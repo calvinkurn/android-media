@@ -46,11 +46,10 @@
             android:digits="0123456789"
             android:gravity="start"
             android:inputType="number"
-            android:maxLength="@integer/max_length_price_input"
             android:maxLines="1"
             android:nextFocusDown="@+id/max_value"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
+            android:layout_marginLeft="-4dp"
+            android:layout_marginRight="-4dp"
             tools:text="pmin" />
 
         <TextView
@@ -69,10 +68,9 @@
             android:digits="0123456789"
             android:gravity="end"
             android:inputType="number"
-            android:maxLength="@integer/max_length_price_input"
             android:maxLines="1"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
+            android:layout_marginLeft="-4dp"
+            android:layout_marginRight="-4dp"
             tools:text="pmax" />
 
     </LinearLayout>
@@ -80,7 +78,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp">
+        android:layout_marginTop="@dimen/margin_ms">
 
         <com.tokopedia.design.price.DynamicBackgroundSeekBar
             android:id="@+id/seekbar_background"

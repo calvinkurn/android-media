@@ -15,6 +15,9 @@ public class FlightAirlineParamUtil {
     }
 
     public static String getId(HashMap<String, Object> hashMap){
+        if (hashMap == null) {
+            return "";
+        }
         return (String) hashMap.get(ID);
     }
 }

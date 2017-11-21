@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TextInputView">
+        <attr name="tiv_remove_background" format="boolean" />
         <attr name="tiv_title_text" format="string" />
         <attr name="tiv_hint_text" format="string" />
         <attr name="tiv_icon" format="reference" />
@@ -21,5 +22,14 @@
         <attr name="spv_icon" format="reference" />
         <attr name="spv_min_value" format="integer" />
         <attr name="spv_max_value" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CardWithActionView">
+        <attr name="cmv_title" format="string" />
+        <attr name="cmv_content" format="string" />
+        <attr name="cmv_content_info" format="string" />
+        <attr name="cmw_subcontent" format="string" />
+        <attr name="cmw_subcontent_info" format="string" />
+        <attr name="cmw_action" format="string" />
     </declare-styleable>
 </resources>

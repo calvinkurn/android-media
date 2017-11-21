@@ -74,16 +74,10 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
         adapter = getSelectionListAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(labelView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
-    }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
         if (!TextUtils.isEmpty(titleText)) {
             labelView.setTitle(titleText);
         }
-        invalidate();
-        requestLayout();
     }
 
     public void setItemList(List<T> itemList) {

@@ -1,6 +1,6 @@
 package com.tokopedia.flight.dashboard.view.validator;
 
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightSelectPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 
 import javax.inject.Inject;
 
@@ -15,16 +15,16 @@ public class FlightSelectPassengerValidator {
     public FlightSelectPassengerValidator() {
     }
 
-    public boolean validateTotalPassenger(FlightSelectPassengerViewModel passData) {
-        int total = passData.getAdult() + passData.getChildren() + passData.getInfant();
+    public boolean validateTotalPassenger(FlightPassengerViewModel passData) {
+        int total = passData.getAdult() + passData.getChildren();
         return total <= MAX_PASSENGER_VALUE;
     }
 
-    public boolean validateInfantNotGreaterThanAdult(FlightSelectPassengerViewModel passengerPassData) {
+    public boolean validateInfantNotGreaterThanAdult(FlightPassengerViewModel passengerPassData) {
         return passengerPassData.getInfant() <= passengerPassData.getAdult();
     }
 
-    public boolean validateAdultCountAtleastOne(FlightSelectPassengerViewModel passengerPassData) {
+    public boolean validateAdultCountAtleastOne(FlightPassengerViewModel passengerPassData) {
         return passengerPassData.getAdult() > 0;
     }
 }

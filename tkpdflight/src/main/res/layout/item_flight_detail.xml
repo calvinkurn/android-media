@@ -10,8 +10,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_rect_stroke_flight_grey"
-        android:padding="@dimen/padding_med">
+        android:background="@color/white"
+        android:padding="@dimen/padding_small">
 
         <RelativeLayout
             android:id="@+id/container_flight_info"
@@ -21,37 +21,39 @@
 
             <TextView
                 android:id="@+id/departure_time"
-                style="@style/TextView.Body1.BlackPrimary"
+                style="@style/TextView.Body1.Green"
                 android:layout_marginRight="10dp"
+                android:layout_toRightOf="@+id/departure_time_circle"
                 tools:text="19:25" />
 
             <TextView
-
                 android:id="@+id/departure_date"
                 style="@style/TextView.Caption.BlackDisabled"
-                android:layout_below="@+id/departure_time"
+                android:layout_alignBottom="@+id/departure_time"
+                android:layout_toRightOf="@+id/departure_time"
                 tools:text="9 ags" />
 
             <ImageView
                 android:id="@+id/departure_time_circle"
                 android:layout_width="@dimen/image_width_xxxs"
                 android:layout_height="@dimen/image_width_xxxs"
-                android:layout_alignBottom="@+id/departure_time"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
                 android:layout_marginRight="@dimen/margin_sm"
-                android:layout_toRightOf="@id/departure_time"
                 android:src="@drawable/selector_flight_detail" />
 
             <TextView
                 android:id="@+id/arrival_time"
-                style="@style/TextView.Body1.BlackPrimary"
-                android:layout_above="@+id/arrival_date"
-                android:layout_marginRight="10dp"
+                style="@style/TextView.Body1.Green"
+                android:layout_alignBottom="@+id/arrival_date"
+                android:layout_toRightOf="@+id/arrival_time_circle"
                 tools:text="19:25" />
 
             <TextView
                 android:id="@+id/arrival_date"
                 style="@style/TextView.Caption.BlackDisabled"
-                android:layout_alignParentBottom="true"
+                android:layout_alignLeft="@+id/container_flight_time"
+                android:layout_below="@+id/container_flight_time"
                 tools:text="9 ags" />
 
             <ImageView
@@ -61,7 +63,6 @@
                 android:layout_alignBottom="@+id/arrival_time"
                 android:layout_alignLeft="@+id/departure_time_circle"
                 android:layout_marginRight="@dimen/margin_sm"
-                android:layout_toRightOf="@id/arrival_time"
                 android:src="@drawable/selector_flight_detail" />
 
             <View
@@ -76,8 +77,8 @@
             <TextView
                 android:id="@+id/departure_airport_name"
                 style="@style/TextView.Body1.BlackPrimary"
-                android:layout_alignBottom="@+id/departure_time"
-                android:layout_toRightOf="@id/departure_time_circle"
+                android:layout_alignLeft="@+id/departure_date"
+                android:layout_below="@+id/departure_date"
                 android:textStyle="bold"
                 tools:text="Jakarta (CGK)" />
 
@@ -103,7 +104,7 @@
                     android:layout_width="@dimen/image_width_xs"
                     android:layout_height="@dimen/image_width_xs"
                     android:layout_marginRight="@dimen/margin_vs"
-                    android:src="@drawable/ic_info_flight" />
+                    android:src="@drawable/ic_clock_flight" />
 
                 <TextView
                     android:id="@+id/flight_time"
@@ -114,8 +115,8 @@
             <TextView
                 android:id="@+id/arrival_airport_name"
                 style="@style/TextView.Body1.BlackPrimary"
-                android:layout_alignBottom="@id/arrival_time"
-                android:layout_toRightOf="@id/arrival_time_circle"
+                android:layout_alignLeft="@+id/arrival_date"
+                android:layout_below="@+id/arrival_date"
                 android:textStyle="bold"
                 tools:text="Jakarta (CGK)" />
 
@@ -124,15 +125,15 @@
                 style="@style/TextView.Caption.BlackSecondary"
                 android:layout_alignLeft="@+id/arrival_airport_name"
                 android:layout_below="@+id/arrival_airport_name"
-                android:layout_marginBottom="@dimen/margin_sm"
                 tools:text="Soekarno-Hatta Intl Airport" />
         </RelativeLayout>
 
         <TextView
+            android:layout_marginTop="@dimen/margin_sm"
             android:id="@+id/transit_info"
+            android:padding="@dimen/padding_med"
             style="@style/TextView.Body1.BlackSecondary"
             android:layout_width="match_parent"
-            android:layout_alignParentBottom="true"
             android:layout_below="@+id/container_flight_info"
             android:background="@drawable/bg_stroke_dash_green_flight"
             android:visibility="gone"

@@ -1,5 +1,7 @@
 package com.tokopedia.flight.airport.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase;

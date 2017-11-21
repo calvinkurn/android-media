@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_100"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/container_price"
+            android:layout_marginBottom="@dimen/margin_small" />
+
+        <LinearLayout
+            android:id="@+id/container_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <TextView
+                style="@style/TextView.Caption"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:text="@string/flight_label_price_total" />
+
+            <TextView
+                android:id="@+id/saving_price"
+                style="@style/TextView.Caption.BlackDisabled"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:visibility="gone"
+                tools:text="Rp. 25000"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/flight_price_total"
+                style="@style/TextView.Title"
+                tools:text="Rp. 5.923.000" />
+        </LinearLayout>
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

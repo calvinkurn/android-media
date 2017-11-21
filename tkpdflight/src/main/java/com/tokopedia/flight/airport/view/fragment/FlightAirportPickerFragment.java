@@ -2,6 +2,11 @@ package com.tokopedia.flight.airport.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
@@ -22,7 +27,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB> implements FlightAirportPickerView{
+public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB> implements FlightAirportPickerView, BaseListAdapter.OnBaseListV2AdapterListener<FlightAirportDB> {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
 
@@ -33,6 +38,12 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
     }
 
     @Override
@@ -47,12 +58,13 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     @Override
     protected BaseListAdapter<FlightAirportDB> getNewAdapter() {
-        return new FlightAirportAdapter();
+        return new FlightAirportAdapter(this);
     }
 
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_flight_airport_picker;
+    public void loadData(int page, int currentDataSize, int rowPerPage) {
+        showLoading();
+        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
     }
 
     @Override
@@ -61,11 +73,6 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
         intent.putExtra(EXTRA_SELECTED_AIRPORT, flightAirportDB);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
-    }
-
-    @Override
-    protected void searchForPage(int page) {
-        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
     }
 
     @Override
@@ -84,6 +91,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     protected long getDelayTextChanged() {
         return DELAY_TEXT_CHANGED;
     }
+
 
     @Override
     protected String getScreenName() {

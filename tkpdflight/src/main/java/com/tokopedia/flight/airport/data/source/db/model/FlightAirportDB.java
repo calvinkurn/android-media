@@ -49,6 +49,9 @@ public class FlightAirportDB extends BaseModel implements ItemType, Parcelable {
     @Column(name = "aliases")
     String aliases;
 
+    @Column(name = "airport_ids")
+    String airportIds;
+
     public String getCountryId() {
         return countryId;
     }
@@ -121,9 +124,20 @@ public class FlightAirportDB extends BaseModel implements ItemType, Parcelable {
         this.aliases = aliases;
     }
 
+    public String getAirportIds() {
+        return airportIds;
+    }
+
+    public void setAirportIds(String airportIds) {
+        this.airportIds = airportIds;
+    }
+
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    public FlightAirportDB() {
     }
 
     @Override
@@ -142,9 +156,7 @@ public class FlightAirportDB extends BaseModel implements ItemType, Parcelable {
         dest.writeString(this.cityCode);
         dest.writeString(this.airportName);
         dest.writeString(this.aliases);
-    }
-
-    public FlightAirportDB() {
+        dest.writeString(this.airportIds);
     }
 
     protected FlightAirportDB(Parcel in) {
@@ -157,6 +169,7 @@ public class FlightAirportDB extends BaseModel implements ItemType, Parcelable {
         this.cityCode = in.readString();
         this.airportName = in.readString();
         this.aliases = in.readString();
+        this.airportIds = in.readString();
     }
 
     public static final Creator<FlightAirportDB> CREATOR = new Creator<FlightAirportDB>() {

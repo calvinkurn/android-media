@@ -10,9 +10,11 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
-import com.tokopedia.flight.search.data.cloud.model.Attributes;
-import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
-import com.tokopedia.flight.search.data.cloud.model.Route;
+import com.tokopedia.flight.search.data.cloud.model.response.Attributes;
+import com.tokopedia.flight.search.data.cloud.model.response.Fare;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
+import com.tokopedia.flight.search.data.cloud.model.response.Route;
+import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 import java.util.List;
 
@@ -21,8 +23,16 @@ import java.util.List;
  */
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
+    public static final String ID = "id";
+    public static final String TOTAL_NUMERIC = "total_numeric";
+    public static final String AIRLINE = "airline";
+    public static final String IS_REFUNDABLE = "is_refundable";
+    public static final String DEPARTURE_TIME = "departure_time";
+    public static final String DEPARTURE_TIME_INT = "departure_time_int";
+    public static final String DURATION_MINUTE = "duration_minute";
+    public static final String TOTAL_TRANSIT = "total_transit";
     @PrimaryKey
-    @Column(name = "id")
+    @Column(name = ID)
     String id;
 
     @Column(name = "type")
@@ -34,10 +44,10 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "departure_airport")
     String departureAirport;
 
-    @Column(name = "departure_time")
+    @Column(name = DEPARTURE_TIME)
     String departureTime;
 
-    @Column(name = "departure_time_int")
+    @Column(name = DEPARTURE_TIME_INT)
     int departureTimeInt;
 
     @Column(name = "arrival_airport")
@@ -49,7 +59,7 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "arrival_time_int")
     int arrivalTimeInt;
 
-    @Column(name = "total_transit")
+    @Column(name = TOTAL_TRANSIT)
     int totalTransit;
 
     @Column(name = "add_day_arrival")
@@ -58,13 +68,13 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "duration")
     String duration;
 
-    @Column(name = "duration_minute")
+    @Column(name = DURATION_MINUTE)
     int durationMinute;
 
     @Column(name = "total")
     String total;
 
-    @Column(name = "total_numeric")
+    @Column(name = TOTAL_NUMERIC)
     int totalNumeric;
 
     @Column(name = "before_total")
@@ -73,22 +83,27 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "routes")
     String routes;
 
-    @Column(name = "airline")
+    @Column(name = "fare")
+    String fare;
+
+    @Column(name = AIRLINE)
     String airline;
 
-    @Column(name = "is_refundable")
-    boolean isRefundable;
+    @Column(name = IS_REFUNDABLE)
+    int isRefundable;
 
     @Override
     public int getType() {
         return 0;
     }
 
-    public FlightSearchSingleRouteDB(){
+    public FlightSearchSingleRouteDB() {
 
     }
 
-    public FlightSearchSingleRouteDB(FlightSearchData flightSearchData){
+    public FlightSearchSingleRouteDB(FlightSearchData flightSearchData) {
+        Gson gson = new Gson();
+
         this.id = flightSearchData.getId();
         this.type = flightSearchData.getFlightType();
         Attributes attributes = flightSearchData.getAttributes();
@@ -96,9 +111,11 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         this.departureAirport = attributes.getDepartureAirport();
         this.departureTime = attributes.getDepartureTime();
         this.departureTimeInt = attributes.getDepartureTimeInt();
+
         this.arrivalAirport = attributes.getArrivalAirport();
         this.arrivalTime = attributes.getArrivalTime();
         this.arrivalTimeInt = attributes.getArrivalTimeInt();
+
         this.totalTransit = attributes.getTotalTransit();
         this.addDayArrival = attributes.getAddDayArrival();
         this.duration = attributes.getDuration();
@@ -108,22 +125,35 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         this.beforeTotal = attributes.getBeforeTotal();
 
         List<Route> routeList = attributes.getRoutes();
-        this.routes = new Gson().toJson(routeList);
+        this.routes = gson.toJson(routeList);
+
+        Fare fare = attributes.getFare();
+        this.fare = gson.toJson(fare);
 
         this.airline = "";
-        this.isRefundable = true;
-        for (int i = 0, sizei = routeList.size(); i<sizei; i++) {
-            if (! routeList.get(i).getRefundable()){
-                isRefundable = false;
+        int refundableCount = 0;
+        for (int i = 0, sizei = routeList.size(); i < sizei; i++) {
+            if (routeList.get(i).getRefundable()) {
+                refundableCount++;
             }
-            if (!TextUtils.isEmpty(airline)) {
-                airline+="-";
+            String airlineID = routeList.get(i).getAirline();
+            if (!TextUtils.isEmpty(airlineID) && !airline.contains(airlineID)) {
+                if (!TextUtils.isEmpty(airline)) {
+                    airline += "-";
+                }
+                airline += routeList.get(i).getAirline();
             }
-            airline+=routeList.get(i).getAirline();
+        }
+        if (refundableCount == routeList.size()) {
+            this.isRefundable = RefundableEnum.REFUNDABLE.getId();
+        } else if (refundableCount == 0){
+            this.isRefundable = RefundableEnum.NOT_REFUNDABLE.getId();
+        } else {
+            this.isRefundable = RefundableEnum.PARTIAL_REFUNDABLE.getId();
         }
     }
 
-    public String getFlightType(){
+    public String getFlightType() {
         return type;
     }
 
@@ -191,11 +221,21 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         return routes;
     }
 
+    public String getFare() {
+        return fare;
+    }
+
     public String getAirline() {
         return airline;
     }
 
-    public boolean isRefundable() {
-        return isRefundable;
+    public RefundableEnum getIsRefundable(){
+        if (isRefundable == RefundableEnum.REFUNDABLE.getId()) {
+            return RefundableEnum.REFUNDABLE;
+        } else if (isRefundable == RefundableEnum.NOT_REFUNDABLE.getId()) {
+            return RefundableEnum.NOT_REFUNDABLE;
+        } else {
+            return RefundableEnum.PARTIAL_REFUNDABLE;
+        }
     }
 }

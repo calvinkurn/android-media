@@ -2,15 +2,18 @@ package com.tokopedia.flight.common.di.module;
 
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
+import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
+import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
-import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
-import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
+import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
+import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
+import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,8 +39,12 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder, HttpLoggingInterceptor httpLoggingInterceptor) {
-        return okHttpClientBuilder.addInterceptor(httpLoggingInterceptor).build();
+    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
+                                            HttpLoggingInterceptor httpLoggingInterceptor,
+                                            FlightAuthInterceptor flightAuthInterceptor) {
+        return okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(flightAuthInterceptor)
+                .build();
     }
 
     @FlightScope
@@ -52,11 +59,14 @@ public class FlightModule {
     @Provides
     public FlightRepository provideFlightRepository(FlightAirportDataListSource flightAirportDataListSource,
                                                     FlightAirlineDataListSource flightAirlineDataListSource,
-                                                    FlightSearchSingleDataListSource flightSearchSingleDataListSource,
-                                                    FlightSearchReturnDataListSource flightSearchReturnDataListSource,
-                                                    FlightClassesDataSource getFlightClassesUseCase) {
+                                                    FlightSearchSingleDataSource flightSearchSingleDataListSource,
+                                                    FlightSearchReturnDataSource flightSearchReturnDataListSource,
+                                                    FlightClassesDataSource getFlightClassesUseCase,
+                                                    FlightCartDataSource flightCartDataSource,
+                                                    FlightMetaDataDBSource flightMetaDataDBSource) {
         return new FlightRepositoryImpl(flightAirportDataListSource,flightAirlineDataListSource,
-                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase);
+                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource,
+                flightMetaDataDBSource);
     }
 
     @FlightScope

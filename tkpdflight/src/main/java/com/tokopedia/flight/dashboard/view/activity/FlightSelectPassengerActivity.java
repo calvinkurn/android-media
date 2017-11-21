@@ -12,12 +12,12 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.FlightSelectPassengerFragment;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightSelectPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 
 public class FlightSelectPassengerActivity extends BaseSimpleActivity implements HasComponent<FlightDashboardComponent>, FlightSelectPassengerFragment.OnFragmentInteractionListener {
     public static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
 
-    public static Intent getCallingIntent(Activity activity, FlightSelectPassengerViewModel viewModel) {
+    public static Intent getCallingIntent(Activity activity, FlightPassengerViewModel viewModel) {
         Intent intent = new Intent(activity, FlightSelectPassengerActivity.class);
         intent.putExtra(EXTRA_PASS_DATA, viewModel);
         return intent;
@@ -25,7 +25,7 @@ public class FlightSelectPassengerActivity extends BaseSimpleActivity implements
 
     @Override
     protected Fragment getNewFragment() {
-        FlightSelectPassengerViewModel passengerPassData = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+        FlightPassengerViewModel passengerPassData = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
         return FlightSelectPassengerFragment.newInstance(passengerPassData);
     }
 
@@ -37,7 +37,7 @@ public class FlightSelectPassengerActivity extends BaseSimpleActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle(getString(R.string.select_passenger_toolbar_title));
+        toolbar.setContentInsetStartWithNavigation(0);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class FlightSelectPassengerActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void actionSavePassenger(FlightSelectPassengerViewModel passData) {
+    public void actionSavePassenger(FlightPassengerViewModel passData) {
         setIntent(getIntent().putExtra(EXTRA_PASS_DATA, passData));
         setResult(RESULT_OK, getIntent());
         finish();

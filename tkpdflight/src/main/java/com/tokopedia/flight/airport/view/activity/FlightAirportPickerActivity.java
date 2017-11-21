@@ -2,6 +2,7 @@ package com.tokopedia.flight.airport.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -15,9 +16,11 @@ import com.tokopedia.flight.common.di.component.FlightComponent;
  */
 
 public class FlightAirportPickerActivity extends BaseSimpleActivity implements HasComponent<FlightComponent> {
+    private static final String EXTRA_TOOLBAR_TITLE = "EXTRA_TOOLBAR_TITLE";
 
-    public static Intent createInstance(Activity activity){
+    public static Intent createInstance(Activity activity, String title) {
         Intent intent = new Intent(activity, FlightAirportPickerActivity.class);
+        intent.putExtra(EXTRA_TOOLBAR_TITLE, title);
         return intent;
     }
 
@@ -38,9 +41,15 @@ public class FlightAirportPickerActivity extends BaseSimpleActivity implements H
 
     @Override
     public FlightComponent getComponent() {
-        if(getApplication() instanceof FlightModuleRouter) {
-            return ((FlightModuleRouter)getApplication()).getFlightComponent();
+        if (getApplication() instanceof FlightModuleRouter) {
+            return ((FlightModuleRouter) getApplication()).getFlightComponent();
         }
         return null;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        updateTitle(getIntent().getStringExtra(EXTRA_TOOLBAR_TITLE));
     }
 }

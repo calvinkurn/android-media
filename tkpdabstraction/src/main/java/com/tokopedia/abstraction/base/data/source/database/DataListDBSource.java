@@ -10,13 +10,6 @@ import rx.Observable;
  * Created by nathan on 10/23/17.
  */
 
-public interface DataListDBSource<T,U> {
+public interface DataListDBSource<T, U> extends DataDBSource<List<T>, List<U>> {
 
-    Observable<Boolean> isDataAvailable();
-
-    Observable<Boolean> deleteAll();
-
-    Observable<Boolean> insertAll(List<T> list);
-
-    Observable<List<U>> getData(HashMap<String, Object> params);
 }

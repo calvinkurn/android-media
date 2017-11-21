@@ -1,8 +1,12 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
@@ -26,46 +30,42 @@ public abstract class BaseSearchListFragment<T extends ItemType> extends BaseLis
     }
 
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_base_search_list;
-    }
-
-    @Override
-    protected void initView(View view) {
-        super.initView(view);
-        searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        searchInputView = getSearchInputView(view);
         searchInputView.setDelayTextChanged(getDelayTextChanged());
         searchInputView.setListener(this);
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_base_search_list, container, false);
+    }
+
+    @NonNull
+    protected SearchInputView getSearchInputView(View view) {
+        return (SearchInputView) view.findViewById(R.id.search_input_view);
     }
 
     @Override
-    protected void showViewEmptyList() {
-        super.showViewEmptyList();
-        showSearchView(false);
+    public void onSearchLoaded(@NonNull List<T> list, int totalItem) {
+        super.onSearchLoaded(list, totalItem);
+        if (getAdapter().getDataSize() == 0 && !getAdapter().isInFilterMode()) {
+            showSearchView(false);
+        } else {
+            showSearchView(true);
+        }
     }
 
     @Override
-    protected void showViewSearchNoResult() {
-        super.showViewSearchNoResult();
-        showSearchView(true);
-    }
-
-    @Override
-    protected void showViewList(@NonNull List<T> list) {
-        super.showViewList(list);
-        showSearchView(true);
-    }
-
-    @Override
-    protected void onLoadSearchErrorWithDataEmpty(Throwable t) {
-        super.onLoadSearchErrorWithDataEmpty(t);
-        showSearchView(false);
-    }
-
-    @Override
-    protected void onLoadSearchErrorWithDataExist(Throwable t) {
-        super.onLoadSearchErrorWithDataExist(t);
-        showSearchView(true);
+    public void onLoadSearchError(Throwable t) {
+        super.onLoadSearchError(t);
+        if (getAdapter().getDataSize() > 0) {
+            showSearchView(true);
+        } else {
+            showSearchView(false);
+        }
     }
 
     @Override
@@ -79,7 +79,7 @@ public abstract class BaseSearchListFragment<T extends ItemType> extends BaseLis
     }
 
     private void updateSearchMode(String text) {
-        searchMode = !TextUtils.isEmpty(text);
+        getAdapter().setInFilterMode(!TextUtils.isEmpty(text));
     }
 
     private void showSearchView(boolean isVisible) {

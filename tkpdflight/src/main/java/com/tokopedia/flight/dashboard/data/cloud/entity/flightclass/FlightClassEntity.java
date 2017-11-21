@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class FlightClassEntity {
     @SerializedName("id")
     @Expose
-    private String id;
+    private int id;
 
     @SerializedName("type")
     @Expose
@@ -20,7 +20,13 @@ public class FlightClassEntity {
     @Expose
     private FlightClassAttributeEntity attributes;
 
-    public String getId() {
+    public FlightClassEntity(int id, String type, String label) {
+        this.id = id;
+        this.type = type;
+        this.attributes = new FlightClassAttributeEntity(label);
+    }
+
+    public int getId() {
         return id;
     }
 

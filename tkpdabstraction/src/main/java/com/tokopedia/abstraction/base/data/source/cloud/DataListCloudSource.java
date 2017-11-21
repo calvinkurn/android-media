@@ -9,7 +9,6 @@ import rx.Observable;
  * Created by nathan on 10/23/17.
  */
 
-public abstract class DataListCloudSource<T> {
+public abstract class DataListCloudSource<T> extends DataCloudSource<List<T>>{
 
-    public abstract Observable<List<T>> getData(HashMap<String, Object> params);
 }

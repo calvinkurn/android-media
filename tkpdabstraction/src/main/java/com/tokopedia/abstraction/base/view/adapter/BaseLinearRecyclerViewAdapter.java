@@ -23,6 +23,16 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
     private RetryDataBinder.OnRetryListener listener;
 
     public BaseLinearRecyclerViewAdapter() {
+        init();
+    }
+
+    public BaseLinearRecyclerViewAdapter(boolean useDefaultDataBinder) {
+        if (useDefaultDataBinder) {
+            init();
+        }
+    }
+
+    public void init(){
         loadingView = new LoadingDataBinder(this);
         emptyView = new NoResultDataBinder(this);
         retryView = new RetryDataBinder(this);
@@ -77,11 +87,11 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
     private RetryDataBinder.OnRetryListener onRetryClicked() {
         return new RetryDataBinder.OnRetryListener() {
             @Override
-            public void onRetryCliked() {
+            public void onRetryClicked() {
                 showRetry(false);
                 showLoading(true);
                 notifyDataSetChanged();
-                listener.onRetryCliked();
+                listener.onRetryClicked();
             }
         };
     }

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightSelectPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 
 import java.util.Date;
 
@@ -47,6 +47,7 @@ public interface FlightDashboardContract {
         void showFlightClassPassengerIsEmpty(@StringRes int resId);
 
         void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -69,7 +70,7 @@ public interface FlightDashboardContract {
 
         void onFlightClassesChange(FlightClassViewModel viewModel);
 
-        void onFlightPassengerChange(FlightSelectPassengerViewModel passengerViewModel);
+        void onFlightPassengerChange(FlightPassengerViewModel passengerViewModel);
 
         void onDepartureAirportChange(FlightAirportDB departureAirport);
 

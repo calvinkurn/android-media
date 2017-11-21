@@ -248,6 +248,16 @@
     </style>
 
     <style name="TextAppearance.Tokopedia.Title.Expanded" parent="android:TextAppearance">
+        <item name="android:textColor">@color/black_seventy_percent_</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance.Tokopedia.Title.Collapsed.Black" parent="android:TextAppearance">
+        <item name="android:textColor">@color/black_seventy_percent_</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="TextAppearance.Tokopedia.Title.Expanded.Black" parent="android:TextAppearance">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
     </style>

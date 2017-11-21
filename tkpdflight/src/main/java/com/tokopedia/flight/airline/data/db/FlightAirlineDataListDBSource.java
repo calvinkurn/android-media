@@ -2,14 +2,14 @@ package com.tokopedia.flight.airline.data.db;
 
 import android.text.TextUtils;
 
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
+import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB_Table;
 import com.tokopedia.flight.airline.util.FlightAirlineParamUtil;
+import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,31 +24,15 @@ import rx.functions.Func1;
  * Created by normansyahputa on 5/18/17.
  */
 
-public class FlightAirlineDataListDBSource implements DataListDBSource<AirlineData,FlightAirlineDB> {
+public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineData,FlightAirlineDB> {
 
     @Inject
     public FlightAirlineDataListDBSource() {
     }
 
     @Override
-    public Observable<Boolean> isDataAvailable() {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(new Select(Method.count()).from(FlightAirlineDB.class).hasData());
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> deleteAll() {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                new Delete().from(FlightAirlineDB.class).execute();
-                subscriber.onNext(true);
-            }
-        });
+    protected Class<? extends Model> getDBClass() {
+        return FlightAirlineDB.class;
     }
 
     @Override
@@ -87,6 +71,17 @@ public class FlightAirlineDataListDBSource implements DataListDBSource<AirlineDa
                             .queryList();
                 }
                 subscriber.onNext(flightAirlineDBs);
+            }
+        });
+    }
+
+    @Override
+    public Observable<Integer> getDataCount(HashMap<String, Object> params) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                long count = new Select(Method.count()).from(FlightAirlineDB.class).count();
+                subscriber.onNext((int) count);
             }
         });
     }

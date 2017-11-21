@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.base.view.activity;
 
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -10,13 +9,11 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.tokopedia.abstraction.R;
@@ -60,7 +57,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     protected void setToolbarColorWhite() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (isShadowDisplayed() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(TOOLBAR_ELEVATION);
         }
         int textColor = ContextCompat.getColor(this, TEXT_COLOR_BACKGROUND_WHITE);
@@ -75,6 +72,10 @@ abstract class BaseToolbarActivity extends BaseActivity {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
     }
 
     protected boolean isShowCloseButton() {
@@ -136,5 +137,9 @@ abstract class BaseToolbarActivity extends BaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected boolean isShadowDisplayed() {
+        return true;
     }
 }

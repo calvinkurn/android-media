@@ -12,12 +12,12 @@ public class FlightDashboardViewModel implements Cloneable {
     private String returnDate;
     private String returnDateFmt;
     private boolean isOneWay;
-    private FlightSelectPassengerViewModel flightPassengerViewModel;
+    private FlightPassengerViewModel flightPassengerViewModel;
     private String flightPassengerFmt;
-    private FlightAirportDB origin;
-    private String originFmt;
-    private FlightAirportDB destination;
-    private String destinationFmt;
+    private FlightAirportDB departureAirport;
+    private String departureAirportFmt;
+    private FlightAirportDB arrivalAirport;
+    private String arrivalAirportFmt;
     private FlightClassViewModel flightClass;
 
     public FlightDashboardViewModel() {
@@ -28,12 +28,12 @@ public class FlightDashboardViewModel implements Cloneable {
                                     String returnDate,
                                     String returnDateFmt,
                                     boolean isOneWay,
-                                    FlightSelectPassengerViewModel flightPassengerViewModel,
+                                    FlightPassengerViewModel flightPassengerViewModel,
                                     String flightPassengerFmt,
-                                    FlightAirportDB origin,
-                                    String originFmt,
-                                    FlightAirportDB destination,
-                                    String destinationFmt,
+                                    FlightAirportDB departureAirport,
+                                    String departureAirportFmt,
+                                    FlightAirportDB arrivalAirport,
+                                    String arrivalAirportFmt,
                                     FlightClassViewModel flightClass) {
         this.departureDate = departureDate;
         this.departureDateFmt = departureDateFmt;
@@ -42,10 +42,10 @@ public class FlightDashboardViewModel implements Cloneable {
         this.isOneWay = isOneWay;
         this.flightPassengerViewModel = flightPassengerViewModel;
         this.flightPassengerFmt = flightPassengerFmt;
-        this.origin = origin;
-        this.originFmt = originFmt;
-        this.destination = destination;
-        this.destinationFmt = destinationFmt;
+        this.departureAirport = departureAirport;
+        this.departureAirportFmt = departureAirportFmt;
+        this.arrivalAirport = arrivalAirport;
+        this.arrivalAirportFmt = arrivalAirportFmt;
         this.flightClass = flightClass;
     }
 
@@ -73,28 +73,28 @@ public class FlightDashboardViewModel implements Cloneable {
         isOneWay = oneWay;
     }
 
-    public FlightSelectPassengerViewModel getFlightPassengerViewModel() {
+    public FlightPassengerViewModel getFlightPassengerViewModel() {
         return flightPassengerViewModel;
     }
 
-    public void setFlightPassengerViewModel(FlightSelectPassengerViewModel flightPassengerViewModel) {
+    public void setFlightPassengerViewModel(FlightPassengerViewModel flightPassengerViewModel) {
         this.flightPassengerViewModel = flightPassengerViewModel;
     }
 
-    public FlightAirportDB getOrigin() {
-        return origin;
+    public FlightAirportDB getDepartureAirport() {
+        return departureAirport;
     }
 
-    public void setOrigin(FlightAirportDB origin) {
-        this.origin = origin;
+    public void setDepartureAirport(FlightAirportDB departureAirport) {
+        this.departureAirport = departureAirport;
     }
 
-    public FlightAirportDB getDestination() {
-        return destination;
+    public FlightAirportDB getArrivalAirport() {
+        return arrivalAirport;
     }
 
-    public void setDestination(FlightAirportDB destination) {
-        this.destination = destination;
+    public void setArrivalAirport(FlightAirportDB arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
     }
 
     public CharSequence getDepartureDateFmt() {
@@ -125,20 +125,20 @@ public class FlightDashboardViewModel implements Cloneable {
         this.flightPassengerFmt = flightPassengerFmt;
     }
 
-    public String getOriginFmt() {
-        return originFmt;
+    public String getDepartureAirportFmt() {
+        return departureAirportFmt;
     }
 
-    public void setOriginFmt(String originFmt) {
-        this.originFmt = originFmt;
+    public void setDepartureAirportFmt(String departureAirportFmt) {
+        this.departureAirportFmt = departureAirportFmt;
     }
 
-    public String getDestinationFmt() {
-        return destinationFmt;
+    public String getArrivalAirportFmt() {
+        return arrivalAirportFmt;
     }
 
-    public void setDestinationFmt(String destinationFmt) {
-        this.destinationFmt = destinationFmt;
+    public void setArrivalAirportFmt(String arrivalAirportFmt) {
+        this.arrivalAirportFmt = arrivalAirportFmt;
     }
 
     @Override
@@ -160,12 +160,12 @@ public class FlightDashboardViewModel implements Cloneable {
         private String returnDate;
         private String returnDateFmt;
         private boolean isOneWay;
-        private FlightSelectPassengerViewModel flightPassengerViewModel;
+        private FlightPassengerViewModel flightPassengerViewModel;
         private String flightPassengerFmt;
-        private FlightAirportDB origin;
-        private String originFmt;
-        private FlightAirportDB destination;
-        private String destinationFmt;
+        private FlightAirportDB departureAirport;
+        private String departureAirportFmt;
+        private FlightAirportDB arrivalAirport;
+        private String arrivalAirportFmt;
         private FlightClassViewModel flightClass;
 
         public Builder() {
@@ -196,7 +196,7 @@ public class FlightDashboardViewModel implements Cloneable {
             return this;
         }
 
-        public Builder setFlightPassengerViewModel(FlightSelectPassengerViewModel flightPassengerViewModel) {
+        public Builder setFlightPassengerViewModel(FlightPassengerViewModel flightPassengerViewModel) {
             this.flightPassengerViewModel = flightPassengerViewModel;
             return this;
         }
@@ -206,23 +206,23 @@ public class FlightDashboardViewModel implements Cloneable {
             return this;
         }
 
-        public Builder setOrigin(FlightAirportDB origin) {
-            this.origin = origin;
+        public Builder setDepartureAirport(FlightAirportDB departureAirport) {
+            this.departureAirport = departureAirport;
             return this;
         }
 
-        public Builder setOriginFmt(String originFmt) {
-            this.originFmt = originFmt;
+        public Builder setDepartureAirportFmt(String departureAirportFmt) {
+            this.departureAirportFmt = departureAirportFmt;
             return this;
         }
 
-        public Builder setDestination(FlightAirportDB destination) {
-            this.destination = destination;
+        public Builder setArrivalAirport(FlightAirportDB arrivalAirport) {
+            this.arrivalAirport = arrivalAirport;
             return this;
         }
 
-        public Builder setDestinationFmt(String destinationFmt) {
-            this.destinationFmt = destinationFmt;
+        public Builder setArrivalAirportFmt(String arrivalAirportFmt) {
+            this.arrivalAirportFmt = arrivalAirportFmt;
             return this;
         }
 
@@ -240,10 +240,10 @@ public class FlightDashboardViewModel implements Cloneable {
                     isOneWay,
                     flightPassengerViewModel,
                     flightPassengerFmt,
-                    origin,
-                    originFmt,
-                    destination,
-                    destinationFmt,
+                    departureAirport,
+                    departureAirportFmt,
+                    arrivalAirport,
+                    arrivalAirportFmt,
                     flightClass);
         }
     }

@@ -17,7 +17,7 @@ public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
 
 
     public interface OnRetryListener {
-        void onRetryCliked();
+        void onRetryClicked();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -67,7 +67,7 @@ public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onRetryCliked();
+                listener.onRetryClicked();
             }
         };
     }

@@ -141,10 +141,19 @@
     <declare-styleable name="DecimalRangeInputView">
         <attr name="driv_label_min" format="string" />
         <attr name="driv_label_max" format="string" />
+        <attr name="driv_typable" format="boolean" />
+        <attr name="driv_label_text_appearance" format="reference" />
+        <attr name="driv_value_text_appearance" format="reference" />
+        <attr name="driv_value_max_length" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="DynamicBackgroundSeekBar">
         <attr name="dbsb_background_color" format="color" />
         <attr name="dbsb_foreground_color" format="color" />
     </declare-styleable>
+
+
+    <attr name="bottomSheetBuilderBackgroundColor" format="color" />
+    <attr name="bottomSheetBuilderItemTextColor" format="color" />
+    <attr name="bottomSheetBuilderTitleTextColor" format="color" />
 </resources>

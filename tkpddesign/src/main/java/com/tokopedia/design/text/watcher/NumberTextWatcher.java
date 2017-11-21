@@ -2,10 +2,10 @@ package com.tokopedia.design.text.watcher;
 
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.widget.EditText;
 
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.StringUtils;
 
 /**
  * Created by Nathaniel on 3/3/2017.
@@ -37,7 +37,7 @@ public class NumberTextWatcher extends AfterTextWatcher {
     public void afterTextChanged(Editable s) {
         applyFormatter();
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(s.toString());
-        valueString = CurrencyFormatHelper.RemoveNonNumeric (valueString);
+        valueString = StringUtils.removeComma(valueString);
         if (TextUtils.isEmpty(valueString)) {
             editText.setText(defaultValue);
             editText.setSelection(editText.getText().length());

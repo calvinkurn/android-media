@@ -18,6 +18,12 @@ public class FlightAirportDetail {
     @Expose
     private List<String> aliases = new ArrayList<>();
 
+    public FlightAirportDetail(String id, String name, List<String> aliases) {
+        this.id = id;
+        this.name = name;
+        this.aliases = aliases;
+    }
+
     public String getId() {
         return id;
     }

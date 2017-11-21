@@ -83,6 +83,7 @@
 
     <style name="Button.Submit.Green">
         <item name="android:background">@drawable/bg_button_green</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:textColor">@color/text_submit_button</item>
     </style>
 
@@ -141,4 +142,21 @@
         <item name="android:textSize">@dimen/font_subheading</item>
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
+
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorSecondary">@color/grey_400</item>
+    </style>
+
+    <style name="BottomSheetBuilder.DialogStyle" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetBuilder.BottomSheetStyle</item>
+    </style>
+
+
+    <style name="BottomSheetBuilder.BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/white</item>
+        <item name="behavior_hideable">true</item>
+        <item name="behavior_skipCollapsed">true</item>
+    </style>
+
 </resources>

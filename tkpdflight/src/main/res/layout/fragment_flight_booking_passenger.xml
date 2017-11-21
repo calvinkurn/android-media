@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_passenger_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vvs"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:textSize="@dimen/font_headline"
+        android:textStyle="bold"
+        tools:text="Penumpang 1 (Dewasa)" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_passenger_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:textSize="@dimen/font_subheading"
+        tools:text="Usia diatas 12 tahun" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:text="Titel"
+        android:textColor="@color/label_color" />
+
+    <com.tokopedia.design.text.SpinnerTextView
+        android:id="@+id/sp_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

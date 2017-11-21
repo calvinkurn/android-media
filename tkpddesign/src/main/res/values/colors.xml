@@ -36,7 +36,15 @@
     <color name="font_white_disabled_38">#88FFFFFF</color>
 
     <color name="colorGray">#DDDDDD</color>
+    <color name="colorRed">#EA212D</color>
 
     <color name="solid_grey_200">@color/grey_200</color>
+
+
+    <color name="colorSheetText">#DE000000</color>
+    <color name="colorSheetTitle">#8A000000</color>
+    <color name="colorSheetDivider">#3f717171</color>
+    <color name="colorStockEmpty">#fff7bc</color>
+    <color name="bottom_sheet_item_text_color">#b3000000</color>
 
 </resources>

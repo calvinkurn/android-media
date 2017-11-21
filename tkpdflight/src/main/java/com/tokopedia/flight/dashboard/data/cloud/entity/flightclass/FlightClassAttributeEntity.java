@@ -15,4 +15,8 @@ public class FlightClassAttributeEntity {
     public String getLabel() {
         return label;
     }
+
+    public FlightClassAttributeEntity(String label) {
+        this.label = label;
+    }
 }

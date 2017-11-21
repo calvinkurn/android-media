@@ -3,58 +3,75 @@ package com.tokopedia.flight.search.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
+import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchReturnFragment;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 /**
  * Created by User on 10/26/2017.
  */
 
-public class FlightSearchReturnActivity extends BaseSimpleActivity {
+public class FlightSearchReturnActivity extends FlightSearchActivity implements FlightSearchFragment.OnFlightSearchFragmentListener {
 
-    private String departureLocation;
-    private String arrivalLocation;
-    private String dateString;
-    private String passengerString;
-    private String classString;
+    public static final String EXTRA_SEL_DEPARTURE_ID = "EXTRA_DEPARTURE_ID";
 
-    public static void start(Context context){
-        Intent intent = new Intent(context, FlightSearchReturnActivity.class);
+    private String selectedDepartureID;
+
+    public static void start(Context context, FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
+        Intent intent = getCallingIntent(context, passDataViewModel, selectedDepartureID);
         context.startActivity(intent);
+    }
+
+    public static Intent getCallingIntent(Context context, FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
+        Intent intent = new Intent(context, FlightSearchReturnActivity.class);
+        intent.putExtra(EXTRA_PASS_DATA, passDataViewModel);
+        intent.putExtra(EXTRA_SEL_DEPARTURE_ID, selectedDepartureID);
+        return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        departureLocation = "Jakarta (CGK)";
-        arrivalLocation = "London (LHR)";
-        dateString = "19 Agustus 2017";
-        passengerString = "1 Dewasa, 1 Anak";
-        classString = "Ekonomi";
-
-        setupFlightToolbar();
-    }
-
-    private void setupFlightToolbar() {
-        toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.tkpd_dark_gray));
-        String title = departureLocation + " ➝ " + arrivalLocation;
-        String subtitle = dateString +" | " + passengerString + " | " + classString;
-        updateTitle(title, subtitle);
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
+    protected void initializeDataFromIntent() {
+        passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+        selectedDepartureID = getIntent().getStringExtra(EXTRA_SEL_DEPARTURE_ID);
+
+        dateString = FlightDateUtil.formatDate(
+                FlightDateUtil.DEFAULT_FORMAT,
+                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                passDataViewModel.getReturnDate()
+        );
+        passengerString = buildPassengerTextFormatted(passDataViewModel.getFlightPassengerViewModel());
+        classString = passDataViewModel.getFlightClass().getTitle();
+    }
+
+    protected FlightAirportDB getDepartureAirport() {
+        return passDataViewModel.getArrivalAirport();
+    }
+
+    protected FlightAirportDB getArrivalAirport() {
+        return passDataViewModel.getDepartureAirport();
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightSearchReturnFragment.newInstance();
+        return FlightSearchReturnFragment.newInstance(passDataViewModel, selectedDepartureID);
     }
+
+    @Override
+    public void selectFlight(String selectedFlightID) {
+        startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedDepartureID, selectedFlightID));
+    }
+
 }

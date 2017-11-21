@@ -1,13 +1,10 @@
 package com.tokopedia.flight.dashboard.view.fragment;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapter;
@@ -22,7 +19,7 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel> implements FlightClassesContract.View {
+public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel> implements FlightClassesContract.View, BaseListAdapter.OnBaseListV2AdapterListener<FlightClassViewModel> {
 
     private OnFragmentInteractionListener interactionListener;
 
@@ -58,19 +55,7 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
 
     @Override
     protected FlightClassesAdapter getNewAdapter() {
-        return new FlightClassesAdapter();
-    }
-
-    @Override
-    protected void searchForPage(int page) {
-
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        presenter.attachView(this);
-        presenter.actionFetchClasses();
+        return new FlightClassesAdapter(this);
     }
 
     @Override
@@ -91,18 +76,14 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            interactionListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException("Activity must implement OnFragmentInteractionListener");
-        }
+    public void loadData(int page, int currentDataSize, int rowPerPage) {
+        presenter.attachView(this);
+        presenter.actionFetchClasses();
     }
 
     @Override
-    public void onAttach(Activity context) {
-        super.onAttach(context);
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
         if (context instanceof OnFragmentInteractionListener) {
             interactionListener = (OnFragmentInteractionListener) context;
         } else {

@@ -1,11 +1,10 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,212 +12,94 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.binder.BaseRetryDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
-import com.tokopedia.abstraction.utils.RefreshHandler;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
 
 import java.util.List;
 
-/**
- * @author normansyahputa on 5/17/17.
- */
+public abstract class BaseListFragment<T extends ItemType> extends BaseDaggerFragment
+        implements BaseListViewListener<T>{
 
-public abstract class BaseListFragment<T extends ItemType> extends BaseDaggerFragment implements
-        BaseListViewListener<T>, BaseListAdapter.Callback<T> {
+    private BaseListAdapter<T> adapter;
+    private SwipeRefreshLayout swipeToRefresh;
+    private SnackbarRetry snackBarRetry;
 
-    private static final int START_PAGE = 1;
-    private static final int DEFAULT_TOTAL_ITEM = 0;
-
-    protected BaseListAdapter<T> adapter;
-    protected RecyclerView recyclerView;
-    protected SwipeToRefresh swipeToRefresh;
-    protected LinearLayoutManager layoutManager;
-    protected int totalItem;
-    protected boolean searchMode;
-    protected int currentPage;
-    protected SnackbarRetry snackBarRetry;
-    private ProgressDialog progressDialog;
-    private RecyclerView.OnScrollListener onScrollListener;
-
-    public BaseListFragment() {
-        // Required empty public constructor
-    }
-
-    protected abstract BaseListAdapter<T> getNewAdapter();
-
-    protected abstract void searchForPage(int page);
-
-    protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        return new NoResultDataBinder(adapter);
-    }
-
-    protected NoResultDataBinder getEmptyViewNoResultBinder() {
-        return getEmptyViewDefaultBinder();
-    }
-
-    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new BaseRetryDataBinder(adapter);
-    }
-
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getActivity());
-    }
-
-    protected int getStartPage() {
-        return START_PAGE;
-    }
-
-    protected boolean hasNextPage() {
-        return adapter.getDataSize() < totalItem && totalItem != DEFAULT_TOTAL_ITEM;
-    }
-
-    protected int getCurrentPage() {
-        return currentPage;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adapter = getNewAdapter();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(getFragmentLayout(), container, false);
+        return inflater.inflate(R.layout.fragment_base_list, container, false);
     }
 
-    protected int getFragmentLayout() {
-        return R.layout.fragment_base_list;
+    public RecyclerView getRecyclerView(View view) {
+        return (RecyclerView) view.findViewById(R.id.recycler_view);
+    }
+
+    @Nullable
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return null;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView(view);
-        initialVar();
-        setViewListener();
-        setActionVar();
-    }
-
-    protected void initView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
-    }
-
-    protected void setViewListener() {
-        onScrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                int lastItemPosition = layoutManager.findLastVisibleItemPosition();
-                int visibleItem = layoutManager.getItemCount() - 1;
-                if (lastItemPosition == visibleItem && hasNextPage()) {
-                    setAndSearchForPage(currentPage + 1);
-                    adapter.showRetryFull(false);
-                    adapter.showLoading(true);
-                }
+        RecyclerView recyclerView = getRecyclerView(view);
+        swipeToRefresh = getSwipeRefreshLayout(view);
+        if (adapter!= null) {
+            if (recyclerView != null) {
+                recyclerView.setAdapter(adapter);
             }
-        };
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        RecyclerView.ItemDecoration itemDecoration = getItemDecoration();
-        if (itemDecoration != null) {
-            recyclerView.addItemDecoration(itemDecoration);
         }
-        recyclerView.addOnScrollListener(onScrollListener);
+
         if (swipeToRefresh != null) {
-            new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+            swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
-                public void onRefresh(View view) {
-                    setAndSearchForPage(getStartPage());
+                public void onRefresh() {
+                    hideSnackBarRetry();
+                    swipeToRefresh.setRefreshing(true);
+                    loadInitialData();
                 }
             });
         }
+        if (needLoadDataAtStart()) {
+            showLoading();
+            loadInitialData();
+        }
     }
 
-    protected void initialVar() {
-        currentPage = getStartPage();
-        searchMode = false;
-        adapter = getNewAdapter();
-        adapter.setCallback(this);
-        adapter.setEmptyView(getEmptyViewDefaultBinder());
-        RetryDataBinder retryDataBinder = getRetryViewDataBinder(adapter);
-        retryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
-            @Override
-            public void onRetryCliked() {
-                hideLoading();
-                adapter.showRetryFull(false);
-                adapter.showLoadingFull(true);
-                resetPageAndSearch();
-            }
-        });
-        adapter.setRetryView(retryDataBinder);
+    protected boolean needLoadDataAtStart(){
+        return true;
     }
 
-    protected void setActionVar() {
-        loadData();
+    protected abstract BaseListAdapter<T> getNewAdapter();
+
+    protected void showLoading(){
+        adapter.showLoading(true);
+        hideSnackBarRetry();
     }
 
-    protected void loadData() {
-        currentPage = getStartPage();
-        adapter.clearData();
-        adapter.showRetryFull(false);
-        adapter.showLoadingFull(true);
-        searchForPage(currentPage);
-    }
-
-    public void resetPageAndSearch() {
-        currentPage = getStartPage();
-        searchForPage(getStartPage());
-    }
-
-    protected void setAndSearchForPage(int page) {
-        this.currentPage = page;
-        searchForPage(page);
+    public void loadInitialData(){
+        adapter.loadStartPage();
     }
 
     @Override
     public void onSearchLoaded(@NonNull List<T> list, int totalItem) {
-        recyclerView.removeOnScrollListener(onScrollListener);
-        recyclerView.addOnScrollListener(onScrollListener);
-        this.totalItem = totalItem;
         hideLoading();
-        if (totalItem <= 0 && getCurrentPage() == getStartPage()) {
-            if (searchMode) {
-                showViewSearchNoResult();
-            } else {
-                showViewEmptyList();
-            }
-        } else {
-            showViewList(list);
-        }
-    }
-
-    protected void showViewEmptyList() {
-        adapter.setEmptyView(getEmptyViewDefaultBinder());
-        adapter.clearData();
-        layoutManager.scrollToPositionWithOffset(0, 0);
-        adapter.showEmptyFull(true);
-    }
-
-    protected void showViewSearchNoResult() {
-        adapter.setEmptyView(getEmptyViewNoResultBinder());
-        adapter.clearData();
-        layoutManager.scrollToPositionWithOffset(0, 0);
-        adapter.showEmptyFull(true);
-    }
-
-    protected void showViewList(@NonNull List<T> list) {
-        if (currentPage == getStartPage()) {
+        if (adapter.isLoadInitialPage() ) {
             adapter.clearData();
-            layoutManager.scrollToPositionWithOffset(0, 0);
         }
-        adapter.addData(list);
+        adapter.addData(list, totalItem);
+    }
+
+    public final BaseListAdapter<T> getAdapter() {
+        return adapter;
     }
 
     @Override
@@ -231,66 +112,37 @@ public abstract class BaseListFragment<T extends ItemType> extends BaseDaggerFra
         }
     }
 
-    /**
-     * Error when adapter is empty
-     * @param t
-     */
-    protected void onLoadSearchErrorWithDataEmpty(Throwable t) {
-        recyclerView.removeOnScrollListener(onScrollListener);
-        adapter.showRetryFull(true);
+    private void onLoadSearchErrorWithDataEmpty(Throwable t) {
+        adapter.showRetry(true);
         if (swipeToRefresh != null) {
             swipeToRefresh.setEnabled(false);
         }
     }
 
-    /**
-     * Error when adapter is not empty
-     * @param t
-     */
-    protected void onLoadSearchErrorWithDataExist(Throwable t) {
+    private void onLoadSearchErrorWithDataExist(Throwable t) {
         showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                searchForPage(currentPage);
+                adapter.loadNextPage();
             }
         });
     }
 
-    protected void showLoading(){
-        adapter.showLoading(true);
-        adapter.showLoadingFull(true);
-        adapter.showEmptyFull(false);
-        adapter.showRetryFull(false);
-        if (swipeToRefresh != null) {
-            swipeToRefresh.setEnabled(false);
-            swipeToRefresh.setRefreshing(true);
-        }
-        hideSnackBarRetry();
-    }
-
     protected void hideLoading() {
         adapter.showLoading(false);
-        adapter.showLoadingFull(false);
-        adapter.showEmptyFull(false);
-        adapter.showRetryFull(false);
         if (swipeToRefresh != null) {
             swipeToRefresh.setEnabled(true);
             swipeToRefresh.setRefreshing(false);
         }
-        progressDialog.dismiss();
         hideSnackBarRetry();
     }
 
     private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
         if (snackBarRetry == null) {
-            initSnackbarRetry(listener);
-            snackBarRetry.showRetrySnackbar();
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
             snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         }
-    }
-
-    protected void initSnackbarRetry(NetworkErrorHelper.RetryClickedListener listener) {
-        snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
+        snackBarRetry.showRetrySnackbar();
     }
 
     private void hideSnackBarRetry() {

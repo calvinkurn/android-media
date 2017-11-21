@@ -120,6 +120,8 @@ public class NumberPickerWithCounterView extends BaseCustomView {
 
     public void setNumber(int number) {
         numberInputView.setText(String.valueOf(number));
+        minusImageButton.setEnabled(enabled && Integer.parseInt(numberInputView.getText().toString().trim()) > minValue);
+        plusImageButton.setEnabled(enabled && Integer.parseInt(numberInputView.getText().toString().trim()) < maxValue);
     }
 
     public void setOnPickerActionListener(OnPickerActionListener onPickerActionListener) {
