@@ -158,6 +158,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     FloatingActionButton fabWishlist;
     LinearLayout rootView;
 
+    private boolean isAppBarCollapsed=false;
+
     private TextView tvTickerGTM;
 
     private ProductPass productPass;
@@ -263,12 +265,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
                 switch (state){
                     case COLLAPSED:
+                        isAppBarCollapsed = true;
                         initStatusBarLight();
                         initToolbarLight();
+                        fabWishlist.hide();
                         break;
                     case EXPANDED:
+                        isAppBarCollapsed = false;
                         initStatusBarDark();
                         initToolbarTransparant();
+                        if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
+                            fabWishlist.show();
+                        }
                         break;
                 }
             }
@@ -727,7 +735,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.product_detail, menu);
+        if(!isAppBarCollapsed)
+            inflater.inflate(R.menu.product_detail, menu);
+        else
+            inflater.inflate(R.menu.product_detail_dark, menu);
+
         super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
     }
