@@ -141,4 +141,8 @@ public interface AccountsApi {
 
     @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
     Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
+
+    @GET(TkpdBaseURL.Accounts.PATH_DISCOVER_REGISTER)
+    Observable<Response<TkpdResponse>> discoverRegister();
+
 }

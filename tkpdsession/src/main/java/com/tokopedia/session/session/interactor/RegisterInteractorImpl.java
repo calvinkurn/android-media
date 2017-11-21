@@ -55,7 +55,7 @@ public class RegisterInteractorImpl implements RegisterInteractor {
         }
 
         Observable<Response<TkpdResponse>> observable = accountsService.getApi()
-                .discoverLogin();
+                .discoverRegister();
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
