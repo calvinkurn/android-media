@@ -3,9 +3,7 @@ package com.tokopedia.flight.booking.view.adapter;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
@@ -18,7 +16,7 @@ import java.util.List;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingMealsAdapter extends BaseListCheckableV2Adapter<FlightBookingMealViewModel> {
+public class FlightBookingMealsAdapter extends BaseListCheckableAdapter<FlightBookingMealViewModel> {
     public FlightBookingMealsAdapter(OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener) {
         super(onBaseListV2AdapterListener);
     }

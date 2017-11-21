@@ -1,7 +1,10 @@
 package com.tokopedia.flight.search.presenter;
 
+import android.view.View;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
+import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightSearchSortWithMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
@@ -16,10 +19,16 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by zulfikarrahman on 10/24/17.
@@ -27,11 +36,14 @@ import rx.Subscriber;
 
 public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView> {
 
+    public static final int DELAY_HORIZONTAL_PROGRESS = 500;
+
     private FlightSearchWithSortUseCase flightSearchWithSortUseCase;
     private FlightSortUseCase flightSortUseCase;
     private FlightSearchStatisticUseCase flightSearchStatisticUseCase;
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
     private FlightSearchSortWithMetaUseCase flightSearchSortWithMetaUseCase;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
@@ -64,6 +76,44 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         }
     }
 
+    public void searchAndSortFlightWithDelay(final FlightSearchApiRequestModel flightSearchApiRequestModel,
+                                             final boolean isReturning, final boolean isFromCache, final FlightFilterModel flightFilterModel,
+                                             @FlightSortOption final int sortOptionId, int delayInSecond) {
+        Subscription subscription = Observable.timer(delayInSecond, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new OnNextSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long aLong) {
+                        searchAndSortFlight(flightSearchApiRequestModel,
+                                isReturning, isFromCache, flightFilterModel, sortOptionId);
+                    }
+                });
+        addSubscription(subscription);
+    }
+
+    public void setDelayHorizontalProgress(){
+        Subscription subscription = Observable.timer(DELAY_HORIZONTAL_PROGRESS, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new OnNextSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long aLong) {
+                        getView().hideHorizontalProgress();
+                    }
+                });
+        addSubscription(subscription);
+    }
+
+    private void addSubscription(Subscription subscription) {
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
+        }
+        compositeSubscription.add(subscription);
+    }
+
     public void getFlightStatistic(boolean isReturning) {
         flightSearchStatisticUseCase.execute(FlightSearchUseCase.generateRequestParams(
                 null,
@@ -92,6 +142,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         flightBookingGetSingleResultUseCase.unsubscribe();
         flightSortUseCase.unsubscribe();
         flightSearchSortWithMetaUseCase.unsubscribe();
+        if (compositeSubscription != null) {
+            compositeSubscription.unsubscribe();
+        }
     }
 
     private Subscriber<FlightSearchViewModel> getSubscriberDetailDepartureFlight() {

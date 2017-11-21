@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightAirportAdapter extends BaseListV2Adapter<FlightAirportDB> {
+public class FlightAirportAdapter extends BaseListAdapter<FlightAirportDB> {
 
     public FlightAirportAdapter(OnBaseListV2AdapterListener<FlightAirportDB> onBaseListV2AdapterListener) {
         super(onBaseListV2AdapterListener);

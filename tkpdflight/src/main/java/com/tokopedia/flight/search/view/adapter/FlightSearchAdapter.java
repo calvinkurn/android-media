@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
@@ -23,7 +23,7 @@ import java.util.List;
  * Created by User on 10/26/2017.
  */
 
-public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel> {
+public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> {
 
     public interface ListenerOnDetailClicked{
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel);

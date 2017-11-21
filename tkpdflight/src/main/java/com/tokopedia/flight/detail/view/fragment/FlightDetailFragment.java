@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.utils.MethodChecker;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
@@ -20,7 +20,7 @@ import com.tokopedia.flight.search.data.cloud.model.response.Route;
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailFragment extends BaseListV2Fragment<Route> implements BaseListV2Adapter.OnBaseListV2AdapterListener<Route> {
+public class FlightDetailFragment extends BaseListFragment<Route> implements BaseListAdapter.OnBaseListV2AdapterListener<Route> {
 
     public static final String EXTRA_FLIGHT_DETAIL_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
     private FlightDetailViewModel flightDetailViewModel;
@@ -67,7 +67,7 @@ public class FlightDetailFragment extends BaseListV2Fragment<Route> implements B
     }
 
     @Override
-    protected BaseListV2Adapter<Route> getNewAdapter() {
+    protected BaseListAdapter<Route> getNewAdapter() {
         return new FlightDetailAdapter(this);
     }
 

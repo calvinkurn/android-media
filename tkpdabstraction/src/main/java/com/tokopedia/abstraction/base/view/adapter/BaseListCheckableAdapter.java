@@ -17,7 +17,7 @@ import java.util.List;
  * limitation: only handle added data, if the data is removed, need to recalculate the position
  * Created by hendry on 11/24/16.
  */
-public abstract class BaseListCheckableV2Adapter<T extends ItemType> extends BaseListV2Adapter<T> {
+public abstract class BaseListCheckableAdapter<T extends ItemType> extends BaseListAdapter<T> {
 
     private HashSet<Integer> checkedPositionList = new HashSet<>();
 
@@ -27,18 +27,18 @@ public abstract class BaseListCheckableV2Adapter<T extends ItemType> extends Bas
         void onItemChecked(T t, boolean isChecked);
     }
 
-    public BaseListCheckableV2Adapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
+    public BaseListCheckableAdapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
         this(null, 0, onBaseListV2AdapterListener, null);
     }
 
-    public BaseListCheckableV2Adapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
-                                      OnCheckableAdapterListener<T> onCheckableAdapterListener) {
+    public BaseListCheckableAdapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
+                                    OnCheckableAdapterListener<T> onCheckableAdapterListener) {
         this(null, 0, onBaseListV2AdapterListener, onCheckableAdapterListener);
     }
 
-    public BaseListCheckableV2Adapter(@Nullable List<T> data, int rowPerPage,
-                                      OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
-                                      OnCheckableAdapterListener<T> onCheckableAdapterListener) {
+    public BaseListCheckableAdapter(@Nullable List<T> data, int rowPerPage,
+                                    OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
+                                    OnCheckableAdapterListener<T> onCheckableAdapterListener) {
         super(onBaseListV2AdapterListener);
         this.onCheckableAdapterListener = onCheckableAdapterListener;
     }

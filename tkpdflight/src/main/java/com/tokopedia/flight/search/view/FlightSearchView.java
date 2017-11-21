@@ -29,4 +29,6 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void onErrorGetDetailFlightDeparture(Throwable e);
 
     void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel);
+
+    void hideHorizontalProgress();
 }

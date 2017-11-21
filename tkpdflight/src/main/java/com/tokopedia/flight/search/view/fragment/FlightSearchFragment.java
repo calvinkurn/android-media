@@ -14,8 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -24,7 +24,6 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
-import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
@@ -47,23 +46,15 @@ import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStati
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hendry on 10/26/2017.
  */
 
-public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewModel> implements FlightSearchView,
-        BaseListV2Adapter.OnBaseListV2AdapterListener<FlightSearchViewModel>, FlightSearchAdapter.ListenerOnDetailClicked {
+public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel> implements FlightSearchView,
+        BaseListAdapter.OnBaseListV2AdapterListener<FlightSearchViewModel>, FlightSearchAdapter.ListenerOnDetailClicked {
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
@@ -85,8 +76,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     private int progress;
 
     int selectedSortOption = FlightSortOption.NO_PREFERENCE;
-
-    CompositeSubscription compositeSubscription;
 
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
     private AirportCombineModelList airportCombineModelList;
@@ -127,7 +116,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
             airportCombineModelList = savedInstanceState.getParcelable(SAVED_AIRPORT_COMBINE);
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
         }
-
     }
 
     private void setUpCombinationAirport() {
@@ -183,7 +171,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     }
 
     @Override
-    protected final BaseListV2Adapter<FlightSearchViewModel> getNewAdapter() {
+    protected final BaseListAdapter<FlightSearchViewModel> getNewAdapter() {
         FlightSearchAdapter flightSearchAdapter = new FlightSearchAdapter(this);
         flightSearchAdapter.setListenerOnDetailClicked(this);
         return flightSearchAdapter;
@@ -208,35 +196,11 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
             if (progress >= MAX_PROGRESS) {
                 progress = MAX_PROGRESS;
                 progressBar.setProgress(MAX_PROGRESS);
-                final Observable<Boolean> progressObservable =
-                        Observable.timer(500, TimeUnit.MILLISECONDS)
-                        .flatMap(new Func1<Long, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Long aLong) {
-                        return Observable.just(true);
-                    }
-                });
-                Subscription subscription = progressObservable.subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new OnNextSubscriber<Boolean>() {
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
-                addSubscription(subscription);
+                flightSearchPresenter.setDelayHorizontalProgress();
             } else {
                 progressBar.setProgress(progress);
             }
         }
-    }
-
-    private void addSubscription(Subscription subscription) {
-        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
-            compositeSubscription = new CompositeSubscription();
-        }
-        compositeSubscription.add(subscription);
     }
 
     protected boolean isReturning() {
@@ -259,16 +223,17 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     public void onPause() {
         super.onPause();
         flightSearchPresenter.detachView();
-        if (compositeSubscription != null) {
-            compositeSubscription.unsubscribe();
-        }
+    }
+
+    @Override
+    public void hideHorizontalProgress() {
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected String getScreenName() {
         return null;
     }
-
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
@@ -277,12 +242,13 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         }
     }
 
+    /**
+     * load all data from cloud
+     */
     @Override
     public void loadData(int page, int currentDataSize, int rowPerPage) {
-        // load all data from server
         showLoading();
-        String date = isReturning() ? flightSearchPassDataViewModel.getReturnDate() :
-                flightSearchPassDataViewModel.getDepartureDate();
+        String date = flightSearchPassDataViewModel.getDate(isReturning());
         FlightPassengerViewModel flightPassengerViewModel = flightSearchPassDataViewModel.getFlightPassengerViewModel();
         int adult = flightPassengerViewModel.getAdult();
         int child = flightPassengerViewModel.getChildren();
@@ -298,6 +264,9 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         }
     }
 
+    /**
+     * load all data from cache
+     */
     public void reloadDataFromCache() {
         showLoading();
         flightSearchPresenter.searchAndSortFlight(null,
@@ -429,9 +398,29 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
             progress += halfProgressAmount;
         }
         if (flightAirportCombineModel.isNeedRefresh()) {
-            if ( flightMetaDataDB.isNeedRefresh()) {
-                // TODO will update the retry and retry load data if max retyr is not reached
-                int noRetry = flightMetaDataDB.getRetryNo();
+            if (flightMetaDataDB.isNeedRefresh()) {
+                // TODO will update the retry and retry load data if max retry is not reached
+                int noRetry = flightAirportCombineModel.getNoOfRetry();
+                noRetry++;
+                flightAirportCombineModel.setNoOfRetry(noRetry);
+                // already reach max retry limit, end retrying.
+                if (noRetry >= flightMetaDataDB.getMaxRetry()) {
+                    flightAirportCombineModel.setNeedRefresh(false);
+                    progress += halfProgressAmount;
+                } else { //no retry still below the max retry, do retry
+                    //retry load data
+                    String date = flightSearchPassDataViewModel.getDate(isReturning());
+                    FlightPassengerViewModel flightPassengerViewModel = flightSearchPassDataViewModel.getFlightPassengerViewModel();
+                    int adult = flightPassengerViewModel.getAdult();
+                    int child = flightPassengerViewModel.getChildren();
+                    int infant = flightPassengerViewModel.getInfant();
+                    int classID = flightSearchPassDataViewModel.getFlightClass().getId();
+                    FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
+                            flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
+                            date, adult, child, infant, classID);
+                    flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel,
+                            isReturning(), false, flightFilterModel, selectedSortOption,flightMetaDataDB.getRefreshTime());
+                }
 
             } else {
                 flightAirportCombineModel.setNeedRefresh(false);
@@ -442,14 +431,15 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
         // if the data is empty, but there is data need to fetch, then keep the loading state
         if (getAdapter().getDataSize() == 0 &&
-                (flightSearchViewModelList==null || flightSearchViewModelList.size() == 0) &&
+                (flightSearchViewModelList == null || flightSearchViewModelList.size() == 0) &&
                 airportCombineModelList.isRetrievingData()) {
             return;
         }
 
         hideLoading();
-        //TODO to update the data instead of always adding those.
+        // TODO to update the data instead of always adding those.
         getAdapter().addData(flightSearchViewModelList);
+        // TODO refresh from cache if there is filter or sort
         if (getAdapter().getDataSize() > 0 && filterAndSortBottomAction.getVisibility() == View.GONE) {
             filterAndSortBottomAction.setVisibility(View.VISIBLE);
         }
