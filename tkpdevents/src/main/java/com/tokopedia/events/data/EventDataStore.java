@@ -18,4 +18,7 @@ public interface EventDataStore {
 
     Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params);
 
+    Observable<EventResponseEntity> getEventsListByLocation(String location);
+
+
 }

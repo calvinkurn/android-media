@@ -14,7 +14,9 @@ import com.tokopedia.events.data.EventsDataStoreFactory;
 import com.tokopedia.events.data.source.EventsApi;
 import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.EventRepository;
+import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
+import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -102,5 +104,21 @@ public class EventModule {
             loggingLevel = HttpLoggingInterceptor.Level.BODY;
         }
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
+    }
+
+    @Provides
+    @EventScope
+    GetEventsLocationListRequestUseCase provideGetEventsLocationListRequestUseCase(ThreadExecutor threadExecutor,
+                                                                           PostExecutionThread postExecutionThread,
+                                                                           EventRepository eventRepository) {
+        return new GetEventsLocationListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+    }
+
+    @Provides
+    @EventScope
+    GetEventsListByLocationRequestUseCase provideGetEventsListByLocationRequestUseCase(ThreadExecutor threadExecutor,
+                                                                             PostExecutionThread postExecutionThread,
+                                                                             EventRepository eventRepository) {
+        return new GetEventsListByLocationRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 }

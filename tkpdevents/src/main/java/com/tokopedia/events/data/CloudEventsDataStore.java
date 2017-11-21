@@ -32,6 +32,11 @@ public class CloudEventsDataStore implements EventDataStore {
 
     @Override
     public Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params) {
-        return eventsApi.getEventsLocationList(params);
+        return eventsApi.getEventsLocationList();
+    }
+
+    @Override
+    public Observable<EventResponseEntity> getEventsListByLocation(String location) {
+        return eventsApi.getEventsByLocation(location);
     }
 }

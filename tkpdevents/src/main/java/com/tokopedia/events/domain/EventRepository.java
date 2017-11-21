@@ -20,4 +20,6 @@ public interface EventRepository {
 
     Observable<List<EventLocationDomain>> getEventsLocationList(TKPDMapParam<String, Object> params);
 
+    Observable<List<EventsCategoryDomain>> getEventsListByLocation(String location);
+
 }

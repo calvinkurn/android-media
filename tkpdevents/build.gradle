@@ -24,6 +24,11 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -105,6 +110,7 @@ dependencies {
     })
 
     compile getTkpdCore()
+    compile getTkpdDesign()
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler

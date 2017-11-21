@@ -1,7 +1,9 @@
 package com.tokopedia.events.view.presenter;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
@@ -23,10 +25,13 @@ import rx.Subscriber;
 public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View> implements EventsContract.Presenter  {
 
     public GetEventsListRequestUseCase getEventsListRequestUsecase;
+    public GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase;
 
     @Inject
-    public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase) {
+    public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
+        this.getEventsListByLocationRequestUseCase = getEventsListByLocationRequestUseCase;
+
     }
 
     @Override
@@ -60,6 +65,29 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             }
         });
     }
+
+    public void getEventsListByLocation(String location){
+        RequestParams requestParams=RequestParams.create();
+        requestParams.putString(getEventsListByLocationRequestUseCase.LOCATION,location);
+        getEventsListByLocationRequestUseCase.execute(requestParams, new Subscriber<List<EventsCategoryDomain>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("enter error");
+            }
+
+            @Override
+            public void onNext(List<EventsCategoryDomain> categoryEntities) {
+
+                getView().renderCategoryList(convertIntoCategoryListVeiwModel(categoryEntities));
+            }
+        });
+    }
+
 
     private List<CategoryViewModel> convertIntoCategoryListVeiwModel(List<EventsCategoryDomain> categoryList){
         List<CategoryViewModel> categoryViewModels=new ArrayList<>();

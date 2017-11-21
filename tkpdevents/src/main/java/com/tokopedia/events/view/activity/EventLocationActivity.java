@@ -1,0 +1,174 @@
+package com.tokopedia.events.view.activity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+
+import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.events.R;
+import com.tokopedia.events.R2;
+import com.tokopedia.events.di.DaggerEventComponent;
+import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.view.adapter.EventLocationAdapter;
+import com.tokopedia.events.view.contractor.EventsLocationContract;
+import com.tokopedia.events.view.presenter.EventLocationsPresenter;
+import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+public class EventLocationActivity extends BasePresenterActivity implements HasComponent<EventComponent>, SearchInputView.Listener, EventsLocationContract.View, EventLocationAdapter.ActionListener {
+    protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
+    public static final String EXTRA_CALLBACK_LOCATION = "EXTRA_CALLBACK_LOCATION";
+
+    @BindView(R2.id.search_input_view)
+    SearchInputView searchInputView;
+    @BindView(R2.id.recyclerview_city_List)
+    RecyclerView recyclerview;
+
+    EventComponent eventComponent;
+    @Inject
+    public EventLocationsPresenter mPresenter;
+    private Unbinder unbinder;
+
+    private EventLocationAdapter eventLocationAdapter;
+    private List<EventLocationViewModel> eventLocationViewModels;
+
+    public static Intent getCallingIntent(Activity activity) {
+        return new Intent(activity, EventLocationActivity.class);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+    }
+
+    @Override
+    protected void setupURIPass(Uri data) {
+
+    }
+
+    @Override
+    protected void setupBundlePass(Bundle extras) {
+
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_event_location;
+    }
+
+    @Override
+    protected void initVar() {
+        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+        initInjector();
+        executeInjector();
+        unbinder = ButterKnife.bind(this);
+        mPresenter.attachView(this);
+        ButterKnife.bind(this);
+        mPresenter.getLocationsListList();
+
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
+    }
+
+    @Override
+    protected void initView() {
+
+
+    }
+
+    @Override
+    protected void setViewListener() {
+        searchInputView.setListener(this);
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+        Log.d("onSearchSubmitted", text);
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+        Log.d("onSearchTextChanged", text);
+        filter(text);
+    }
+
+    @Override
+    public void renderLocationList(List<EventLocationViewModel> eventLocationViewModels) {
+        this.eventLocationViewModels = eventLocationViewModels;
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        eventLocationAdapter = new EventLocationAdapter(this, eventLocationViewModels, this);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.setAdapter(eventLocationAdapter);
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public RequestParams getParams() {
+        return RequestParams.EMPTY;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
+    public EventComponent getComponent() {
+        if (eventComponent == null) initInjector();
+        return eventComponent;
+    }
+
+    private void executeInjector() {
+        if (eventComponent == null) initInjector();
+        eventComponent.inject(this);
+    }
+
+    private void initInjector() {
+        eventComponent = DaggerEventComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+    }
+
+    void filter(String text) {
+        //update recyclerview
+        eventLocationAdapter.updateList(eventLocationViewModels, text);
+    }
+
+    @Override
+    public void onLocationItemSelected(EventLocationViewModel locationViewModel) {
+        setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationViewModel));
+        finish();
+    }
+}

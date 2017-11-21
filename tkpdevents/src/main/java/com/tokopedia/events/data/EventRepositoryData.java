@@ -73,4 +73,16 @@ public class EventRepositoryData implements EventRepository {
                 });
     }
 
+    @Override
+    public Observable<List<EventsCategoryDomain>> getEventsListByLocation(String location) {
+        return eventsDataStoreFactory
+                .createCloudDataStore()
+                .getEventsListByLocation(location).map(new Func1<EventResponseEntity, List<EventsCategoryDomain>>() {
+                    @Override
+                    public List<EventsCategoryDomain> call(EventResponseEntity eventResponseEntity) {
+                        EventEntityMaper eventEntityMaper = new EventEntityMaper();
+                        return eventEntityMaper.tranform(eventResponseEntity);
+                    }
+                });
+    }
 }

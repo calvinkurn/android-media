@@ -5,6 +5,7 @@ import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -19,5 +20,8 @@ public interface EventsApi {
     Observable<EventResponseEntity> getSearchEvents(TKPDMapParam<String, Object> params);
 
     @GET(EventsUrl.EVENTS_LOCATION_LIST)
-    Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params);
+    Observable<EventLocationEntity> getEventsLocationList();
+
+    @GET(EventsUrl.EVENTS_LIST_BY_LOCATION)
+    Observable<EventResponseEntity> getEventsByLocation(@Path("location") String location);
 }

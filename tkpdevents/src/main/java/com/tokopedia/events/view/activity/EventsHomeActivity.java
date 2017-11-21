@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
@@ -22,6 +26,7 @@ import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
+import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
 
 import java.util.List;
 
@@ -37,6 +42,7 @@ import butterknife.Unbinder;
 public class EventsHomeActivity extends BasePresenterActivity implements HasComponent<EventComponent>, EventsContract.View {
 
     private Unbinder unbinder;
+    public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
 
     EventComponent eventComponent;
     @Inject
@@ -56,13 +62,16 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
         return new Intent(activity, EventsHomeActivity.class);
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+
+        setupToolbar();
+    }
+
     private void executeInjector() {
         if (eventComponent == null) initInjector();
         eventComponent.inject(this);
-        /*EventComponent component = DaggerEventComponent.builder()
-                //.eventComponent(eventComponent)
-                .build();
-        component.inject(this);*/
     }
 
     private void initInjector() {
@@ -117,6 +126,21 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_event_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_menu_location) {
+            navigateToActivityRequest(EventLocationActivity.getCallingIntent(EventsHomeActivity.this), REQUEST_CODE_EVENTLOCATIONACTIVITY);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void initVar() {
@@ -124,7 +148,7 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
         initInjector();
         executeInjector();
         mPresenter.attachView(this);
-        mPresenter.initialize();
+        // mPresenter.initialize();
         ButterKnife.bind(this);
         mPresenter.getEventsList();
     }
@@ -168,9 +192,28 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+            case REQUEST_CODE_EVENTLOCATIONACTIVITY:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    EventLocationViewModel eventLocationViewModel = (EventLocationViewModel) data.getParcelableExtra(EventLocationActivity.EXTRA_CALLBACK_LOCATION);
+                    mPresenter.getEventsListByLocation(eventLocationViewModel.getSearchName());
+                }
+
+                break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void renderCategoryList(List<CategoryViewModel> categoryList) {
         holderCategoryListLayout.removeAllViews();
         for (CategoryViewModel categoryViewModel : categoryList) {
+            if(categoryViewModel.getItems()==null || categoryViewModel.getItems().size()==0){
+                continue;
+            }
             EventCategoryView eventCategoryView = new EventCategoryView(this);
             eventCategoryView.renderData(categoryViewModel.getItems(), categoryViewModel.getTitle());
             if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
@@ -183,7 +226,6 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
         }
 
     }
-
 
 
     private void setViewPagerListener() {
@@ -212,4 +254,8 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
         //viewPager.setCurrentItem(0);
     }
 
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
 }

@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.EventRepository;
+import com.tokopedia.events.view.activity.EventLocationActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
 
 import dagger.Component;
@@ -19,6 +20,8 @@ import dagger.Component;
 public interface EventComponent {
 
     void inject(EventsHomeActivity activity);
+
+    void inject(EventLocationActivity activity);
 
     ThreadExecutor threadExecutor();
 

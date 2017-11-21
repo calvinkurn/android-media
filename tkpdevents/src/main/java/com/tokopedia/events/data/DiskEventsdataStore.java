@@ -26,4 +26,9 @@ public class DiskEventsdataStore implements EventDataStore {
     public Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params) {
         return null;
     }
+
+    @Override
+    public Observable<EventResponseEntity> getEventsListByLocation(String location) {
+        return null;
+    }
 }
