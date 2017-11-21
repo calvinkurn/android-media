@@ -3,7 +3,6 @@ package com.tokopedia.flight.search.view.fragment.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
@@ -11,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
@@ -21,7 +20,7 @@ import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
  * Created by User on 11/17/2017.
  */
 
-public abstract class BaseFlightFilterFragment<T extends ItemType> extends BaseListV2Fragment<T>
+public abstract class BaseFlightFilterFragment<T extends ItemType> extends BaseListFragment<T>
     implements OnFlightBaseFilterListener {
     protected OnFlightFilterListener listener;
     private FlightFilterModel originalFilterModel;

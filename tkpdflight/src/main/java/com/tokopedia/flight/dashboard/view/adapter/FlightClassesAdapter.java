@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -16,7 +15,7 @@ import java.util.List;
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightClassesAdapter extends BaseListV2Adapter<FlightClassViewModel> {
+public class FlightClassesAdapter extends BaseListAdapter<FlightClassViewModel> {
     public FlightClassesAdapter(OnBaseListV2AdapterListener<FlightClassViewModel> onBaseListV2AdapterListener) {
         super(onBaseListV2AdapterListener);
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.flight.search.view.adapter;
 
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,20 +7,16 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.binder.LoadingDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.RefundableStat;
 
 /**
  * Created by User on 10/26/2017.
  */
 
-public class FlightFilterRefundableAdapter extends BaseListCheckableV2Adapter<RefundableStat> {
+public class FlightFilterRefundableAdapter extends BaseListCheckableAdapter<RefundableStat> {
 
     public FlightFilterRefundableAdapter(OnBaseListV2AdapterListener<RefundableStat> onBaseListV2AdapterListener,
                                          OnCheckableAdapterListener<RefundableStat> onCheckableAdapterListener){
@@ -40,7 +35,7 @@ public class FlightFilterRefundableAdapter extends BaseListCheckableV2Adapter<Re
         TextView tvDesc;
         CheckBox checkBox;
 
-        public FlightSearchViewHolder(View itemView, BaseListCheckableV2Adapter<RefundableStat> baseListCheckableV2Adapter) {
+        public FlightSearchViewHolder(View itemView, BaseListCheckableAdapter<RefundableStat> baseListCheckableV2Adapter) {
             super(itemView, baseListCheckableV2Adapter);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             tvDesc = (TextView) itemView.findViewById(R.id.tv_desc);

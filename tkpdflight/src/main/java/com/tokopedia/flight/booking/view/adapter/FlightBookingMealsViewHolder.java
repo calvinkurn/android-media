@@ -5,8 +5,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseMultipleCheckViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
@@ -22,7 +21,7 @@ public class FlightBookingMealsViewHolder extends CheckableBaseViewHolder<Flight
     private AppCompatCheckBox checkBox;
 
     public FlightBookingMealsViewHolder(View itemView,
-                                        BaseListCheckableV2Adapter<FlightBookingMealViewModel> baseListCheckableV2Adapter) {
+                                        BaseListCheckableAdapter<FlightBookingMealViewModel> baseListCheckableV2Adapter) {
         super(itemView, baseListCheckableV2Adapter);
         mealName = (TextView) itemView.findViewById(R.id.meal_name);
         mealPrice = (TextView) itemView.findViewById(R.id.meal_price);

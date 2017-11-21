@@ -3,18 +3,9 @@ package com.tokopedia.flight.booking.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingLuggageAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
 
@@ -24,7 +15,7 @@ import java.util.ArrayList;
  * Created by zulfikarrahman on 11/7/17.
  */
 
-public class FlightBookingLuggageFragment extends BaseListV2Fragment<FlightBookingLuggageViewModel> implements BaseListV2Adapter.OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> {
+public class FlightBookingLuggageFragment extends BaseListFragment<FlightBookingLuggageViewModel> implements BaseListAdapter.OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> {
 
     public static final String EXTRA_SELECTED_LUGGAGE = "EXTRA_SELECTED_LUGGAGE";
     public static final String EXTRA_LIST_LUGGAGE = "EXTRA_LIST_LUGGAGE";
@@ -59,7 +50,7 @@ public class FlightBookingLuggageFragment extends BaseListV2Fragment<FlightBooki
     }
 
     @Override
-    protected BaseListV2Adapter<FlightBookingLuggageViewModel> getNewAdapter() {
+    protected BaseListAdapter<FlightBookingLuggageViewModel> getNewAdapter() {
         FlightBookingLuggageAdapter flightBookingLuggageAdapter = new FlightBookingLuggageAdapter(this);
         flightBookingLuggageAdapter.setSelectedLuggage(selectedLuggage);
         return flightBookingLuggageAdapter;

@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 
 /**
  * Created by User on 11/2/2017.
@@ -25,7 +25,7 @@ public class LoadMoreRecyclerView extends VerticalRecyclerView {
         super(context, attrs, defStyle);
     }
 
-    public void setAdapter(final BaseListV2Adapter adapter) {
+    public void setAdapter(final BaseListAdapter adapter) {
         RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

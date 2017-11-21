@@ -12,12 +12,14 @@ public class FlightAirportCombineModel implements Parcelable {
     private String arrAirport;
     private boolean hasLoad;
     private boolean needRefresh;
+    private int noOfRetry = 0;
 
     public FlightAirportCombineModel(String depAirport, String arrAirport) {
         this.depAirport = depAirport;
         this.arrAirport = arrAirport;
         this.hasLoad = false;
         this.needRefresh = true;
+        this.noOfRetry = 0;
     }
 
     public String getDepAirport() {
@@ -36,6 +38,22 @@ public class FlightAirportCombineModel implements Parcelable {
         return needRefresh;
     }
 
+    public void setNeedRefresh(boolean needRefresh) {
+        this.needRefresh = needRefresh;
+    }
+
+    public void setHasLoad(boolean hasLoad) {
+        this.hasLoad = hasLoad;
+    }
+
+    public int getNoOfRetry() {
+        return noOfRetry;
+    }
+
+    public void setNoOfRetry(int noOfRetry) {
+        this.noOfRetry = noOfRetry;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -47,6 +65,7 @@ public class FlightAirportCombineModel implements Parcelable {
         dest.writeString(this.arrAirport);
         dest.writeByte(this.hasLoad ? (byte) 1 : (byte) 0);
         dest.writeByte(this.needRefresh ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.noOfRetry);
     }
 
     protected FlightAirportCombineModel(Parcel in) {
@@ -54,6 +73,7 @@ public class FlightAirportCombineModel implements Parcelable {
         this.arrAirport = in.readString();
         this.hasLoad = in.readByte() != 0;
         this.needRefresh = in.readByte() != 0;
+        this.noOfRetry = in.readInt();
     }
 
     public static final Parcelable.Creator<FlightAirportCombineModel> CREATOR = new Parcelable.Creator<FlightAirportCombineModel>() {
