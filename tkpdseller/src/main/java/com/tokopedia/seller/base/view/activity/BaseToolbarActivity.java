@@ -27,7 +27,7 @@ import com.tokopedia.seller.common.utils.MenuTintUtils;
  * Created by nathan on 7/11/17.
  */
 
-public abstract class BaseToolbarActivity extends BaseActivity {
+abstract class BaseToolbarActivity extends BaseActivity {
 
     private final static int TOOLBAR_ELEVATION = 10;
     private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black;
