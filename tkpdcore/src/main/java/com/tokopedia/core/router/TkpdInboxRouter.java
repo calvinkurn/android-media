@@ -10,7 +10,7 @@ import android.content.Intent;
 
 public interface TkpdInboxRouter {
 
-    public static final String IS_TOPCHAT_DISABLED = "is_topchat_disabled";
+    String ENABLE_TOPCHAT = "enable_topchat";
 
     String TX_ASK_SELLER = "tx_ask_seller";
     String TX_ASK_BUYER = "tx_ask_buyer";

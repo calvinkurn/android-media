@@ -24,11 +24,9 @@ import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
@@ -189,14 +187,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 break;
 
             case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if ((mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof InboxChatActivity)
-                    || (MainApplication.currentActivity() instanceof InboxChatActivity)) {
-                    NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
-                    listener.onGetNotif(data);
-                }else if ((mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatRoomActivity)
-                    || (MainApplication.currentActivity() instanceof ChatRoomActivity)) {
+                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
                     NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
                     listener.onGetNotif(data);
                 }else {

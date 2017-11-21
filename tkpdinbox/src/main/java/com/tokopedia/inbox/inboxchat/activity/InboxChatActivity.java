@@ -17,6 +17,8 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -26,6 +28,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatPagerAdapter;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
@@ -36,7 +39,7 @@ import java.util.List;
 import butterknife.BindView;
 
 public class InboxChatActivity extends DrawerPresenterActivity
-        implements InboxMessageConstant, NotificationReceivedListener {
+        implements InboxMessageConstant, NotificationReceivedListener, HasComponent, ChatNotifInterface {
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -215,5 +218,10 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxChatActivity.class);
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

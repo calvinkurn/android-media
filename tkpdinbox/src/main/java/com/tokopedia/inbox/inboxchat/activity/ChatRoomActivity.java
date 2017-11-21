@@ -19,12 +19,15 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
@@ -32,7 +35,7 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
  * Created by Nisie on 5/19/16.
  */
 public class ChatRoomActivity extends BasePresenterActivity
-        implements InboxMessageConstant, NotificationReceivedListener {
+        implements InboxMessageConstant, NotificationReceivedListener, HasComponent, ChatNotifInterface {
 
 
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
@@ -187,5 +190,10 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_KEYWORD, keyword);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

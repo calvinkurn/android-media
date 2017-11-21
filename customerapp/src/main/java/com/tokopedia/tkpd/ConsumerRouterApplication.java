@@ -22,7 +22,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -87,11 +86,8 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -102,7 +98,6 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
@@ -775,7 +770,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if (TrackingUtils.getBoolean(TkpdInboxRouter.IS_TOPCHAT_DISABLED))
+        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return getTimeMachineIntent(context);
         else
             return InboxChatActivity.getCallingIntent(context);

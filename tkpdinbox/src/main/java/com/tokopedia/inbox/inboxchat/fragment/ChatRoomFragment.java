@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -245,12 +246,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .build();
+        AppComponent appComponent = getComponent(AppComponent.class);
+
         DaggerInboxChatComponent daggerInboxChatComponent =
                 (DaggerInboxChatComponent) DaggerInboxChatComponent.builder()
-                        .appComponent(daggerAppComponent).build();
+                        .appComponent(appComponent).build();
         daggerInboxChatComponent.inject(this);
     }
 

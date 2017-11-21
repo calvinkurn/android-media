@@ -628,7 +628,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if (TrackingUtils.getBoolean(TkpdInboxRouter.IS_TOPCHAT_DISABLED))
+        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return getTimeMachineIntent(context);
         else
             return InboxChatActivity.getCallingIntent(context);
