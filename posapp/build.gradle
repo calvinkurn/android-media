@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
-apply from: "../node_modules/react-native/react.gradle"
-//apply from: "../node_modules/react-native-code-push/android/codepush.gradle"
+apply from: "../buildconfig/reactnative/react.gradle"
 
 def getDpiId(String density) {
 
