@@ -184,7 +184,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
     }
 
     compileOptions {
@@ -198,9 +198,9 @@ android {
 
     productFlavors {
         staging {
-
+            
         }
-
+        
         live {
 
         }

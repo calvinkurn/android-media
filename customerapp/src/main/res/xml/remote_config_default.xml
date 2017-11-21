@@ -49,4 +49,28 @@
         <key>mainapp_activate_branch_links</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_applink_is_need_update</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_latest_version_code</key>
+        <value>0</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_is_force_update</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_update_message</key>
+        <value>Update aplikasi sekarang dan nikmati performa yang lebih stabil.</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_update_title</key>
+        <value>Update Aplikasi</value>
+    </entry>
+    <entry>
+        <key>mainapp_applink_update_link</key>
+        <value>https://play.google.com/store/apps/details?id=com.tokopedia.tkpd</value>
+    </entry>
 </defaultsMap>

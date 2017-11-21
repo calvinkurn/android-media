@@ -12,6 +12,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -21,9 +22,11 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
@@ -36,19 +39,21 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
+import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
@@ -60,8 +65,9 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
+import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
+import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
@@ -70,25 +76,30 @@ import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
+import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
+import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
@@ -99,9 +110,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import rx.Observable;
-
 import javax.inject.Inject;
+
+import rx.Observable;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
@@ -113,8 +124,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
-        TkpdInboxRouter, RemoteConfigRouter, TopAdsModuleRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
+        TokoCashRouter, IWalletRouter, RemoteConfigRouter, TopAdsModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -147,7 +158,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
-        .reactNativeModule(new ReactNativeModule(this));
+                .reactNativeModule(new ReactNativeModule(this));
         daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
     }
 
@@ -254,11 +265,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.putExtras(bundle);
         intent.setData(Uri.parse(applinks));
         deepLinkDelegate.dispatchFrom(activity, intent);
-    }
-
-    @Override
-    public Intent instanceIntentTokoCashActivation() {
-        return ActivateTokoCashActivity.newInstance(this);
     }
 
     @Override
@@ -596,7 +602,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,customSubject, source);
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
     }
 
     @Override
@@ -604,6 +610,70 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void navigateAppLinkWallet(Context context,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        context.startActivity(getIntentAppLinkWallet(context, appLinkScheme, alternateRedirectUrl));
+    }
+
+
+    @Override
+    public void navigateAppLinkWallet(Activity activity,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        activity.startActivityForResult(
+                getIntentAppLinkWallet(activity, appLinkScheme, alternateRedirectUrl), requestCode
+        );
+    }
+
+    @Override
+    public void navigateAppLinkWallet(android.app.Fragment fragment,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        fragment.startActivityForResult(
+                getIntentAppLinkWallet(
+                        fragment.getActivity(), appLinkScheme, alternateRedirectUrl
+                ), requestCode
+        );
+    }
+
+    @Override
+    public void navigateAppLinkWallet(Fragment fragmentSupport,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        fragmentSupport.startActivityForResult(
+                getIntentAppLinkWallet(fragmentSupport.getActivity(),
+                        appLinkScheme, alternateRedirectUrl
+                ), requestCode
+        );
+    }
+
+    /**
+     * @param context
+     * @param appLinkScheme
+     * @param alternateRedirectUrl
+     * @return
+     */
+
+    private Intent getIntentAppLinkWallet(Context context, String appLinkScheme,
+                                          String alternateRedirectUrl) {
+
+        return appLinkScheme == null || appLinkScheme.isEmpty() ?
+                DigitalWebActivity.newInstance(context, alternateRedirectUrl)
+                : isSupportedDelegateDeepLink(appLinkScheme)
+                ? new Intent(context, DeeplinkHandlerActivity.class).setData(Uri.parse(appLinkScheme))
+                : DigitalWebActivity.newInstance(context, appLinkScheme);
+    }
+
 
     @Override
     public String getFlavor() {
@@ -638,10 +708,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return Observable.just(dataCashbackModels);
     }
 
-    public void goToAddProduct(Activity activity){
-        if(activity != null) {
+    public void goToAddProduct(Activity activity) {
+        if (activity != null) {
             ProductAddActivity.start(activity);
         }
+    }
+
+    @Override
+    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
+        return new ApplinkUnsupportedImpl(activity);
     }
 
     @Override
@@ -651,36 +726,82 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean getBooleanConfig(String key) {
-        return getFirebaseRemoteConfig().getBoolean(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getBoolean(key);
+        }
+        return false;
     }
 
     @Override
     public byte[] getByteArrayConfig(String key) {
-        return getFirebaseRemoteConfig().getByteArray(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getByteArray(key);
+        }
+        return new byte[0];
     }
 
     @Override
     public double getDoubleConfig(String key) {
-        return getFirebaseRemoteConfig().getDouble(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getDouble(key);
+        }
+        return 0.0D;
     }
 
     @Override
     public long getLongConfig(String key) {
-        return getFirebaseRemoteConfig().getLong(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getLong(key);
+        }
+        return 0L;
     }
 
     @Override
     public String getStringConfig(String key) {
-        return getFirebaseRemoteConfig().getString(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getString(key);
+        }
+        return "";
     }
 
     private FirebaseRemoteConfig getFirebaseRemoteConfig() {
-        if(firebaseRemoteConfig == null) firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        return firebaseRemoteConfig;
+        return RemoteConfigFetcher.initRemoteConfig(this);
+    }
+
+    @Override
+    public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels,
+                                 long startDate, long endDate,
+                                 int datePickerSelection, int datePickerType) {
+        return DatePickerUtil.getDatePickerIntent(activity, startDate, endDate, convert(periodRangeModels),
+                datePickerSelection, datePickerType);
     }
 
     @Override
     public Intent getForgotPasswordIntent(Context context, String email) {
-        return ForgotPasswordActivity.getCallingIntent(context,email);
+        return ForgotPasswordActivity.getCallingIntent(context, email);
     }
+
+    public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
+        List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
+        for (PeriodRangeModelCore periodRangeModelCore : periodRangeModelCores) {
+            periodRangeModels.add(new PeriodRangeModel(
+                    periodRangeModelCore.getStartDate(),
+                    periodRangeModelCore.getEndDate(),
+                    periodRangeModelCore.getLabel()
+            ));
+        }
+        return periodRangeModels;
+    }
+
+    @Override
+    public String getRangeDateFormatted(Context context, long startDate, long endDate) {
+        return DateLabelUtils.getRangeDateFormatted(context, startDate, endDate);
+    }
+
+    @Override
+    public void invalidateCategoryMenuData() {
+        HomeCategoryMenuDbManager dbManager = new HomeCategoryMenuDbManager();
+        dbManager.deleteAll();
+    }
+
 }

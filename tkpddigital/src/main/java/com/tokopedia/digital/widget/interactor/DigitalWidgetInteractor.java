@@ -44,27 +44,31 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     private OperatorMapper operatorMapper;
     private ThreadExecutor threadExecutor;
     private PostExecutionThread postExecutionThread;
+    private boolean useCache;
 
     public DigitalWidgetInteractor(CompositeSubscription compositeSubscription,
                                    DigitalWidgetRepository digitalWidgetRepository,
                                    ProductMapper productMapper,
                                    OperatorMapper operatorMapper,
                                    JobExecutor jobExecutor,
-                                   PostExecutionThread postExecutionThread) {
+                                   PostExecutionThread postExecutionThread,
+                                   boolean useCache) {
         this.compositeSubscription = compositeSubscription;
         this.digitalWidgetRepository = digitalWidgetRepository;
         this.operatorMapper = operatorMapper;
         this.productMapper = productMapper;
         this.threadExecutor = jobExecutor;
         this.postExecutionThread = postExecutionThread;
+        this.useCache = useCache;
     }
 
     @Override
     public void getProductsFromPrefix(Subscriber<List<Product>> subscriber, final int categoryId, String prefix,
                                       Boolean validatePrefix) {
         compositeSubscription.add(
-                Observable.zip(getOperatorByPrefix(prefix),
-                        digitalWidgetRepository.getObservableProducts()
+                Observable.zip(
+                        getOperatorByPrefix(prefix),
+                        digitalWidgetRepository.getObservableProducts(useCache)
                                 .map(productMapper)
                                 .doOnNext(
                                         new Action1<List<Product>>() {
@@ -97,7 +101,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     }
 
     private Observable<List<Operator>> getOperatorByPrefix(final String prefix) {
-        return digitalWidgetRepository.getObservableOperators()
+        return digitalWidgetRepository.getObservableOperators(useCache)
                 .map(operatorMapper)
                 .flatMap(new Func1<List<Operator>, Observable<Operator>>() {
                     @Override
@@ -131,7 +135,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     @Override
     public void getOperatorsFromCategory(Subscriber<List<Operator>> subscriber, final int categoryId) {
         compositeSubscription.add(Observable.zip(
-                digitalWidgetRepository.getObservableOperators().map(operatorMapper),
+                digitalWidgetRepository.getObservableOperators(useCache).map(operatorMapper),
                 getIdOperators(categoryId), new Func2<List<Operator>, List<Integer>, List<Operator>>() {
                     @Override
                     public List<Operator> call(List<Operator> operators, final List<Integer> integers) {
@@ -160,7 +164,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     }
 
     private Observable<List<Integer>> getIdOperators(final int categoryId) {
-        return digitalWidgetRepository.getObservableProducts()
+        return digitalWidgetRepository.getObservableProducts(useCache)
                 .map(productMapper)
                 .flatMap(new Func1<List<Product>, Observable<Product>>() {
                     @Override
@@ -191,7 +195,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     @Override
     public void getProductsFromOperator(Subscriber<List<Product>> subscriber, int categoryId, String operatorId) {
         compositeSubscription.add(
-                digitalWidgetRepository.getObservableProducts()
+                digitalWidgetRepository.getObservableProducts(useCache)
                         .map(productMapper)
                         .flatMap(new Func1<List<Product>, Observable<Product>>() {
                             @Override
@@ -210,7 +214,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     @Override
     public void getOperatorById(Subscriber<Operator> subscriber, final String operatorId) {
         compositeSubscription.add(
-                digitalWidgetRepository.getObservableOperators()
+                digitalWidgetRepository.getObservableOperators(useCache)
                         .map(operatorMapper)
                         .flatMap(new Func1<List<Operator>, Observable<Operator>>() {
                             @Override
@@ -234,7 +238,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     public void getProductById(Subscriber<Product> subscriber, String categoryId, String operatorId,
                                String productId) {
         compositeSubscription.add(
-                digitalWidgetRepository.getObservableProducts()
+                digitalWidgetRepository.getObservableProducts(useCache)
                         .map(productMapper)
                         .flatMap(new Func1<List<Product>, Observable<Product>>() {
                             @Override

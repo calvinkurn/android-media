@@ -144,6 +144,9 @@ public interface AppEventTracking {
     interface Category {
         String HOMEPAGE = "Homepage";
         String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
+        String HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
+        String HOMEPAGE_OFFICIAL_STORE_WIDGET = "homepage official store widget";
+        String HOMEPAGE_BANNER = "homepage banner";
         String PRODUCT_DETAIL = "Product Detail Page";
         String ADD_TO_CART = "Add to Cart";
         String CHECKOUT = "Checkout";
@@ -232,6 +235,7 @@ public interface AppEventTracking {
 
     interface Action {
         String CLICK = "Click";
+        String CLICK_VIEW_ALL    = "click view all";
         String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
         String VOICE_SEARCH = "Voice Search";
@@ -292,6 +296,7 @@ public interface AppEventTracking {
         String SELECT_PRODUCT = "Select Product";
         String SELECT_OPERATOR = "Select Operator";
         String CLICK_SEARCH_BAR = "Click Search Bar";
+        String CLICK_BELI_LOWER = "click beli ";
 
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String CLICK_PHONEBOOK_ICON = "Click Phonebook Icon";
@@ -324,6 +329,12 @@ public interface AppEventTracking {
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
+        String CLICK_ACTIVATE = "click activate";
+        String CLICK_SALDO = "click saldo";
+        String CLICK_REMOVE_WISHLIST = "wishlist - remove item";
+        String CLICK_SHOP_FAVORITE = "favorite - click shop";
+        String CLICK_EMPTY_SEARCH_WISHLIST = "wishlist - click empty cari product";
+        String CLICK_SEARCH_ITEM_WISHLIST = "wishlist - search item";
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
     }
@@ -639,6 +650,8 @@ public interface AppEventTracking {
         String CATEGORY = "category";
         String CONDITION = "condition";
         String PICTURE_STATUS = "picture status";
+        String CHECKOUT_INSTANT = "instant";
+        String CHECKOUT_NO_INSTANT = "no "+CHECKOUT_INSTANT;
 
         String SELECT_PRODUCT_FROM_WIDGET = "select Product - ";
         String CLICK_WIDGET_BAR = "click ";
