@@ -46,6 +46,9 @@ public class CreateOrderParameter {
     @SerializedName("currency")
     @Expose
     private String currency;
+    @SerializedName("fee")
+    @Expose
+    private Double fee;
 
 
     public Integer getUserId() {
@@ -142,5 +145,13 @@ public class CreateOrderParameter {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Double getFee() {
+        return fee;
+    }
+
+    public void setFee(Double fee) {
+        this.fee = fee;
     }
 }

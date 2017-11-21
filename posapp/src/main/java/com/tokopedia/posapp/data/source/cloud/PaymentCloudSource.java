@@ -62,6 +62,7 @@ public class PaymentCloudSource {
                 orderParam.getTransactionId() +
                 orderParam.getCurrency() +
                 String.format("%.02f", orderParam.getAmount()) +
+                String.format("%.02f", orderParam.getFee()) +
                 orderParam.getGatewayCode() +
                 orderParam.getState() +
                 orderParam.getUserDefinedString();
