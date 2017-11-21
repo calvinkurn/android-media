@@ -147,6 +147,8 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
             } else {
                 this.notifyItemRangeInserted(prevSize, addedSize);
             }
+        } else {
+            notifyDataSetChanged();
         }
     }
 
