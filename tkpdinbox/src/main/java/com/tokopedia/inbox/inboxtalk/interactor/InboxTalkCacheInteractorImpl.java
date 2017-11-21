@@ -33,11 +33,11 @@ public class InboxTalkCacheInteractorImpl implements InboxTalkCacheInteractor {
     @Override
     public void storeFirstPage(String nav, String filter, JSONObject result) {
         InboxTalkCacheManager cache = new InboxTalkCacheManager();
-        cache.setNav(nav,filter);
+        cache.setNav(nav, filter);
         cache.setResult(result);
         cache.setCacheDuration(300);
 
-        Observable.just(cache)
+        subscription.add(Observable.just(cache)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<InboxTalkCacheManager, InboxTalkCacheManager>() {
@@ -61,12 +61,13 @@ public class InboxTalkCacheInteractorImpl implements InboxTalkCacheInteractor {
                     @Override
                     public void onNext(InboxTalkCacheManager inboxTalkCacheManager) {
                     }
-                });
+                })
+        );
     }
 
     @Override
     public void getInboxTalkFromCache(final String nav, final InboxTalkCacheInteractor.GetInboxTalkListener listener) {
-        Observable.just(nav)
+        subscription.add(Observable.just(nav)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<String, JSONObject>() {
@@ -100,6 +101,12 @@ public class InboxTalkCacheInteractorImpl implements InboxTalkCacheInteractor {
                             Log.i("steven", "Get The Cache!! " + jsonObject.toString());
                         listener.onSuccess(jsonObject);
                     }
-                });
+                })
+        );
+    }
+
+    @Override
+    public void unsubscribe() {
+        this.subscription.unsubscribe();
     }
 }
