@@ -882,7 +882,7 @@ public class TkpdBaseURL {
     }
 
     public static class Reputation {
-        public static final String URL_REPUTATION = WEB_DOMAIN + "reputationapp/";
+        public static final String URL_REPUTATION = LIVE_DOMAIN + "reputationapp/";
         private static final String REPUTATION_VERSION = "v1";
 
         public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/"

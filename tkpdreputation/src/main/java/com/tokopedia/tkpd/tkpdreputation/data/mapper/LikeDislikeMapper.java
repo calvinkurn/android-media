@@ -21,7 +21,10 @@ public class LikeDislikeMapper implements Func1<Response<TkpdResponse>, LikeDisl
     @Override
     public LikeDislikeDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() ==
+                    null) {
                 LikeDislikePojo data = response.body().convertDataObj(
                         LikeDislikePojo.class);
                 return mappingToDomain(data);

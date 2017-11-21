@@ -22,7 +22,10 @@ public class ReportReviewMapper implements Func1<Response<TkpdResponse>, ReportR
     @Override
     public ReportReviewDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() ==
+                    null) {
                 ReportReviewPojo data = response.body().convertDataObj(ReportReviewPojo.class);
                 return mappingToDomain(data);
             } else {

@@ -21,7 +21,10 @@ public class DeleteReviewResponseMapper implements Func1<Response<TkpdResponse>,
     @Override
     public DeleteReviewResponseDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() ==
+                    null) {
                 DeleteReviewResponsePojo data = response.body().convertDataObj(
                         DeleteReviewResponsePojo.class);
                 return mappingToDomain(data);
