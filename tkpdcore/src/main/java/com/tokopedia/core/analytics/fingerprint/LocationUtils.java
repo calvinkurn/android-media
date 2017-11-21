@@ -79,7 +79,7 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
                         ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
                     if (location != null) {
-                        LocationCache.saveLocation(location);
+                        LocationCache.saveLocation(context, location);
                     } else {
                         CommonUtils.dumper("location permission not granted");
                     }
