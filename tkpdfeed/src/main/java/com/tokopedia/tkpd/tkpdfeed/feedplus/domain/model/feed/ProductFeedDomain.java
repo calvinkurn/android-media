@@ -62,7 +62,7 @@ public class ProductFeedDomain {
 
 
     @Nullable
-    private int rating;
+    private double rating;
 
     @NonNull
     private String cursor;
@@ -79,7 +79,7 @@ public class ProductFeedDomain {
                              @Nullable String url,
                              @Nullable String productLink,
                              @Nullable boolean wishlist,
-                             @Nullable int rating,
+                             @Nullable double rating,
                              @NonNull String cursor) {
         this.id = id;
         this.name = name;
@@ -197,11 +197,11 @@ public class ProductFeedDomain {
     }
 
     @Nullable
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(@Nullable int rating) {
+    public void setRating(@Nullable double rating) {
         this.rating = rating;
     }
 

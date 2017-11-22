@@ -34,9 +34,7 @@ public class URLParser {
 				iden = iden+"_"+Path.get(i);
 			}
 		}
-		CategoryDB dep =
-				DbManagerImpl.getInstance().getCategoryDb(iden);
-		return dep != null ? dep.getDepartmentId()+"" : "0";
+		return iden;
 	}
 
 	public String getQuery () {

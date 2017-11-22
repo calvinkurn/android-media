@@ -73,8 +73,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 212001301;
-        defaultVersionName = "2.13";
+        defaultVersionCode = 216001101;
+        defaultVersionName = "2.16";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -184,7 +184,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
     }
 
     compileOptions {
@@ -197,10 +197,6 @@ android {
     }
 
     productFlavors {
-        staging {
-
-        }
-
         live {
 
         }
@@ -254,7 +250,6 @@ dependencies {
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
-    compile project(':tkpdtopads')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpdride')

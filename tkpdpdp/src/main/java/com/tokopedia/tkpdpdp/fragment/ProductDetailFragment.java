@@ -49,6 +49,7 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -99,6 +100,7 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
 
@@ -157,6 +159,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     CollapsingToolbarLayout collapsingToolbarLayout;
     FloatingActionButton fabWishlist;
     LinearLayout rootView;
+
+    private boolean isAppBarCollapsed=false;
 
     private TextView tvTickerGTM;
 
@@ -263,12 +267,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
                 switch (state){
                     case COLLAPSED:
+                        isAppBarCollapsed = true;
                         initStatusBarLight();
                         initToolbarLight();
+                        fabWishlist.hide();
                         break;
                     case EXPANDED:
+                        isAppBarCollapsed = false;
                         initStatusBarDark();
                         initToolbarTransparant();
+                        if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
+                            fabWishlist.show();
+                        }
                         break;
                 }
             }
@@ -563,6 +573,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         resultIntent.putExtra(WISHLIST_STATUS_UPDATED_POSITION,
                 getActivity().getIntent().getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1));
         resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, status == STATUS_IN_WISHLIST);
+        resultIntent.putExtra(EXTRA_PRODUCT_ID, String.valueOf(productData.getInfo().getProductId()));
         getActivity().setResult(Activity.RESULT_CANCELED, resultIntent);
 
     }
@@ -727,7 +738,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.product_detail, menu);
+        if(!isAppBarCollapsed)
+            inflater.inflate(R.menu.product_detail, menu);
+        else
+            inflater.inflate(R.menu.product_detail_dark, menu);
+
         super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
     }
