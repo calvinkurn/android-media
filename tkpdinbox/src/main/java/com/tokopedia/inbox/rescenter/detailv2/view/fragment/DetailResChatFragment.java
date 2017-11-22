@@ -423,7 +423,7 @@ public class DetailResChatFragment
 
                 chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
                 chatAdapter.notifyDataSetChanged();
-                rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+                scrollChatToBottom();
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
             }
         });
@@ -458,9 +458,13 @@ public class DetailResChatFragment
         fabChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+                scrollChatToBottom();
             }
         });
+    }
+
+    private void scrollChatToBottom() {
+        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
@@ -470,7 +474,7 @@ public class DetailResChatFragment
                 message,
                 null,
                 null,
-                getConversationCreateTime(),
+                null,
                 null,
                 null,
                 null,
@@ -486,7 +490,7 @@ public class DetailResChatFragment
                 message,
                 null,
                 null,
-                getConversationCreateTime(),
+                null,
                 getConversationAttachmentTemp(attachmentList),
                 null,
                 null,
@@ -1064,8 +1068,6 @@ public class DetailResChatFragment
     @Override
     public void onAddItemAdapter(List<Visitable> items) {
         chatAdapter.addAllItems(items);
-        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-
     }
 
     @Override
@@ -1076,7 +1078,7 @@ public class DetailResChatFragment
     @Override
     public void onRefreshChatAdapter() {
         chatAdapter.notifyDataSetChanged();
-        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        scrollChatToBottom();
     }
 
     @Override
