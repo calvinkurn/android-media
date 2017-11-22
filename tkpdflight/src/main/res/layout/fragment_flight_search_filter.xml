@@ -24,7 +24,7 @@
 
             <com.tokopedia.design.text.RangeInputView
                 android:id="@+id/price_range_input_view"
-                style="@style/LabelLayout"
+                style="@style/FlightFilterLabelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:driv_label_max="@string/flight_search_filter_price_max_label"
@@ -35,7 +35,7 @@
 
             <com.tokopedia.design.text.RangeInputView
                 android:id="@+id/duration_range_input_view"
-                style="@style/LabelLayout"
+                style="@style/FlightFilterLabelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:driv_typable="false"
@@ -46,22 +46,22 @@
 
             <com.tokopedia.design.label.selection.text.SelectionTextLabelView
                 android:id="@+id/selection_text_label_layout_transit"
-                style="@style/LabelLayout"
+                style="@style/FlightFilterLabelLayout"
                 app:slv_title="@string/flight_search_filter_transit" />
 
             <com.tokopedia.design.label.selection.text.SelectionTextLabelView
                 android:id="@+id/selection_text_label_layout_airline"
-                style="@style/LabelLayout"
+                style="@style/FlightFilterLabelLayout"
                 app:slv_title="@string/flight_search_filter_airplane" />
 
             <com.tokopedia.design.label.selection.text.SelectionTextLabelView
                 android:id="@+id/selection_text_label_layout_departure_time"
-                style="@style/LabelLayout"
+                style="@style/FlightFilterLabelLayout"
                 app:slv_title="@string/flight_search_filter_departure_time" />
 
             <com.tokopedia.design.label.selection.text.SelectionTextLabelView
                 android:id="@+id/selection_text_label_layout_refund_policy"
-                style="@style/LabelLayout"
+                style="@style/FlightFilterLabelLayout"
                 app:slv_title="@string/flight_search_filter_refund_policy" />
 
         </LinearLayout>

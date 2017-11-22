@@ -95,12 +95,12 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             }
         });
 
-        vReset = findViewById(R.id.tv_reset);
+        vReset = findViewById(R.id.v_reset);
         vReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fragment f = getCurrentFragment();
-                if (f!=null && f instanceof OnFlightBaseFilterListener) {
+                if (f != null && f instanceof OnFlightBaseFilterListener) {
                     ((OnFlightBaseFilterListener) f).resetFilter();
                 }
             }
@@ -125,9 +125,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         this.onBackPressed(true);
     }
 
-    private Fragment getCurrentFragment(){
+    private Fragment getCurrentFragment() {
         List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
-        for (int i = 0, sizei = fragmentList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = fragmentList.size(); i < sizei; i++) {
             Fragment fragment = fragmentList.get(i);
             if (fragment.isAdded() && fragment.isVisible()) {
                 return fragment;
@@ -141,7 +141,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         this.onBackPressed(false);
     }
 
-    private void onBackPressed(boolean submitFilter){
+    private void onBackPressed(boolean submitFilter) {
         if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
             if (!submitFilter) {
                 backFilterToOriginal();
@@ -160,9 +160,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         }
     }
 
-    private void backFilterToOriginal(){
+    private void backFilterToOriginal() {
         Fragment f = getCurrentFragment();
-        if (f!=null && f instanceof OnFlightBaseFilterListener) {
+        if (f != null && f instanceof OnFlightBaseFilterListener) {
             ((OnFlightBaseFilterListener) f).changeFilterToOriginal();
         }
     }
@@ -258,11 +258,11 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     }
 
     private void updateButtonFilter(int count) {
-//        if (currentTag.equals(getTagFragment())) {
-        buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
-//        } else {
-//            buttonFilter.setText(getString(R.string.flight_save));
-//        }
+        if (currentTag.equals(getTagFragment())) {
+            buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
+        } else {
+            buttonFilter.setText(getString(R.string.flight_save_x_flights, count));
+        }
     }
 
     @Override

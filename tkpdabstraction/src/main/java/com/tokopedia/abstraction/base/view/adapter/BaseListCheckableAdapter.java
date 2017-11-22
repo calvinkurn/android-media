@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -27,19 +28,19 @@ public abstract class BaseListCheckableAdapter<T extends ItemType> extends BaseL
         void onItemChecked(T t, boolean isChecked);
     }
 
-    public BaseListCheckableAdapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
-        this(null, 0, onBaseListV2AdapterListener, null);
+    public BaseListCheckableAdapter(Context context, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
+        this(context, null, 0, onBaseListV2AdapterListener, null);
     }
 
-    public BaseListCheckableAdapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
+    public BaseListCheckableAdapter(Context context, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
                                     OnCheckableAdapterListener<T> onCheckableAdapterListener) {
-        this(null, 0, onBaseListV2AdapterListener, onCheckableAdapterListener);
+        this(context, null, 0, onBaseListV2AdapterListener, onCheckableAdapterListener);
     }
 
-    public BaseListCheckableAdapter(@Nullable List<T> data, int rowPerPage,
+    public BaseListCheckableAdapter(Context context, @Nullable List<T> data, int rowPerPage,
                                     OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
                                     OnCheckableAdapterListener<T> onCheckableAdapterListener) {
-        super(onBaseListV2AdapterListener);
+        super(context, data, rowPerPage, onBaseListV2AdapterListener);
         this.onCheckableAdapterListener = onCheckableAdapterListener;
     }
 

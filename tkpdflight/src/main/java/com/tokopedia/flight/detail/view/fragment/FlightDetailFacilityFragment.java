@@ -70,7 +70,7 @@ public class FlightDetailFacilityFragment extends BaseListFragment<Route> implem
 
     @Override
     protected BaseListAdapter<Route> getNewAdapter() {
-        return new FlightDetailFacilityAdapter(this);
+        return new FlightDetailFacilityAdapter(getContext(),this);
     }
 
     @Override

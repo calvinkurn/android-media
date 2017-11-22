@@ -2,6 +2,7 @@ package com.tokopedia.flight.common.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,12 +43,16 @@ public class HorizontalProgressBar extends FrameLayout {
         init();
     }
 
-    private void init(){
+    private void init() {
         View view = inflate(getContext(), R.layout.view_horizontal_progress_bar, this);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
     }
 
-    public void setProgress(int progress){
-        progressBar.setProgress(progress);
+    public void setProgress(int progress) {
+        if (Build.VERSION.SDK_INT >= 24) {
+            progressBar.setProgress(progress, true);
+        } else {
+            progressBar.setProgress(progress);
+        }
     }
 }

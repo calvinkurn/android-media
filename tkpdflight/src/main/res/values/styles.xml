@@ -18,6 +18,13 @@
         <item name="android:background">@drawable/bg_button_round</item>
     </style>
 
+    <style name="FlightFilterLabelLayout" parent="LabelLayout">
+        <item name="android:paddingTop">@dimen/margin_sm</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingBottom">@dimen/margin_sm</item>
+    </style>
+
     <style name="ButtonRound.Success">
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/bg_button_round_success</item>
