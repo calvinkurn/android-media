@@ -33,6 +33,7 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
@@ -60,6 +61,9 @@ public interface AppComponent {
     void inject(BaseActivity baseActivity);
 
     void inject(TActivity baseActivity);
+
+    @TopAdsQualifier
+    Retrofit topAdsRetrofit();
 
     @ApplicationContext
     Context context();
