@@ -1,6 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
@@ -19,13 +19,9 @@ public class FlightBookingLuggageAdapter extends BaseListAdapter<FlightBookingLu
 
     private List<FlightBookingLuggageViewModel> selectedLuggage;
 
-    public FlightBookingLuggageAdapter(OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
+    public FlightBookingLuggageAdapter(Context context, OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
         selectedLuggage = new ArrayList<>();
-    }
-
-    public FlightBookingLuggageAdapter(@Nullable List<FlightBookingLuggageViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
     }
 
     public void setSelectedLuggage(List<FlightBookingLuggageViewModel> selectedLuggage) {

@@ -1,6 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
@@ -16,16 +16,8 @@ import java.util.List;
  */
 
 public class FlightBookingMealsAdapter extends BaseListCheckableAdapter<FlightBookingMealViewModel> {
-    public FlightBookingMealsAdapter(OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
-    }
-
-    public FlightBookingMealsAdapter(OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener, OnCheckableAdapterListener<FlightBookingMealViewModel> onCheckableAdapterListener) {
-        super(onBaseListV2AdapterListener, onCheckableAdapterListener);
-    }
-
-    public FlightBookingMealsAdapter(@Nullable List<FlightBookingMealViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener, OnCheckableAdapterListener<FlightBookingMealViewModel> onCheckableAdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener, onCheckableAdapterListener);
+    public FlightBookingMealsAdapter(Context context, OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
     @Override
@@ -43,7 +35,7 @@ public class FlightBookingMealsAdapter extends BaseListCheckableAdapter<FlightBo
             return;
         }
         HashSet<Integer> checkedPositionList = new HashSet<>();
-        for (int i = 0, sizei = checkedDataList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = checkedDataList.size(); i < sizei; i++) {
             if (list.contains(checkedDataList.get(i))) {
                 checkedPositionList.add(i);
             }

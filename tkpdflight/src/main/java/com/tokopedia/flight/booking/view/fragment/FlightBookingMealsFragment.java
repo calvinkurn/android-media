@@ -103,7 +103,7 @@ public class FlightBookingMealsFragment extends BaseListFragment<FlightBookingMe
 
     @Override
     protected BaseListAdapter<FlightBookingMealViewModel> getNewAdapter() {
-        FlightBookingMealsAdapter flightBookingMealsAdapter = new FlightBookingMealsAdapter(this);
+        FlightBookingMealsAdapter flightBookingMealsAdapter = new FlightBookingMealsAdapter(getActivity(), this);
         flightBookingMealsAdapter.setListChecked(selectedMeals.getMealViewModels());
         return flightBookingMealsAdapter;
     }
