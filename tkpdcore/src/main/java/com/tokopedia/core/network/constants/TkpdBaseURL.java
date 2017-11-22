@@ -57,6 +57,7 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
+    public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -117,7 +118,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
 
-        public static final String MOST_HELPFUL_REVIEW =  "reputationapp/review/api/v1/mosthelpful";
+        public static final String MOST_HELPFUL_REVIEW =
+                "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {
@@ -420,7 +422,8 @@ public class TkpdBaseURL {
         public static final String PATH_EDIT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/edit_address_resolution.pl";
         public static final String PATH_REPLY_CONVERSATION_SUBMIT_V2 = "v4/action/resolution-center/reply_conversation_submit.pl";
         public static final String PATH_REPLY_CONVERSATION_VALIDATION_V2 = "v4/action/resolution-center/reply_conversation_validation.pl";
-        public static final String PATH_GENERATE_TOKEN_HOST = "generate_token_host.pl";
+        public static final String PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER = "generate_token_host.pl";
+        public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/" + PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER;
     }
 
     public static class Search {
@@ -531,6 +534,7 @@ public class TkpdBaseURL {
 
     public static class Shipment {
         public static final String PATH_RATES = "rates/v1";
+        public static final String PATH_DISTRICT_RECOMMENDATION = "/v2/district-recommendation";
     }
 
     public static class Upload {
@@ -744,12 +748,19 @@ public class TkpdBaseURL {
         public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
     }
 
-    public static class TopCash {
+    public static class TokoCash {
         public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
-        public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
-        public static final String PATH_WALLET = "balance";
-        public static final String PATH_REQUEST_OTP_WALLET = "otp/request";
-        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "link";
+        public static final String PATH_WALLET = "api/v1/wallet/balance";
+        public static final String PATH_REQUEST_OTP_WALLET = "api/v1/wallet/otp/request";
+        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "api/v1/wallet/link";
+        public static final String GET_TOKEN_WALLET = "api/v1/wallet/token";
+    }
+
+    public static class Wallet {
+        public static final String GET_HISTORY = "api/v1/me/history";
+        public static final String POST_COMPLAINT = "api/v1/cs/complaint";
+        public static final String GET_OAUTH_INFO_ACCOUNT= "api/v1/me/profile";
+        public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
     }
 
     public static class Truecaller {

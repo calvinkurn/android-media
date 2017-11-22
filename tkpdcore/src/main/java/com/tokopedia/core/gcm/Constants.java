@@ -56,6 +56,7 @@ public interface Constants {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
         String FEED = "tokopedia://feed";
+        String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
         String HOME_CATEGORY = "tokopedia://home/category";
         String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
@@ -81,6 +82,7 @@ public interface Constants {
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
         String SELLER_STATUS = "tokopedia://seller/status";
         String SELLER_HISTORY = "tokopedia://seller/history";
+        String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
@@ -108,7 +110,11 @@ public interface Constants {
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
         String REFERRAL = "tokopedia://referral";
         String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
+        String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
+        String WALLET_HOME = "tokopedia://wallet";
+        String WALLET_ACTIVATION = "tokopedia://wallet/activation";
+        String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
@@ -131,6 +137,7 @@ public interface Constants {
         String HTTP = "http";
         String HTTPS = HTTP + "s";
         String APPLINKS = "tokopedia";
+        String APPLINKS_SELLER = "sellerapp";
     }
 
     interface Settings {
@@ -144,5 +151,9 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
+    }
+
+    interface AppLinkQueryParameter {
+        String WALLET_TOP_UP_VISIBILITY = "top_up_visible";
     }
 }

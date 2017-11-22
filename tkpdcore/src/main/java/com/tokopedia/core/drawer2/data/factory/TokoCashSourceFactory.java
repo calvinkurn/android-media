@@ -14,8 +14,6 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 
 public class TokoCashSourceFactory {
 
-    public static final String KEY_TOKOCASH_DATA = "KEY_TOKOCASH_DATA";
-
     private Context context;
     private AccountsService accountsService;
     private TokoCashMapper tokoCashMapper;

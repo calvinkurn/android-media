@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -226,6 +229,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
             } else {
+                invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -352,12 +356,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
+                            invalidateCategoryCache();
                             Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
                     }
                 });
+    }
+
+    private void invalidateCategoryCache() {
+        ((TkpdCoreRouter) getApplication()).invalidateCategoryMenuData();
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -385,4 +394,27 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            ApplicationInfo ai = null;
+            try {
+                ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                Bundle bundle = ai.metaData;
+                String i = bundle.getString("APPS_HOME", "");
+                if (!TextUtils.isEmpty(i)) {
+                    Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                            (this);
+                    startActivity(intentHome);
+                } else {
+                    super.onBackPressed();
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

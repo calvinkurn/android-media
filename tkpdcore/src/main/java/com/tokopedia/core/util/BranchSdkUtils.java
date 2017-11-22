@@ -2,11 +2,11 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.util.ArrayList;
@@ -57,14 +57,14 @@ public class BranchSdkUtils {
                 public void onLinkCreate(String url, BranchError error) {
 
                     if (error == null) {
-                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContentForBranch(url), extraDescription + url);
+                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContentForBranch(url), extraDescription + url,url);
                     } else {
-                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri());
+                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(),url);
                     }
                 }
             });
         } else {
-            ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri());
+            ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(),data.renderShareUri());
 
         }
     }
@@ -81,6 +81,8 @@ public class BranchSdkUtils {
             deeplinkPath = getApplinkPath(Constants.Applinks.SHOP, data.getId());//"shop/" + data.getId();
         } else if (ShareData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
+        }else if (ShareData.CATALOG_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_CATALOG, data.getId());
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
@@ -103,15 +105,18 @@ public class BranchSdkUtils {
         if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
             return true;
         } else {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.FIREBASE_REMOTE_CONFIG);
-            return localCacheHandler.getBoolean(TkpdCache.Key.MAINAPP_ACTIVATE_BRANCH_LINKS_KEY, true);
+            if(activity.getApplication() instanceof RemoteConfigRouter) {
+                return ((RemoteConfigRouter) activity.getApplication())
+                        .getBooleanConfig(TkpdCache.Key.CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS);
+            }
+            return true;
         }
     }
 
     private static String getApplinkPath(String url, String id) {
         if (url.contains(Constants.Schemes.APPLINKS + "://")) {
             url = url.replace(Constants.Schemes.APPLINKS + "://", "");
-            url = url.replaceAll("\\{.*?\\} ?", id);
+            url = url.replaceAll("\\{.*?\\} ?", id == null ? "" : id);
         } else if (url.contains(TkpdBaseURL.WEB_DOMAIN)) {
             url = url.replace(TkpdBaseURL.WEB_DOMAIN, "");
         } else if (url.contains(TkpdBaseURL.MOBILE_DOMAIN)) {
@@ -121,12 +126,12 @@ public class BranchSdkUtils {
     }
 
     private static String getAppShareDescription(Activity activity, String type) {
-        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.FIREBASE_REMOTE_CONFIG);
-            return localCacheHandler.getString(TkpdCache.Key.APP_SHARE_DESCRIPTION_KEY, "") + " \n";
-        } else {
-            return "";
+        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type) && activity.getApplication() instanceof RemoteConfigRouter) {
+            return ((RemoteConfigRouter) activity.getApplication())
+                    .getStringConfig(TkpdCache.Key.CONFIG_APP_SHARE_DESCRIPTION) + " \n";
         }
+        return "";
+
     }
 
     public static void sendCommerceEvent(ArrayList<Product> locaProducts, String revenue, String totalShipping) {
@@ -179,6 +184,6 @@ public class BranchSdkUtils {
     }
 
     public interface GenerateShareContents {
-        void onCreateShareContents(String shareContents, String shareUri);
+        void onCreateShareContents(String shareContents, String shareUri,String branchUrl);
     }
 }

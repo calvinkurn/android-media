@@ -318,12 +318,12 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @OnClick(R2.id.cabs_autocomplete_back_icon)
     public void actionBackIconClicked() {
+        RideGATracking.eventBackPress(getScreenName());
         getActivity().finish();
     }
 
     @Override
     public void onPlaceSelectedFound(PlacePassViewModel placePassViewModel) {
-        RideGATracking.eventClickAutDetectLocation(getScreenName(),placePassViewModel.getAddress()); //9
         mOnFragmentInteractionListener.onLocationSelected(placePassViewModel);
     }
 
@@ -452,6 +452,11 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void showErrorNoInternetConnectionMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendAutoDetectGAEvent(PlacePassViewModel placePassViewModel) {
+        RideGATracking.eventClickAutDetectLocation(getScreenName(),placePassViewModel.getAddress()); //9
     }
 
     @OnClick(R2.id.iv_cross)

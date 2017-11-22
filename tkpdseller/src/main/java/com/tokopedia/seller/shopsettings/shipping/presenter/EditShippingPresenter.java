@@ -2,6 +2,8 @@ package com.tokopedia.seller.shopsettings.shipping.presenter;
 
 import android.os.Bundle;
 
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.EditShippingCouriers;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
@@ -11,7 +13,7 @@ import java.util.List;
 
 /**
  * Created by Kris on 2/23/2016.
- TOKOPEDIA
+ * TOKOPEDIA
  */
 public interface EditShippingPresenter {
 
@@ -90,4 +92,10 @@ public interface EditShippingPresenter {
     void savePostalCode(String s);
 
     void saveAddressArea(String s);
+
+    void setSelectedAddress(Address address);
+
+    Address getselectedAddress();
+
+    Token getToken();
 }

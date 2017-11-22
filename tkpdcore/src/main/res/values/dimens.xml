@@ -219,4 +219,5 @@
     <dimen name="feature_product_item_component_spacing">3dp</dimen>
     <dimen name="toolbar_shadow_height">5dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
+    <dimen name="share_header_height">52dp</dimen>
 </resources>

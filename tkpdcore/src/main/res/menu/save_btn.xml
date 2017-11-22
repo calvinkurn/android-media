@@ -6,6 +6,6 @@
         android:title="@string/btn_send"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:icon="@drawable/ic_tick"/>
+        android:icon="@drawable/ic_new_action_check"/>
 
 </menu>

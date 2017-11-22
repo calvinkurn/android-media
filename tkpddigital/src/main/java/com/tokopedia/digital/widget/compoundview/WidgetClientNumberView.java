@@ -174,7 +174,7 @@ public class WidgetClientNumberView extends LinearLayout {
 
     public void setDropdownAutoComplete(List<OrderClientNumber> numberList) {
         adapter = new AutoCompleteTVAdapter(getContext(),
-                R.layout.item_autocomplete, numberList);
+                R.layout.item_autocomplete_widget, numberList);
 
         this.pulsaAutocompleteView.setAdapter(adapter);
         this.pulsaAutocompleteView.setThreshold(1);

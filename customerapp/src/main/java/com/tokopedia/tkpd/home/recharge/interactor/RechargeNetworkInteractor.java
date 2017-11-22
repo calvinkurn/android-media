@@ -13,7 +13,7 @@ import rx.Subscriber;
  */
 public interface RechargeNetworkInteractor {
 
-    void getCategoryData(Subscriber<List<Category>> subscriber);
+    void getCategoryData(Subscriber<List<Category>> subscriber, boolean isUseCache);
 
     void getStatus(Subscriber<Status> subscriber);
 

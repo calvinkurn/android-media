@@ -1,0 +1,84 @@
+{
+  "account_list": [
+    {
+      "client_id": "G6T6CVTS8bMY",
+      "client_name": "tokopedia",
+      "identifier": "jonathan.nugraha@tokopedia.com",
+      "identifier_type": "pantry",
+      "img_url": "https://cdn7.tokopedia.net/tiket-production/kereta-api/img/toped.png",
+      "auth_date": 1507603873,
+      "auth_date_fmt": "10 October 2017, 09:51",
+      "refresh_token": "4VjMJJ25Qz6B4X_mFE4tlA"
+    },
+    {
+      "client_id": "G6T6CVTS8bMY",
+      "client_name": "tokopedia",
+      "identifier": "teuku.amin+01@tokopedia.com",
+      "identifier_type": "email",
+      "img_url": "https://cdn7.tokopedia.net/tiket-production/kereta-api/img/toped.png",
+      "auth_date": 1502076473,
+      "auth_date_fmt": "07 August 2017, 10:27",
+      "refresh_token": "D17yxiYnS32P3wBqnIXyeg"
+    },
+    {
+      "client_id": "G6T6CVTS8bMY",
+      "client_name": "tokopedia",
+      "identifier": "teuku.amin+69@tokopedia.com",
+      "identifier_type": "email",
+      "img_url": "https://cdn7.tokopedia.net/tiket-production/kereta-api/img/toped.png",
+      "auth_date": 1500458359,
+      "auth_date_fmt": "19 July 2017, 16:59",
+      "refresh_token": "GDXZFk1TRwmVprLWNQwZKw"
+    },
+    {
+      "client_id": "G6T6CVTS8bMY",
+      "client_name": "tokopedia",
+      "identifier": "masro",
+      "identifier_type": "pantry",
+      "img_url": "https://cdn7.tokopedia.net/tiket-production/kereta-api/img/toped.png",
+      "auth_date": 1506932114,
+      "auth_date_fmt": "02 October 2017, 15:15",
+      "refresh_token": "J3C0qGmGS2y1PpC5MzWJMQ"
+    },
+    {
+      "client_id": "G6T6CVTS8bMY",
+      "client_name": "tokopedia",
+      "identifier": "teuku.amin dummy@tokopedia.com",
+      "identifier_type": "",
+      "img_url": "https://cdn7.tokopedia.net/tiket-production/kereta-api/img/toped.png",
+      "auth_date": 1500458059,
+      "auth_date_fmt": "19 July 2017, 16:54",
+      "refresh_token": "JM0Qv1goSza5TpCxoTWt9g"
+    },
+    {
+      "client_id": "G6T6CVTS8bMY",
+      "client_name": "tokopedia",
+      "identifier": "teuku.amin testdemo@tokopedia.com",
+      "identifier_type": "",
+      "img_url": "https://cdn7.tokopedia.net/tiket-production/kereta-api/img/toped.png",
+      "auth_date": 1502826881,
+      "auth_date_fmt": "16 August 2017, 02:54",
+      "refresh_token": "NAc_ZqcSRiqDd2Q5gy5ZVQ"
+    },
+    {
+      "client_id": "G6T6CVTS8bMY",
+      "client_name": "tokopedia",
+      "identifier": "teuku.amin zz@tokopedia.com",
+      "identifier_type": "",
+      "img_url": "https://cdn7.tokopedia.net/tiket-production/kereta-api/img/toped.png",
+      "auth_date": 1492592067,
+      "auth_date_fmt": "19 April 2017, 15:54",
+      "refresh_token": "PLTbMm_OTVydwG2O91al5g"
+    },
+    {
+      "client_id": "G6T6CVTS8bMY",
+      "client_name": "tokopedia",
+      "identifier": "teuku.amin+abc@tokopedia.com",
+      "identifier_type": "",
+      "img_url": "https://cdn7.tokopedia.net/tiket-production/kereta-api/img/toped.png",
+      "auth_date": 1500454155,
+      "auth_date_fmt": "19 July 2017, 15:49",
+      "refresh_token": "Pgh6RnUeRTqC4wKngKz9Zg"
+    }
+  ]
+}

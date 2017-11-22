@@ -10,9 +10,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.myproduct.model.FolderModel;
+import com.tokopedia.core.newgallery.model.ImageModel;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -20,6 +21,11 @@ import java.util.List;
  */
 public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.ViewHolder> {
     int maxSelection = -1;
+    private List<ImageModel> data;
+
+    public ImageAlbumAdapter(List<ImageModel> data) {
+        this.data = data;
+    }
 
     public int getMaxSelection() {
         return maxSelection;
@@ -46,6 +52,10 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
         return data.size();
     }
 
+    public void addAll(List<ImageModel> data) {
+        this.data.addAll(data);
+    }
+
     /**
      * This is view holder class
      */
@@ -54,7 +64,7 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
         ImageView mImageView;
         LinearLayout mBorder;
         TextView mAlbumname;
-        FolderModel folderModel;
+        ImageModel folderModel;
         int maxSelection = ImageGalleryAdapter.UNLIMITED_SELECTION;
 
         public ViewHolder(View itemView) {
@@ -68,25 +78,17 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
             mImageView.setOnClickListener(this);
         }
 
-        public void bindView(FolderModel folderModel, int maxSelection) {
-            this.folderModel = folderModel;
-            mAlbumname.setText(folderModel.getPath());
-            ImageHandler.loadImageFit2(itemView.getContext(), mImageView,
-                    folderModel.getImageModels().get(0).getPath());
+        public void bindView(ImageModel item, int maxSelection) {
+            this.folderModel = item;
+            mAlbumname.setText(item.getName());
+            ImageHandler.loadImageFit2(itemView.getContext(), mImageView, new File(item.getPathFile()));
             setMaxSelection(maxSelection);
-//            ImageHandler.LoadImageCustom(Uri.fromFile(new File(folderModel.getImageModels().get(0).getPathFromMediaUri())).toString())
-//                    .fit()
-//                    .centerCrop().into(mImageView);
         }
 
         public void moveToImageGallery() {
             if (itemView.getContext() != null && itemView.getContext() instanceof ImageGalleryView) {
-                ((ImageGalleryView) itemView.getContext()).moveToGallery(folderModel.getImageModels(), maxSelection);
+                ((ImageGalleryView) itemView.getContext()).moveToGallery(getAdapterPosition(), maxSelection);
             }
-        }
-
-        public int getMaxSelection() {
-            return maxSelection;
         }
 
         public void setMaxSelection(int maxSelection) {
@@ -97,19 +99,5 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
         public void onClick(View v) {
             moveToImageGallery();
         }
-    }
-
-    List<FolderModel> data;
-
-    public ImageAlbumAdapter(List<FolderModel> data) {
-        this.data = data;
-    }
-
-    public void addAll(List<FolderModel> data) {
-        this.data.addAll(data);
-    }
-
-    public void add(FolderModel data) {
-        this.data.add(data);
     }
 }

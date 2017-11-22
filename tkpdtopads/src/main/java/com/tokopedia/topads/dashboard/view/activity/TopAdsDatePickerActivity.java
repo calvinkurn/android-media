@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 
@@ -14,7 +13,7 @@ import java.util.Date;
  * Created by Nathaniel on 1/20/2017.
  */
 @Deprecated
-public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<T> {
+public abstract class TopAdsDatePickerActivity<T> extends BaseTopAdsDatePickerActivity<T> {
 
     protected Date startDate;
     protected Date endDate;

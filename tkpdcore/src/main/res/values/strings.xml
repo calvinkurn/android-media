@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-    <item name="group_pos" type="id"/>
-    <item name="child_pos" type="id"/>
+    <item name="group_pos" type="id" />
+    <item name="child_pos" type="id" />
 
     <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
     <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
@@ -456,6 +456,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_shop_owner">Pemilik Toko</string>
     <string name="title_name">Nama</string>
     <string name="title_email">Email</string>
+    <string name="title_email_optional">Email (Optional)</string>
     <string name="title_email_long">Alamat Email</string>
     <string name="title_phone_number">Nomor Ponsel</string>
     <string name="title_shop_location">Lokasi Toko</string>
@@ -595,7 +596,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
         <item>Bekas</item>
     </string-array>
     <string-array name="filter_browse_catalog_value">
-        <item/>
+        <item />
         <item>1</item>
         <item>2</item>
     </string-array>
@@ -622,7 +623,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <!-- Strings related to add new address -->
     <string name="title_password">Kata Sandi</string>
     <string name="title_receiver_name">Nama Penerima</string>
-    <string name="title_location_name">Nama Lokasi</string>
+    <string name="title_location_name">Nama Lokasi (Contoh: Toko di ITC, Mangga Dua)</string>
     <string name="title_save_address_as">Simpan Alamat sebagai (Contoh: Alamat rumah, Alamat kantor, Alamat pacar)</string>
     <string name="title_address_add_address">Alamat</string>
     <string name="title_post_code">Kode Pos</string>
@@ -632,10 +633,16 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_province">Provinsi</string>
     <string name="title_regency">Kabupaten</string>
     <string name="title_sub_district">Kecamatan</string>
+    <string name="title_city_or_district">Kota atau Kecamatan</string>
     <string name="msg_choose">Pilih</string>
+    <string name="error_city_or_district">Kota atau kecamatan harus dipilih</string>
     <string name="error_province">Provinsi harus dipilih</string>
     <string name="error_regency">Kabupaten harus dipilih</string>
     <string name="error_sub_district">Kecamatan harus dipilih</string>
+    <string name="hint_district_recommendation_search">Tulis min 3 karakter</string>
+    <string name="hint_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
+    <string name="hint_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
+    <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
 
     <!-- Strings related to inbox -->
     <string name="title_my_product_seller">ULASAN PEMBELI</string>
@@ -813,6 +820,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_activity_browse_category">Direktori</string>
     <string name="title_activity_manage_product">Daftar Produk</string>
     <string name="title_activity_choose_address">Alamat</string>
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="title_activity_shop_editor">Ubah Informasi Toko</string>
     <string name="title_activity_share">Bagikan</string>
@@ -872,8 +880,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_grand_total">Grand Total</string>
     <string name="title_buyer">Pembeli</string>
     <string name="title_phone">Telepon</string>
+    <string name="title_phone_optional">Telepon (Opsional)</string>
     <string name="title_phone_tokopedia">Telepon Tokopedia</string>
     <string name="title_fax">Fax</string>
+    <string name="title_fax_optional">Fax (Opsional)</string>
     <string name="title_process_partial">Proses sebagian</string>
     <string name="title_reject">Tolak</string>
     <string name="title_confirm_button">Konfirmasi</string>
@@ -1614,7 +1624,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="error_google_map_not_chosen">Mohon Pilih Lokasi terlebih dahulu</string>
 
-    <string name="title_empty_stock">Stok Kosong</string>
+    <string name="title_empty_stock">Stok Habis</string>
     <string name="load_more">Lihat Selebihnya</string>
     <string name="dialog_spam">Apakah anda yakin ingin menandai pesan ini sebagai spam?</string>
 
@@ -1946,7 +1956,6 @@ di Tokopedia Sekarang!</string>
 
     <string name="notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
     <string name="title_email_address">Alamat Email</string>
-    <string name="title_phone_optional">Nomor Telepon (Opsional)</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
     <string name="action_send_otp_with_call">Atau kirim Kode Verifikasi melalui telepon</string>
     <string name="action_send_otp_with_call_2">Atau lewat telepon</string>
@@ -2094,5 +2103,7 @@ di Tokopedia Sekarang!</string>
     <string name="tambah_produk">+ Tambah Produk</string>
     <string name="product_share_subtitle">Dimana saja dan kapan saja</string>
     <string name="product_share_app_subtitle">Pilih cara berbagimu</string>
+    <string name="title_share_feed">Bagikan Post ini</string>
+    <string name="bri_transfer_info">*) Penarikan dana ke rekening BRI akan dikenakan biaya transfer Rp 1,500.- oleh bank BRI</string>
 
 </resources>
