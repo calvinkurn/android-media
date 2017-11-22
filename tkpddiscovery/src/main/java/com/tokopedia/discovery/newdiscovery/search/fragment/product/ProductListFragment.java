@@ -539,6 +539,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    protected void updateDepartmentId(String deptId) {
+        getSearchParameter().setDepartmentId(deptId);
+    }
+
+    @Override
     protected void reloadData() {
         adapter.clearData();
         initTopAdsParams();
@@ -650,7 +655,9 @@ public class ProductListFragment extends SearchSectionFragment
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
             String preFilteredSc = getSearchParameter().getDepartmentId();
-            addPreFilteredCategory(preFilteredSc);
+            if (!TextUtils.isEmpty(preFilteredSc)) {
+                addPreFilteredCategory(preFilteredSc);
+            }
             Intent intent = RevampedDynamicFilterActivity.createInstance(
                     getActivity(), getFilters(), getFlagFilterHelper()
             );

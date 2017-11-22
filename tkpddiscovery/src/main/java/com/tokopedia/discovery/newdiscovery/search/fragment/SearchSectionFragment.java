@@ -260,6 +260,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
+                updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
             }
         }
@@ -452,6 +453,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void onSwipeToRefresh() {
+
+    }
+
+    protected void updateDepartmentId(String deptId) {
 
     }
 
