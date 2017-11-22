@@ -50,7 +50,7 @@
                 android:id="@+id/rv_next_step"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_med"
                 android:nestedScrollingEnabled="false"
                 context:listitem="@layout/item_next_action"/>
         </LinearLayout>

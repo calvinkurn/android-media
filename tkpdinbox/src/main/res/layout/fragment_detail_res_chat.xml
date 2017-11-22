@@ -57,7 +57,6 @@
         </LinearLayout>
     </FrameLayout>
 
-
     <include layout="@layout/layout_button_action"
         android:id="@+id/layout_action"
         android:visibility="visible"
@@ -96,7 +95,8 @@
         android:layout_height="wrap_content"
         android:background="@color/trans_black_40"
         android:orientation="horizontal"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        context:visibility="visible"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"
