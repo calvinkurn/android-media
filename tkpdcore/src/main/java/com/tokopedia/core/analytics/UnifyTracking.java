@@ -2449,6 +2449,56 @@ public class UnifyTracking extends TrackingUtils {
         );
     }
 
+    public static void eventTopChatSearch(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventInsertAttachment(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventSendAttachment (String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void sendChat(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventOpenTopChat(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventPDPSendChat() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.PRODUCT_PAGE
+                                    , AppEventTracking.Category.PRODUCT_PAGE
+                                    , AppEventTracking.Action.PRODUCT_PAGE
+                                    , AppEventTracking.EventLabel.PRODUCT_PAGE
+                                    ).getEvent());
+    }
+
+
+    public static void eventSendMessagePage() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.SEND_MESSAGE_PAGE
+                , AppEventTracking.Category.SEND_MESSAGE_PAGE
+                , AppEventTracking.Action.SEND_MESSAGE_PAGE
+                , ""
+        ).getEvent());
+    }
+
+    public static void eventShopSendChat() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.SHOP_PAGE
+                , AppEventTracking.Category.SHOP_PAGE
+                , AppEventTracking.Action.SHOP_PAGE
+                , ""
+        ).getEvent());
+    }
+
     public static void eventSellerHomeDashboardClick(String main, String item) {
         sendGTMEvent(new EventTracking(
                         AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
