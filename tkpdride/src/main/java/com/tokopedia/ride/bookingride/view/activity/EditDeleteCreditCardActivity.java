@@ -15,6 +15,7 @@ import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewMo
 import com.tokopedia.ride.bookingride.view.fragment.EditDeleteCreditCardFragment;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.ontrip.view.OnTripActivity;
 
 /**
  * Created by sandeepgoyal on 28/09/17.
@@ -22,8 +23,15 @@ import com.tokopedia.ride.common.ride.di.RideComponent;
 
 public class EditDeleteCreditCardActivity extends BaseActivity implements HasComponent<RideComponent> {
     private RideComponent rideComponent;
+    private BackButtonListener backButtonListener;
 
     public static final String KEY_PAYMENT_METHOD_VIEW_MODEL = "CardDetails";
+
+    public interface BackButtonListener {
+        void onBackPressed();
+
+        boolean canGoBack();
+    }
 
     public static Intent getCallingActivity(Activity activity, PaymentMethodViewModel paymentMethodViewModel) {
         Intent intent = new Intent(activity, EditDeleteCreditCardActivity.class);
@@ -41,6 +49,7 @@ public class EditDeleteCreditCardActivity extends BaseActivity implements HasCom
         PaymentMethodViewModel paymentMethodViewModel = (PaymentMethodViewModel) getIntent().getParcelableExtra(KEY_PAYMENT_METHOD_VIEW_MODEL);
         setupToolbar(paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET) ? getString(R.string.title_tokocash) : getString(R.string.credit_card));
         EditDeleteCreditCardFragment fragment = EditDeleteCreditCardFragment.newInstance(paymentMethodViewModel);
+        backButtonListener = fragment.getBackButtonListener();
         replaceFragment(R.id.fl_container, fragment);
     }
 
@@ -82,5 +91,14 @@ public class EditDeleteCreditCardActivity extends BaseActivity implements HasCom
         rideComponent = DaggerRideComponent.builder()
                 .appComponent(getApplicationComponent())
                 .build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backButtonListener != null && backButtonListener.canGoBack()) {
+            backButtonListener.onBackPressed();
+        } else {
+            finish();
+        }
     }
 }

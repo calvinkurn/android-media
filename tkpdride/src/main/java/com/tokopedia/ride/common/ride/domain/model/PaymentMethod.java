@@ -22,6 +22,7 @@ public class PaymentMethod {
     private String cardTypeImage;
     private String bankImage;
     private String maskedNumber;
+    private boolean saveWebView;
 
     public String getLabel() {
         return label;
@@ -157,5 +158,13 @@ public class PaymentMethod {
 
     public void setMaskedNumber(String maskedNumber) {
         this.maskedNumber = maskedNumber;
+    }
+
+    public boolean isSaveWebView() {
+        return saveWebView;
+    }
+
+    public void setSaveWebView(boolean saveWebView) {
+        this.saveWebView = saveWebView;
     }
 }

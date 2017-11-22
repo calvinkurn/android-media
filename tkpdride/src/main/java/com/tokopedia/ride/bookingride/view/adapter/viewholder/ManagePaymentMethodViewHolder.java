@@ -30,6 +30,10 @@ public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
     TextView paymentMethodName;
     @BindView(R2.id.tokocash_balance)
     TextView tokocashBalance;
+    @BindView(R2.id.bank_image)
+    ImageView bankImage;
+    @BindView(R2.id.tv_auto_debit_not_allowed)
+    TextView autoDebitTextView;
 
     private PaymentMethodItemClickListener itemClickListener;
     private PaymentMethodViewModel paymentMethodViewModel;
@@ -61,9 +65,23 @@ public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
                     .asBitmap()
                     .fitCenter()
                     .dontAnimate()
-                    .error(R.drawable.tokocash)
+                    .error(R.drawable.error_drawable)
                     .into(imageView);
         }
+
+        if (element.getBankImage() == null) {
+            bankImage.setVisibility(View.GONE);
+        } else {
+            bankImage.setVisibility(View.VISIBLE);
+            Glide.with(context).load(element.getBankImage())
+                    .asBitmap()
+                    .fitCenter()
+                    .dontAnimate()
+                    .error(R.drawable.error_drawable)
+                    .into(bankImage);
+        }
+
+        //autoDebitTextView.setVisibility(element.isSaveWebView() ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R2.id.container)

@@ -5,8 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONObject;
-
 public class PaymentMethodEntity {
 
     @SerializedName("label")
@@ -60,6 +58,10 @@ public class PaymentMethodEntity {
     @SerializedName("bank_image")
     @Expose
     private String bankImage;
+    @SerializedName("save_webview")
+    @Expose
+    private boolean saveWebView;
+
 
     public String getLabel() {
         return label;
@@ -195,5 +197,9 @@ public class PaymentMethodEntity {
 
     public void setMaskedNum(String maskedNum) {
         this.maskedNum = maskedNum;
+    }
+
+    public boolean isSaveWebView() {
+        return saveWebView;
     }
 }

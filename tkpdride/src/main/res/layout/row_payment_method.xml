@@ -15,12 +15,20 @@
         android:layout_marginRight="@dimen/new_margin_small"
         android:src="@drawable/ic_tokocash_icon" />
 
+    <ImageView
+        android:id="@+id/bank_image"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginRight="@dimen/new_margin_small"
+        android:layout_toRightOf="@id/payment_method_image"
+        android:src="@drawable/ic_tokocash_icon" />
+
     <TextView
         android:id="@+id/payment_method_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/payment_method_image"
+        android:layout_toRightOf="@id/bank_image"
         android:textColor="@color/black"
         tools:text="Credit Card" />
 
@@ -29,11 +37,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:visibility="gone"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_toRightOf="@id/payment_method_name"
         android:textColor="@color/grey_700"
+        android:visibility="gone"
         tools:text="(Rp 543.240)" />
+
+    <TextView
+        android:id="@+id/tv_auto_debit_not_allowed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/payment_method_image"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:text="Auto-Debit not allowed"
+        android:textColor="@color/red_500"
+        android:textSize="@dimen/fontvvs"
+        android:visibility="gone" />
 
     <View
         android:layout_width="match_parent"

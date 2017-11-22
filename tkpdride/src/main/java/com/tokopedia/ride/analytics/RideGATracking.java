@@ -285,6 +285,15 @@ public class RideGATracking extends UnifyTracking {
         ).getEvent());
     }
 
+    public static void eventClickSignup() {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventClickSignup),
+                AppScreen.SCREEN_RIDE_COMPLETED
+        ).getEvent());
+    }
+
     private static String toLowerCase(String screenName){
         if(screenName == null || screenName.isEmpty()){
             return "Uber Screen";

@@ -107,7 +107,7 @@ public class InterruptConfirmationHttpException extends IOException {
         }
     }
 
-    public String getTosUrl() {
+    public String getHref() {
         return entity.getHref();
     }
 

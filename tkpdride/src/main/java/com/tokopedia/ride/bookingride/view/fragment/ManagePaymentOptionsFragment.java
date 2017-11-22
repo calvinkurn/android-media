@@ -1,6 +1,7 @@
 package com.tokopedia.ride.bookingride.view.fragment;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -203,5 +204,11 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
     @OnClick(R2.id.layout_add_credit_card)
     public void actionAddCreditCard() {
         presenter.addCreditCard();
+    }
+
+    @Override
+    public void showAutoDebitDialog(PaymentMethodViewModel paymentMethodViewModel) {
+        DialogFragment dialogFragment = AutoDetbitConfirmationDialogFragment.newInstance(paymentMethodViewModel);
+        dialogFragment.show(getFragmentManager().beginTransaction(), "auto_debit_dialog");
     }
 }

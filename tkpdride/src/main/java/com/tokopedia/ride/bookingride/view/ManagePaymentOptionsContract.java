@@ -33,6 +33,8 @@ public interface ManagePaymentOptionsContract {
         void closeActivity(PaymentMethodViewModel paymentMethodViewModel);
 
         void opeScroogePage(String saveUrl, boolean isPostReq, Bundle saveBody);
+
+        void showAutoDebitDialog(PaymentMethodViewModel paymentMethodViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {

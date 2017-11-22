@@ -262,7 +262,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 if (e instanceof InterruptConfirmationHttpException) {
                     if (!(e.getCause() instanceof JsonSyntaxException) && ((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
                         getView().openInterruptConfirmationDialog(
-                                ((InterruptConfirmationHttpException) e).getTosUrl(),
+                                ((InterruptConfirmationHttpException) e).getHref(),
                                 ((InterruptConfirmationHttpException) e).getKey(),
                                 ((InterruptConfirmationHttpException) e).getId()
                         );
@@ -271,7 +271,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         getView().showBlockTranslucentLayout();
                         showPendingFareInterrupt();
                     } else if (!(e.getCause() instanceof JsonSyntaxException)) {
-                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
+                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getHref());
                     } else {
                         getView().showFailedRideRequestMessage(e.getMessage());
                         getView().failedToRequestRide(e.getMessage());

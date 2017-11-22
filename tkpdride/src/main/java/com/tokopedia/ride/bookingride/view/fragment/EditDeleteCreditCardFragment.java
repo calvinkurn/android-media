@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.view.EditCardDetailContract;
 import com.tokopedia.ride.bookingride.view.EditCardDetailPresenter;
+import com.tokopedia.ride.bookingride.view.activity.EditDeleteCreditCardActivity;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.scrooge.ScroogePGUtil;
@@ -40,12 +42,18 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements EditCa
     TextView txtCardNumber;
     @BindView(R2.id.txt_card_expiration)
     TextView txtCardExpiration;
-    private PaymentMethodViewModel paymentMethodViewModel;
+    @BindView(R2.id.layout_confirm_dialog)
+    View confirmLayoutDialog;
+    @BindView(R2.id.btn_allow_auto_debit)
+    TextView autoDebitButton;
 
+    private PaymentMethodViewModel paymentMethodViewModel;
     private ProgressDialog progressDialog;
 
     @Inject
     EditCardDetailPresenter presenter;
+    private boolean isConfirmDialogShown;
+    private BottomSheetBehavior mBottomSheetBehavior;
 
     public static EditDeleteCreditCardFragment newInstance(PaymentMethodViewModel paymentMethodViewModel) {
         Bundle bundle = new Bundle();
@@ -61,6 +69,22 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements EditCa
         return rootView;
     }
 
+    public EditDeleteCreditCardActivity.BackButtonListener getBackButtonListener() {
+        return new EditDeleteCreditCardActivity.BackButtonListener() {
+            @Override
+            public void onBackPressed() {
+                if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+
+            @Override
+            public boolean canGoBack() {
+                return (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        };
+    }
+
     public interface OnFragmentInteractionListener {
         void openWebView(String url);
     }
@@ -72,16 +96,37 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements EditCa
 
         paymentMethodViewModel = getArguments().getParcelable(KEY_PAYMENT_METHOD_VIEW_MODEL);
 
+        mBottomSheetBehavior = BottomSheetBehavior.from(confirmLayoutDialog);
+        mBottomSheetBehavior.setPeekHeight(0);
+
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.message_please_wait));
 
         txtCardNumber.setText(paymentMethodViewModel.getName());
         txtCardExpiration.setText(String.format("%s/%s", paymentMethodViewModel.getExpiryMonth(), paymentMethodViewModel.getExpiryYear()));
+
+        autoDebitButton.setVisibility(paymentMethodViewModel.isSaveWebView() ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R2.id.btn_delete)
-    public void actionDestinationButtonClicked() {
+    public void actionDeleteButtonClicked() {
+        showConfrimDialog();
+    }
+
+    @OnClick(R2.id.btn_dialog_cancel)
+    public void actionDialogCancelButtonClicked() {
+        hideConfirmDialog();
+    }
+
+    @OnClick(R2.id.btn_dialog_delete)
+    public void actionDialogDeleteButtonClicked() {
+        hideConfirmDialog();
         presenter.deleteCard(paymentMethodViewModel);
+    }
+
+    @OnClick(R2.id.btn_allow_auto_debit)
+    public void actionAutoDebitButtonClicked() {
+        ScroogePGUtil.openScroogePage(this, paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody(), getString(R.string.toolbar_title_add_credit_card));
     }
 
     @Override
@@ -115,13 +160,13 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements EditCa
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ScroogePGUtil.RESULT_CODE_DELETE_CC_SUCCESS) {
-            //show success message
-            closeActivity();
-
-        } else if (requestCode == ScroogePGUtil.RESULT_CODE_DELETE_CC_FAIL) {
-            //show success message
-            showErrorMessage(getString(R.string.error_message_delete_cc_fail));
+        if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
+            if (requestCode == ScroogePGUtil.RESULT_CODE_DELETE_CC_FAIL) {
+                //show success message
+                showErrorMessage(getString(R.string.error_message_delete_cc_fail));
+            } else {
+                closeActivity();
+            }
         }
     }
 
@@ -144,5 +189,13 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements EditCa
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_edit_delete_credit_card;
+    }
+
+    public void hideConfirmDialog() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    public void showConfrimDialog() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 }

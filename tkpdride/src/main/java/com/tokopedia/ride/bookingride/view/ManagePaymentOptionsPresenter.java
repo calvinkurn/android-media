@@ -134,6 +134,8 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
                 visitable.setSaveurl(paymentMethod.getSaveUrl());
                 visitable.setSaveBody(paymentMethod.getSaveBody());
                 visitable.setCardType(paymentMethod.getCardType());
+                visitable.setSaveWebView(paymentMethod.isSaveWebView());
+                visitable.setBankImage(paymentMethod.getBankImage());
 
                 if (tokoCashBalance != null && paymentMethod.getMode() != null && paymentMethod.getMode().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET)) {
                     visitable.setTokoCashBalance(tokoCashBalance);
@@ -165,49 +167,54 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
 
     @Override
     public void selectPaymentOption(final PaymentMethodViewModel paymentMethodViewModel) {
-        getView().showProgressBar();
-        saveUrlUseCase.setUrl(paymentMethodViewModel.getSaveurl());
-        RequestParams params = RequestParams.create();
+        if (paymentMethodViewModel.isSaveWebView()) {
+            getView().showAutoDebitDialog(paymentMethodViewModel);
+            //getView().opeScroogePage(paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody());
+        } else {
+            getView().showProgressBar();
+            saveUrlUseCase.setUrl(paymentMethodViewModel.getSaveurl());
+            RequestParams params = RequestParams.create();
 
-        //create params from bundle
-        Bundle bundle = paymentMethodViewModel.getSaveBody();
-        Set<String> set = bundle.keySet();
-        for (String key : set) {
-            params.putString(key, bundle.getString(key));
-        }
-
-        saveUrlUseCase.execute(params, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
+            //create params from bundle
+            Bundle bundle = paymentMethodViewModel.getSaveBody();
+            Set<String> set = bundle.keySet();
+            for (String key : set) {
+                params.putString(key, bundle.getString(key));
             }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
+            saveUrlUseCase.execute(params, new Subscriber<String>() {
+                @Override
+                public void onCompleted() {
 
-                if (isViewAttached()) {
-                    getView().hideProgressBar();
-                    String error;
-                    if (e instanceof UnknownHostException) {
-                        error = getView().getActivity().getString(R.string.error_no_connection);
-                    } else if (e instanceof SocketTimeoutException) {
-                        error = getView().getActivity().getString(R.string.error_timeout);
-                    } else {
-                        error = getView().getActivity().getString(R.string.error_default);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+
+                    if (isViewAttached()) {
+                        getView().hideProgressBar();
+                        String error;
+                        if (e instanceof UnknownHostException) {
+                            error = getView().getActivity().getString(R.string.error_no_connection);
+                        } else if (e instanceof SocketTimeoutException) {
+                            error = getView().getActivity().getString(R.string.error_timeout);
+                        } else {
+                            error = getView().getActivity().getString(R.string.error_default);
+                        }
+                        getView().showErrorMessage(e.getMessage());
                     }
-                    getView().showErrorMessage(e.getMessage());
                 }
-            }
 
-            @Override
-            public void onNext(String s) {
-                if (isViewAttached() && getView().getActivity() != null) {
-                    getView().hideProgressBar();
-                    getView().closeActivity(paymentMethodViewModel);
+                @Override
+                public void onNext(String s) {
+                    if (isViewAttached() && getView().getActivity() != null) {
+                        getView().hideProgressBar();
+                        getView().closeActivity(paymentMethodViewModel);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**

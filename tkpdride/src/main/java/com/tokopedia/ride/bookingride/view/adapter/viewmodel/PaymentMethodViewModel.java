@@ -28,6 +28,8 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
     private String saveurl;
     private Bundle saveBody;
     private String tokoCashBalance;
+    private boolean saveWebView;
+    private String bankImage;
 
 
     public PaymentMethodViewModel() {
@@ -46,6 +48,8 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         saveBody = in.readBundle();
         cardType = in.readString();
         tokoCashBalance = in.readString();
+        saveWebView = in.readByte() != 0;
+        bankImage = in.readString();
     }
 
     public static final Creator<PaymentMethodViewModel> CREATOR = new Creator<PaymentMethodViewModel>() {
@@ -161,6 +165,22 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         return paymentMethodTypeFactory.type(this);
     }
 
+    public boolean isSaveWebView() {
+        return saveWebView;
+    }
+
+    public void setSaveWebView(boolean saveWebView) {
+        this.saveWebView = saveWebView;
+    }
+
+    public String getBankImage() {
+        return bankImage;
+    }
+
+    public void setBankImage(String bankImage) {
+        this.bankImage = bankImage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -180,5 +200,7 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         dest.writeBundle(saveBody);
         dest.writeString(cardType);
         dest.writeString(tokoCashBalance);
+        dest.writeByte((byte) (saveWebView ? 1 : 0));
+        dest.writeString(bankImage);
     }
 }

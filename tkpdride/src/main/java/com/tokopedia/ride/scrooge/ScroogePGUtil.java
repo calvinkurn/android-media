@@ -39,6 +39,10 @@ public class ScroogePGUtil {
         activity.startActivityForResult(ScroogeActivity.getCallingIntent(activity, url, isPostRequest, postparams, title), REQUEST_CODE_OPEN_SCROOGE_PAGE);
     }
 
+    public static void openScroogePage(Activity activity, String url, boolean isPostRequest, Bundle postparams, String title) {
+        activity.startActivityForResult(ScroogeActivity.getCallingIntent(activity, url, isPostRequest, getPostData(postparams), title), REQUEST_CODE_OPEN_SCROOGE_PAGE);
+    }
+
     /**
      * To launch scrooge activity
      *

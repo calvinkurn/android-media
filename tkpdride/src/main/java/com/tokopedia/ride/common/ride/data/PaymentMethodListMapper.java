@@ -76,6 +76,7 @@ public class PaymentMethodListMapper {
                 paymentMethod.setExpiryYear(paymentMethodEntity.getExpiryYear());
                 paymentMethod.setLabel(transform(paymentMethodEntity.getLabel(), paymentMethodEntity.getMode()));
                 paymentMethod.setMaskedNumber(paymentMethodEntity.getMaskedNum());
+                paymentMethod.setSaveWebView(paymentMethodEntity.isSaveWebView());
                 paymentMethodList.add(paymentMethod);
             }
 
