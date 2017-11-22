@@ -55,6 +55,9 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         setupFragment(savedInstanceState);
         if (isToolbarWhite()) {
             setToolbarColorWhite();
+        }else{
+            // set black to 70%
+            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black_70));
         }
         if (getSupportActionBar() != null && isShowCloseButton()) {
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, closeButtonDrawable()));
