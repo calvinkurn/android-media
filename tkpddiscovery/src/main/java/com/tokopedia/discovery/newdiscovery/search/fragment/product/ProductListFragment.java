@@ -251,12 +251,7 @@ public class ProductListFragment extends SearchSectionFragment
                 !getSearchParameter().getDepartmentId().equals("0")) {
             adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().getDepartmentId());
         }
-        if (getSelectedFilter() != null) {
-            adsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getSelectedSort() != null) {
-            adsParams.getParam().putAll(getSelectedSort());
-        }
+        enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
     }
 
