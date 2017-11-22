@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TextDrawable;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
@@ -114,12 +116,18 @@ public class DetailResChatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_resolution_detail, menu);
-        MenuItem settingsMenuItem = menu.findItem(R.id.action_detail);
-        SpannableString s = new SpannableString(settingsMenuItem.getTitle());
-        s.setSpan(new ForegroundColorSpan(MethodChecker.getColor(this, R.color.black_70)), 0, s.length(), 0);
-        settingsMenuItem.setTitle(s);
+        menu.add(Menu.NONE, R.id.action_detail, 0, "");
+        MenuItem menuItem = menu.findItem(R.id.action_detail); // OR THIS
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setIcon(getDetailMenuItem());
         return true;
+    }
+
+    private Drawable getDetailMenuItem() {
+        TextDrawable drawable = new TextDrawable(this);
+        drawable.setText(getResources().getString(R.string.detail));
+        drawable.setTextColor(R.color.black_70b);
+        return drawable;
     }
 
     @Override

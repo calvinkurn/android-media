@@ -198,4 +198,5 @@ yang ditemukan</string>
     <string name="string_complaint_title_identifier">$store_name</string>
     <string name="string_tokopedia_system">Sistem Tokopedia</string>
     <string name="string_tokopedia">Toped</string>
+    <string name="detail">Detail</string>
 </resources>
