@@ -58,6 +58,9 @@ public interface MojitoApi {
             @Query("keywords") String keyword
     );
 
+    @GET(TkpdBaseURL.Mojito.PATH_OS_BANNER)
+    Observable<Response<String>> getOfficialStoreBanner(@Query("keywords") String keyword);
+
     @GET(TkpdBaseURL.Mojito.PATH_CHECK_WISHLIST)
     Observable<Response<WishlistCheckResult>> checkWishlist(
             @Path("userId") String userId,
