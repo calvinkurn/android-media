@@ -68,7 +68,7 @@ public class FlightDetailFragment extends BaseListFragment<Route> implements Bas
 
     @Override
     protected BaseListAdapter<Route> getNewAdapter() {
-        return new FlightDetailAdapter(this);
+        return new FlightDetailAdapter(getContext(), this);
     }
 
     public void loadData(int page, int currentDataSize, int rowPerPage) {

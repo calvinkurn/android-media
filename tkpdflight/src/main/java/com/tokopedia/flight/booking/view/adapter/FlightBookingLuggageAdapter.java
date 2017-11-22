@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
@@ -18,12 +19,12 @@ public class FlightBookingLuggageAdapter extends BaseListAdapter<FlightBookingLu
 
     private String selectedLuggage = "";
 
-    public FlightBookingLuggageAdapter(OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
+    public FlightBookingLuggageAdapter(Context context, OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
-    public FlightBookingLuggageAdapter(@Nullable List<FlightBookingLuggageViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightBookingLuggageAdapter(Context context, @Nullable List<FlightBookingLuggageViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
+        super(context, data, rowPerPage, onBaseListV2AdapterListener);
     }
 
     public void setSelectedLuggage(String selectedLuggage) {

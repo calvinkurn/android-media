@@ -51,7 +51,7 @@ public class FlightBookingLuggageFragment extends BaseListFragment<FlightBooking
 
     @Override
     protected BaseListAdapter<FlightBookingLuggageViewModel> getNewAdapter() {
-        FlightBookingLuggageAdapter flightBookingLuggageAdapter = new FlightBookingLuggageAdapter(this);
+        FlightBookingLuggageAdapter flightBookingLuggageAdapter = new FlightBookingLuggageAdapter(getContext(), this);
         flightBookingLuggageAdapter.setSelectedLuggage(selectedLuggage);
         return flightBookingLuggageAdapter;
     }

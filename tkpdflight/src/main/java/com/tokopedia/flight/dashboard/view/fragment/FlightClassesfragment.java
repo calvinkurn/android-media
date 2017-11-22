@@ -55,7 +55,7 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
 
     @Override
     protected FlightClassesAdapter getNewAdapter() {
-        return new FlightClassesAdapter(this);
+        return new FlightClassesAdapter(getContext(), this);
     }
 
     @Override

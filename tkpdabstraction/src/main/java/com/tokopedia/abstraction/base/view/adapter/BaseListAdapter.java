@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +30,8 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
     private List<T> data = new ArrayList<>();
     protected OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener;
 
+    protected Context context;
+
     private int totalItem;
     private boolean isInFilterMode;
     private NoResultDataBinder emptyNoResultDataBinder;
@@ -42,13 +45,14 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         void loadData(int page, int currentDataSize, int rowPerPage);
     }
 
-    public BaseListAdapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
-        this(null, DEFAULT_ROW_PER_PAGE, onBaseListV2AdapterListener);
+    public BaseListAdapter(Context context, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
+        this(context, null, DEFAULT_ROW_PER_PAGE, onBaseListV2AdapterListener);
     }
 
-    public BaseListAdapter(@Nullable List<T> data, int rowPerPage,
+    public BaseListAdapter(Context context, @Nullable List<T> data, int rowPerPage,
                            OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
         super(false);
+        this.context = context;
         initData(data);
         this.rowPerPage = rowPerPage <= 0 ? DEFAULT_ROW_PER_PAGE : rowPerPage;
         this.onBaseListV2AdapterListener = onBaseListV2AdapterListener;

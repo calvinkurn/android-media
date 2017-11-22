@@ -75,7 +75,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private HorizontalProgressBar progressBar;
     private int progress;
 
-    int selectedSortOption = FlightSortOption.NO_PREFERENCE;
+    int selectedSortOption;
 
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
     private AirportCombineModelList airportCombineModelList;
@@ -105,7 +105,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
         if (savedInstanceState == null) {
             flightFilterModel = new FlightFilterModel();
-            selectedSortOption = FlightSortOption.NO_PREFERENCE;
+            selectedSortOption = FlightSortOption.CHEAPEST;
             flightSearchStatisticModel = null;
             setUpCombinationAirport();
             progress = 0;
@@ -154,15 +154,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
-        FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
-        flightDetailViewModel.build(flightSearchViewModel);
-        flightDetailViewModel.build(flightSearchPassDataViewModel);
-        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel),
-                REQUEST_CODE_SEE_DETAIL_FLIGHT);
-    }
-
-    @Override
     protected final void initInjector() {
         DaggerFlightSearchComponent.builder()
                 .flightComponent(((FlightModuleRouter) getActivity().getApplication()).getFlightComponent())
@@ -173,7 +164,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     protected final BaseListAdapter<FlightSearchViewModel> getNewAdapter() {
-        FlightSearchAdapter flightSearchAdapter = new FlightSearchAdapter(this);
+        FlightSearchAdapter flightSearchAdapter = new FlightSearchAdapter(getContext(),this);
         flightSearchAdapter.setListenerOnDetailClicked(this);
         return flightSearchAdapter;
     }
@@ -495,6 +486,15 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 flightSearchStatisticModel,
                 flightFilterModel),
                 REQUEST_CODE_SEARCH_FILTER);
+    }
+
+    @Override
+    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
+        FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
+        flightDetailViewModel.build(flightSearchViewModel);
+        flightDetailViewModel.build(flightSearchPassDataViewModel);
+        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel),
+                REQUEST_CODE_SEE_DETAIL_FLIGHT);
     }
 
     @Override

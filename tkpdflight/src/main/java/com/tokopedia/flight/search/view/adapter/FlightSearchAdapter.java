@@ -1,5 +1,6 @@
 package com.tokopedia.flight.search.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.util.DurationUtil;
+import com.tokopedia.flight.search.view.adapter.base.BaseFlightSearchAdapter;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -23,7 +25,7 @@ import java.util.List;
  * Created by User on 10/26/2017.
  */
 
-public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> {
+public class FlightSearchAdapter extends BaseFlightSearchAdapter<FlightSearchViewModel> {
 
     public interface ListenerOnDetailClicked{
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
@@ -35,12 +37,12 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
         this.listenerOnDetailClicked = listenerOnDetailClicked;
     }
 
-    public FlightSearchAdapter(OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
+    public FlightSearchAdapter(Context context, OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
-    public FlightSearchAdapter(@Nullable List<FlightSearchViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightSearchAdapter(Context context, @Nullable List<FlightSearchViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
+        super(context, data, rowPerPage, onBaseListV2AdapterListener);
     }
 
     public class FlightSearchViewHolder extends BaseViewHolder<FlightSearchViewModel> {
@@ -149,4 +151,5 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
         View view = getLayoutView(parent, R.layout.item_flight_search);
         return new FlightSearchViewHolder(view);
     }
+
 }

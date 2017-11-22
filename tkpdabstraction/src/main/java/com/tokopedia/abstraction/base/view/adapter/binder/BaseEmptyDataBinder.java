@@ -76,8 +76,11 @@ public abstract class BaseEmptyDataBinder extends NoResultDataBinder {
     @Override
     public void bindViewHolder(ViewHolder holder, int position) {
         EmptyViewHolder emptyViewHolder = (EmptyViewHolder) holder;
-        if (!TextUtils.isEmpty(emptyTitleText)) {
+        if (TextUtils.isEmpty(emptyTitleText)) {
+            emptyViewHolder.emptyTitleTextView.setVisibility(View.GONE);
+        } else {
             emptyViewHolder.emptyTitleTextView.setText(emptyTitleText);
+            emptyViewHolder.emptyTitleTextView.setVisibility(View.VISIBLE);
         }
         if (!TextUtils.isEmpty(emptyContentText)) {
             emptyViewHolder.emptyContentTextView.setText(emptyContentText);

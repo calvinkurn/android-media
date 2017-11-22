@@ -41,7 +41,7 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
 
     @Override
     protected BaseListAdapter<FlightBookingPhoneCodeViewModel> getNewAdapter() {
-        return new FlightBookingPhoneCodeAdapter(this);
+        return new FlightBookingPhoneCodeAdapter(getContext(), this);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tokopedia.flight.review;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
@@ -15,15 +16,15 @@ import java.util.List;
  */
 
 public class FlightBookingReviewPriceAdapter extends BaseListAdapter<FlightSearchViewModel> {
-    public FlightBookingReviewPriceAdapter() {
-        super(null);
+    public FlightBookingReviewPriceAdapter(Context context) {
+        super(context, null);
     }
-    public FlightBookingReviewPriceAdapter(OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
+    public FlightBookingReviewPriceAdapter(Context context, OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
-    public FlightBookingReviewPriceAdapter(@Nullable List<FlightSearchViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightBookingReviewPriceAdapter(Context context, @Nullable List<FlightSearchViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
+        super(context, data, rowPerPage, onBaseListV2AdapterListener);
     }
 
     @Override

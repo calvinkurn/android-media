@@ -38,7 +38,7 @@ public class FlightFilterTransitFragment extends BaseFlightFilterFragment<Transi
 
     @Override
     protected BaseListAdapter<TransitStat> getNewAdapter() {
-        flightFilterTransitAdapter = new FlightFilterTransitAdapter(this, this);
+        flightFilterTransitAdapter = new FlightFilterTransitAdapter(getContext(), this, this);
         return flightFilterTransitAdapter;
     }
 
