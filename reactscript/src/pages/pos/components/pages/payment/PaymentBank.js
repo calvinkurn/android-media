@@ -10,6 +10,7 @@ import { getBankList, selectBank, getEmiList, selectEmi, makePayment, reloadStat
 import { Text } from '../../../common/TKPText'
 import { NavigationModule } from 'NativeModules'
 import numeral from 'numeral'
+import { icons } from '../../../lib/config'
 
 
 
@@ -296,9 +297,13 @@ class PaymentBank extends Component {
     headerStyle: {
         backgroundColor: '#42B549'
     },
-    headerLeft: <TouchableOpacity onPress={() => PaymentBank.onBackPress(navigation.state.params)}><Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow_back.png' }}
-                style={{ width: 15, height: 15, marginLeft: 20 }} /></TouchableOpacity>
-  });
+    headerLeft: (
+      <TouchableOpacity onPress={() => PaymentBank.onBackPress(navigation.state.params)}>
+        <Image source={{ uri: icons.arrow_back }} style={{ width: 15, height: 15, margin: 20, resizeMode: 'contain' }} />
+      </TouchableOpacity>
+    )
+  })
+
 
   static onBackPress(props) {
     props.dispatch(reloadState('PaymentBank'))

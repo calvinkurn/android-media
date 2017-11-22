@@ -62,8 +62,13 @@ class CartItemList extends Component {
       return <Processing />
     }
 
-    if (this.props.checkout_status_msg === 'SUCCESS' && !this.props.showLoadingPage && !this.props.isFetchingParamsCheckout){
-      // console.log(this.props)
+    const {
+      checkout_status_msg,
+      showLoadingPage,
+      isFetchingParamsCheckout,
+    } = this.props
+    if (checkout_status_msg === 'SUCCESS' && !showLoadingPage && !isFetchingParamsCheckout){
+      console.log('cart item list')
       NavigationModule.navigateAndFinish(`posapp://payment/checkout?checkout_data=${JSON.stringify(this.props.checkout_data)}`, "")
     }
 

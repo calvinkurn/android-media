@@ -4,7 +4,6 @@ import { PosCacheModule, ProductDiscoveryModule } from 'NativeModules'
 // ===================== Product List ======================= //
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
 export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryText) => {
-  console.log(shopId, start, rows, etalaseId, productId, queryText)
   return {
     type: FETCH_PRODUCTS,
     payload: PosCacheModule.getDataAll("PRODUCT")

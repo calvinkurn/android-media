@@ -11,6 +11,7 @@ export * from './invoice'
 //  ==================== Clear the Redux ===================== //
 export const RELOAD_STATE = 'RELOAD_STATE'
 export const reloadState = (state, action) => {
+  console.log('reload state')
   return {
     type: RELOAD_STATE
   }
