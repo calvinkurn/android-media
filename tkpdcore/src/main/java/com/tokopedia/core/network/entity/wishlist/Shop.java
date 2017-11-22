@@ -17,6 +17,8 @@ public class Shop implements Parcelable {
     String Url;
     @SerializedName("gold_merchant")
     Boolean IsGoldMerchant;
+    @SerializedName("official_store")
+    Boolean isOfficial;
     @SerializedName("location")
     String Location;
     @SerializedName("status")
@@ -80,6 +82,14 @@ public class Shop implements Parcelable {
         LuckyMerchant = luckyMerchant;
     }
 
+    public Boolean getOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(Boolean official) {
+        isOfficial = official;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -91,6 +101,7 @@ public class Shop implements Parcelable {
         dest.writeString(this.Name);
         dest.writeString(this.Url);
         dest.writeValue(this.IsGoldMerchant);
+        dest.writeValue(this.isOfficial);
         dest.writeString(this.Location);
         dest.writeString(this.Status);
         dest.writeString(this.LuckyMerchant);
@@ -104,6 +115,7 @@ public class Shop implements Parcelable {
         this.Name = in.readString();
         this.Url = in.readString();
         this.IsGoldMerchant = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.isOfficial = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.Location = in.readString();
         this.Status = in.readString();
         this.LuckyMerchant = in.readString();

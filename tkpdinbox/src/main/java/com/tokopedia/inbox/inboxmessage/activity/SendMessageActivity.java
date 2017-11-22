@@ -121,5 +121,8 @@ public class SendMessageActivity extends BasePresenterActivity {
         return intent;
     }
 
-
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

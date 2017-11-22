@@ -80,4 +80,9 @@ public class PhoneVerificationProfileActivity extends TActivity implements HasCo
     public AppComponent getComponent() {
         return getApplicationComponent();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

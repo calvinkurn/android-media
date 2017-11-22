@@ -70,7 +70,7 @@ public class BottomSheetBuilder {
     private boolean mDelayedDismiss = true;
     private boolean mExpandOnStart = false;
     private int mMode;
-    private Menu mMenu;
+    protected Menu menu;
     private CoordinatorLayout mCoordinatorLayout;
     private AppBarLayout mAppBarLayout;
     private BottomSheetItemClickListener mItemClickListener;
@@ -112,9 +112,9 @@ public class BottomSheetBuilder {
     }
 
     public BottomSheetBuilder setMenu(@MenuRes int menu) {
-        mMenu = new MenuBuilder(mContext);
-        new SupportMenuInflater(mContext).inflate(menu, mMenu);
-        return setMenu(mMenu);
+        this.menu = new MenuBuilder(mContext);
+        new SupportMenuInflater(mContext).inflate(menu, this.menu);
+        return setMenu(this.menu);
     }
 
     public BottomSheetBuilder setItemLayout(@LayoutRes int layoutRes) {
@@ -123,8 +123,8 @@ public class BottomSheetBuilder {
     }
 
     public BottomSheetBuilder setMenu(Menu menu) {
-        mMenu = menu;
-        mAdapterBuilder.setMenu(mMenu);
+        this.menu = menu;
+        mAdapterBuilder.setMenu(this.menu);
         return this;
     }
 
@@ -242,7 +242,7 @@ public class BottomSheetBuilder {
 
     public View createView() {
 
-        if (mMenu == null && mAdapterBuilder.getItems().isEmpty()) {
+        if (menu == null && mAdapterBuilder.getItems().isEmpty()) {
             throw new IllegalStateException("You need to provide at least one Menu " +
                     "or an item with addItem");
         }
@@ -282,7 +282,7 @@ public class BottomSheetBuilder {
 
     public BottomSheetMenuDialog createDialog() {
 
-        if (mMenu == null && mAdapterBuilder.getItems().isEmpty()) {
+        if (menu == null && mAdapterBuilder.getItems().isEmpty()) {
             throw new IllegalStateException("You need to provide at least one Menu " +
                     "or an item with addItem");
         }

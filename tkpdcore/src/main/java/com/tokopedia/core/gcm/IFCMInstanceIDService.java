@@ -6,8 +6,6 @@ package com.tokopedia.core.gcm;
 
 public interface IFCMInstanceIDService {
 
-    void updateLocalyticsPushRegistrationID(String token);
-
     void updateMoEngageToken(String token);
 
     void propagateIDtoServer(String token);

@@ -1,14 +1,12 @@
 package com.tokopedia.digital.widget.presenter;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
-import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.widget.interactor.IDigitalCategoryListInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
@@ -89,8 +87,8 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     }
 
     @NonNull
-    private Subscriber<TokoCashData> getSubscriberFetchTokoCashData() {
-        return new Subscriber<TokoCashData>() {
+    private Subscriber<TokoCashBalanceData> getSubscriberFetchTokoCashData() {
+        return new Subscriber<TokoCashBalanceData>() {
             @Override
             public void onCompleted() {
 
@@ -105,11 +103,8 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
             }
 
             @Override
-            public void onNext(TokoCashData tokoCashDataResponse) {
-                Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH_DIGITAL);
-                intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA_DIGITAL,
-                        tokoCashDataResponse);
-                digitalCategoryListView.sendBroadcastReceiver(intent);
+            public void onNext(TokoCashBalanceData tokoCashData) {
+                digitalCategoryListView.renderTokoCashData(tokoCashData);
             }
         };
     }

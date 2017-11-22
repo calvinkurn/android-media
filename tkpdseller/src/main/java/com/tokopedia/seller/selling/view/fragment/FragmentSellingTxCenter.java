@@ -159,8 +159,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
 
         if(getActivity()!= null) {
             presenter.fetchArguments(getArguments());
-            ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXCENTER);
-            ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_TXCENTER);
             ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CENTER);
             super.setUserVisibleHint(isVisibleToUser);
             presenter.setLocalyticFlow(getActivity());

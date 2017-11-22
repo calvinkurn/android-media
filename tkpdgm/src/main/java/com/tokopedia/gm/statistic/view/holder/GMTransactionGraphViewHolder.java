@@ -25,7 +25,7 @@ import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
 import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
 import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.gm.statistic.view.builder.CheckedBottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphViewModel;
 import com.tokopedia.gm.statistic.view.widget.LineChartContainerWidget;

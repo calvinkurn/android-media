@@ -4,11 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
 
 import java.io.File;
@@ -34,16 +30,25 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
                                      @NonNull ArrayList<String> instagramDescList) {
         ArrayList<String> correctResolutionLocalPathList = new ArrayList<>();
         ArrayList<String> correctResolutionInstagramDescList = new ArrayList<>();
+        ArrayList<Integer> failedPositionArrayList = new ArrayList<>();
         for (int i=0, sizei = localPathList.size(); i < sizei ; i++) {
             String localPath = localPathList.get(i);
             if (!isResolutionCorrect(localPath)) {
-                getView().onSaveInstagramResolutionError(i + 1, localPath);
+                failedPositionArrayList.add(i+1);
                 continue;
             }
             correctResolutionLocalPathList.add(localPath);
-            correctResolutionInstagramDescList.add(instagramDescList.get(i));
+            try {
+                correctResolutionInstagramDescList.add(instagramDescList.get(i));
+            }catch (Exception e) {
+                correctResolutionInstagramDescList.add("");
+            }
         }
-        if (correctResolutionLocalPathList.size() == 0) {
+        if (failedPositionArrayList.size() > 0) {
+            getView().onErrorSaveBulkDraft(new ResolutionImageException(failedPositionArrayList));
+        }
+        if (correctResolutionLocalPathList.size() == 0 ) {
+            getView().hideDraftLoading();
             return;
         }
         saveBulkDraftProductUseCase.execute(
@@ -72,7 +77,7 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             @Override
             public void onError(Throwable e) {
                 if(isViewAttached()) {
-                    getView().onSaveBulkDraftError(e);
+                    getView().onErrorSaveBulkDraft(e);
                 }
             }
 

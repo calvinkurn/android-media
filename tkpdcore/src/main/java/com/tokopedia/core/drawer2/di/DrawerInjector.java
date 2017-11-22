@@ -4,7 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.apollographql.apollo.ApolloClient;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.data.UserAttributesRepository;
+import com.tokopedia.core.analytics.data.UserAttributesRepositoryImpl;
+import com.tokopedia.core.analytics.data.factory.UserAttributesFactory;
+import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -45,6 +50,8 @@ import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -77,6 +84,17 @@ public class DrawerInjector {
                 new AnalyticsCacheHandler(),
                 sessionHandler
         );
+
+        UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(
+                new UserAttributesFactory(
+                        ApolloClient.builder()
+                                .okHttpClient(OkHttpFactory.create().buildClientDefaultAuth())
+                                .serverUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
+                                .build())
+        );
+
+        GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(new JobExecutor(),
+                new UIThread(), userAttributesRepository);
 
         ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
 
@@ -154,7 +172,8 @@ public class DrawerInjector {
                 depositUseCase,
                 notificationUseCase,
                 tokoCashUseCase,
-                topPointsUseCase);
+                topPointsUseCase,
+                getUserAttributesUseCase);
     }
 
 

@@ -4,6 +4,7 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
+import com.tokopedia.seller.product.draft.data.source.db.model.DraftNotFoundException;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase_Table;
 
@@ -40,9 +41,10 @@ public class ProductDraftDataManager {
                         .where(ProductDraftDataBase_Table.id.is(productId))
                         .querySingle();
         if (productDraftDatabase == null){
-            return Observable.error(new RuntimeException("Product draft not found in database"));
+            return Observable.error(new DraftNotFoundException());
+        } else {
+            return Observable.just(productDraftDatabase.getData());
         }
-        return Observable.just(productDraftDatabase.getData());
     }
 
     public Observable<List<ProductDraftDataBase>> getAllDraft(String userId) {
@@ -89,7 +91,7 @@ public class ProductDraftDataManager {
             productDraftDataBase.save();
             return Observable.just(productDraftDataBase.getId());
         } else {
-            throw new RuntimeException("Draft tidak ditemukan");
+            return Observable.error(new DraftNotFoundException());
         }
     }
 
@@ -104,7 +106,7 @@ public class ProductDraftDataManager {
             productDraftDataBase.save();
             return Observable.just(productDraftDataBase.getId());
         } else {
-            throw new RuntimeException("Draft tidak ditemukan");
+            return Observable.error(new DraftNotFoundException());
         }
     }
 
@@ -119,7 +121,7 @@ public class ProductDraftDataManager {
                 productDraftDataBase.save();
                 return Observable.just(true);
             } else {
-                throw new RuntimeException("Draft tidak ditemukan");
+                return Observable.error(new DraftNotFoundException());
             }
         } else { // update all isUploading
             new Update<>(ProductDraftDataBase.class)

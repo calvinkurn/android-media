@@ -27,6 +27,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideStatus;
@@ -256,6 +257,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                RideGATracking.eventBackPress(getScreenName());
                 onBackPressed();
                 return true;
             default:

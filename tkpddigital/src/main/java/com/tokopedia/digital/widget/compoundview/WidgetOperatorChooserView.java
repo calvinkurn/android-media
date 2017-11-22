@@ -10,12 +10,12 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.adapter.WidgetOperatorAdapter;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.operator.Operator;
 
 import java.util.List;
 
@@ -32,6 +32,8 @@ public class WidgetOperatorChooserView extends LinearLayout {
     Spinner spinnerOperator;
 
     private OperatorChoserListener listener;
+
+    private boolean resetClientNumber;
 
     public WidgetOperatorChooserView(Context context) {
         super(context);
@@ -57,22 +59,23 @@ public class WidgetOperatorChooserView extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public void renderDataView(final List<RechargeOperatorModel> operators, LastOrder lastOrder, int categoryId,
+    public void renderDataView(final List<Operator> operators, LastOrder lastOrder, int categoryId,
                                String lastOperatorSelected) {
         WidgetOperatorAdapter adapterOperator = new WidgetOperatorAdapter(
                 getContext(), android.R.layout.simple_spinner_item, operators);
         spinnerOperator.setAdapter(adapterOperator);
         spinnerOperator.setOnItemSelectedListener(getItemSelectedListener(operators));
-        spinnerOperator.setOnTouchListener(getOnTouchListener());
-        setLastOrderSelectedOperator(operators, lastOrder, categoryId, lastOperatorSelected);
+        initSetLastOrderSelectedOperator(operators, lastOrder, categoryId, lastOperatorSelected);
     }
 
-    private AdapterView.OnItemSelectedListener getItemSelectedListener(final List<RechargeOperatorModel> operators) {
+    private AdapterView.OnItemSelectedListener getItemSelectedListener(final List<Operator> operators) {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                listener.onResetOperator();
+                listener.onResetOperator(resetClientNumber);
                 listener.onCheckChangeOperator(operators.get(i));
+                listener.onTrackingOperator();
+                resetClientNumber = true;
             }
 
             @Override
@@ -82,46 +85,54 @@ public class WidgetOperatorChooserView extends LinearLayout {
         };
     }
 
-    private OnTouchListener getOnTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    listener.onTrackingOperator();
-                }
-                return false;
-            }
-        };
-    }
-
-    private void setLastOrderSelectedOperator(List<RechargeOperatorModel> operators,
+    private void initSetLastOrderSelectedOperator(List<Operator> operators,
                                               LastOrder lastOrder, int categoryId,
                                               String lastOperatorSelected) {
-        if (SessionHandler.isV4Login(getContext()) && lastOrder != null
-                && lastOrder.getData().getAttributes().getCategory_id() == categoryId) {
+        if (SessionHandler.isV4Login(getContext()) && lastOrder != null &&
+                lastOrder.getAttributes().getCategoryId() == categoryId) {
             for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
-                RechargeOperatorModel model = operators.get(i);
-                if (String.valueOf(model.operatorId)
+                Operator model = operators.get(i);
+                if (String.valueOf(model.getId())
                         .equalsIgnoreCase(
-                                String.valueOf(lastOrder.getData().getAttributes().getOperator_id()
+                                String.valueOf(lastOrder.getAttributes().getOperatorId()
                                 ))) {
                     spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
                 }
             }
         } else {
             for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
-                RechargeOperatorModel model = operators.get(i);
-                if (String.valueOf(model.operatorId).equalsIgnoreCase(lastOperatorSelected)) {
+                Operator model = operators.get(i);
+                if (String.valueOf(model.getId()).equalsIgnoreCase(lastOperatorSelected)) {
                     spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
+                }
+            }
+        }
+    }
+
+    public void setLastOrderSelectedOperator(List<Operator> operators,
+                                              LastOrder lastOrder, int categoryId) {
+        if (SessionHandler.isV4Login(getContext())  &&
+                lastOrder.getAttributes().getCategoryId() == categoryId) {
+            for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
+                Operator model = operators.get(i);
+                if (String.valueOf(model.getId())
+                        .equalsIgnoreCase(
+                                String.valueOf(lastOrder.getAttributes().getOperatorId()
+                                ))) {
+                    resetClientNumber = false;
+                    spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
                 }
             }
         }
     }
 
     public interface OperatorChoserListener {
-        void onCheckChangeOperator(RechargeOperatorModel rechargeOperatorModel);
+        void onCheckChangeOperator(Operator rechargeOperatorModel);
 
-        void onResetOperator();
+        void onResetOperator(boolean resetClientNumber);
 
         void onTrackingOperator();
     }

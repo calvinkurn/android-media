@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R;
@@ -85,14 +84,6 @@ public class HotListImpl implements HotList {
         }
         hotListView.initAdapter(data);
         hotListView.initLinLayManager();
-    }
-
-    @Override
-    public void setLocalyticFlow(Context context) {
-        if (context != null)
-            CommonUtils.dumper("LocalTag : hot list");
-        String screenName = context.getString(R.string.home_hot_list);
-        ScreenTracking.screenLoca(screenName);
     }
 
     @Override

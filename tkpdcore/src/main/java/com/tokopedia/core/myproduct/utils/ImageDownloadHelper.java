@@ -34,7 +34,7 @@ public class ImageDownloadHelper {
 
     private static final int WIDTH_DOWNLOAD = 2048;
     private static final int DEF_WIDTH_CMPR = 2048;
-    private static final int DEF_QLTY_COMPRESS = 70;
+    private static final int DEF_QLTY_COMPRESS = 95;
 
     private boolean needCompressTkpd = false;
 
@@ -106,30 +106,34 @@ public class ImageDownloadHelper {
                         if (context == null ){
                             return null;
                         }
-                        FutureTarget<File> future = Glide.with(context)
-                                .load(url)
-                                .downloadOnly(WIDTH_DOWNLOAD, WIDTH_DOWNLOAD);
-                        try {
-                            File cacheFile = future.get();
-                            String cacheFilePath = cacheFile.getAbsolutePath();
-                            File photo;
-                            if (needCompressTkpd) {
-                                String fileNameToMove = FileUtils.generateUniqueFileName(cacheFilePath);
-                                photo = FileUtils.writeImageToTkpdPath(
-                                        FileUtils.compressImage(
-                                                cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                                        fileNameToMove);
-                            } else {
-                                photo = writeImageToTkpdPath(cacheFile);
+                        if (url.startsWith("http")) {
+                            FutureTarget<File> future = Glide.with(context)
+                                    .load(url)
+                                    .downloadOnly(WIDTH_DOWNLOAD, WIDTH_DOWNLOAD);
+                            try {
+                                File cacheFile = future.get();
+                                String cacheFilePath = cacheFile.getAbsolutePath();
+                                File photo;
+                                if (needCompressTkpd) {
+                                    String fileNameToMove = FileUtils.generateUniqueFileName();
+                                    photo = FileUtils.writeImageToTkpdPath(
+                                            FileUtils.compressImage(
+                                                    cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                                            fileNameToMove);
+                                } else {
+                                    photo = writeImageToTkpdPath(cacheFile);
+                                }
+                                if (photo != null) {
+                                    return photo;
+                                }
+                            } catch (InterruptedException | ExecutionException e) {
+                                e.printStackTrace();
+                                throw new RuntimeException(e.getMessage());
                             }
-                            if (photo != null) {
-                                return photo;
-                            }
-                        } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e.getMessage());
+                            return null;
+                        } else {
+                            return new File(url);
                         }
-                        return null;
                     }
                 });
     }
@@ -140,11 +144,11 @@ public class ImageDownloadHelper {
         File dest = null;
         try {
 
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+            File directory = new File(FileUtils.getFolderPathForUploadNoRand(Environment.getExternalStorageDirectory().getAbsolutePath()));
             if (!directory.exists()) {
                 directory.mkdirs();
             }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
+            dest = new File(directory.getAbsolutePath() + FileUtils.generateUniqueFileName() );
 
             inStream = new FileInputStream(source);
             outStream = new FileOutputStream(dest);

@@ -73,8 +73,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 212001301;
-        defaultVersionName = "2.13";
+        defaultVersionCode = 216001101;
+        defaultVersionName = "2.16";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -153,9 +153,17 @@ android {
     splits {
         density {
             enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+            reset()
+            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
+            compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
+        abi {
+            enable allowSplit()
+            reset()
+            include "armeabi-v7a"
+            universalApk true
+        }
+
     }
 
     defaultConfig {
@@ -176,7 +184,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
     }
 
     compileOptions {
@@ -189,11 +197,6 @@ android {
     }
 
     productFlavors {
-        staging {
-
-        }
-        alpha {
-        }
         live {
 
         }
@@ -247,6 +250,7 @@ dependencies {
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
+    compile project(':tkpdtopads')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpdride')

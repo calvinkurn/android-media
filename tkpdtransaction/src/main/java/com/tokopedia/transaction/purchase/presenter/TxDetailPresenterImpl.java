@@ -287,15 +287,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
         tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
-        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
+        tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsgV2() != null ?
+                Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsgV2()) :
+                "");
 
         llFreeReturn.setVisibility(View.GONE);
-        btnBack.setVisibility(View.GONE);
+        btnBack.setVisibility(View.VISIBLE);
         btnNotReceive.setVisibility(View.GONE);
-        if (orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
-            btnNotReceive.setVisibility(View.VISIBLE);
-        else
-            btnBack.setVisibility(View.VISIBLE);
       
         //will be used later
 //        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
@@ -307,13 +305,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-            }
-        });
-        btnNotReceive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                showNotReceiveDialog(context, orderData);
             }
         });
 
@@ -510,7 +501,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
                             processReview(context, message);
                             dialog.dismiss();
                         }

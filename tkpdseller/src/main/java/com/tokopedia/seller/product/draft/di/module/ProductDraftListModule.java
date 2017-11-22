@@ -37,10 +37,9 @@ public class ProductDraftListModule extends ProductAddModule {
     ProductDraftListPresenter providePresenterDraft(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                                     DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
                                                     UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
-                                                    SaveBulkDraftProductUseCase saveBulkDraftProductUseCase,
                                                     ClearAllDraftProductUseCase clearAllDraftProductUseCase){
         return new ProductDraftListPresenterImpl(fetchAllDraftProductUseCase, deleteSingleDraftProductUseCase,
-                updateUploadingDraftProductUseCase, saveBulkDraftProductUseCase, clearAllDraftProductUseCase);
+                updateUploadingDraftProductUseCase, clearAllDraftProductUseCase);
     }
 
 }

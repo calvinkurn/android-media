@@ -129,4 +129,9 @@ public class HistoryShippingActivity extends BasePresenterActivity<HistoryShippi
                 .resolutionDetailModule(new ResolutionDetailModule())
                 .build();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

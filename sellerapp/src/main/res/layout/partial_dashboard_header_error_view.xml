@@ -14,6 +14,6 @@
         android:background="@android:color/white"
         android:padding="@dimen/margin_sm"
         app:eccv_content_text="@string/error_connection_problem"
-        app:eccv_icon="@drawable/ic_gm_statistic_error" />
+        app:eccv_icon="@drawable/ic_cloud_error"/>
 
 </RelativeLayout>

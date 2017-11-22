@@ -171,7 +171,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onResume() {
         super.onResume();
         wishList.onResume(getActivity());
-        UnifyTracking.eventViewWishlist();
     }
 
     @Override
@@ -266,6 +265,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    UnifyTracking.eventRemoveWishlist();
                     wishList.deleteWishlist(getActivity(), productId, position);
                     isDeleteDialogShown = false;
                 }
@@ -372,6 +372,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void findProduct() {
+        UnifyTracking.eventClickCariEmptyWishlist();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -472,6 +473,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        UnifyTracking.eventClickCariWishlist(query);
         wishList.searchWishlist(query);
         return false;
     }

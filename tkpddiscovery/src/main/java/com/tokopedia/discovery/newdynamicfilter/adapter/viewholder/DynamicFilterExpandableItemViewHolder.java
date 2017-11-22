@@ -33,14 +33,15 @@ public class DynamicFilterExpandableItemViewHolder extends DynamicFilterViewHold
         titleContainer = (LinearLayout) itemView.findViewById(R.id.title_container);
         title = (TextView) itemView.findViewById(R.id.expandable_item_title);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.expandable_item_selected_list);
-        adapter = new ExpandableItemSelectedListAdapter(filterView);
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void bind(final Filter filter) {
+        adapter = new ExpandableItemSelectedListAdapter(filterView);
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(adapter);
+
         title.setText(filter.getTitle());
         titleContainer.setOnClickListener(new View.OnClickListener() {
             @Override

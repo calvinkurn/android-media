@@ -2,7 +2,7 @@ package com.tokopedia.gm.featured.domain.mapper;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.gm.featured.data.model.GMFeaturedProductDataModel;
-import com.tokopedia.gm.featured.domain.model.GMFeaturedProductDomainModel;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;

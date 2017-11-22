@@ -49,6 +49,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -64,6 +65,7 @@ import com.tokopedia.core.shopinfo.fragment.OfficialShopHomeFragment;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
@@ -74,6 +76,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
+import static com.tokopedia.core.shopinfo.models.shopmodel.Info.SHOP_OFFICIAL_VALUE;
 
 /**
  * Created by UNKNOWN on UNKNOWN DATE TIME
@@ -269,15 +272,12 @@ public class ShopInfoActivity extends BaseActivity
 //                updateView();
             }
         }
-
-        sendEventLoca();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         registerReceiver(loginReceiver, new IntentFilter(LOGIN_ACTION));
-        sendNotifLocalyticsCallback();
     }
 
 
@@ -593,7 +593,11 @@ public class ShopInfoActivity extends BaseActivity
         ImageHandler.loadImageLucky2(this, holder.luckyShop, shopModel.info.shopLucky);
         setFreeReturn(holder, shopModel.info);
         holder.shopName.setText(MethodChecker.fromHtml(shopModel.info.shopName));
-        holder.location.setText(shopModel.info.shopLocation);
+        if (shopModel.info.shopIsOfficial == SHOP_OFFICIAL_VALUE) {
+            holder.location.setText(getResources().getString(R.string.authorized));
+        } else {
+            holder.location.setText(shopModel.info.shopLocation);
+        }
         holder.location.setVisibility(View.VISIBLE);
         holder.collapsingToolbarLayout.setTitle(" ");
         if (shopModel.info.shopIsOfficial == 1) {
@@ -636,11 +640,13 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
-        List<Badge> badges = data.badges;
-        for (int i = 0; i < badges.size(); i++) {
-            Badge badge = badges.get(i);
-            if (badge.getTitle().equals("Free Returns")) {
-                LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
+        if(data.badges != null) {
+            List<Badge> badges = data.badges;
+            for (int i = 0; i < badges.size(); i++) {
+                Badge badge = badges.get(i);
+                if (badge.getTitle().equals("Free Returns")) {
+                    LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
+                }
             }
         }
     }
@@ -749,15 +755,14 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent shareIntent = new Intent(ShopInfoActivity.this, ShareActivity.class);
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setType(ShareData.SHOP_TYPE)
                         .setName(getString(R.string.message_share_shop))
                         .setTextContent(compileShare())
                         .setUri(shopModel.info.shopUrl)
+                        .setId(shopModel.info.shopId)
                         .build();
-                shareIntent.putExtra(ShareData.TAG, shareData);
-                startActivity(shareIntent);
+                startActivity(ShareActivity.createIntent(ShopInfoActivity.this,shareData));
             }
         };
     }
@@ -893,24 +898,10 @@ public class ShopInfoActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback();
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
     }
 
     public void setToolbarCollapse() {
         holder.appBarLayout.setExpanded(false, true);
-    }
-
-    private void sendEventLoca() {
-        ScreenTracking.eventLoca(AppScreen.SCREEN_VIEWED_SHOP_PAGE);
     }
 
     @Override
@@ -1040,7 +1031,13 @@ public class ShopInfoActivity extends BaseActivity
         if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
-        } else {
+        } if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            super.onBackPressed();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            super.onBackPressed();
+        }else {
             super.onBackPressed();
         }
     }

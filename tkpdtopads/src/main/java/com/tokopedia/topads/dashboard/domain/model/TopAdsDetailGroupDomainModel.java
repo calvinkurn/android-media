@@ -6,6 +6,15 @@ package com.tokopedia.topads.dashboard.domain.model;
 
 public class TopAdsDetailGroupDomainModel extends TopAdsDetailProductDomainModel {
     String groupTotal;
+    String keywordTotal;
+
+    public String getKeywordTotal() {
+        return keywordTotal;
+    }
+
+    public void setKeywordTotal(String keywordTotal) {
+        this.keywordTotal = keywordTotal;
+    }
 
     public String getGroupTotal() {
         return groupTotal;
@@ -35,6 +44,7 @@ public class TopAdsDetailGroupDomainModel extends TopAdsDetailProductDomainModel
         detailGroupDomainModel.setAdId(getAdId());
         detailGroupDomainModel.setItemId(getItemId());
         detailGroupDomainModel.setAdType(getAdType());
+        detailGroupDomainModel.setKeywordTotal(getKeywordTotal());
         return detailGroupDomainModel;
     }
 

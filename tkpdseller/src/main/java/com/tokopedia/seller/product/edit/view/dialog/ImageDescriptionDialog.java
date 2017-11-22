@@ -4,11 +4,13 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 
 /**
@@ -60,8 +62,9 @@ public class ImageDescriptionDialog extends DialogFragment {
         viewOK = parentView.findViewById(R.id.text_ok);
 
         if (savedInstanceState == null) { // happen only on first time. On saved, will the latest desc.
-            editTextProdDesc.setText(descriptionString);
-            editTextProdDesc.setSelection(descriptionString.length());
+            Spanned descString = MethodChecker.fromHtmlPreserveLineBreak(descriptionString);
+            editTextProdDesc.setText(descString);
+            editTextProdDesc.setSelection(descString.length());
         }
 
         return parentView;

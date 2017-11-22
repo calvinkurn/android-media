@@ -1,16 +1,9 @@
 package com.tokopedia.seller.database;
 
-import android.content.Context;
-import android.text.TextUtils;
-
 import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.SQLiteType;
-import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
-import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase_Table;
 
 /**
  * Created by hendry on 6/22/2017.

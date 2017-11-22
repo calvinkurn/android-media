@@ -47,7 +47,7 @@
     <string name="confirm_booking_seats_format" formatted="false">%d Seats</string>
     <string name="your_trips_toolbar_title">Your Trips</string>
     <string name="btn_request">Request</string>
-    <string name="apply_promocode">Do you have a promocode?</string>
+    <string name="apply_promocode">Click to apply promo code?</string>
     <string name="apply">APPLY</string>
     <string name="btn_apply">APPLY</string>
     <string name="hint_enter_promo_code">Enter Promo Code</string>
@@ -81,7 +81,6 @@
     <string name="ride_push_toolbar_driver_not_found_desc">Sorry no driver found immediately, you can try again</string>
     <string name="ride_push_driver_cancel">Driver canceled your booking</string>
     <string name="ride_push_book_request_again">Please Book another Uber</string>
-    <string name="ride_push_driver_arriving_now">Your Uber is arriving now</string>
     <string name="ride_home_driver_cancel_last_rid">Driver canceled your last ride.</string>
     <string name="complete_trip_tokocash_charged">TokoCash Charged</string>
     <string name="ride_push_in_progress">Trip Started</string>
@@ -158,4 +157,8 @@
     <string name="change_destination_insufficient_balance_message">Please topup your Tokocash to\nchange your destination</string>
     <string name="add_tokocash">Add TokoCash</string>
     <string name="change_destination_insufficient_balance_screen_title">Insufficient TokoCash</string>
+    <string name="receipt_pending">Receipt Pending</string>
+    <string name="message_uber_waiting_receipt">Your trip is now completed and receipt is being generated.</string>
+    <string name="ride_push_title_template_accepted">Your %s is booked</string>
+    <string name="ride_push_title_template_arriving">Your %s is on its way</string>
 </resources>

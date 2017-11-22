@@ -51,6 +51,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -60,6 +61,7 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
@@ -172,6 +174,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     RelativeLayout destinationLayout;
     @BindView((R2.id.tv_destination_change))
     TextView changeDestinationTextView;
+    @BindView(R2.id.layout_receipt_pending)
+    RelativeLayout dialogReceiptPending;
 
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
@@ -447,6 +451,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @OnClick(R2.id.cabs_processing_cancel_button)
     public void actionCancelButtonClicked() {
         showCancelPanel();
+        RideGATracking.eventClickCancelRequestRide(getScreenName());
         presenter.actionCancelButtonClicked();
     }
 
@@ -717,6 +722,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         Intent intent = CompleteTripActivity.getCallingIntent(getActivity(), result.getRequestId(), driverAndVehicle);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void renderCompletedRequestWithoutReceipt(RideRequest result) {
+        replaceFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result, getTag()));
+        setTitle(R.string.title_trip_completed);
+
+        //show dialog the ride is completed and receipt is response is pending
+        dialogReceiptPending.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -1048,6 +1062,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @OnClick({R2.id.crux_cabs_destination, R2.id.tv_destination_change})
     public void actionDestinationButtonClicked() {
+        RideGATracking.eventClickChangeDestinationOpenMap(AppScreen.SCREEN_RIDE_ONTRIP);
+
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_red_old);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);

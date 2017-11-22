@@ -41,6 +41,7 @@ public class OldSessionRouter {
     }
 
     public static Intent getPhoneVerificationActivationActivityIntent(Context context) {
+
         Intent intent = RouterUtils.getActivityIntent(context, PHONE_VERIFICATION_ACTIVATION_ACTIVITY);
         return intent;
     }

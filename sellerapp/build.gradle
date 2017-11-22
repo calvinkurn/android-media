@@ -189,8 +189,7 @@ android {
         staging {
 
         }
-        alpha {
-        }
+
         live {
 
         }
@@ -222,6 +221,9 @@ dependencies {
         compile (rootProject.ext.tkpdDependencies.session) {
             exclude group: 'com.tokopedia.core'
         }
+        compile (rootProject.ext.tkpdDependecies.transaction) {
+        exclude group 'com.tokopedia.core'
+        }
         compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdtopads')
@@ -229,6 +231,7 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpddigital')
+    compile project(':tkpdtransaction')
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
@@ -236,9 +239,6 @@ dependencies {
 
     compile('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
-    }
-    compile(rootProject.ext.miscDependencies.smoothAppBarLayout) {
-        exclude group: "com.android.support"
     }
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler

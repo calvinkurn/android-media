@@ -57,6 +57,7 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
+    public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -117,7 +118,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
 
-        public static final String MOST_HELPFUL_REVIEW =  "reputationapp/review/api/v1/mosthelpful";
+        public static final String MOST_HELPFUL_REVIEW =
+                "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {
@@ -418,7 +420,8 @@ public class TkpdBaseURL {
         public static final String PATH_EDIT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/edit_address_resolution.pl";
         public static final String PATH_REPLY_CONVERSATION_SUBMIT_V2 = "v4/action/resolution-center/reply_conversation_submit.pl";
         public static final String PATH_REPLY_CONVERSATION_VALIDATION_V2 = "v4/action/resolution-center/reply_conversation_validation.pl";
-        public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/generate_token_host.pl";
+        public static final String PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER = "generate_token_host.pl";
+        public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/" + PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER;
     }
 
     public static class Search {
@@ -529,6 +532,7 @@ public class TkpdBaseURL {
 
     public static class Shipment {
         public static final String PATH_RATES = "rates/v1";
+        public static final String PATH_DISTRICT_RECOMMENDATION = "/v2/district-recommendation";
     }
 
     public static class Upload {
@@ -550,6 +554,7 @@ public class TkpdBaseURL {
         public static final String PATH_PROFILE_IMAGE = "/web-service/v4/action/upload-image/upload_profile_image.pl";
         public static final String PATH_UPLOAD_VIDEO = "/upload/video";
         public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
+        public static final String PATH_GENERATE_HOST_RESO = "/v4/action/resolution-center/generate_token_host.pl";
     }
 
     public static class Tome {
@@ -724,6 +729,8 @@ public class TkpdBaseURL {
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
         public static final String GET_FEATURED_PRODUCTS = "/v1/mobile/featured_product/{shopId}?json=1";
+        public static final String SET_CASHBACK_PRODUCTS = "/v1/cashback/set";
+        public static final String GET_CASHBACK_PRODUCTS = "v1/tx/cashback";
     }
 
     public static class FCM {
@@ -739,12 +746,19 @@ public class TkpdBaseURL {
         public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
     }
 
-    public static class TopCash {
+    public static class TokoCash {
         public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
-        public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
-        public static final String PATH_WALLET = "balance";
-        public static final String PATH_REQUEST_OTP_WALLET = "otp/request";
-        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "link";
+        public static final String PATH_WALLET = "api/v1/wallet/balance";
+        public static final String PATH_REQUEST_OTP_WALLET = "api/v1/wallet/otp/request";
+        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "api/v1/wallet/link";
+        public static final String GET_TOKEN_WALLET = "api/v1/wallet/token";
+    }
+
+    public static class Wallet {
+        public static final String GET_HISTORY = "api/v1/me/history";
+        public static final String POST_COMPLAINT = "api/v1/cs/complaint";
+        public static final String GET_OAUTH_INFO_ACCOUNT= "api/v1/me/profile";
+        public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
     }
 
     public static class Truecaller {
@@ -761,6 +775,7 @@ public class TkpdBaseURL {
         public static final String PATH_OPERATOR = "operator/list";
         public static final String PATH_PRODUCT = "product/list";
         public static final String PATH_RECENT_NUMBER = "recent-number";
+        public static final String PATH_NUMBER_LIST = "favorite/list";
         public static final String PATH_LAST_ORDER = "last-order";
         public static final String PATH_SALDO = "saldo";
         public static final String PATH_GET_CART = "cart";
@@ -794,9 +809,11 @@ public class TkpdBaseURL {
     }
 
     public static class ResCenterV2 {
-        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/v1/";
-        public static final String BASE_INBOX_RESOLUTION = "inbox";
-        public static final String BASE_DETAIL_RESOLUTION = "detail/{resolution_id}";
+        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/";
+        public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
+        public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
+        public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";
+        public static final String BASE_DETAIL_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
 
         public static final String GET_RESOLUTION_LIST = BASE_INBOX_RESOLUTION;
         public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;
@@ -808,6 +825,23 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
         public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
         public static final String ACTION_REPLY_RESOLUTION = BASE_DETAIL_RESOLUTION + "/reply";
+
+
+        public static final String BASE_RESOLUTION_CREATE = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
+        public static final String BASE_RESOLUTION_VALIDATE = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
+        public static final String BASE_RESOLUTION_SUBMIT = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
+        public static final String GET_RESOLUTION_STEP_1 = BASE_RESOLUTION_CREATE + "/step1";
+        public static final String POST_RESOLUTION_STEP_2_3 = BASE_RESOLUTION_CREATE + "/step2_3";
+
+        public static final String BASE_RESOLUTION_EDIT = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
+        public static final String GET_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
+        public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
+        public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
+        public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
+
+
+
+
     }
 
     public static class Replacement {
@@ -822,14 +856,12 @@ public class TkpdBaseURL {
     public static class Payment {
         public static final String URL_BCA_ONE_CLICK = SCROOGE_DOMAIN;
         public static final String PATH_ONE_CLICK = "ws/oneclick";
-        public static final String PATH_ONE_CLICK_GET_USER_DATA = "oneclick/get";
-        public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
-        public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
-        public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
         public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
         public static final String PATH_CC_DELETE = "v2/ccvault/delete";
         public static final String PATH_GET_CANCEL_TRANSACTION_DIALOG = "get_payment_status";
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
+        public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
+        public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
     }
 
     public static class FinTech {

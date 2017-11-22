@@ -3,18 +3,17 @@ package com.tokopedia.core.app;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.drawer2.view.subscriber.ProfileSubscriber;
+import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -52,6 +51,8 @@ public interface TkpdCoreRouter {
 
     void actionApplink(Activity activity, String linkUrl);
 
+    void actionApplink(Activity activity, String linkUrl, String extra);
+
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
     Intent getHomeIntent(Context context);
@@ -77,5 +78,23 @@ public interface TkpdCoreRouter {
     Intent getRegisterIntent(Context context);
 
     void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
+
+    String getFlavor();
+
+    boolean isSupportedDelegateDeepLink(String appLinks);
+
+    Intent getIntentDeepLinkHandlerActivity();
+
+    void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
+
+    void goToAddProduct(Activity activity);
+
+    boolean isInMyShop(Context context, String shopId);
+
+    Intent getForgotPasswordIntent(Context context, String email);
+
+    void invalidateCategoryMenuData();
+
+    ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
 }

@@ -1,16 +1,13 @@
 package com.tokopedia.tkpd;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
-import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -31,26 +28,6 @@ public class ConsumerSplashScreen extends SplashScreen {
             taskStackBuilder.addNextIntent(RideHomeActivity.getCallingIntent(this));
             taskStackBuilder.startActivities();
         }
-        fetchRemoteConfig(this);
         finish();
-    }
-
-    /**
-     * This method is for fetch Remote config file and save some data in to cache (specially for drawer menu)
-     * @param activity
-     */
-    private void fetchRemoteConfig(Activity activity) {
-        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(activity);
-        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
-            @Override
-            public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
     }
 }

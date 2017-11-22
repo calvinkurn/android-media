@@ -136,6 +136,8 @@ public abstract class TActivity extends BaseActivity {
 
 
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+                .WebViewToolbarSubtitleText);
     }
 
     protected boolean isLightToolbarThemes() {

@@ -41,4 +41,14 @@ public class ProductDraftEditActivity extends ProductDraftAddActivity  {
         String productId = getIntent().getStringExtra(PRODUCT_DRAFT_ID);
         return ProductDraftEditFragment.createInstance(productId);
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
+    protected boolean needDeleteCacheOnBack() {
+        return false;
+    }
 }

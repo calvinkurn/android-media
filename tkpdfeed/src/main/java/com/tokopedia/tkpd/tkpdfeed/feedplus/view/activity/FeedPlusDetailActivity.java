@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,11 +13,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
 
@@ -27,11 +28,23 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment
 
 public class FeedPlusDetailActivity extends BasePresenterActivity implements HasComponent {
 
-    public static final String EXTRA_DETAIL_ID = "EXTRA_DETAIL_ID";
+    public static final String EXTRA_DETAIL_ID = "extra_detail_id";
+    public static final String EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER";
 
-    public static Intent getIntent(FragmentActivity activity, String detailId) {
+    @DeepLink(Constants.Applinks.FEED_DETAILS)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, FeedPlusDetailActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    public static Intent getIntent(FragmentActivity activity, String detailId,
+                                   String pageRowNumber) {
         Intent intent = new Intent(activity, FeedPlusDetailActivity.class);
         intent.putExtra(EXTRA_DETAIL_ID, detailId);
+        intent.putExtra(EXTRA_ANALYTICS_PAGE_ROW_NUMBER, pageRowNumber);
+
         return intent;
     }
 
@@ -84,16 +97,13 @@ public class FeedPlusDetailActivity extends BasePresenterActivity implements Has
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     public void setupToolbar() {
         super.setupToolbar();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.white)));

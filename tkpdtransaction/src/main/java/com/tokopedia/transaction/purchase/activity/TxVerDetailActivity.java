@@ -409,4 +409,9 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                 detailInvoice != null ? detailInvoice.getInvoice() : ""
         );
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
@@ -136,7 +137,9 @@ public class ErrorHandler {
             else {
                 return e.getLocalizedMessage();
             }
-        } else {
+        }  else if (BuildConfig.DEBUG) {
+            return e.getLocalizedMessage();
+        }else {
             return context.getString(R.string.default_request_error_unknown) + " " +
                     context.getString(R.string.code_error) + ErrorCode.UNKNOWN;
         }

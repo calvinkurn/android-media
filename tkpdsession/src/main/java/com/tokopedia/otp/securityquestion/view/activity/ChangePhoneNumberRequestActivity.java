@@ -49,12 +49,13 @@ public class ChangePhoneNumberRequestActivity extends TActivity implements
         super.onResume();
     }
 
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, ChangePhoneNumberRequestActivity.class);
-    }
-
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, ChangePhoneNumberRequestActivity.class);
+    }
+
 }

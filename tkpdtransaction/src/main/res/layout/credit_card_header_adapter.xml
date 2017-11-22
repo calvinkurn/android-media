@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="18dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/card_thick_edge"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/small_dp"
+            android:layout_marginStart="@dimen/small_dp"
+            android:text="@string/title_credit_card"
+            android:textSize="@dimen/font_medium" />
+
+        <ImageView
+            android:id="@+id/credit_card_menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingEnd="@dimen/small_dp"
+            android:paddingLeft="@dimen/small_dp"
+            android:paddingRight="@dimen/small_dp"
+            android:paddingStart="@dimen/small_dp"
+            android:src="@drawable/ic_new_action_overflow_black" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/add_credit_card_layout"
+        android:layout_width="match_parent"
+        android:layout_height="115dp"
+        android:layout_margin="@dimen/margin_vs"
+        android:background="@drawable/btn_plain"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_cc" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/message_no_credit_card"
+            android:textColor="@color/label_color" />
+
+    </LinearLayout>
+
+</LinearLayout>

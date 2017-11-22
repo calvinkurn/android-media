@@ -9,6 +9,7 @@ import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -73,7 +74,7 @@ public class FingerprintInterceptor implements Interceptor {
             GetFingerprintUseCase getFingerprintUseCase;
             FingerprintRepository fpRepo = new FingerprintDataRepository();
             getFingerprintUseCase = new GetFingerprintUseCase(fpRepo);
-            json = getFingerprintUseCase.execute(null)
+            json = getFingerprintUseCase.createObservable(RequestParams.EMPTY)
                     .map(new Func1<String, String>() {
                         @Override
                         public String call(String s) {

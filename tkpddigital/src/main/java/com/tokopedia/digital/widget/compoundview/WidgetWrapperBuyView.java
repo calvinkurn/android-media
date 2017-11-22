@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
@@ -25,6 +24,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.model.PreCheckoutDigitalWidget;
+import com.tokopedia.digital.widget.model.category.Category;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +42,8 @@ public class WidgetWrapperBuyView extends LinearLayout {
     public static final String ARG_UTM_CONTENT = "ARG_UTM_CONTENT";
     private static final String ARG_UTM_SOURCE_VALUE = "android";
     private static final String ARG_UTM_MEDIUM_VALUE = "widget";
+
+    private boolean isInsant;
 
     @BindView(R2.id.buy_with_credit_checkbox)
     CheckBox creditCheckbox;
@@ -86,6 +88,7 @@ public class WidgetWrapperBuyView extends LinearLayout {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isInsant = isChecked;
                 buyButton.setText(
                         isChecked ? getResources().getString(R.string.title_button_pay)
                                 : getResources().getString(R.string.title_buy));
@@ -131,21 +134,8 @@ public class WidgetWrapperBuyView extends LinearLayout {
     private void sendGTMClickBeli() {
         CommonUtils.dumper("GAv4 category clicked " + category.getId());
         CommonUtils.dumper("GAv4 clicked beli Pulsa");
-        String labelBeli;
-        switch (category.getId()) {
-            case 1:
-                labelBeli = AppEventTracking.EventLabel.PULSA_WIDGET;
-                break;
-            case 2:
-                labelBeli = AppEventTracking.EventLabel.PAKET_DATA_WIDGET;
-                break;
-            case 3:
-                labelBeli = AppEventTracking.EventLabel.PLN_WIDGET;
-                break;
-            default:
-                labelBeli = AppEventTracking.EventLabel.PULSA_BELI;
-        }
-        UnifyTracking.eventRechargeBuy(labelBeli);
+
+        UnifyTracking.eventRechargeBuy(category.getAttributes().getName(), isInsant ? "instant" : "no instant");
     }
 
     private String generateATokenRechargeCheckout() {

@@ -16,6 +16,7 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
 import com.tokopedia.core.cache.di.module.CacheModule;
 import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
@@ -32,7 +33,6 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
@@ -63,9 +63,6 @@ public interface AppComponent {
 
     @ApplicationContext
     Context context();
-
-    @TopAdsQualifier
-    Retrofit topAdsRetrofit();
 
     @AceQualifier
     Retrofit aceRetrofit();
@@ -129,11 +126,13 @@ public interface AppComponent {
     @ApiCacheQualifier
     LocalCacheHandler localCacheHandler();
 
+    CacheApiDataManager cacheApiDataManager();
+
     ApiCacheRepository apiCacheRepository();
 
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
 
-    ApiCacheDataSource cacheHelper();
+    ApiCacheDataSource apiCacheDataSource();
 
     CacheApiClearAllUseCase cacheApiClearAllUseCase();
 }

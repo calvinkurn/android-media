@@ -53,6 +53,17 @@ public class DataResponseCreateGroup {
     @SerializedName("group_total")
     @Expose
     private String groupTotal;
+    @SerializedName("keyword_total")
+    @Expose
+    private String keywordTotal;
+
+    public String getKeywordTotal() {
+        return keywordTotal;
+    }
+
+    public void setKeywordTotal(String keywordTotal) {
+        this.keywordTotal = keywordTotal;
+    }
 
     public String getGroupId() {
         return groupId;

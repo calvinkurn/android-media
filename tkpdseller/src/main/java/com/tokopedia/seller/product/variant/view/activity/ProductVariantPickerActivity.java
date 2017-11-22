@@ -1,12 +1,9 @@
 package com.tokopedia.seller.product.variant.view.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,15 +42,12 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         productVariantByCatModel = getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
-
         super.onCreate(savedInstanceState);
-
-        toolbar.setTitle(getString(R.string.product_variant_option_x, productVariantByCatModel.getName()) );
-        toolbar.setNavigationIcon(R.drawable.ic_close_24dp);
+        toolbar.setTitle(getString(R.string.product_variant_option_x, productVariantByCatModel.getName()));
         updateBottomSheetInfo();
     }
 
-    public String getVariantName(){
+    public String getVariantName() {
         return productVariantByCatModel.getName();
     }
 
@@ -173,6 +167,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_product_variant_item_picker, menu);
+        updateOptionMenuColor(menu);
         return true;
     }
 
@@ -186,13 +181,13 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         }
     }
 
-    private boolean isMaxVariantReached(){
+    private boolean isMaxVariantReached() {
         return ((ProductVariantPickerCacheFragment) getCacheListFragment()).getItemList().size()
                 >= ProductVariantConstant.MAX_LIMIT_VARIANT;
     }
 
-    private void showMaxVariantReachedMessage(){
-        NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_variant_max_variant_has_been_reached));
+    private void showMaxVariantReachedMessage() {
+        NetworkErrorHelper.showCloseSnackbar(this, getString(R.string.product_variant_max_variant_has_been_reached));
     }
 
     public void showAddDialog(String stringToAdd) {
@@ -213,12 +208,17 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         dialogFragment.show(getSupportFragmentManager(), DIALOG_ADD_VARIANT_TAG);
     }
 
-    public void showAddDialog(){
+    public void showAddDialog() {
         showAddDialog("");
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

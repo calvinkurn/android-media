@@ -153,7 +153,6 @@ public class InboxReputationFormFragmentPresenterImpl
     @Override
     public void onSubmitReview() {
         viewListener.removeError();
-        TrackingUtils.eventLoca(viewListener.getActivity().getString(R.string.event_submit_review));
         if (isValidForm()) {
             viewListener.setActionsEnabled(false);
             switch (viewListener.getActivity().getIntent().getExtras().getString("nav", "")) {

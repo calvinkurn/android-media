@@ -25,6 +25,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.OldSessionRouter;
@@ -101,7 +103,6 @@ public class FragmentBannerWebView extends Fragment {
 
     }
 
-
     public FragmentBannerWebView() {
     }
 
@@ -120,15 +121,24 @@ public class FragmentBannerWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if (getActivity() != null && getActivity().getApplication() != null)
-            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-                if (((IDigitalModuleRouter) getActivity().getApplication())
-                        .isSupportedDelegateDeepLink(url)) {
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            if (getActivity().getApplication() instanceof IDigitalModuleRouter && (((IDigitalModuleRouter) getActivity().getApplication())
+                        .isSupportedDelegateDeepLink(url))) {
                     ((IDigitalModuleRouter) getActivity().getApplication())
                             .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                     return true;
+            } else if (Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter &&
+                        (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
+
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .getApplinkUnsupported(getActivity())
+                            .showAndCheckApplinkUnsupported();
+                    return true;
                 }
             }
+        }
+
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
                 FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
             if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
@@ -171,8 +181,8 @@ public class FragmentBannerWebView extends Fragment {
                 startActivityForResult(intent, LOGIN_GPLUS);
                 return true;
             }
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -234,7 +244,6 @@ public class FragmentBannerWebView extends Fragment {
         }
     }
 
-
     public WebView getWebview() {
         return webview;
     }
@@ -250,4 +259,5 @@ public class FragmentBannerWebView extends Fragment {
             webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
+
 }

@@ -131,25 +131,25 @@
             android:id="@+id/instant_courier_driver_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/small_dp"
-            android:paddingLeft="@dimen/small_dp"
-            android:paddingStart="@dimen/small_dp"
-            android:paddingRight="@dimen/small_dp"
-            android:paddingEnd="@dimen/small_dp"
-            android:paddingBottom="@dimen/med_dp"
-            android:background="@drawable/see_all_bg"
             android:layout_margin="@dimen/margin_small"
+            android:background="@drawable/see_all_bg"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/med_dp"
+            android:paddingEnd="@dimen/small_dp"
+            android:paddingLeft="@dimen/small_dp"
+            android:paddingRight="@dimen/small_dp"
+            android:paddingStart="@dimen/small_dp"
+            android:paddingTop="@dimen/small_dp"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:orientation="vertical">
+            tools:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/label_color"
-                android:text="@string/title_driver_detail"/>
+                android:text="@string/title_driver_detail"
+                android:textColor="@color/label_color"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small">
@@ -158,13 +158,19 @@
                     android:id="@+id/driver_photo"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    tools:src="@drawable/facebook_square_blue" />
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    tools:src="@drawable/facebook_square_blue"/>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_marginStart="@dimen/margin_small"
+                    android:layout_toEndOf="@+id/driver_photo"
+                    android:layout_toLeftOf="@+id/btn_call_driver"
+                    android:layout_toRightOf="@+id/driver_photo"
+                    android:layout_toStartOf="@+id/btn_call_driver"
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
@@ -175,43 +181,43 @@
                         android:textStyle="bold"
                         tools:text="Opang"/>
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/driver_phone"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:lines="1"
+                        android:textColor="@color/label_color"
+                        android:textIsSelectable="true"
+                        tools:text="08124566665"/>
 
-                        <TextView
-                            android:id="@+id/driver_phone"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:textColor="@color/label_color"
-                            android:textIsSelectable="true"
-                            tools:text="08124566665"/>
-
-                        <TextView
-                            android:id="@+id/driver_info_border"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:textColor="@color/label_color"
-                            android:textIsSelectable="true"
-                            android:layout_marginLeft="@dimen/margin_vs"
-                            android:layout_marginStart="@dimen/margin_vs"
-                            android:layout_marginRight="@dimen/margin_vs"
-                            android:layout_marginEnd="@dimen/margin_vs"
-                            android:text="@string/string_splitter"/>
-
-                        <TextView
-                            android:id="@+id/driver_license"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:textColor="@color/label_color"
-                            android:textIsSelectable="true"
-                            tools:text="B4953773"/>
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/driver_license"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:lines="1"
+                        android:textColor="@color/label_color"
+                        android:textIsSelectable="true"
+                        tools:text="B 4953 AZ"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/btn_call_driver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/border_button_rounded"
+                    android:gravity="center"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="2dp"
+                    android:text="@string/label_call_ondemand_driver_logistic"
+                    android:textColor="@color/label_color"/>
+            </RelativeLayout>
 
         </LinearLayout>
 

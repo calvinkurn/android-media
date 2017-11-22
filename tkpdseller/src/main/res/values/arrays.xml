@@ -19,7 +19,7 @@
     <!-- Product =============================================================================== -->
     <string-array name="product_currency_entries">
         <item>Rp</item>
-        <item>$</item>
+        <item>US$</item>
     </string-array>
     <string-array name="product_currency_values">
         <item>@string/product_currency_value_idr</item>
@@ -36,8 +36,8 @@
     </string-array>
 
     <string-array name="product_stock_status_entries">
-        <item>Stock Tersedia</item>
-        <item>Stock Kosong</item>
+        <item>Stok Tersedia</item>
+        <item>Stok Kosong</item>
     </string-array>
     <string-array name="product_stock_status_values">
         <item>@string/product_stock_available_value</item>
