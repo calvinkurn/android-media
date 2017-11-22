@@ -294,6 +294,7 @@ public class DetailResChatFragment
 
         presenter.initUploadImageHandler(getActivity(), uploadImageDialog);
 
+        fabChat.hide();
         linearLayoutManager = new LinearLayoutManager(getActivity());
         rvChat.setLayoutManager(linearLayoutManager);
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
