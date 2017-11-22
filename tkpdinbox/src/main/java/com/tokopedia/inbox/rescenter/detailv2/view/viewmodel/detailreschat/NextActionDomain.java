@@ -11,11 +11,21 @@ public class NextActionDomain implements Parcelable {
 
     private String last;
     private NextActionDetailDomain detail;
+    private String problem;
     private boolean isSuccess;
 
-    public NextActionDomain(String last, NextActionDetailDomain detail) {
+    public NextActionDomain(String last, NextActionDetailDomain detail, String problem) {
         this.last = last;
         this.detail = detail;
+        this.problem = problem;
+    }
+
+    public String getProblem() {
+        return problem;
+    }
+
+    public void setProblem(String problem) {
+        this.problem = problem;
     }
 
     public String getLast() {
@@ -55,12 +65,14 @@ public class NextActionDomain implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.last);
         dest.writeParcelable(this.detail, flags);
+        dest.writeString(this.problem);
         dest.writeByte(this.isSuccess ? (byte) 1 : (byte) 0);
     }
 
     protected NextActionDomain(Parcel in) {
         this.last = in.readString();
         this.detail = in.readParcelable(NextActionDetailDomain.class.getClassLoader());
+        this.problem = in.readString();
         this.isSuccess = in.readByte() != 0;
     }
 

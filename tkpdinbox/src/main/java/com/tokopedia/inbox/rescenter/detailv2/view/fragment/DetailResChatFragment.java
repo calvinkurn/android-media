@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,6 +121,7 @@ public class DetailResChatFragment
 
     private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
+    private LinearLayoutManager linearLayoutManager;
 
     @Inject
     DetailResChatFragmentPresenter presenter;
@@ -288,9 +290,10 @@ public class DetailResChatFragment
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
-        rvChat.addOnScrollListener(recyclerViewListener());
         presenter.initUploadImageHandler(getActivity(), uploadImageDialog);
-        rvChat.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        rvChat.setLayoutManager(linearLayoutManager);
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
         rvChat.setAdapter(chatAdapter);
         rvAttachment.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -310,6 +313,15 @@ public class DetailResChatFragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                //hide FAB when reach bottom
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    fabChat.hide();
+                } else {
+                    fabChat.show();
+                }
             }
         };
     }
@@ -345,6 +357,7 @@ public class DetailResChatFragment
 
     @Override
     protected void setViewListener() {
+        rvChat.addOnScrollListener(recyclerViewListener());
         cvNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -986,14 +999,13 @@ public class DetailResChatFragment
     @Override
     public void onAddItemAdapter(List<Visitable> items) {
         chatAdapter.addAllItems(items);
+        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+
     }
 
     @Override
     public void onRefreshChatAdapter(boolean isFirstInit) {
         chatAdapter.notifyDataSetChanged();
-        if (!isFirstInit) {
-            rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-        }
     }
 
     @Override

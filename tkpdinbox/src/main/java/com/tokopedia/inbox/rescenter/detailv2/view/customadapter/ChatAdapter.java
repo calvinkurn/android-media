@@ -51,6 +51,7 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void addAllItems(List<Visitable> items) {
         this.list.addAll(items);
+        notifyDataSetChanged();
     }
 
     public void addItem(Visitable item) {
