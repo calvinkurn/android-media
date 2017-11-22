@@ -12,7 +12,11 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.C
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationListDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.CustomerDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.LastDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ShopDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,19 +76,25 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
     private void initAllData(DetailResChatDomain detailResChatDomain) {
         mainView.initNextStep(detailResChatDomain.getNextAction());
         mainView.initActionButton(detailResChatDomain.getButton());
-        initChatData(detailResChatDomain);
+        mainView.onAddItemAdapter(initChatData(
+                detailResChatDomain.getConversationList(),
+                detailResChatDomain.getShop(),
+                detailResChatDomain.getCustomer(),
+                detailResChatDomain.getLast(),
+                detailResChatDomain.getActionBy()));
+        mainView.onRefreshChatAdapter();
     }
 
 
-    private void initChatData(DetailResChatDomain detailResChatDomain) {
+    private List<Visitable> initChatData(ConversationListDomain conversationListDomain, ShopDomain shopDomain, CustomerDomain customerDomain, LastDomain lastDomain, int actionBy) {
         int lastAction = 0;
         List<Visitable> items = new ArrayList<>();
-        for (ConversationDomain conversationDomain : detailResChatDomain.getConversationList().getConversationDomains()) {
+        for (ConversationDomain conversationDomain : conversationListDomain.getConversationDomains()) {
             String actionType = conversationDomain.getAction().getType();
             if (actionType.equals(CREATE)) {
                 items.add(new ChatCreateLeftViewModel(
-                        detailResChatDomain.getShop(),
-                        detailResChatDomain.getLast(),
+                        shopDomain,
+                        lastDomain,
                         conversationDomain));
             } else if (actionType.equals(REPLY_CONVERSATION)) {
                 boolean isShowTitle;
@@ -94,15 +104,15 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                     lastAction = conversationDomain.getAction().getBy();
                     isShowTitle = true;
                 }
-                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
+                if (actionBy == conversationDomain.getAction().getBy()) {
                     items.add(new ChatRightViewModel(
-                            detailResChatDomain.getShop(),
-                            detailResChatDomain.getCustomer(),
+                            shopDomain,
+                            customerDomain,
                             conversationDomain));
                 } else {
                     items.add(new ChatLeftViewModel(
-                            detailResChatDomain.getShop(),
-                            detailResChatDomain.getCustomer(),
+                            shopDomain,
+                            customerDomain,
                             conversationDomain,
                             isShowTitle));
                 }
@@ -114,15 +124,15 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                     lastAction = conversationDomain.getAction().getBy();
                     isShowTitle = true;
                 }
-                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
+                if (actionBy == conversationDomain.getAction().getBy()) {
                     items.add(new ChatSystemRightViewModel(
-                            detailResChatDomain.getShop(),
-                            detailResChatDomain.getCustomer(),
+                            shopDomain,
+                            customerDomain,
                             conversationDomain));
                 } else {
                     items.add(new ChatSystemLeftViewModel(
-                            detailResChatDomain.getShop(),
-                            detailResChatDomain.getCustomer(),
+                            shopDomain,
+                            customerDomain,
                             conversationDomain,
                             isShowTitle));
                 }
@@ -134,7 +144,7 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                     || actionType.equals(ACCEPT_ADMIN_SOLUTION)) {
                 items.add(new ChatCommonLeftViewModel(conversationDomain, actionType));
             } else {
-                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
+                if (actionBy == conversationDomain.getAction().getBy()) {
                     items.add(new ChatNotSupportedRightViewModel(
                             conversationDomain));
                 } else {
@@ -143,7 +153,6 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                 }
             }
         }
-        mainView.onAddItemAdapter(items);
-        mainView.onRefreshChatAdapter();
+        return items;
     }
 }
