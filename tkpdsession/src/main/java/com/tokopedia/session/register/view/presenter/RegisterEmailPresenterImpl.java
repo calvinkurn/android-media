@@ -120,7 +120,8 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
             isValid = false;
             sendGTMRegisterError(AppEventTracking.EventLabel.HANDPHONE);
         } else {
-            boolean validatePhoneNumber = validatePhoneNumber(phone.replace("-", ""));
+            boolean validatePhoneNumber = RegisterUtil.isValidPhoneNumber(phone.replace("-",
+                    ""));
             if (!validatePhoneNumber) {
                 viewListener.setPhoneError(viewListener.getString(com.tokopedia.core.R.string.error_invalid_phone_number));
                 isValid = false;
@@ -151,14 +152,6 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
 
 
         return isValid;
-    }
-
-    public static boolean validatePhoneNumber(String phoneNo) {
-        for (int i = MIN_PHONE_NUMBER; i <= MAX_PHONE_NUMBER; i++) {
-            if (phoneNo.matches("\\d{" + i + "}")) return true;
-        }
-        return false;
-
     }
 
     private void sendGTMRegisterError(String label) {

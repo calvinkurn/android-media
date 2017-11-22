@@ -9,10 +9,9 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordLoginUseCase;
 import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordUseCase;
 import com.tokopedia.session.register.view.subscriber.CreatePasswordSubscriber;
+import com.tokopedia.session.register.view.util.RegisterUtil;
 import com.tokopedia.session.register.view.viewlistener.CreatePassword;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
-import com.tokopedia.session.session.presenter.RegisterNewImpl;
-import com.tokopedia.session.session.presenter.RegisterNewNextImpl;
 
 import javax.inject.Inject;
 
@@ -79,7 +78,7 @@ public class CreatePasswordPresenter extends BaseDaggerPresenter<CreatePassword.
         if (TextUtils.isEmpty(model.getMsisdn())) {
             viewListener.showErrorPhoneNumber(R.string.error_field_required);
             isValid = false;
-        } else if (!RegisterNewNextImpl.isValidPhoneNumber(model.getMsisdn())) {
+        } else if (!RegisterUtil.isValidPhoneNumber(model.getMsisdn())) {
             viewListener.showErrorPhoneNumber(R.string.error_invalid_phone_number);
             isValid = false;
         }
@@ -107,7 +106,7 @@ public class CreatePasswordPresenter extends BaseDaggerPresenter<CreatePassword.
         if (TextUtils.isEmpty(model.getFullName())) {
             viewListener.showErrorName(R.string.error_field_required);
             isValid = false;
-        } else if (RegisterNewImpl.RegisterUtil.checkRegexNameLocal(model.getFullName())) {
+        } else if (RegisterUtil.checkRegexNameLocal(model.getFullName())) {
             viewListener.showErrorName(R.string.error_illegal_character);
             isValid = false;
         } else if (model.getFullName().length() > 35) {

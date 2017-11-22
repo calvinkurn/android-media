@@ -10,7 +10,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -32,14 +31,14 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.presenter.CreatePasswordPresenter;
+import com.tokopedia.session.register.view.util.RegisterUtil;
 import com.tokopedia.session.register.view.viewlistener.CreatePassword;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
-import com.tokopedia.session.session.presenter.RegisterNewImpl;
 
 import javax.inject.Inject;
 
@@ -75,7 +74,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     DatePickerDialog.OnDateSetListener callBack = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            vBDay.setText(RegisterNewImpl.RegisterUtil.formatDateText(
+            vBDay.setText(RegisterUtil.formatDateText(
                     dayOfMonth,
                     monthOfYear,
                     year
@@ -295,7 +294,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
                 model.setBdayMonth(month);
                 model.setBdayDay(dayOfMonth);
 
-                String birthday = RegisterNewImpl.RegisterUtil.formatDateText(
+                String birthday = RegisterUtil.formatDateText(
                         model.getBdayDay(),
                         model.getBdayMonth(),
                         model.getBdayYear());
