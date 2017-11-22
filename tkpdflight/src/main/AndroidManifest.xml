@@ -45,6 +45,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".booking.view.activity.FlightBookingLuggageActivity"
+            android:label="@string/flight_booking_luggage_toolbar_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".booking.view.activity.FlightBookingMealsActivity"
+            android:label="@string/flight_booking_meal_toolbar_title"
             android:screenOrientation="portrait" />
         <activity
             android:name=".booking.view.activity.FlightBookingPassengerActivity"
