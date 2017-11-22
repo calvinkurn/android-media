@@ -489,6 +489,7 @@ public class DetailResChatFragment
     @Override
     public void errorInputMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
+        chatAdapter.deleteLastItem();
     }
 
     @Override
