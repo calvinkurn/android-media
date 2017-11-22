@@ -34,7 +34,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
 
     private int totalItem;
     private boolean isInFilterMode;
-    private NoResultDataBinder emptyNoResultDataBinder;
+    private NoResultDataBinder emptyWhenSearchDataBinder;
     private LoadingDataBinder loadingDataBinder;
 
     private int pageToLoad = 1;
@@ -72,6 +72,8 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         setLoadingView(createLoadingDataBinder());
         setEmptyView(createEmptyViewBinder());
         setRetryView(createRetryDataBinder());
+
+        setEmptyWhenSearchView();
     }
 
     @Override
@@ -90,6 +92,16 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         }
         emptyView.setIsFullScreen(true);
         super.setEmptyView(emptyView);
+    }
+
+    private void setEmptyWhenSearchView() {
+        if (emptyWhenSearchDataBinder == null) {
+            emptyWhenSearchDataBinder = createEmptyViewSearchBinder();
+        }
+        if (emptyWhenSearchDataBinder == null) {
+            emptyWhenSearchDataBinder = new NoResultDataBinder(this);
+        }
+        emptyWhenSearchDataBinder.setIsFullScreen(true);
     }
 
     @Override
@@ -277,7 +289,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
             case VIEW_EMPTY:
                 return super.onCreateViewHolder(parent, viewType);
             case VIEW_EMPTY_SEARCH:
-                return getEmptyDataWhenSearchBinder().newViewHolder(parent);
+                return emptyWhenSearchDataBinder.newViewHolder(parent);
             default:
                 return onCreateItemViewHolder(parent, viewType);
         }
@@ -298,7 +310,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
                 super.onBindViewHolder(holder, position);
                 break;
             case VIEW_EMPTY_SEARCH:
-                getEmptyDataWhenSearchBinder().bindViewHolder((NoResultDataBinder.ViewHolder) holder, position);
+                emptyWhenSearchDataBinder.bindViewHolder((NoResultDataBinder.ViewHolder) holder, position);
                 break;
             default:
                 bindItemViewHolder(position, holder);
@@ -354,16 +366,6 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         if (viewHolder instanceof BaseViewHolder) {
             ((BaseViewHolder<T>) viewHolder).bindObject(t);
         }
-    }
-
-    private NoResultDataBinder getEmptyDataWhenSearchBinder() {
-        if (emptyNoResultDataBinder == null) {
-            emptyNoResultDataBinder = createEmptyViewSearchBinder();
-        }
-        if (emptyNoResultDataBinder == null) {
-            emptyNoResultDataBinder = new NoResultDataBinder(this);
-        }
-        return emptyNoResultDataBinder;
     }
 
 

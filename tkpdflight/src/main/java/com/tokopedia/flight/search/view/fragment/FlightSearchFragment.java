@@ -54,7 +54,8 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel> implements FlightSearchView,
-        BaseListAdapter.OnBaseListV2AdapterListener<FlightSearchViewModel>, FlightSearchAdapter.ListenerOnDetailClicked {
+        BaseListAdapter.OnBaseListV2AdapterListener<FlightSearchViewModel>,
+        FlightSearchAdapter.OnBaseFlightSearchAdapterListener {
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
@@ -164,8 +165,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     protected final BaseListAdapter<FlightSearchViewModel> getNewAdapter() {
-        FlightSearchAdapter flightSearchAdapter = new FlightSearchAdapter(getContext(),this);
-        flightSearchAdapter.setListenerOnDetailClicked(this);
+        FlightSearchAdapter flightSearchAdapter = new FlightSearchAdapter(getContext(),this, this);
         return flightSearchAdapter;
     }
 
@@ -495,6 +495,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         flightDetailViewModel.build(flightSearchPassDataViewModel);
         this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel),
                 REQUEST_CODE_SEE_DETAIL_FLIGHT);
+    }
+
+    @Override
+    public void onResetFilterClicked() {
+        flightFilterModel = new FlightFilterModel();
+        showLoading();
+        setUIMarkFilter();
+        reloadDataFromCache();
     }
 
     @Override

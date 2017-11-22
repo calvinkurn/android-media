@@ -166,5 +166,7 @@
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
     <string name="flight_booking_passenger_birthdate_infant_should_no_more_than_two_years">Umur penumpang bayi harus dibawah sama 2 tahun</string>
     <string name="flight_there_is_no_flight_available">Tidak ada penerbangan yang tersedia</string>
+    <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
     <string name="change_date">Ubah Tanggal</string>
+    <string name="reset_filter">Reset Filter</string>
 </resources>
