@@ -12,8 +12,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostNewGroupFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
@@ -86,8 +84,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity imp
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
             fragmentList.add(TopAdsKeywordNewChooseGroupFragment.newInstance());
-            fragmentList.add(new TopAdsNewCostNewGroupFragment());
-            fragmentList.add(new TopAdsNewScheduleNewGroupFragment());
+            fragmentList.add(TopAdsKeywordAddFragment.newInstance());
             return fragmentList;
         } else {
             return fragmentList;

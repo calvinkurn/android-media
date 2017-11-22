@@ -122,7 +122,6 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bundle args = getArguments();
         groupId = stepperModel.getGroupId();
         keywordType = stepperModel.getKeywordType();
         serverCount = stepperModel.getServerCount();

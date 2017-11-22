@@ -82,6 +82,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
 
     @Override
     protected void saveStepperModel(TopAdsKeywordStepperModel stepperModel) {
+        stepperModel.setGroupId(chosenId);
         stepperModel.setChoosenId(chosenId);
         stepperModel.setGroupName(autoCompleteChooseGroup.getText().toString());
         stepperModel.setKeywordType(keywordType);
@@ -250,7 +251,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToNextPage();
+                onNextClicked();
             }
         });
     }
