@@ -111,17 +111,21 @@ public class NetworkErrorHelper {
     }
 
     public static void showSnackbar(Activity activity) {
-        SnackbarManager.make(activity,
-                activity.getResources().getString(R.string.msg_network_error),
-                Snackbar.LENGTH_SHORT)
-                .show();
+        if (activity != null) {
+            SnackbarManager.make(activity,
+                    activity.getResources().getString(R.string.msg_network_error),
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     public static void showSnackbar(Activity activity, String error) {
-        SnackbarManager.make(activity,
-                error,
-                Snackbar.LENGTH_SHORT)
-                .show();
+        if (activity != null) {
+            SnackbarManager.make(activity,
+                    error,
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     public static void showEmptyState(Context context, final View rootview, final RetryClickedListener listener) {

@@ -76,12 +76,12 @@ public class WidgetRadioChooserView extends LinearLayout {
         Operator operatorModel = operators.get(radioGroup.getChildAt(0).getId());
         listener.onCheckChange(operatorModel);
         initCheckRadioButtonBasedOnLastOrder(operators, radioGroup, lastOrder, lastOperatorSelected);
-        radioGroup.setOnTouchListener(getOnTouchListener());
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 listener.onResetClientNumber();
                 listener.onCheckChange(operators.get(i));
+                listener.onTrackingOperator();
             }
         });
     }
@@ -117,18 +117,6 @@ public class WidgetRadioChooserView extends LinearLayout {
                 }
             }
         }
-    }
-
-    private View.OnTouchListener getOnTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    listener.onTrackingOperator();
-                }
-                return false;
-            }
-        };
     }
 
     public interface RadioChoserListener {
