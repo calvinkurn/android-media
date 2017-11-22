@@ -16,7 +16,7 @@ import rx.Observable;
 public class GetResChatUseCase extends UseCase<DetailResChatDomain> {
 
     public static final String PARAMS_RESO_ID = "resolution_id";
-    public static final String PARAMS_LIMIT = "limit_count";
+    public static final String PARAMS_LIMIT = "limit";
 
     private ResCenterRepository resCenterRepository;
 
