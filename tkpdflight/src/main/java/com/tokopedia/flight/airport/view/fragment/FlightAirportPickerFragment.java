@@ -58,7 +58,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     @Override
     protected BaseListAdapter<FlightAirportDB> getNewAdapter() {
-        return new FlightAirportAdapter(this);
+        return new FlightAirportAdapter(getContext(), this);
     }
 
     @Override

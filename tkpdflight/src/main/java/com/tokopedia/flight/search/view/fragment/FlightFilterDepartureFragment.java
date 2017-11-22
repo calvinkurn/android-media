@@ -36,7 +36,7 @@ public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<Depa
 
     @Override
     protected BaseListAdapter<DepartureStat> getNewAdapter() {
-        flightFilterDepartureAdapter = new FlightFilterDepartureAdapter(this, this);
+        flightFilterDepartureAdapter = new FlightFilterDepartureAdapter(getContext(), this, this);
         return flightFilterDepartureAdapter;
     }
 

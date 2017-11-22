@@ -1,5 +1,6 @@
 package com.tokopedia.flight.detail.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,12 @@ import java.util.List;
  */
 
 public class FlightDetailFacilityAdapter extends BaseListAdapter<Route> {
-    public FlightDetailFacilityAdapter(OnBaseListV2AdapterListener<Route> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
+    public FlightDetailFacilityAdapter(Context context, OnBaseListV2AdapterListener<Route> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
-    public FlightDetailFacilityAdapter(@Nullable List<Route> data, int rowPerPage, OnBaseListV2AdapterListener<Route> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightDetailFacilityAdapter(Context context, @Nullable List<Route> data, int rowPerPage, OnBaseListV2AdapterListener<Route> onBaseListV2AdapterListener) {
+        super(context, data, rowPerPage, onBaseListV2AdapterListener);
     }
 
     @Override

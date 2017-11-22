@@ -137,12 +137,12 @@
     <string name="flight_booking_toolbar_title">Isi data pemesan</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>
-    <string name="duration_flight_hh">%1$d Jm</string>
-    <string name="duration_flight_hhh">%1$d Jam</string>
-    <string name="duration_flight_dd">%1$d Hr</string>
-    <string name="duration_flight_ddd">%1$d Hari</string>
-    <string name="duration_flight_mm">%1$d Mnt</string>
-    <string name="duration_flight_mmm">%1$d Menit</string>
+    <string name="flight_duration_hh">%1$d Jm</string>
+    <string name="flight_duration_hhh">%1$d Jam</string>
+    <string name="flight_duration_dd">%1$d Hr</string>
+    <string name="flight_duration_ddd">%1$d Hari</string>
+    <string name="flight_duration_mm">%1$d Mnt</string>
+    <string name="flight_duration_mmm">%1$d Menit</string>
     <string name="flight_label_multi_maskapai">Multi Maskapai</string>
     <string name="activity_label_flight_search_departure">Pencarian Pergi</string>
     <string name="flight_dashboard_departure_airport_hint">Penerbangan Asal</string>
@@ -165,4 +165,8 @@
     <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
     <string name="flight_booking_passenger_birthdate_infant_should_no_more_than_two_years">Umur penumpang bayi harus dibawah sama 2 tahun</string>
+    <string name="flight_there_is_no_flight_available">Tidak ada penerbangan yang tersedia</string>
+    <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
+    <string name="change_date">Ubah Tanggal</string>
+    <string name="reset_filter">Reset Filter</string>
 </resources>

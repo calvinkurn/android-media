@@ -36,7 +36,7 @@ public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<Airlin
 
     @Override
     protected BaseListAdapter<AirlineStat> getNewAdapter() {
-        adapter = new FlightFilterAirlineAdapter(this, this);
+        adapter = new FlightFilterAirlineAdapter(getContext(), this, this);
         return adapter;
     }
 

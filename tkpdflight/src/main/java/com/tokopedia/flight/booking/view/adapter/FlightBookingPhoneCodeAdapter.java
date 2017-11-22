@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
@@ -15,12 +16,12 @@ import java.util.List;
  */
 
 public class FlightBookingPhoneCodeAdapter extends BaseListAdapter<FlightBookingPhoneCodeViewModel> {
-    public FlightBookingPhoneCodeAdapter(OnBaseListV2AdapterListener<FlightBookingPhoneCodeViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
+    public FlightBookingPhoneCodeAdapter(Context context, OnBaseListV2AdapterListener<FlightBookingPhoneCodeViewModel> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
-    public FlightBookingPhoneCodeAdapter(@Nullable List<FlightBookingPhoneCodeViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightBookingPhoneCodeViewModel> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightBookingPhoneCodeAdapter(Context context, @Nullable List<FlightBookingPhoneCodeViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightBookingPhoneCodeViewModel> onBaseListV2AdapterListener) {
+        super(context, data, rowPerPage, onBaseListV2AdapterListener);
     }
 
     @Override

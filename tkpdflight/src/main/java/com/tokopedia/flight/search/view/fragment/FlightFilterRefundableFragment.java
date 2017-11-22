@@ -38,7 +38,7 @@ public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<Ref
 
     @Override
     protected BaseListAdapter<RefundableStat> getNewAdapter() {
-        flightFilterRefundableAdapter = new FlightFilterRefundableAdapter(this, this);
+        flightFilterRefundableAdapter = new FlightFilterRefundableAdapter(getContext(), this, this);
         return flightFilterRefundableAdapter;
     }
 

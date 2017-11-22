@@ -1,5 +1,6 @@
 package com.tokopedia.flight.dashboard.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,12 @@ import java.util.List;
  */
 
 public class FlightClassesAdapter extends BaseListAdapter<FlightClassViewModel> {
-    public FlightClassesAdapter(OnBaseListV2AdapterListener<FlightClassViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
+    public FlightClassesAdapter(Context context, OnBaseListV2AdapterListener<FlightClassViewModel> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
-    public FlightClassesAdapter(@Nullable List<FlightClassViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightClassViewModel> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightClassesAdapter(Context context, @Nullable List<FlightClassViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightClassViewModel> onBaseListV2AdapterListener) {
+        super(context, data, rowPerPage, onBaseListV2AdapterListener);
     }
 
     @Override

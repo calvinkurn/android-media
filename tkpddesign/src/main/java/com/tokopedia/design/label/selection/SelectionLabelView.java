@@ -2,10 +2,12 @@ package com.tokopedia.design.label.selection;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.tokopedia.design.R;
@@ -23,9 +25,6 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
     public interface OnDeleteListener<T> {
         void onDelete(T t);
     }
-
-    private LabelView labelView;
-    private RecyclerView recyclerView;
 
     private SelectionListAdapter<T> adapter;
 
@@ -69,10 +68,10 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_selection_label_view, this);
-        labelView = (LabelView) view.findViewById(R.id.label_view);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        LabelView labelView = (LabelView) view.findViewById(R.id.label_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         adapter = getSelectionListAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(labelView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
 
         if (!TextUtils.isEmpty(titleText)) {
@@ -82,5 +81,15 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
 
     public void setItemList(List<T> itemList) {
         adapter.setItemList(itemList);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return super.dispatchTouchEvent(ev);
     }
 }

@@ -34,9 +34,9 @@ public class DurationUtil {
         String durationFormat = "";
         if (day > 0) {
             if (useLongFormat) {
-                durationFormat += context.getString(R.string.duration_flight_ddd, day);
+                durationFormat += context.getString(R.string.flight_duration_ddd, day);
             } else {
-                durationFormat += context.getString(R.string.duration_flight_dd, day);
+                durationFormat += context.getString(R.string.flight_duration_dd, day);
             }
         }
         if (hour > 0) {
@@ -44,9 +44,9 @@ public class DurationUtil {
                 durationFormat += " ";
             }
             if (useLongFormat) {
-                durationFormat += context.getString(R.string.duration_flight_hhh, hour);
+                durationFormat += context.getString(R.string.flight_duration_hhh, hour);
             } else {
-                durationFormat += context.getString(R.string.duration_flight_hh, hour);
+                durationFormat += context.getString(R.string.flight_duration_hh, hour);
             }
         }
 
@@ -55,9 +55,9 @@ public class DurationUtil {
                 durationFormat += " ";
             }
             if (useLongFormat) {
-                durationFormat += context.getString(R.string.duration_flight_mmm, minute);
+                durationFormat += context.getString(R.string.flight_duration_mmm, minute);
             } else {
-                durationFormat += context.getString(R.string.duration_flight_mm, minute);
+                durationFormat += context.getString(R.string.flight_duration_mm, minute);
             }
         }
         return durationFormat;
