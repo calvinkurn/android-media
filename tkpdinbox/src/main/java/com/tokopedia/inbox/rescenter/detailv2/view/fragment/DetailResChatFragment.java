@@ -12,6 +12,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -302,7 +304,7 @@ public class DetailResChatFragment
         attachmentAdapter = AttachmentAdapter.createAdapter(getActivity(), true);
         attachmentAdapter.setListener(getAttachmentAdapterListener());
         rvAttachment.setAdapter(attachmentAdapter);
-        initView(true);
+        initView();
     }
 
     private RecyclerView.OnScrollListener recyclerViewListener() {
@@ -315,6 +317,9 @@ public class DetailResChatFragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                //define FAB position
+                resetFABPosition();
+
                 //hide FAB when reach bottom
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
@@ -338,6 +343,31 @@ public class DetailResChatFragment
         };
     }
 
+    private void resetFABPosition() {
+        RelativeLayout.LayoutParams params = getButtonInitParams();
+        if (rvAttachment.getVisibility() == View.VISIBLE) {
+            params.addRule(RelativeLayout.ABOVE, R.id.rv_attachment);
+        } else if (actionButtonLayout.getVisibility() == View.VISIBLE) {
+            params.addRule(RelativeLayout.ABOVE, R.id.layout_action);
+        } else {
+            params.addRule(RelativeLayout.ABOVE, R.id.ff_chat);
+        }
+        fabChat.setLayoutParams(params);
+    }
+
+    private RelativeLayout.LayoutParams getButtonInitParams() {
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,50, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,50, getResources().getDisplayMetrics()));
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.setMargins(
+                0,
+                0,
+                (int) getResources().getDimension(R.dimen.margin_small),
+                (int) getResources().getDimension(R.dimen.margin_small));
+        return params;
+    }
+
     private AttachmentAdapter.ProductImageListener getAttachmentAdapterListener() {
         return new AttachmentAdapter.ProductImageListener() {
             @Override
@@ -356,15 +386,16 @@ public class DetailResChatFragment
                             initActionButton(detailResChatDomain.getButton());
                         }
                         attachmentAdapter.notifyDataSetChanged();
+                        resetFABPosition();
                     }
                 };
             }
         };
     }
 
-    private void initView(boolean isFirstInit) {
+    private void initView() {
         chatAdapter.clearData();
-        presenter.initView(resolutionId, isFirstInit);
+        presenter.initView(resolutionId);
     }
 
     @Override
@@ -505,17 +536,17 @@ public class DetailResChatFragment
     }
 
     @Override
-    public void successGetConversation(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
+    public void successGetConversation(DetailResChatDomain detailResChatDomain) {
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void errorGetConversation(String error, final boolean isFirstInit) {
+    public void errorGetConversation(String error) {
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.loadConversation(resolutionId, isFirstInit);
+                presenter.loadConversation(resolutionId);
             }
         });
     }
@@ -868,6 +899,7 @@ public class DetailResChatFragment
             actionButtonLayout.setVisibility(View.GONE);
         }
         attachmentAdapter.notifyDataSetChanged();
+        resetFABPosition();
     }
 
     @Override
@@ -894,7 +926,7 @@ public class DetailResChatFragment
     @Override
     public void successAcceptSolution() {
         dismissProgressBar();
-        initView(false);
+        initView();
     }
 
     @Override
@@ -906,7 +938,7 @@ public class DetailResChatFragment
     @Override
     public void successCancelComplaint() {
         dismissProgressBar();
-        initView(false);
+        initView();
     }
 
     @Override
@@ -918,7 +950,7 @@ public class DetailResChatFragment
     @Override
     public void successAskHelp() {
         dismissProgressBar();
-        initView(false);
+        initView();
     }
 
     @Override
@@ -930,7 +962,7 @@ public class DetailResChatFragment
     @Override
     public void successInputAddress() {
         dismissProgressBar();
-        initView(false);
+        initView();
     }
 
     @Override
@@ -942,7 +974,7 @@ public class DetailResChatFragment
     @Override
     public void successEditAddress() {
         dismissProgressBar();
-        initView(false);
+        initView();
     }
 
     @Override
@@ -954,7 +986,7 @@ public class DetailResChatFragment
     @Override
     public void successFinishResolution() {
         dismissProgressBar();
-        initView(false);
+        initView();
     }
 
     @Override
@@ -972,7 +1004,7 @@ public class DetailResChatFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case DetailResChatActivity.REQUEST_GO_DETAIL:
-                initView(true);
+                initView();
                 break;
             case ImageUploadHandler.REQUEST_CODE:
                 presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
@@ -982,19 +1014,19 @@ public class DetailResChatFragment
                 break;
             case REQUEST_EDIT_SOLUTION:
                 if (resultCode == Activity.RESULT_OK)
-                    initView(false);
+                    initView();
                 break;
             case REQUEST_APPEAL_SOLUTION:
                 if (resultCode == Activity.RESULT_OK)
-                    initView(false);
+                    initView();
                 break;
             case REQUEST_INPUT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK)
-                    initView(false);
+                    initView();
                 break;
             case REQUEST_EDIT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK) {
-                    initView(false);
+                    initView();
                 }
                 break;
             case REQUEST_CHOOSE_ADDRESS:
@@ -1042,8 +1074,9 @@ public class DetailResChatFragment
     }
 
     @Override
-    public void onRefreshChatAdapter(boolean isFirstInit) {
+    public void onRefreshChatAdapter() {
         chatAdapter.notifyDataSetChanged();
+        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
     }
 
     @Override

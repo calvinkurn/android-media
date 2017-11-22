@@ -45,11 +45,9 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
     public static final String ACTION_RESET = "action_reset";
 
     private final DetailResChatFragmentListener.View mainView;
-    private boolean isFirstInit;
 
-    public GetDetailResChatSubscriber(DetailResChatFragmentListener.View mainView, boolean isFirstInit) {
+    public GetDetailResChatSubscriber(DetailResChatFragmentListener.View mainView) {
         this.mainView = mainView;
-        this.isFirstInit = isFirstInit;
     }
 
     @Override
@@ -61,24 +59,24 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
     public void onError(Throwable e) {
         mainView.dismissProgressBar();
         e.printStackTrace();
-        mainView.errorGetConversation(ErrorHandler.getErrorMessage(e), isFirstInit);
+        mainView.errorGetConversation(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(DetailResChatDomain detailResChatDomain) {
         mainView.dismissProgressBar();
-        mainView.successGetConversation(detailResChatDomain, isFirstInit);
+        mainView.successGetConversation(detailResChatDomain);
         initAllData(detailResChatDomain);
     }
 
     private void initAllData(DetailResChatDomain detailResChatDomain) {
         mainView.initNextStep(detailResChatDomain.getNextAction());
         mainView.initActionButton(detailResChatDomain.getButton());
-        initChatData(detailResChatDomain, isFirstInit);
+        initChatData(detailResChatDomain);
     }
 
 
-    private void initChatData(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
+    private void initChatData(DetailResChatDomain detailResChatDomain) {
         int lastAction = 0;
         List<Visitable> items = new ArrayList<>();
         for (ConversationDomain conversationDomain : detailResChatDomain.getConversationList().getConversationDomains()) {
@@ -146,6 +144,6 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
             }
         }
         mainView.onAddItemAdapter(items);
-        mainView.onRefreshChatAdapter(isFirstInit);
+        mainView.onRefreshChatAdapter();
     }
 }
