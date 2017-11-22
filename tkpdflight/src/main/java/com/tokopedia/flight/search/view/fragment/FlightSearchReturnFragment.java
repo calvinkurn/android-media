@@ -41,10 +41,9 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
         selectedFlightDeparture = getArguments().getString(FlightSearchReturnActivity.EXTRA_SEL_DEPARTURE_ID);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_search_return, container, false);
+    protected int getLayout() {
+        return R.layout.fragment_search_return;
     }
 
     @Override
