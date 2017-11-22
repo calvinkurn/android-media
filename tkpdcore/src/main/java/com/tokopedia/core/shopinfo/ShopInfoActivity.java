@@ -865,15 +865,16 @@ public class ShopInfoActivity extends BaseActivity
                                 shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
-        } else {
-            UnifyTracking.eventShopSendChat();
-            bundle.putBoolean("login", true);
-            intent = SessionRouter.getLoginActivityIntent(this);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
-            bundle.putString(PARAM_OWNER_FULLNAME, shopModel.info.shopName);
-            intent.putExtras(bundle);
-            startActivityForResult(intent, REQ_RELOAD);
+            else {
+                UnifyTracking.eventShopSendChat();
+                bundle.putBoolean("login", true);
+                intent = SessionRouter.getLoginActivityIntent(this);
+                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
+                bundle.putString(PARAM_OWNER_FULLNAME, shopModel.info.shopName);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQ_RELOAD);
+            }
         }
     }
 
