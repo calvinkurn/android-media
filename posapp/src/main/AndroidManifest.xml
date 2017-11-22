@@ -17,7 +17,7 @@
             android:name="LOCALYTICS_APP_KEY"
             android:value="@string/key_localytics" />
         <meta-data
-            android:name="io.fabric.ApiKey"
+            android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
 
         <service
