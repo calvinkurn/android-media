@@ -16,7 +16,6 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
-import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
@@ -118,7 +117,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
         }
     }
 
-    private void showLoading() {
+    protected void showLoading() {
         if (!swipeToRefresh.isRefreshing()) {
             progressDialog.show();
         }

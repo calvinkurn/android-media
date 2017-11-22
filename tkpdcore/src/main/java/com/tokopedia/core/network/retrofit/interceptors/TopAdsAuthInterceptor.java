@@ -1,20 +1,12 @@
-package com.tokopedia.topads.common.util;
+package com.tokopedia.core.network.retrofit.interceptors;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
-
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by normansyahputa on 10/20/17.
