@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.domain.model.shop;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 
@@ -8,9 +10,17 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
  */
 
 public class EtalaseDomain {
+    @SerializedName("etalaseId")
+    @Expose
     private String etalaseId;
+    @SerializedName("etalaseName")
+    @Expose
     private String etalaseName;
+    @SerializedName("etalaseAlias")
+    @Expose
     private String etalaseAlias;
+    @SerializedName("useAce")
+    @Expose
     private int useAce;
 
     public String getEtalaseId() {

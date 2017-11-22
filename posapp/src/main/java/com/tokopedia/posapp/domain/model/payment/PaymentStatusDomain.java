@@ -1,5 +1,8 @@
 package com.tokopedia.posapp.domain.model.payment;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.List;
 
@@ -8,30 +11,80 @@ import java.util.List;
  */
 
 public class PaymentStatusDomain {
+    @SerializedName("merchantCode")
+    @Expose
     private String merchantCode;
+    @SerializedName("profileCode")
+    @Expose
     private String profileCode;
+    @SerializedName("transactionId")
+    @Expose
     private String transactionId;
+    @SerializedName("transactionCode")
+    @Expose
     private String transactionCode;
+    @SerializedName("currency")
+    @Expose
     private String currency;
+    @SerializedName("amount")
+    @Expose
     private double amount;
+    @SerializedName("gatewayCode")
+    @Expose
     private String gatewayCode;
+    @SerializedName("gatewayType")
+    @Expose
     private String gatewayType;
+    @SerializedName("fee")
+    @Expose
     private String fee;
+    @SerializedName("additionalFee")
+    @Expose
     private String additionalFee;
+    @SerializedName("userDefinedValue")
+    @Expose
     private String userDefinedValue;
+    @SerializedName("customerEmail")
+    @Expose
     private String customerEmail;
+    @SerializedName("state")
+    @Expose
     private Integer state;
+    @SerializedName("expiredOn")
+    @Expose
     private Date expiredOn;
+    @SerializedName("paymentDetails")
+    @Expose
     private List<PaymentDetailDomain> paymentDetails;
+    @SerializedName("items")
+    @Expose
     private List<PaymentStatusItemDomain> items;
+    @SerializedName("validParam")
+    @Expose
     private String validParam;
+    @SerializedName("signature")
+    @Expose
     private String signature;
+    @SerializedName("tokocashUsage")
+    @Expose
     private String tokocashUsage;
+    @SerializedName("pairData")
+    @Expose
     private String pairData;
+    @SerializedName("orderId")
+    @Expose
     private int orderId;
+    @SerializedName("invoiceRef")
+    @Expose
     private String invoiceRef;
+    @SerializedName("bankId")
+    @Expose
     private int bankId;
+    @SerializedName("bankName")
+    @Expose
     private String bankName;
+    @SerializedName("bankLogo")
+    @Expose
     private String bankLogo;
 
     public String getMerchantCode() {

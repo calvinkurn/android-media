@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.domain.model.cart;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.base.domain.DefaultParams;
 import com.tokopedia.posapp.domain.model.product.ProductDomain;
 
@@ -8,10 +10,20 @@ import com.tokopedia.posapp.domain.model.product.ProductDomain;
  */
 
 public class CartDomain implements DefaultParams {
+    @SerializedName("id")
+    @Expose
     private Long id;
+    @SerializedName("productId")
+    @Expose
     private int productId;
+    @SerializedName("product")
+    @Expose
     private ProductDomain product;
+    @SerializedName("outletId")
+    @Expose
     private String outletId;
+    @SerializedName("quantity")
+    @Expose
     private int quantity;
 
     public Long getId() {

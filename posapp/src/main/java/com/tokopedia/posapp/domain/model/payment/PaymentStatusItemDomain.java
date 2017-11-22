@@ -8,10 +8,20 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class PaymentStatusItemDomain {
+    @SerializedName("id")
+    @Expose
     private int id;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("quantity")
+    @Expose
     private int quantity;
+    @SerializedName("price")
+    @Expose
     private double price;
+    @SerializedName("imageUrl")
+    @Expose
     private String imageUrl;
 
     public int getId() {
