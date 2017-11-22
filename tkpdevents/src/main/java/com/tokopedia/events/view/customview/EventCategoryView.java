@@ -58,7 +58,7 @@ public class EventCategoryView extends LinearLayout {
 
     public void renderData(List<CategoryItemsViewModel> categoryItems,String title) {
         categoryTitle.setText(title);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(context, categoryItems);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(eventCategoryAdapter);

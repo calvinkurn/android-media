@@ -1,10 +1,13 @@
 package com.tokopedia.events.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by ashwanityagi on 16/11/17.
  */
 
-public class CategoryItemsViewModel {
+public class CategoryItemsViewModel implements Parcelable {
 
     private Integer id;
     private Integer parentId;
@@ -618,4 +621,163 @@ public class CategoryItemsViewModel {
     public void setForms(Object forms) {
         this.forms = forms;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeValue(this.parentId);
+        dest.writeValue(this.categoryId);
+        dest.writeValue(this.providerId);
+        dest.writeString(this.childCategoryIds);
+        dest.writeString(this.cityIds);
+        dest.writeString(this.providerProductId);
+        dest.writeString(this.providerProductCode);
+        dest.writeString(this.providerProductName);
+        dest.writeString(this.displayName);
+        dest.writeString(this.title);
+        dest.writeString(this.actionText);
+        dest.writeString(this.censor);
+        dest.writeString(this.genre);
+        dest.writeString(this.duration);
+        dest.writeString(this.url);
+        dest.writeString(this.seoUrl);
+        dest.writeString(this.imageWeb);
+        dest.writeString(this.thumbnailWeb);
+        dest.writeString(this.imageApp);
+        dest.writeString(this.thumbnailApp);
+        dest.writeString(this.tnc);
+        dest.writeString(this.offerText);
+        dest.writeString(this.shortDesc);
+        dest.writeString(this.longRichDesc);
+        dest.writeString(this.salientFeatures);
+        dest.writeString(this.metaTitle);
+        dest.writeString(this.metaDescription);
+        dest.writeString(this.metaKeywords);
+        dest.writeString(this.searchTags);
+        dest.writeString(this.displayTags);
+        dest.writeString(this.promotionText);
+        dest.writeString(this.autocode);
+        dest.writeValue(this.convenienceFee);
+        dest.writeValue(this.mrp);
+        dest.writeValue(this.salesPrice);
+        dest.writeValue(this.seatChartTypeId);
+        dest.writeValue(this.hasSeatLayout);
+        dest.writeValue(this.form);
+        dest.writeValue(this.priority);
+        dest.writeValue(this.quantity);
+        dest.writeValue(this.soldQuantity);
+        dest.writeValue(this.sellRate);
+        dest.writeValue(this.thumbsUp);
+        dest.writeValue(this.thumbsDown);
+        dest.writeValue(this.rating);
+        dest.writeValue(this.isFeatured);
+        dest.writeValue(this.isPromo);
+        dest.writeValue(this.isFoodAvailable);
+        dest.writeValue(this.isSearchable);
+        dest.writeValue(this.isTop);
+        dest.writeValue(this.usePdf);
+        dest.writeValue(this.status);
+        dest.writeValue(this.redirect);
+        dest.writeValue(this.minStartDate);
+        dest.writeValue(this.maxEndDate);
+        dest.writeValue(this.saleStartDate);
+        dest.writeValue(this.saleEndDate);
+        dest.writeString(this.customLabels);
+        dest.writeString(this.minStartTime);
+        dest.writeString(this.maxEndTime);
+        dest.writeString(this.saleStartTime);
+        dest.writeString(this.saleEndTime);
+        dest.writeValue(this.dateRange);
+        dest.writeString(this.cityName);
+        //dest.writeParcelable(this.schedules, flags);
+        //dest.writeParcelable(this.forms, flags);
+    }
+
+    protected CategoryItemsViewModel(Parcel in) {
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.parentId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.providerId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.childCategoryIds = in.readString();
+        this.cityIds = in.readString();
+        this.providerProductId = in.readString();
+        this.providerProductCode = in.readString();
+        this.providerProductName = in.readString();
+        this.displayName = in.readString();
+        this.title = in.readString();
+        this.actionText = in.readString();
+        this.censor = in.readString();
+        this.genre = in.readString();
+        this.duration = in.readString();
+        this.url = in.readString();
+        this.seoUrl = in.readString();
+        this.imageWeb = in.readString();
+        this.thumbnailWeb = in.readString();
+        this.imageApp = in.readString();
+        this.thumbnailApp = in.readString();
+        this.tnc = in.readString();
+        this.offerText = in.readString();
+        this.shortDesc = in.readString();
+        this.longRichDesc = in.readString();
+        this.salientFeatures = in.readString();
+        this.metaTitle = in.readString();
+        this.metaDescription = in.readString();
+        this.metaKeywords = in.readString();
+        this.searchTags = in.readString();
+        this.displayTags = in.readString();
+        this.promotionText = in.readString();
+        this.autocode = in.readString();
+        this.convenienceFee = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.mrp = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.salesPrice = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.seatChartTypeId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.hasSeatLayout = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.form = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.priority = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.quantity = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.soldQuantity = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.sellRate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.thumbsUp = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.thumbsDown = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.rating = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isFeatured = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isPromo = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isFoodAvailable = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isSearchable = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isTop = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.usePdf = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.status = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.redirect = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.minStartDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.maxEndDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.saleStartDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.saleEndDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.customLabels = in.readString();
+        this.minStartTime = in.readString();
+        this.maxEndTime = in.readString();
+        this.saleStartTime = in.readString();
+        this.saleEndTime = in.readString();
+        this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.cityName = in.readString();
+       // this.schedules = in.readParcelable(Object.class.getClassLoader());
+       // this.forms = in.readParcelable(Object.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<CategoryItemsViewModel> CREATOR = new Parcelable.Creator<CategoryItemsViewModel>() {
+        @Override
+        public CategoryItemsViewModel createFromParcel(Parcel source) {
+            return new CategoryItemsViewModel(source);
+        }
+
+        @Override
+        public CategoryItemsViewModel[] newArray(int size) {
+            return new CategoryItemsViewModel[size];
+        }
+    };
 }

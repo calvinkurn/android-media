@@ -14,20 +14,26 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
+import com.tokopedia.events.view.adapter.CategoryTabsPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
+import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,7 +45,7 @@ import butterknife.Unbinder;
 /**
  * Created by ashwanityagi on 02/11/17.
  */
-public class EventsHomeActivity extends BasePresenterActivity implements HasComponent<EventComponent>, EventsContract.View {
+public class EventsHomeActivity extends TActivity implements HasComponent<EventComponent>, EventsContract.View {
 
     private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
@@ -48,13 +54,17 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
     @Inject
     public EventHomePresenter mPresenter;
 
-    @BindView(R2.id.holder_category_list)
-    LinearLayout holderCategoryListLayout;
+    //@BindView(R2.id.holder_category_list)
+    //LinearLayout holderCategoryListLayout;
     @BindView(R2.id.event_bannerpager)
     TouchViewPager viewPager;
-    @BindView(R2.id.tab_layout)
-    TabLayout tabLayout;
+    @BindView(R2.id.pager_indicator)
+    CirclePageIndicator tabLayout;
 
+    @BindView(R2.id.category_view_pager)
+    ViewPager categoryViewPager;
+    @BindView(R2.id.tabs)
+    TabLayout tabs;
 
     private SlidingImageAdapter adapter;
 
@@ -63,11 +73,18 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_events_home_new);
+        unbinder = ButterKnife.bind(this);
+        initInjector();
+        executeInjector();
+        mPresenter.attachView(this);
+        ButterKnife.bind(this);
+        mPresenter.getEventsList();
         setupToolbar();
     }
+
 
     private void executeInjector() {
         if (eventComponent == null) initInjector();
@@ -101,30 +118,30 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
 
     }
 
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_events_home;
-    }
-
-    @Override
-    protected void initView() {
-
-    }
+//    @Override
+//    protected void setupURIPass(Uri data) {
+//
+//    }
+//
+//    @Override
+//    protected void setupBundlePass(Bundle extras) {
+//
+//    }
+//
+//    @Override
+//    protected void initialPresenter() {
+//
+//    }
+//
+//    @Override
+//    protected int getLayoutId() {
+//        return R.layout.activity_events_home_new;
+//    }
+//
+//    @Override
+//    protected void initView() {
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -141,22 +158,22 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
         }
         return super.onOptionsItemSelected(item);
     }
+//
+//    @Override
+//    protected void initVar() {
+//        unbinder = ButterKnife.bind(this);
+//        initInjector();
+//        executeInjector();
+//        mPresenter.attachView(this);
+//        // mPresenter.initialize();
+//        ButterKnife.bind(this);
+//        mPresenter.getEventsList();
+//    }
 
-    @Override
-    protected void initVar() {
-        unbinder = ButterKnife.bind(this);
-        initInjector();
-        executeInjector();
-        mPresenter.attachView(this);
-        // mPresenter.initialize();
-        ButterKnife.bind(this);
-        mPresenter.getEventsList();
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
+//    @Override
+//    protected void setActionVar() {
+//
+//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -167,29 +184,29 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        invalidateTitleToolBar();
+        // invalidateTitleToolBar();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        invalidateTitleToolBar();
+        // invalidateTitleToolBar();
     }
 
-    private void invalidateTitleToolBar() {
-        String titleToolbar = getString(R.string.drawer_title_appshare);
-        if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
-    }
+//    private void invalidateTitleToolBar() {
+//        String titleToolbar = getString(R.string.drawer_title_appshare);
+//        if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+//    }
 
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
+//    @Override
+//    protected void setViewListener() {
+//
+//    }
+//
+//    @Override
+//    protected boolean isLightToolbarThemes() {
+//        return true;
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -209,9 +226,10 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
 
     @Override
     public void renderCategoryList(List<CategoryViewModel> categoryList) {
-        holderCategoryListLayout.removeAllViews();
+        // holderCategoryListLayout.removeAllViews();
+        ArrayList<EventCategoryView> eventCategoryViews = new ArrayList<>();
         for (CategoryViewModel categoryViewModel : categoryList) {
-            if(categoryViewModel.getItems()==null || categoryViewModel.getItems().size()==0){
+            if (categoryViewModel.getItems() == null || categoryViewModel.getItems().size() == 0) {
                 continue;
             }
             EventCategoryView eventCategoryView = new EventCategoryView(this);
@@ -219,11 +237,23 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
             if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
                 adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()));
                 setViewPagerListener();
-                tabLayout.setupWithViewPager(viewPager, true);
+                tabLayout.setViewPager(viewPager);
             } else {
-                holderCategoryListLayout.addView(eventCategoryView);
+
+                eventCategoryViews.add(eventCategoryView);
+                // holderCategoryListLayout.addView(eventCategoryView);
             }
         }
+
+        CategoryFragmentPagerAdapter categoryTabsPagerAdapter = new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
+        categoryViewPager.setAdapter(categoryTabsPagerAdapter);
+        tabs.setupWithViewPager(categoryViewPager);
+        categoryViewPager.setCurrentItem(0);
+        categoryViewPager.setSaveFromParentEnabled(false);
+//        SlidingCategoryAdapter eventCategoryAdapter=new SlidingCategoryAdapter(EventsHomeActivity.this,eventCategoryViews);
+//        categoryViewPager.setAdapter(eventCategoryAdapter);
+//        categoryTabLayout.setupWithViewPager(categoryViewPager, true);
+
 
     }
 

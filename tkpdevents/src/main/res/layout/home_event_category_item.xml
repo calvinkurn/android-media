@@ -1,61 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
-    android:layout_height="250dp"
-    android:padding="@dimen/padding_vs"
-    android:orientation="vertical">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_white_border_grey"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_vs"
-        android:weightSum="2">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/img_event"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="175dp"
             android:scaleType="center"
             android:src="@drawable/background" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="10dp">
+            android:layout_height="wrap_content"
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/event_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="The 90's Festival" />
+                android:layout_toLeftOf="@+id/tv_event_price"
+                android:paddingBottom="@dimen/padding_vs"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_vs"
+                android:text="The 90's Festival"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/font_medium" />
 
             <TextView
                 android:id="@+id/btn_bookticket"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_alignBottom="@+id/linearLayout2"
                 android:layout_alignParentRight="true"
-
                 android:background="@drawable/rounded_filled_theme_bttn_orange"
+                android:paddingBottom="@dimen/padding_vs"
                 android:paddingLeft="@dimen/padding_med"
                 android:paddingRight="@dimen/padding_med"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingBottom="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_vs"
                 android:text="Beli Ticket"
                 android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textSize="@dimen/font_small" />
 
             <TextView
                 android:id="@+id/tv_event_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:padding="@dimen/padding_small"
                 android:text="Rp 552.00"
                 android:textColor="@color/green_500"
                 android:textSize="12sp" />
@@ -64,8 +67,8 @@
                 android:id="@+id/place_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/linearLayout2"
-                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/event_title"
+                android:layout_marginBottom="@dimen/margin_vs"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -77,18 +80,19 @@
                     android:src="@drawable/arrow_drop_down" />
 
                 <TextView
+                    android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Kemayoran"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/font_small" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/tv_event_price"
-                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/place_layout"
+                android:layout_marginBottom="@dimen/margin_vs"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -97,15 +101,16 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="2dp"
                     android:layout_marginRight="2dp"
-                    android:src="@drawable/arrow_drop_down" />
+                    android:src="@drawable/arrow_drop_down"
+                    android:textSize="@dimen/font_small" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="25 Nov 2017"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/font_small" />
             </LinearLayout>
 
         </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
+</android.support.v7.widget.CardView>
