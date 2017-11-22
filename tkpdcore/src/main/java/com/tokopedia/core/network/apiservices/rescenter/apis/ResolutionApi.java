@@ -86,6 +86,11 @@ public interface ResolutionApi {
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_CONVERSATION_V2)
     Observable<Response<TkpdResponse>> getConversation(@Path("resolution_id") String resoId, @QueryMap TKPDMapParam<String, Object> params);
 
+    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_CONVERSATION_MORE_V2)
+    Observable<Response<TkpdResponse>> getConversationMore(
+            @Path("resolution_id") String resoId,
+            @QueryMap TKPDMapParam<String, Object> params);
+
     @GET(TkpdBaseURL.ResCenterV2.BASE_DETAIL_NEXT_ACTION_RESOLUTION_V2)
     Observable<Response<TkpdResponse>> getNextAction(@Path("resolution_id") String resoId);
 

@@ -58,6 +58,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Butto
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationListDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
@@ -122,6 +123,7 @@ public class DetailResChatFragment
     private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
+    private String lastConvId;
 
     @Inject
     DetailResChatFragmentPresenter presenter;
@@ -322,6 +324,16 @@ public class DetailResChatFragment
                 } else {
                     fabChat.show();
                 }
+
+                int topVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                Log.d("MyTag", "topVisibleItemPosition "+ topVisibleItemPosition);
+                if(topVisibleItemPosition<=1) {
+                    ConversationDomain topConversation = detailResChatDomain.getConversationList().
+                            getConversationDomains().
+                            get(topVisibleItemPosition);
+                    lastConvId = String.valueOf(topConversation.getResConvId());
+                    presenter.doLoadMore(resolutionId, lastConvId);
+                }
             }
         };
     }
@@ -505,6 +517,26 @@ public class DetailResChatFragment
                 presenter.loadConversation(resolutionId, isFirstInit);
             }
         });
+    }
+
+    @Override
+    public void successGetConversation(ConversationListDomain conversationListDomain) {
+        this.detailResChatDomain.getConversationList()
+                .setCanLoadMore(conversationListDomain.getCanLoadMore());
+        this.detailResChatDomain.getConversationList()
+                .getConversationDomains().addAll(0, conversationListDomain.getConversationDomains());
+    }
+
+    @Override
+    public void errorGetConversationMore(String error) {
+        if(resolutionId!=null && lastConvId!=null) {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.doLoadMore(resolutionId, lastConvId);
+                }
+            });
+        }
     }
 
     @Override
@@ -1001,6 +1033,11 @@ public class DetailResChatFragment
         chatAdapter.addAllItems(items);
         rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
 
+    }
+
+    @Override
+    public void onAddItemWithPositionAdapter(int position, List<Visitable> items) {
+        chatAdapter.addAllItemsOnPosition(position, items);
     }
 
     @Override
