@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.List;
 
 /**
- * @author  by alvarisi on 11/7/17.
+ * @author by alvarisi on 11/7/17.
  */
 
 public class FlightBookingPassengerViewModel implements Parcelable {
@@ -17,8 +17,8 @@ public class FlightBookingPassengerViewModel implements Parcelable {
     private String headerTitle;
     private String passengerName;
     private String passengerBirthdate;
-    private List<FlightBookingLuggageRouteViewModel> flightBookingLuggageRouteViewModels;
-    private List<FlightBookingMealRouteViewModel> flightBookingMealRouteViewModels;
+    private List<FlightBookingLuggageMetaViewModel> flightBookingLuggageMetaViewModels;
+    private List<FlightBookingMealMetaViewModel> flightBookingMealMetaViewModels;
 
     public FlightBookingPassengerViewModel() {
     }
@@ -31,7 +31,8 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         headerTitle = in.readString();
         passengerName = in.readString();
         passengerBirthdate = in.readString();
-        flightBookingMealRouteViewModels = in.createTypedArrayList(FlightBookingMealRouteViewModel.CREATOR);
+        flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingLuggageMetaViewModel.CREATOR);
+        flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingMealMetaViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
@@ -86,12 +87,12 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.singleRoute = singleRoute;
     }
 
-    public List<FlightBookingMealRouteViewModel> getFlightBookingMealRouteViewModels() {
-        return flightBookingMealRouteViewModels;
+    public List<FlightBookingMealMetaViewModel> getFlightBookingMealMetaViewModels() {
+        return flightBookingMealMetaViewModels;
     }
 
-    public void setFlightBookingMealRouteViewModels(List<FlightBookingMealRouteViewModel> flightBookingMealRouteViewModels) {
-        this.flightBookingMealRouteViewModels = flightBookingMealRouteViewModels;
+    public void setFlightBookingMealMetaViewModels(List<FlightBookingMealMetaViewModel> flightBookingMealMetaViewModels) {
+        this.flightBookingMealMetaViewModels = flightBookingMealMetaViewModels;
     }
 
     @Override
@@ -115,12 +116,12 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.passengerId = passengerId;
     }
 
-    public List<FlightBookingLuggageRouteViewModel> getFlightBookingLuggageRouteViewModels() {
-        return flightBookingLuggageRouteViewModels;
+    public List<FlightBookingLuggageMetaViewModel> getFlightBookingLuggageMetaViewModels() {
+        return flightBookingLuggageMetaViewModels;
     }
 
-    public void setFlightBookingLuggageRouteViewModels(List<FlightBookingLuggageRouteViewModel> flightBookingLuggageRouteViewModels) {
-        this.flightBookingLuggageRouteViewModels = flightBookingLuggageRouteViewModels;
+    public void setFlightBookingLuggageMetaViewModels(List<FlightBookingLuggageMetaViewModel> flightBookingLuggageMetaViewModels) {
+        this.flightBookingLuggageMetaViewModels = flightBookingLuggageMetaViewModels;
     }
 
     public String getPassengerTitle() {
@@ -145,6 +146,7 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         dest.writeString(headerTitle);
         dest.writeString(passengerName);
         dest.writeString(passengerBirthdate);
-        dest.writeTypedList(flightBookingMealRouteViewModels);
+        dest.writeTypedList(flightBookingLuggageMetaViewModels);
+        dest.writeTypedList(flightBookingMealMetaViewModels);
     }
 }

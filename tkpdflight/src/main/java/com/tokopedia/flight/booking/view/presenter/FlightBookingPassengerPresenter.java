@@ -4,13 +4,11 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageRouteViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealRouteViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,13 +19,9 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
-
 /**
  * @author by alvarisi on 11/16/17.
+ *         TODO :this class still
  */
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
@@ -59,7 +53,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         }
 
         if (isAdultPassenger() || isChildPassenger()) {
-            if (isRoundTrip()) {
+            getView().renderPassengerLuggages(getView().getLuggageViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
+            getView().renderPassengerMeals(getView().getMealViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
+            /*if (isRoundTrip()) {
                 flightBookingGetSingleResultUseCase
                         .createObservable(flightBookingGetSingleResultUseCase.createRequestParam(false, getView().getDepartureId()))
                         .zipWith(flightBookingGetSingleResultUseCase.createObservable(
@@ -103,7 +99,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                                                 }
                                                 if (flightBookingMealRouteViewModels.size() > 0) {
                                                     getView().renderPassengerMeals(flightBookingMealRouteViewModels,
-                                                            getView().getCurrentPassengerViewModel().getFlightBookingMealRouteViewModels());
+                                                            getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
                                                 }
                                             }
 
@@ -142,7 +138,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
                                                 if (flightBookingLuggageRouteViewModels.size() > 0) {
                                                     getView().renderPassengerLuggages(flightBookingLuggageRouteViewModels,
-                                                            getView().getCurrentPassengerViewModel().getFlightBookingLuggageRouteViewModels());
+                                                            getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
                                                 }
                                             }
                                         }
@@ -198,7 +194,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                                         }
                                         if (flightBookingMealRouteViewModels.size() > 0) {
                                             getView().renderPassengerMeals(flightBookingMealRouteViewModels,
-                                                    getView().getCurrentPassengerViewModel().getFlightBookingMealRouteViewModels());
+                                                    getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
                                         }
                                     }
 
@@ -221,13 +217,13 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                                         }
                                         if (flightBookingLuggageRouteViewModels.size() > 0) {
                                             getView().renderPassengerLuggages(flightBookingLuggageRouteViewModels,
-                                                    getView().getCurrentPassengerViewModel().getFlightBookingLuggageRouteViewModels());
+                                                    getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
                                         }
                                     }
                                 }
                             }
                         });
-            }
+            }*/
         }
 
         if (getView().getCurrentPassengerViewModel().getPassengerName() != null) {
@@ -297,6 +293,77 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         Date newReturnDate = now.getTime();
         String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
         getView().renderBirthdate(birthdateStr);
+    }
+
+    @Override
+    public void onPassengerLuggageClick(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel) {
+        FlightBookingLuggageMetaViewModel existingSelected = null;
+        for (FlightBookingLuggageMetaViewModel selected : getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels()) {
+            if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
+                existingSelected = selected;
+            }
+        }
+        if (existingSelected == null) {
+            existingSelected = new FlightBookingLuggageMetaViewModel();
+            existingSelected.setKey(flightBookingLuggageMetaViewModel.getKey());
+            existingSelected.setDescription(flightBookingLuggageMetaViewModel.getDescription());
+            existingSelected.setLuggages(new ArrayList<FlightBookingLuggageViewModel>());
+        }
+        getView().navigateToLuggagePicker(flightBookingLuggageMetaViewModel.getLuggages(), existingSelected);
+    }
+
+    @Override
+    public void onLuggageDataChange(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel) {
+        List<FlightBookingLuggageMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels();
+        int index = viewModels.indexOf(flightBookingLuggageMetaViewModel);
+        if (index != -1) {
+            viewModels.set(index, flightBookingLuggageMetaViewModel);
+        } else {
+            viewModels.add(flightBookingLuggageMetaViewModel);
+        }
+
+        getView().renderPassengerLuggages(getView().getLuggageViewModels(), viewModels);
+    }
+
+    @Override
+    public void onMealDataChange(FlightBookingMealMetaViewModel flightBookingMealMetaViewModel) {
+        List<FlightBookingMealMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
+        int index = viewModels.indexOf(flightBookingMealMetaViewModel);
+        if (index != -1) {
+            viewModels.set(index, flightBookingMealMetaViewModel);
+        } else {
+            viewModels.add(flightBookingMealMetaViewModel);
+        }
+
+        getView().renderPassengerMeals(getView().getMealViewModels(), viewModels);
+    }
+
+    @Override
+    public void onDeleteMeal(FlightBookingMealMetaViewModel viewModel) {
+        List<FlightBookingMealMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
+        int index = viewModels.indexOf(viewModel);
+        if (index != -1) {
+            viewModels.set(index, viewModel);
+        } else {
+            viewModels.add(viewModel);
+        }
+
+        getView().renderPassengerMeals(getView().getMealViewModels(), viewModels);
+    }
+
+    @Override
+    public void onOptionMeal(FlightBookingMealMetaViewModel viewModel) {
+        List<FlightBookingMealMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
+        int index = viewModels.indexOf(viewModel);
+        if (index != -1) {
+            getView().navigateToMealPicker(viewModel.getMealViewModels(), viewModels.get(index));
+        } else {
+            FlightBookingMealMetaViewModel selected = new FlightBookingMealMetaViewModel();
+            selected.setKey(viewModel.getKey());
+            selected.setDescription(viewModel.getDescription());
+            selected.setMealViewModels(new ArrayList<FlightBookingMealViewModel>());
+            getView().navigateToMealPicker(viewModel.getMealViewModels(), selected);
+        }
     }
 
     private boolean validateFields() {

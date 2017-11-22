@@ -10,6 +10,8 @@ import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
@@ -151,7 +153,6 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
         List<FlightBookingPassengerViewModel> passengerViewModels = buildPassengerViewModel(getView().getCurrentBookingParamViewModel().getSearchParam());
         getView().getCurrentBookingParamViewModel().setPassengerViewModels(passengerViewModels);
         getView().renderPassengersList(passengerViewModels);
-
         getView().renderTotalPrices(String.valueOf(totalPrice));
     }
 
@@ -326,6 +327,8 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                     passengerNumber,
                     getView().getString(R.string.flight_booking_postfix_adult_passenger))
             );
+            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingLuggageMetaViewModel>());
+            viewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingMealMetaViewModel>());
             viewModels.add(viewModel);
             passengerNumber++;
         }
@@ -339,8 +342,11 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                     passengerNumber,
                     getView().getString(R.string.flight_booking_postfix_children_passenger))
             );
+            viewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingMealMetaViewModel>());
+            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingLuggageMetaViewModel>());
             viewModels.add(viewModel);
             passengerNumber++;
+
         }
         for (int i = 1, infantTotal = passData.getFlightPassengerViewModel().getChildren(); i <= infantTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
@@ -352,6 +358,9 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                     passengerNumber,
                     getView().getString(R.string.flight_booking_postfix_infant_passenger))
             );
+
+            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingLuggageMetaViewModel>());
+            viewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingMealMetaViewModel>());
             viewModels.add(viewModel);
             passengerNumber++;
         }

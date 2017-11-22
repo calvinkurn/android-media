@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageRouteViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealRouteViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -98,27 +98,31 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
             if (viewModel.getPassengerName() != null) {
                 passengerDetailLayout.setVisibility(View.VISIBLE);
                 tvChangePassengerData.setText(itemView.getContext().getString(R.string.flight_booking_passenger_change_label));
-                tvPassengerName.setText(String.valueOf(viewModel.getPassengerName()));
+                String passengerName = viewModel.getPassengerName();
+                if (viewModel.getPassengerTitle() != null && viewModel.getPassengerTitle().length() > 0) {
+                    passengerName = String.format("%s %s", viewModel.getPassengerTitle(), passengerName);
+                }
+                tvPassengerName.setText(String.valueOf(passengerName));
                 List<SimpleViewModel> simpleViewModels = new ArrayList<>();
-                if (viewModel.getPassengerName() != null && viewModel.getPassengerName().length() > 0) {
+                if (viewModel.getPassengerBirthdate() != null && viewModel.getPassengerBirthdate().length() > 0) {
                     simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(R.string.flight_booking_list_passenger_birthdate_label), String.valueOf(FlightDateUtil.formatDate(
                             FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
                     ))));
                 }
 
-                if (viewModel.getFlightBookingLuggageRouteViewModels() != null) {
-                    for (FlightBookingLuggageRouteViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageRouteViewModels()) {
+                if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
+                    for (FlightBookingLuggageMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
                         simpleViewModels.add(new SimpleViewModel(
-                                itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getRoute().getDepartureAirport() + " - " + flightBookingLuggageRouteViewModel.getRoute().getArrivalAirport(), String.valueOf(FlightDateUtil.formatDate(
-                                FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingLuggageRouteViewModel.getLuggage())
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getDescription(), String.valueOf(FlightDateUtil.formatDate(
+                                FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingLuggageRouteViewModel.getLuggages())
                         ))));
                     }
                 }
 
-                if (viewModel.getFlightBookingMealRouteViewModels() != null && viewModel.getFlightBookingMealRouteViewModels().size() > 0) {
-                    for (FlightBookingMealRouteViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealRouteViewModels()) {
+                if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
+                    for (FlightBookingMealMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
                         simpleViewModels.add(new SimpleViewModel(
-                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + flightBookingMealRouteViewModel.getRoute().getDepartureAirport() + " - " + flightBookingMealRouteViewModel.getRoute().getArrivalAirport(), String.valueOf(FlightDateUtil.formatDate(
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + flightBookingMealRouteViewModel.getDescription(), String.valueOf(FlightDateUtil.formatDate(
                                 FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingMealRouteViewModel.getMealViewModels())
                         ))));
                     }
