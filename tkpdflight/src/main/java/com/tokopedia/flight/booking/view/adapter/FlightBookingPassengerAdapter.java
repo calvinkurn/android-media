@@ -125,18 +125,19 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                         FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
                 )));
 
-                if (viewModel.getDepartureLugage() != null) {
+                if (viewModel.getFlightBookingLuggageRouteViewModels() != null) {
                     luggageDepartureLayout.setVisibility(View.VISIBLE);
                     tvLuggageDepartureLabel.setText("Luggage departure");
-                    tvLuggageDeparture.setText(viewModel.getDepartureLugage().getWeightFmt());
+                    // TODO Flight Luggage
+//                    tvLuggageDeparture.setText(viewModel.getDepartureLugage().getWeightFmt());
                 } else {
                     luggageDepartureLayout.setVisibility(View.GONE);
                 }
 
-                if (viewModel.getDepartureMeals() != null && viewModel.getDepartureMeals().size() > 0) {
+                if (viewModel.getFlightBookingMealRouteViewModels() != null && viewModel.getFlightBookingMealRouteViewModels().size() > 0) {
                     mealDepartureLayout.setVisibility(View.VISIBLE);
                     tvMealDepartureLabel.setText("Meal Departure");
-                    tvMealDeparture.setText(TextUtils.join(",", viewModel.getDepartureMeals()));
+                    tvMealDeparture.setText(TextUtils.join(",", viewModel.getFlightBookingMealRouteViewModels()));
                 } else {
                     mealDepartureLayout.setVisibility(View.GONE);
                 }
@@ -145,21 +146,22 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                     luggageReturnLayout.setVisibility(View.GONE);
                     mealReturnLayout.setVisibility(View.GONE);
                 } else {
-                    if (viewModel.getReturnLugage() != null) {
+                    // TODO : Flight Return Luggage
+                   /* if (viewModel.getReturnLugage() != null) {
                         luggageReturnLayout.setVisibility(View.VISIBLE);
                         tvLuggageReturnLabel.setText("Luggage Return");
                         tvLuggageReturn.setText(viewModel.getReturnLugage().getWeightFmt());
                     } else {
                         luggageReturnLayout.setVisibility(View.GONE);
-                    }
+                    }*/
 
-                    if (viewModel.getReturnMeals() != null && viewModel.getReturnMeals().size() > 0) {
+                    /*if (viewModel.getReturnMeals() != null && viewModel.getReturnMeals().size() > 0) {
                         mealReturnLayout.setVisibility(View.VISIBLE);
                         tvMealReturnLabel.setText("Meal Departure");
                         tvMealReturn.setText(TextUtils.join(",", viewModel.getReturnMeals()));
                     } else {
                         mealReturnLayout.setVisibility(View.GONE);
-                    }
+                    }*/
                 }
 
             } else {

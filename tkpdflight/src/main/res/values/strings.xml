@@ -157,6 +157,14 @@
     <string name="flight_label_see_detail">Lihat Detail</string>
     <string name="flight_label_transit">Transit di %1$s • %2$s</string>
     <string name="flight_label_currency">Rp %1$s</string>
+    <string name="flight_booking_passenger_adult_subtitle">Usia diatas 12 tahun</string>
+    <string name="flight_booking_passenger_child_subtitle">Usia 2 - 12 tahun</string>
+    <string name="flight_booking_passenger_infant_subtitle">Usia dibawah 2 tahun</string>
+    <string name="flight_booking_passenger_name_empty_error">Nama penumpang harus diisi</string>
+    <string name="flight_bookingpassenger_title_error">Title Penumpang harus dipilih</string>
+    <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
+    <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
+    <string name="flight_booking_passenger_birthdate_infant_should_no_more_than_two_years">Umur penumpang bayi harus dibawah sama 2 tahun</string>
     <string name="flight_there_is_no_flight_available">Tidak ada penerbangan yang tersedia</string>
     <string name="change_date">Ubah Tanggal</string>
 </resources>
