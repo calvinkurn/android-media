@@ -82,11 +82,11 @@ public class DrawerPosHelper extends DrawerHelper
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
 
-        if (GlobalConfig.isAllowDebuggingTools()) {
+//        if (GlobalConfig.isAllowDebuggingTools()) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_developer_option),
                     TkpdState.DrawerPosition.DEVELOPER_OPTIONS,
                     true));
-        }
+//        }
 
         shopLayout.setVisibility(View.GONE);
         footerShadow.setVisibility(View.GONE);
