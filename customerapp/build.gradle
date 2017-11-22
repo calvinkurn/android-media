@@ -200,6 +200,10 @@ android {
         live {
 
         }
+
+        staging {
+
+        }
     }
 
 //    variantFilter { variant ->
