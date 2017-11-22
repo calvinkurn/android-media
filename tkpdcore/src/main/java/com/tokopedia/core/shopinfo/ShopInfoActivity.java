@@ -38,6 +38,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
@@ -860,10 +861,12 @@ public class ShopInfoActivity extends BaseActivity
                         .getAskSellerIntent(this,
                                 shopModel.info.shopId,
                                 shopModel.info.shopName,
-                                TkpdInboxRouter.SHOP);
+                                TkpdInboxRouter.SHOP,
+                                shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
         } else {
+            UnifyTracking.eventShopSendChat();
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);

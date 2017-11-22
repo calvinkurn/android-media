@@ -214,7 +214,9 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                                 String.valueOf(data.getShopInfo().getShopId()),
                                 data.getShopInfo().getShopName(),
                                 data.getInfo().getProductName(),
-                                TkpdInboxRouter.PRODUCT);
+                                data.getInfo().getProductUrl(),
+                                TkpdInboxRouter.PRODUCT,
+                                data.getShopInfo().getShopAvatar());
                 listener.onProductShopMessageClicked(intent);
             }
         }
