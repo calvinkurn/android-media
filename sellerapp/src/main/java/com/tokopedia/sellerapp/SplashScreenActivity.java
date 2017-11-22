@@ -8,9 +8,11 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
@@ -69,9 +71,10 @@ public class SplashScreenActivity extends SplashScreen {
             intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
-        } else {
+        } else if (MainApplication.getAppContext() instanceof SessionRouter) {
             Intent intent;
-            intent = OldSessionRouter.getPhoneVerificationActivationActivityIntent(context);
+            intent = ((SessionRouter) MainApplication.getAppContext())
+                    .getPhoneVerificationActivationIntent(context);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             return intent;

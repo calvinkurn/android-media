@@ -1,6 +1,7 @@
 package com.tokopedia.otp.phoneverification.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -84,5 +85,9 @@ public class PhoneVerificationProfileActivity extends TActivity implements HasCo
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, PhoneVerificationProfileActivity.class);
     }
 }

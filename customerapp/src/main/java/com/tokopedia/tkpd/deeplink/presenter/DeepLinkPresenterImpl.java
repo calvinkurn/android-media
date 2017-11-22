@@ -17,6 +17,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.fragment.FragmentShopPreview;
@@ -24,6 +25,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -219,10 +221,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 Log.d(TAG, "onSuccess: ");
                 if (SessionHandler.isMsisdnVerified()) {
                     finishLogin();
-                } else {
+                } else if (MainApplication.getAppContext() instanceof SessionRouter){
                     Intent intentHome = HomeRouter.getHomeActivity(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Intent intentPhoneVerif = OldSessionRouter.getPhoneVerificationActivationActivityIntent(context);
+                    Intent intentPhoneVerif = ((SessionRouter) MainApplication.getAppContext())
+                            .getPhoneVerificationActivationIntent(context);
 
                     context.startActivities(new Intent[]
                             {

@@ -156,16 +156,16 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_security_question, parent, false);
 
-        vInputOtp = (EditText) view.findViewById(R.id.input_otp);
-        titleOTP = (TextView) view.findViewById(R.id.title_otp);
-        titleSecurity = (TextView) view.findViewById(R.id.title_security);
+        vInputOtp = view.findViewById(R.id.input_otp);
+        titleOTP = view.findViewById(R.id.title_otp);
+        titleSecurity = view.findViewById(R.id.title_security);
         vOtp = view.findViewById(R.id.view_otp);
         vError = view.findViewById(R.id.view_error);
-        vSendOtp = (TextView) view.findViewById(R.id.send_otp);
-        vSendOtpCall = (TextView) view.findViewById(R.id.send_otp_call);
-        vSaveBut = (TextView) view.findViewById(R.id.save_but);
-        changeNumber = (TextView) view.findViewById(R.id.title_change_number);
-        verifyTrueCaller = (TextView) view.findViewById(R.id.verify_button);
+        vSendOtp = view.findViewById(R.id.send_otp);
+        vSendOtpCall = view.findViewById(R.id.send_otp_call);
+        vSaveBut = view.findViewById(R.id.save_but);
+        changeNumber = view.findViewById(R.id.title_change_number);
+        verifyTrueCaller = view.findViewById(R.id.verify_button);
         prepareView();
         setViewListener();
         presenter.attachView(this);
@@ -297,7 +297,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
                                @Override
                                public void updateDrawState(TextPaint ds) {
-                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                                   ds.setColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
                                }
                            }
                 , getString(R.string.content_change_number).indexOf("klik disini")
@@ -316,7 +316,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                                  ds.setColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
                               }
                           }
                 , getString(R.string.action_send_otp_with_call).indexOf("lewat")
@@ -359,7 +359,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     public void onSuccessGetQuestionPhone(QuestionViewModel questionViewModel) {
         vSendOtp.setText(R.string.title_otp_phone);
         vInputOtp.setEnabled(true);
-        String phone = sessionHandler.getTempPhoneNumber(getActivity());
+        String phone = SessionHandler.getTempPhoneNumber(getActivity());
         phone = phone.substring(phone.length() - 4);
         String contentSecurity = String.format(getResources().getString(
                 R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>", phone);
@@ -469,8 +469,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
                         isRunningTimer = false;
                         enableOtpButton();
                     } catch (Exception e) {
-
-
+                        e.printStackTrace();
                     }
                 }
 
@@ -481,7 +480,8 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     private void enableOtpButton() {
         vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
-        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_share_transaparent));
+        MethodChecker.setBackground(vSendOtp, MethodChecker.getDrawable(getActivity(), R.drawable
+                .btn_share_transaparent));
         vSendOtp.setText(R.string.title_resend_otp);
         vSendOtp.setEnabled(true);
 
@@ -494,9 +494,10 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void disableOtpButton() {
-        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
+        MethodChecker.setBackground(vSendOtp,  MethodChecker.getDrawable(getActivity(), R.drawable
+                .btn_transparent_disable));
         vSendOtp.setEnabled(false);
-        vSendOtp.setTextColor(getResources().getColor(R.color.grey_600));
+        vSendOtp.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_600));
         vSendOtpCall.setVisibility(View.GONE);
     }
 

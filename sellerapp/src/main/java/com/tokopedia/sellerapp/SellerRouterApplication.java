@@ -56,6 +56,9 @@ import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
+import com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -639,5 +642,20 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getTrueCallerIntent(Context context) {
         return TruecallerActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public Intent getPhoneVerificationActivationIntent(Context context) {
+        return PhoneVerificationActivationActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public Intent getPhoneVerificationProfileIntent(Context context) {
+        return PhoneVerificationProfileActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public Intent getChangePhoneNumberRequestIntent(Context context) {
+        return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }
 }

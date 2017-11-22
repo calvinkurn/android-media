@@ -29,8 +29,10 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
@@ -93,7 +95,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     TextInputLayout descInput;
     EditText shopDesc;
 
-    private void initView(View view){
+    private void initView(View view) {
         submitButton = (TextView) view.findViewById(R.id.submit_button);
         verifyButton = (TextView) view.findViewById(R.id.verify_button);
         verifyInstruction = (TextView) view.findViewById(R.id.verify_instruction);
@@ -193,8 +195,11 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     public void showVerificationDialog() {
-        startActivityForResult(OldSessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
-                REQUEST_VERIFY_PHONE_NUMBER);
+        if (MainApplication.getAppContext() instanceof SessionRouter) {
+            Intent intent = ((SessionRouter) MainApplication.getAppContext())
+                    .getPhoneVerificationActivationIntent(getActivity());
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
+        }
     }
 
     @Override
@@ -240,7 +245,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToCamera(int imagePosition) {
-        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition, true, 1,true);
+        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition, true, 1, true);
     }
 
     public void SubmitDialog() {
@@ -478,7 +483,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
                 default:
                     break;
             }
-        } else if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             imageLocation = data.getStringExtra(ImageGallery.EXTRA_URL);
         } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER
                 && resultCode == Activity.RESULT_OK

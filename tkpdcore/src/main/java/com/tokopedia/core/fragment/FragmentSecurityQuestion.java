@@ -33,9 +33,11 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
@@ -354,8 +356,11 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         changeNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = OldSessionRouter.getChangePhoneNumberRequestActivity(getActivity());
-                startActivity(intent);
+                if (MainApplication.getAppContext() instanceof SessionRouter) {
+                    Intent intent = ((SessionRouter) MainApplication.getAppContext())
+                            .getChangePhoneNumberRequestIntent(getActivity());
+                    startActivity(intent);
+                }
             }
         });
 
