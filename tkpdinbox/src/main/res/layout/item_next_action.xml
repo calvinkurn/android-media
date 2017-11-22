@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    xmlns:context="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
     
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="25dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
             android:visibility="visible"
             android:id="@+id/iv_indicator_arrow"
             android:layout_width="6dp"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
             android:paddingRight="2dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/margin_vvvs"/>
+            android:layout_height="35dp"
+            android:layout_marginTop="@dimen/margin_vvvs"
+            context:src="@drawable/ic_step_arrow_past"/>
 
         <ImageView
             android:id="@+id/iv_indicator_circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_vvvs"
-            android:layout_below="@id/iv_indicator_arrow"/>
-    </RelativeLayout>
+            android:layout_below="@id/iv_indicator_arrow"
+            context:src="@drawable/ic_step_current"/>
+    </LinearLayout>
 
     <TextView
         android:layout_marginLeft="@dimen/margin_small"
         android:id="@+id/tv_action"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:minHeight="50dp"
         android:gravity="bottom|left"
         android:textColor="@color/black_54"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        context:text="asd"/>
 </LinearLayout>
