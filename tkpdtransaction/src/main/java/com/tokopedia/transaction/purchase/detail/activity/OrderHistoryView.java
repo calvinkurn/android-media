@@ -12,4 +12,8 @@ public interface OrderHistoryView {
 
     void onLoadError(String message);
 
+    void showMainViewLoadingPage();
+
+    void hideMainViewLoadingPage();
+
 }

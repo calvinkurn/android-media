@@ -13,6 +13,9 @@ public class Data {
     @SerializedName("order_status")
     @Expose
     private Integer orderStatus;
+    @SerializedName("reso_id")
+    @Expose
+    private Integer resoId;
     @SerializedName("invoice")
     @Expose
     private String invoice;
@@ -49,6 +52,14 @@ public class Data {
 
     public void setOrderStatus(Integer orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public Integer getResoId() {
+        return resoId;
+    }
+
+    public void setResoId(Integer resoId) {
+        this.resoId = resoId;
     }
 
     public String getInvoice() {

@@ -12,6 +12,9 @@ public class Detail {
     @SerializedName("partial_order")
     @Expose
     private Integer partialOrder;
+    @SerializedName("preorder")
+    @Expose
+    private Preorder preorder;
     @SerializedName("shipment")
     @Expose
     private Shipment shipment;
@@ -42,6 +45,10 @@ public class Detail {
 
     public void setPartialOrder(Integer partialOrder) {
         this.partialOrder = partialOrder;
+    }
+
+    public Preorder getPreorder() {
+        return preorder;
     }
 
     public Shipment getShipment() {

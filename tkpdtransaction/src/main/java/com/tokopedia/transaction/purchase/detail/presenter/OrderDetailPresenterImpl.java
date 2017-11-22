@@ -33,6 +33,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void fetchData(Context context, String orderId) {
+        mainView.showMainViewLoadingPage();
         TKPDMapParam<String, String> temporaryHash = new TKPDMapParam<>();
         temporaryHash.put("order_id", orderId);
         temporaryHash.put("user_id", SessionHandler.getLoginID(context));
@@ -60,7 +61,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processShowComplain(Context context, OrderDetailData data) {
-
+        mainView.onViewComplaint(data.getResoId());
     }
 
     @Override
@@ -115,11 +116,13 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
             @Override
             public void onError(Throwable e) {
+                mainView.hideMainViewLoadingPage();
                 mainView.onError(e.getMessage());
             }
 
             @Override
             public void onNext(OrderDetailData data) {
+                mainView.hideMainViewLoadingPage();
                 mainView.onReceiveDetailData(data);
             }
         };

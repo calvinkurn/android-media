@@ -25,4 +25,10 @@ public interface OrderDetailView {
 
     void onOrderFinished(String message);
 
+    void showMainViewLoadingPage();
+
+    void hideMainViewLoadingPage();
+
+    void onViewComplaint(String resoId);
+
 }

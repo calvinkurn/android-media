@@ -30,6 +30,7 @@ public class OrderHistoryPresenterImpl implements OrderHistoryPresenter {
 
     @Override
     public void fetchHistoryData(Context context, String orderId) {
+        mainView.showMainViewLoadingPage();
         TKPDMapParam<String, String> temporaryParams = new TKPDMapParam<>();
         temporaryParams.put("order_id", orderId);
         temporaryParams.put("user_id", SessionHandler.getLoginID(context));
@@ -54,11 +55,13 @@ public class OrderHistoryPresenterImpl implements OrderHistoryPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                mainView.hideMainViewLoadingPage();
+                mainView.onLoadError(e.getMessage());
             }
 
             @Override
             public void onNext(OrderHistoryData data) {
+                mainView.hideMainViewLoadingPage();
                 mainView.receivedHistoryData(data);
             }
         };

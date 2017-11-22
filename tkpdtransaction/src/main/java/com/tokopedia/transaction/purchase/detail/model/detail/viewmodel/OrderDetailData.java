@@ -12,6 +12,8 @@ public class OrderDetailData {
 
     private String orderStatus;
 
+    private String resoId;
+
     private String orderImage;
 
     private String purchaseDate;
@@ -29,6 +31,14 @@ public class OrderDetailData {
     private String shippingAddress;
 
     private String partialOrderStatus;
+
+    private String preorderPeriod;
+
+    private boolean isPreorder;
+
+    private String dropshipperName;
+
+    private String dropshipperPhone;
 
     private String invoiceNumber;
 
@@ -64,6 +74,14 @@ public class OrderDetailData {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getResoId() {
+        return resoId;
+    }
+
+    public void setResoId(String resoId) {
+        this.resoId = resoId;
     }
 
     public String getOrderImage() {
@@ -136,6 +154,38 @@ public class OrderDetailData {
 
     public void setPartialOrderStatus(String PartialOrderStatus) {
         this.partialOrderStatus = PartialOrderStatus;
+    }
+
+    public boolean isPreorder() {
+        return isPreorder;
+    }
+
+    public void setPreorder(boolean preorder) {
+        isPreorder = preorder;
+    }
+
+    public String getPreorderPeriod() {
+        return preorderPeriod;
+    }
+
+    public void setPreorderPeriod(String preorderPeriod) {
+        this.preorderPeriod = preorderPeriod;
+    }
+
+    public String getDropshipperName() {
+        return dropshipperName;
+    }
+
+    public void setDropshipperName(String dropshipperName) {
+        this.dropshipperName = dropshipperName;
+    }
+
+    public String getDropshipperPhone() {
+        return dropshipperPhone;
+    }
+
+    public void setDropshipperPhone(String dropshipperPhone) {
+        this.dropshipperPhone = dropshipperPhone;
     }
 
     public String getInvoiceNumber() {

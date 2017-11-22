@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
@@ -20,6 +21,7 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
@@ -46,6 +48,8 @@ public class OrderDetailActivity extends TActivity
     @Inject
     OrderDetailPresenterImpl presenter;
 
+    private TkpdProgressDialog progressDialog;
+
     public static Intent createInstance(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
         intent.putExtra(EXTRA_ORDER_ID, orderId);
@@ -56,6 +60,7 @@ public class OrderDetailActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.order_detail_page);
+        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
         initInjector();
         presenter.setMainViewListener(this);
         presenter.fetchData(this, getExtraOrderId());
@@ -125,8 +130,6 @@ public class OrderDetailActivity extends TActivity
 
     private void setDescriptionView(OrderDetailData data) {
         TextView descriptionDate = (TextView) findViewById(R.id.description_date);
-        LinearLayout timeLimitLayout = (LinearLayout) findViewById(R.id.time_limit_layout);
-        TextView responseTime = (TextView) findViewById(R.id.description_response_time);
         TextView descriptionBuyerName = (TextView) findViewById(R.id.description_buyer_name);
         TextView descriptionCourierName = (TextView) findViewById(R.id.description_courier_name);
         TextView descriptionShippingAddess = (TextView)
@@ -138,6 +141,40 @@ public class OrderDetailActivity extends TActivity
         descriptionCourierName.setText(data.getCourierName());
         descriptionShippingAddess.setText(data.getShippingAddress());
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());
+        setResponseTimeView(data);
+        setPreorderView(data);
+        setDropshipperView(data);
+    }
+
+    private void setDropshipperView(OrderDetailData data) {
+        TextView dropshipperMode = (TextView) findViewById(R.id.dropshipper_mode);
+        LinearLayout dropshipperNameLayout = (LinearLayout)
+                findViewById(R.id.dropshipper_name_layout);
+        TextView dropshipperName = (TextView) findViewById(R.id.dropshipper_name);
+        LinearLayout dropshipperPhoneLayout = (LinearLayout)
+                findViewById(R.id.dropshipper_phone_layout);
+        TextView dropshipperPhone = (TextView) findViewById(R.id.dropshipper_phone);
+        if(data.getDropshipperName() == null || data.getDropshipperName().isEmpty()) {
+            dropshipperMode.setText(getString(R.string.label_title_button_no));
+            dropshipperNameLayout.setVisibility(View.GONE);
+            dropshipperPhoneLayout.setVisibility(View.GONE);
+        } else {
+            dropshipperMode.setText(getString(R.string.label_title_button_yes));
+            dropshipperName.setText(data.getDropshipperName());
+            dropshipperPhone.setText(data.getDropshipperPhone());
+        }
+    }
+
+    private void setPreorderView(OrderDetailData data) {
+        LinearLayout preorderLayout = (LinearLayout) findViewById(R.id.preorder_layout);
+        TextView preorderTime = (TextView) findViewById(R.id.preorder_time);
+        if(data.isPreorder()) preorderTime.setText(data.getPreorderPeriod());
+        else preorderLayout.setVisibility(View.GONE);
+    }
+
+    private void setResponseTimeView(OrderDetailData data) {
+        LinearLayout timeLimitLayout = (LinearLayout) findViewById(R.id.time_limit_layout);
+        TextView responseTime = (TextView) findViewById(R.id.description_response_time);
         if(data.getResponseTimeLimit() == null || data.getResponseTimeLimit().isEmpty()) {
             timeLimitLayout.setVisibility(View.GONE);
         } else responseTime.setText(data.getResponseTimeLimit());
@@ -161,6 +198,14 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onError(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(this,
+                getMainScrollView(),
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.fetchData(OrderDetailActivity.this, getExtraOrderId());
+            }
+        });
         NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
@@ -213,6 +258,24 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void showMainViewLoadingPage() {
+        progressDialog.showDialog();
+        getMainScrollView().setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideMainViewLoadingPage() {
+        progressDialog.dismiss();
+        getMainScrollView().setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onViewComplaint(String resoId) {
+        Intent intent =  InboxRouter.getDetailResCenterActivityIntent(this, resoId);
+        startActivity(intent);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroyed();
@@ -238,6 +301,12 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onComplaintClicked(String orderId) {
+        Intent intent = InboxRouter.getCreateResCenterActivityIntent(this,
+                orderId);
+        startActivityForResult(intent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
+    }
 
+    private View getMainScrollView() {
+        return findViewById(R.id.main_scroll_view);
     }
 }

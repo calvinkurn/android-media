@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.transaction.purchase.detail.customview.OrderHistoryStepperLayout
-        android:id="@+id/order_history_stepper_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="@dimen/padding_med"
-        android:text="Status Pemesanan"
-        android:textSize="@dimen/font_large"
-        android:textStyle="bold" />
+        android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_500" />
+        <com.tokopedia.transaction.purchase.detail.customview.OrderHistoryStepperLayout
+            android:id="@+id/order_history_stepper_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/order_history_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="@dimen/padding_small" />
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="@dimen/padding_med"
+            android:text="Status Pemesanan"
+            android:textSize="@dimen/font_large"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_500" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/order_history_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="@dimen/padding_small" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

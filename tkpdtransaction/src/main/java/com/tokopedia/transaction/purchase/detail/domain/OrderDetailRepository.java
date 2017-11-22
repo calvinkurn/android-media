@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Data;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
@@ -78,10 +79,12 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
 
     private OrderDetailData generateOrderDetailModel(OrderDetailResponse response) {
+        validateData(response);
         OrderDetailData viewData = new OrderDetailData();
         Data responseData = response.getData();
         viewData.setOrderId(String.valueOf(responseData.getOrderId()));
         viewData.setOrderStatus(responseData.getStatus().getDetail());
+        viewData.setResoId(String.valueOf(responseData.getResoId()));
         viewData.setOrderImage(responseData.getStatus().getImage());
 
         viewData.setBuyerName(responseData.getDetail().getReceiver().getName());
@@ -97,6 +100,20 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         viewData.setPartialOrderStatus(
                 getPartialOrderStatus(responseData.getDetail().getPartialOrder())
         );
+        if(responseData.getDetail().getPreorder() == null
+                || responseData.getDetail().getPreorder().getIsPreorder() == 0) {
+            viewData.setPreorder(false);
+        } else {
+            viewData.setPreorder(true);
+            viewData.setPreorderPeriod(String.valueOf(
+                    responseData.getDetail().getPreorder().getProcessTime())
+            );
+        }
+        if(responseData.getDetail().getDropShipper() != null) {
+            viewData.setDropshipperName(responseData.getDetail().getDropShipper().getName());
+            viewData.setDropshipperPhone(responseData.getDetail().getDropShipper().getPhone());
+        }
+
         viewData.setShippingAddress(
                 responseData.getDetail().getReceiver().getName() + "\n"
                 + responseData.getDetail().getReceiver().getPhone() + "\n"
@@ -153,6 +170,12 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         viewData.setButtonData(buttonData);
 
         return viewData;
+    }
+
+    private void validateData(OrderDetailResponse response) {
+        if(response.getData() == null) {
+            throw new ResponseRuntimeException("Terjadi Kesalahan");
+        } //TODO add another
     }
 
     private OrderHistoryData getOrderHistoryData(OrderHistoryResponse response) {

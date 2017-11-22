@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderHistoryAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderHistoryStepperLayout;
@@ -25,6 +28,10 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
 
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
 
+    private View mainViewContainer;
+
+    private TkpdProgressDialog mainProgressDialog;
+
     @Inject
     OrderHistoryPresenterImpl presenter;
 
@@ -38,6 +45,8 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.order_history_layout);
+        mainProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
+        mainViewContainer = findViewById(R.id.main_container);
         initInjector();
         presenter.setMainViewListener(this);
         presenter.fetchHistoryData(this, getExtraOrderId());
@@ -57,6 +66,7 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
         stepperLayout.setStepperStatus(data);
 
         RecyclerView orderHistoryList = (RecyclerView) findViewById(R.id.order_history_list);
+
         orderHistoryList.setNestedScrollingEnabled(false);
         orderHistoryList.setLayoutManager(new LinearLayoutManager(this));
         orderHistoryList.setAdapter(new OrderHistoryAdapter(
@@ -70,7 +80,24 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
 
     @Override
     public void onLoadError(String message) {
+        NetworkErrorHelper.showEmptyState(this, mainViewContainer, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.fetchHistoryData(OrderHistoryActivity.this, getExtraOrderId());
+            }
+        });
+    }
 
+    @Override
+    public void showMainViewLoadingPage() {
+        mainProgressDialog.showDialog();
+        mainViewContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideMainViewLoadingPage() {
+        mainProgressDialog.dismiss();
+        mainViewContainer.setVisibility(View.VISIBLE);
     }
 
     @Override

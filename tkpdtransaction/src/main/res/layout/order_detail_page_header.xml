@@ -19,9 +19,9 @@
 
         <ImageView
             android:id="@+id/order_detail_status_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/facebook_square_blue" />
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            tools:src="@drawable/facebook_square_blue" />
 
         <LinearLayout
             android:id="@+id/order_detail_status_layout"

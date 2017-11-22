@@ -83,11 +83,12 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductPass productPass = new ProductPass();
-                productPass.setProductId(data.getProductId());
-                productPass.setProductName(data.getItemName());
-                productPass.setProductImage(data.getImageUrl());
-                productPass.setProductPrice(data.getPrice());
+                ProductPass productPass = ProductPass.Builder.aProductPass()
+                        .setProductId(data.getProductId())
+                        .setProductName(data.getItemName())
+                        .setProductImage(data.getImageUrl())
+                        .setProductPrice(data.getPrice())
+                        .build();
                 mainView.goToProductInfo(productPass);
             }
         };
