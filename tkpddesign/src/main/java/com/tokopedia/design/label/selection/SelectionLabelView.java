@@ -83,4 +83,17 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
     public void setItemList(List<T> itemList) {
         adapter.setItemList(itemList);
     }
+
+    public void setTitle(String title) {
+        titleText = title;
+        labelView.setTitle(titleText);
+    }
+
+    public void setContentText(String contentText) {
+        labelView.setContent(contentText);
+    }
+
+    public void setArrow(boolean isShow) {
+        labelView.setVisibleArrow(isShow);
+    }
 }
