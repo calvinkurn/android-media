@@ -15,6 +15,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
+import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
@@ -587,6 +588,14 @@ public class TrackingUtils extends TrackingConfig {
 
     public static Trace startTrace(String traceName) {
         return getFPMEngine(traceName).startTrace();
+    }
+
+    public static void eventClickHotlistProductFeatured(Hotlist hotlist) {
+        getGTMEngine().eventClickHotlistProductFeatured(hotlist);
+    }
+
+    public static void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
+        getGTMEngine().eventImpressionHotlistProductFeatured(hotlist);
     }
 }
 
