@@ -31,8 +31,6 @@ import butterknife.ButterKnife;
 public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
-    private HotListModel hotListModel;
-
     public final class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.hotprod_img)
         ImageView mImageofProduct;
@@ -78,7 +76,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
             return;
         switch (getItemViewType(position)) {
             case TkpdState.RecyclerView.VIEW_STANDARD:
-                hotListModel = ((HotListModel) data.get(position));
+                final HotListModel hotListModel = ((HotListModel) data.get(position));
                 ImageHandler.loadImageFit2(((ViewHolder) viewHolder).getContext(), ((ViewHolder) viewHolder).mImageofProduct, hotListModel.getHotListBiggerImage());
                 ((ViewHolder) viewHolder).mNameOfProduct.setText(hotListModel.getHotListName());
                 ((ViewHolder) viewHolder).mPrice.setText(hotListModel.getHotListPrice());
