@@ -28,15 +28,16 @@ import java.nio.channels.FileChannel;
 
 public class WatermarkView extends View {
 
-    public static final float TEXT_SIZE_MIN = 14; // dp
+    public static final float TEXT_SIZE_MIN = 8; // dp
     public static final float TEXT_SIZE_MAX = 28; // dp
 
     public static final float PADDING_DEFAULT = 12; // dp
-    public static final float WIDTH_MIN_FONT = 300; // dp
+    public static final float WIDTH_MIN_FONT = 150; // dp
     public static final float WIDTH_MAX_FONT = 600; // dp
     public static final int TEXT_LENGTH_THRESHOLD = 18;
     public static final float TEXT_LENGTH_MULTIPLIER = 0.8f;
     public static final String TEMP_FILE_NAME = "temp.tmp";
+    public static final float PADDING_TEXT_RATIO = 2f / 3;
 
     private String textString;
     private int xText = 0;
@@ -44,6 +45,7 @@ public class WatermarkView extends View {
     private TextPaint mTextPaint = new TextPaint();
     private float mTextSize = TEXT_SIZE_MIN;
     private RectF windowRect = new RectF();
+    private float paddingDefault = PADDING_DEFAULT;
 
     float density;
 
@@ -106,6 +108,7 @@ public class WatermarkView extends View {
             this.windowRect = new RectF(left, top, right, bottom);
             int width = (int) (right - left);
             setTextSize(getCalcTextSize(width, textString));
+            paddingDefault = mTextSize * PADDING_TEXT_RATIO;
             setTextCoord((int) left, (int) bottom);
         }
     }
@@ -134,8 +137,8 @@ public class WatermarkView extends View {
     }
 
     public void setTextCoord(int x, int y) {
-        this.xText = x + (int) (PADDING_DEFAULT * density);
-        this.yText = y - (int) (PADDING_DEFAULT * density);
+        this.xText = x + (int) (paddingDefault * density);
+        this.yText = y - (int) (paddingDefault * density);
         invalidate();
     }
 
@@ -162,7 +165,7 @@ public class WatermarkView extends View {
         setDefaultTextPaint(watermarkTextPaint);
         watermarkTextPaint.setTextSize((int) (mTextSize * ratio * density + 0.5f));
 
-        int padding = (int) (PADDING_DEFAULT * ratio * density);
+        int padding = (int) (paddingDefault * ratio * density);
         int xText = padding;
         int yText = mutableBitmap.getHeight() - padding;
 
