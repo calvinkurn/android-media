@@ -348,6 +348,8 @@ public interface AppEventTracking {
         String CLICK_SEARCH_ITEM_WISHLIST = "wishlist - search item";
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
+        String CLICK_SALDO = "click saldo";
+        String CLICK_ACTIVATE = "click activate";
     }
 
     interface EventLabel {

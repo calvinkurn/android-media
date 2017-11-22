@@ -125,7 +125,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
-        TokoCashRouter, IWalletRouter, RemoteConfigRouter, TopAdsModuleRouter {
+        TokoCashRouter, IWalletRouter, RemoteConfigRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -137,9 +137,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
-
-    private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
-    private TopAdsComponent topAdsComponent;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
 
@@ -158,8 +155,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
-                .reactNativeModule(new ReactNativeModule(this));
-        daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
+        .reactNativeModule(new ReactNativeModule(this));
     }
 
     @Override
@@ -168,14 +164,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
         }
         return productComponent;
-    }
-
-    @Override
-    public TopAdsComponent getTopAdsComponent() {
-        if (topAdsComponent == null) {
-            topAdsComponent = daggerTopAdsBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return topAdsComponent;
     }
 
     @Override

@@ -1,9 +1,10 @@
-package com.tokopedia.digital.cart.compoundview;
+package com.tokopedia.design.voucher;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -11,63 +12,57 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.drew.lang.annotations.NotNull;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.tokopedia.design.R;
+import com.tokopedia.design.base.BaseCustomView;
 
 /**
- * @author by Nabilla Sabbaha on 2/27/2017.
+ * Created by nabillasabbaha on 11/20/17.
+ * this custom view is for voucher view in cart
  */
 
-public class VoucherCartHolderView extends RelativeLayout {
+public class VoucherCartView extends BaseCustomView {
 
-    @BindView(R2.id.checkbox_voucher)
-    CheckBox checkBoxVoucher;
-    @BindView(R2.id.holder_input_voucher)
-    RelativeLayout holderInputVoucher;
-    @BindView(R2.id.holder_voucher)
-    RelativeLayout holderVoucher;
-    @BindView(R2.id.button_voucher)
-    TextView buttonVoucher;
-    @BindView(R2.id.button_cancel)
-    TextView buttonCancel;
-    @BindView(R2.id.edittext_voucher)
-    EditText editTextVoucher;
-    @BindView(R2.id.error_voucher)
-    TextView errorVoucher;
-    @BindView(R2.id.textview_voucher)
-    TextView usedVoucher;
-    @BindView(R2.id.text_checkedbox)
-    TextView labelUsedVoucher;
+    private CheckBox checkBoxVoucher;
+    private RelativeLayout holderInputVoucher;
+    private RelativeLayout holderVoucher;
+    private TextView buttonVoucher;
+    private TextView buttonCancel;
+    private EditText editTextVoucher;
+    private TextView errorVoucher;
+    private TextView usedVoucher;
+    private TextView labelUsedVoucher;
 
+    private View rootView;
     private ActionListener actionListener;
     private String voucherCode = "";
-    private Context context;
 
-    public VoucherCartHolderView(Context context) {
+    public VoucherCartView(@NonNull Context context) {
         super(context);
         init(context);
     }
 
-    public VoucherCartHolderView(Context context, AttributeSet attrs) {
+    public VoucherCartView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public VoucherCartHolderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public VoucherCartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     private void init(Context context) {
-        this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_voucher_digital_module, this, true);
-        ButterKnife.bind(this);
+        rootView = inflate(context, R.layout.widget_voucher_cart, this);
+        checkBoxVoucher = (CheckBox) rootView.findViewById(R.id.checkbox_voucher);
+        holderInputVoucher = (RelativeLayout) rootView.findViewById(R.id.holder_input_voucher);
+        holderVoucher = (RelativeLayout) rootView.findViewById(R.id.holder_voucher);
+        buttonVoucher = (TextView) rootView.findViewById(R.id.button_voucher);
+        buttonCancel = (TextView) rootView.findViewById(R.id.button_cancel);
+        editTextVoucher = (EditText) rootView.findViewById(R.id.edittext_voucher);
+        errorVoucher = (TextView) rootView.findViewById(R.id.error_voucher);
+        usedVoucher = (TextView) rootView.findViewById(R.id.textview_voucher);
+        labelUsedVoucher = (TextView) rootView.findViewById(R.id.text_checkedbox);
+
         actionVoucher();
     }
 
@@ -76,7 +71,6 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     private void actionVoucher() {
-
         checkBoxVoucher.setOnCheckedChangeListener(getCheckboxVoucherListener());
         labelUsedVoucher.setOnClickListener(new OnClickListener() {
             @Override
@@ -88,7 +82,6 @@ public class VoucherCartHolderView extends RelativeLayout {
         buttonCancel.setOnClickListener(getCancelVoucherListener());
     }
 
-    @NotNull
     private CompoundButton.OnCheckedChangeListener getCheckboxVoucherListener() {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -110,7 +103,6 @@ public class VoucherCartHolderView extends RelativeLayout {
         };
     }
 
-    @NotNull
     private OnClickListener getVoucherListener() {
         return new OnClickListener() {
             @Override
@@ -122,7 +114,7 @@ public class VoucherCartHolderView extends RelativeLayout {
                     } else throw new IllegalArgumentException("Action Listener null coy!!");
                 } else {
                     hideHolderVoucher();
-                    errorVoucher.setText(context.getString(R.string.empty_voucher));
+                    errorVoucher.setText(getContext().getString(R.string.empty_voucher));
                     errorVoucher.setVisibility(VISIBLE);
                 }
             }
@@ -135,16 +127,27 @@ public class VoucherCartHolderView extends RelativeLayout {
         return voucherCode;
     }
 
+    /**
+     *
+     * @param voucherName voucher code
+     * @param message message that has been show up when success/failed verify voucher code
+     */
+
     public void setUsedVoucher(String voucherName, String message) {
-        UnifyTracking.eventVoucherSuccess(voucherCode,"");
+        actionListener.trackingSuccessVoucher(voucherName);
         voucherCode = voucherName;
         usedVoucher.setText(message);
         holderVoucher.setVisibility(VISIBLE);
         errorVoucher.setVisibility(GONE);
     }
 
+    /**
+     *
+     * @param errorMessage
+     */
+
     public void setErrorVoucher(String errorMessage) {
-        UnifyTracking.eventVoucherError(errorMessage,"");
+        actionListener.trackingErrorVoucher(errorMessage);
         hideHolderVoucher();
         errorVoucher.setVisibility(VISIBLE);
         errorVoucher.setText(errorMessage);
@@ -155,12 +158,11 @@ public class VoucherCartHolderView extends RelativeLayout {
         return TextUtils.isEmpty(editTextVoucher.getText().toString());
     }
 
-    @NotNull
     private OnClickListener getCancelVoucherListener() {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickCancelVoucher("","");
+                actionListener.trackingCancelledVoucher();
                 hideHolderVoucher();
                 editTextVoucher.setText("");
                 checkBoxVoucher.setChecked(false);
@@ -172,6 +174,11 @@ public class VoucherCartHolderView extends RelativeLayout {
         voucherCode = "";
         holderVoucher.setVisibility(GONE);
     }
+
+    /**
+     *
+     * @param voucherAutoCode voucher code
+     */
 
     public void renderVoucherAutoCode(String voucherAutoCode) {
         if (!TextUtils.isEmpty(voucherAutoCode)) {
@@ -190,5 +197,11 @@ public class VoucherCartHolderView extends RelativeLayout {
         void forceShowSoftKeyboardVoucherInput();
 
         void disableVoucherDiscount();
+
+        void trackingErrorVoucher(String errorMsg);
+
+        void trackingSuccessVoucher(String voucherName);
+
+        void trackingCancelledVoucher();
     }
 }
