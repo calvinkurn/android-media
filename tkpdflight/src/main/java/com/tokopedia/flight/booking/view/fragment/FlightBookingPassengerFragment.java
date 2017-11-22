@@ -1,8 +1,10 @@
 package com.tokopedia.flight.booking.view.fragment;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -12,7 +14,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +30,18 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.booking.view.activity.FlightBookingLuggageActivity;
+import com.tokopedia.flight.booking.view.activity.FlightBookingMealsActivity;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerLuggageAdapter;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerMealAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageRouteViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealRouteViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +58,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_MEALS = "EXTRA_MEALS";
     public static final String EXTRA_DEPARTURE = "EXTRA_DEPARTURE";
     public static final String EXTRA_RETURN = "EXTRA_RETURN";
+    private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
+    private static final int REQUEST_CODE_PICK_MEAL = 2;
 
     public interface OnFragmentInteractionListener {
         void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
@@ -68,8 +79,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private AppCompatButton buttonSubmit;
     private FlightBookingPassengerViewModel viewModel;
-    private List<FlightBookingLuggageViewModel> luggageViewModels;
-    private List<FlightBookingMealViewModel> mealViewModels;
+    private List<FlightBookingLuggageMetaViewModel> luggageViewModels;
+    private List<FlightBookingMealMetaViewModel> mealViewModels;
 
     private OnFragmentInteractionListener interactionListener;
 
@@ -79,8 +90,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static FlightBookingPassengerFragment newInstance(String departureId,
                                                              String returnId,
                                                              FlightBookingPassengerViewModel viewModel,
-                                                             List<FlightBookingLuggageViewModel> luggageViewModels,
-                                                             List<FlightBookingMealViewModel> mealViewModels) {
+                                                             List<FlightBookingLuggageMetaViewModel> luggageViewModels,
+                                                             List<FlightBookingMealMetaViewModel> mealViewModels) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -95,8 +106,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     public static Fragment newInstance(String departureId,
                                        FlightBookingPassengerViewModel viewModel,
-                                       List<FlightBookingLuggageViewModel> luggageViewModels,
-                                       List<FlightBookingMealViewModel> mealViewModels) {
+                                       List<FlightBookingLuggageMetaViewModel> luggageViewModels,
+                                       List<FlightBookingMealMetaViewModel> mealViewModels) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -198,25 +209,76 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public List<FlightBookingLuggageViewModel> getLuggageViewModels() {
+    public List<FlightBookingLuggageMetaViewModel> getLuggageViewModels() {
         return luggageViewModels;
     }
 
     @Override
-    public List<FlightBookingMealViewModel> getMealViewModels() {
+    public List<FlightBookingMealMetaViewModel> getMealViewModels() {
         return mealViewModels;
     }
 
     @Override
-    public void renderPassengerMeals(List<FlightBookingMealRouteViewModel> flightBookingMealRouteViewModels,
-                                     List<FlightBookingMealRouteViewModel> selecteds) {
+    public void renderPassengerMeals(List<FlightBookingMealMetaViewModel> flightBookingMealRouteViewModels,
+                                     List<FlightBookingMealMetaViewModel> selecteds) {
+        mealsContainer.setVisibility(View.GONE);
+        FlightBookingPassengerMealAdapter adapter = new FlightBookingPassengerMealAdapter();
+        adapter.setInteractionListener(new FlightBookingPassengerMealAdapter.OnAdapterInteractionListener() {
+            @Override
+            public void onItemDeleteMeal(FlightBookingMealMetaViewModel viewModel) {
+                presenter.onDeleteMeal(viewModel);
+            }
 
+            @Override
+            public void onItemOptionClicked(FlightBookingMealMetaViewModel viewModel) {
+                presenter.onOptionMeal(viewModel);
+            }
+        });
+        LinearLayoutManager flightSimpleAdapterLayoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        rvMeals.setLayoutManager(flightSimpleAdapterLayoutManager);
+        rvMeals.setHasFixedSize(true);
+        rvMeals.setNestedScrollingEnabled(false);
+        rvMeals.setAdapter(adapter);
+        adapter.setViewModels(flightBookingMealRouteViewModels);
+        adapter.setSelecetedViewModels(selecteds);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void renderPassengerLuggages(List<FlightBookingLuggageRouteViewModel> flightBookingLuggageRouteViewModels,
-                                        List<FlightBookingLuggageRouteViewModel> selecteds) {
-
+    public void renderPassengerLuggages(final List<FlightBookingLuggageMetaViewModel> flightBookingLuggageRouteViewModels,
+                                        List<FlightBookingLuggageMetaViewModel> selecteds) {
+        luggageContainer.setVisibility(View.VISIBLE);
+        FlightBookingPassengerLuggageAdapter adapter = new FlightBookingPassengerLuggageAdapter();
+        List<SimpleViewModel> viewModels = new ArrayList<>();
+        if (flightBookingLuggageRouteViewModels != null)
+            for (FlightBookingLuggageMetaViewModel flightBookingLuggageRouteViewModel : flightBookingLuggageRouteViewModels) {
+                SimpleViewModel viewModel = new SimpleViewModel(
+                        flightBookingLuggageRouteViewModel.getDescription(),
+                        "Pilih"
+                );
+                for (FlightBookingLuggageMetaViewModel selected : selecteds) {
+                    if (selected.getKey().equalsIgnoreCase(flightBookingLuggageRouteViewModel.getKey())) {
+                        viewModel.setDescription(TextUtils.join(",", selected.getLuggages()));
+                        break;
+                    }
+                }
+                viewModels.add(viewModel);
+            }
+        adapter.setInteractionListener(new FlightBookingPassengerLuggageAdapter.OnAdapterInteractionListener() {
+            @Override
+            public void onItemClickListener(int id) {
+                presenter.onPassengerLuggageClick(flightBookingLuggageRouteViewModels.get(id));
+            }
+        });
+        LinearLayoutManager flightSimpleAdapterLayoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        rvLuggages.setLayoutManager(flightSimpleAdapterLayoutManager);
+        rvLuggages.setHasFixedSize(true);
+        rvLuggages.setNestedScrollingEnabled(false);
+        rvLuggages.setAdapter(adapter);
+        adapter.setSimpleViewModels(viewModels);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -339,5 +401,38 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void renderPassengerTitle(String passengerTitle) {
         spTitle.setSpinnerValueByEntries(passengerTitle);
+    }
+
+    @Override
+    public void navigateToLuggagePicker(List<FlightBookingLuggageViewModel> luggages, FlightBookingLuggageMetaViewModel selected) {
+        Intent intent = FlightBookingLuggageActivity.createIntent(getActivity(), luggages, selected);
+        startActivityForResult(intent, REQUEST_CODE_PICK_LUGGAGE);
+    }
+
+    @Override
+    public void navigateToMealPicker(List<FlightBookingMealViewModel> viewModel, FlightBookingMealMetaViewModel selected) {
+        Intent intent = FlightBookingMealsActivity.createIntent(getActivity(), viewModel, selected);
+        startActivityForResult(intent, REQUEST_CODE_PICK_MEAL);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_PICK_LUGGAGE:
+                    if (data != null) {
+                        FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingLuggageFragment.EXTRA_SELECTED_LUGGAGE);
+                        presenter.onLuggageDataChange(flightBookingLuggageMetaViewModel);
+                    }
+                    break;
+                case REQUEST_CODE_PICK_MEAL:
+                    if (data != null) {
+                        FlightBookingMealMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingMealsFragment.EXTRA_SELECTED_MEALS);
+                        presenter.onMealDataChange(flightBookingLuggageMetaViewModel);
+                    }
+                    break;
+            }
+        }
     }
 }

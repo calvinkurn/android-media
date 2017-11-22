@@ -9,6 +9,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
@@ -64,6 +65,12 @@ public interface FlightBookingContract {
         void renderCartData(FlightBookingCartData flightBookingCartData);
 
         FlightBookingCartData getCurrentCartPassData();
+
+        void getRenderDeparturePrice(List<SimpleViewModel> prices);
+
+        void getRenderReturnPrice(List<SimpleViewModel> prices);
+
+        void renderTotalPrices(String totalPrice);
     }
 
     interface Presenter extends CustomerPresenter<View> {

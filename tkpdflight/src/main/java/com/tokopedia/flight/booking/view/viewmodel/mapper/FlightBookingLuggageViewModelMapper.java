@@ -23,7 +23,7 @@ public class FlightBookingLuggageViewModelMapper {
         FlightBookingLuggageViewModel data = null;
         if (entity != null) {
             for (AmenityItem item : entity.getItems()) {
-                data = transform(entity.getKey(), item);
+                data = transform(item);
                 if (data != null) {
                     viewModels.add(data);
                 }
@@ -32,11 +32,11 @@ public class FlightBookingLuggageViewModelMapper {
         return viewModels;
     }
 
-    private FlightBookingLuggageViewModel transform(String key, AmenityItem item) {
+    private FlightBookingLuggageViewModel transform(AmenityItem item) {
         FlightBookingLuggageViewModel viewModel = null;
         if (item != null) {
             viewModel = new FlightBookingLuggageViewModel();
-            viewModel.setId(key);
+            viewModel.setId(item.getId());
             viewModel.setPriceFmt(item.getPrice());
             viewModel.setWeightFmt(item.getDescription());
         }

@@ -29,6 +29,7 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
     private SelectionListAdapter<T> adapter;
 
     private String titleText;
+    LabelView labelView;
 
     public void setOnDeleteListener(final OnDeleteListener<T> onDeleteListener) {
         adapter.setOnDeleteListener(new SelectionListAdapter.OnDeleteListener<T>() {
@@ -68,7 +69,7 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_selection_label_view, this);
-        LabelView labelView = (LabelView) view.findViewById(R.id.label_view);
+        labelView = (LabelView) view.findViewById(R.id.label_view);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         adapter = getSelectionListAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -91,5 +92,18 @@ public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCu
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return super.dispatchTouchEvent(ev);
+    }
+
+    public void setTitle(String title) {
+        titleText = title;
+        labelView.setTitle(titleText);
+    }
+
+    public void setContentText(String contentText) {
+        labelView.setContent(contentText);
+    }
+
+    public void setArrow(boolean isShow) {
+        labelView.setVisibleArrow(isShow);
     }
 }
