@@ -110,10 +110,19 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public  List<CategoryItemsViewModel> convertIntoCategoryListItemsVeiwModel(List<EventsItemDomain> categoryResponseItemsList){
         List<CategoryItemsViewModel> categoryItemsViewModelList=new ArrayList<>();
         if(categoryResponseItemsList!=null){
+            CategoryItemsViewModel CategoryItemsViewModel;
             for (EventsItemDomain categoryEntity:categoryResponseItemsList
                     ) {
-                categoryItemsViewModelList.add(new CategoryItemsViewModel(categoryEntity.getId(),categoryEntity.getCategoryId(),categoryEntity.getDisplayName(),
-                        categoryEntity.getTitle(),categoryEntity.getImageApp(),categoryEntity.getSalesPrice()));
+               CategoryItemsViewModel =new CategoryItemsViewModel();
+                CategoryItemsViewModel.setId(categoryEntity.getId());
+                CategoryItemsViewModel.setCategoryId(categoryEntity.getCategoryId());
+                CategoryItemsViewModel.setDisplayName(categoryEntity.getDisplayName());
+                CategoryItemsViewModel.setTitle(categoryEntity.getTitle());
+                CategoryItemsViewModel.setImageApp(categoryEntity.getImageApp());
+                CategoryItemsViewModel.setSalesPrice(categoryEntity.getSalesPrice());
+                CategoryItemsViewModel.setMinStartTime(categoryEntity.getMinStartTime());
+                CategoryItemsViewModel.setCityName(categoryEntity.getCityName());
+                categoryItemsViewModelList.add(CategoryItemsViewModel);
             }
         }
         return categoryItemsViewModelList;

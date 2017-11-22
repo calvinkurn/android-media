@@ -8,6 +8,8 @@
         android:supportsRtl="true">
         <activity android:name=".view.activity.EventsHomeActivity"></activity>
         <activity android:name=".view.activity.EventLocationActivity"></activity>
+        <activity android:name=".view.activity.AppBarFlexiImageScrollsActivity"></activity>
+        <activity android:name=".view.activity.BookTicketActivity"></activity>
     </application>
 
 </manifest>

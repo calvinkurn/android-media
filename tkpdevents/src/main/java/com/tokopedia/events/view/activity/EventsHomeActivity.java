@@ -83,6 +83,7 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
         ButterKnife.bind(this);
         mPresenter.getEventsList();
         setupToolbar();
+        toolbar.setTitle("Events");
     }
 
 
@@ -287,5 +288,10 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

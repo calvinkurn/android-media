@@ -77,13 +77,7 @@ public class CategoryItemsViewModel implements Parcelable {
     private Object schedules;
     private Object forms;
 
-    public CategoryItemsViewModel(int id, int categoryId, String displayName, String title, String imageApp, int price) {
-        this.id = id;
-        this.categoryId = categoryId;
-        this.displayName=displayName;
-        this.title = title;
-        this.imageApp = imageApp;
-        this.salesPrice=price;
+    public CategoryItemsViewModel() {
     }
 
     public Integer getId() {

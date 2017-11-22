@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/margin_default"
+    android:layout_marginEnd="@dimen/margin_default"
+    android:layout_marginBottom="@dimen/margin_default"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/card_corner_default"
+    app:cardElevation="1dp">
+
+    <LinearLayout
+        android:id="@+id/btn_terms_conditions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_default">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_arrow"
+                android:layout_width="@dimen/icon_size_small"
+                android:layout_height="@dimen/icon_size_small"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_default"
+                android:text="@string/show_tnc"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <at.blogc.android.views.ExpandableTextView
+            android:id="@+id/tv_tnc_expandable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginStart="@dimen/margin_default"
+            android:paddingTop="@dimen/margin_default"
+            android:ellipsize="end"
+            android:maxLines="0"
+            android:text="@string/bigcontent"
+            android:textColor="@color/grey_700"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:animation_duration="300" />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

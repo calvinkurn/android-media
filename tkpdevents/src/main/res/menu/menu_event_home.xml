@@ -7,6 +7,7 @@
         android:orderInCategory="100"
         android:title="City"
         app:showAsAction="always"
+        android:icon="@drawable/ic_placeholder"
         tools:ignore="AppCompatResource" />
 
 </menu>

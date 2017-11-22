@@ -36,9 +36,7 @@
                     android:layout_height="60dp"
                     android:background="@color/tkpd_main_green"
                     android:minHeight="?attr/actionBarSize"
-                    android:theme="@style/AppBarTheme"
-                    app:subtitleTextAppearance="@style/ToolbarSubtitleText"
-                    app:titleTextAppearance="@style/ToolbarText" />
+                    android:theme="@style/AppBarTheme" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -69,11 +67,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="@color/colorBottomNavigationPrimary"
             app:tabGravity="fill"
             app:tabMode="scrollable"
             app:tabSelectedTextColor="@color/colorGreen"
-            app:tabTextColor="@color/white" />
+            app:tabTextColor="@color/black_70" />
 
     </android.support.design.widget.AppBarLayout>
 

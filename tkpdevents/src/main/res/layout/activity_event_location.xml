@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context="com.tokopedia.events.view.activity.EventLocationActivity">
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_view"
