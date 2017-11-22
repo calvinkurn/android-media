@@ -580,7 +580,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (getActivity() != null && presenter != null) {
             sendButton.setOnClickListener(getSendWithApiListener());
             notifyConnectionWebSocket();
-            presenter.createWebSocket();
+            presenter.recreateWebSocket();
         }
     }
 
