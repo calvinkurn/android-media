@@ -6,14 +6,11 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -75,6 +72,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
 
     @Override
     protected void onClickedNext() {
+        if (firstTimeCheck()) return;
         if(!isError()) {
             super.onClickedNext();
             if (stepperModel == null) {
