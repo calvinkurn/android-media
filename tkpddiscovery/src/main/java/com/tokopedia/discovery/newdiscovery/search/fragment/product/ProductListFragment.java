@@ -653,6 +653,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void backToTop() {
+        recyclerView.smoothScrollToPosition(0);
+    }
+
+    @Override
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
             String preFilteredSc = getSearchParameter().getDepartmentId();

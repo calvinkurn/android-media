@@ -56,6 +56,8 @@ public interface CatalogFragmentContract {
         void setTopAdsEndlessListener();
 
         void unSetTopAdsEndlessListener();
+
+        void backToTop();
     }
 
     interface Presenter extends SearchSectionFragmentPresenter<View> {

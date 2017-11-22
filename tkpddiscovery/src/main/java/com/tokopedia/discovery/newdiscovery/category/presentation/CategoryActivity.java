@@ -25,6 +25,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.base.CategoryS
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.ProductFragment;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
+import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     private static final String EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL";
 
+    public static final int TAB_SHOP_CATALOG= 1;
+    public static final int TAB_PRODUCT = 0;
+
     private String departmentId;
     private String categoryName;
     private String categoryUrl;
@@ -43,6 +47,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FrameLayout container;
+
+    private  ProductFragment productFragment;
+    private CatalogFragment catalogFragment;
 
     @Inject
     CategoryPresenter categoryPresenter;
@@ -169,13 +176,14 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     public void prepareFragment(ProductViewModel productViewModel) {
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();
-        Fragment productFragment;
         if (!TextUtils.isEmpty(categoryUrl)) {
             productFragment = ProductFragment.newInstance(productViewModel,categoryUrl);
         } else {
             productFragment = ProductFragment.newInstance(productViewModel);
         }
         if (productViewModel.isHasCatalog()) {
+            catalogFragment = getCatalogFragment(
+                    productViewModel.getCategoryHeaderModel().getDepartementId());
             categorySectionItems.add(new CategorySectionItem(
                     getResources().getString(R.string.product_tab_title), productFragment));
             categorySectionItems.add(new CategorySectionItem(
@@ -191,6 +199,23 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         viewPager.setAdapter(categorySectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         setToolbarTitle(productViewModel.getCategoryHeaderModel().getHeaderModel().getCategoryName());
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case TAB_PRODUCT:
+                        productFragment.backToTop();
+                        break;
+                    case TAB_SHOP_CATALOG:
+                        catalogFragment.backToTop();
+                        break;
+
+
+                }
+
+            }
+        });
     }
 
     private void initInjector() {
@@ -202,7 +227,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         categoryComponent.inject(this);
     }
 
-    private Fragment getCatalogFragment(String departmentId) {
+    private CatalogFragment getCatalogFragment(String departmentId) {
         return CatalogFragment.createInstanceByCategoryID(departmentId);
     }
 
