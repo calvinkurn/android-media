@@ -56,6 +56,7 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         if (isToolbarWhite()) {
             setToolbarColorWhite();
         }else{
+            // look at {@link setupLayout}
             // set black to 70%
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black_70));
         }
