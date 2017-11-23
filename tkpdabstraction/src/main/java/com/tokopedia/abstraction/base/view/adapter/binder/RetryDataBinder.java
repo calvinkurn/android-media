@@ -30,6 +30,14 @@ public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
             retry = (TextView) itemView.findViewById(R.id.retry_but);
             retryTitle = (TextView) itemView.findViewById(R.id.retry_text);
         }
+
+        public TextView getRetry() {
+            return retry;
+        }
+
+        public TextView getRetryTitle() {
+            return retryTitle;
+        }
     }
 
     private OnRetryListener listener;
