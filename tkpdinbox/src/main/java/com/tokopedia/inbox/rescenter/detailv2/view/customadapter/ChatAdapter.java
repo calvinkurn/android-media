@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactory;
 
@@ -21,10 +22,13 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list = new ArrayList<>();
     private DetailChatTypeFactory typeFactory;
+    private LoadingModel loadingModel;
+    private boolean isChatLoadingShown = false;
 
     public ChatAdapter(DetailChatTypeFactory typeFactory) {
         list = new ArrayList<>();
         this.typeFactory = typeFactory;
+        this.loadingModel = new LoadingModel();
     }
 
     @Override
@@ -64,6 +68,26 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void addItemOnPosition(Visitable item, int position) {
         this.list.add(position, item);
+        notifyItemInserted(position);
+    }
+
+    public void removeItemOnPosition(int position) {
+        this.list.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void showLoading(){
+        if(!isChatLoadingShown) {
+            addItemOnPosition(loadingModel, 0);
+            isChatLoadingShown = true;
+        }
+    }
+
+    public void removeLoading() {
+        if(isChatLoadingShown) {
+            removeItemOnPosition(0);
+            isChatLoadingShown = false;
+        }
     }
 
     public void clearData() {

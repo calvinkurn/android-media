@@ -30,6 +30,10 @@ public interface DetailResChatFragmentListener {
 
         void dismissProgressBar();
 
+        void showChatProgressBar();
+
+        void dismissChatProgressBar();
+
         void errorGetConversation(String error);
 
         void successGetConversationMore(ConversationListDomain conversationListDomain);
