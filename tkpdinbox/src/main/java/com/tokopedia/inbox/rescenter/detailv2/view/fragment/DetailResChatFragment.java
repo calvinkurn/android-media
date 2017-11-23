@@ -340,7 +340,7 @@ public class DetailResChatFragment
                         !isLoadingMore) {
                     ConversationDomain topConversation = detailResChatDomain.getConversationList().
                             getConversationDomains().
-                            get(topVisibleItemPosition);
+                            get(0);
                     lastConvId = String.valueOf(topConversation.getResConvId());
                     presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);
                     isLoadingMore = true;
@@ -429,7 +429,7 @@ public class DetailResChatFragment
 
                 chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
                 chatAdapter.notifyDataSetChanged();
-                scrollChatToBottom();
+                scrollChatToBottom(false);
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
             }
         });
@@ -464,13 +464,17 @@ public class DetailResChatFragment
         fabChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scrollChatToBottom();
+                scrollChatToBottom(false);
             }
         });
     }
 
-    private void scrollChatToBottom() {
-        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+    private void scrollChatToBottom(boolean isInitChat) {
+        if (isInitChat) {
+            rvChat.scrollToPosition(chatAdapter.getItemCount() - 1);
+        } else {
+            rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        }
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
@@ -1087,7 +1091,7 @@ public class DetailResChatFragment
     @Override
     public void onRefreshChatAdapter() {
         chatAdapter.notifyDataSetChanged();
-        scrollChatToBottom();
+        scrollChatToBottom(true);
     }
 
     @Override
