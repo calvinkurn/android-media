@@ -3,18 +3,13 @@ package com.tokopedia.flight.airport.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
@@ -32,7 +27,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB> implements FlightAirportPickerView, BaseListV2Adapter.OnBaseListV2AdapterListener<FlightAirportDB> {
+public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB> implements FlightAirportPickerView, BaseListAdapter.OnBaseListV2AdapterListener<FlightAirportDB> {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
 
@@ -62,8 +57,8 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
-    protected BaseListV2Adapter<FlightAirportDB> getNewAdapter() {
-        return new FlightAirportAdapter(this);
+    protected BaseListAdapter<FlightAirportDB> getNewAdapter() {
+        return new FlightAirportAdapter(getContext(), this);
     }
 
     @Override

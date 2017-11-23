@@ -1,21 +1,11 @@
 package com.tokopedia.flight.dashboard.view.fragment;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapter;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -29,7 +19,7 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightClassesfragment extends BaseListV2Fragment<FlightClassViewModel> implements FlightClassesContract.View, BaseListV2Adapter.OnBaseListV2AdapterListener<FlightClassViewModel> {
+public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel> implements FlightClassesContract.View, BaseListAdapter.OnBaseListV2AdapterListener<FlightClassViewModel> {
 
     private OnFragmentInteractionListener interactionListener;
 
@@ -65,7 +55,7 @@ public class FlightClassesfragment extends BaseListV2Fragment<FlightClassViewMod
 
     @Override
     protected FlightClassesAdapter getNewAdapter() {
-        return new FlightClassesAdapter(this);
+        return new FlightClassesAdapter(getContext(), this);
     }
 
     @Override

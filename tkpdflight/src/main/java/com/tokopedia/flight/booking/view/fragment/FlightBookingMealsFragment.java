@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,11 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingMealsAdapter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 
 import java.util.ArrayList;
@@ -28,20 +27,20 @@ import java.util.List;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingMealsFragment extends BaseListV2Fragment<FlightBookingMealViewModel> implements BaseListV2Adapter.OnBaseListV2AdapterListener<FlightBookingMealViewModel> {
+public class FlightBookingMealsFragment extends BaseListFragment<FlightBookingMealViewModel> implements BaseListAdapter.OnBaseListV2AdapterListener<FlightBookingMealViewModel> {
 
     public static final String EXTRA_SELECTED_MEALS = "EXTRA_SELECTED_MEALS";
     public static final String EXTRA_LIST_MEALS = "EXTRA_LIST_MEALS";
 
     private List<FlightBookingMealViewModel> flightBookingMealViewModels;
-    private List<String> selectedMeals;
+    private FlightBookingMealMetaViewModel selectedMeals;
 
     public static FlightBookingMealsFragment createInstance(ArrayList<FlightBookingMealViewModel> flightBookingMealViewModels,
-                                                            ArrayList<String> selectedMeals){
+                                                            FlightBookingMealMetaViewModel selectedMeals) {
         FlightBookingMealsFragment flightBookingMealsFragment = new FlightBookingMealsFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(EXTRA_LIST_MEALS, flightBookingMealViewModels);
-        bundle.putStringArrayList(EXTRA_SELECTED_MEALS, selectedMeals);
+        bundle.putParcelable(EXTRA_SELECTED_MEALS, selectedMeals);
         flightBookingMealsFragment.setArguments(bundle);
         return flightBookingMealsFragment;
     }
@@ -51,7 +50,7 @@ public class FlightBookingMealsFragment extends BaseListV2Fragment<FlightBooking
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         flightBookingMealViewModels = getArguments().getParcelableArrayList(EXTRA_LIST_MEALS);
-        selectedMeals = getArguments().getStringArrayList(EXTRA_SELECTED_MEALS);
+        selectedMeals = getArguments().getParcelable(EXTRA_SELECTED_MEALS);
     }
 
     @Nullable
@@ -88,23 +87,24 @@ public class FlightBookingMealsFragment extends BaseListV2Fragment<FlightBooking
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
 
-        if(itemId == R.id.menu_reset){
-            ((BaseListCheckableV2Adapter)getAdapter()).resetCheckedItemSet();
+        if (itemId == R.id.menu_reset) {
+            ((BaseListCheckableAdapter) getAdapter()).resetCheckedItemSet();
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void setResultAndFinish() {
         Intent intent = new Intent();
-        intent.putStringArrayListExtra(EXTRA_SELECTED_MEALS, ((FlightBookingMealsAdapter)getAdapter()).getListChecked());
+        selectedMeals.setMealViewModels(getAdapter().getData());
+        intent.putExtra(EXTRA_SELECTED_MEALS, selectedMeals);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 
     @Override
-    protected BaseListV2Adapter<FlightBookingMealViewModel> getNewAdapter() {
-        FlightBookingMealsAdapter flightBookingMealsAdapter = new FlightBookingMealsAdapter(this);
-        flightBookingMealsAdapter.setListChecked(selectedMeals);
+    protected BaseListAdapter<FlightBookingMealViewModel> getNewAdapter() {
+        FlightBookingMealsAdapter flightBookingMealsAdapter = new FlightBookingMealsAdapter(getActivity(), this);
+        flightBookingMealsAdapter.setListChecked(selectedMeals.getMealViewModels());
         return flightBookingMealsAdapter;
     }
 

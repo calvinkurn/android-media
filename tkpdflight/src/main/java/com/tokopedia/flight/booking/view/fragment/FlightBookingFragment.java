@@ -30,12 +30,14 @@ import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
+import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
@@ -59,6 +61,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
 
     private AppCompatTextView timeFinishOrderIndicatorTextView;
+    private AppCompatTextView priceTotalAppCompatTextView;
     private CardWithActionView departureInfoView;
     private CardWithActionView returnInfoView;
     private RecyclerView passengerRecyclerView;
@@ -71,6 +74,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatTextView contactPhoneNumberLabel;
     private AppCompatEditText etPhoneCountryCode;
     private AppCompatEditText etPhoneNumber;
+    private RecyclerView pricelistsRecyclerView;
 
     private String departureTripId, returnTripId;
     private FlightBookingParamViewModel paramViewModel;
@@ -81,6 +85,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     private FlightBookingPassengerAdapter adapter;
     private ProgressDialog progressDialog;
+    private FlightSimpleAdapter priceListAdapter;
 
 
     public static Fragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
@@ -107,6 +112,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         paramViewModel.setSearchParam((FlightSearchPassDataViewModel) getArguments().getParcelable(EXTRA_SEARCH_PASS_DATA));
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setCancelable(false);
     }
 
     @Override
@@ -115,6 +121,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_flight_booking, container, false);
         timeFinishOrderIndicatorTextView = (AppCompatTextView) view.findViewById(R.id.tv_time_finish_order_indicator);
+        priceTotalAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_total_price);
         departureInfoView = (CardWithActionView) view.findViewById(R.id.cwa_departure_info);
         returnInfoView = (CardWithActionView) view.findViewById(R.id.cwa_return_info);
         passengerRecyclerView = (RecyclerView) view.findViewById(R.id.rv_passengers);
@@ -127,6 +134,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         contactPhoneNumberLabel = (AppCompatTextView) view.findViewById(R.id.contact_phone_number_label);
         etPhoneCountryCode = (AppCompatEditText) view.findViewById(R.id.et_phone_country_code);
         etPhoneNumber = (AppCompatEditText) view.findViewById(R.id.et_phone_number);
+        pricelistsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_price_lists);
 
         etPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +155,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         passengerRecyclerView.setLayoutManager(layoutManager);
         passengerRecyclerView.setHasFixedSize(true);
+        passengerRecyclerView.setNestedScrollingEnabled(false);
         passengerRecyclerView.setAdapter(adapter);
 
         departureInfoView.setActionListener(new CardWithActionView.ActionListener() {
@@ -162,6 +171,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onReturnInfoClicked();
             }
         });
+
+        priceListAdapter = new FlightSimpleAdapter();
+        LinearLayoutManager flightSimpleAdapterLayoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        pricelistsRecyclerView.setLayoutManager(flightSimpleAdapterLayoutManager);
+        pricelistsRecyclerView.setHasFixedSize(true);
+        pricelistsRecyclerView.setNestedScrollingEnabled(false);
+        pricelistsRecyclerView.setAdapter(priceListAdapter);
+
         return view;
     }
 
@@ -184,7 +202,17 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
-        startActivityForResult(FlightBookingPassengerActivity.getCallingIntent(getActivity(), viewModel), REQUEST_CODE_PASSENGER);
+        startActivityForResult(
+                FlightBookingPassengerActivity.getCallingIntent(
+                        getActivity(),
+                        getDepartureTripId(),
+                        getReturnTripId(),
+                        viewModel,
+                        flightBookingCartData.getLuggageViewModels(),
+                        flightBookingCartData.getMealViewModels()
+                ),
+                REQUEST_CODE_PASSENGER
+        );
     }
 
     @Override
@@ -350,6 +378,23 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public FlightBookingCartData getCurrentCartPassData() {
         return flightBookingCartData;
+    }
+
+    @Override
+    public void getRenderDeparturePrice(List<SimpleViewModel> prices) {
+        priceListAdapter.addViewModels(prices);
+        priceListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void getRenderReturnPrice(List<SimpleViewModel> prices) {
+        priceListAdapter.addViewModels(prices);
+        priceListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void renderTotalPrices(String totalPrice) {
+        priceTotalAppCompatTextView.setText(totalPrice);
     }
 
     private String generateIdEmpotency(String requestId) {

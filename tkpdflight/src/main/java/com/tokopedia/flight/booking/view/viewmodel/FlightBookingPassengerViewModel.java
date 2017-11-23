@@ -6,20 +6,19 @@ import android.os.Parcelable;
 import java.util.List;
 
 /**
- * Created by alvarisi on 11/7/17.
+ * @author by alvarisi on 11/7/17.
  */
 
 public class FlightBookingPassengerViewModel implements Parcelable {
     private int passengerId; //passengerLocalNumber
     private boolean singleRoute;
     private int type;
+    private String passengerTitle;
     private String headerTitle;
     private String passengerName;
     private String passengerBirthdate;
-    private FlightBookingLuggageViewModel departureLugage;
-    private FlightBookingLuggageViewModel returnLugage;
-    private List<FlightBookingMealViewModel> departureMeals;
-    private List<FlightBookingMealViewModel> returnMeals;
+    private List<FlightBookingLuggageMetaViewModel> flightBookingLuggageMetaViewModels;
+    private List<FlightBookingMealMetaViewModel> flightBookingMealMetaViewModels;
 
     public FlightBookingPassengerViewModel() {
     }
@@ -28,11 +27,12 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         passengerId = in.readInt();
         singleRoute = in.readByte() != 0;
         type = in.readInt();
+        passengerTitle = in.readString();
         headerTitle = in.readString();
         passengerName = in.readString();
         passengerBirthdate = in.readString();
-        departureLugage = in.readParcelable(FlightBookingLuggageViewModel.class.getClassLoader());
-        returnLugage = in.readParcelable(FlightBookingLuggageViewModel.class.getClassLoader());
+        flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingLuggageMetaViewModel.CREATOR);
+        flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingMealMetaViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
@@ -87,36 +87,12 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.singleRoute = singleRoute;
     }
 
-    public FlightBookingLuggageViewModel getDepartureLugage() {
-        return departureLugage;
+    public List<FlightBookingMealMetaViewModel> getFlightBookingMealMetaViewModels() {
+        return flightBookingMealMetaViewModels;
     }
 
-    public void setDepartureLugage(FlightBookingLuggageViewModel departureLugage) {
-        this.departureLugage = departureLugage;
-    }
-
-    public FlightBookingLuggageViewModel getReturnLugage() {
-        return returnLugage;
-    }
-
-    public void setReturnLugage(FlightBookingLuggageViewModel returnLugage) {
-        this.returnLugage = returnLugage;
-    }
-
-    public List<FlightBookingMealViewModel> getDepartureMeals() {
-        return departureMeals;
-    }
-
-    public void setDepartureMeals(List<FlightBookingMealViewModel> departureMeals) {
-        this.departureMeals = departureMeals;
-    }
-
-    public List<FlightBookingMealViewModel> getReturnMeals() {
-        return returnMeals;
-    }
-
-    public void setReturnMeals(List<FlightBookingMealViewModel> returnMeals) {
-        this.returnMeals = returnMeals;
+    public void setFlightBookingMealMetaViewModels(List<FlightBookingMealMetaViewModel> flightBookingMealMetaViewModels) {
+        this.flightBookingMealMetaViewModels = flightBookingMealMetaViewModels;
     }
 
     @Override
@@ -140,6 +116,22 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.passengerId = passengerId;
     }
 
+    public List<FlightBookingLuggageMetaViewModel> getFlightBookingLuggageMetaViewModels() {
+        return flightBookingLuggageMetaViewModels;
+    }
+
+    public void setFlightBookingLuggageMetaViewModels(List<FlightBookingLuggageMetaViewModel> flightBookingLuggageMetaViewModels) {
+        this.flightBookingLuggageMetaViewModels = flightBookingLuggageMetaViewModels;
+    }
+
+    public String getPassengerTitle() {
+        return passengerTitle;
+    }
+
+    public void setPassengerTitle(String passengerTitle) {
+        this.passengerTitle = passengerTitle;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -150,10 +142,11 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         dest.writeInt(passengerId);
         dest.writeByte((byte) (singleRoute ? 1 : 0));
         dest.writeInt(type);
+        dest.writeString(passengerTitle);
         dest.writeString(headerTitle);
         dest.writeString(passengerName);
         dest.writeString(passengerBirthdate);
-        dest.writeParcelable(departureLugage, flags);
-        dest.writeParcelable(returnLugage, flags);
+        dest.writeTypedList(flightBookingLuggageMetaViewModels);
+        dest.writeTypedList(flightBookingMealMetaViewModels);
     }
 }

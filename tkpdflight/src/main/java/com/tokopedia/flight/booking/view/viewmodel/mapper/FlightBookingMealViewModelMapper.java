@@ -36,7 +36,7 @@ public class FlightBookingMealViewModelMapper {
         FlightBookingMealViewModel viewModel = null;
         if (item != null) {
             viewModel = new FlightBookingMealViewModel();
-            viewModel.setIdBooking(key);
+            viewModel.setId(item.getId());
             viewModel.setPrice(item.getPrice());
             viewModel.setTitle(item.getDescription());
         }

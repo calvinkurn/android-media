@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:divider="@drawable/line_divider"
-    android:showDividers="middle">
+    android:orientation="vertical">
+
+    <com.tokopedia.flight.common.view.HorizontalProgressBar
+        android:id="@+id/horizontal_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progress_bar_height" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,24 +17,24 @@
         android:background="@color/light_green"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_ms"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/padding_ms"
-        android:paddingBottom="@dimen/padding_ms">
+        android:paddingTop="@dimen/padding_ms">
 
         <ImageView
             android:layout_width="@dimen/image_width_xs"
             android:layout_height="@dimen/image_width_xs"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/padding_med"
             android:layout_marginRight="@dimen/padding_med"
-            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_flight_round" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
                 style="@style/TextView.Caption.BlackSecondary"
@@ -45,15 +48,20 @@
                 <TextView
                     android:id="@+id/airline_name"
                     style="@style/TextView.Body1"
-                    android:layout_marginRight="@dimen/padding_ms"
                     android:layout_marginEnd="@dimen/padding_ms"
-                    tools:text="Garuda"/>
+                    android:layout_marginRight="@dimen/padding_ms"
+                    tools:text="Garuda" />
 
                 <TextView
                     android:id="@+id/duration"
                     style="@style/TextView.Caption.BlackSecondary" />
             </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/line_divider" />
 
     </LinearLayout>
 

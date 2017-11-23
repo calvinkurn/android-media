@@ -4,7 +4,7 @@ import android.support.annotation.CallSuper;
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
 /**
@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
 public abstract class CheckableBaseViewHolder<T extends ItemType> extends BaseViewHolder<T> implements CompoundButton.OnCheckedChangeListener {
 
-    private BaseListCheckableV2Adapter<T> baseListCheckableV2Adapter;
-    public CheckableBaseViewHolder(View itemView, BaseListCheckableV2Adapter<T> baseListCheckableV2Adapter) {
+    private BaseListCheckableAdapter<T> baseListCheckableV2Adapter;
+    public CheckableBaseViewHolder(View itemView, BaseListCheckableAdapter<T> baseListCheckableV2Adapter) {
         super(itemView);
         this.baseListCheckableV2Adapter = baseListCheckableV2Adapter;
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.flight.search.view.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,7 +8,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
@@ -16,11 +17,11 @@ import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
  * Created by User on 10/26/2017.
  */
 
-public class FlightFilterTransitAdapter extends BaseListCheckableV2Adapter<TransitStat> {
+public class FlightFilterTransitAdapter extends BaseListCheckableAdapter<TransitStat> {
 
-    public FlightFilterTransitAdapter(OnBaseListV2AdapterListener<TransitStat> onBaseListV2AdapterListener,
-                                      OnCheckableAdapterListener<TransitStat> onCheckableAdapterListener){
-        super(onBaseListV2AdapterListener, onCheckableAdapterListener);
+    public FlightFilterTransitAdapter(Context context, OnBaseListV2AdapterListener<TransitStat> onBaseListV2AdapterListener,
+                                      OnCheckableAdapterListener<TransitStat> onCheckableAdapterListener) {
+        super(context, onBaseListV2AdapterListener, onCheckableAdapterListener);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class FlightFilterTransitAdapter extends BaseListCheckableV2Adapter<Trans
         TextView tvDesc;
         CheckBox checkBox;
 
-        public FlightSearchViewHolder(View itemView, BaseListCheckableV2Adapter<TransitStat> baseListCheckableV2Adapter) {
+        public FlightSearchViewHolder(View itemView, BaseListCheckableAdapter<TransitStat> baseListCheckableV2Adapter) {
             super(itemView, baseListCheckableV2Adapter);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             tvDesc = (TextView) itemView.findViewById(R.id.tv_desc);

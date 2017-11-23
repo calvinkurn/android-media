@@ -3,8 +3,8 @@ package com.tokopedia.flight.search.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.flight.search.view.adapter.FlightFilterAirlineAdapter;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
@@ -19,8 +19,8 @@ import rx.functions.Func1;
 
 
 public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<AirlineStat>
-        implements BaseListV2Adapter.OnBaseListV2AdapterListener<AirlineStat>,
-        BaseListCheckableV2Adapter.OnCheckableAdapterListener<AirlineStat>{
+        implements BaseListAdapter.OnBaseListV2AdapterListener<AirlineStat>,
+        BaseListCheckableAdapter.OnCheckableAdapterListener<AirlineStat>{
     public static final String TAG = FlightFilterAirlineFragment.class.getSimpleName();
 
     private FlightFilterAirlineAdapter adapter;
@@ -35,8 +35,8 @@ public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<Airlin
     }
 
     @Override
-    protected BaseListV2Adapter<AirlineStat> getNewAdapter() {
-        adapter = new FlightFilterAirlineAdapter(this, this);
+    protected BaseListAdapter<AirlineStat> getNewAdapter() {
+        adapter = new FlightFilterAirlineAdapter(getContext(), this, this);
         return adapter;
     }
 

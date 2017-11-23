@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.view.adapter;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +9,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.binder.LoadingDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
@@ -22,11 +19,11 @@ import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
  * Created by User on 10/26/2017.
  */
 
-public class FlightFilterAirlineAdapter extends BaseListCheckableV2Adapter<AirlineStat> {
+public class FlightFilterAirlineAdapter extends BaseListCheckableAdapter<AirlineStat> {
 
-    public FlightFilterAirlineAdapter(OnBaseListV2AdapterListener<AirlineStat> onBaseListV2AdapterListener,
+    public FlightFilterAirlineAdapter(Context context, OnBaseListV2AdapterListener<AirlineStat> onBaseListV2AdapterListener,
                                       OnCheckableAdapterListener<AirlineStat> onCheckableAdapterListener){
-        super(onBaseListV2AdapterListener, onCheckableAdapterListener);
+        super(context, onBaseListV2AdapterListener, onCheckableAdapterListener);
     }
 
     @Override
@@ -42,7 +39,7 @@ public class FlightFilterAirlineAdapter extends BaseListCheckableV2Adapter<Airli
         TextView tvDesc;
         CheckBox checkBox;
 
-        public FlightSearchViewHolder(View itemView, BaseListCheckableV2Adapter<AirlineStat> baseListCheckableV2Adapter) {
+        public FlightSearchViewHolder(View itemView, BaseListCheckableAdapter<AirlineStat> baseListCheckableV2Adapter) {
             super(itemView, baseListCheckableV2Adapter);
             ivLogo = (ImageView) itemView.findViewById(R.id.iv_logo);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);

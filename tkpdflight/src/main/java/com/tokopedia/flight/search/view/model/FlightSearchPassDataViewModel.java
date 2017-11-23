@@ -67,6 +67,10 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         return returnDate;
     }
 
+    public String getDate(boolean isReturning){
+        return isReturning ? getReturnDate() : getDepartureDate();
+    }
+
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
     }

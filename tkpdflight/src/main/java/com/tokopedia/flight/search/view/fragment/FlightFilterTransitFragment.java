@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.flight.search.view.adapter.FlightFilterTransitAdapter;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
@@ -21,8 +21,8 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class FlightFilterTransitFragment extends BaseFlightFilterFragment<TransitStat>
-        implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat>,
-        BaseListCheckableV2Adapter.OnCheckableAdapterListener<TransitStat>{
+        implements BaseListAdapter.OnBaseListV2AdapterListener<TransitStat>,
+        BaseListCheckableAdapter.OnCheckableAdapterListener<TransitStat>{
     public static final String TAG = FlightFilterTransitFragment.class.getSimpleName();
 
     private FlightFilterTransitAdapter flightFilterTransitAdapter;
@@ -37,14 +37,8 @@ public class FlightFilterTransitFragment extends BaseFlightFilterFragment<Transi
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    protected BaseListV2Adapter<TransitStat> getNewAdapter() {
-        flightFilterTransitAdapter = new FlightFilterTransitAdapter(this, this);
+    protected BaseListAdapter<TransitStat> getNewAdapter() {
+        flightFilterTransitAdapter = new FlightFilterTransitAdapter(getContext(), this, this);
         return flightFilterTransitAdapter;
     }
 
