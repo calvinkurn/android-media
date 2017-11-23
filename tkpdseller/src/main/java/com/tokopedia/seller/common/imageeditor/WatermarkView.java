@@ -35,7 +35,7 @@ public class WatermarkView extends View {
     public static final float WIDTH_MIN_FONT = 150; // dp
     public static final float WIDTH_MAX_FONT = 600; // dp
     public static final int TEXT_LENGTH_THRESHOLD = 18;
-    public static final float TEXT_LENGTH_MULTIPLIER = 0.8f;
+    public static final float TEXT_LENGTH_MULTIPLIER = 0.7f;
     public static final String TEMP_FILE_NAME = "temp.tmp";
     public static final float PADDING_TEXT_RATIO = 2f / 3;
 
