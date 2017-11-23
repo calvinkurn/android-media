@@ -14,8 +14,8 @@ export const BASE_API_URL_SCROOGE = {
 }
 
 export const BASE_API_URL_PCIDSS = {
-    STAGING: `${BASE_API_URL.STAGING}o2o/v1/payment/process/creditcard`,
-    PRODUCTION: `${BASE_API_URL.PRODUCTION}o2o/v1/payment/process/creditcard`
+    STAGING: `${BASE_API_URL.STAGING}o2o/v2/payment/process/creditcard`,
+    PRODUCTION: `${BASE_API_URL.PRODUCTION}o2o/v2/payment/process/creditcard`
 }
 
 export const BASE_API_URL_ORDER = {

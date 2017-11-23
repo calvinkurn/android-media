@@ -53,7 +53,7 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
     cc_card_no: cc_card_no_without_spaces,
     cc_expired_month: parseInt(exp_month),
     cc_expired_year: parseInt(exp_year),
-    cc_cvv: parseInt(data.cvv),
+    cc_cvv: data.cvv,
     inst_term: data.installment_term,
     gateway_code: gateway_code,
     payment_amount: parseFloat(checkoutData.payment_amount),
