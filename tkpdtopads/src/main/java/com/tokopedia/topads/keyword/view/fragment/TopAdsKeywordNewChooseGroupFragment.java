@@ -22,8 +22,11 @@ import com.tokopedia.topads.R;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
@@ -47,6 +50,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
 
     public static final String TAG = TopAdsKeywordNewChooseGroupFragment.class.getSimpleName();
 
+    private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
     private static final String EXTRA_IS_POSITIVE = "is_pos";
 
     private static final String SAVED_GROUP_ID = "grp_id";
@@ -77,11 +81,13 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     private TextView textKeywordExample;
 
     private @KeywordTypeDef int keywordType = -1;
+    private String groupId;
 
-    public static Fragment newInstance(boolean isPositiveKeyword) {
+    public static Fragment newInstance(boolean isPositiveKeyword, String groupId) {
         Fragment fragment = new TopAdsKeywordNewChooseGroupFragment();
         Bundle args = new Bundle();
         args.putBoolean(EXTRA_IS_POSITIVE, isPositiveKeyword);
+        args.putString(EXTRA_CHOOSEN_GROUP, groupId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -92,6 +98,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         Bundle bundle = getArguments();
         if (bundle != null) {
             isPositive = bundle.getBoolean(EXTRA_IS_POSITIVE, true);
+            groupId = bundle.getString(EXTRA_CHOOSEN_GROUP);
         }
         adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_autocomplete_text);
     }
@@ -195,6 +202,12 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
             }
         });
 
+        if(groupId != null){
+            autoCompleteChooseGroup.setText(groupId);
+            autoCompleteChooseGroup.lockView();
+            topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
+        }
+
         adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
             @Override
             public ArrayList<String> getData() {
@@ -281,7 +294,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     protected void initInjector() {
         DaggerTopAdsKeywordNewChooseGroupComponent.builder()
                 .topAdsKeywordNewChooseGroupModule(new TopAdsKeywordNewChooseGroupModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsKeywordNewChooseGroupPresenter.attachView(this);
@@ -313,6 +326,12 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         this.groupAds.addAll(groupAds);
         groupNames.clear();
         for (GroupAd groupAd : groupAds) {
+            if(groupId != null) {
+                if (groupAd.getName().equals(groupId)) {
+                    chosenId = groupAd.getId();
+                }
+                groupId = null; // this is just for the first time only
+            }
             groupNames.add(groupAd.getName());
         }
         autoCompleteChooseGroup.showDropDownFilter();

@@ -109,11 +109,7 @@ public class DeepLinkChecker {
     }
 
     private static boolean isBrowse(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("search") || linkSegment.get(0).equals("p")
-                && !isHot(linkSegment)
-                && !isCatalog(linkSegment)
-                && !isCategory(linkSegment)
-                && !isTopPicks(linkSegment));
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("search");
     }
 
     private static boolean isCategory(List<String> linkSegment) {
@@ -151,8 +147,13 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("bantuan"));
     }
 
+    private static boolean isEvents(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("events"));
+    }
+
     private static boolean isProduct(List<String> linkSegment) {
         return (linkSegment.size() == 2
+                && !isEvents(linkSegment)
                 && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
@@ -201,37 +202,26 @@ public class DeepLinkChecker {
 
     public static void openBrowse(String url, Context context) {
         Uri uriData = Uri.parse(url);
-        List<String> linkSegment = uriData.getPathSegments();
         Bundle bundle = new Bundle();
-        String departmentId = "0";
-        String searchQuery = "";
-        String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
-        if (isSearch(url)) {
-            departmentId = uriData.getQueryParameter("sc");
-            searchQuery = uriData.getQueryParameter("q");
-            source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
-            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-            bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-        } else if (isCategory(url)) {
-            String iden = linkSegment.get(1);
-            for (int i = 2; i < linkSegment.size(); i++) {
-                iden = iden + "_" + linkSegment.get(i);
-            }
-            CategoryDB dep =
-                    DbManagerImpl.getInstance().getCategoryDb(iden);
-            if (dep != null) {
-                departmentId = dep.getDepartmentId() + "";
-                bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-            }
-            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-            source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY;
-        }
 
+        String departmentId = uriData.getQueryParameter("sc");
+        String searchQuery = uriData.getQueryParameter("q");
+        String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+
+        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
         bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
         bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
         bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+
+        Intent intent;
+        if (TextUtils.isEmpty(departmentId)) {
+            intent = BrowseProductRouter.getSearchProductIntent(context);
+        } else {
+            intent = BrowseProductRouter.getIntermediaryIntent(context,departmentId);
+        }
+
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -249,13 +239,9 @@ public class DeepLinkChecker {
     }
 
     public static void openHot(String url, Context context) {
-        URLParser urlParser = new URLParser(url);
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+        context.startActivity(
+                BrowseProductRouter.getHotlistIntent(context, url)
+        );
     }
 
 

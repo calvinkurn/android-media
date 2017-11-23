@@ -3,20 +3,19 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory;
 import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.CheckNewFeedMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.CloudCheckNewFeedDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.CloudFirstFeedDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.CloudFeedDataSource;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.CloudFeedDetailDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.CloudRecentProductDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.local.LocalFeedDataSource;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.cloud.CloudFeedDetailDataSource;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 
 /**
  * @author ricoharisin .

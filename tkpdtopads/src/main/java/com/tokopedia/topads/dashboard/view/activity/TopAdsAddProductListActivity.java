@@ -24,4 +24,9 @@ public class TopAdsAddProductListActivity extends BaseSimpleActivity{
         int maxNumberSelection = getIntent().getExtras().getInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, 50);
         return TopAdsAddProductListFragment.newInstance(maxNumberSelection, selectionParcel, isExistingGroup, isHideEtalase);
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }

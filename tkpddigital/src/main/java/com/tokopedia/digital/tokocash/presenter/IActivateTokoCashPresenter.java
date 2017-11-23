@@ -7,6 +7,4 @@ package com.tokopedia.digital.tokocash.presenter;
 public interface IActivateTokoCashPresenter {
 
     void linkWalletToTokoCash(String otp);
-
-    void onDestroyView();
 }
