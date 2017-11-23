@@ -2,16 +2,12 @@ package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.design.text.SearchInputView;
@@ -24,7 +20,6 @@ import com.tokopedia.events.view.contractor.EventsLocationContract;
 import com.tokopedia.events.view.presenter.EventLocationsPresenter;
 import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class EventLocationActivity extends BasePresenterActivity implements HasComponent<EventComponent>, SearchInputView.Listener, EventsLocationContract.View, EventLocationAdapter.ActionListener {
+public class EventLocationActivity extends TActivity implements HasComponent<EventComponent>, SearchInputView.Listener, EventsLocationContract.View, EventLocationAdapter.ActionListener {
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     public static final String EXTRA_CALLBACK_LOCATION = "EXTRA_CALLBACK_LOCATION";
 
@@ -56,32 +51,9 @@ public class EventLocationActivity extends BasePresenterActivity implements HasC
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_event_location;
-    }
-
-    @Override
-    protected void initVar() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_event_location);
         searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         initInjector();
         executeInjector();
@@ -89,25 +61,58 @@ public class EventLocationActivity extends BasePresenterActivity implements HasC
         mPresenter.attachView(this);
         ButterKnife.bind(this);
         mPresenter.getLocationsListList();
-
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected void initView() {
-
-
-    }
-
-    @Override
-    protected void setViewListener() {
         searchInputView.setListener(this);
+
     }
+
+//    @Override
+//    protected void setupURIPass(Uri data) {
+//
+//    }
+//
+//    @Override
+//    protected void setupBundlePass(Bundle extras) {
+//
+//    }
+//
+//    @Override
+//    protected void initialPresenter() {
+//
+//    }
+//
+//    @Override
+//    protected int getLayoutId() {
+//        return R.layout.activity_event_location;
+//    }
+//
+//    @Override
+//    protected void initVar() {
+//        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+//        initInjector();
+//        executeInjector();
+//        unbinder = ButterKnife.bind(this);
+//        mPresenter.attachView(this);
+//        ButterKnife.bind(this);
+//        mPresenter.getLocationsListList();
+//
+//
+//    }
+//
+//    @Override
+//    protected void setActionVar() {
+//
+//    }
+//
+//    @Override
+//    protected void initView() {
+//
+//
+//    }
+//
+//    @Override
+//    protected void setViewListener() {
+//        searchInputView.setListener(this);
+//    }
 
     @Override
     public void onSearchSubmitted(String text) {
