@@ -582,7 +582,7 @@ public class DetailResChatFragment
                 public void onRetryClicked() {
                     presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);
                 }
-            });
+            }).showRetrySnackbar();
         } else {
             isLoadingMore = false;
         }

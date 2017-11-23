@@ -121,6 +121,7 @@ public class DetailResChatFragmentPresenter
         acceptSolutionUseCase.unsubscribe();
         askHelpResolutionUseCase.unsubscribe();
         cancelResolutionUseCase.unsubscribe();
+        getResChatMoreUseCase.unsubscribe();
     }
 
     @Override
