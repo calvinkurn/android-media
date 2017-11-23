@@ -2,15 +2,17 @@ package com.tokopedia.flight.booking.view.fragment;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -20,10 +22,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -39,12 +44,15 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
+import com.tokopedia.flight.booking.widget.CountdownTimeView;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,21 +68,24 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
 
-    private AppCompatTextView timeFinishOrderIndicatorTextView;
+    private ProgressBar fullPageProgressBar;
+    private NestedScrollView fullPageLayout;
+    private CountdownTimeView countdownFinishTransactionView;
     private AppCompatTextView priceTotalAppCompatTextView;
     private CardWithActionView departureInfoView;
     private CardWithActionView returnInfoView;
     private RecyclerView passengerRecyclerView;
     private AppCompatButton submitButton;
-    private TextInputLayout tilContactName;
+    private TkpdHintTextInputLayout tilContactName;
     private AppCompatEditText etContactName;
-    private TextInputLayout tilContactEmail;
+    private TkpdHintTextInputLayout tilContactEmail;
     private AppCompatEditText etContactEmail;
     private RelativeLayout contactPhoneNumberLayout;
     private AppCompatTextView contactPhoneNumberLabel;
-    private AppCompatEditText etPhoneCountryCode;
+    private AppCompatTextView tvPhoneCountryCode;
     private AppCompatEditText etPhoneNumber;
     private RecyclerView pricelistsRecyclerView;
+
 
     private String departureTripId, returnTripId;
     private FlightBookingParamViewModel paramViewModel;
@@ -120,23 +131,25 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_flight_booking, container, false);
-        timeFinishOrderIndicatorTextView = (AppCompatTextView) view.findViewById(R.id.tv_time_finish_order_indicator);
+        countdownFinishTransactionView = (CountdownTimeView) view.findViewById(R.id.countdown_finish_transaction);
         priceTotalAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_total_price);
         departureInfoView = (CardWithActionView) view.findViewById(R.id.cwa_departure_info);
         returnInfoView = (CardWithActionView) view.findViewById(R.id.cwa_return_info);
         passengerRecyclerView = (RecyclerView) view.findViewById(R.id.rv_passengers);
         submitButton = (AppCompatButton) view.findViewById(R.id.button_submit);
-        tilContactName = (TextInputLayout) view.findViewById(R.id.til_contact_name);
+        tilContactName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_contact_name);
         etContactName = (AppCompatEditText) view.findViewById(R.id.et_contact_name);
-        tilContactEmail = (TextInputLayout) view.findViewById(R.id.til_contact_email);
+        tilContactEmail = (TkpdHintTextInputLayout) view.findViewById(R.id.til_contact_email);
         etContactEmail = (AppCompatEditText) view.findViewById(R.id.et_contact_email);
         contactPhoneNumberLayout = (RelativeLayout) view.findViewById(R.id.contact_phone_number_layout);
         contactPhoneNumberLabel = (AppCompatTextView) view.findViewById(R.id.contact_phone_number_label);
-        etPhoneCountryCode = (AppCompatEditText) view.findViewById(R.id.et_phone_country_code);
+        tvPhoneCountryCode = (AppCompatTextView) view.findViewById(R.id.et_phone_country_code);
         etPhoneNumber = (AppCompatEditText) view.findViewById(R.id.et_phone_number);
         pricelistsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_price_lists);
+        fullPageProgressBar = (ProgressBar) view.findViewById(R.id.pb_full_page);
+        fullPageLayout = (NestedScrollView) view.findViewById(R.id.container_full_page);
 
-        etPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
+        tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(FlightBookingPhoneCodeActivity.getCallingIntent(getActivity()), REQUEST_CODEP_PHONE_CODE);
@@ -275,7 +288,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip) {
         returnInfoView.setVisibility(View.VISIBLE);
-        returnInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
+        returnInfoView.setContent(returnTrip.getDepartureAirportName() + "-" + returnTrip.getArrivalAirportName());
         returnInfoView.setContentInfo(searchParam.getDepartureDate());
         String airLineSection = "";
         boolean isTransit = false;
@@ -289,9 +302,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
         String tripInfo = "";
         if (isTransit) {
-            tripInfo += String.format("| %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format("| %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
         }
         tripInfo += String.format("| %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         returnInfoView.setSubContentInfo(tripInfo);
@@ -300,8 +313,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
-        departureInfoView.setContentInfo(searchParam.getDepartureDate());
+        departureInfoView.setContent(returnTrip.getDepartureAirportName() + "-" + returnTrip.getArrivalAirportName());
+        departureInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;
         if (returnTrip.getAirlineList().size() > 1) {
@@ -314,11 +327,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
         String tripInfo = "";
         if (isTransit) {
-            tripInfo += String.format("| %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format("| %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
         }
-        tripInfo += String.format("| %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(" | %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -329,7 +342,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderPhoneCodeView(String countryPhoneCode) {
-        etPhoneCountryCode.setText(countryPhoneCode);
+        tvPhoneCountryCode.setText(countryPhoneCode);
     }
 
     @Override
@@ -362,12 +375,14 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void showFullPageLoading() {
-        progressDialog.show();
+        fullPageProgressBar.setVisibility(View.VISIBLE);
+        fullPageLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void hideFullPageLoading() {
-        progressDialog.dismiss();
+        fullPageProgressBar.setVisibility(View.GONE);
+        fullPageLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -397,6 +412,47 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         priceTotalAppCompatTextView.setText(totalPrice);
     }
 
+    @Override
+    public void showGetCartDataErrorStateLayout() {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.onRetryGetCartData();
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void renderFinishTimeCountDown(Date date) {
+        countdownFinishTransactionView.setListener(new CountdownTimeView.OnActionListener() {
+            @Override
+            public void onFinished() {
+                presenter.onFinishTransactionTimeReached();
+            }
+        });
+        countdownFinishTransactionView.setExpiredDate(date);
+        countdownFinishTransactionView.start();
+    }
+
+    @Override
+    public void showExpireTransactionDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setMessage(R.string.flight_booking_expired_booking_label);
+        dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getActivity().setResult(Activity.RESULT_CANCELED);
+                        getActivity().finish();
+                    }
+                });
+        dialog.setCancelable(false);
+        dialog.create().show();
+    }
+
     private String generateIdEmpotency(String requestId) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = FlightRequestUtil.md5(timeMillis);
@@ -417,5 +473,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void onResume() {
         super.onResume();
         presenter.onResume();
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroyView();
+        super.onDestroyView();
     }
 }
