@@ -40,25 +40,20 @@ TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnC
     private static final String TAG = TopAdsViewHolder.class.getSimpleName();
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
-    private LinearLayout adsHeader;
     private Context context;
     private static final int DEFAULT_SPAN_COUNT = 2;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode displayMode;
     private TopAdsInfoClickListener clickListener;
-    private TextView textHeader;
 
     public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
         super(itemView);
         context = itemView.getContext();
-        adsHeader = (LinearLayout) itemView.findViewById(R.id.ads_header);
-        textHeader = (TextView) adsHeader.findViewById(R.id.title_promote);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.list);
         gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
                 GridLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(context);
-        itemView.findViewById(R.id.info_topads).setOnClickListener(this);
         container = itemView.findViewById(R.id.root);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
@@ -70,7 +65,6 @@ TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnC
     public void bind(TopAdsViewModel element) {
         List<Item> list = element.getList();
         if (list.size() > 0) {
-            adsHeader.setVisibility(View.VISIBLE);
             switchDisplay(list.get(0));
         }
         adapter.setList(list);
@@ -103,13 +97,6 @@ TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements View.OnC
                 } else {
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
-                TextView textView = (TextView) adsHeader.findViewById(R.id.title_promote);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.getContext().getResources().getDimension(R.dimen.font_small));
-                ImageView imageView = (ImageView) adsHeader.findViewById(R.id.info_topads);
-                imageView.setImageResource(R.drawable.icon_info);
-                imageView.setColorFilter(ContextCompat.getColor(context, R.color.tkpd_dark_gray));
-                textHeader.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
                 params.setMargins(0, params.topMargin, 0, 0);
                 container.setLayoutParams(params);
