@@ -137,7 +137,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
         durationDecimalRangeInputView.setData(statMinDur, statMaxDur, filterMinDur, filterMaxDur);
         durationDecimalRangeInputView.setOnValueChangedListener(new DecimalRangeInputView.OnValueChangedListener() {
             @Override
-            public void onValueChanged(int minValue, int maxValue) {
+            public void onValueChanged(int minValue, int maxValue, int minBound, int maxBound) {
                 FlightFilterModel flightFilterModel = onFilterFragmentListener.getFlightFilterModel();
                 flightFilterModel.setDurationMin(minValue);
                 flightFilterModel.setDurationMax(maxValue);
@@ -178,7 +178,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
         priceRangeInputView.setData(statMinPrice, statMaxPrice, filterMinPrice, filterMaxPrice);
         priceRangeInputView.setOnValueChangedListener(new DecimalRangeInputView.OnValueChangedListener() {
             @Override
-            public void onValueChanged(int minValue, int maxValue) {
+            public void onValueChanged(int minValue, int maxValue, int minBound, int maxBound) {
                 FlightFilterModel flightFilterModel = onFilterFragmentListener.getFlightFilterModel();
                 flightFilterModel.setPriceMin(minValue);
                 flightFilterModel.setPriceMax(maxValue);

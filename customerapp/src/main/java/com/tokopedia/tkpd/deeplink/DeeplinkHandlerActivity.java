@@ -28,6 +28,8 @@ import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModule;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
@@ -45,7 +47,8 @@ import io.branch.referral.Branch;
         PdpApplinkModule.class,
         RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
-        SessionApplinkModule.class
+        SessionApplinkModule.class,
+        FeedDeeplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
@@ -60,7 +63,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new PdpApplinkModuleLoader(),
                 new RideDeeplinkModuleLoader(),
                 new DiscoveryApplinkModuleLoader(),
-                new SessionApplinkModuleLoader()
+                new SessionApplinkModuleLoader(),
+                new FeedDeeplinkModuleLoader()
         );
     }
 
@@ -80,7 +84,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             if (deepLinkDelegate.supportsUri(applink.toString())) {
                 deepLinkDelegate.dispatchFrom(this, intent);
             } else {
-                startActivity(HomeRouter.getHomeActivity(this));
+                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+                startActivity(homeIntent);
             }
 
             if (getIntent().getExtras() != null) {

@@ -3,8 +3,11 @@ package com.tokopedia.abstraction.di.component;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.di.module.AppModule;
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.di.qualifier.AuthKeyQualifier;
+import com.tokopedia.abstraction.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.di.scope.ApplicationScope;
 
 import dagger.Component;
@@ -28,4 +31,12 @@ public interface BaseAppComponent {
     Retrofit.Builder retrofitBuilder();
 
     Gson gson();
+
+    @AuthKeyQualifier
+    String provideAuthKey();
+
+    AbstractionRouter provideAbstractionRouter();
+
+    @FreshAccessTokenQualifier
+    String provideAccessToken();
 }

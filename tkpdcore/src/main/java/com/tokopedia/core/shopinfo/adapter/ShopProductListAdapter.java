@@ -20,6 +20,7 @@ import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 public class ShopProductListAdapter extends RecyclerView.Adapter {
 
     private RetryClickedListener retryClickedListener;
+    private String shopId;
 
     public interface ProductListAdapterListener {
         void onListTypeChange();
@@ -65,11 +66,12 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         this.listener = listener;
     }
 
-    private ShopProductListAdapter(ProductModel productModel) {
+    private ShopProductListAdapter(ProductModel productModel, String shopId) {
+        this.shopId = shopId;
         small = new ProductSmallDelegate();
         grid = new ProductLargeDelegate();
         list = new ProductListDelegate();
-        extras = new ExtrasDelegate();
+        extras = new ExtrasDelegate(shopId);
         header = new ShopProductListHeaderDelegate();
         this.productModel = productModel;
     }
@@ -317,8 +319,8 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public static ShopProductListAdapter createAdapter(ProductModel lists) {
-        return new ShopProductListAdapter(lists);
+    public static ShopProductListAdapter createAdapter(ProductModel lists, String shopId) {
+        return new ShopProductListAdapter(lists, shopId);
     }
 
     public void showEmptyState(String message, RetryClickedListener retryClickedListener){

@@ -17,8 +17,8 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     private String mEmailAddress;
     private String mMethod;
     private String phoneNumber;
-    private boolean isGoldMerchant;
-    private boolean isSeller;
+    private Boolean isGoldMerchant;
+    private Boolean isSeller;
     private String shopId;
     private String shopName;
     private String dateOfBirth;
@@ -29,10 +29,10 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     private String tokocashAmt;
     private String saldoAmt;
     private String topAdsAmt;
-    private boolean isTopadsUser;
-    private boolean hasPurchasedMarketplace;
-    private boolean hasPurchasedDigital;
-    private boolean hasPurchasedTiket;
+    private Boolean isTopadsUser;
+    private Boolean hasPurchasedMarketplace;
+    private Boolean hasPurchasedDigital;
+    private Boolean hasPurchasedTiket;
     private String lastTransactionDate;
     private String totalActiveProduct;
     private String shopScore;
@@ -97,35 +97,35 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         this.lastTransactionDate = lastTransactionDate;
     }
 
-    public boolean isHasPurchasedTiket() {
+    public Boolean isHasPurchasedTiket() {
         return hasPurchasedTiket;
     }
 
-    public void setHasPurchasedTiket(boolean hasPurchasedTiket) {
+    public void setHasPurchasedTiket(Boolean hasPurchasedTiket) {
         this.hasPurchasedTiket = hasPurchasedTiket;
     }
 
-    public void setHasPurchasedDigital(boolean hasPurchasedDigital) {
+    public void setHasPurchasedDigital(Boolean hasPurchasedDigital) {
         this.hasPurchasedDigital = hasPurchasedDigital;
     }
 
-    public boolean isHasPurchasedDigital() {
+    public Boolean isHasPurchasedDigital() {
         return hasPurchasedDigital;
     }
 
-    public void setHasPurchasedMarketplace(boolean hasPurchasedMarketplace) {
+    public void setHasPurchasedMarketplace(Boolean hasPurchasedMarketplace) {
         this.hasPurchasedMarketplace = hasPurchasedMarketplace;
     }
 
-    public boolean isHasPurchasedMarketplace() {
+    public Boolean isHasPurchasedMarketplace() {
         return hasPurchasedMarketplace;
     }
 
-    public boolean isTopadsUser() {
+    public Boolean isTopadsUser() {
         return isTopadsUser;
     }
 
-    public void setTopadsUser(boolean topadsUser) {
+    public void setTopadsUser(Boolean topadsUser) {
         isTopadsUser = topadsUser;
     }
 
@@ -214,7 +214,7 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         return null;
     }
 
-    public boolean isGoldMerchant() {
+    public Boolean isGoldMerchant() {
         return isGoldMerchant;
     }
 
@@ -242,15 +242,15 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public void setGoldMerchant(boolean goldMerchant) {
+    public void setGoldMerchant(Boolean goldMerchant) {
         isGoldMerchant = goldMerchant;
     }
 
-    public boolean isSeller() {
+    public Boolean isSeller() {
         return isSeller;
     }
 
-    public void setSeller(boolean seller) {
+    public void setSeller(Boolean seller) {
         isSeller = seller;
     }
 
@@ -333,12 +333,27 @@ public class CustomerWrapper extends BaseAnalyticsModel {
                 ", mFullName='" + mFullName + '\'' +
                 ", mEmailAddress='" + mEmailAddress + '\'' +
                 ", mMethod='" + mMethod + '\'' +
-                ", phonenumber='" + phoneNumber + '\'' +
-                ", isgoldmerch='" + isGoldMerchant + '\'' +
-                ", isseller='" + isSeller + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", isGoldMerchant=" + isGoldMerchant +
+                ", isSeller=" + isSeller +
                 ", shopId='" + shopId + '\'' +
                 ", shopName='" + shopName + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", totalItemSold='" + totalItemSold + '\'' +
+                ", regDate='" + regDate + '\'' +
+                ", dateShopCreated='" + dateShopCreated + '\'' +
+                ", shopLocation='" + shopLocation + '\'' +
+                ", tokocashAmt='" + tokocashAmt + '\'' +
+                ", saldoAmt='" + saldoAmt + '\'' +
+                ", topAdsAmt='" + topAdsAmt + '\'' +
+                ", isTopadsUser=" + isTopadsUser +
+                ", hasPurchasedMarketplace=" + hasPurchasedMarketplace +
+                ", hasPurchasedDigital=" + hasPurchasedDigital +
+                ", hasPurchasedTiket=" + hasPurchasedTiket +
+                ", lastTransactionDate='" + lastTransactionDate + '\'' +
+                ", totalActiveProduct='" + totalActiveProduct + '\'' +
+                ", shopScore='" + shopScore + '\'' +
+                ", mAttr=" + mAttr +
                 '}';
     }
 
@@ -350,8 +365,8 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         private String mEmailAddress;
         private String mMethod;
         private String phoneNumber;
-        private boolean isGoldMerchant;
-        private boolean isSeller;
+        private Boolean isGoldMerchant;
+        private Boolean isSeller;
         private String shopId;
         private String shopName;
         private String dateOfBirth;
@@ -362,10 +377,10 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         private String tokocashAmt;
         private String saldoAmt;
         private String topAdsAmt;
-        private boolean isTopadsUser;
-        private boolean hasPurchasedMarketplace;
-        private boolean hasPurchasedDigital;
-        private boolean hasPurchasedTiket;
+        private Boolean isTopadsUser;
+        private Boolean hasPurchasedMarketplace;
+        private Boolean hasPurchasedDigital;
+        private Boolean hasPurchasedTiket;
         private String lastTransactionDate;
         private String totalActiveProduct;
         private String shopScore;
@@ -390,22 +405,22 @@ public class CustomerWrapper extends BaseAnalyticsModel {
             return this;
         }
 
-        public CustomerWrapper.Builder setHasPurchasedTiket(boolean hasPurchasedTiket) {
+        public CustomerWrapper.Builder setHasPurchasedTiket(Boolean hasPurchasedTiket) {
             this.hasPurchasedTiket = hasPurchasedTiket;
             return this;
         }
 
-        public CustomerWrapper.Builder setHasPurchasedMarketplace(boolean hasPurchasedMarketplace) {
+        public CustomerWrapper.Builder setHasPurchasedMarketplace(Boolean hasPurchasedMarketplace) {
             this.hasPurchasedMarketplace = hasPurchasedMarketplace;
             return this;
         }
 
-        public CustomerWrapper.Builder setHasPurchasedDigital(boolean hasPurchasedDigital) {
+        public CustomerWrapper.Builder setHasPurchasedDigital(Boolean hasPurchasedDigital) {
             this.hasPurchasedDigital = hasPurchasedDigital;
             return this;
         }
 
-        public CustomerWrapper.Builder setTopadsUser(boolean topadsUser) {
+        public CustomerWrapper.Builder setTopadsUser(Boolean topadsUser) {
             isTopadsUser = topadsUser;
             return this;
         }
@@ -472,20 +487,20 @@ public class CustomerWrapper extends BaseAnalyticsModel {
             return this;
         }
 
-        public boolean isGoldMerchant() {
+        public Boolean isGoldMerchant() {
             return isGoldMerchant;
         }
 
-        public CustomerWrapper.Builder setGoldMerchant(boolean goldMerchant) {
+        public CustomerWrapper.Builder setGoldMerchant(Boolean goldMerchant) {
             isGoldMerchant = goldMerchant;
             return this;
         }
 
-        public boolean isSeller() {
+        public Boolean isSeller() {
             return isSeller;
         }
 
-        public CustomerWrapper.Builder setSeller(boolean seller) {
+        public CustomerWrapper.Builder setSeller(Boolean seller) {
             isSeller = seller;
             return this;
         }

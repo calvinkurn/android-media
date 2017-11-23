@@ -85,6 +85,14 @@
         <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
+    <style name="TabBar.White">
+        <item name="tabTextColor">@color/tkpd_grey_text</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabIndicatorColor">@color/tkpd_main_green</item>
+        <item name="tabSelectedTextColor">@android:color/black</item>
+    </style>
+
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/tkpd_main_green</item>
         <item name="android:textColorPrimary">@color/colorBlack</item>

@@ -73,11 +73,12 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     private CompositeSubscription compositeSubscription;
 
-    public static WidgetStyle1RechargeFragment newInstance(Category category, int position) {
+    public static WidgetStyle1RechargeFragment newInstance(Category category, int position, boolean useCache) {
         WidgetStyle1RechargeFragment fragment = new WidgetStyle1RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         bundle.putInt(ARG_TAB_INDEX_POSITION, position);
+        bundle.putBoolean(ARG_USE_CACHE, useCache);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -130,7 +131,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 new ProductMapper(),
                 new OperatorMapper(),
                 new JobExecutor(),
-                new UIThread());
+                new UIThread(),
+                useCache);
 
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
     }
@@ -156,7 +158,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     protected void setViewListener() {
-        setRechargeEditTextCallback(widgetClientNumberView);
         setRechargeEditTextTouchCallback(widgetClientNumberView);
 
         widgetClientNumberView.setButtonPickerListener(getButtonPickerListener());
@@ -198,7 +199,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 } else {
                     if (category.getAttributes().isValidatePrefix()) {
                         if (selectedOperator == null) {
-                            if ((temp.length() >= 3 && temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
+                            if (temp.length() >= 3) {
                                 presenter.validatePhonePrefix(temp, category.getId(),
                                         category.getAttributes().isValidatePrefix());
                             }
@@ -230,6 +231,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
+                UnifyTracking.eventSelectNumberOnUserProfileWidget(category.getAttributes().getName());
+
                 LastOrder lastOrder = new LastOrder();
                 Attributes attributes = new Attributes();
                 attributes.setClientNumber(orderClientNumber.getClientNumber());
@@ -317,7 +320,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void trackingProduct() {
                 if (selectedProduct != null)
                     UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                            selectedProduct.getAttributes().getPrice());
+                            selectedProduct.getAttributes().getDesc());
             }
         };
     }
@@ -355,6 +358,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void renderDataOperator(Operator operatorModel) {
         if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
             selectedOperator = operatorModel;
+            UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                    selectedOperator.getAttributes().getName());
             selectedOperatorId = String.valueOf(operatorModel.getId());
             minLengthDefaultOperator = operatorModel.getAttributes().getMinimumLength();
             widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
@@ -444,12 +449,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void saveAndDisplayPhoneNumber(String phoneNumber) {
         selectedOperator = null;
         widgetClientNumberView.setText(phoneNumber);
-    }
-
-    @Override
-    protected void trackingOnClientNumberFocusListener() {
-        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
-                selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
     }
 
     @Override

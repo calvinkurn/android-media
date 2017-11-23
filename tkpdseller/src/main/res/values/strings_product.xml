@@ -87,9 +87,9 @@
     <string name="product_error_product_name_empty">Nama produk harus diisi</string>
     <string name="product_error_product_category_empty">Kategori harus diisi</string>
     <string name="product_minimum_price_rp">100</string>
-    <string name="product_maximum_price_rp">100,000,000</string>
+    <string name="product_maximum_price_rp">500,000,000</string>
     <string name="product_minimum_price_usd">1</string>
-    <string name="product_maximum_price_usd">7,500</string>
+    <string name="product_maximum_price_usd">35,000</string>
     <string name="product_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_minimum_weight_gram">1</string>
     <string name="product_maximum_weight_gram">500,000</string>
@@ -104,7 +104,7 @@
     <string name="product_minimum_pre_order_day">1</string>
     <string name="product_maximum_pre_order_day">90</string>
     <string name="product_minimum_pre_order_week">1</string>
-    <string name="product_maximum_pre_order_week">4</string>
+    <string name="product_maximum_pre_order_week">13</string>
     <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
     <string name="product_minimum_total_stock">1</string>
     <string name="product_maximum_total_stock">10,000</string>

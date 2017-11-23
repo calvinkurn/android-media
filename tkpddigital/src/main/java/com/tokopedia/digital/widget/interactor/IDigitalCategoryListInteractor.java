@@ -1,6 +1,6 @@
 package com.tokopedia.digital.widget.interactor;
 
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.List;
@@ -15,5 +15,5 @@ public interface IDigitalCategoryListInteractor {
 
     void getDigitalCategoryItemDataList(Subscriber<List<DigitalCategoryItemData>> subscriber);
 
-    void getTokoCashData(Subscriber<TokoCashData> subscriber);
+    void getTokoCashData(Subscriber<TokoCashBalanceData> subscriber);
 }

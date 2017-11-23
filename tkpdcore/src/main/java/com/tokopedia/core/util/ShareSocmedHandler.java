@@ -225,7 +225,7 @@ public class ShareSocmedHandler {
     public static void ShareSpecific(final ShareData data, final Activity context, final String packageName, final String targetType, final Bitmap image, final String altUrl) {
         BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
             @Override
-            public void onCreateShareContents(String shareContents, String shareUri) {
+            public void onCreateShareContents(String shareContents, String shareUri,String branchUrl) {
                 ShareData(context, packageName, targetType, shareContents, shareUri, image, altUrl);
             }
         });
@@ -323,7 +323,7 @@ public class ShareSocmedHandler {
                             public void onNext(final File file) {
                                 BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
                                     @Override
-                                    public void onCreateShareContents(String shareContents, String shareUri) {
+                                    public void onCreateShareContents(String shareContents, String shareUri,String branchUrl) {
                                         ShareDataWithSpecificUri(file, targetType, image, context, shareContents, shareUri, packageName, altUrl);
 
                                     }
@@ -487,7 +487,7 @@ public class ShareSocmedHandler {
 
         BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
             @Override
-            public void onCreateShareContents(String shareContents, String shareUri) {
+            public void onCreateShareContents(String shareContents, String shareUri,String branchUrl) {
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("text/plain");
                 share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -615,3 +615,4 @@ public class ShareSocmedHandler {
         fbinterface = (FacebookInterface) activity;
     }
 }
+

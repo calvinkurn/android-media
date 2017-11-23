@@ -3,7 +3,6 @@ package com.tokopedia.discovery.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -122,60 +121,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @BindView(R2.id.search)
     DiscoverySearchView discoverySearchView;
 
-
-    @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
-    public static Intent getCallingIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putString(AD_SRC, TopAdsApi.SRC_DIRECTORY);// ini yang buat ganti ganti
-        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
-        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_DIRECTORY);
-        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
-        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
-        return intent
-                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
-                .putExtras(bundle);
-    }
-
-    @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putString(AD_SRC, TopAdsApi.SRC_BROWSE_PRODUCT);
-        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
-        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_DIRECTORY);
-        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
-        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT);
-        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
-        return intent
-                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
-                .putExtras(bundle);
-    }
-
-    @DeepLink(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL)
-    public static Intent getCallingApplinkHostlistIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putString(AD_SRC, TopAdsApi.SRC_HOTLIST);
-        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, bundle.getString("alias", ""));
-        intent.putExtra(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, bundle.getString("alias", ""));
-        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
-        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_HOTLIST);
-        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID, "0"));
-        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-        browseProductActivityModel.setAlias(bundle.getString("alias", ""));
-        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
-
-        return intent
-                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
-                .putExtras(bundle);
-    }
-
     private static HashMap<String, String> convertBundleToMaps(Bundle bundle) {
         HashMap<String, String> maps = new HashMap<>();
         Set<String> keys = bundle.keySet();
@@ -184,7 +129,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
         return maps;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -748,9 +692,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void startShareActivity(ShareData shareData) {
-        Intent intent = new Intent(BrowseProductActivity.this, ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
-        startActivity(intent);
+       startActivity(ShareActivity.createIntent(BrowseProductActivity.this,shareData));
     }
 
     @Override
