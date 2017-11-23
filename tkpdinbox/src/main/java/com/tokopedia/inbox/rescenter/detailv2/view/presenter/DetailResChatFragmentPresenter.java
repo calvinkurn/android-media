@@ -35,6 +35,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressAccept
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressMigrateVersionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ReplyDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import java.io.File;
@@ -138,14 +139,14 @@ public class DetailResChatFragmentPresenter
     }
 
     @Override
-    public void doLoadMore(String resolutionId, String convId) {
+    public void doLoadMore(String resolutionId, String convId, DetailResChatDomain detailResChatDomain) {
         mainView.showProgressBar();
         getResChatMoreUseCase.execute(
                 GetResChatMoreUseCase.getResChatUseCaseParam(
                         String.valueOf(resolutionId),
                         PARAM_LIMIT_CONVERSATION,
                         convId),
-                new GetDetailResChatMoreSubscriber(mainView));
+                new GetDetailResChatMoreSubscriber(mainView, detailResChatDomain));
     }
 
     @Override

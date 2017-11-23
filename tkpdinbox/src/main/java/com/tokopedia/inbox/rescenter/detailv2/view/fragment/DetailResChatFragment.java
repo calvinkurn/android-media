@@ -109,6 +109,8 @@ public class DetailResChatFragment
     public static final int ACTION_BY_ADMIN = 3;
     public static final int ACTION_BY_SYSTEM = 4;
 
+    private static final int TOP_POSITION = 0;
+
     private TextView tvNextStep;
     private RecyclerView rvChat, rvAttachment;
     private ProgressBar progressBar;
@@ -126,6 +128,7 @@ public class DetailResChatFragment
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
     private String lastConvId;
+    private boolean isLoadingMore = false;
 
     @Inject
     DetailResChatFragmentPresenter presenter;
@@ -331,13 +334,19 @@ public class DetailResChatFragment
                 }
 
                 int topVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
-                Log.d("MyTag", "topVisibleItemPosition "+ topVisibleItemPosition);
-                if(topVisibleItemPosition<=1) {
+                Log.d("milhamj","topVisibleItemPosition " + topVisibleItemPosition
+                        + " getCanLoadMore() " + detailResChatDomain.getConversationList().getCanLoadMore()
+                        + " isLoadingMore " + isLoadingMore
+                );
+                if(topVisibleItemPosition<=1 &&
+                        detailResChatDomain.getConversationList().getCanLoadMore()==1 &&
+                        !isLoadingMore) {
                     ConversationDomain topConversation = detailResChatDomain.getConversationList().
                             getConversationDomains().
                             get(topVisibleItemPosition);
                     lastConvId = String.valueOf(topConversation.getResConvId());
-                    presenter.doLoadMore(resolutionId, lastConvId);
+                    presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);
+                    isLoadingMore = true;
                 }
             }
         };
@@ -474,7 +483,7 @@ public class DetailResChatFragment
                 message,
                 null,
                 null,
-                null,
+                getConversationCreateTime(),
                 null,
                 null,
                 null,
@@ -490,7 +499,7 @@ public class DetailResChatFragment
                 message,
                 null,
                 null,
-                null,
+                getConversationCreateTime(),
                 getConversationAttachmentTemp(attachmentList),
                 null,
                 null,
@@ -556,11 +565,13 @@ public class DetailResChatFragment
     }
 
     @Override
-    public void successGetConversation(ConversationListDomain conversationListDomain) {
+    public void successGetConversationMore(ConversationListDomain conversationListDomain) {
         this.detailResChatDomain.getConversationList()
                 .setCanLoadMore(conversationListDomain.getCanLoadMore());
         this.detailResChatDomain.getConversationList()
-                .getConversationDomains().addAll(0, conversationListDomain.getConversationDomains());
+                .getConversationDomains().addAll(TOP_POSITION, conversationListDomain.getConversationDomains());
+        isLoadingMore = false;
+        Log.d("milhamj", "success isLoadingMore: " + isLoadingMore);
     }
 
     @Override
@@ -569,10 +580,13 @@ public class DetailResChatFragment
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
-                    presenter.doLoadMore(resolutionId, lastConvId);
+                    presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);
                 }
             });
+        } else {
+            isLoadingMore = false;
         }
+        Log.d("milhamj", "error isLoadingMore: " + isLoadingMore);
     }
 
     @Override

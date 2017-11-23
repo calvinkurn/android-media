@@ -19,16 +19,26 @@ import rx.Subscriber;
 
 public class GetDetailResChatMoreSubscriber extends Subscriber<ConversationListDomain> {
 
+    private final static int TOP_POSITION = 0;
     private final DetailResChatFragmentListener.View mainView;
+    private final DetailResChatDomain detailResChatDomain;
 
-    public GetDetailResChatMoreSubscriber(DetailResChatFragmentListener.View mainView) {
+    public GetDetailResChatMoreSubscriber(DetailResChatFragmentListener.View mainView,
+                                          DetailResChatDomain detailResChatDomain) {
         this.mainView = mainView;
+        this.detailResChatDomain = detailResChatDomain;
     }
 
     @Override
     public void onNext(ConversationListDomain conversationListDomain) {
         mainView.dismissProgressBar();
-        Log.d("MyTag", "detailResChatDomain " + conversationListDomain);
+        mainView.successGetConversationMore(conversationListDomain);
+        List<Visitable> visitableList = GetDetailResChatSubscriber.initChatData(conversationListDomain,
+                detailResChatDomain.getShop(),
+                detailResChatDomain.getCustomer(),
+                detailResChatDomain.getLast(),
+                detailResChatDomain.getActionBy());
+        mainView.onAddItemWithPositionAdapter(TOP_POSITION, visitableList);
     }
 
     @Override
@@ -41,6 +51,5 @@ public class GetDetailResChatMoreSubscriber extends Subscriber<ConversationListD
         mainView.dismissProgressBar();
         e.printStackTrace();
         mainView.errorGetConversationMore(ErrorHandler.getErrorMessage(e));
-        Log.d("MyTag", "error " + e.getLocalizedMessage());
     }
 }

@@ -86,7 +86,11 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
     }
 
 
-    private List<Visitable> initChatData(ConversationListDomain conversationListDomain, ShopDomain shopDomain, CustomerDomain customerDomain, LastDomain lastDomain, int actionBy) {
+    public static List<Visitable> initChatData(ConversationListDomain conversationListDomain,
+                                               ShopDomain shopDomain,
+                                               CustomerDomain customerDomain,
+                                               LastDomain lastDomain,
+                                               int actionBy) {
         int lastAction = 0;
         List<Visitable> items = new ArrayList<>();
         for (ConversationDomain conversationDomain : conversationListDomain.getConversationDomains()) {

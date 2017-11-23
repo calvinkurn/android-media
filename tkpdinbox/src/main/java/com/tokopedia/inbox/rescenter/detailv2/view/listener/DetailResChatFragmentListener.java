@@ -32,7 +32,7 @@ public interface DetailResChatFragmentListener {
 
         void errorGetConversation(String error);
 
-        void successGetConversation(ConversationListDomain conversationListDomain);
+        void successGetConversationMore(ConversationListDomain conversationListDomain);
 
         void errorGetConversationMore(String error);
 
@@ -119,6 +119,6 @@ public interface DetailResChatFragmentListener {
 
         void actionEditAddress(String addressId, String oldAddressId, String conversationId);
 
-        void doLoadMore(String resolutionId, String convId);
+        void doLoadMore(String resolutionId, String convId, DetailResChatDomain detailResChatDomain);
     }
 }
