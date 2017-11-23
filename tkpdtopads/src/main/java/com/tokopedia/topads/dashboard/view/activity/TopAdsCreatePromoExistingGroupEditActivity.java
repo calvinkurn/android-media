@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupEditFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupFragment;
 
 import java.util.ArrayList;
 import java.util.List;

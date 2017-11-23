@@ -62,11 +62,11 @@ public interface AppComponent {
 
     void inject(TActivity baseActivity);
 
-    @ApplicationContext
-    Context context();
-
     @TopAdsQualifier
     Retrofit topAdsRetrofit();
+
+    @ApplicationContext
+    Context context();
 
     @AceQualifier
     Retrofit aceRetrofit();
