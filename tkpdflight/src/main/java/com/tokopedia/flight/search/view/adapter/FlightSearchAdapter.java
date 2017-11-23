@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.view.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,11 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.binder.BaseEmptyDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.binder.BaseRetryDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.binder.DataBindAdapter;
 import com.tokopedia.abstraction.base.view.adapter.binder.EmptyDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
@@ -29,6 +33,8 @@ import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> {
 
     private OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
+    private String errorMessage;
+
     public interface OnBaseFlightSearchAdapterListener{
         void onResetFilterClicked();
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
@@ -176,6 +182,37 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
             }
         });
         return emptyDataBinder;
+    }
+
+    @Nullable
+    @Override
+    protected RetryDataBinder createRetryDataBinder() {
+        return new FlightBaseRetryDataBinder(this);
+    }
+
+    private class FlightBaseRetryDataBinder extends BaseRetryDataBinder{
+
+        public FlightBaseRetryDataBinder(DataBindAdapter dataBindAdapter) {
+            super(dataBindAdapter, R.drawable.ic_flight_empty_state);
+        }
+
+        @Override
+        public void bindViewHolder(RetryDataBinder.ViewHolder holder, int position) {
+            super.bindViewHolder(holder, position);
+            if (holder instanceof ViewHolder) {
+                TextView tvRetryDescription = ((ViewHolder) holder).getRetryDescription();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    tvRetryDescription.setVisibility(View.GONE);
+                } else {
+                    tvRetryDescription.setText(errorMessage);
+                    tvRetryDescription.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override

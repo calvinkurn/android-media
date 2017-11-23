@@ -27,7 +27,7 @@ import rx.functions.Func1;
  * Created by normansyahputa on 5/18/17.
  */
 
-public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAirportCountry,FlightAirportDB> {
+public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAirportCountry, FlightAirportDB> {
 
     public static final String ID = "id";
 
@@ -46,7 +46,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                 .flatMap(new Func1<FlightAirportCountry, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(FlightAirportCountry flightAirportCountry) {
-                        if(flightAirportCountry.getId().equals("ID")) {
+                        if(flightAirportCountry.getAttributes().getCities().size() > 0) {
                             for (FlightAirportCity flightAirportCity : flightAirportCountry.getAttributes().getCities()) {
                                 if (flightAirportCity.getFlightAirportDetails() != null && flightAirportCity.getFlightAirportDetails().size() > 1) {
                                     List<String> airportIds = new ArrayList<>();
@@ -59,10 +59,20 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                                     insertFlight(flightAirportCountry, flightAirportCity, flightAirportDetail, "");
                                 }
                             }
-                            return Observable.just(true);
                         }else{
-                            return Observable.just(false);
+                            FlightAirportDB flightAirportDB = new FlightAirportDB();
+                            flightAirportDB.setCountryId(flightAirportCountry.getId());
+                            flightAirportDB.setCityId("");
+                            flightAirportDB.setAirportId("");
+                            flightAirportDB.setPhoneCode(flightAirportCountry.getAttributes().getPhoneCode());
+                            flightAirportDB.setCountryName(flightAirportCountry.getAttributes().getName());
+                            insertFlight(flightAirportDB);
                         }
+                        return Observable.just(true);
+                    }
+
+                    private void insertFlight(FlightAirportDB flightAirportDB) {
+                        flightAirportDB.insert();
                     }
 
                     private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {
@@ -77,7 +87,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                         flightAirportDB.setAirportName(flightAirportDetail.getName());
                         flightAirportDB.setAirportIds(airportIds);
                         String aliases = "";
-                        for (String alias: flightAirportDetail.getAliases()) {
+                        for (String alias : flightAirportDetail.getAliases()) {
                             aliases += alias;
                         }
                         flightAirportDB.setAliases(aliases);
