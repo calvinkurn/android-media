@@ -32,6 +32,8 @@ public class TkpdBaseURL {
     public static String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
     public static String ACCOUNTS_ALPHA_DOMAIN = "https://accounts-alpha.tokopedia.com/";
     public static String INBOX_DOMAIN = "https://inbox.tokopedia.com";
+    public static String CHAT_DOMAIN = "https://chat.tokopedia.com";
+    public static String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
     public static String JS_DOMAIN = "https://js.tokopedia.com/";
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
@@ -57,6 +59,7 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
+    public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -117,7 +120,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
 
-        public static final String MOST_HELPFUL_REVIEW =  "reputationapp/review/api/v1/mosthelpful";
+        public static final String MOST_HELPFUL_REVIEW =
+                "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {
@@ -264,6 +268,8 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
+        public static final String URL_INBOX_MESSAGE_TIME_MACHINE = MOBILE_DOMAIN +
+                "inbox-message-old.pl?flag_app=1";
     }
 
     public static class Shop {
@@ -532,6 +538,7 @@ public class TkpdBaseURL {
 
     public static class Shipment {
         public static final String PATH_RATES = "rates/v1";
+        public static final String PATH_DISTRICT_RECOMMENDATION = "/v2/district-recommendation";
     }
 
     public static class Upload {
@@ -745,12 +752,19 @@ public class TkpdBaseURL {
         public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
     }
 
-    public static class TopCash {
+    public static class TokoCash {
         public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
-        public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
-        public static final String PATH_WALLET = "balance";
-        public static final String PATH_REQUEST_OTP_WALLET = "otp/request";
-        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "link";
+        public static final String PATH_WALLET = "api/v1/wallet/balance";
+        public static final String PATH_REQUEST_OTP_WALLET = "api/v1/wallet/otp/request";
+        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "api/v1/wallet/link";
+        public static final String GET_TOKEN_WALLET = "api/v1/wallet/token";
+    }
+
+    public static class Wallet {
+        public static final String GET_HISTORY = "api/v1/me/history";
+        public static final String POST_COMPLAINT = "api/v1/cs/complaint";
+        public static final String GET_OAUTH_INFO_ACCOUNT= "api/v1/me/profile";
+        public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
     }
 
     public static class Truecaller {
@@ -879,6 +893,19 @@ public class TkpdBaseURL {
     public class TkpdCart {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";
+    }
+
+    public static class Chat {
+        public static final String CHAT_WEBSOCKET = "/connect";
+        public static final String GET_MESSAGE = "/tc/v1/list_message";
+        public static final String GET_REPLY = "/tc/v1/list_reply/{msgId}";
+        public static final String GET_USER_CONTACT = "/tc/v1/message_contact/";
+        public static final String REPLY = "/tc/v1/reply";
+        public static final String LISTEN_WEBSOCKET = "/connect";
+        public static final String SEARCH = "/tc/v1/search";
+        public static final String DELETE = "/tc/v1/delete";
+        public static final String SEND_MESSAGE = "/tc/v1/send";
+        public static final String GET_TOPCHAT_NOTIFICATION = "tc/v1/notif_unreads";
     }
 
     public class Maps {

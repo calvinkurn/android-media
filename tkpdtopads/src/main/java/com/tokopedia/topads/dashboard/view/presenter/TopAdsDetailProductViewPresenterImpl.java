@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdAction;
@@ -34,7 +33,7 @@ public class TopAdsDetailProductViewPresenterImpl<T extends Ad> extends TopAdsDe
         topAdsProductAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
             @Override
             public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onTurnOnAdSuccess();
+                topAdsDetailViewListener.onTurnOnAdSuccess(dataResponseActionAds);
             }
 
             @Override
@@ -50,7 +49,7 @@ public class TopAdsDetailProductViewPresenterImpl<T extends Ad> extends TopAdsDe
         topAdsProductAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
             @Override
             public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onTurnOffAdSuccess();
+                topAdsDetailViewListener.onTurnOffAdSuccess(dataResponseActionAds);
             }
 
             @Override

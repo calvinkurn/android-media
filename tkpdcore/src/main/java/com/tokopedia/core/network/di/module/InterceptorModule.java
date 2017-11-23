@@ -76,13 +76,6 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public TopAdsAuthInterceptor provideTopAdsAuthInterceptor() {
-        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
-        return new TopAdsAuthInterceptor(oAuthString);
-    }
-
-    @ApplicationScope
-    @Provides
     public FingerprintInterceptor provideFingerprintInterceptor() {
         return new FingerprintInterceptor();
     }
@@ -114,16 +107,25 @@ public class InterceptorModule {
         return new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
 
+    @ApplicationScope
+    @Provides
+    public ResolutionInterceptor provideResolutionInterceptor() {
+        return new ResolutionInterceptor();
+    }
+
+    @ApplicationScope
+    @Provides
+    public TopAdsAuthInterceptor provideTopAdsAuthInterceptor(
+            SessionHandler sessionHandler,
+            @ApplicationContext Context context) {
+        String oAuthString = "Bearer " + sessionHandler.getAccessToken(context);
+        return new TopAdsAuthInterceptor(oAuthString);
+    }
+
     @TopAdsQualifier
     @ApplicationScope
     @Provides
     TkpdErrorResponseInterceptor provideTopAdsErrorResponseInterceptor() {
         return new TkpdErrorResponseInterceptor(TopAdsResponseError.class);
-    }
-
-    @ApplicationScope
-    @Provides
-    public ResolutionInterceptor provideResolutionInterceptor() {
-        return new ResolutionInterceptor();
     }
 }

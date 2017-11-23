@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,26 +17,26 @@ import android.widget.LinearLayout;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.listener.TokoCashReceivedListener;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
-import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
 import com.tokopedia.digital.widget.compoundview.DigitalItemHeaderHolder;
@@ -64,8 +63,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalCategoryListPresenter>
         implements IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
-        RefreshHandler.OnRefreshHandlerListener, TokoCashReceivedListener,
-        DigitalItemHeaderHolder.ActionListener {
+        RefreshHandler.OnRefreshHandlerListener, DigitalItemHeaderHolder.ActionListener {
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
     private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
             "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";
@@ -87,8 +85,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private RefreshHandler refreshHandler;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-    private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
-    private TokoCashData tokoCashData;
+    private TokoCashBalanceData tokoCashBalanceData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
 
     public static DigitalCategoryListFragment newInstance() {
@@ -159,10 +156,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     protected void initView(View view) {
         refreshHandler = new RefreshHandler(getActivity(), view, this);
-        tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
-        getActivity().registerReceiver(tokoCashBroadcastReceiver, new IntentFilter(
-                TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH_DIGITAL
-        ));
     }
 
     @Override
@@ -273,8 +266,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
-    public void sendBroadcastReceiver(Intent intent) {
-        getActivity().sendBroadcast(intent);
+    public void renderTokoCashData(TokoCashBalanceData tokoCashData) {
+        this.tokoCashBalanceData = tokoCashData;
     }
 
     @Override
@@ -357,7 +350,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
     }
@@ -365,17 +357,17 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
         UnifyTracking.eventClickDigitalCategory(itemData.getName());
-        if (itemData.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
-                && tokoCashData.getLink() != 1) {
-            String urlActivation = getTokoCashActionRedirectUrl(tokoCashData);
-            String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
-                    getActivity());
-            if (getActivity() != null) {
-                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) getActivity().getApplication())
-                            .goToWallet(getActivity(), seamlessUrl);
-                }
-            }
+        if (itemData.getCategoryId().equalsIgnoreCase(
+                String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
+                )) && tokoCashBalanceData != null && tokoCashBalanceData.getLink() != TokoCashTypeDef.TOKOCASH_ACTIVE) {
+            WalletRouterUtil.navigateWallet(
+                    getActivity().getApplication(),
+                    this,
+                    IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                    tokoCashBalanceData.getAction().getApplinks(),
+                    tokoCashBalanceData.getAction().getRedirectUrl(),
+                    new Bundle()
+            );
         } else {
             if (getActivity().getApplication() instanceof IDigitalModuleRouter)
                 if (((IDigitalModuleRouter) getActivity().getApplication())
@@ -391,11 +383,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                     bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
                     bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_INTERNAL, true);
                     ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(), itemData.getAppLinks(), bundle);
-                    /*Intent intent = (((IDigitalModuleRouter) getActivity().getApplication())
-                            .getIntentDeepLinkHandlerActivity());
-                    intent.putExtras(bundle);
-                    intent.setData(Uri.parse(itemData.getAppLinks()));
-                    startActivity(intent);*/
                 } else {
                     String redirectValueUrl = itemData.getRedirectValue();
                     if (redirectValueUrl != null && redirectValueUrl.length() > 0) {
@@ -417,21 +404,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing()) presenter.processGetDigitalCategoryList();
-    }
-
-    @Override
-    public void onReceivedTokoCashData(TokoCashData tokoCashData) {
-        this.tokoCashData = tokoCashData;
-    }
-
-    @Override
-    public void onTokoCashDataError(String errorMessage) {
-
-    }
-
-    private String getTokoCashActionRedirectUrl(TokoCashData tokoCashData) {
-        if (tokoCashData.getAction() == null) return "";
-        else return tokoCashData.getAction().getRedirectUrl();
     }
 
     private void renderErrorStateData(String message) {

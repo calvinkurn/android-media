@@ -12,7 +12,6 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
-import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.WsV4Auth;
@@ -129,26 +128,6 @@ public class OkHttpClientModule {
                 apiCacheInterceptor);
     }
 
-    @TopAdsAuth
-    @ApplicationScope
-    @Provides
-    public OkHttpClient provideOkHttpClientTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
-                                                      TopAdsAuthInterceptor topAdsAuthInterceptor,
-                                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                                      @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
-                                                       ChuckInterceptor chuckInterceptor,
-                                                      DebugInterceptor debugInterceptor,
-                                                      ApiCacheInterceptor apiCacheInterceptor) {
-
-        return OkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
-                topAdsAuthInterceptor,
-                okHttpRetryPolicy,
-                errorResponseInterceptor,
-                chuckInterceptor,
-                debugInterceptor,
-                apiCacheInterceptor);
-    }
-
     @WsV4Auth
     @ApplicationScope
     @Provides
@@ -222,5 +201,21 @@ public class OkHttpClientModule {
                 okHttpRetryPolicy,
                 chuckInterceptor,
                 debugInterceptor);
+    }
+
+    @TopAdsQualifier
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                      TopAdsAuthInterceptor topAdsAuthInterceptor,
+                                                      OkHttpRetryPolicy okHttpRetryPolicy,
+                                                      @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
+                                                      ApiCacheInterceptor apiCacheInterceptor) {
+
+        return OkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
+                topAdsAuthInterceptor,
+                okHttpRetryPolicy,
+                errorResponseInterceptor,
+                apiCacheInterceptor);
     }
 }

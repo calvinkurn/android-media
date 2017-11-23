@@ -21,6 +21,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryFragment;
+import com.tokopedia.tkpdpdp.InstallmentActivity;
 
 import butterknife.BindView;
 
@@ -78,6 +79,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
                     @Override
                     public void onClick(View v) {
                         finish();
+                        CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
                     }
                 });
         Fragment fragment =
@@ -126,6 +128,12 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     public FrameLayout getFrameLayout() {
         return frameLayout;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
     }
 
 

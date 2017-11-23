@@ -71,9 +71,4 @@ public class ActivateTokoCashPresenter implements IActivateTokoCashPresenter {
             }
         };
     }
-
-    @Override
-    public void onDestroyView() {
-        activateTokoCashInteractor.onDestroy();
-    }
 }
