@@ -74,6 +74,12 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.title_loading));
         snackbarRetry = getSnackbarWithAction();
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_impression));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_click));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_ctr));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_conversion));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_average));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_cost));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -153,7 +159,6 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     protected void loadData() {
         presenter.getStatisticFromNet(startDate, endDate, getTypeStatistic(), SessionHandler.getShopID(this));
-        getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
     }
 
     @Override
@@ -204,22 +209,6 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     public void dismissLoading() {
         progressDialog.dismiss();
         swipeToRefresh.setRefreshing(false);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_statistic, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-
-        if (itemId == R.id.menu_date) {
-            openDatePicker();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     protected abstract int getTypeStatistic();
