@@ -124,8 +124,10 @@ public class BuildAndShowNotification {
             mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
         } else if (!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())) {
             downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
-        } else {
-
+        } else if(!TextUtils.isEmpty(applinkNotificationPass.getBannerUrl())){
+            configureLargeImageNotification(applinkNotificationPass, mBuilder, configuration);
+        } else
+            {
             mBuilder.setLargeIcon(
                     BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
             );
@@ -330,6 +332,50 @@ public class BuildAndShowNotification {
         return mBuilder;
     }
 
+    private void configureLargeImageNotification(final ApplinkNotificationPass applinkNotificationPass,
+                                                 final NotificationCompat.Builder mBuilder,
+                                                 final NotificationConfiguration configuration){
+
+        if (!TextUtils.isEmpty(applinkNotificationPass.getBannerUrl())) {
+
+            ImageHandler.loadImageBitmapNotification(
+                    mContext,
+                    applinkNotificationPass.getBannerUrl(), new OnGetFileListener() {
+
+                        @Override
+                        public void onFileReady(File file) {
+
+                            NotificationCompat.BigPictureStyle bigStyle =
+                                    new NotificationCompat.BigPictureStyle();
+
+                            bigStyle.bigPicture(
+                                    Bitmap.createScaledBitmap(
+                                            BitmapFactory.decodeFile(file.getAbsolutePath()),
+                                            mContext.getResources().getDimensionPixelSize(R.dimen.notif_width),
+                                            mContext.getResources().getDimensionPixelSize(R.dimen.notif_height),
+                                            true
+                                    )
+                            );
+                            bigStyle.setBigContentTitle(applinkNotificationPass.getTitle());
+                            bigStyle.setSummaryText(applinkNotificationPass.getDescription());
+
+                            mBuilder.setStyle(bigStyle);
+
+                            NotificationManager mNotificationManager =
+                                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                            Notification notif = mBuilder.build();
+                            if (configuration.isVibrate() && configuration.isBell()) {
+                                notif.defaults |= Notification.DEFAULT_VIBRATE;
+                            }
+                            mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+
+                        }
+                    }
+            );
+        }
+
+    }
+
     private NotificationCompat.Builder configureBigPictureNotification(final Bundle data, final NotificationCompat.Builder mBuilder) {
         if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_IMAGE))) {
             ImageHandler.loadImageBitmapNotification(
@@ -371,6 +417,6 @@ public class BuildAndShowNotification {
         if (GlobalConfig.isSellerApp())
             return R.drawable.ic_stat_notify2;
         else
-            return R.drawable.ic_stat_notify;
+            return R.drawable.ic_stat_notify_white;
     }
 }

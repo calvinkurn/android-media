@@ -23,10 +23,12 @@ public class TopAdsMapper extends Mapper<TopAdsModel> {
     private JsonResponseConverter converter;
     private Context context;
     private String errorMessage;
+    private int position;
 
-    public TopAdsMapper(Context context, RawHttpRequestExecutor executor) {
+    public TopAdsMapper(Context context, RawHttpRequestExecutor executor, int position) {
         this.executor = executor;
         this.context = context;
+        this.position = position;
         errorMessage = context.getString(R.string.error_response_message);
         converter = JsonResponseConverter.newInstance();
     }
@@ -35,7 +37,9 @@ public class TopAdsMapper extends Mapper<TopAdsModel> {
     public TopAdsModel getModel() {
         try {
             JSONObject object = converter.convertResponse(executor.makeRequest());
-            return new TopAdsModel(object);
+            TopAdsModel model = new TopAdsModel(object);
+            model.setAdsPosition(position);
+            return model;
         } catch (Exception e) {
             errorMessage = e.getLocalizedMessage();
         }

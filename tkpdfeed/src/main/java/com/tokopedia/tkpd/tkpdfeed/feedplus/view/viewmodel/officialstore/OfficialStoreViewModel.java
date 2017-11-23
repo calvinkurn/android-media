@@ -1,42 +1,46 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore;
 
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductCardViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
-
-import java.util.ArrayList;
-
 /**
- * Created by stevenfredian on 5/18/17.
+ * @author by nisie on 7/26/17.
  */
 
-public class OfficialStoreViewModel extends ProductCardViewModel {
+public class OfficialStoreViewModel {
+    private int shopId;
 
-    private String officialStoreHeaderImageUrl;
+    private String shopUrl;
 
-    public OfficialStoreViewModel(String url, ArrayList<ProductFeedViewModel> listProduct) {
-        this.officialStoreHeaderImageUrl = url;
-        this.listProduct = listProduct;
+    private String shopName;
+
+    private String logoUrl;
+
+    private boolean isNew;
+
+    public int getShopId() {
+        return shopId;
     }
 
-    @Override
-    public int type(FeedPlusTypeFactory favoriteTypeFactory) {
-        return favoriteTypeFactory.type(this);
+    public String getShopUrl() {
+        return shopUrl;
     }
 
-    public ArrayList<ProductFeedViewModel> getListProduct() {
-        return listProduct;
+    public String getShopName() {
+        return shopName;
     }
 
-    public void setListProduct(ArrayList<ProductFeedViewModel> listProduct) {
-        this.listProduct = listProduct;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public String getOfficialStoreHeaderImageUrl() {
-        return officialStoreHeaderImageUrl;
+    public boolean getIsNew() {
+        return isNew;
     }
 
-    public void setOfficialStoreHeaderImageUrl(String officialStoreHeaderImageUrl) {
-        this.officialStoreHeaderImageUrl = officialStoreHeaderImageUrl;
+    public OfficialStoreViewModel(int shopId, String shopUrl, String shopName,
+                                  String logoUrl, boolean isNew) {
+        this.shopId = shopId;
+        this.shopUrl = shopUrl;
+        this.shopName = shopName;
+        this.logoUrl = logoUrl;
+        this.isNew = isNew;
     }
 }

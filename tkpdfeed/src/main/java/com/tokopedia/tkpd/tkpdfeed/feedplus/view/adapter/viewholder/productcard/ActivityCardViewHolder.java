@@ -21,8 +21,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedProductAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 
@@ -110,6 +110,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     public void bind(ActivityCardViewModel activityCardViewModel) {
         if (activityCardViewModel != null) {
             setHeader(activityCardViewModel);
+            activityCardViewModel.setRowNumber(getAdapterPosition());
             adapter.setData(activityCardViewModel);
             setFooter(activityCardViewModel);
         }
@@ -134,7 +135,10 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         ClickableSpan goToFeedDetail = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
+                viewListener.onGoToFeedDetail(
+                        activityCardViewModel.getPage(),
+                        activityCardViewModel.getRowNumber(),
+                        activityCardViewModel.getFeedId());
             }
 
             @Override
@@ -150,6 +154,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             @Override
             public void onClick(View view) {
                 viewListener.onGoToShopDetail(
+                        activityCardViewModel.getPage(),
+                        activityCardViewModel.getRowNumber(),
                         activityCardViewModel.getHeader().getShopId(),
                         activityCardViewModel.getHeader().getUrl());
 
@@ -197,7 +203,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             @Override
             public void onClick(View v) {
                 viewListener.onGoToShopDetail(
-                        activityCardViewModel.getHeader().getShopId(),
+                        activityCardViewModel.getPage(), activityCardViewModel.getRowNumber(), activityCardViewModel.getHeader().getShopId(),
                         activityCardViewModel.getHeader().getUrl());
             }
         });
@@ -205,7 +211,9 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
+                viewListener.onGoToFeedDetail(
+                        activityCardViewModel.getPage(),
+                        activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId());
             }
         });
     }
@@ -230,7 +238,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                             viewModel.getShareUrl(),
                             viewModel.getHeader().getShopName(),
                             viewModel.getHeader().getShopAvatar(),
-                            viewModel.getShareLinkDescription()
+                            viewModel.getShareLinkDescription(),
+                            viewModel.getPage() + "." + viewModel.getRowNumber()
                     );
                 }
             });

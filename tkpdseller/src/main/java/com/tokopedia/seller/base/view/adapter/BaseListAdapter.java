@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,21 +17,21 @@ import java.util.List;
  */
 public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecyclerViewAdapter {
 
-    public interface Callback<T> {
-
-        void onItemClicked(T t);
-    }
 
     protected List<T> data;
-    private Callback callback;
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
-    }
+    protected Callback<T> callback;
 
     public BaseListAdapter() {
         super();
         this.data = new ArrayList<>();
+    }
+
+    public List<T> getData() {
+        return data;
+    }
+
+    public void setCallback(Callback<T> callback) {
+        this.callback = callback;
     }
 
     @Override
@@ -47,7 +48,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
                 super.onBindViewHolder(holder, position);
                 break;
             default:
-                bindData(position, holder);
+                bindViewHolder(position, holder);
                 break;
         }
     }
@@ -71,10 +72,14 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
     }
 
-    private void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
+    private void bindViewHolder(final int position, RecyclerView.ViewHolder viewHolder) {
         if (data.size() <= position) {
             return;
         }
+        bindData(position, viewHolder);
+    }
+
+    protected void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
         final T t = data.get(position);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +90,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
             }
         });
         if (viewHolder instanceof BaseViewHolder) {
-            ((BaseViewHolder) viewHolder).bindObject(t);
+            ((BaseViewHolder<T>) viewHolder).bindObject(t);
         }
     }
 
@@ -104,8 +109,20 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         }
     }
 
+    public void addSingleDataWithPosition(Pair<Integer, T> pairData) {
+        if (data != null && data.size() > 0) {
+            this.data.add(pairData.getModel1(), pairData.getModel2());
+            notifyItemInserted(pairData.getModel1());
+        }
+    }
+
     public void clearData() {
         this.data.clear();
         notifyDataSetChanged();
+    }
+
+    public interface Callback<T> {
+
+        void onItemClicked(T t);
     }
 }

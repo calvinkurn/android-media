@@ -36,6 +36,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
         String description = data.getString(Constants.ARG_NOTIFICATION_DESCRIPTION);
         String image = data.getString(Constants.ARG_NOTIFICATION_IMAGE, null);
         String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
+        String banner = data.getString(Constants.ARG_NOTIFICATION_BANNER, "");
         ApplinkNotificationPass.ApplinkNotificationPassBuilder builder =
                 ApplinkNotificationPass.ApplinkNotificationPassBuilder.builder();
         NotificationConfiguration configuration = buildDefaultConfiguration(context);
@@ -59,6 +60,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
         ApplinkNotificationPass applinkNotificationPass = builder
                 .description(description)
                 .image(image)
+                .banner(banner)
                 .id(Constants.ARG_NOTIFICATION_APPLINK_PROMO)
                 .title(title)
                 .group(NOTIFICATION_GROUP)

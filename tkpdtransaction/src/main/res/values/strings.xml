@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">tkpdtransaction</string>
+    <string name="title_change_payment">Ubah Pembayaran</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
     <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
     <string name="label_title_dialog_request_cancel_order">Pengajuan Pembatalan Pesanan</string>
@@ -11,6 +12,7 @@
     <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
     <string name="toko_cash_info">TokoCash</string>
 
+    <string name="label_payment_setting">Pengaturan Pembayaran</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
     <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
@@ -59,9 +61,10 @@
     <string name="label_transaction_potential_cashback">Potensi Cashback</string>
     <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
     <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
-    <string name="cancel_replacement">Batalkan Pesanan</string>
+    <string name="cancel_replacement">Batalkan Pencarian</string>
     <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="alert_payment_canceled_transaction_module">Pembayaran dibatalkan</string>
+    <string name="title_driver_detail">Detil Driver</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
 
@@ -71,4 +74,40 @@
     <string name="mulai_belanja">Mulai belanja</string>
     <string name="holder_desc_atc">Pesanan akan sampai dalam waktu maksimal 8 jam sejak penjual melakukan pengiriman
 (berlaku untuk pengiriman sebelum pukul 16:00).</string>
+    <string name="quick_payment">Pembayaran Cepat</string>
+    <string name="payment_method">Metode Pembayaran</string>
+    <string name="title_credit_card">Kartu Kredit</string>
+    <string name="bca_one_click">BCA OneKlik</string>
+    <string name="title_register">Daftar</string>
+    <string name="title_delete">Hapus</string>
+    <string name="title_change">Ubah</string>
+    <string name="title_cancel">Batal</string>
+    <string name="parameter_klik">Klik</string>
+    <string name="parameter_kartu">Kartu</string>
+    <string name="parameter_kredit">Kredit</string>
+    <string name="parameter_bca">BCA</string>
+    <string name="title_daily_limit">Limit Harian</string>
+    <string name="title_delete_bca_one_click">Hapus BCA OneKlik?</string>
+    <string name="title_payment_account_owner">Nama Pemilik Rekening</string>
+    <string name="title_card_type">Tipe Kartu</string>
+    <string name="title_credit_card_number">Nomor Kartu Kredit</string>
+    <string name="title_expiry_date">Masa Berlaku</string>
+    <string name="message_no_credit_card">Belum Ada Kartu Kredit Tersimpan</string>
+    <string name="success_cancel_replacement">Pesanan berhasil dibatalkan</string>
+    <string name="title_cancel_transaction">Batalkan Transaksi</string>
+    <string name="title_confirm_cancel_transaction">Konfirmasi Pembatalan Transaksi</string>
+    <string name="question_cancel_transaction">Batalkan Transaksi?</string>
+    <string name="string_splitter">|</string>
+
+    <string name="label_call_ondemand_driver_logistic">Hubungi</string>
+    <string name="label_call_ondemand_driver_logistic_action_1">Telepon Driver</string>
+    <string name="label_call_ondemand_driver_logistic_action_2">SMS Driver</string>
+    <string name="error_message_phone_dialer_app_not_found">Maaf, aplikasi telepon tidak ditemukan</string>
+    <string name="error_message_sms_app_not_found">Maaf, aplikasi SMS tidak ditemukan</string>
+    <string name="authentication_title_1">Autentikasi Tunggal</string>
+    <string name="authentication_title_2">Autentikasi Ganda (Direkomendasikan)</string>
+    <string name="authentication_description_1">Anda hanya akan diminta memasukkan CVV untuk setiap transaksi. Verifikasi via SMS akan diperlukan untuk transaksi kasus tertentu.</string>
+    <string name="authentication_description_2">Anda akan diminta memasukkan CVV dan verifikasi via SMS untuk setiap transaksi.</string>
+    <string name="menu_credit_card_authentication">Pengaturan Autentikasi</string>
+    <string name="title_preorder_proccess_time">Waktu Proses: </string>
 </resources>

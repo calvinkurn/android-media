@@ -12,7 +12,7 @@ import rx.functions.Func1;
 /**
  * Created by sebastianuskh on 3/8/17.
  */
-
+@Deprecated
 public class CategoryVersionDataSource {
     private final CategoryVersionCloud categoryVersionCloud;
     private final CategoryVersionCache categoryVersionCache;

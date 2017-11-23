@@ -27,6 +27,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.customView.ReputationRecyclerView;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
@@ -97,7 +98,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
         @BindView(R2.id.btn_overflow)
         ImageView overFlow;
         @BindView(R2.id.image_holder)
-        RecyclerView imageHolder;
+        ReputationRecyclerView imageHolder;
 
         ImageUploadAdapter adapter;
 
@@ -129,7 +130,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
         @BindView(R2.id.collapse)
         TextView collapse;
         @BindView(R2.id.image_holder)
-        RecyclerView imageHolder;
+        ReputationRecyclerView imageHolder;
 
         ImageUploadAdapter adapter;
 
@@ -156,8 +157,7 @@ public class ProductReviewAdapter extends BaseRecyclerViewAdapter {
     }
 
     public boolean isLastItemPosition(int position) {
-        if (position == data.size()) return true;
-        else return false;
+        return position == data.size();
     }
 
     @Override

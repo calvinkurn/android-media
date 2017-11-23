@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxticket.interactor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -89,7 +90,6 @@ public interface InboxTicketRetrofitInteractor {
         void onNoConnectionError();
 
         void onFailAuth();
-
 
     }
 

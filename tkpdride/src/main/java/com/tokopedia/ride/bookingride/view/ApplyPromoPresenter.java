@@ -16,6 +16,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -27,6 +29,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetPromoUseCase promoUseCase;
 
+    @Inject
     public ApplyPromoPresenter(GetFareEstimateUseCase applyPromoUseCase, GetPromoUseCase promoUseCase) {
         this.getFareEstimateUseCase = applyPromoUseCase;
         this.promoUseCase = promoUseCase;
@@ -61,9 +64,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                 } else if (e instanceof SocketTimeoutException) {
                     message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                 } else if (e instanceof UnProcessableHttpException) {
-                    message = ((UnProcessableHttpException) e).getMessage();
-                } else {
-                    message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                    message = e.getMessage();
                 }
 
                 getView().onFailedApplyPromo(message);

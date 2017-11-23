@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.domain.model;
 
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import java.util.List;
 

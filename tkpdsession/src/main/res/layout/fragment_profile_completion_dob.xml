@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:id="@+id/container">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/date_title_prof_comp"
+        android:textSize="@dimen/text_size_16"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
+        android:textColor="@color/black_70"
+        android:lineSpacingExtra="4sp"
+        android:layout_gravity="center"/>
+
+    <android.support.v4.widget.Space
+        android:layout_width="0dp"
+        android:layout_height="@dimen/space_large" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColorHint="@color/grey_hint"
+            android:theme="@style/Theme.TextInputLayout"
+            android:hint="@string/profile_completion_date">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding_textview_prof_comp"
+                android:maxLength="2"
+                android:inputType="numberDecimal"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/autoCompleteTextViewContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColorHint="@color/grey_hint"
+            android:theme="@style/Theme.TextInputLayout"
+            android:hint="@string/profile_completion_month">
+            <AutoCompleteTextView
+                android:id="@+id/month"
+                android:paddingLeft="@dimen/padding_textview_prof_comp"
+                android:layout_margin="@dimen/padding_textview_prof_comp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:clickable="true"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:theme="@style/Theme.TextInputLayout"
+            android:textColorHint="@color/grey_hint"
+            android:hint="@string/profile_completion_year">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/year"
+                android:paddingLeft="@dimen/padding_textview_prof_comp"
+                android:layout_margin="@dimen/padding_textview_prof_comp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="4"
+                android:inputType="numberDecimal"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -121,7 +121,7 @@ public class DigitalChooserProductFragment extends BasePresenterFragment
     @Override
     protected void initialVar() {
         productChooserAdapter = new ProductChooserAdapter(
-                this, productListData, productStyleView, this
+                this, productListData, this
         );
     }
 
@@ -135,16 +135,8 @@ public class DigitalChooserProductFragment extends BasePresenterFragment
         actionListener.onProductItemSelected(product);
     }
 
-    @Override
-    public void onProductLinkClicked(String url) {
-        startActivity(DigitalWebActivity.newInstance(getActivity(), url));
-    }
-
     public interface ActionListener {
         void onProductItemSelected(Product product);
-
-        void onProductItemChooserCanceled();
     }
-
 
 }

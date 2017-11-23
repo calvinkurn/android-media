@@ -67,11 +67,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableRight="@drawable/ic_search_black_24dp"
-                android:drawableTint="@color/warm_grey"
+                android:drawableLeft="@drawable/icon_magnifier"
+                android:drawablePadding="@dimen/padding_small"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="5dp"
-                android:hint="Cari produk atau toko..."
+                android:hint="@string/cari_produk_atau_toko"
+                android:textColorHint="@color/black_38"
                 android:padding="5dp" />
 
         </LinearLayout>

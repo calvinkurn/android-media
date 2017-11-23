@@ -167,7 +167,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
-    public void displayAds(List<Item> list) {
+    public void displayAds(List<Item> list, int position) {
         if (list.size() > 0) {
             adsHeader.setVisibility(VISIBLE);
         }

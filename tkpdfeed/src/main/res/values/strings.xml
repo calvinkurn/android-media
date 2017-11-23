@@ -43,5 +43,7 @@
     <string name="share_sms">SMS</string>
     <string name="share_copy">Copy Link</string>
     <string name="share_others">Lainnya</string>
+    <string name="discount_off">% Off</string>
+    <string name="title_toppicks">Top Picks</string>
 
 </resources>

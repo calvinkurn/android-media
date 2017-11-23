@@ -23,4 +23,6 @@ public interface InboxTicketDetailFragmentPresenter {
     void actionCamera();
 
     void onDestroyView();
+
+    void commentRating(String isHelpful);
 }

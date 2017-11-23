@@ -65,6 +65,8 @@ public class RideHistoryEntityMapper {
             payment = new Payment();
             payment.setCurrency(transformCurrency(paymentEntity.getCurrencyCode()));
             payment.setTotalAmount(paymentEntity.getTotalAmount());
+            payment.setPaidAmount(paymentEntity.getPaidAmount());
+            payment.setPendingAmount(paymentEntity.getPendingAmount());
         }
         return payment;
     }

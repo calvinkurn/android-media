@@ -280,4 +280,9 @@
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class com.tokopedia.tkpd.database.model.** { *; }
 
+-keep class com.tokopedia.core.product.model.**{ *; }
+
+#Branch.io settings
+-keep class com.google.android.gms.ads.identifier.** { *; }
+
 

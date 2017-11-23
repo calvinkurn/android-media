@@ -25,7 +25,7 @@ public class ReputationViewHelper {
         sellerReputationHeaderView = (ReputationView) itemView.findViewById(R.id.seller_reputation_header_view);
         ButterKnife.bind(this, itemView);
 
-        textHeaderReputation.setText(R.string.your_shop_reputation);
+        textHeaderReputation.setText(R.string.shop_reputation);
     }
 
     public void renderData(ShopModel shopModel) {

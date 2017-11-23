@@ -34,6 +34,7 @@ public class RideAddressEntityMapper {
             rideAddress.setAddressName(entity.getAddressName());
             rideAddress.setLatitude(entity.getLatitude());
             rideAddress.setLongitude(entity.getLongitude());
+            rideAddress.setPrefill(entity.getPrefill());
         }
         return rideAddress;
     }

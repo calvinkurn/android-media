@@ -14,6 +14,8 @@
     <string name="november">November</string>
     <string name="december">Desember</string>
     <string name="wrong_input">inputan salah</string>
+    <string name="invalid_date">Tanggal Lahir tidak valid</string>
+    <string name="invalid_gender">Jenis Kelamin tidak valid</string>
 
     <string name="title_success_activate_account">Aktivasi telah berhasil</string>
     <string name="welcome_to_tokopedia">Selamat bergabung di Tokopedia</string>
@@ -22,6 +24,7 @@
     <string name="title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="title_resend_otp_sms">Kirim SMS Ulang</string>
     <string name="change_number">Ubah Nomor</string>
+    <string name="title_phone_number">Nomor Ponsel</string>
     <string name="title_activity_change_phone_number">Ubah Nomor Ponsel</string>
     <string name="verify_phone_number">Verifikasi Nomor Ponsel</string>
     <string name="profile_completion">Kelengkapan data diri</string>
@@ -58,4 +61,25 @@
     <string name="tokocash">TokoCash</string>
     <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel, TokoCash akan diaktifkan</string>
     <string name="register_now">Daftar Sekarang di Tokopedia</string>
+    <string name="profile_completion_title">Data Diri</string>
+    <string name="continue_form">Lanjut</string>
+    <string name="skip_form">Lewati</string>
+    <string name="via_call">atau lewat telepon</string>
+    <string name="via_call_short">lewat telepon</string>
+
+    <string name="tokocash_phone_verification_text">Setelah terverifikasi, TokoCash akan aktif dan dapat digunakan sebagai pilihan pembayaran.</string>
+
+    <string name="your_profile_completion">Kelengkapan profil</string>
+    <string name="gender_title_prof_comp">Jenis Kelamin Anda</string>
+    <string name="date_title_prof_comp">Tanggal Lahir Anda</string>
+    <string name="title_verif_phone_prof_comp">Verifikasi Nomor Handphone</string>
+
+    <string name="profile_completion_man">Pria</string>
+    <string name="profile_completion_woman">Wanita</string>
+    <string name="profile_completion_date">Tanggal</string>
+    <string name="profile_completion_month">Bulan</string>
+    <string name="profile_completion_year">Tahun</string>
+    <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
+    <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
+    <string name="see_your_profile">Lihat Profil Anda</string>
 </resources>

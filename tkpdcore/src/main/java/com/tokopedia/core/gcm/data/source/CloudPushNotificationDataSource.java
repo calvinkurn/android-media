@@ -145,6 +145,12 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
     }
 
     @Override
+    public Observable<String> getRegistrationDevice() {
+        String cloudRegitrationID = FirebaseInstanceId.getInstance().getToken();
+        return Observable.just(cloudRegitrationID);
+    }
+
+    @Override
     public Observable<String> savePushNotification(String category, String response, String customIndex, String serverId) {
         return null;
     }

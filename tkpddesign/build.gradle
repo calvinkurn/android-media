@@ -18,7 +18,7 @@ publishing {
             groupId 'com.tokopedia.design'
             artifactId 'design'
             version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpdseller-design.aar")
+            artifact("$buildDir/outputs/aar/tkpddesign-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
@@ -81,6 +81,7 @@ android {
 
 dependencies {
     compile rootProject.ext.supportLibDependencies.design
+    compile rootProject.ext.supportLibDependencies.cardViewV7
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

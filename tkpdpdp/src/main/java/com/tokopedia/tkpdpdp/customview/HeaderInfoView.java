@@ -1,11 +1,18 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.TintableBackgroundView;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
@@ -35,11 +42,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView tvName;
     private TextView cashbackTextView;
     private TextView tvPrice;
-    private LinearLayout cashbackHolder;
     private TextView textOriginalPrice;
     private TextView textDiscount;
     private LinearLayout linearDiscountTimerHolder;
     private TextView textDiscountTimer;
+    private Context context;
+    private LinearLayout textOfficialStore;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -52,7 +60,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     public void setListener(ProductDetailView listener) {
         this.listener = listener;
-
     }
 
     @Override
@@ -61,11 +68,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         tvName = (TextView) findViewById(R.id.tv_name);
         tvPrice = (TextView) findViewById(R.id.tv_price);
         cashbackTextView = (TextView) findViewById(R.id.label_cashback);
-        cashbackHolder = (LinearLayout) findViewById(R.id.cashback_holder);
         textOriginalPrice = (TextView) findViewById(R.id.text_original_price);
         textDiscount = (TextView) findViewById(R.id.text_discount);
         linearDiscountTimerHolder = (LinearLayout) findViewById(R.id.linear_discount_timer_holder);
         textDiscountTimer = (TextView) findViewById(R.id.text_discount_timer);
+        this.context = context;
+        textOfficialStore = (LinearLayout) findViewById(R.id.text_official_store);
 
     }
 
@@ -88,15 +96,29 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
         tvPrice.setText(data.getInfo().getProductPrice());
-        setVisibility(VISIBLE);
+
 
         if (data.getCashBack() != null && !data.getCashBack().getProductCashbackValue().isEmpty()) {
-            cashbackHolder.setVisibility(VISIBLE);
             cashbackTextView.setText(data.getCashBack().getProductCashbackValue());
-            cashbackTextView.setVisibility(VISIBLE);
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
+            cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
+            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                cashbackTextView.setBackgroundTintList(tint);
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {
+                    ((TintableBackgroundView) cashbackTextView).setSupportBackgroundTintList(tint);
+            } else {
+                ViewCompat.setBackgroundTintList(cashbackTextView, tint);
+            }
+            cashbackTextView.setVisibility(VISIBLE);
         }
+
+        if(data.getShopInfo().getShopIsOfficial() != null && data.getShopInfo().getShopIsOfficial() == 1) {
+            textOfficialStore.setVisibility(VISIBLE);
+        }
+        setVisibility(VISIBLE);
     }
 
     public void renderTempData(ProductPass productPass) {

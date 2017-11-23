@@ -5,8 +5,8 @@
     android:installLocation="preferExternal">
 
     <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="24"
+        android:minSdkVersion="16"
+        android:targetSdkVersion="25"
         tools:overrideLibrary="com.readystatesoftware.chuck" />
 
     <permission
@@ -23,6 +23,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -35,7 +36,7 @@
 
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
+        android:maxSdkVersion="22" />
     <uses-permission
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
@@ -86,7 +87,10 @@
         <meta-data
             android:name="net.hockeyapp.android.appIdentifier"
             android:value="528b17702bf941a581f15e188677306b " />
-
+        <!-- Branch init -->
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="@string/BRANCH_SDK_KEY" />
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
@@ -111,6 +115,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.facebook.react.devsupport.DevSettingsActivity"
+            android:label="com.tokopedia.tkpd:string/app_name" />
+        <activity
             android:name=".onboarding.OnboardingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
@@ -128,7 +135,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ShopStatistic"
             android:label="@string/title_activity_shop_statistic"
@@ -144,6 +151,10 @@
         <activity
             android:name=".manage.people.address.activity.ChooseAddressActivity"
             android:label="@string/title_activity_choose_address"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".manage.people.address.activity.DistrictRecommendationActivity"
+            android:label="@string/title_activity_search_address"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ManagePeople"
@@ -246,7 +257,6 @@
             android:name=".DeveloperOptions"
             android:label="@string/title_activity_developer_options"
             android:screenOrientation="portrait" />
-        <activity android:name="com.localytics.android.PushTrackingActivity" />
         <activity
             android:name=".TermPrivacy"
             android:label="@string/title_activity_term_and_privacy"
@@ -297,7 +307,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".home.TopPicksWebView"
-            android:label="@string/title_activity_deep_link"
+            android:label="@string/title_activity_top_picks"
             android:screenOrientation="portrait" />
         <activity
             android:name=".geolocation.activity.GeolocationActivity"
@@ -341,9 +351,10 @@
         <activity
             android:name=".topads.WebViewTopAdsActivity"
             android:theme="@style/Theme.BrowseProduct" />
-        <activity
-            android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".msisdn.activity.MsisdnActivity"
             android:label="@string/title_msisdn"
@@ -351,6 +362,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".home.BrandsWebViewActivity"
+            android:label="@string/title_official_store"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity"
             android:label="@string/title_official_store"
             android:screenOrientation="portrait" />
 
@@ -416,15 +431,6 @@
                 <category android:name="com.tokopedia.tkpd" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".service.ErrorNetworkReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="com.tokopedia.tkpd.FORCE_LOGOUT" />
-                <action android:name="com.tokopedia.tkpd.SERVER_ERROR" />
-                <action android:name="com.tokopedia.tkpd.TIMEZONE_ERROR" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".msisdn.IncomingSmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -468,20 +474,6 @@
             android:name=".manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
         <service
-            android:name="com.localytics.android.GcmListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.localytics.android.InstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
-        <service
             android:name=".product.intentservice.ProductInfoIntentService"
             android:exported="false" />
         <service
@@ -511,6 +503,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity android:name=".referral.ReferralActivity" />
         <activity android:name=".onboarding.NewOnboardingActivity"></activity>
     </application>
 

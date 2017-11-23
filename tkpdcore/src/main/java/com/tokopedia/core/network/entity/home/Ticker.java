@@ -163,6 +163,10 @@ public class Ticker {
             return MethodChecker.fromHtml(str);
         }
 
+        public String getMessage2() {
+            return message;
+        }
+
         public void setMessage(String message) {
             this.message = message;
         }

@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.home.feed.view;
 
+import android.Manifest;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +25,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
@@ -30,6 +33,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.home.model.HistoryProductListItem;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -39,6 +43,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.tkpd.R;
@@ -47,6 +52,8 @@ import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
 import com.tokopedia.tkpd.home.feed.di.component.DaggerDataFeedComponent;
 import com.tokopedia.tkpd.home.util.DefaultRetryListener;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -65,16 +72,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.FAVORITE_TAB;
 import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
-
+@RuntimePermissions
 public class FragmentProductFeed extends BaseDaggerFragment implements FeedContract.View,
         DefaultRetryListener.OnClickRetry, ListenerFabClick, SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener {
 
     private static final String TAG = "FragmentProductFeed";
+    public static final int MAX_CHOOSEN_IMAGE = 10;
 
     @BindView(R.id.index_main_recycler_view)
     RecyclerView contentRecyclerView;
@@ -91,6 +103,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Inject
     FeedPresenter feedPresenter;
+
     View parentView;
 
     private GridLayoutManager gridLayoutManager;
@@ -154,11 +167,10 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     protected void initInjector() {
-        AppComponent component = getComponent(AppComponent.class);
         DaggerDataFeedComponent feedComponent
                 = (DaggerDataFeedComponent) DaggerDataFeedComponent
                 .builder()
-                .appComponent(component).build();
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this)).build();
         feedComponent.inject(this);
     }
 
@@ -167,7 +179,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
-            setLocalyticFlow();
             sendAppsFlyerData();
         }
         super.setUserVisibleHint(isVisibleToUser);
@@ -518,6 +529,31 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         });
     }
 
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void onInstagramClicked() {
+        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getContext(),
+                    FragmentProductFeed.this,
+                    INSTAGRAM_SELECT_REQUEST_CODE, MAX_CHOOSEN_IMAGE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            ArrayList<InstagramMediaModel> images = data.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
+            if (images == null || images.size() == 0) {
+                return;
+            }
+            Application application = getActivity().getApplication();
+            if(application != null && application instanceof SellerModuleRouter){
+                ((SellerModuleRouter) application).goMultipleInstagramAddProduct(
+                        getContext(), images);
+            }
+        }
+    }
+
     private void onAddGallery() {
         GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, true, -1);
     }
@@ -540,10 +576,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     private boolean isPositionOnRetryFeed(int position) {
         return adapter.isRetry(topAdsRecyclerAdapter.getPlacer().getItem(position).originalPos());
-    }
-
-    private void setLocalyticFlow() {
-        ScreenTracking.screenLoca(getString(R.string.home_product_feed));
     }
 
     private void sendAppsFlyerData() {

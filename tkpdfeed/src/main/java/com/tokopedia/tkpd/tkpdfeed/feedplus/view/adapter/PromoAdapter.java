@@ -1,16 +1,19 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
+import android.content.res.Resources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoViewModel;
 
 import java.util.ArrayList;
@@ -25,7 +28,10 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int VIEW_LAYOUT = 344;
     private static final float MARGIN_CARD = 10;
     private static final float WIDTH_CARD = 285;
-    private ArrayList<PromoViewModel> list;
+    private static final float SCALE_LARGE_PROMO_IMAGE = 1.9f;
+    private static final float SCALE_SMALL_PROMO_IMAGE = 2.3f;
+
+    private PromoCardViewModel promoCardViewModel;
 
     private FeedPlus.View viewListener;
 
@@ -51,29 +57,44 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        final ArrayList<PromoViewModel> list = promoCardViewModel.getListPromo();
         if (getItemViewType(position) == VIEW_MORE) {
             final ViewMoreViewHolder temp = (ViewMoreViewHolder) holder;
             temp.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onViewMorePromoClicked();
+                    viewListener.onViewMorePromoClicked(promoCardViewModel.getPage(),
+                            promoCardViewModel.getRowNumber());
                 }
             });
         } else {
             final LayoutViewHolder temp = (LayoutViewHolder) holder;
             if (getItemCount() == 1) {
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
-                CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
+                CardView.LayoutParams params = new CardView.LayoutParams(
+                        CardView.LayoutParams.MATCH_PARENT,
+                        CardView.LayoutParams.WRAP_CONTENT);
                 int marginPixels = (int) (MARGIN_CARD * scale + 0.5f);
                 params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
                 temp.container.setLayoutParams(params);
+
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup
+                        .LayoutParams.MATCH_PARENT, Math.round(Resources.getSystem()
+                        .getDisplayMetrics()
+                        .widthPixels / SCALE_LARGE_PROMO_IMAGE));
+                temp.imageView.setLayoutParams(lp);
             } else {
                 final float scale = temp.container.getResources().getDisplayMetrics().density;
                 int widthPixels = (int) (WIDTH_CARD * scale + 0.5f);
-                CardView.LayoutParams params = new CardView.LayoutParams(widthPixels, CardView.LayoutParams.WRAP_CONTENT);
+                CardView.LayoutParams params = new CardView.LayoutParams(widthPixels,
+                        CardView.LayoutParams.WRAP_CONTENT);
                 int marginPixels = (int) (MARGIN_CARD * scale + 0.5f);
                 params.setMargins(marginPixels, marginPixels, 0, marginPixels);
                 temp.container.setLayoutParams(params);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup
+                        .LayoutParams.MATCH_PARENT, Math.round(Resources.getSystem().getDisplayMetrics()
+                        .widthPixels / SCALE_SMALL_PROMO_IMAGE));
+                temp.imageView.setLayoutParams(lp);
             }
             ImageHandler.LoadImage(temp.imageView, list.get(position).getImageUrl());
             temp.period.setText(list.get(position).getPeriod());
@@ -82,7 +103,11 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             temp.copyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onCopyClicked(temp.promoCode.getText().toString(),
+                    viewListener.onCopyClicked(
+                            promoCardViewModel.getPage(),
+                            promoCardViewModel.getRowNumber(),
+                            list.get(position).getId(),
+                            temp.promoCode.getText().toString(),
                             list.get(position).getName());
                 }
             });
@@ -92,7 +117,11 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             temp.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onSeePromo(list.get(position).getLink(),
+                    viewListener.onSeePromo(
+                            promoCardViewModel.getPage(),
+                            promoCardViewModel.getRowNumber(),
+                            list.get(position).getId(),
+                            list.get(position).getLink(),
                             list.get(position).getName());
                 }
             });
@@ -100,7 +129,11 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             temp.seeArea.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onSeePromo(list.get(position).getLink(),
+                    viewListener.onSeePromo(
+                            promoCardViewModel.getPage(),
+                            promoCardViewModel.getRowNumber(),
+                            list.get(position).getId(),
+                            list.get(position).getLink(),
                             list.get(position).getName());
                 }
             });
@@ -119,21 +152,25 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if (promoCardViewModel.getListPromo() != null
+                && !promoCardViewModel.getListPromo().isEmpty())
+            return promoCardViewModel.getListPromo().size();
+        else
+            return 0;
     }
 
-    public void setList(ArrayList<PromoViewModel> list) {
-        this.list = list;
+    public void setData(PromoCardViewModel promoCardViewModel) {
+        this.promoCardViewModel = promoCardViewModel;
         notifyDataSetChanged();
     }
 
     public ArrayList<PromoViewModel> getList() {
-        return list;
+        return promoCardViewModel.getListPromo();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (list.size() > 1 && position == getItemCount() - 1) {
+        if (promoCardViewModel.getListPromo().size() > 1 && position == getItemCount() - 1) {
             return VIEW_MORE;
         } else {
             return VIEW_LAYOUT;

@@ -34,4 +34,8 @@ public interface TxDetailPresenter {
     void onDestroyView();
 
     void processRequestCancelOrder(Activity activity, String reason, OrderData orderData);
+
+    void processComplain(Context context, OrderData orderData);
+
+    void processFinish(Context context, OrderData orderData);
 }

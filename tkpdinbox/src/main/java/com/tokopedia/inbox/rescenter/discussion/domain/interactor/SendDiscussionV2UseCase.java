@@ -156,14 +156,14 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
 
     private List<AttachmentViewModel> mappingAttachmentView(List<ReplyAttachmentDomainData> replyAttachmentDomainData) {
         List<AttachmentViewModel> list = new ArrayList<>();
-        for(ReplyAttachmentDomainData attachments : replyAttachmentDomainData) {
+        for (ReplyAttachmentDomainData attachments : replyAttachmentDomainData) {
             AttachmentViewModel attachmentViewModel = new AttachmentViewModel();
             attachmentViewModel.setImgThumb(attachments.getIsVideo() == 1 ? "" : attachments.getThumbnail());
             attachmentViewModel.setUrl(attachments.getFullUrl());
             attachmentViewModel.setFileType(attachments.getIsVideo() == 1 ? AttachmentViewModel.FILE_VIDEO : AttachmentViewModel.FILE_IMAGE);
             list.add(attachmentViewModel);
         }
-        return  list;
+        return list;
     }
 
     private String formatTime(String createTimeOld) {
@@ -230,7 +230,7 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
                         if (attachment.isVideo()) {
                             RequestParams uploadVideoParams = RequestParams.create();
                             uploadVideoParams.putString(UploadVideoUseCase.PARAM_FILE_TO_UPLOAD, attachment.getFileLoc());
-                            uploadVideoParams.putString(UploadVideoUseCase.PARAM_FILE_NAME, attachment.getFileLoc().substring(attachment.getFileLoc().lastIndexOf("/")+1));
+                            uploadVideoParams.putString(UploadVideoUseCase.PARAM_FILE_NAME, attachment.getFileLoc().substring(attachment.getFileLoc().lastIndexOf("/") + 1));
                             uploadVideoParams.putString(UploadVideoUseCase.PARAM_SERVER_ID, model.getServerId());
                             uploadVideoParams.putString(UploadVideoUseCase.PARAM_URL, model.getUploadHost());
                             return uploadVideoUseCase.createObservable(uploadVideoParams);

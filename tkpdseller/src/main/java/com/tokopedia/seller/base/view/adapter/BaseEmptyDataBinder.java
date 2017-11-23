@@ -25,7 +25,7 @@ public abstract class BaseEmptyDataBinder extends NoResultDataBinder {
         void onEmptyButtonClicked();
     }
 
-    private String emptyTitleText;
+    protected String emptyTitleText;
     private String emptyContentText;
     private String emptyContentItemText;
     private String emptyButtonItemText;
@@ -118,7 +118,7 @@ public abstract class BaseEmptyDataBinder extends NoResultDataBinder {
     }
 
     public static class EmptyViewHolder extends ViewHolder {
-        private TextView emptyTitleTextView;
+        public TextView emptyTitleTextView;
         private TextView emptyContentTextView;
         private TextView emptyContentItemTextView;
         private Button emptyButtonItemButton;

@@ -4,18 +4,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,6 +31,7 @@ import java.util.List;
  */
 public class DeepLinkChecker {
 
+    public static final int OTHER = -1;
     public static final int BROWSE = 0;
     public static final int HOT = 1;
     public static final int CATALOG = 2;
@@ -35,38 +43,64 @@ public class DeepLinkChecker {
     public static final int HOME = 8;
     public static final int PROMO = 9;
     public static final int ETALASE = 10;
+    public static final int APPLINK = 11;
+    public static final int INVOICE = 12;
+    public static final int ACCOUNTS = 13;
+    public static final int RECHARGE = 14;
+    public static final int BLOG = 15;
+    public static final int PELUANG = 16;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
     public static int getDeepLinkType(String url) {
-        List<String> linkSegment = getLinkSegment(url);
+        Uri uriData = Uri.parse(url);
+
+        List<String> linkSegment = uriData.getPathSegments();
         CommonUtils.dumper("DEEPLINK " + linkSegment.toString());
+        if (uriData.toString().contains("accounts.tokopedia.com"))
+            return ACCOUNTS;
+        else if (uriData.getScheme().equals(Constants.APPLINK_CUSTOMER_SCHEME))
+            return APPLINK;
+
         try {
-            if (isHome(url, linkSegment))
-                return HOME;
+            if (isExcludedHostUrl(uriData))
+                return OTHER;
+            else if (isExcludedUrl(uriData))
+                return OTHER;
             else if (isPromo(linkSegment))
                 return PROMO;
+            else if (isInvoice(linkSegment))
+                return INVOICE;
+            else if (isBlog(linkSegment))
+                return BLOG;
+            else if (isPeluang(linkSegment))
+                return PELUANG;
+            else if (isHome(url, linkSegment))
+                return HOME;
+            else if (isCategory(linkSegment))
+                return CATEGORY;
             else if (isBrowse(linkSegment))
                 return BROWSE;
             else if (isHot(linkSegment))
                 return HOT;
-            else if (isCategory(linkSegment))
-                return CATEGORY;
             else if (isHotList(linkSegment))
                 return HOT_LIST;
             else if (isCatalog(linkSegment))
                 return CATALOG;
-            else if (isProduct(linkSegment))
-                return PRODUCT;
-            else if (isShop(linkSegment))
-                return SHOP;
+            else if (isPulsa(linkSegment))
+                return RECHARGE;
             else if (isTopPicks(linkSegment))
                 return TOPPICKS;
             else if (isEtalase(linkSegment))
                 return ETALASE;
-            else return -1;
+            else if (isProduct(linkSegment))
+                return PRODUCT;
+            else if (isShop(linkSegment))
+                return SHOP;
+            else return OTHER;
         } catch (Exception e) {
-            return -1;
+            e.printStackTrace();
+            return OTHER;
         }
     }
 
@@ -97,8 +131,8 @@ public class DeepLinkChecker {
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {
-        return (Uri.parse(url).getHost().contains("www.tokopedia.com")
-                || Uri.parse(url).getHost().contains("m.tokopedia.com")) && linkSegment.size() == 0;
+        return (Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost())
+                || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost())) && linkSegment.size() == 0;
     }
 
     private static boolean isHot(List<String> linkSegment) {
@@ -113,8 +147,18 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("toppicks"));
     }
 
+    private static boolean isHelp(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("bantuan"));
+    }
+
+    private static boolean isEvents(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("events"));
+    }
+
     private static boolean isProduct(List<String> linkSegment) {
         return (linkSegment.size() == 2
+                && !isEvents(linkSegment)
+                && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
                 && !isCatalog(linkSegment)
@@ -255,10 +299,14 @@ public class DeepLinkChecker {
     }
 
     public static void openHomepage(Context context, int tab) {
-        Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
-        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, tab);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        context.startActivity(intent);
+        if (context != null &&
+                context.getApplicationContext() != null &&
+                context.getApplicationContext() instanceof TkpdCoreRouter){
+            Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+            intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, tab);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            context.startActivity(intent);
+        }
     }
 
     public static void openShopWithParameter(String url, Context context, Bundle parameter) {
@@ -267,5 +315,47 @@ public class DeepLinkChecker {
         intent.putExtras(bundle);
         intent.putExtras(parameter);
         context.startActivity(intent);
+    }
+
+    private static boolean isExcludedUrl(Uri uriData) {
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
+            for (String excludedString : listExcludedString) {
+                if (uriData.getPath().endsWith(excludedString)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isExcludedHostUrl(Uri uriData) {
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST).split(","));
+            for (String excludedString : listExcludedString) {
+                if (uriData.getPath().startsWith(excludedString)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isInvoice(List<String> linkSegment) {
+        return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl");
+    }
+
+    private static boolean isPulsa(List<String> linkSegment) {
+        return linkSegment.size() == 1 && linkSegment.get(0).equals("pulsa");
+    }
+
+    private static boolean isBlog(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("blog");
+    }
+
+    private static boolean isPeluang(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (
+                linkSegment.get(0).equals("peluang") || linkSegment.get(0).equals("peluang.pl")
+        );
     }
 }

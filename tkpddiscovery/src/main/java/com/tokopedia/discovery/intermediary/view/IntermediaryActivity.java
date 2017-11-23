@@ -3,12 +3,12 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +22,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 
 import butterknife.BindView;
@@ -54,6 +55,14 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     @Override
     public void inflateView(int layoutId) {
         setContentView(layoutId);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == CategoryNavigationActivity.DESTROY_INTERMEDIARY) {
+            finish();
+        }
     }
 
     public static void moveTo(Context context, String depId, String categoryName) {

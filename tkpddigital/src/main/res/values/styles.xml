@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+           xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="DigitalWebView" parent="@style/Theme.Tokopedia3">
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:statusBarColor">@color/white</item>
+    </style>
 
     <style name="CardViewDigital" parent="CardView">
         <item name="android:layout_width">match_parent</item>
@@ -23,6 +29,16 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="TextSubTitleXLarge">
+        <item name="android:textColor">@color/digital_item_sub_title</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextSubTitleXXLarge">
+        <item name="android:textColor">@color/digital_item_sub_title</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="TextTitleSmall">
         <item name="android:textColor">@color/digital_item_title</item>
         <item name="android:textSize">12sp</item>
@@ -36,6 +52,49 @@
     <style name="TextTitleLarge">
         <item name="android:textColor">@color/digital_item_title</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextTitleXLarge">
+        <item name="android:textColor">@color/digital_item_title</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextTitleXXLarge">
+        <item name="android:textColor">@color/digital_item_title</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextProductName">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextProductDescription">
+        <item name="android:textColor">@color/grey_500</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextProductPrice">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextProductOldPrice">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextProductPromoPrice">
+        <item name="android:textColor">@color/deep_orange_500</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextProductPromoTag">
+        <item name="android:textColor">@color/deep_orange_500</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DigitalButtonBuy">

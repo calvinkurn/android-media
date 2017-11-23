@@ -6,15 +6,19 @@ import android.content.Intent;
 
 import com.appsflyer.SingleInstallBroadcastReceiver;
 import com.google.android.gms.analytics.CampaignTrackingReceiver;
-import com.localytics.android.ReferralReceiver;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.CampaignUtil;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.nishikino.model.Campaign;
 
+import io.branch.referral.InstallListener;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class InstallReceiver extends BroadcastReceiver {
+    private static final String REFERRER = "referrer";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -34,13 +38,20 @@ public class InstallReceiver extends BroadcastReceiver {
                         appsflyerInstall.onReceive(receiverData.contextData, receiverData.intentData);
 
                         new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
-
-                        ReferralReceiver localyticsInstall = new ReferralReceiver();
-                        localyticsInstall.onReceive(receiverData.contextData, receiverData.intentData);
+                        Campaign campaign = CampaignUtil.getCampaignFromQuery(
+                                receiverData.intentData.getStringExtra(REFERRER)
+                        );
+                        TrackingUtils.eventCampaign(campaign);
                         return true;
                     }
                 })
                 .unsubscribeOn(Schedulers.newThread())
+                .onErrorResumeNext(new Func1<Throwable, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Throwable throwable) {
+                        return Observable.just(true);
+                    }
+                })
                 .subscribe();
 	}
 

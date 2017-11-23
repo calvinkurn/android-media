@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.home.fragment.BrandsWebViewFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 
@@ -16,7 +17,7 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
  * Created by brilliant.oka on 15/03/17.
  */
 
-public class BrandsWebViewActivity extends TActivity implements
+public class BrandsWebViewActivity extends TkpdCoreWebViewActivity implements
         FragmentGeneralWebView.OnFragmentInteractionListener {
 
     public static final String EXTRA_URL = "url";
@@ -68,15 +69,5 @@ public class BrandsWebViewActivity extends TActivity implements
         } catch (Exception ex) {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

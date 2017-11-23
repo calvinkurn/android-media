@@ -11,22 +11,21 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 
 import java.util.ArrayList;
 
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProductAdapter.ViewHolder>{
+public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProductAdapter.ViewHolder> {
 
-    protected ArrayList<ProductFeedViewModel> list;
-    private final Context context;
     private final FeedPlus.View viewListener;
+    private PromotedProductViewModel promotedProductViewModel;
 
     public PromotedProductAdapter(Context context, FeedPlus.View viewListener) {
-        this.context = context;
         this.viewListener = viewListener;
     }
 
@@ -53,6 +52,7 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        final ArrayList<ProductFeedViewModel> list = promotedProductViewModel.getListProduct();
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
         ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());
@@ -60,7 +60,9 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
+                viewListener.onGoToProductDetail(promotedProductViewModel.getRowNumber(),
+                        list.get(position).getPage(),
+                        String.valueOf(list.get(position).getProductId()));
 
             }
         });
@@ -68,7 +70,9 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
+                viewListener.onGoToProductDetail(promotedProductViewModel.getRowNumber(),
+                        list.get(position).getPage(),
+                        String.valueOf(list.get(position).getProductId()));
 
             }
         });
@@ -76,19 +80,19 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
 
     @Override
     public int getItemCount() {
-        if (list.size() > 6)
+        if (promotedProductViewModel.getListProduct().size() > 6)
             return 6;
         else
-            return list.size();
+            return promotedProductViewModel.getListProduct().size();
     }
 
-    public void setList(ArrayList<ProductFeedViewModel> list) {
-        this.list = list;
+    public void setData(PromotedProductViewModel promotedProductViewModel) {
+        this.promotedProductViewModel = promotedProductViewModel;
         notifyDataSetChanged();
     }
 
     public ArrayList<ProductFeedViewModel> getList() {
-        return list;
+        return promotedProductViewModel.getListProduct();
     }
 
     @Override

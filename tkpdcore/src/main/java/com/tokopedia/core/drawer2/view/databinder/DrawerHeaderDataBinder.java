@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
@@ -39,12 +41,25 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         void onGoToTopPoints(String topPointsUrl);
 
-        void onGoToTopCash(String topCashUrl);
+        void onGoToProfileCompletion();
 
-        void onGoToTopCashWithOtp(String topCashUrl);
+        void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance);
+
+        void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
+    }
+
+    public interface RetryTokoCashListener {
+        void onRetryTokoCash();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView percentText;
+        private final TextView completeProfile;
+        private final TextView verifiedText;
+        private final View verifiedIcon;
+        private final View layoutProgress;
+        private final ProgressBar progressBar;
 
         @BindView(R2.id.user_avatar)
         ImageView avatar;
@@ -88,6 +103,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         @BindView(R2.id.toko_cash_label)
         TextView tokoCashLabel;
 
+        @BindView(R2.id.retry_top_cash)
+        ImageView retryTopCash;
+
         @BindView(R2.id.toko_cash_activation_button)
         TextView tokoCashActivationButton;
 
@@ -99,12 +117,20 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            percentText = (TextView) itemView.findViewById(R.id.percent_text);
+            completeProfile = (TextView) itemView.findViewById(R.id.complete_profile);
+            layoutProgress = itemView.findViewById(R.id.layout_progress);
+            verifiedText = (TextView) itemView.findViewById(R.id.verified);
+            verifiedIcon = itemView.findViewById(R.id.verified_icon);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.ProgressBar);
+
         }
     }
 
     private Context context;
     private DrawerData data;
     private DrawerHeaderListener listener;
+    private RetryTokoCashListener tokoCashListener;
 
     public DrawerHeaderDataBinder(DataBindAdapter dataBindAdapter,
                                   Context context,
@@ -114,6 +140,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         this.context = context;
         this.data = createDataFromCache(drawerCache);
         this.listener = listener;
+        if (context instanceof RetryTokoCashListener) {
+            this.tokoCashListener = (RetryTokoCashListener) context;
+        }
     }
 
     private DrawerData createDataFromCache(LocalCacheHandler drawerCache) {
@@ -152,6 +181,10 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     protected void bindDrawerHeaderGuest(ViewHolder holder) {
         holder.coverImg.setVisibility(View.VISIBLE);
         holder.drawerPointsLayout.setVisibility(View.GONE);
+        holder.percentText.setVisibility(View.GONE);
+        holder.layoutProgress.setVisibility(View.GONE);
+        holder.verifiedIcon.setVisibility(View.GONE);
+        holder.verifiedText.setVisibility(View.GONE);
         holder.drawerHeader.setVisibility(View.GONE);
         ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
     }
@@ -161,11 +194,26 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.drawerPointsLayout.setVisibility(View.VISIBLE);
         holder.coverImg.setVisibility(View.GONE);
 
+        holder.name.setVisibility(View.VISIBLE);
+        holder.avatar.setVisibility(View.VISIBLE);
+        holder.percentText.setVisibility(View.VISIBLE);
 
-        if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
-            ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
+
+        if (data.getDrawerProfile().getUserAvatar() != null)
+            ImageHandler.loadImage(context,holder.avatar, data.getDrawerProfile().getUserAvatar(),R.drawable.ic_image_avatar_boy,R.drawable.ic_image_avatar_boy);
 
         holder.name.setText(data.getDrawerProfile().getUserName());
+        holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
+        if (data.getProfileCompletion() == 100) {
+            holder.layoutProgress.setVisibility(View.GONE);
+            holder.verifiedIcon.setVisibility(View.VISIBLE);
+            holder.verifiedText.setVisibility(View.VISIBLE);
+        } else {
+            holder.progressBar.setProgress(data.getProfileCompletion());
+            holder.layoutProgress.setVisibility(View.VISIBLE);
+            holder.verifiedIcon.setVisibility(View.GONE);
+            holder.verifiedText.setVisibility(View.GONE);
+        }
 
         setDeposit(holder);
         setTopPoints(holder);
@@ -193,15 +241,21 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (data.getDrawerTokoCash() != null
-                        && data.getDrawerTokoCash().getRedirectUrl() != null
-                        && !data.getDrawerTokoCash().getRedirectUrl().equals("")) {
-                    if (isRegistered(data.getDrawerTokoCash()))
-                        listener.onGoToTopCashWithOtp(data.getDrawerTokoCash().getRedirectUrl());
-                    else
-                        listener.onGoToTopCash(data.getDrawerTokoCash().getDrawerTokoCashAction().getRedirectUrl());
+                if (data.getDrawerTokoCash() != null && data.getDrawerTokoCash().getDrawerWalletAction() != null) {
+                    if (isRegistered(data.getDrawerTokoCash())) {
+                        listener.onWalletBalanceClicked(
+                                data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
+                                data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
+                        );
+                    } else {
+                        listener.onWalletActionButtonClicked(
+                                data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
+                                data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
+                        );
+                    }
+                } else {
+                    tokoCashListener.onRetryTokoCash();
                 }
-
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {
@@ -217,22 +271,33 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                 listener.onGoToProfile();
             }
         });
+
+        holder.completeProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onGoToProfileCompletion();
+            }
+        });
     }
 
     private void setTopCash(ViewHolder holder) {
+        holder.loadingTokoCash.setVisibility(View.VISIBLE);
         if (isTokoCashDisabled(data.getDrawerTokoCash())) {
-            holder.loadingTokoCash.setVisibility(View.VISIBLE);
+            holder.loadingTokoCash.setVisibility(View.GONE);
+            holder.retryTopCash.setVisibility(View.VISIBLE);
         } else {
-            if (isRegistered(data.getDrawerTokoCash())) {
+            if (data.getDrawerTokoCash().getDrawerWalletAction().getTypeAction()
+                    == DrawerWalletAction.TYPE_ACTION_BALANCE) {
                 showTokoCashBalanceView(holder);
-                holder.tokoCash.setText(data.getDrawerTokoCash().getBalance());
-                holder.tokoCashLabel.setText(data.getDrawerTokoCash().getText());
+                holder.tokoCash.setText(data.getDrawerTokoCash().getDrawerWalletAction().getBalance());
+                holder.tokoCashLabel.setText(data.getDrawerTokoCash().getDrawerWalletAction().getLabelTitle());
             } else {
                 showTokoCashActivateView(holder);
                 holder.tokoCashActivationButton.setText(data.getDrawerTokoCash()
-                        .getDrawerTokoCashAction().getText());
+                        .getDrawerWalletAction().getLabelActionButton());
             }
             holder.loadingTokoCash.setVisibility(View.GONE);
+            holder.retryTopCash.setVisibility(View.GONE);
         }
     }
 
@@ -249,12 +314,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     }
 
     private boolean isRegistered(DrawerTokoCash drawerTokoCash) {
-        return drawerTokoCash.getLink() == 1;
+        return drawerTokoCash.getDrawerWalletAction().getTypeAction()
+                == DrawerWalletAction.TYPE_ACTION_BALANCE;
     }
 
     private boolean isTokoCashDisabled(DrawerTokoCash drawerTokoCash) {
-        return (drawerTokoCash == null) ||
-                (drawerTokoCash.getText() == null || drawerTokoCash.getText().equals(""));
+        return drawerTokoCash == null || drawerTokoCash.getDrawerWalletAction() == null
+                || drawerTokoCash.getDrawerWalletAction().getLabelTitle() == null
+                || drawerTokoCash.getDrawerWalletAction().getLabelTitle().equals("");
     }
 
     private void setTopPoints(ViewHolder holder) {

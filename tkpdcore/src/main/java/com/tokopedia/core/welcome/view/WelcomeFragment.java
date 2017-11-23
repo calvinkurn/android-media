@@ -248,7 +248,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < listProvider.size(); i++) {
                 String color = listProvider.get(i).getColor();
                 int colorInt;
                 if(color==null) {

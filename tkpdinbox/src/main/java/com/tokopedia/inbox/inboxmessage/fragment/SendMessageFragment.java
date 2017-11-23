@@ -35,6 +35,7 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
     public static final java.lang.String PARAM_CUSTOM_MESSAGE = "custom_message";
     public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
     public static final java.lang.String PARAM_USER_ID = "to_user_id";
+    public static final String PARAM_SOURCE = "source";
 
 
     @BindView(R2.id.send_msg_to)

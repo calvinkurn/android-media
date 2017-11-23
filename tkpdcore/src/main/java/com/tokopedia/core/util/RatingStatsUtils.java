@@ -233,24 +233,29 @@ public class RatingStatsUtils {
         holder.qualityFilterMeanTV.setText(advanceModel.getProductRatingPoint());
         holder.accuracyCountReviewTV.setText(advanceModel.getProductReview());
         holder.qualityCountReviewTV.setText(advanceModel.getProductReview());
-
-        if(advanceModel.getProductRatingList().size()>0) {
-            if (getCurrentRatingType() == ratingType.ByQuality) {
-                for (int i = 0 ; i<barView.length; i++){
-                    changeStatisticBar(barView[i],advanceModel.getProductRatingList().get(i).getRatingTotalRatingPersen(),false);
-                    changeStatisticText(starCount[i],advanceModel.getProductRatingList().get(i).getRatingRating());
+        if (advanceModel.getProductRatingList() != null) {
+            if (advanceModel.getProductRatingList().size() > 0) {
+                if (getCurrentRatingType() == ratingType.ByQuality) {
+                    for (int i = 0; i < barView.length; i++) {
+                        changeStatisticBar(barView[i], advanceModel.getProductRatingList().get(i).getRatingTotalRatingPersen(), false);
+                        changeStatisticText(starCount[i], advanceModel.getProductRatingList().get(i).getRatingRating());
+                    }
+                } else {
+                    for (int i = 0; i < barView.length; i++) {
+                        changeStatisticBar(barView[i], advanceModel.getProductRatingList().get(i).getRatingTotalRateAccuracyPersen(), false);
+                        changeStatisticText(starCount[i], advanceModel.getProductRatingList().get(i).getRatingRateAccuracy());
+                    }
                 }
-            } else {
-                for (int i = 0 ; i<barView.length; i++){
-                    changeStatisticBar(barView[i],advanceModel.getProductRatingList().get(i).getRatingTotalRateAccuracyPersen(),false);
-                    changeStatisticText(starCount[i],advanceModel.getProductRatingList().get(i).getRatingRateAccuracy());
+            } else if (advanceModel.getProductRatingList().size() == 0) {
+                for (int i = 0; i < barView.length; i++) {
+                    changeStatisticBar(barView[i], "0", false);
+                    changeStatisticText(starCount[i], 0);
                 }
             }
-        }
-        else if(advanceModel.getProductRatingList().size()==0){
-            for (int i = 0 ; i<barView.length; i++){
-                changeStatisticBar(barView[i],"0",false);
-                changeStatisticText(starCount[i],0);
+        } else {
+            for (int i = 0; i < barView.length; i++) {
+                changeStatisticBar(barView[i], "0", false);
+                changeStatisticText(starCount[i], 0);
             }
         }
     }

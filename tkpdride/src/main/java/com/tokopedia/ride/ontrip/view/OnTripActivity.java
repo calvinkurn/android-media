@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -26,9 +27,12 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
@@ -38,7 +42,7 @@ import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 
 @RuntimePermissions
-public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener {
+public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener, HasComponent<RideComponent> {
     public static final String EXTRA_PLACE_SOURCE = "EXTRA_PLACE_SOURCE";
     public static final String EXTRA_PLACE_DESTINATION = "EXTRA_PLACE_DESTINATION";
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
@@ -56,6 +60,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     private BackButtonListener backButtonListener;
     private OnUpdatedByPushNotification onUpdatedByPushNotification;
     private BroadcastReceiver mReceiver;
+    private RideComponent rideComponent;
 
 
     public interface BackButtonListener {
@@ -252,6 +257,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                RideGATracking.eventBackPress(getScreenName());
                 onBackPressed();
                 return true;
             default:
@@ -285,4 +291,18 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
         manager.unregisterReceiver(mReceiver);
     }
+
+
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null) initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+    }
+
 }

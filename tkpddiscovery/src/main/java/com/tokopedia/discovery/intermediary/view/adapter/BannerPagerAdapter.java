@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.TopPicksWebView;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 
@@ -26,11 +28,13 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     List<BannerModel> bannerList = new ArrayList<>();
     private final Context context;
+    private final String categoryId;
     private static final String URL = "url";
 
-    public BannerPagerAdapter(Context context, List<BannerModel> bannerList) {
+    public BannerPagerAdapter(Context context, List<BannerModel> bannerList, String categoryId) {
         this.context = context;
         this.bannerList = bannerList;
+        this.categoryId = categoryId;
     }
 
     @Override
@@ -38,14 +42,28 @@ public class BannerPagerAdapter extends PagerAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.slider_intermediary, container, false);
 
-        ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
+        final ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
         if (bannerList.get(position).getUrl()!=null && bannerList.get(position).getUrl().length()>0) {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, TopPicksWebView.class);
-                    intent.putExtra(URL, bannerList.get(position).getUrl());
-                    context.startActivity(intent);
+                    UnifyTracking.eventBannerClickCategory(categoryId,bannerList.get(position).getUrl());
+                    switch ((DeepLinkChecker.getDeepLinkType(bannerList.get(position).getUrl()))) {
+                        case DeepLinkChecker.BROWSE:
+                            DeepLinkChecker.openBrowse(bannerList.get(position).getUrl(), context);
+                            break;
+                        case DeepLinkChecker.HOT:
+                            DeepLinkChecker.openHot(bannerList.get(position).getUrl(), context);
+                            break;
+                        case DeepLinkChecker.CATALOG:
+                            DeepLinkChecker.openCatalog(bannerList.get(position).getUrl(), context);
+                            break;
+                        default:
+                            Intent intent = new Intent(context, BannerWebView.class);
+                            intent.putExtra(URL, bannerList.get(position).getUrl());
+                            context.startActivity(intent);
+                    }
+
                 }
             });
         }

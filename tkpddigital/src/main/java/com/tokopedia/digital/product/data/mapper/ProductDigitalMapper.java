@@ -5,6 +5,7 @@ import com.tokopedia.digital.product.data.entity.response.ResponseBanner;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;
+import com.tokopedia.digital.product.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.product.data.entity.response.ResponseRecentNumberData;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -13,6 +14,7 @@ import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.Promo;
+import com.tokopedia.digital.product.model.PulsaBalance;
 import com.tokopedia.digital.product.model.Rule;
 import com.tokopedia.digital.product.model.Teaser;
 
@@ -91,7 +93,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         categoryData.setOperatorStyle(
                 responseCategoryDetailData.getAttributes().getOperatorStyle()
         );
-
+        categoryData.setOperatorLabel(
+                responseCategoryDetailData.getAttributes().getOperatorLabel()
+        );
 
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
         for (com.tokopedia.digital.product.data.entity.response.Field field
@@ -122,6 +126,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
 
         List<Operator> operatorCategoryList = new ArrayList<>();
         List<BannerData> bannerDataList = new ArrayList<>();
+        List<BannerData> otherBannerDataList = new ArrayList<>();
         for (ResponseCategoryDetailIncluded categoryDetailIncluded
                 : responseCategoryDetailIncludedList) {
             if (categoryDetailIncluded.getType().equalsIgnoreCase(Operator.DEFAULT_TYPE_CONTRACT)) {
@@ -131,6 +136,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                         categoryDetailIncluded.getAttributes().getDefaultProductId()
                 );
                 operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
+                operatorCategory.setUssdCode(categoryDetailIncluded.getAttributes().getUssdCode());
                 operatorCategory.setLastorderUrl(
                         categoryDetailIncluded.getAttributes().getLastorderUrl()
                 );
@@ -143,6 +149,8 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                     Product productOperator = new Product();
                     productOperator.setDesc(product.getAttributes().getDesc());
                     productOperator.setDetail(product.getAttributes().getDetail());
+                    productOperator.setDetailUrl(product.getAttributes().getDetailUrl());
+                    productOperator.setDetailUrlText(product.getAttributes().getDetailUrlText());
                     productOperator.setInfo(product.getAttributes().getInfo());
                     productOperator.setPrice(product.getAttributes().getPrice());
                     productOperator.setPricePlain(product.getAttributes().getPricePlain());
@@ -220,10 +228,27 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                                 .link(categoryDetailIncluded.getAttributes().getLink())
                                 .build()
                 );
+            } else if (categoryDetailIncluded.getType()
+                    .equalsIgnoreCase(BannerData.OTHER_TYPE_CONTRACT)) {
+                if (categoryDetailIncluded.getAttributes() != null) {
+                    otherBannerDataList.add(
+                            new BannerData.Builder()
+                                    .id(categoryDetailIncluded.getId())
+                                    .type(categoryDetailIncluded.getType())
+                                    .title(categoryDetailIncluded.getAttributes().getTitle())
+                                    .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
+                                    .promocode(categoryDetailIncluded.getAttributes().getPromocode())
+                                    .image(categoryDetailIncluded.getAttributes().getImage())
+                                    .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
+                                    .link(categoryDetailIncluded.getAttributes().getLink())
+                                    .build()
+                    );
+                }
             }
         }
         categoryData.setOperatorList(operatorCategoryList);
         categoryData.setBannerDataListIncluded(bannerDataList);
+        categoryData.setOtherBannerDataListIncluded(otherBannerDataList);
 
         if (responseCategoryDetailData.getAttributes().getTeaser() != null) {
             Teaser categoryTeaser = new Teaser();
@@ -246,7 +271,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 .clientNumber(lastOrderData.getAttributes().getClientNumber())
                 .categoryId(lastOrderData.getAttributes().getCategoryId())
                 .operatorId(lastOrderData.getAttributes().getOperatorId())
-                .productId(lastOrderData.getAttributes().getProductId())
+                .lastProduct(lastOrderData.getAttributes().getProductId())
                 .build();
     }
 
@@ -262,5 +287,20 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 )
                 .operatorId("")
                 .build();
+    }
+
+    @Override
+    public PulsaBalance transformPulsaBalance(
+            ResponsePulsaBalance responsePulsaBalance) throws MapperDataException {
+        return new PulsaBalance.Builder()
+                .mobileBalance(responsePulsaBalance.getAttributes().getBalance())
+                .plainBalance(responsePulsaBalance.getAttributes().getBalancePlain())
+                .success(responsePulsaBalance.getAttributes().isSuccess())
+                .expireDate(responsePulsaBalance.getAttributes().getExpireDate()).build();
+    }
+
+    public List<CategoryData> transformCategoryDataList(Object object) throws MapperDataException {
+        List<CategoryData> categoryDataList = new ArrayList<>();
+        return categoryDataList;
     }
 }

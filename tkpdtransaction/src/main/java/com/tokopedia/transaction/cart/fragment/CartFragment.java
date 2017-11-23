@@ -9,6 +9,7 @@ import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,6 +81,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
@@ -168,21 +170,27 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView donasiTitle;
     @BindView(R2.id.donasi_info)
     ImageView donasiInfo;
-    @BindView(R2.id.layout_cart_fragment)
-    RelativeLayout layoutCartFragment;
     @BindView(R2.id.total_payment_loading)
     ProgressBar totalPaymentLoading;
+    @BindView(R2.id.instant_insert_voucher_text_view)
+    TextView instantInsertVoucherTextView;
+    @BindView(R2.id.instant_insert_voucher_button)
+    TextView instantInsertVoucherButton;
+    @BindView(R2.id.instant_promo_placeholder)
+    CardView instantPromoPlaceHolder;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
     private TopPayBroadcastReceiver topPayBroadcastReceiver;
     private CartItemAdapter cartItemAdapter;
 
+    private String voucherCode;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
     private String totalLoyaltyPoint;
     private String donationValue;
 
+    private boolean hasPromotion;
     private final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
@@ -399,10 +407,15 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderSuccessCheckVoucher(String descVoucher) {
+    public void renderSuccessCheckVoucher(String descVoucher, int instantVoucher) {
         tilEtVoucherCode.setError(null);
         tilEtVoucherCode.setErrorEnabled(false);
         tvVoucherDesc.setText(descVoucher);
+        instantPromoPlaceHolder.setVisibility(View.GONE);
+        if (instantVoucher == 1) {
+            etVoucherCode.setText(voucherCode);
+            cbUseVoucher.setChecked(true);
+        }
     }
 
     @Override
@@ -410,6 +423,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         tvVoucherDesc.setText("");
         tilEtVoucherCode.setErrorEnabled(true);
         tilEtVoucherCode.setError(message);
+    }
+
+    @Override
+    public void renderErrorFromInstantVoucher(int instantVoucher) {
+        if (instantVoucher == 1)
+            cbUseVoucher.setChecked(true);
     }
 
     @Override
@@ -593,6 +612,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         donasiInfo.setOnClickListener(getDonasiInfoListener(donation));
     }
 
+    private View.OnClickListener insertCode(final String voucherCode) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CartFragment.this.voucherCode = voucherCode;
+                etVoucherCode.setText(voucherCode);
+                getButtonCheckVoucherClickListener();
+                presenter.processCheckVoucherCode(1);
+            }
+        };
+    }
+
     @Override
     public String getStringFromResource(@StringRes int resId) {
         return getResources().getString(resId);
@@ -677,6 +708,19 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             tvTotalPayment.setText(ValueConverter.getStringIdrFormat(grandTotal));
         }
         totalPaymentLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderInstantPromo(CartPromo cartPromo) {
+        if (cartPromo.isVisible() == 1) {
+            hasPromotion = true;
+            instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+            instantInsertVoucherTextView
+                    .setText(Html.fromHtml(cartPromo.getPromoText()));
+            instantInsertVoucherButton.setText(cartPromo.getCtaText());
+            instantInsertVoucherButton.setTextColor(Color.parseColor(cartPromo.getCtaColor()));
+            instantInsertVoucherButton.setOnClickListener(insertCode(cartPromo.getPromoCode()));
+        }
     }
 
     @Override
@@ -952,6 +996,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     tilEtVoucherCode.setErrorEnabled(false);
                     if (totalLoyaltyBalance != null)
                         renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
+                    if (hasPromotion) instantPromoPlaceHolder.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -967,7 +1012,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     renderErrorCheckVoucher(
                             getStringFromResource(R.string.label_error_form_voucher_code_empty));
                 } else {
-                    presenter.processCheckVoucherCode();
+                    presenter.processCheckVoucherCode(0);
                 }
             }
         };

@@ -13,16 +13,19 @@
     <color name="grey_700">#616161</color>
     <color name="grey_750">#4b4b4b</color>
     <color name="grey_800">#424242</color>
+    <color name="grey_title">#60000000</color>
 
     <color name="light_green">#F3FEF3</color>
+    <color name="medium_green">#42b549</color>
+    <color name="medium_green_50">#8042b549</color>
+
+    <color name="white">#FFFFFF</color>
 
     <color name="background_apps">@color/grey_200</color>
     <color name="background_error">#D50000</color>
     <color name="background_notification">#EA212D</color>
     <color name="background_wish_list">#F33960</color>
     <color name="background_star_review">#FFC107</color>
-
-    <color name="font_top_ads_green">@color/tkpd_main_green</color>
 
     <color name="font_black_primary_70">#B3000000</color>
     <color name="font_black_secondary_54">#8C000000</color>
@@ -33,5 +36,7 @@
     <color name="font_white_disabled_38">#88FFFFFF</color>
 
     <color name="colorGray">#DDDDDD</color>
+
+    <color name="solid_grey_200">#fff1f1f1</color>
 
 </resources>

@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.EmptyFeedDetailViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder;

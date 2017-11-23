@@ -43,17 +43,24 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.BookingRideDependencyInjection;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.view.RideHomeMapContract;
+import com.tokopedia.ride.bookingride.view.RideHomeMapPresenter;
 import com.tokopedia.ride.bookingride.view.TouchableWrapperLayout;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
+import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -72,11 +79,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private static final float DEFAULT_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
-    public static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final String DEFAULT_EMPTY_VALUE = "";
     private static final String DEFAULT_EMPTY_MARKER = "--";
 
-    private RideHomeMapContract.Presenter presenter;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -107,11 +112,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @BindView((R2.id.destination_clear))
     ImageView destinationClearImageView;
 
-    private PlacePassViewModel source, destination;
+    @Inject
+    RideHomeMapPresenter presenter;
 
+    private PlacePassViewModel source, destination;
     private boolean isAlreadySelectDestination;
     private boolean isDisableSelectLocation;
-
     private GoogleMap googleMap;
     private OnFragmentInteractionListener interactionListener;
     private int toolBarHeightinPx;
@@ -161,6 +167,16 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setInitialVariable();
+    }
+
+    @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
     }
 
     @Override
@@ -315,7 +331,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.setMyLocationEnabled(true);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
+        MapConfiguration mapConfiguration = new MapConfiguration(getActivity());
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mapConfiguration.getDefaultLatitude(), mapConfiguration.getDefaultLongitude()), DEFAULT_MAP_ZOOM));
         if (source != null && destination != null) {
             presenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
@@ -402,9 +419,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setInitialVariable() {
-        presenter = BookingRideDependencyInjection.createPresenter(
-                getActivity().getApplicationContext()
-        );
+
 
         toolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
@@ -529,6 +544,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE, sourcePickerLayout);
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
+        RideGATracking.eventClickSource(getScreenName());
     }
 
     @OnClick(R2.id.crux_cabs_destination)
@@ -541,10 +557,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, destinationLayoout);
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
+        RideGATracking.eventClickDestination(getScreenName());
     }
 
     @OnClick(R2.id.destination_clear)
     public void actionDestinationClearIconClicked() {
+        RideGATracking.eventClickDeleteDestination(destination.getAddress());
         enablePickLocation();
         destination = null;
         isAlreadySelectDestination = false;
@@ -558,6 +576,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
         setDestinationLocationText(DEFAULT_EMPTY_VALUE);
         proccessToRenderRideProduct();
+
 
     }
 
@@ -717,11 +736,22 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public boolean isLaunchedWithLocation() {
-        if (getArguments() != null && getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
-            return true;
-        }
+        return getArguments() != null && getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false);
+    }
 
-        return false;
+    @Override
+    public void setDestinationAndProcessList(PlacePassViewModel address) {
+        destination = address;
+        interactionListener.collapseBottomPanel();
+        isAlreadySelectDestination = true;
+        setDestinationLocationText(String.valueOf(destination.getTitle()));
+        proccessToRenderRideProduct();
+        hideMarkerCenter();
+    }
+
+    @Override
+    public PlacePassViewModel getSource() {
+        return source;
     }
 
     public void setMarkerText(String timeEst) {
@@ -730,8 +760,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     public void appResumedFromBackground() {

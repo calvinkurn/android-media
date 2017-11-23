@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -29,6 +30,8 @@ import butterknife.ButterKnife;
  */
 public class TxVerAdapter extends ArrayAdapter<TxVerData> {
 
+    private static final int PENDING_PAYMENT_MODE = 1;
+    private static final int UNEDITABLE_PAYMENT_MODE = 2;
     private final LayoutInflater inflater;
     private final Context context;
     private final ActionListener actionListener;
@@ -48,6 +51,8 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
         void actionEditPayment(TxVerData data);
 
         void actionUploadProof(TxVerData data);
+
+        void actionCancelTransaction(TxVerData data);
     }
 
     @NonNull
@@ -97,9 +102,15 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
     private void showPopUp(View view, final TxVerData data) {
         PopupMenu popup = new PopupMenu(context, view);
         MenuInflater inflater = popup.getMenuInflater();
-        int menuId = data.getButton().getButtonUploadProof() == 0
-                ? R.menu.menu_edit_payment
-                : R.menu.menu_edit_payment_upload;
+        int menuId;
+        if(getTypePaymentMethod(data) == PENDING_PAYMENT_MODE
+                || getTypePaymentMethod(data) == UNEDITABLE_PAYMENT_MODE) {
+            menuId = R.menu.menu_transaction_payment_delete;
+        } else if(data.getButton().getButtonUploadProof() == 0) {
+            menuId = R.menu.menu_transaction_payment;
+        } else {
+            menuId = R.menu.menu_transaction_payment_upload;
+        }
         inflater.inflate(menuId, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -111,7 +122,10 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
                 } else if (i == R.id.action_upload) {
                     actionListener.actionUploadProof(data);
                     return true;
-                } else {
+                } else if (i == R.id.action_cancel_transaction) {
+                    actionListener.actionCancelTransaction(data);
+                    return true;
+                }else {
                     return false;
                 }
             }
@@ -128,21 +142,26 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
 
     private void renderUnchangeableHolder(TxVerData item, ViewHolder holder) {
         holder.holderNormalPayment.setVisibility(View.GONE);
-        holder.btnOverflow.setVisibility(View.GONE);
         holder.holderUnchangeablePayment.setVisibility(View.VISIBLE);
-        holder.tvSpecialPaymentMethod.setText(MessageFormat.format("Kode {0} : {1}",
-                item.getBankName(), item.getUserAccountName()));
+        if(item.getUserAccountName().equals("-") || item.getUserAccountName().isEmpty()) {
+            holder.tvSpecialPaymentMethod.setText(item.getBankName());
+        } else {
+            holder.tvSpecialPaymentMethod.setText(MessageFormat.format("Kode {0} : {1}",
+                    item.getBankName(), item.getUserAccountName()));
+        }
     }
 
     private void renderKlikBCAHolder(TxVerData item, ViewHolder holder) {
         holder.holderNormalPayment.setVisibility(View.GONE);
-        holder.btnOverflow.setVisibility(View.GONE);
         holder.holderUnchangeablePayment.setVisibility(View.VISIBLE);
         holder.tvSpecialPaymentMethod.setText(item.getBankName());
     }
 
     private int getTypePaymentMethod(TxVerData item) {
-        return item.getBankName().contains("Klik") && item.getBankName().contains("BCA") ? 1
+        return (item.getBankName().contains(context.getString(R.string.parameter_klik))
+                && item.getBankName().contains(context.getString(R.string.parameter_bca))) ||
+                (item.getBankName().contains(context.getString(R.string.parameter_kartu))
+                        && item.getBankName().contains(context.getString(R.string.parameter_kredit))) ? 1
                 : item.getButton().getButtonEditPayment() == 0 &&
                 item.getButton().getButtonUploadProof() == 0 &&
                 item.getButton().getButtonViewProof() == 0 ? 2 : 3;

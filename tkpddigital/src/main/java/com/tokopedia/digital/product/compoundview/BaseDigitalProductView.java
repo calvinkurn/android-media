@@ -8,7 +8,13 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
 import java.util.List;
@@ -27,6 +33,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
     protected O operatorSelected;
     protected H historyClientNumber;
     protected C data;
+    protected BottomSheetView bottomSheetView;
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
@@ -52,6 +59,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
         ButterKnife.bind(this);
         onCreateView();
+        setBottomSheetDialog();
     }
 
     public void renderData(C data, H historyClientNumber) {
@@ -98,6 +106,16 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         }
     }
 
+    private void setBottomSheetDialog() {
+        bottomSheetView = new BottomSheetView(context);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(context.getString(R.string.title_tooltip_instan_payment))
+                .setBody(context.getString(R.string.body_tooltip_instan_payment))
+                .setImg(R.drawable.ic_digital_instant_payment)
+                .build());
+    }
+
     @NonNull
     protected CompoundButton.OnCheckedChangeListener getInstantCheckoutChangeListener() {
         return new CompoundButton.OnCheckedChangeListener() {
@@ -105,6 +123,10 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) onInstantCheckoutChecked();
                 else onInstantCheckoutUnChecked();
+
+                if (data instanceof CategoryData)
+                    UnifyTracking.eventCheckInstantSaldo(((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
+
             }
         };
     }
@@ -134,6 +156,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             String clientNumberState, boolean isInstantCheckoutChecked
     );
 
+    public abstract void clearFocusOnClientNumber();
+
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);
 
@@ -162,6 +186,10 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         boolean isRecentInstantCheckoutUsed(String categoryId);
 
         void storeLastInstantCheckoutUsed(String categoryId, boolean checked);
+
+        void onClientNumberClicked(String clientNumber, ClientNumber number, List<OrderClientNumber> numberList);
+
+        void onClientNumberCleared(ClientNumber clientNumber, List<OrderClientNumber> recentClientNumberList);
     }
 
     public static class PreCheckoutProduct {
@@ -236,7 +264,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             return categoryName;
         }
 
-        void setCategoryName(String categoryName) {
+        public void setCategoryName(String categoryName) {
             this.categoryName = categoryName;
         }
 

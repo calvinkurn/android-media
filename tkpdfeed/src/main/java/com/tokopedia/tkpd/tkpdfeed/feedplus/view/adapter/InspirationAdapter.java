@@ -11,8 +11,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 
 import java.util.ArrayList;
 
@@ -21,8 +22,8 @@ import java.util.ArrayList;
  */
 public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.ViewHolder> {
 
-    protected ArrayList<InspirationProductViewModel> list;
     private final FeedPlus.View viewListener;
+    private InspirationViewModel inspirationViewModel;
 
     public InspirationAdapter(Context context, FeedPlus.View viewListener) {
         this.viewListener = viewListener;
@@ -44,14 +45,20 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                 @Override
                 public void onClick(View v) {
                     viewListener.onGoToProductDetailFromInspiration(
-                            String.valueOf(list.get(getAdapterPosition()).getProductId()));
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getPage(),
+                            inspirationViewModel.getRowNumber(),
+                            String.valueOf(inspirationViewModel.getListProduct().get(getAdapterPosition())
+                                    .getProductId()));
                 }
             });
             productImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     viewListener.onGoToProductDetailFromInspiration(
-                            String.valueOf(list.get(getAdapterPosition()).getProductId()));
+                            inspirationViewModel.getListProduct().get(getAdapterPosition())
+                                    .getPage(),
+                            inspirationViewModel.getRowNumber(),
+                            String.valueOf(inspirationViewModel.getListProduct().get(getAdapterPosition()).getProductId()));
                 }
             });
         }
@@ -66,30 +73,32 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
-        holder.productPrice.setText(list.get(position).getPrice());
-        ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());
+        holder.productName.setText(MethodChecker.fromHtml(inspirationViewModel.getListProduct().get(position).getName()));
+        holder.productPrice.setText(inspirationViewModel.getListProduct().get(position).getPrice());
+        ImageHandler.LoadImage(holder.productImage, inspirationViewModel.getListProduct().get(position).getImageSource());
     }
 
     @Override
     public int getItemCount() {
-        if (list != null && !list.isEmpty()) {
-            if (list.size() > 6)
+        if (inspirationViewModel != null
+                && inspirationViewModel.getListProduct() != null
+                && !inspirationViewModel.getListProduct().isEmpty()) {
+            if (inspirationViewModel.getListProduct().size() > 6)
                 return 6;
             else
-                return list.size();
+                return inspirationViewModel.getListProduct().size();
         } else {
             return 0;
         }
     }
 
-    public void setList(ArrayList<InspirationProductViewModel> list) {
-        this.list = list;
+    public void setData(InspirationViewModel inspirationViewModel) {
+        this.inspirationViewModel = inspirationViewModel;
         notifyDataSetChanged();
     }
 
     public ArrayList<InspirationProductViewModel> getList() {
-        return list;
+        return inspirationViewModel.getListProduct();
     }
 
     @Override

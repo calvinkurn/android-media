@@ -1,6 +1,5 @@
 package com.tokopedia.ride.common.ride.domain.model;
 
-import com.tokopedia.ride.bookingride.data.entity.PeopleAddressPagingEntity;
 import com.tokopedia.ride.bookingride.domain.model.Paging;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 

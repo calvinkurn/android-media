@@ -10,13 +10,13 @@
         android:padding="@dimen/padding_small"
         android:orientation="vertical">
 
+        <include layout="@layout/shop_statistic_transaction"/>
+
         <include layout="@layout/shop_statistic_review"/>
 
         <include layout="@layout/shop_statistic_satisfaction"/>
 
         <include layout="@layout/shop_statistic_response"/>
-
-        <include layout="@layout/shop_statistic_transaction"/>
 
     </LinearLayout>
 </ScrollView>

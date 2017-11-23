@@ -2,11 +2,10 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 
 /**
@@ -32,8 +31,10 @@ public class SingleFeedDetailViewHolder extends FeedDetailViewHolder {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToBuyProduct(String.valueOf(feedDetailViewModel.getProductId())
-                        ,feedDetailViewModel.getPrice());
+                viewListener.onGoToBuyProduct(
+                        String.valueOf(feedDetailViewModel.getProductId())
+                        ,feedDetailViewModel.getPrice(),
+                        feedDetailViewModel.getImageSource());
             }
         });
     }

@@ -23,6 +23,7 @@ import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -43,7 +44,7 @@ public class RidePushDependencyInjection {
     }
 
     private RideInterceptor provideRideInterceptor(String token, String userId) {
-        return new RideInterceptor(token, userId);
+        return new RideInterceptor(token);
     }
 
     private ChuckInterceptor provideChuckInterceptor() {
@@ -62,7 +63,7 @@ public class RidePushDependencyInjection {
 
     private BookingRideRepository provideBookingRideRepository(BookingRideDataStoreFactory factory,
                                                                ProductEntityMapper mapper, TimeEstimateEntityMapper estimateEntityMapper) {
-        return new BookingRideRepositoryData(factory, mapper, estimateEntityMapper);
+        return new BookingRideRepositoryData(factory);
     }
 
     public GetRideRequestDetailUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
@@ -76,7 +77,8 @@ public class RidePushDependencyInjection {
                                                 .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
                                                         OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
                                                         provideChuckInterceptor(),
-                                                        new DebugInterceptor()
+                                                        new DebugInterceptor(),
+                                                        new HttpLoggingInterceptor()
                                                         )
                                                 )
                                                 .build()
@@ -88,7 +90,7 @@ public class RidePushDependencyInjection {
         );
     }
 
-    public GetRideRequestMapUseCase provideGetRideRequestMapUseCase(String token, String userId){
+    public GetRideRequestMapUseCase provideGetRideRequestMapUseCase(String token, String userId) {
         return new GetRideRequestMapUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
@@ -99,7 +101,8 @@ public class RidePushDependencyInjection {
                                                 .client(OkHttpFactory.create().buildDaggerClientBearerRidehailing(provideRideInterceptor(token, userId),
                                                         OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
                                                         provideChuckInterceptor(),
-                                                        new DebugInterceptor()
+                                                        new DebugInterceptor(),
+                                                        new HttpLoggingInterceptor()
                                                         )
                                                 )
                                                 .build()

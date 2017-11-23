@@ -1,20 +1,29 @@
 <resources>
     <string name="app_name">TopSeller</string>
-    <string name="block_gm_subscribe_title">Tidak dapat mengakses\nGold Merchant</string>
-    <string name="block_gm_subscribe_desc">Maaf, pembelian Gold Merchant tidak dapat\ndilakukan pada Android Jelly Bean (4.3)\nkebawah. Silahkan lakukan pembelian atau\nperpanjangan Gold Merchant melalui\nbrowser Anda</string>
-    <string name="button_gm_subscribe">Buka Browser</string>
     <string name="extend_gold_merchant">Perpanjang Gold Merchant</string>
     <string name="upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="payment_and_topup">Pembayaran dan Top Up</string>
+    <string name="digital_product">Produk Digital</string>
+    <string name="digital_transaction_list">Daftar Transaksi Digital</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="drawer_title_top_ads">TopAds</string>
-    <string name="title_shop_score_widget_home">Performa Toko</string>
-    <string name="view_shop_score_per_cent">/100</string>
-    <string name="action_shop_score_go_to_detail">Lihat Detail</string>
-    <string name="decription_shop_score_summary_30days_info">Skor dihitung berdasarkan performa toko dalam 30 hari terakhir.</string>
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
+
+    <string name="dashboard_label_regular_merchant">Regular Merchant</string>
+    <string name="dashboard_label_gold_merchant">Gold Merchant</string>
+
+    <string name="dashboard_shop_success_rate">%1s%%</string>
+    <string name="open_shop">Buka Toko</string>
+    <string name="dashboard_your_shop_is_closed_until_xx">Toko Anda tutup sampai dengan %1$s</string>
+    <string name="dashboard_x_points">%1$s poin</string>
+    <string name="dashboard_your_shop_is_in_moderation">Toko Anda dalam status MODERASI</string>
+    <string name="dashboard_reason_x">Alasan : %1$s</string>
+
+    <string name="transaction_success">Transaksi Sukses</string>
+    <string name="featured_product_desc_should_gold_merchant">Pilih 5 produk terbaik Anda untuk ditampilkan di halaman toko. Dapatkan akses Produk Unggulan dengan berlangganan Gold Merchant.</string>
 
 </resources>

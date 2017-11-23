@@ -165,4 +165,9 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
                 throw new UnsupportedOperationException("Invalid Type Action");
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

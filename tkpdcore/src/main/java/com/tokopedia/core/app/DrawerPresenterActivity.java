@@ -1,5 +1,6 @@
 package com.tokopedia.core.app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +31,8 @@ import com.tokopedia.core.util.SessionHandler;
  * Created on 3/23/16.
  */
 public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
-        implements NotificationReceivedListener, DrawerDataListener {
+        implements NotificationReceivedListener, DrawerDataListener,
+        DrawerHeaderDataBinder.RetryTokoCashListener {
 
     private static final String TAG = DrawerPresenterActivity.class.getSimpleName();
     private static final int MAX_NOTIF = 999;
@@ -113,6 +115,14 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.getProfile();
     }
 
+    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler){
+        drawerDataManager.getUserAttributes(sessionHandler);
+    }
+
+    protected void getProfileCompletion() {
+        drawerDataManager.getProfileCompletion();
+    }
+
     @Override
     protected void initView() {
         if (getSupportActionBar() != null) {
@@ -154,6 +164,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             if (!GlobalConfig.isSellerApp()) {
                 getDrawerTopPoints();
                 getDrawerTokoCash();
+                getProfileCompletion();
+                getDrawerUserAttrUseCase(sessionHandler);
             }
         }
     }
@@ -252,7 +264,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
             ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
                     .getData().setDrawerTokoCash(tokoCash);
-        Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
+        Intent intent = new Intent();
+        intent.setAction(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
         intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA,
                 tokoCash);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
@@ -296,6 +309,26 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     @Override
+    public void onErrorGetProfileCompletion(String errorMessage) {
+    }
+
+    @Override
+    public void onSuccessGetProfileCompletion(int completion) {
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setProfileCompletion(completion);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setProfileCompletion(completion);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
     public void onBackPressed() {
         if (drawerHelper.isOpened()) {
             drawerHelper.closeDrawer();
@@ -310,5 +343,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.unsubscribe();
     }
 
-
+    @Override
+    public void onRetryTokoCash() {
+        drawerDataManager.getTokoCash();
+    }
 }

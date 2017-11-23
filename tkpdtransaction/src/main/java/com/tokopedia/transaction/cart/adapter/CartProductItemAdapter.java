@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
@@ -223,8 +224,9 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cartProductAction != null)
+                if (cartProductAction != null) {
                     cartProductAction.onCancelCartProduct(item.getCartProduct());
+                }
             }
         });
         holder.etQuantityProduct.setText(item.getTempQuantity());

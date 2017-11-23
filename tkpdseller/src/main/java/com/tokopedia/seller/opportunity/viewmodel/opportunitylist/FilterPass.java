@@ -10,17 +10,20 @@ import android.os.Parcelable;
 public class FilterPass implements Parcelable{
     private String key;
     private String value;
+    private String name;
 
     public FilterPass(){}
 
-    public FilterPass(String key, String value) {
+    public FilterPass(String key, String value, String name) {
         this.key = key;
         this.value = value;
+        this.name = name;
     }
 
     public FilterPass(Parcel in) {
         key = in.readString();
         value = in.readString();
+        name = in.readString();
     }
 
     public static final Creator<FilterPass> CREATOR = new Creator<FilterPass>() {
@@ -51,6 +54,14 @@ public class FilterPass implements Parcelable{
         this.value = value;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -60,5 +71,6 @@ public class FilterPass implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(key);
         dest.writeString(value);
+        dest.writeString(name);
     }
 }

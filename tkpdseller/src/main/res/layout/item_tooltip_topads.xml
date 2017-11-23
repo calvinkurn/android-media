@@ -37,7 +37,7 @@
             />
     </LinearLayout>
 
-    <com.tokopedia.seller.lib.williamchart.tooltip.TooltipPointerView
+    <com.tokopedia.seller.common.williamchart.tooltip.TooltipPointerView
         android:layout_below="@+id/container_tooltip"
         android:id="@+id/tooltip_pointer"
         app:tooltip_pointer_color="@color/black"

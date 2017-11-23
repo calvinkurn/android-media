@@ -584,4 +584,5 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
     public void unsubscribe() {
         compositeSubscription.unsubscribe();
     }
+
 }

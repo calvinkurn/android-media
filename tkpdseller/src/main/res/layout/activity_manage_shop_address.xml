@@ -12,13 +12,11 @@
         android:gravity="center"
         android:visibility="gone" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress">
+        android:orientation="vertical">
 
         <com.tokopedia.core.customadapter.LazyListView
             android:id="@+id/listview_shop_location"
@@ -38,8 +36,7 @@
             android:id="@+id/include_no_result_wrapper"
             layout="@layout/error_no_result"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </RelativeLayout>

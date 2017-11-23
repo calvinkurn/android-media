@@ -20,7 +20,7 @@ public class PromoPushNotificationBuildAndShow extends AbstractApplinkBuildAndSh
     private static final String NOTIFICATION_CATEGORY = "promo";
     private Bundle data;
 
-    public PromoPushNotificationBuildAndShow(Bundle bundle){
+    public PromoPushNotificationBuildAndShow(Bundle bundle) {
         data = bundle;
     }
 
@@ -29,6 +29,7 @@ public class PromoPushNotificationBuildAndShow extends AbstractApplinkBuildAndSh
         BuildAndShowNotification buildAndShowNotification = new BuildAndShowNotification(context);
         String title = data.getString(Constants.ARG_NOTIFICATION_TITLE);
         String description = data.getString(Constants.ARG_NOTIFICATION_DESCRIPTION);
+        String banner = data.getString(Constants.ARG_NOTIFICATION_BANNER);
         String image = data.getString(Constants.ARG_NOTIFICATION_IMAGE, null);
         String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
         ApplinkNotificationPass.ApplinkNotificationPassBuilder builder =
@@ -41,6 +42,7 @@ public class PromoPushNotificationBuildAndShow extends AbstractApplinkBuildAndSh
         ApplinkNotificationPass applinkNotificationPass = builder
                 .description(description)
                 .image(image)
+                .banner(banner)
                 .id(Constants.ARG_NOTIFICATION_APPLINK_PROMO)
                 .title(title)
                 .group(NOTIFICATION_GROUP)

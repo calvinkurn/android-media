@@ -1,9 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.recentview.RecentViewTypeFactory;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview.RecentViewDetailProductViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
+
+import java.util.List;
 
 /**
  * @author by nisie on 7/4/17.
@@ -14,9 +15,6 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
     private String name;
     private String price;
     private String imageSource;
-    private String cashback;
-    private boolean isWholesale;
-    private boolean isPreorder;
     private boolean isFreeReturn;
     private boolean isWishlist;
     private int rating;
@@ -25,14 +23,13 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
     private final boolean isOfficial;
     private final String shopName;
     private final String shopLocation;
+    private List<LabelsViewModel> labels;
 
     public RecentViewDetailProductViewModel(Integer productId,
                                             String name,
                                             String price,
                                             String imageSource,
-                                            String cashback,
-                                            boolean isWholesale,
-                                            boolean isPreorder,
+                                            List<LabelsViewModel> labels,
                                             boolean isFreeReturn,
                                             boolean isWishlist,
                                             int rating,
@@ -44,9 +41,7 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
         this.name = name;
         this.price = price;
         this.imageSource = imageSource;
-        this.cashback = cashback;
-        this.isWholesale = isWholesale;
-        this.isPreorder = isPreorder;
+        this.labels = labels;
         this.isFreeReturn = isFreeReturn;
         this.isWishlist = isWishlist;
         this.rating = rating;
@@ -66,18 +61,6 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
 
     public String getImageSource() {
         return imageSource;
-    }
-
-    public String getCashback() {
-        return cashback;
-    }
-
-    public boolean isWholesale() {
-        return isWholesale;
-    }
-
-    public boolean isPreorder() {
-        return isPreorder;
     }
 
     public boolean isFreeReturn() {
@@ -115,5 +98,9 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
     @Override
     public int type(RecentViewTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public List<LabelsViewModel> getLabels() {
+        return labels;
     }
 }

@@ -134,7 +134,7 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
     @Override
     public void getNotificationFromNetwork(final Context context) {
         notificationUseCase.execute(
-                notificationUseCase.getRequestParam(
+                NotificationUseCase.getRequestParam(
                         GlobalConfig.isSellerApp()), onGetNotification(context));
     }
 

@@ -248,7 +248,7 @@ public class PreviewProductImageDetail extends TActivity {
                 new NotificationCompat.Builder(PreviewProductImageDetail.this);
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(com.tokopedia.core.R.string.download_in_process))
-                .setSmallIcon(com.tokopedia.core.R.drawable.ic_stat_notify)
+                .setSmallIcon(com.tokopedia.core.R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), com.tokopedia.core.R.drawable.ic_stat_notify))
                 .setAutoCancel(true)
         ;

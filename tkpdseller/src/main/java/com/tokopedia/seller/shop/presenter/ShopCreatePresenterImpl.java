@@ -21,6 +21,7 @@ import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.apiservices.shop.MyShopActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shop.ShopEditService;
 import com.tokopedia.seller.shop.ShopEditorActivity;
@@ -104,7 +105,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
     @Override
     public void getRotationData(Bundle argument) {
-        Log.d(STUART, SHOP_CREATE_FRAGMENT + " getRotationData(Bundle argument) ");
         shopCreateParams = Parcels.unwrap(argument.getParcelable(DATA_VIEW));
     }
 
@@ -159,7 +159,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
     @Override
     public void saveDataBeforeRotation(Bundle argument) {
         saveDescTag();
-        Log.d(STUART, SHOP_CREATE_FRAGMENT + " saveDataBeforeRotation(Bundle argument) ");
         argument.putParcelable(DATA_VIEW, Parcels.wrap(shopCreateParams));
     }
 
@@ -184,7 +183,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "Subscribe Error");
+
 
                     }
 
@@ -278,7 +277,6 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 //                        } else {
 //                            if(tkpdResponseResponse.body().getErrorMessages() != null && tkpdResponseResponse.body().getErrorMessages().size() > 0) {
 //                                view.setShopDomainResult(tkpdResponseResponse.body().getErrorMessages().get(0), false);
-//                                Log.e("ShopCreatePresenterImpl", tkpdResponseResponse.body().getErrorMessages().get(0));
 //                            }else{
 //                                view.setShopDomainResult(CommonUtils.generateMessageError(view.getMainContext(), null), false);
 //                            }
@@ -429,7 +427,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
                     @Override
                     public void onError(Throwable e) {
-
+                        UnifyTracking.eventCreateShopFillBiodataError();
                     }
 
                     @Override
@@ -448,7 +446,10 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                             return;
                         }
                         if (verifyData()) {
+                            UnifyTracking.eventCreateShopFillBiodata();
                             view.startOpenShopEditShippingActivity();
+                        }else{
+                            UnifyTracking.eventCreateShopFillBiodataError();
                         }
                     }
                 }));
@@ -497,6 +498,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
             case ShopEditServiceConstant.STATUS_RUNNING:
                 switch (type) {
                     case ShopEditServiceConstant.CREATE_SHOP:
+                        UnifyTracking.eventCreateShopFillLogistic();
                         view.showProgress(true);
                         break;
                     case ShopEditServiceConstant.CREATE_SHOP_WITHOUT_IMAGE:
@@ -505,6 +507,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                 break;
             case ShopEditService.STATUS_FINISHED:
                 UnifyTracking.eventCreateShopSuccess();
+                UnifyTracking.eventCreateShopFillLogistic();
                 switch (type) {
                     case ShopEditService.CREATE_SHOP:
                         view.showProgress(false);
@@ -519,6 +522,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                 break;
             case ShopEditService.STATUS_ERROR:
                 String errorMessage = resultData.getString(ShopEditServiceConstant.MESSAGE_ERROR_FLAG);
+                UnifyTracking.eventCreateShopFillLogisticError();
                 switch (type) {
                     case ShopEditService.CREATE_SHOP:
                         shopCreateParams.setShopImgAvatarSrc(resultData.getString(PIC_SRC));
@@ -549,7 +553,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                         openShopValidationData.getData().getShopUrl());
                 saveCache(openShopValidationData.getData().getShopId().toString());
                 ShopEditorActivity.finishActivity(bundle, (Activity) view.getMainContext());
-
+                view.sendBroadcastToAppWidget();
             } else {
                 String unknownError = "Kesalahan Tidak Diketahui";
                 view.onMessageError(0, unknownError);
@@ -571,6 +575,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                         openShopSubmitData.getData().getShopUrl());
                 saveCache(openShopSubmitData.getData().getShopId().toString());
                 ShopEditorActivity.finishActivity(bundle, (Activity) view.getMainContext());
+                view.sendBroadcastToAppWidget();
 
             } else {
                 String unknownError = "Kesalahan Tidak Diketahui";

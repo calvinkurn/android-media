@@ -9,7 +9,7 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 3/8/17.
  */
-
+@Deprecated
 public class CategoryVersionCloud {
     private final HadesCategoryApi api;
 

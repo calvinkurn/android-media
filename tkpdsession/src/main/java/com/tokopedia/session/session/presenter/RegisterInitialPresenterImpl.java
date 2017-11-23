@@ -291,7 +291,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
 //                    registerView.updateData(RegisterView.NAME, loginGoogleModel.getFullName());
                 registerViewModel.setmName(loginGoogleModel.getFullName());
             }
-            if(loginGoogleModel.getGender().contains("male")){
+            if(loginGoogleModel.getGender() == null || loginGoogleModel.getGender().contains("male")){
 //                    registerView.updateData(RegisterView.GENDER, RegisterViewModel.GENDER_MALE);
                 registerViewModel.setmGender(RegisterViewModel.GENDER_MALE);
             }else{

@@ -35,13 +35,10 @@ def getTopAdsSdk() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.customer'
-            artifactId 'customer'
+            groupId 'com.tokopedia.feed'
+            artifactId 'feed'
             version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/t" +
-                    "" +
-                    "" +
-                    "-release.aar")
+            artifact("$buildDir/outputs/aar/tkpdfeed-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
@@ -111,7 +108,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    compile project(':tkpdcore')
+    compile getTkpdCore()
     compile getTopAdsSdk()
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
@@ -135,4 +132,7 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

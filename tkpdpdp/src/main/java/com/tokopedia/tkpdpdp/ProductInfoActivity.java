@@ -13,24 +13,31 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.firebase.perf.metrics.AddTrace;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenterImpl;
 
 public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductInfoPresenter> implements
+        DeepLinkWebViewHandleListener,
         ProductInfoView,
         DetailFragmentInteractionListener,
         ProductInfoResultReceiver.Receiver {
@@ -51,6 +58,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Override
+    @AddTrace(name = "onCreateTracePDP", enabled = true)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_info_fragmented);
@@ -132,10 +140,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Override
-    protected void initView() {
-    }
-
-    @Override
     protected void setViewListener() {
         presenter.initialFragment(this, uriData, bundleData);
     }
@@ -154,7 +158,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void shareProductInfo(@NonNull ShareData shareData) {
         presenter.processToShareProduct(this, shareData);
-        inflateNewFragment(ProductShareFragment.newInstance(shareData), ProductShareFragment.class.getSimpleName());
+        startActivity(ShareActivity.createIntent(ProductInfoActivity.this, shareData));
     }
 
     @Override
@@ -239,6 +243,12 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
+        } else if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            this.finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            this.finish();
         } else {
             this.finish();
         }
@@ -279,4 +289,10 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
     }
 
+    @Override
+    public void catchToWebView(String url) {
+        Intent intent = BannerWebView.getCallingIntent(this, url);
+        startActivity(intent);
+        finish();
+    }
 }

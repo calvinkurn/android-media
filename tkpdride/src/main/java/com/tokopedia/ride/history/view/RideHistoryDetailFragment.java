@@ -31,12 +31,18 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
-import com.tokopedia.ride.history.di.RideHistoryDetailDependencyInjection;
+import com.tokopedia.ride.history.di.DaggerRideHistoryComponent;
+import com.tokopedia.ride.history.di.RideHistoryComponent;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -83,7 +89,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @BindView(R2.id.tv_cashback)
     TextView cashbackValueTextView;
     @BindView(R2.id.tv_total_charged)
-    TextView totalChargedTexView;
+    TextView tokocashChargedTexView;
     @BindView(R2.id.rl_payment_details)
     RelativeLayout paymentDetailsLayout;
     @BindView(R2.id.layout_rate)
@@ -103,7 +109,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     ProgressDialog mProgressDialog;
 
-    RideHistoryDetailContract.Presenter mPresenter;
+    @Inject
+    RideHistoryDetailPresenter mPresenter;
 
     public RideHistoryDetailFragment() {
         // Required empty public constructor
@@ -140,6 +147,15 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     }
 
     @Override
+    protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        RideHistoryComponent rideHistoryComponent = DaggerRideHistoryComponent.builder()
+                .rideComponent(component)
+                .build();
+        rideHistoryComponent.inject(this);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.fragment_ride_history_detail;
     }
@@ -147,7 +163,6 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = RideHistoryDetailDependencyInjection.createPresenter(getActivity());
         mProgressDialog = new ProgressDialog(getActivity());
         mPresenter.attachView(this);
         mPresenter.initialize();
@@ -210,7 +225,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     public void renderHistory(RideHistoryViewModel rideHistoryViewModel) {
         System.out.println("Vishal renderHistory " + rideHistory.getStartAddress());
 
-        requestTimeTextView.setText(rideHistory.getRequestTime());
+        requestTimeTextView.setText(RideUtils.convertTime(rideHistory.getRequestTime()));
         rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
         setPickupLocationText(rideHistory.getStartAddress());
@@ -223,8 +238,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
             driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
         }
 
-        totalChargedTexView.setText(rideHistory.getFare());
-        rideFareTextView.setText(rideHistory.getFare());
+        tokocashChargedTexView.setText(rideHistory.getTokoCashCharged());
+        rideFareTextView.setText(rideHistory.getTotalFare());
         totalFareValueTextView.setText(rideHistory.getTotalFare());
 
         if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {
@@ -240,7 +255,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         }
 
         if (rideHistory.getDiscount() > 0) {
-            discountValueTextView.setText("- " + rideHistory.getDiscountDisplayFormat());
+            discountValueTextView.setText(String.format("- %s", rideHistory.getDiscountDisplayFormat()));
         } else {
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);
@@ -251,7 +266,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
             Glide.with(getActivity()).load(rideHistory.getDriverPictureUrl())
                     .asBitmap()
                     .centerCrop()
-                    .error(R.mipmap.ic_launcher)
+                    .error(R.drawable.default_user_pic_light)
                     .into(new BitmapImageViewTarget(driverPictTextView) {
                         @Override
                         protected void setResource(Bitmap resource) {
@@ -415,6 +430,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @OnClick(R2.id.layout_need_help)
     public void actionNeedHelpClicked() {
+        RideGATracking.eventClickHelpTrip(getScreenName(),rideHistory.getRequestTime(),rideHistory.getTotalFare(),rideHistory.getStatus());//17
         startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
     }
 

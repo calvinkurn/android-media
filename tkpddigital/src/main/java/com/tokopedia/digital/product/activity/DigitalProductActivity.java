@@ -9,6 +9,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -40,9 +42,8 @@ public class DigitalProductActivity extends BasePresenterActivity
 
     }
 
-
     @SuppressWarnings("unused")
-    @DeepLink({Constants.Applinks.DIGITAL, Constants.Applinks.DIGITAL_PRODUCT})
+    @DeepLink({Constants.Applinks.DIGITAL_PRODUCT})
     public static Intent getcallingIntent(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -128,9 +129,15 @@ public class DigitalProductActivity extends BasePresenterActivity
     public void updateTitleToolbar(String title) {
         this.titleToolbar = title;
         invalidateTitleToolBar();
+        TrackingUtils.sendMoEngageOpenDigitalCatScreen(title, passData.getCategoryId());
     }
 
     private void invalidateTitleToolBar() {
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

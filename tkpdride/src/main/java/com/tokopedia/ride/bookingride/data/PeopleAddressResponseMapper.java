@@ -3,8 +3,8 @@ package com.tokopedia.ride.bookingride.data;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressEntity;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressPagingEntity;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressResponse;
-import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
 import com.tokopedia.ride.bookingride.domain.model.Paging;
+import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
 
 import java.util.ArrayList;

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.presenter;
 
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
@@ -16,17 +17,17 @@ public interface Category {
 
     void subscribe();
     void unSubscribe();
-    void fetchBanners(final FacadePromo.GetPromoListener listener);
+
     void fetchSlides(final FacadePromo.GetPromoListener listener);
     void fetchTickers(final FetchTickersListener listener);
     void closeTicker();
     boolean isTickerClosed();
     void resetTickerState();
+    void fetchCacheTokocash();
 
     interface FetchTickersListener{
         void onSuccess(ArrayList<Ticker.Tickers> tickers);
         void onError();
 
     }
-
 }

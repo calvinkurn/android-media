@@ -2,17 +2,18 @@ package com.tokopedia.core.home.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.model.HotListViewModel;
 import com.tokopedia.core.network.apiservices.search.HotListService;
@@ -83,14 +84,6 @@ public class HotListImpl implements HotList {
         }
         hotListView.initAdapter(data);
         hotListView.initLinLayManager();
-    }
-
-    @Override
-    public void setLocalyticFlow(Context context) {
-        if (context != null)
-            CommonUtils.dumper("LocalTag : hot list");
-        String screenName = context.getString(R.string.home_hot_list);
-        ScreenTracking.screenLoca(screenName);
     }
 
     @Override
@@ -340,7 +333,8 @@ public class HotListImpl implements HotList {
         if (temp == null) {
             throw new RuntimeException("invalid passing data !!! at " + HotListImpl.class.getSimpleName());
         }
-        urlParser = new URLParser(temp.getHotListProductUrl());
+        String url = temp.getHotListProductUrl();
+        urlParser = new URLParser(url);
         Log.d(TAG, "urlParser type " + urlParser.getType());
         switch (urlParser.getType()) {
             case HOT_KEY:
@@ -353,6 +347,11 @@ public class HotListImpl implements HotList {
                 hotListView.moveToOtherActivity(
                         DetailProductRouter.getCatalogDetailActivity(mContext, urlParser.getHotAlias()));
                 break;
+            case TOPPICKS_KEY:
+                if (!TextUtils.isEmpty(url)) {
+                    hotListView.moveToOtherActivity(TopPicksWebView.newInstance(mContext, url));
+                }
+                break;
             default:
                 bundle = new Bundle();
                 bundle.putString(BrowseProductRouter.DEPARTMENT_ID,
@@ -361,6 +360,8 @@ public class HotListImpl implements HotList {
                 bundle.putInt(BrowseProductRouter.FRAGMENT_ID,
                         BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
 
+                bundle.putSerializable(BrowseProductRouter.EXTRA_FILTER, urlParser.getParamKeyValueMap());
+                bundle.putString(BrowseProductRouter.EXTRA_TITLE, temp.getHotListName());
                 bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
                 bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
                 hotListView.moveToOtherActivity(bundle);

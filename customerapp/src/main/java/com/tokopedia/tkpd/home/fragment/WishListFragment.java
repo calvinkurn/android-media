@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
@@ -168,14 +170,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onResume() {
         super.onResume();
-        wishList.setLocalyticFlow(getActivity(), getString(R.string.home_wishlist));
-        if (wishList.isAfterRotation()) {
-            if (!wishList.isLoadedFirstPage())
-                wishList.refreshData(getActivity());
-        } else {
-            wishList.fetchDataFromCache(getActivity());
-        }
-        UnifyTracking.eventViewWishlist();
+        wishList.onResume(getActivity());
     }
 
     @Override
@@ -230,6 +225,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         searchEditText.setFocusable(false);
         searchEditText.clearFocus();
         searchEditText.requestFocusFromTouch();
+        TextView searchText = (TextView) searchEditText.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchText.setHintTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
         setAdapter();
     }
 
@@ -268,6 +265,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    UnifyTracking.eventRemoveWishlist();
                     wishList.deleteWishlist(getActivity(), productId, position);
                     isDeleteDialogShown = false;
                 }
@@ -374,6 +372,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void findProduct() {
+        UnifyTracking.eventClickCariEmptyWishlist();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -474,6 +473,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        UnifyTracking.eventClickCariWishlist(query);
         wishList.searchWishlist(query);
         return false;
     }

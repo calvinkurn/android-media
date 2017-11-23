@@ -14,16 +14,15 @@ import android.widget.ProgressBar;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.transaction.R;
-
-import static com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory.KEY_TOKOCASH_DATA;
 
 /**
  * Created by kris on 1/13/17. Tokopedia
  */
 
-public class WalletActivity extends TActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener{
+public class WalletActivity extends TActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
 
     public static final String EXTRA_URL = "url";
     private String url;
@@ -83,7 +82,7 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     public void onProgressResult(String progressResult) {
         Uri uri = Uri.parse(progressResult);
-        if(uri.getPath().contains("thanks_wallet")) {
+        if (uri.getPath().contains("thanks_wallet")) {
             clearTokoCashData();
             finish();
         }
@@ -91,7 +90,7 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
 
     private void clearTokoCashData() {
         GlobalCacheManager cacheManager = new GlobalCacheManager();
-        cacheManager.delete(KEY_TOKOCASH_DATA);
+        cacheManager.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     @Override
@@ -118,11 +117,21 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     @Override
     public boolean onOverrideUrl(String url) {
         Uri uri = Uri.parse(url);
-        if(uri.getPath().contains("thanks_wallet")) {
+        if (uri.getPath().contains("thanks_wallet")) {
             clearTokoCashData();
             finish();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onWebTitlePageCompleted(String title) {
+
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

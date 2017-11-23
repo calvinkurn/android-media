@@ -14,6 +14,8 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -24,6 +26,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
         implements ConfirmBookingContract.Presenter {
     private GetFareEstimateUseCase getFareEstimateUseCase;
 
+    @Inject
     public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase) {
         this.getFareEstimateUseCase = getFareEstimateUseCase;
     }
@@ -50,16 +53,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (isViewAttached()) {
-                    if (e instanceof UnknownHostException) {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_no_connection));
-                    } else if (e instanceof SocketTimeoutException) {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_timeout));
-                    } else {
-                        getView().showToastMessage(getView().getActivity().getString(R.string.error_default));
-                    }
-                    getView().goToProductList();
-                }
                 if (isViewAttached()) {
                     getView().hideProgress();
 
@@ -121,7 +114,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                     }
 
                     getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref, fareEstimate.getCode(), fareEstimate.getMessageSuccess());
-                    getView().setViewListener();
                 }
 
             }

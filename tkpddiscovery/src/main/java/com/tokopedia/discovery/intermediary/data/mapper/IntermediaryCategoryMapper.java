@@ -170,6 +170,7 @@ public class IntermediaryCategoryMapper implements Func3<Response<CategoryHadesM
                 BrandModel brandModel = new BrandModel();
                 brandModel.setId(String.valueOf(brand.getShopId()));
                 brandModel.setImageUrl(brand.getLogoUrl());
+                brandModel.setBrandName(brand.getShopName());
                 brandModels.add(brandModel);
             }
         }

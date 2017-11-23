@@ -28,6 +28,7 @@ public class BaseWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         callback.onSuccessResult(url);
+        callback.onWebTitlePageCompleted(view.getTitle());
     }
 
     @Override
@@ -44,5 +45,7 @@ public class BaseWebViewClient extends WebViewClient {
 
     public interface WebViewCallback extends BaseCallbackListener<String, String, SslError> {
         boolean onOverrideUrl(String url);
+
+        void onWebTitlePageCompleted(String title);
     }
 }

@@ -62,10 +62,5 @@ public class UseCaseTest extends TestCase {
         public Observable<Integer> createObservable(RequestParams requestParams) {
             return Observable.empty();
         }
-
-        @SuppressWarnings("unchecked")
-        @Override public void execute(RequestParams requestParams, Subscriber useCaseSubscriber) {
-            super.execute(requestParams,useCaseSubscriber);
-        }
     }
 }

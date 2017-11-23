@@ -15,10 +15,10 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.customView.ReputationRecyclerView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.review.adapter.ProductReviewAdapter;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.review.adapter.ProductReviewAdapter;
 import com.tokopedia.core.review.listener.ProductReviewView;
 import com.tokopedia.core.review.model.helpful_review.HelpfulReviewList;
 import com.tokopedia.core.review.model.product_review.AdvanceReview;
@@ -34,10 +34,6 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by Steven on 15/12/16.
@@ -62,15 +58,11 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     private boolean isFirstTime;
     private TkpdProgressDialog progressDialog;
 
-    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
-    @BindView(R2.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R2.id.view_rating_stats)
+    ReputationRecyclerView recyclerView;
     View statsView;
 
     SnackbarRetry snackbarRetry;
-    private Unbinder unbinder;
 
     public static ProductReviewFragment createInstance(String NAV, String productID, String shopID) {
         ProductReviewFragment fragment = new ProductReviewFragment();
@@ -117,7 +109,9 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_fragment_reputation_product, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.include_loading);
+        recyclerView = (ReputationRecyclerView) rootView.findViewById(R.id.recycler_view);
+        statsView = rootView.findViewById(R.id.view_rating_stats);
         initView();
         setAdapter();
         setListener();
@@ -163,8 +157,8 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
-        presenter.onDestroyView();
+        if (presenter != null)
+            presenter.onDestroyView();
     }
 
     @Override
@@ -198,8 +192,8 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
 
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isLastPosition() && !isRequest && !refresh.isRefreshing()&& !isSnackbarVisible(snackbarRetry)) {
-                    if(page.CheckNextPage()) {
+                if (isLastPosition() && !isRequest && !refresh.isRefreshing() && !isSnackbarVisible(snackbarRetry)) {
+                    if (page.CheckNextPage()) {
                         refresh.setPullEnabled(false);
                         getNextPage();
                     }
@@ -224,7 +218,7 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     }
 
     private boolean isSnackbarVisible(SnackbarRetry snackbarRetry) {
-        return snackbarRetry!=null && snackbarRetry.isShown();
+        return snackbarRetry != null && snackbarRetry.isShown();
     }
 
     @Override
@@ -256,6 +250,12 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     @Override
     public void showNetworkErrorSnackbar() {
         NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
+    @Override
+    public String getShopId() {
+        return getArguments().getString("shop_id");
+
     }
 
     @Override
@@ -324,20 +324,21 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     public void onConnectionTimeOut() {
         onConnectionTimeOut("");
     }
+
     @Override
     public void onConnectionTimeOut(String error) {
         Log.d("steven", "timeout " + page.getPage());
-        isRequest=false;
-        if(page.getPage()==1){
-            if(refresh.isRefreshing()) {
+        isRequest = false;
+        if (page.getPage() == 1) {
+            if (refresh.isRefreshing()) {
                 refresh.finishRefresh();
             }
-            if(recyclerList.size()>0){
+            if (recyclerList.size() > 0) {
                 removeLoadingFooter();
                 adapter.notifyDataSetChanged();
-                snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),refreshSnackbarListener());
+                snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), refreshSnackbarListener());
                 snackbarRetry.showRetrySnackbar();
-            }else {
+            } else {
                 displayView(false);
                 if (error.length() <= 0) {
                     NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryListener());
@@ -345,11 +346,9 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
                     NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, retryListener());
                 }
             }
-        }
-
-        else{
+        } else {
             removeLoadingFooter();
-            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),retrySnackbarListener());
+            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), retrySnackbarListener());
             adapter.notifyDataSetChanged();
             snackbarRetry.showRetrySnackbar();
         }
@@ -415,7 +414,7 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     @Override
     public void onCacheResponse(AdvanceReview advanceReview, List<ReviewProductModel> listReputation, PagingHandler.PagingHandlerModel paging) {
         Log.d("steven", "cache");
-        if(advanceReview!=null ){
+        if (advanceReview != null) {
             displayLoading(false);
             enableFilterStats();
             recyclerList.clear();
@@ -519,7 +518,7 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
 
 
     private void enableFilterStats() {
-        if(!isSnackbarVisible(snackbarRetry)) {
+        if (!isSnackbarVisible(snackbarRetry)) {
             slideOffViewHandler.ToggleSlideOffScreen(statsView, true, true);
         }
     }
@@ -537,11 +536,12 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
             recyclerView.setVisibility(View.VISIBLE);
         }
     }
+
     public void displayView(boolean status) {
-        if(status){
+        if (status) {
             progressBar.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             progressBar.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
         }

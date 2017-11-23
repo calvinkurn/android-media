@@ -30,17 +30,26 @@ import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
+import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
+import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -49,6 +58,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
 /**
  * Created by alvarisi on 3/13/17.
@@ -60,23 +70,29 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private final GetOverviewPolylineUseCase getOverviewPolylineUseCase;
+    private GetUserAddressUseCase getUserAddressUseCase;
     private boolean isMapDragging = false;
     private Location mCurrentLocation;
     private boolean mRenderProductListBasedOnLocationUpdates;
     private boolean mSourceIsCurrentLocation;
+    private MapConfiguration mapConfiguration;
 
-    public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
+    @Inject
+    public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase, GetUserAddressUseCase getUserAddressUseCase) {
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
+        this.getUserAddressUseCase = getUserAddressUseCase;
     }
 
     @Override
     public void initialize() {
+        mapConfiguration = new MapConfiguration(getView().getActivityContext());
+
         if (getView().isUserLoggedIn()) {
             if (checkPlayServices()) {
                 createLocationRequest();
                 initializeLocationService();
             } else {
-                getView().moveMapToLocation(RideHomeMapFragment.DEFAULT_LATLNG.latitude, RideHomeMapFragment.DEFAULT_LATLNG.longitude);
+                getView().moveMapToLocation(mapConfiguration.getDefaultLatitude(), mapConfiguration.getDefaultLongitude());
                 getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
             }
 
@@ -113,18 +129,20 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                         @Override
                         public void onConnected(@Nullable Bundle bundle) {
-                            if (getFuzedLocation() != null) {
-                                mCurrentLocation = getFuzedLocation();
-                                if (!getView().isLaunchedWithLocation()) {
-                                    setSourceAsCurrentLocation();
-                                    mRenderProductListBasedOnLocationUpdates = true;
-                                } else {
-                                    mRenderProductListBasedOnLocationUpdates = false;
-                                }
+                            if (isViewAttached()) {
+                                if (getFuzedLocation() != null) {
+                                    mCurrentLocation = getFuzedLocation();
+                                    if (!getView().isLaunchedWithLocation()) {
+                                        setSourceAsCurrentLocation();
+                                        mRenderProductListBasedOnLocationUpdates = true;
+                                    } else {
+                                        mRenderProductListBasedOnLocationUpdates = false;
+                                    }
 
-                                startLocationUpdates();
-                            } else {
-                                checkLocationSettings();
+                                    startLocationUpdates();
+                                } else {
+                                    checkLocationSettings();
+                                }
                             }
                         }
 
@@ -148,7 +166,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     }
 
     /**
-     * This functions checks if locations is not enabledm shows a dialog to enable to location
+     * This functions checks if locations is not enabled shows a dialog to enable to location
      */
     private void checkLocationSettings() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
@@ -167,12 +185,17 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        mCurrentLocation = getFuzedLocation();
-                        startLocationUpdates();
-                        if (!getView().isLaunchedWithLocation()) {
-                            setSourceAsCurrentLocation();
-                        }
+                        if (isViewAttached()) {
+                            mCurrentLocation = getFuzedLocation();
+                            startLocationUpdates();
+                            if (!getView().isLaunchedWithLocation()) {
+                                setSourceAsCurrentLocation();
+                            }
 
+                            if (mapConfiguration != null && mCurrentLocation != null) {
+                                mapConfiguration.setDefaultLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                            }
+                        }
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         // Location settings are not satisfied, but this can be fixed
@@ -205,65 +228,63 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
         mSourceIsCurrentLocation = true;
 
-        if (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
-            //set source as current location
-            Observable.create(new Observable.OnSubscribe<String>() {
-                @Override
-                public void call(Subscriber<? super String> subscriber) {
-                    try {
-                        subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
-                                mCurrentLocation.getLatitude(),
-                                mCurrentLocation.getLongitude()
-                        ));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+        //set source as current location
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
+                            mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude()
+                    ));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
 
-                        //if address not found and destination not selected keep looking for address using current current location
-                        if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
-                            mRenderProductListBasedOnLocationUpdates = true;
-                        }
+                    //if address not found and destination not selected keep looking for address using current current location
+                    if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
+                        mRenderProductListBasedOnLocationUpdates = true;
                     }
                 }
-            }).onErrorReturn(new Func1<Throwable, String>() {
-                @Override
-                public String call(Throwable throwable) {
-                    return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
-                }
-            })
-                    .subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<String>() {
-                        @Override
-                        public void onCompleted() {
+            }
+        }).onErrorReturn(new Func1<Throwable, String>() {
+            @Override
+            public String call(Throwable throwable) {
+                return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
+            }
+        })
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-                        @Override
-                        public void onNext(String sourceAddress) {
-                            if (isViewAttached()) {
-                                PlacePassViewModel placeVm = new PlacePassViewModel();
-                                placeVm.setAddress(sourceAddress);
-                                placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
-                                placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
-                                placeVm.setTitle(sourceAddress);
-                                getView().setSourceLocation(placeVm);
-                            }
+                    @Override
+                    public void onNext(String sourceAddress) {
+                        if (isViewAttached()) {
+                            PlacePassViewModel placeVm = new PlacePassViewModel();
+                            placeVm.setAddress(sourceAddress);
+                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
+                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
+                            placeVm.setTitle(sourceAddress);
+                            getView().setSourceLocation(placeVm);
+
+                            prefillDestinationFromRecentAddressList();
                         }
-                    });
-        } else {
-            getCurrentPlace();
-        }
+                    }
+                });
     }
 
-    public Location getFuzedLocation() {
+    private Location getFuzedLocation() {
         if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED)
                 && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -289,6 +310,11 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     mRenderProductListBasedOnLocationUpdates = false;
                     setSourceAsCurrentLocation();
                 }
+
+                if (mapConfiguration != null) {
+                    mapConfiguration.setDefaultLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                }
+
             }
         });
     }
@@ -319,6 +345,10 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     @Override
     public void getOverviewPolyline(double sourceLat, double sourceLng, double destinationLat, double destinationLng) {
+        if (getView() == null || getView().getActivity() == null) {
+            return;
+        }
+
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
                 sourceLat,
@@ -344,7 +374,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
             @Override
             public void onNext(List<OverviewPolyline> overviewPolylines) {
-                if (isViewAttached() && !isUnsubscribed()) {
+                if (isViewAttached() && !isUnsubscribed() && getView().isAlreadySelectDestination()) {
                     getView().renderTripPolyline(overviewPolylines);
                 }
             }
@@ -371,17 +401,19 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     @Override
     public void handleEnableLocationDialogResult(int resultCode) {
-        if (resultCode == RESULT_OK) {
-            if (getFuzedLocation() != null) {
-                mCurrentLocation = getFuzedLocation();
-                startLocationUpdates();
-                setSourceAsCurrentLocation();
+        if (isViewAttached()) {
+            if (resultCode == RESULT_OK) {
+                if (getFuzedLocation() != null) {
+                    mCurrentLocation = getFuzedLocation();
+                    startLocationUpdates();
+                    setSourceAsCurrentLocation();
+                } else {
+                    mRenderProductListBasedOnLocationUpdates = true;
+                    startLocationUpdates();
+                }
             } else {
-                mRenderProductListBasedOnLocationUpdates = true;
-                startLocationUpdates();
+                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
             }
-        } else {
-            getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
         }
     }
 
@@ -525,4 +557,53 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         return Observable.create(new PendingResultObservable<>(result));
     }
 
+    private void prefillDestinationFromRecentAddressList() {
+        if (getView().isAlreadySelectDestination()) {
+            return;
+        }
+
+        String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
+        String userId = SessionHandler.getLoginID(getView().getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
+        getUserAddressUseCase.execute(requestParams,
+                new Subscriber<List<RideAddress>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<RideAddress> rideAddresses) {
+                        if (isViewAttached() && !isUnsubscribed() && rideAddresses != null && rideAddresses.size() > 0) {
+
+                            RideAddress address = rideAddresses.get(0);
+                            if (address.isPrefill() && getView().getSource() != null) {
+                                //set the destination if not already set
+                                if (!getView().isAlreadySelectDestination() && !getView().getSource().getTitle().equalsIgnoreCase(address.getAddressName())) {
+                                    //set destination
+                                    PlacePassViewModel destination = new PlacePassViewModel();
+                                    destination.setAddress(address.getAddressDescription());
+                                    destination.setTitle(address.getAddressName());
+                                    destination.setAndFormatLongitude(Double.parseDouble(address.getLongitude()));
+                                    destination.setAndFormatLatitude(Double.parseDouble(address.getLatitude()));
+
+                                    getView().setDestinationAndProcessList(destination);
+                                }
+                            }
+                        }
+                    }
+                });
+    }
 }

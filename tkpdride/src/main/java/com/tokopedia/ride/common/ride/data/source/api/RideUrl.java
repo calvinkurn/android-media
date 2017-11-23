@@ -27,4 +27,6 @@ public interface RideUrl {
     String RIDE_ADDRESS = "/user/address";
     String RIDE_RATING = "/uber/rating";
     String CANCEL_REASONS = "/uber/cancel/reasons";
+    String UPDATE_REQUEST = "/uber/request/update";
+    String SEND_TIP = "/uber/tip/send";
 }

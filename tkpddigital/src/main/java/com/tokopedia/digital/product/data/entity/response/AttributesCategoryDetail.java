@@ -42,6 +42,9 @@ public class AttributesCategoryDetail {
     @SerializedName("operator_style")
     @Expose
     private String operatorStyle;
+    @SerializedName("operator_label")
+    @Expose
+    private String operatorLabel;
     @SerializedName("fields")
     @Expose
     private List<Field> fields = new ArrayList<>();
@@ -84,6 +87,10 @@ public class AttributesCategoryDetail {
 
     public String getOperatorStyle() {
         return operatorStyle;
+    }
+
+    public String getOperatorLabel() {
+        return operatorLabel;
     }
 
     public List<Field> getFields() {

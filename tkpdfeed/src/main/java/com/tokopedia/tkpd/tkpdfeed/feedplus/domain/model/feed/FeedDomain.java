@@ -12,25 +12,21 @@ import javax.annotation.Nullable;
  */
 
 public class FeedDomain {
-
-    private final
     @Nullable
-    List<DataFeedDomain> listFeed;
+    private final List<DataFeedDomain> listFeed;
 
-    private final
     @Nullable
-    List<DataInspirationDomain> listInspiration;
+    private final List<DataInspirationDomain> listInspiration;
 
-    private final
     @Nullable
-    boolean hasNext;
+    private final boolean hasNext;
 
     @Nullable
     private List<RecentViewProductDomain> recentProduct;
 
     public FeedDomain(@Nullable List<DataFeedDomain> listFeed,
                       @Nullable List<DataInspirationDomain> listInspiration,
-                      @Nullable boolean hasNext) {
+                      boolean hasNext) {
         this.listFeed = listFeed;
         this.listInspiration = listInspiration;
         this.hasNext = hasNext;
@@ -41,7 +37,6 @@ public class FeedDomain {
         return listFeed;
     }
 
-    @Nullable
     public boolean isHasNext() {
         return hasNext;
     }
@@ -51,10 +46,11 @@ public class FeedDomain {
         return listInspiration;
     }
 
-    public void setRecentProduct(List<RecentViewProductDomain> recentProduct) {
+    public void setRecentProduct(@Nullable List<RecentViewProductDomain> recentProduct) {
         this.recentProduct = recentProduct;
     }
 
+    @Nullable
     public List<RecentViewProductDomain> getRecentProduct() {
         return recentProduct;
     }

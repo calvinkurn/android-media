@@ -2,6 +2,7 @@ package com.tokopedia.core.network.di.module;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
+import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
@@ -12,8 +13,6 @@ import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
-import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Auth;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -24,7 +23,6 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import javax.inject.Named;
@@ -47,13 +45,15 @@ public class OkHttpClientModule {
                                                   TkpdBaseInterceptor tkpdBaseInterceptor,
                                                   OkHttpRetryPolicy okHttpRetryPolicy,
                                                   ChuckInterceptor chuckInterceptor,
-                                                  DebugInterceptor debugInterceptor) {
+                                                  DebugInterceptor debugInterceptor,
+                                                  ApiCacheInterceptor apiCacheInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientNoAuth(fingerprintInterceptor,
                 tkpdBaseInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor);
+                debugInterceptor,
+                apiCacheInterceptor);
     }
 
     @DefaultAuth
@@ -63,13 +63,15 @@ public class OkHttpClientModule {
                                                       TkpdAuthInterceptor tkpdAuthInterceptor,
                                                   OkHttpRetryPolicy okHttpRetryPolicy,
                                                   ChuckInterceptor chuckInterceptor,
-                                                  DebugInterceptor debugInterceptor) {
+                                                  DebugInterceptor debugInterceptor,
+                                                       ApiCacheInterceptor apiCacheInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientDefaultAuth(fingerprintInterceptor,
                 tkpdAuthInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor);
+                debugInterceptor,
+                apiCacheInterceptor);
     }
 
     @DefaultAuthWithErrorHandler
@@ -113,31 +115,15 @@ public class OkHttpClientModule {
                                                       @Named(AuthUtil.KEY.KEY_MOJITO) GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
                                                        OkHttpRetryPolicy okHttpRetryPolicy,
                                                        ChuckInterceptor chuckInterceptor,
-                                                       DebugInterceptor debugInterceptor) {
+                                                       DebugInterceptor debugInterceptor,
+                                                      ApiCacheInterceptor apiCacheInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientAuth(fingerprintInterceptor,
                 globalTkpdAuthInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor);
-    }
-
-    @TopAdsAuth
-    @ApplicationScope
-    @Provides
-    public OkHttpClient provideOkHttpClientTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
-                                                      TopAdsAuthInterceptor topAdsAuthInterceptor,
-                                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                                      @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
-                                                       ChuckInterceptor chuckInterceptor,
-                                                      DebugInterceptor debugInterceptor) {
-
-        return OkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
-                topAdsAuthInterceptor,
-                okHttpRetryPolicy,
-                errorResponseInterceptor,
-                chuckInterceptor,
-                debugInterceptor);
+                debugInterceptor,
+                apiCacheInterceptor);
     }
 
     @WsV4Auth
@@ -147,13 +133,15 @@ public class OkHttpClientModule {
                                                       @Named(AuthUtil.KEY.KEY_WSV4) GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
                                                       ChuckInterceptor chuckInterceptor,
-                                                      DebugInterceptor debugInterceptor) {
+                                                      DebugInterceptor debugInterceptor,
+                                                    ApiCacheInterceptor apiCacheInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientAuth(fingerprintInterceptor,
                 globalTkpdAuthInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor);
+                debugInterceptor,
+                apiCacheInterceptor);
     }
 
     @ApplicationScope
@@ -188,11 +176,13 @@ public class OkHttpClientModule {
     public OkHttpClient provideOkHttpClientWithAuthTypeJsonUt(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
                                                               OkHttpRetryPolicy okHttpRetryPolicy,
                                                               ChuckInterceptor chuckInterceptor,
-                                                              DebugInterceptor debugInterceptor) {
+                                                              DebugInterceptor debugInterceptor,
+                                                              ApiCacheInterceptor apiCacheInterceptor) {
         return OkHttpFactory.create().buildDaggerClientBearerWithClientDefaultAuth(tkpdBearerWithAuthTypeJsonUtInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor);
+                debugInterceptor,
+                apiCacheInterceptor);
     }
 
     @UploadWsV4Auth

@@ -17,18 +17,20 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
 import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
@@ -295,12 +297,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
         buildCheckoutData(cartDigitalInfoData);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
-        voucherCartHolderView.setVisibility(
-                cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
-        );
-        voucherCartHolderView.renderVoucherAutoCode(
-                cartDigitalInfoData.getAttributes().getVoucherAutoCode()
-        );
+        if (GlobalConfig.isSellerApp()) {
+            voucherCartHolderView.setVisibility(View.GONE);
+        } else {
+            voucherCartHolderView.setVisibility(
+                    cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
+            );
+            voucherCartHolderView.renderVoucherAutoCode(
+                    cartDigitalInfoData.getAttributes().getVoucherAutoCode()
+            );
+        }
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
         itemCartHolderView.setCategoryName(cartDigitalInfoData.getAttributes().getCategoryName());
@@ -323,7 +329,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
             );
         }
-        if (passData.getInstantCheckout().equals("1")) {
+        if (passData.getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             pbMainLoading.setVisibility(View.VISIBLE);
             mainContainer.setVisibility(View.GONE);
             presenter.processToInstantCheckout();
@@ -332,7 +338,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
-        sendGTMAnalytics(cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName() + " - " + cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
+        sendGTMAnalytics(
+                cartDigitalInfoData.getAttributes().getCategoryName(),
+                cartDigitalInfoData.getAttributes().getOperatorName()
+                        + " - " + cartDigitalInfoData.getAttributes().getPricePlain(),
+                cartDigitalInfoData.isInstantCheckout()
+        );
 
     }
 
@@ -537,7 +548,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorInstantCheckout(String message) {
-        closeViewWithMessageAlert(message);
+        showToastMessage(message);
+        presenter.processGetCartDataAfterCheckout();
     }
 
     @Override
@@ -619,7 +631,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickButtonNext() {
-        UnifyTracking.eventClickLanjutCheckoutPage(cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName() + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain());
+        UnifyTracking.eventClickLanjutCheckoutPage(
+                cartDigitalInfoDataState.getAttributes().getCategoryName(),
+                cartDigitalInfoDataState.getAttributes().getOperatorName()
+                        + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain()
+        );
         presenter.processToCheckout();
     }
 
@@ -641,6 +657,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onVoucherCheckButtonClicked() {
+        UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),getVoucherCode(),cartDigitalInfoDataState.getAttributes().getOperatorName());
         presenter.processCheckVoucher();
         KeyboardHandler.hideSoftKeyboard(getActivity());
     }

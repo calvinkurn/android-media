@@ -251,7 +251,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(departmentId);
+                    UnifyTracking.eventExpandCategoryIntermediary(departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9, childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
@@ -312,7 +312,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderBanner(List<BannerModel> bannerModelList) {
         bannerHandler = new Handler();
         incrementPage = runnableIncrement();
-        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList);
+        bannerPagerAdapter = new BannerPagerAdapter(getActivity(), bannerModelList, departmentId);
         banner = getActivity().getLayoutInflater().inflate(R.layout.banner_intermediary, bannerContainer);
         bannerViewPager = (ViewPager) banner.findViewById(R.id.view_pager_intermediary);
         bannerIndicator = (CirclePageIndicator) banner.findViewById(R.id.indicator_intermediary);
@@ -391,7 +391,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
                 .equals(YouTubeInitializationResult.SUCCESS)) {
 
-            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl()));
+            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl(), departmentId));
 
         } else {
             placeHolderVideo.addView(new YoutubeWebViewThumbnail(getContext(), videoModel.getVideoUrl()));
@@ -484,7 +484,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        return (int) (width / 2);
+        return width / 2;
     }
 
     @OnClick(R2.id.category_view_all)
@@ -548,7 +548,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
-        BrowseProductActivity.moveTo(
+        BrowseProductActivity.moveToFromIntermediary(
                 getActivity(),
                 child.getCategoryId(),
                 TopAdsApi.SRC_DIRECTORY,
@@ -585,6 +585,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onBrandClick(BrandModel brandModel) {
+        UnifyTracking.eventOfficialStoreIntermediary(departmentId,brandModel.getBrandName());
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(brandModel.getId(), ""));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

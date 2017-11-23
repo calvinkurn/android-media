@@ -268,14 +268,12 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                 .subscribe(new rx.Subscriber<Map<String, Object>>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted()!!!");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         if (e != null) {
-                            Log.e(TAG, e.getLocalizedMessage());
-
                             Bundle resultData = new Bundle();
                             resultData.putInt(TYPE, type);
                             resultData.putString(MESSAGE_ERROR_FLAG, e.getLocalizedMessage());
@@ -287,8 +285,6 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
                     @Override
                     public void onNext(Map<String, Object> shopCreateParams) {
-                        Log.d(TAG, " masuk sini !!! ");
-
                         OpenShopSubmitData openShopSubmitData = (OpenShopSubmitData) shopCreateParams.get(OPEN_SHOP_SUBMIT_DATA);
                         Bundle result = new Bundle();
                         result.putInt(TYPE, type);
@@ -308,14 +304,12 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                 .subscribe(new rx.Subscriber<Map<String, Object>>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "onCompleted()!!!");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         if (e != null) {
-                            Log.e(TAG, e.getLocalizedMessage());
-
                             Bundle resultData = new Bundle();
                             resultData.putInt(TYPE, type);
                             resultData.putString(MESSAGE_ERROR_FLAG, e.getLocalizedMessage());
@@ -326,8 +320,6 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
                     @Override
                     public void onNext(Map<String, Object> shopCreateParams) {
-                        Log.d(TAG, " masuk sini !!! ");
-
                         OpenShopValidationData openShopValidationData = (OpenShopValidationData) shopCreateParams.get(OPEN_SHOP_VALIDATION_DATA);
                         Bundle result = new Bundle();
                         result.putInt(TYPE, type);
@@ -361,10 +353,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, messageTAG + e.getLocalizedMessage());
-//            if(e.getLocalizedMessage().contains("Unable to resolve host")){
             listener.noConnection();
-//            }
         }
 
         @Override

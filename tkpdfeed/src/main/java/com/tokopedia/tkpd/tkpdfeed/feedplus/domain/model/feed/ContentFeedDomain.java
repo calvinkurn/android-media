@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed;
 
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
+
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -10,26 +13,45 @@ import javax.annotation.Nullable;
 
 public class ContentFeedDomain {
 
-    private final @Nullable
+    @Nullable
+    private final
     String type;
 
-    private final @Nullable int totalProduct;
+    @Nullable
+    private final
+    int totalProduct;
 
-    private final @Nullable
+    @Nullable
+    private final
     List<ProductFeedDomain> products;
 
-    private final @Nullable List<PromotionFeedDomain> promotions;
+    @Nullable
+    private final
+    List<PromotionFeedDomain> promotions;
 
-    private final @Nullable String statusActivity;
+    @Nullable
+    private final
+    String statusActivity;
+
+    @Nullable
+    private final List<OfficialStoreDomain> officialStores;
+
+    @Nullable
+    private final List<TopPicksDomain> topPicksDomains;
 
     public ContentFeedDomain(@Nullable String type, @Nullable int total_product,
-                   @Nullable List<ProductFeedDomain> products, @Nullable List<PromotionFeedDomain> promotions,
-                   @Nullable String status_activity) {
+                             @Nullable List<ProductFeedDomain> products,
+                             @Nullable List<PromotionFeedDomain> promotions,
+                             @Nullable List<OfficialStoreDomain> officialStores,
+                             @Nullable List<TopPicksDomain> topPicksDomains,
+                             @Nullable String status_activity) {
         this.type = type;
         this.totalProduct = total_product;
         this.products = products;
         this.promotions = promotions;
         this.statusActivity = status_activity;
+        this.topPicksDomains = topPicksDomains;
+        this.officialStores = officialStores;
     }
 
     @Nullable
@@ -55,5 +77,15 @@ public class ContentFeedDomain {
     @Nullable
     public String getStatusActivity() {
         return statusActivity;
+    }
+
+    @Nullable
+    public List<OfficialStoreDomain> getOfficialStores() {
+        return officialStores;
+    }
+
+    @Nullable
+    public List<TopPicksDomain> getTopPicksDomains() {
+        return topPicksDomains;
     }
 }

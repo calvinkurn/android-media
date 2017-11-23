@@ -46,6 +46,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
     public void onClick(View v) {
         if (v.getId() == R.id.simple_top_bar_close_button) {
             finish();
+            DescriptionActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
         }
     }
 

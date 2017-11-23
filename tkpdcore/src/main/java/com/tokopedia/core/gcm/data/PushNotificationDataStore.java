@@ -37,4 +37,6 @@ public interface PushNotificationDataStore {
     Observable<String> savePushNotification(String category, String response, String customIndex, String serverId);
 
     Observable<Boolean> savePushNotification(String category, String response);
+
+    Observable<String> getRegistrationDevice();
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.core.customwidget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.design.ticker.TickerView
+                android:id="@+id/ticker_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:visibility="gone"
+                app:tckv_indicator_off_color="@color/grey"
+                app:tckv_indicator_on_color="@color/tkpd_main_green" />
+
+            <com.tokopedia.design.loading.LoadingStateView
+                android:id="@+id/loading_state_view_header"
+                style="@style/CardViewLayoutMatchParent"
+                android:background="@color/white"
+                app:lsv_error_layout="@layout/partial_dashboard_header_error_view"
+                app:lsv_loading_layout="@layout/partial_dashboard_header_loading_view">
+
+                <include layout="@layout/partial_dashboard_header" />
+
+            </com.tokopedia.design.loading.LoadingStateView>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_med">
+
+                <com.tokopedia.design.loading.LoadingStateView
+                    android:id="@+id/loading_state_view_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:lsv_loading_layout="@layout/partial_dashboard_footer_loading_view">
+
+                    <include layout="@layout/partial_dashboard_navigation_list" />
+
+                </com.tokopedia.design.loading.LoadingStateView>
+
+            </FrameLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</com.tokopedia.core.customwidget.SwipeToRefresh>

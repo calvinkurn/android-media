@@ -2,13 +2,13 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/tkpd_bg_color"
     android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/tkpd_bg_color">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/container_view"

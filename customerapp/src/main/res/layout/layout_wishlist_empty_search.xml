@@ -21,7 +21,7 @@
             android:layout_gravity="center"
             android:padding="@dimen/margin_large"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_wishlist_empty_search"
+            app:srcCompat="@drawable/ic_wishlist_empty_search"
             android:layout_marginBottom="@dimen/margin_vs" />
 
         <TextView

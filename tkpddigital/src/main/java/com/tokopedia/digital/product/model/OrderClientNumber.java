@@ -9,15 +9,21 @@ import android.os.Parcelable;
 public class OrderClientNumber implements Parcelable {
 
     private String clientNumber;
+    private String name;
     private String productId;
     private String categoryId;
     private String operatorId;
+    private String lastUpdated;
+    private String lastProduct;
 
     private OrderClientNumber(Builder builder) {
         setClientNumber(builder.clientNumber);
+        setName(builder.name);
         setProductId(builder.productId);
         setCategoryId(builder.categoryId);
         setOperatorId(builder.operatorId);
+        setLastUpdated(builder.lastUpdated);
+        setLastProduct(builder.lastProduct);
     }
 
     public String getOperatorId() {
@@ -28,12 +34,36 @@ public class OrderClientNumber implements Parcelable {
         this.operatorId = operatorId;
     }
 
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getLastProduct() {
+        return lastProduct;
+    }
+
+    public void setLastProduct(String lastProduct) {
+        this.lastProduct = lastProduct;
+    }
+
     public String getClientNumber() {
         return clientNumber;
     }
 
     public void setClientNumber(String clientNumber) {
         this.clientNumber = clientNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getProductId() {
@@ -63,15 +93,23 @@ public class OrderClientNumber implements Parcelable {
 
     public static final class Builder {
         private String clientNumber;
+        private String name;
         private String productId;
         private String categoryId;
         private String operatorId;
+        private String lastUpdated;
+        private String lastProduct;
 
         public Builder() {
         }
 
         public Builder clientNumber(String val) {
             clientNumber = val;
+            return this;
+        }
+
+        public Builder name(String val) {
+            name = val;
             return this;
         }
 
@@ -90,6 +128,16 @@ public class OrderClientNumber implements Parcelable {
             return this;
         }
 
+        public Builder lastUpdated(String val) {
+            lastUpdated = val;
+            return this;
+        }
+
+        public Builder lastProduct(String val) {
+            lastProduct = val;
+            return this;
+        }
+
         public OrderClientNumber build() {
             return new OrderClientNumber(this);
         }
@@ -103,16 +151,22 @@ public class OrderClientNumber implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.clientNumber);
+        dest.writeString(this.name);
         dest.writeString(this.productId);
         dest.writeString(this.categoryId);
         dest.writeString(this.operatorId);
+        dest.writeString(this.lastUpdated);
+        dest.writeString(this.lastProduct);
     }
 
     protected OrderClientNumber(Parcel in) {
         this.clientNumber = in.readString();
+        this.name = in.readString();
         this.productId = in.readString();
         this.categoryId = in.readString();
         this.operatorId = in.readString();
+        this.lastUpdated = in.readString();
+        this.lastProduct = in.readString();
     }
 
     public static final Creator<OrderClientNumber> CREATOR = new Creator<OrderClientNumber>() {

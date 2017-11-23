@@ -54,7 +54,7 @@
                 android:text="Comment Here\n\tComment Here\n\t\tComment There"
                 android:textSize="@dimen/font_medium" />
 
-            <android.support.v7.widget.RecyclerView
+            <com.tokopedia.core.customView.ReputationRecyclerView
                 android:id="@+id/image_holder"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/img_thumb_holder"

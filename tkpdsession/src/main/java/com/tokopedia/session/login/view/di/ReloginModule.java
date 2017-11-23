@@ -3,7 +3,7 @@ package com.tokopedia.session.login.view.di;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -26,14 +26,7 @@ class ReloginModule {
 
     @ReloginScope
     @Provides
-    SessionHandler provideSessionHandler(@ActivityContext Context context) {
-
-        return new SessionHandler(context);
-    }
-
-    @ReloginScope
-    @Provides
-    Bundle provideAccountsBundle(@ActivityContext Context context,
+    Bundle provideAccountsBundle(@ApplicationContext Context context,
                                  SessionHandler sessionHandler) {
         Bundle bundle = new Bundle();
         String authKey;
@@ -53,7 +46,7 @@ class ReloginModule {
 
     @ReloginScope
     @Provides
-    LoginFactory provideLoginFactory(@ActivityContext Context context,
+    LoginFactory provideLoginFactory(@ApplicationContext Context context,
                                      AccountsService accountsService,
                                      MakeLoginMapper makeLoginMapper) {
 

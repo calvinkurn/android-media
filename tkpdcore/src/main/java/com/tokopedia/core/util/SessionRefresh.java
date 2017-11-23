@@ -8,6 +8,7 @@ import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.session.presenter.Login;
 
 import java.io.IOException;
@@ -30,7 +31,9 @@ public class SessionRefresh {
         params.putString(Login.UUID_KEY, sessionHandler.getUUID());
         params.putString(Login.USER_ID, sessionHandler.getLoginID());
         Call<String> responseCall = getRetrofit(authKey)
-                .create(AccountsApi.class).makeLoginsynchronous(params.getParameters());
+                .create(AccountsApi.class).makeLoginsynchronous(
+                        AuthUtil.generateParamsNetwork2(
+                                MainApplication.getAppContext(), params.getParameters()));
         return responseCall.execute().body();
     }
 

@@ -350,7 +350,7 @@ public class EditShippingInteractorImpl implements EditShippingRetrofitInteracto
     private Map<String, String> splitQuery(URI uri) throws UnsupportedEncodingException {
         Map<String, String> queryPairs = new LinkedHashMap<>();
         String query = uri.getQuery();
-        String[] pairs = query.split("&");
+        String[] pairs = query != null ? query.split("&") : new String[0];
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
             queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));

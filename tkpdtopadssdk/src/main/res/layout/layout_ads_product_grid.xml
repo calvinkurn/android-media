@@ -63,10 +63,38 @@
         android:textStyle="normal" />
 
     <LinearLayout
+        android:id="@id/rating_review_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/price"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="@dimen/product_grid_padding"
+        android:layout_marginRight="@dimen/product_grid_padding"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@id/rating"
+            android:layout_width="@dimen/rating_width"
+            android:layout_height="@dimen/rating_height"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@id/review_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/review_count_margin_left"
+            android:textSize="@dimen/text_size_xsmall"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@id/shop_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/price"
+        android:layout_below="@id/rating_review_container"
         android:gravity="bottom"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"

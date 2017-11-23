@@ -8,16 +8,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
@@ -43,9 +50,10 @@ import java.util.Map;
  * @author by Angga.Prasetiyo on 28/04/2016.
  */
 public class TxDetailPresenterImpl implements TxDetailPresenter {
+    private static final int CREATE_RESCENTER_REQUEST_CODE = 789;
     private final TxDetailViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
-
+    private static final int FREE_RETURN = 1;
     public TxDetailPresenterImpl(TxDetailViewListener viewListener) {
         this.viewListener = viewListener;
         this.netInteractor = new TxOrderNetInteractorImpl();
@@ -95,7 +103,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                          */
                         viewListener.navigateToActivityRequest(
                                 InboxRouter.getCreateResCenterActivityIntent(
-                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, 6
+                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_CHECK_COURIER
                                 ), TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
@@ -110,7 +118,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                          */
                         viewListener.navigateToActivityRequest(
                                 InboxRouter.getCreateResCenterActivityIntent(
-                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, 1
+                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_REFUND
                                 ), TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
@@ -148,21 +156,21 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @SuppressWarnings("deprecation")
     @Override
     public void processAskSeller(Context context, OrderData orderData) {
-        Intent intent = InboxRouter.getSendMessageActivityIntent(context);
-        Bundle bundle = new Bundle();
-        bundle.putString(InboxRouter.PARAM_SHOP_ID,
-                orderData.getOrderShop().getShopId());
-        bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME,
-                orderData.getOrderShop().getShopName());
-        bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                orderData.getOrderDetail().getDetailInvoice());
-        bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                MethodChecker.fromHtml(
-                        context.getString(R.string.custom_content_message_ask_seller)
-                                .replace("XXX",
-                                        orderData.getOrderDetail().getDetailPdfUri())).toString()
-        );
-        viewListener.navigateToActivity(intent.putExtras(bundle));
+
+        if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                    .getAskSellerIntent(context,
+                            orderData.getOrderShop().getShopId(),
+                            orderData.getOrderShop().getShopName(),
+                            orderData.getOrderDetail().getDetailInvoice(),
+                            MethodChecker.fromHtml(
+                                    context.getString(R.string.custom_content_message_ask_seller)
+                                            .replace("XXX",
+                                                    orderData.getOrderDetail().getDetailPdfUri())
+                            ).toString(),
+                            TkpdInboxRouter.TX_ASK_SELLER);
+            viewListener.navigateToActivity(intent);
+        }
     }
 
     @Override
@@ -209,6 +217,16 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                 });
     }
 
+    @Override
+    public void processComplain(Context context, OrderData orderData){
+        showComplainDialog(context, orderData);
+    }
+
+    @Override
+    public void processFinish(Context context, OrderData orderData) {
+        showFinishDialog(context, orderData);
+    }
+
     private void processReview(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -230,6 +248,135 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         viewListener.showDialog(builder.create());
     }
 
+    private void showFinishDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_finish);
+        TextView tvFinishTitle = (TextView) dialog.findViewById(R.id.tvFinishTitle);
+        TextView tvFinishBody = (TextView) dialog.findViewById(R.id.tvFinishBody);
+        Button btnFinish = (Button) dialog.findViewById(R.id.btnFinish);
+        Button btnComplain = (Button) dialog.findViewById(R.id.btnComplain);
+        tvFinishTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupTitle()));
+        tvFinishBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupMsg()));
+        btnComplain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmPurchase(context, dialog, orderData);
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showComplainDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_complain);
+        Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
+        Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
+        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
+        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(R.id.llFreeReturn);
+        TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
+        TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
+        TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
+        tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsgV2() != null ?
+                Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsgV2()) :
+                "");
+
+        llFreeReturn.setVisibility(View.GONE);
+        btnBack.setVisibility(View.VISIBLE);
+        btnNotReceive.setVisibility(View.GONE);
+      
+        //will be used later
+//        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
+//            llFreeReturn.setVisibility(View.VISIBLE);
+//            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+//        }
+      
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        btnReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                if (orderData.getOrderDetail().getDetailFreeReturn() == FREE_RETURN) {
+                    LocalCacheHandler cache = new LocalCacheHandler(context,
+                            ConstantOnBoarding.CACHE_FREE_RETURN);
+                    if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
+                        viewListener.navigateToActivityRequest(
+                                InboxRouter.getCreateResCenterActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId()
+                                ), CREATE_RESCENTER_REQUEST_CODE
+                        );
+                    } else {
+                        viewListener.navigateToActivityRequest(
+                                InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId()
+                                ), CREATE_RESCENTER_REQUEST_CODE
+                        );
+                    }
+                } else {
+                    viewListener.navigateToActivityRequest(
+                            InboxRouter.getCreateResCenterActivityIntent(
+                                    context, orderData.getOrderDetail().getDetailOrderId()
+                            ), CREATE_RESCENTER_REQUEST_CODE
+                    );
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showNotReceiveDialog(final Context context, final OrderData orderData) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_not_received);
+        Button btnRefund = (Button) dialog.findViewById(R.id.btnRefund);
+        Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
+        TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
+        TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
+        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle()));
+        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg()));
+        btnRefund.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                viewListener.navigateToActivityRequest(
+                        InboxRouter.getCreateResCenterActivityIntent(
+                                context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_REFUND
+                        ), CREATE_RESCENTER_REQUEST_CODE
+                );
+            }
+        });
+
+        btnCheckCourier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                viewListener.navigateToActivityRequest(
+                        InboxRouter.getCreateResCenterActivityIntent(
+                                context, orderData.getOrderDetail().getDetailOrderId(), 5, InboxRouter.SOLUTION_CHECK_COURIER
+                        ), CREATE_RESCENTER_REQUEST_CODE
+                );
+            }
+        });
+
+        dialog.show();
+    }
     private void processResolution(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -354,7 +501,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
                             processReview(context, message);
                             dialog.dismiss();
                         }

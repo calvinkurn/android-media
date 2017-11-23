@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:paddingBottom="2dp"
-                android:textColor="@color/grey"
+                android:textColor="@color/label_text_color"
                 android:textSize="@dimen/font_small"
                 tools:text="5%" />
 
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_vs"
-                android:textColor="@color/grey"
+                android:textColor="@color/label_text_color"
                 android:textSize="@dimen/font_small"
                 tools:text="Jakarta Barat" />
         </LinearLayout>
@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_vs"
-                android:textColor="@color/grey"
+                android:textColor="@color/label_text_color"
                 android:textSize="@dimen/font_small"
                 tools:text="Gojek - Go send" />
 

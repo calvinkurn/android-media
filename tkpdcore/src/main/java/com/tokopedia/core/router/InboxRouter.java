@@ -14,6 +14,12 @@ import com.tokopedia.core.util.RouterUtils;
  * Created by Nathaniel on 11/11/2016.
  */
 
+/**
+ * @deprecated do not use this class
+ * please use TkpdInboxRouter instead
+ * @author nisie
+ */
+@Deprecated
 public class InboxRouter {
 
     private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.inbox.contactus.activity.ContactUsActivity";
@@ -41,13 +47,15 @@ public class InboxRouter {
 
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
     private static final String INBOX_MESSAGE_FRAGMENT = "com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment";
-    private static final String SEND_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity";;
-    public static final java.lang.String PARAM_CUSTOM_SUBJECT = "custom_subject";
-    public static final java.lang.String PARAM_CUSTOM_MESSAGE = "custom_message";
     public static final java.lang.String PARAM_OWNER_FULLNAME = "owner_fullname";
-    public static final java.lang.String PARAM_USER_ID = "to_user_id";
     public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
     public static final String PARAM_URL = "PARAM_URL";
+
+    //Trouble ID
+
+    //Solution ID
+    public static final int SOLUTION_REFUND = 1;
+    public static final int SOLUTION_CHECK_COURIER = 6;
 
 
     /////////// INTENT
@@ -197,9 +205,5 @@ public class InboxRouter {
         bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, state);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    public static Intent getSendMessageActivityIntent(Context context) {
-        return RouterUtils.getActivityIntent(context, SEND_MESSAGE_ACTIVITY);
     }
 }

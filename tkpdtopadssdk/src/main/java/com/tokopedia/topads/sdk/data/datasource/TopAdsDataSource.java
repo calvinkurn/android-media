@@ -14,7 +14,7 @@ public interface TopAdsDataSource {
 
     void setConfig(Config config);
 
-    TopAdsModel getTopAds(TKPDMapParam<String, String> params);
+    TopAdsModel getTopAds(TKPDMapParam<String, String> params, int position);
 
     PreferedCategory getPreferenceCategory();
 

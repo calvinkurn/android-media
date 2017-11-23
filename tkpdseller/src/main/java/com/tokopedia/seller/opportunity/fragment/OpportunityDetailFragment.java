@@ -12,8 +12,11 @@ import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
@@ -64,11 +67,25 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     public void onActionConfirmClicked() {
+        UnifyTracking.eventOpportunity(
+                OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE,
+                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                AppEventTracking.Action.CLICK,
+                OpportunityTrackingEventLabel.EventLabel.TAKE_OPPORTUNITY
+        );
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.message_dialog_accept_opportunity);
         builder.setPositiveButton(R.string.action_agree, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_YES,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.CLICK,
+                        OpportunityTrackingEventLabel.EventLabel.YES
+                );
+
                 presenter.acceptOpportunity();
                 dialogInterface.dismiss();
             }
@@ -76,6 +93,12 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         builder.setNegativeButton(R.string.action_back, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_NO,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.CLICK,
+                        OpportunityTrackingEventLabel.EventLabel.NO
+                );
                 dialogInterface.dismiss();
             }
         });
@@ -86,6 +109,13 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     public void onActionSeeDetailProduct(String productId) {
+        UnifyTracking.eventOpportunity(
+                OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_PRODUCT,
+                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                AppEventTracking.Action.CLICK,
+                OpportunityTrackingEventLabel.EventLabel.SEE_PRODUCT
+        );
+
         startActivityForResult(
                 SnapShotProduct.createIntent(getActivity(), productId, getOpportunityId()),
                 REQUEST_OPEN_SNAPSHOT

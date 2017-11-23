@@ -196,7 +196,6 @@ public class EtalaseShopEditor extends TActivity {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e(STUART, ETALASE_SHOP_EDITOR + "on error");
                                 NetworkErrorHelper.showEmptyState(EtalaseShopEditor.this, mainView, new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {
@@ -207,7 +206,6 @@ public class EtalaseShopEditor extends TActivity {
 
                             @Override
                             public void onNext(Response<TkpdResponse> responseData) {
-                                Log.e(STUART, ETALASE_SHOP_EDITOR + "on next");
                                 TkpdResponse response = responseData.body();
 
                                 JSONObject jsonObject = null;

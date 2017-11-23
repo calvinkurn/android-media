@@ -6,6 +6,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
+import com.tokopedia.core.util.SessionHandler;
 
 import rx.Observable;
 
@@ -26,4 +27,8 @@ public interface DrawerDataManager {
     void getNotification();
 
     void unsubscribe();
+
+    void getProfileCompletion();
+
+    void getUserAttributes(SessionHandler sessionHandler);
 }

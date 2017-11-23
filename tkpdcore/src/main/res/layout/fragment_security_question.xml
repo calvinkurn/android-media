@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
 
     <TextView
         android:id="@+id/save_but"
@@ -20,7 +20,7 @@
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/fontvs"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 android:id="@+id/progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:id="@+id/view_error"
@@ -58,14 +58,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/title_error_security"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/error_msg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/msg_error_security" />
+                    android:text="@string/msg_error_security"/>
 
             </LinearLayout>
 
@@ -83,19 +83,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small"
                     android:text="@string/title_security_question"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:text="@string/msg_security_question" />
+                    android:text="@string/msg_security_question"/>
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small" />
+                    android:layout_marginBottom="@dimen/margin_small"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/wrapper_input_text"
@@ -107,7 +107,7 @@
                         android:id="@+id/input_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_small" />
+                        android:layout_marginBottom="@dimen/margin_small"/>
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
@@ -122,26 +122,42 @@
 
                 <TextView
                     android:id="@+id/title_otp"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:text="@string/title_security_question"
-                    android:textColor="@color/body_text_5_inverse"
-                    android:textSize="@dimen/fontxl"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="8sp"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    tools:text="Hai Farrah NF,"
+                    />
 
                 <TextView
                     android:id="@+id/title_security"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/content_security_question" />
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="8sp"
+                    android:text="@string/content_security_question"
+                    android:textColor="@color/black_54"
+                    android:textStyle="normal"/>
 
                 <TextView
                     android:id="@+id/title_change_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small"
-                    android:text="@string/content_change_number" />
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:text="@string/content_change_number"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
+                    android:textStyle="normal"/>
 
                 <TextView
                     android:id="@+id/send_otp"
@@ -150,11 +166,11 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/margin_large"
                     android:layout_weight="0.3"
-                    android:background="@drawable/btn_share_transaparent"
+                    android:background="@drawable/btn_green_3dp"
                     android:gravity="center"
-                    android:textColor="@color/tkpd_green_onboarding"
+                    android:textColor="@color/white"
 
-                    tools:text="Kirim OTP ke Email" />
+                    tools:text="Kirim OTP ke Email"/>
 
                 <TextView
                     android:id="@+id/send_otp_call"
@@ -162,16 +178,18 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
-                    android:text="@string/action_send_otp_with_call"
-                    android:textColor="@color/grey_500" />
+                    android:text="@string/action_send_otp_with_call_2"
+                    android:textColor="@color/grey_500"
+                    android:textSize="@dimen/fontvs"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:textColor="@color/black_54"
                     android:layout_marginBottom="@dimen/margin_med"
                     android:layout_marginTop="@dimen/margin_med"
-                    android:text="@string/title_otp" />
+                    android:text="@string/title_otp"/>
 
 
                 <com.tkpd.library.ui.widget.PinEntryEditText
@@ -191,21 +209,23 @@
                     android:textIsSelectable="false"
                     android:textSize="20sp"
                     android:visibility="visible"
-                    app:pinLineColors="@color/pin_line_colors" />
+                    app:pinLineColors="@color/pin_line_colors"/>
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/verify_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lanjutkan dengan TrueCaller"
-                android:textColor="@color/white"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="#127FFF"
+                android:drawableLeft="@drawable/truecaller"
                 android:gravity="center"
                 android:padding="@dimen/padding_small"
-                android:background="#127FFF"
+                android:text="@string/truecaller_verif"
+                android:textColor="@color/white"
                 android:visibility="gone"
-                android:layout_marginTop="@dimen/margin_small"/>
+                tools:visibility="visible"/>
 
         </LinearLayout>
     </ScrollView>

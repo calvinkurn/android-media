@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.domain.model.Receipt;
 
 import rx.Observable;
 

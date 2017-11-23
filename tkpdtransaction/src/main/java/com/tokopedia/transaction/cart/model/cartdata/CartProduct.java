@@ -20,6 +20,9 @@ public class CartProduct implements Parcelable {
     @SerializedName("product_id")
     @Expose
     private String productId;
+    @SerializedName("product_hide_edit")
+    @Expose
+    private Integer productHideEdit;
     @SerializedName("product_price")
     @Expose
     private String productPrice;
@@ -114,6 +117,14 @@ public class CartProduct implements Parcelable {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public Integer getProductHideEdit() {
+        return productHideEdit;
+    }
+
+    public void setProductHideEdit(Integer product_hide_edit) {
+        this.productHideEdit = product_hide_edit;
     }
 
     public String getProductPrice() {
@@ -296,6 +307,7 @@ public class CartProduct implements Parcelable {
         dest.writeString(this.productErrorMsg);
         dest.writeParcelable(this.productPreorder, flags);
         dest.writeString(this.productId);
+        dest.writeValue(this.productHideEdit);
         dest.writeString(this.productPrice);
         dest.writeString(this.productName);
         dest.writeValue(this.productQuantity);
@@ -327,6 +339,7 @@ public class CartProduct implements Parcelable {
         this.productErrorMsg = in.readString();
         this.productPreorder = in.readParcelable(ProductPreorder.class.getClassLoader());
         this.productId = in.readString();
+        this.productHideEdit = (Integer) in.readValue(Integer.class.getClassLoader());
         this.productPrice = in.readString();
         this.productName = in.readString();
         this.productQuantity = (Integer) in.readValue(Integer.class.getClassLoader());

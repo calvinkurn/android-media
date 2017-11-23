@@ -159,6 +159,14 @@ public class BrowseProductActivityModel implements Parcelable {
         this.totalDataCategory = totalDataCategory;
     }
 
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
     @Override
     public String toString() {
         return new Gson().toJson(this);

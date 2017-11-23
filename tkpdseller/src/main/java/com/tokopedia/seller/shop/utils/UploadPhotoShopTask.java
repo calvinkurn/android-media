@@ -58,7 +58,6 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
 
     @Override
     protected String doInBackground(byte[]... jpeg) {
-        Log.d(TAG, messageTAG + FileUtils.getPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath(), "image", "jpg"));
 //        File photo=new File(Environment.getExternalStorageDirectory(), "image.jpg");// old
         File photo = writeImageToTkpdPath(jpeg[0]);
 
@@ -73,84 +72,16 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
         int height = resolution.getModel2();
         PictureDB pictureDB = new PictureDB(path, width, height);
         pictureDB.save();
-        Log.d(TAG, messageTAG + " hasil save ke db : " + pictureDB.Id);
         //[END] save to db for images
 
         return photo.getAbsolutePath();
     }
 
-    public static File writeImageToTkpdPath(InputStream source) {
-        OutputStream outStream = null;
-        File dest = null;
-        try {
-
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            outStream = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = source.read(buffer)) > 0) {
-
-                outStream.write(buffer, 0, length);
-
-            }
-
-            source.close();
-            outStream.close();
-
-            Log.d(TAG, "File is copied successful!");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
-    }
-
-    public static File writeImageToTkpdPath(File source) {
-        InputStream inStream = null;
-        OutputStream outStream = null;
-        File dest = null;
-        try {
-
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            inStream = new FileInputStream(source);
-            outStream = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = inStream.read(buffer)) > 0) {
-
-                outStream.write(buffer, 0, length);
-
-            }
-
-            inStream.close();
-            outStream.close();
-
-            Log.d(TAG, "File is copied successful!");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
-    }
-
+    /**
+     * Folder Path for upload is random, and generated everytime the function called
+     * use FileUtils.writeImageToTkpdPath instead
+     */
+    @Deprecated
     public static File writeImageToTkpdPath(byte[] buffer) {
         File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
         if (!directory.exists()) {
@@ -168,7 +99,6 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
             fos.write(buffer);
             fos.close();
         } catch (java.io.IOException e) {
-            Log.e("PictureDemo", "Exception in photoCallback", e);
             return null;
         }
         return photo;

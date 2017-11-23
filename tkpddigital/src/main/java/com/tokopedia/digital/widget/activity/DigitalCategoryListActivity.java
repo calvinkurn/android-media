@@ -22,8 +22,13 @@ import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
 public class DigitalCategoryListActivity extends BasePresenterActivity {
 
+    @Override
+    public String getScreenName() {
+        return DigitalCategoryListActivity.class.getSimpleName();
+    }
+
     @SuppressWarnings("unused")
-    @DeepLink({Constants.Applinks.DIGITAL_CATEGORY})
+    @DeepLink({Constants.Applinks.DIGITAL_CATEGORY, Constants.Applinks.DIGITAL})
     public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -49,6 +54,11 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
         return new Intent(context, DigitalCategoryListActivity.class);
     }
 
+    public static Intent newInstance(Context context, boolean isFromSeller) {
+        Intent intent = new Intent(context, DigitalCategoryListActivity.class);
+        return intent;
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -56,7 +66,6 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
     }
 
     @Override
@@ -77,9 +86,12 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     @Override
     protected void setViewListener() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof DigitalCategoryListFragment))
+        if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
+            DigitalCategoryListFragment digitalCategoryListFragment
+                    = DigitalCategoryListFragment.newInstance();
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    DigitalCategoryListFragment.newInstance()).commit();
+                    digitalCategoryListFragment).commit();
+        }
     }
 
     @Override
@@ -90,5 +102,10 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

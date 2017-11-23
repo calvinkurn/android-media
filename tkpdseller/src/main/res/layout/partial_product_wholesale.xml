@@ -13,7 +13,7 @@
     <TextView
         android:id="@+id/text_view_add_wholesale"
         style="@style/TextView.Body1.Green"
-        android:layout_marginTop="@dimen/topads_detail_padding_item"
+        android:layout_marginTop="@dimen/margin_sm"
         android:text="@string/product_label_add_wholesale" />
 
 </LinearLayout>

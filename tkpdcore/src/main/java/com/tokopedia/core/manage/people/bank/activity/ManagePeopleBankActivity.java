@@ -243,4 +243,9 @@ public class ManagePeopleBankActivity extends BasePresenterActivity
                 throw new UnsupportedOperationException("Invalid Type Action");
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

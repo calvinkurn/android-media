@@ -2,20 +2,19 @@ package com.tokopedia.inbox.rescenter.detailv2.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
-import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
@@ -34,6 +33,7 @@ import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionSubmitMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
@@ -212,7 +212,7 @@ public class ResolutionDetailModule {
     @ResolutionDetailScope
     @Provides
     ResCenterDataSourceFactory provideResCenterDataSourceFactory(
-            @ActivityContext Context context,
+            @ApplicationContext Context context,
             ResolutionApi resolutionApi,
             InboxResCenterApi inboxResCenterApi,
             ResCenterActApi resCenterActApi,
@@ -325,7 +325,7 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
-    UploadImageSourceFactory provideUploadImageSourceFactory(@ActivityContext Context context,
+    UploadImageSourceFactory provideUploadImageSourceFactory(@ApplicationContext Context context,
                                                              GeneratedHostActApi generatedHostActApi,
                                                              ResCenterActApi resCenterActApi,
                                                              GenerateHostMapper generateHostMapper,

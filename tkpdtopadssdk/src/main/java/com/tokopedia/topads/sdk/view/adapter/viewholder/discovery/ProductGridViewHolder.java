@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +43,8 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     public TextView shopLocation;
     public ImageView productImage;
     private ImageLoader imageLoader;
+    private ImageView rating;
+    private TextView reviewCount;
 
 
     public ProductGridViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
@@ -57,6 +60,8 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         productPrice = (TextView) itemView.findViewById(R.id.price);
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopLocation = (TextView) itemView.findViewById(R.id.location);
+        rating = (ImageView) itemView.findViewById(R.id.rating);
+        reviewCount = (TextView) itemView.findViewById(R.id.review_count);
     }
 
     @Override
@@ -96,6 +101,22 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         if(product.getLabels()!=null){
             LabelLoader.initLabel(context, labelContainer, product.getLabels());
         }
+
+        if (data.getProduct().getProductRating() == 0) {
+            rating.setVisibility(View.GONE);
+            reviewCount.setVisibility(View.GONE);
+        } else {
+            rating.setVisibility(View.VISIBLE);
+            reviewCount.setVisibility(View.VISIBLE);
+            rating.setImageResource(
+                    ImageLoader.getRatingDrawable(getStarCount(data.getProduct().getProductRating()))
+            );
+            reviewCount.setText("(" + data.getProduct().getCountReviewFormat() + ")");
+        }
+    }
+
+    private int getStarCount(int rating) {
+        return Math.round(rating / 20f);
     }
 
     @Override

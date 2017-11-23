@@ -4,8 +4,9 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
-import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
-import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Table;
+import com.tokopedia.seller.product.draft.data.source.db.model.DraftNotFoundException;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase_Table;
 
 import java.util.List;
 
@@ -23,11 +24,12 @@ public class ProductDraftDataManager {
     public ProductDraftDataManager() {
     }
 
-    public Observable<Long> saveDraft(String json, long draftId, boolean isUploading){
+    public Observable<Long> saveDraft(String json, long draftId, boolean isUploading, String shopId){
         ProductDraftDataBase productDraftDataBase = new ProductDraftDataBase();
         productDraftDataBase.setData(json);
         productDraftDataBase.setId(draftId);
         productDraftDataBase.setUploading(isUploading);
+        productDraftDataBase.setShopId(shopId);
         productDraftDataBase.save();
         return Observable.just(productDraftDataBase.getId());
     }
@@ -39,27 +41,31 @@ public class ProductDraftDataManager {
                         .where(ProductDraftDataBase_Table.id.is(productId))
                         .querySingle();
         if (productDraftDatabase == null){
-            throw new RuntimeException("Product draft not found in database");
+            return Observable.error(new DraftNotFoundException());
+        } else {
+            return Observable.just(productDraftDatabase.getData());
         }
-        return Observable.just(productDraftDatabase.getData());
     }
 
-    public Observable<List<ProductDraftDataBase>> getAllDraft() {
+    public Observable<List<ProductDraftDataBase>> getAllDraft(String userId) {
         return Observable.just( new Select()
                 .from(ProductDraftDataBase.class)
                 .where(ProductDraftDataBase_Table.is_uploading.is(false))
+                .and(ProductDraftDataBase_Table.shopId.is(userId))
                 .queryList());
     }
 
-    public Observable<Long> getAllDraftCount() {
+    public Observable<Long> getAllDraftCount(String userId) {
         return Observable.just( new Select(Method.count())
                 .from(ProductDraftDataBase.class)
                 .where(ProductDraftDataBase_Table.is_uploading.is(false))
+                .and(ProductDraftDataBase_Table.shopId.is(userId))
                 .count());
     }
 
-    public Observable<Boolean> clearAllDraft(){
-        new Delete().from(ProductDraftDataBase.class).execute();
+    public Observable<Boolean> clearAllDraft(String userId){
+        new Delete().from(ProductDraftDataBase.class)
+                .where(ProductDraftDataBase_Table.shopId.is(userId)).execute();
         return Observable.just(true);
     }
 
@@ -85,7 +91,7 @@ public class ProductDraftDataManager {
             productDraftDataBase.save();
             return Observable.just(productDraftDataBase.getId());
         } else {
-            throw new RuntimeException("Draft tidak ditemukan");
+            return Observable.error(new DraftNotFoundException());
         }
     }
 
@@ -100,7 +106,7 @@ public class ProductDraftDataManager {
             productDraftDataBase.save();
             return Observable.just(productDraftDataBase.getId());
         } else {
-            throw new RuntimeException("Draft tidak ditemukan");
+            return Observable.error(new DraftNotFoundException());
         }
     }
 
@@ -115,7 +121,7 @@ public class ProductDraftDataManager {
                 productDraftDataBase.save();
                 return Observable.just(true);
             } else {
-                throw new RuntimeException("Draft tidak ditemukan");
+                return Observable.error(new DraftNotFoundException());
             }
         } else { // update all isUploading
             new Update<>(ProductDraftDataBase.class)
@@ -126,5 +132,12 @@ public class ProductDraftDataManager {
         }
     }
 
+    public Observable<Boolean> updateBlankShopIdDraft(String shopId) {
+        new Update<>(ProductDraftDataBase.class)
+                .set(ProductDraftDataBase_Table.shopId.eq(shopId))
+                .where(ProductDraftDataBase_Table.shopId.isNull())
+                .execute();
+        return Observable.just(true);
+    }
 
 }

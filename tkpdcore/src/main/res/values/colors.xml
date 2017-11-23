@@ -23,6 +23,7 @@
     <color name="black_38">#61000000</color>
     <color name="black_54">#8a000000</color>
     <color name="black_70">#b3000000</color>
+    <color name="black_70b">#b3000000</color>
     <color name="black_twenty_percent">#1F000000</color>
     <color name="greyish_brown_two">#4b4b4b</color>
     <color name="tkpd_green_onboarding">#53BA51</color>
@@ -97,4 +98,15 @@
     <color name="green_nob">#42b549</color>
     <color name="orange_nob">#f79b21</color>
     <color name="blue_nob">#00bcd4</color>
+    <color name="grey_hint">#e0e0e0</color>
+
+    <color name="color_complain_header">#c0000000</color>
+    <color name="color_complain_body">#8a000000</color>
+    <color name="color_free_return_text">#0c87c8</color>
+    <color name="color_free_return_stroke">#bce8f1</color>
+    <color name="color_free_return">#d5f9ff</color>
+    <color name="digital_ussd_light_yellow">#fff5dd</color>
+    <color name="sparator_btn_promote">#33AFAFAF</color>
+    <color name="hint_search_view">#4D727272</color>
+    <color name="devider">#c7c7c7</color>
 </resources>

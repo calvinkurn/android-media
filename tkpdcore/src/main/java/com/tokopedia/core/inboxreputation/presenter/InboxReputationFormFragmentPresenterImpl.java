@@ -14,7 +14,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tokopedia.core.GalleryBrowser;
@@ -154,7 +153,6 @@ public class InboxReputationFormFragmentPresenterImpl
     @Override
     public void onSubmitReview() {
         viewListener.removeError();
-        TrackingUtils.eventLoca(viewListener.getActivity().getString(R.string.event_submit_review));
         if (isValidForm()) {
             viewListener.setActionsEnabled(false);
             switch (viewListener.getActivity().getIntent().getExtras().getString("nav", "")) {
@@ -282,9 +280,6 @@ public class InboxReputationFormFragmentPresenterImpl
 
         if (isMessageEmpty()) {
             viewListener.showMessageReviewError(R.string.error_review_message_empty);
-            isValid = false;
-        } else if (isMessageInvalid()) {
-            viewListener.showMessageReviewError(R.string.error_review_message);
             isValid = false;
         }
 

@@ -79,6 +79,7 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
             Uri url = Uri.parse(uri);
             handlerIntent.setData(url);
             Bundle bundle = new Bundle();
+            bundle.putBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, true);
             bundle.putString(Constants.EXTRA_APPLINK_CATEGORY, Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION);
             handlerIntent.putExtras(bundle);
 

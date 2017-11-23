@@ -2,16 +2,21 @@ package com.tokopedia.digital.product.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
@@ -27,14 +32,16 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -42,6 +49,7 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
@@ -49,7 +57,10 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.activity.DigitalSearchNumberActivity;
+import com.tokopedia.digital.product.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.adapter.BannerAdapter;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
@@ -57,27 +68,42 @@ import com.tokopedia.digital.product.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle3View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle4View;
+import com.tokopedia.digital.product.compoundview.CheckPulsaBalanceView;
 import com.tokopedia.digital.product.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
-import com.tokopedia.digital.product.domain.LastOrderNumberRepository;
+import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
+import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.listener.IProductDigitalView;
+import com.tokopedia.digital.product.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
+import com.tokopedia.digital.product.model.PulsaBalance;
 import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.presenter.ProductDigitalPresenter;
+import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
+import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,13 +117,15 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.digital.product.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
+
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
 @RuntimePermissions
 public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
         implements IProductDigitalView, BannerAdapter.ActionListener,
-        BaseDigitalProductView.ActionListener {
+        BaseDigitalProductView.ActionListener, IUssdUpdateListener, CheckPulsaBalanceView.ActionListener {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
 
@@ -106,6 +134,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String EXTRA_STATE_CLIENT_NUMBER = "EXTRA_STATE_CLIENT_NUMBER";
     private static final String EXTRA_STATE_CATEGORY_DATA = "EXTRA_STATE_CATEGORY_DATA";
     private static final String EXTRA_STATE_BANNER_LIST_DATA = "EXTRA_STATE_BANNER_LIST_DATA";
+    private static final String EXTRA_STATE_OTHER_BANNER_LIST_DATA = "EXTRA_STATE_OTHER_BANNER_LIST_DATA";
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA";
     private static final String EXTRA_STATE_INSTANT_CHECKOUT_CHECKED =
             "EXTRA_STATE_INSTANT_CHECKOUT_CHECKED";
@@ -117,12 +146,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
-
     private Operator operatorSelectedState;
     private Product productSelectedState;
     private String clientNumberState;
     private CategoryData categoryDataState;
     private List<BannerData> bannerDataListState;
+    private List<BannerData> otherBannerDataListState;
     private HistoryClientNumber historyClientNumberState;
     private String voucherCodeCopiedState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
@@ -137,19 +166,25 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     RecyclerView rvBanner;
     @BindView(R2.id.holder_product_detail)
     LinearLayout holderProductDetail;
+    @BindView(R2.id.holder_check_balance)
+    LinearLayout holderCheckBalance;
 
     private BannerAdapter bannerAdapter;
     private String categoryId;
+    private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
     private CompositeSubscription compositeSubscription;
-    private BaseDigitalProductView<
-            CategoryData, Operator, Product, HistoryClientNumber
-            > digitalProductView;
+    private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
     private LocalCacheHandler cacheHandlerLastInputClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     private ActionListener actionListener;
+
+    private USSDBroadcastReceiver ussdBroadcastReceiver;
+    private ShowCaseDialog showCaseDialog;
+    private int selectedSimIndex = 0;//start from 0
+    private boolean ussdInProgress = false;
 
     public static Fragment newInstance(String categoryId) {
         Fragment fragment = new DigitalProductFragment();
@@ -188,6 +223,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         state.putParcelableArrayList(
                 EXTRA_STATE_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) bannerDataListState
         );
+        state.putParcelableArrayList(
+                EXTRA_STATE_OTHER_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) otherBannerDataListState
+        );
         state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
         state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
         state.putParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
@@ -201,10 +239,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         isInstantCheckoutChecked = savedState.getBoolean(EXTRA_STATE_INSTANT_CHECKOUT_CHECKED);
         categoryDataState = savedState.getParcelable(EXTRA_STATE_CATEGORY_DATA);
         bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
+        otherBannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_OTHER_BANNER_LIST_DATA);
         historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
         voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
         digitalCheckoutPassDataState = savedState.getParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA);
-
         presenter.processStateDataToReRender();
     }
 
@@ -222,14 +260,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
+        IDigitalWidgetRepository digitalWidgetRepository =
+                new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
-        ILastOrderNumberRepository lastOrderNumberRepository =
-                new LastOrderNumberRepository(digitalEndpointService, productDigitalMapper);
+        IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper);
+
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
-                        compositeSubscription, digitalCategoryRepository,
-                        lastOrderNumberRepository, cacheHandlerLastInputClientNumber
+                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
+                        cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
                 );
         presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
     }
@@ -292,13 +332,22 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
+        String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
-        bannerAdapter.addBannerDataListAndTitle(bannerDataList, title);
+        bannerAdapter.addBannerDataListAndTitle(bannerDataList, formattedTitle);
+    }
+
+    @Override
+    public void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList) {
+        String formattedTitle = getResources().getString(R.string.promo_category, title);
+        this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
+        bannerAdapter.addBannerDataListAndTitle(otherBannerDataList, formattedTitle);
     }
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
         for (int i = bannerDataList.size() - 1; i >= 0; i--) {
-            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) && TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
+            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) &&
+                    TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
                 bannerDataList.remove(bannerDataList.get(i));
             }
         }
@@ -362,6 +411,40 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void renderCheckPulsaBalanceData() {
+        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
+    public void renderCheckPulsaBalance() {
+        holderCheckBalance.removeAllViews();
+        for (int i = 0; i < 2; i++) {
+            Operator operator = presenter.getSelectedUssdOperator(i);
+            if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
+                continue;
+            }
+            String phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
+            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    operator, phoneNumber)) {
+                phoneNumber = presenter.getDeviceMobileNumber(i);
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                }
+            }
+
+            String ussdCode = operator.getUssdCode();
+            if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
+                CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
+                checkPulsaBalanceView.setActionListener(this);
+                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber);
+                holderCheckBalance.addView(checkPulsaBalanceView);
+                startShowCaseUSSD();
+            }
+        }
+    }
+
+    @Override
     public void renderErrorStyleNotSupportedProductDigitalData(String message) {
         showSnackBarCallbackCloseView(message);
     }
@@ -402,10 +485,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public List<BannerData> getOtherBannerDataListState() {
+        return otherBannerDataListState;
+    }
+
+    @Override
     public HistoryClientNumber getHistoryClientNumberState() {
         return historyClientNumberState;
     }
-
 
     @Override
     public String getVersionInfoApplication() {
@@ -446,8 +533,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void clearContentRendered() {
-        pbMainLoading.setVisibility(View.GONE);
-        mainHolderContainer.setVisibility(View.GONE);
+        if (pbMainLoading != null) {
+            pbMainLoading.setVisibility(View.GONE);
+        }
+        if (mainHolderContainer != null) {
+            mainHolderContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -484,7 +575,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public String getCategoryId() {
-        return categoryId;
+        return categoryId == null ? "" : categoryId;
     }
 
     @Override
@@ -551,13 +642,20 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void closeView() {
-        getActivity().finish();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
     public void onDestroy() {
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
+
+        if (ussdBroadcastReceiver != null)
+            getActivity().unregisterReceiver(ussdBroadcastReceiver);
+        presenter.removeUssdTimerCallback();
+
         super.onDestroy();
     }
 
@@ -587,7 +685,26 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void onButtonCheckBalanceClicked(int simPosition, String ussdCode, CheckPulsaBalanceView checkPulsaBalanceView) {
+        if (ussdInProgress) {
+            showToastMessage(getString(R.string.msg_ussd_please_wait));
+        } else {
+            selectedSimIndex = simPosition;
+            selectedCheckPulsaBalanceView = checkPulsaBalanceView;
+            Operator operator = presenter.getSelectedUssdOperator(simPosition);
+            String phoneNumber = presenter.getUssdPhoneNumberFromCache(simPosition);
+            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    operator, phoneNumber)) {
+                presenter.storeUssdPhoneNumber(simPosition, "");
+            }
+            DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
+        }
+    }
+
+    @Override
     public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -598,6 +715,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -608,9 +727,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
+        UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser
+                        getActivity(), operatorListData, titleChooser, categoryDataState.getName()
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
@@ -618,6 +739,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), productListData, titleChooser
@@ -652,7 +775,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         );
     }
 
-
     @Override
     public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
@@ -663,6 +785,30 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
         );
         cacheHandlerRecentInstantCheckoutUsed.applyEditor();
+    }
+
+    @Override
+    public void onClientNumberClicked(String number, ClientNumber clientNumber, List<OrderClientNumber> numberList) {
+        if (!numberList.isEmpty()) {
+            startActivityForResult(
+                    DigitalSearchNumberActivity.newInstance(
+                            getActivity(), categoryId, clientNumber, number, numberList
+                    ),
+                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+            );
+        }
+    }
+
+    @Override
+    public void onClientNumberCleared(ClientNumber clientNumber, List<OrderClientNumber> numberList) {
+        if (!numberList.isEmpty()) {
+            startActivityForResult(
+                    DigitalSearchNumberActivity.newInstance(
+                            getActivity(), categoryId, clientNumber, "", numberList
+                    ),
+                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+            );
+        }
     }
 
     @Override
@@ -706,10 +852,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     );
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
-                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                    if (!TextUtils.isEmpty(message)) {
-                        showToastMessage(message);
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                        if (!TextUtils.isEmpty(message)) {
+                            showToastMessage(message);
+                        }
                     }
                 }
                 break;
@@ -727,15 +875,26 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     presenter.processAddToCartProduct(digitalCheckoutPassDataState);
                 }
                 break;
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
+                    handleCallbackSearchNumber(orderClientNumber);
+                } else {
+                    handleCallbackSearchNumberCancel();
+                }
+                break;
         }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_digital_product_detail, menu);
+        if (GlobalConfig.isSellerApp()) {
+            menu.findItem(R.id.action_menu_subscription_digital).setVisible(false);
+            menu.findItem(R.id.action_menu_product_list_digital).setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -756,6 +915,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             );
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
+            if (categoryDataState != null) {
+                UnifyTracking.eventClickDaftarTransaksiEvent(categoryDataState.getName(), categoryDataState.getName());
+            }
+
             navigateToActivity(
                     DigitalWebActivity.newInstance(
                             getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
@@ -766,7 +929,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         } else {
             return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
@@ -784,9 +946,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         );
-        navigateToActivityRequest(
-                contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
-        );
+        try {
+            navigateToActivityRequest(
+                    contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
+            );
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.error_message_contact_not_found));
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
@@ -806,8 +974,100 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         );
     }
 
+    @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
+    public void checkBalanceByUSSD(int simPosition, String ussdCode) {
+        presenter.processToCheckBalance(null, simPosition, ussdCode);
+        UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
+    }
+
+    @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
+    void showDeniedForPhone() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CALL_PHONE);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
+    void showNeverAskForPhone() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CALL_PHONE);
+    }
+
+    @OnShowRationale({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
+    void showRationaleForPhone(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(
+                getActivity(), request, Manifest.permission.CALL_PHONE
+        );
+    }
+
     private void renderContactDataToClientNumber(ContactData contactData) {
         digitalProductView.renderClientNumberFromContact(contactData.getContactNumber());
+    }
+
+    private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+        if (orderClientNumber != null) {
+            UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
+        }
+
+        if (categoryDataState.isSupportedStyle()) {
+            switch (categoryDataState.getOperatorStyle()) {
+                case CategoryData.STYLE_PRODUCT_CATEGORY_1 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99 :
+                    handleStyle1(orderClientNumber);
+                    break;
+                case CategoryData.STYLE_PRODUCT_CATEGORY_2 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_3 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_4 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_5 :
+                    handleStyleOther(orderClientNumber);
+                    break;
+            }
+        }
+    }
+
+    private void handleStyleOther(OrderClientNumber orderClientNumber) {
+        Operator selectedOperator = null;
+        if (orderClientNumber.getOperatorId() != null) {
+            for (Operator operator : categoryDataState.getOperatorList()) {
+                if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    selectedOperator = operator;
+                    digitalProductView.renderUpdateOperatorSelected(operator);
+                }
+            }
+        }
+
+        digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
+        digitalProductView.clearFocusOnClientNumber();
+
+        if (selectedOperator != null) {
+            for (Product product : selectedOperator.getProductList()) {
+                if (orderClientNumber.getProductId() != null) {
+                    if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                        digitalProductView.renderUpdateProductSelected(product);
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleStyle1(OrderClientNumber orderClientNumber) {
+        digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
+        digitalProductView.clearFocusOnClientNumber();
+
+        if (orderClientNumber.getOperatorId() != null) {
+            for (Operator operator : categoryDataState.getOperatorList()) {
+                if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    for (Product product : operator.getProductList()) {
+                        if (orderClientNumber.getProductId() != null) {
+                            if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                                digitalProductView.renderUpdateProductSelected(product);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleCallbackSearchNumberCancel() {
+        digitalProductView.clearFocusOnClientNumber();
     }
 
     private void handleCallBackProductChooser(Product product) {
@@ -818,7 +1078,187 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         digitalProductView.renderUpdateOperatorSelected(operator);
     }
 
+    @Override
+    public void showMessageAlert(String message, String title) {
+        View view = getView();
+        if (view == null) {
+            return;
+        }
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        Dialog dialog = alertDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @Override
+    public void showAccessibilityAlertDialog() {
+        View view = getView();
+        if (view == null) {
+            return;
+        }
+        AlertDialog.Builder accessibiltyDialog = new AlertDialog.Builder(getActivity());
+        accessibiltyDialog.setMessage(getActivity().getString(R.string.dialog_accessibility_service_on));
+        accessibiltyDialog.setPositiveButton("ALLOW", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                startActivityForResult(intent, 0);
+            }
+        });
+        accessibiltyDialog.setNegativeButton("DENY", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        Dialog dialog = accessibiltyDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @Override
+    public void registerUssdReciever() {
+        if (selectedCheckPulsaBalanceView != null)
+            selectedCheckPulsaBalanceView.showCheckBalanceProgressbar();
+        if (ussdBroadcastReceiver == null) {
+            ussdBroadcastReceiver = new USSDBroadcastReceiver(this);
+            getActivity().registerReceiver(ussdBroadcastReceiver, new IntentFilter(
+                    USSDBroadcastReceiver.ACTION_GET_BALANCE_FROM_USSD
+            ));
+
+        }
+        Intent intent = new Intent(context, USSDAccessibilityService.class);
+        intent.putExtra(USSDAccessibilityService.KEY_START_SERVICE_FROM_APP, true);
+        context.startService(intent);
+        ussdInProgress = true;
+
+    }
+
+    @Override
+    public void renderPulsaBalance(PulsaBalance pulsaBalance, int selectedSim) {
+        ussdInProgress = false;
+        String number = "";
+        if (selectedCheckPulsaBalanceView != null) {
+            selectedCheckPulsaBalanceView.hideProgressbar();
+            number = selectedCheckPulsaBalanceView.getPhoneNumberText();
+        }
+        if (pulsaBalance != null && pulsaBalance.isSuccess()) {
+            pulsaBalance.setMobileNumber(number);
+            startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
+                    categoryDataState.getClientNumberList().get(0).getValidation(),
+                    categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
+        } else {
+            showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
+        }
+    }
+
+    private void startShowCaseUSSD() {
+        final String showCaseTag = DigitalProductFragment.class.getName();
+        if (ShowCasePreference.hasShown(getActivity(), showCaseTag)) {
+            return;
+        }
+        if (showCaseDialog != null) {
+            return;
+        }
+        showCaseDialog = createShowCase();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+        showCaseObjectList.add(new ShowCaseObject(
+                holderCheckBalance,
+                getString(R.string.title_showcase_ussd),
+                getString(R.string.message_showcase_ussd),
+                ShowCaseContentPosition.UNDEFINED,
+                R.color.tkpd_main_green));
+        showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.view_layout_showcase)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .prevStringRes(R.string.navigate_back)
+                .nextStringRes(R.string.next)
+                .finishStringRes(R.string.title_done)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
+    }
+
+
+    @Override
+    public void showPulsaBalanceError(String message) {
+        ussdInProgress = false;
+        if (selectedCheckPulsaBalanceView != null)
+            selectedCheckPulsaBalanceView.hideProgressbar();
+        showMessageAlert(message, getActivity().getString(R.string.message_ussd_title));
+    }
+
+    @Override
+    public void onReceivedUssdData(String result) {
+        presenter.processPulsaBalanceUssdResponse(result, selectedSimIndex);
+    }
+
+    @Override
+    public void onUssdDataError(String errorMessage) {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        restoreUssdData();
+    }
+
+    private void restoreUssdData() {
+        if (selectedCheckPulsaBalanceView == null ||
+                GlobalConfig.isSellerApp() ||
+                android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        } else if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+            Operator operator = presenter.getSelectedUssdOperator(selectedSimIndex);
+            String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
+
+            if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
+                return;
+            }
+            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    operator, phoneNumber)) {
+                phoneNumber = presenter.getDeviceMobileNumber(selectedSimIndex);
+
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                }
+            }
+            selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
+        }
+    }
+
     public interface ActionListener {
         void updateTitleToolbar(String title);
     }
+
 }

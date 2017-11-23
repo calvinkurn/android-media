@@ -88,6 +88,7 @@ public class SendMessagePresenterImpl implements SendMessagePresenter {
         param.setMessage_subject(viewListener.getSubject());
         param.setTo_shop_id(viewListener.getArguments().getString(SendMessageFragment.PARAM_SHOP_ID,""));
         param.setTo_user_id(viewListener.getArguments().getString(SendMessageFragment.PARAM_USER_ID,""));
+        param.setSource(viewListener.getArguments().getString(SendMessageFragment.PARAM_SOURCE,""));
         return param.getSendMessageParam();
     }
 

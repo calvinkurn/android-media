@@ -40,7 +40,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     }
 
     @Override
-    public TopAdsModel getTopAds(TKPDMapParam<String, String> params) {
+    public TopAdsModel getTopAds(TKPDMapParam<String, String> params, int position) {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
                 .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
@@ -48,7 +48,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
                 .addParameters(params)
                 .build();
         RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
-        return new TopAdsMapper(context, executor).getModel();
+        return new TopAdsMapper(context, executor, position).getModel();
     }
 
     @Override

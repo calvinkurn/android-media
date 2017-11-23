@@ -1,14 +1,11 @@
 package com.tokopedia.digital.cart.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +25,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
+import com.tokopedia.payment.router.IPaymentModuleRouter;
 
 import butterknife.BindView;
 
@@ -40,6 +38,8 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
     private static final long FORCE_TIMEOUT = 60000L;
     private static final String TAG = InstantCheckoutActivity.class.getSimpleName();
 
+    private static final String SEAMLESS = "seamless";
+
     public static final String EXTRA_INSTANT_CHECKOUT_DATA = "EXTRA_INSTANT_CHECKOUT_DATA";
 
     @BindView(R2.id.webview)
@@ -48,6 +48,8 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
     ProgressBar progressBar;
 
     private InstantCheckoutData instantCheckoutData;
+    private IPaymentModuleRouter paymentModuleRouter;
+
 
     public static Intent newInstance(Context context, InstantCheckoutData instantCheckoutData) {
         return new Intent(context, InstantCheckoutActivity.class)
@@ -76,10 +78,11 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-
+        if (getApplication() instanceof IPaymentModuleRouter) {
+            paymentModuleRouter = (IPaymentModuleRouter) getApplication();
+        }
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void setViewListener() {
         progressBar.setIndeterminate(true);
@@ -140,11 +143,11 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
 
         @SuppressWarnings("deprecation")
         public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-            Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
+            //     Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
         }
 
         public boolean onConsoleMessage(ConsoleMessage cm) {
-            Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
+            //    Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
             return true;
         }
     }
@@ -156,18 +159,36 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.invalidate();
-            Log.d(TAG, "redirect url instant checkout = " + url);
+            //   Log.d(TAG, "redirect url instant checkout = " + url);
             if ((!instantCheckoutData.getFailedCallbackUrl().isEmpty()
                     && url.contains(instantCheckoutData.getFailedCallbackUrl()))
                     || (!instantCheckoutData.getSuccessCallbackUrl().isEmpty()
                     && url.contains(instantCheckoutData.getSuccessCallbackUrl()))) {
-                view.invalidate();
                 view.stopLoading();
                 finish();
-                return false;
+                return true;
+            } else {
+                if (paymentModuleRouter != null
+                        && paymentModuleRouter.isSupportedDelegateDeepLink(url)
+                        && paymentModuleRouter.getIntentDeepLinkHandlerActivity() != null) {
+                    Intent intent = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                    finish();
+                    return true;
+                } else if (paymentModuleRouter != null) {
+                    String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
+                    if (urlFinal == null)
+                        return super.shouldOverrideUrlLoading(view, url);
+                    view.loadUrl(
+                            urlFinal,
+                            paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
+                    );
+                    return true;
+                } else {
+                    return super.shouldOverrideUrlLoading(view, url);
+                }
             }
-            return super.shouldOverrideUrlLoading(view, url);
         }
 
         @Override
@@ -191,13 +212,12 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request,
                                     WebResourceError error) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                showError(view, error.getErrorCode());
             super.onReceivedError(view, request, error);
         }
 
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
+            //    Log.d(TAG, "start url instant checkout = " + url);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -237,5 +257,10 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
     private void showToastMessageWithForceCloseView(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

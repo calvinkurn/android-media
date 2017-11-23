@@ -13,6 +13,10 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -24,6 +28,7 @@ import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunitySortActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
@@ -107,8 +112,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         KeyboardHandler.DropKeyboard(getActivity(), searchView);
         presenter.initOpportunityForFirstTime(
                 opportunityParam.getQuery(),
-                opportunityParam.getKeySort(),
-                opportunityParam.getSort(),
                 opportunityParam.getListFilter()
         );
     }
@@ -190,8 +193,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         pagingHandler.resetPage();
         presenter.initOpportunityForFirstTime(
                 opportunityParam.getQuery(),
-                opportunityParam.getKeySort(),
-                opportunityParam.getSort(),
                 opportunityParam.getListFilter()
         );
     }
@@ -228,10 +229,15 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                             pagingHandler.nextPage();
                             presenter.getOpportunity(
                                     opportunityParam.getQuery(),
-                                    opportunityParam.getKeySort(),
-                                    opportunityParam.getSort(),
                                     opportunityParam.getListFilter());
                         }
+
+                        UnifyTracking.eventOpportunity(
+                                OpportunityTrackingEventLabel.EventName.SCROLL_OPPORTUNITY,
+                                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                                AppEventTracking.Action.SCROLL,
+                                OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
+                        );
                     }
                 });
 
@@ -240,6 +246,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public boolean onQueryTextSubmit(String query) {
                 opportunityParam.setQuery(query);
                 resetOpportunityList();
+
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        query
+                );
                 return false;
             }
 
@@ -281,6 +294,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onSuccessGetOpportunity(OpportunityViewModel viewModel) {
         setPaging(viewModel.getPagingHandlerModel());
+
+        UnifyTracking.eventOpportunity(
+                OpportunityTrackingEventLabel.EventName.LOAD_OPPORTUNITY_PRODUCT,
+                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                AppEventTracking.Action.LOAD,
+                String.valueOf(pagingHandler.getPage())
+        );
+
         enableView();
         finishLoadingList();
         adapter.setList(viewModel.getListOpportunity());
@@ -386,8 +407,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public void onRetryClicked() {
                 presenter.initOpportunityForFirstTime(
                         opportunityParam.getQuery(),
-                        opportunityParam.getKeySort(),
-                        opportunityParam.getSort(),
                         opportunityParam.getListFilter()
                 );
             }
@@ -441,6 +460,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ScreenTracking.screen(getScreenName());
+
         if (requestCode == REQUEST_CODE_OPPORTUNITY_DETAIL
                 && resultCode == OpportunityDetailFragment.RESULT_DELETED
                 && data != null) {
@@ -469,15 +490,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         ArrayList<FilterPass> listPass = opportunityFilterPassModel.getListPass();
 
         if (listPass != null) {
-            opportunityParam.setListFilter(listPass);
+            opportunityParam.setFilter(listPass);
             resetOpportunityList();
         }
     }
 
     private void setOpportunitySortData(Intent data) {
         if (filterData != null && filterData.getListSortingType() != null) {
-            String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
-            String keySort = data.getExtras().getString(OpportunitySortFragment.SELECTED_KEY);
+            FilterPass sort = data.getExtras().getParcelable(OpportunitySortFragment.SELECTED_SORT);
             int position = data.getExtras().getInt(OpportunitySortFragment.SELECTED_POSITION);
 
             for (int i = 0; i < filterData.getListSortingType().size(); i++) {
@@ -487,7 +507,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                     filterData.getListSortingType().get(i).setSelected(true);
                 }
             }
-            opportunityParam.setSort(keySort, paramSort);
+            opportunityParam.setSort(sort);
             resetOpportunityList();
         }
 
@@ -508,5 +528,18 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         super.onSaveInstanceState(outState);
         outState.putParcelable(ARGS_FILTER_DATA, filterData);
         outState.putParcelable(ARGS_PARAM, opportunityParam);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_OPPORTUNITY_TAB;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && getActivity() != null) {
+            ScreenTracking.screen(getScreenName());
+        }
     }
 }

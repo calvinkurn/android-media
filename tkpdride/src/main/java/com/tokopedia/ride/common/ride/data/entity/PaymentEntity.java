@@ -24,6 +24,14 @@ public class PaymentEntity {
     @Expose
     private boolean receiptReady;
 
+    @SerializedName("pending_amount")
+    @Expose
+    private String pendingAmount;
+
+    @SerializedName("paid_amount")
+    @Expose
+    private String paidAmount;
+
     public PaymentEntity() {
     }
 
@@ -41,5 +49,13 @@ public class PaymentEntity {
 
     public boolean isReceiptReady() {
         return receiptReady;
+    }
+
+    public String getPendingAmount() {
+        return pendingAmount;
+    }
+
+    public String getPaidAmount() {
+        return paidAmount;
     }
 }

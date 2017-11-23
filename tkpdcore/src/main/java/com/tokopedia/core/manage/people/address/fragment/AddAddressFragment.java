@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
@@ -30,7 +29,7 @@ import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
@@ -190,13 +189,13 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             this.mProvinces = savedState.getParcelableArrayList(ARG_STATE_PROVINCE);
             this.mCities = savedState.getParcelableArrayList(ARG_STATE_CITY);
             this.mDistricts = savedState.getParcelableArrayList(ARG_STATE_DISTRICT);
-            if (this.mProvinces != null && this.mProvinces.size() > 0){
+            if (this.mProvinces != null && this.mProvinces.size() > 0) {
                 setProvince(this.mProvinces);
             }
-            if (this.mCities != null && this.mCities.size() > 0){
+            if (this.mCities != null && this.mCities.size() > 0) {
                 setCity(this.mCities);
             }
-            if (this.mDistricts != null && this.mDistricts.size() > 0){
+            if (this.mDistricts != null && this.mDistricts.size() > 0) {
                 setDistrict(this.mDistricts);
             }
         }

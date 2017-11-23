@@ -1,9 +1,25 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
+import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.seller.product.edit.constant.InvenageSwitchTypeDef;
+import com.tokopedia.seller.product.edit.constant.UploadToTypeDef;
+import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -85,7 +101,7 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
         updateUploadingDraftProductUseCase.unsubscribe();
     }
 
-    public Subscriber<Boolean> getUploadingSubscriber() {
+    private Subscriber<Boolean> getUploadingSubscriber() {
         return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.design.card.EmptyCardContentView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/empty_card_content_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="@dimen/margin_sm"
+    app:eccv_content_text="@string/gm_statistic_no_market_insight_in_this_period"
+    app:eccv_icon="@drawable/icon_gm_seller_app_pasar_empty_05" />

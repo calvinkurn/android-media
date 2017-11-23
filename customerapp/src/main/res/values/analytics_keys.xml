@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="key_localytics">e5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30</string>
-    <string name="key_localytics_testmessage">ampe5ce78bb486192da7790186-01e0f208-0058-11e5-9b02-00739d24cb30</string>
-
-    <!-- debug -->
-    <!--<string name="key_localytics">a4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900</string>-->
-    <!--<string name="key_localytics_testmessage">ampa4c853a5c07b6acfeb61343-037f3b9e-6591-11e5-bdf6-0013a62af900</string>-->
-
     <string name="key_appsflyer">SdSopxGtYr9yK8QEjFVHXL</string>
     <string name="key_gtm">GTM-P32KTB</string>
     <string name="key_ga">UA-9801603-4</string>
 
     <string name="key_moengage">LNCME8HVKUEJIGXE2N0698H0</string>
+
+    <!-- BUILD KEY -->
+    <!--<string name="key_moengage">I5SFHN64ZTKF2RA7F667NT0P</string>-->
+
     <string name="key_sender_id">id:673352445777</string>
 </resources>

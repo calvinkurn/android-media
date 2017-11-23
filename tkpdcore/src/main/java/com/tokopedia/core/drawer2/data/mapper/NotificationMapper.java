@@ -5,6 +5,8 @@ import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -13,6 +15,10 @@ import rx.functions.Func1;
  */
 
 public class NotificationMapper implements Func1<Response<TkpdResponse>, NotificationModel> {
+
+    @Inject
+    public NotificationMapper() {
+    }
 
     @Override
     public NotificationModel call(Response<TkpdResponse> response) {

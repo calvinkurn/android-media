@@ -13,6 +13,8 @@ import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailSummaryDomainM
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
@@ -22,6 +24,7 @@ public class ShopScoreDetailMapper
         implements Func1<ShopScoreDetailServiceModel, ShopScoreDetailDomainModel> {
     private final Context context;
 
+    @Inject
     public ShopScoreDetailMapper(Context context) {
         this.context = context;
     }

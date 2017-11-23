@@ -8,7 +8,7 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 3/8/17.
  */
-
+@Deprecated
 public class CategoryRepositoryImpl implements CategoryRepository {
     private final CategoryVersionDataSource categoryVersionDataSource;
 

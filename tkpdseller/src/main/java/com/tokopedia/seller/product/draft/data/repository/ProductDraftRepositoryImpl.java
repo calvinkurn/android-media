@@ -1,10 +1,14 @@
 package com.tokopedia.seller.product.draft.data.repository;
 
-import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.draft.data.mapper.ProductDraftMapper;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import java.util.List;
 
@@ -18,16 +22,19 @@ import rx.functions.Func2;
 
 public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     private final ProductDraftDataSource productDraftDataSource;
+    private Context context;
 
-    public ProductDraftRepositoryImpl(ProductDraftDataSource productDraftDataSource) {
+    public ProductDraftRepositoryImpl(ProductDraftDataSource productDraftDataSource, Context context) {
         this.productDraftDataSource = productDraftDataSource;
+        this.context = context;
     }
 
 
     @Override
     public Observable<Long> saveDraft(UploadProductInputDomainModel domainModel, boolean isUploading) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
-        return productDraftDataSource.saveDraft(productDraft, domainModel.getId(), isUploading);
+        String shopId = SessionHandler.getShopID(context);
+        return productDraftDataSource.saveDraft(productDraft, domainModel.getId(), isUploading, shopId);
     }
 
     @Override
@@ -38,7 +45,8 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
     @Override
     public Observable<List<UploadProductInputDomainModel>> getAllDraft() {
-        return productDraftDataSource.getAllDraft()
+        String shopId = SessionHandler.getShopID(context);
+        return productDraftDataSource.getAllDraft(shopId)
                 .flatMap(new Func1<List<ProductDraftDataBase>, Observable<ProductDraftDataBase>>() {
                     @Override
                     public Observable<ProductDraftDataBase> call(List<ProductDraftDataBase> productDraftDataBases) {
@@ -62,12 +70,14 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
     @Override
     public Observable<Long> getAllDraftCount() {
-        return productDraftDataSource.getAllDraftCount();
+        String shopId = SessionHandler.getShopID(context);
+        return productDraftDataSource.getAllDraftCount(shopId);
     }
 
     @Override
     public Observable<Boolean> clearAllDraft() {
-        return productDraftDataSource.clearAllDraft();
+        String shopID = SessionHandler.getShopID(context);
+        return productDraftDataSource.clearAllDraft(shopID);
     }
 
     @Override

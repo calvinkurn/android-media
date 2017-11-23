@@ -14,6 +14,7 @@ public class LoginGoogleModel {
     String birthday;
     String imageUrl;
     String uuid;
+    private String accessToken;
 
     public String getFullName() {
         return fullName;
@@ -82,5 +83,13 @@ public class LoginGoogleModel {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", uuid='" + uuid + '\'' +
                 '}';
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }

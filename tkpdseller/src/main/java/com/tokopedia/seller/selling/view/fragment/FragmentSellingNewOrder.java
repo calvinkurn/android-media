@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.fragment;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
@@ -149,6 +151,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         if (resultCode == getActivity().RESULT_OK) {
             switch (requestCode) {
                 case PROCESS_ORDER:
+                    AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
                     shouldRefreshList = true;
                     break;
             }
@@ -216,8 +219,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
         presenter.getOrderList(isVisibleToUser);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
-        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_NEWORDER);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
         super.setUserVisibleHint(isVisibleToUser);
     }

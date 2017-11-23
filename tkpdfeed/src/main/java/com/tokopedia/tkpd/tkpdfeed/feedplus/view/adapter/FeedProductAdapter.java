@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
@@ -104,7 +104,9 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.blackScreen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
+                    viewListener.onGoToFeedDetail(
+                            activityCardViewModel.getPage(),
+                            activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId());
                 }
             });
 
@@ -115,14 +117,20 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
+                    viewListener.onGoToProductDetail(
+                            activityCardViewModel.getRowNumber(),
+                            list.get(position).getPage(),
+                            String.valueOf(list.get(position).getProductId()));
                 }
             });
 
             holder.productImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail(String.valueOf(list.get(position).getProductId()));
+                    viewListener.onGoToProductDetail(
+                            activityCardViewModel.getRowNumber(),
+                            list.get(position).getPage(),
+                            String.valueOf(list.get(position).getProductId()));
                 }
             });
         }

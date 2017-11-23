@@ -63,6 +63,7 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     public static final String EXTRA_MESSAGE_ERROR_GET_INVOICE = "EXTRA_MESSAGE_ERROR_GET_INVOICE";
     public static final int RESULT_INVOICE_FAILED = 2;
     public static final int REQUEST_EDIT_PAYMENT = 42;
+    private static final int KLIK_BCA_MODE = 1;
 
     private TxVerData txVerData;
     private TxVerInvoiceAdapter invoiceAdapter;
@@ -156,7 +157,6 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
             case 2:
                 holderAccountBankInfo.setVisibility(View.GONE);
                 btnEditPayment.setVisibility(View.GONE);
-                tvPaymentCode.setVisibility(View.VISIBLE);
                 tvPaymentCode.setText(String.format("Kode %s : %s",
                         txVerData.getBankName(), txVerData.getUserAccountName()));
                 break;
@@ -233,13 +233,15 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     public void renderInvoiceList(List<Detail> detail) {
         invoiceAdapter.addAllInvoiceList(detail);
+        if(presenter.getTypePaymentMethod(txVerData) != KLIK_BCA_MODE
+                && !tvPaymentCode.getText().toString().isEmpty()) {
+            tvPaymentCode.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void renderErrorGetInvoiceData(String message) {
-        setResult(RESULT_INVOICE_FAILED,
-                new Intent().putExtra(EXTRA_MESSAGE_ERROR_GET_INVOICE, message));
-        finish();
+
     }
 
     @Override
@@ -406,5 +408,10 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                 this, detailInvoice != null ? detailInvoice.getUrl() : "",
                 detailInvoice != null ? detailInvoice.getInvoice() : ""
         );
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

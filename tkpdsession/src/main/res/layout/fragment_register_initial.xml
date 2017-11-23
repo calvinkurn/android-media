@@ -10,7 +10,8 @@
     <ScrollView
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,16 +21,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginTop="@dimen/margin_med"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_med"
-                android:layout_marginBottom="@dimen/margin_med"
                 android:lineSpacingExtra="4sp"
+                android:text="@string/register_now"
                 android:textColor="@color/black_70"
                 android:textSize="16sp"
-                android:textStyle="normal"
-                android:text="@string/register_now" />
+                android:textStyle="normal" />
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -79,8 +80,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/view"
+                android:layout_marginBottom="@dimen/padding_med"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
+                app:backgroundColor="@color/black"
                 app:cornerSize="5"
                 app:customText="Daftar dengan Email"
                 app:iconButton="@drawable/ic_register_icon"

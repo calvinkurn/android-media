@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class SellerAppRouter {
 
-    private static final String SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
+    private static final String SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
 
     private static final String SELLER_ONBOARDING_ACTIVITY = "com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity";
     private static final String TRUECALLER_ACTIVITY = "com.tokopedia.sellerapp.truecaller.TruecallerActivity";

@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Design</string>
     <string name="product_default_counter_text">0</string>
+    <string name="text_ticker_action_close">Tutup</string>
+    <string name="search_input_hint">Cari</string>
+    <string name="top_ads_range_date_text">%1$s - %2$s</string>
+
+    <string name="reputation_shop_point">%1$s point</string>
+    <string name="price_range_separator_symbol">-</string>
+    <string name="empty_search_result_title_template">Oops, $1 tidak ditemukan</string>
+    <string name="empty_search_result_content_template">Hasil pencarian untuk \"$1\" tidak ditemukan</string>
 </resources>

@@ -5,6 +5,9 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
@@ -61,6 +64,8 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private OpenShopData openShopModel;
 
+    private Address selectedAddress;
+
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
         editShippingRetrofitInteractor = new EditShippingInteractorImpl();
@@ -99,9 +104,16 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public void bindDataToView(EditShippingCouriers model) {
         this.model = model;
-        view.setLocationProvinceCityDistrict(shopInformation.provinceName
-                , shopInformation.cityName
-                , shopInformation.districtName);
+        if (selectedAddress == null) {
+            if (shopInformation.provinceName == null || shopInformation.cityName == null ||
+                    shopInformation.districtName == null) {
+                view.setLocationProvinceCityDistrict();
+            } else {
+                view.setLocationProvinceCityDistrict(shopInformation.provinceName
+                        , shopInformation.cityName
+                        , shopInformation.districtName);
+            }
+        }
         view.onShowViewAfterLoading();
         displayCourierList(model);
         setFragmentHeaderData();
@@ -130,7 +142,11 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                         openShopModel.setShipment(model.getShipment());
                         setCourierModel(model.getShipment());
                         shopInformation.setShopDistrictId(Integer.parseInt(locationID));
-                        view.refreshLocationViewListener(shopInformation);
+                        if (selectedAddress == null) {
+                            view.refreshLocationViewListener(shopInformation);
+                        } else {
+                            view.refreshLocationViewListener(selectedAddress);
+                        }
                         sortCourierOpenShop(model);
                         activateCourierServices(model.getShipment());
                         displayCourierOpenShop(model);
@@ -188,11 +204,12 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public void bindDataToViewOpenShop(OpenShopData model) {
         openShopModel = model;
-        if (openShopModel.getShopShipping().provinceName == null || openShopModel.getShopShipping().provinceName.isEmpty()) {
-            view.setLocationProvinceCityDistrict(
-                    view.getMainContext().getString(R.string.title_select_province),
-                    view.getMainContext().getString(R.string.title_select_city),
-                    view.getMainContext().getString(R.string.title_select_district));
+        if (selectedAddress != null) {
+            view.setLocationProvinceCityDistrict(selectedAddress.getProvinceName()
+                    , selectedAddress.getCityName()
+                    , selectedAddress.getDistrictName());
+        } else if (openShopModel.getShopShipping().provinceName == null || openShopModel.getShopShipping().provinceName.isEmpty()) {
+            view.setLocationProvinceCityDistrict();
         } else {
             view.setLocationProvinceCityDistrict(openShopModel.getShopShipping().provinceName
                     , openShopModel.getShopShipping().cityName
@@ -211,7 +228,11 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                 EditShippingPresenterImpl.this.model.setCourier(model.getCourier());
                 setCourierModel(model.courier);
                 shopInformation.setShopDistrictId(Integer.parseInt(districtID));
-                view.refreshLocationViewListener(shopInformation);
+                if (selectedAddress == null) {
+                    view.refreshLocationViewListener(shopInformation);
+                } else {
+                    view.refreshLocationViewListener(selectedAddress);
+                }
                 sortCourier(model);
                 activateCourierServices(model.courier);
                 displayCourierList(model);
@@ -268,10 +289,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void setShopInformation(ShopShipping shopInformation) {
-        this.shopInformation = shopInformation;
     }
 
     private void setCourierModel(List<Courier> courierList) {
@@ -338,26 +355,36 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     }
 
     private void putDataToHashMap(Map<String, String> shippingParams) {
-        shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
         shippingParams.put(SHIPMENT_IDS, compiledShippingId());
         shippingParams.put(POSTAL, view.getZipCode());
         shippingParams.put(ADDR_STREET, view.getStreetAddress());
         shippingParams.put(SHOP_ID, SessionHandler.getShopID(view.getMainContext()));
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
-        shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
+        if (selectedAddress != null) {
+            shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
+            shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
+        } else {
+            shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
+            shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
+        }
         addAdditionalOptionsConfigurations(shippingParams);
     }
 
     private void putDataToHashMapOpenShop(Map<String, String> shippingParams) {
-        shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
         shippingParams.put(SHIPMENT_IDS, compiledShippingId());
         shippingParams.put(SHOP_POSTAL, view.getZipCode());
         shippingParams.put(ADDR_STREET, view.getStreetAddress());
         shippingParams.put(SHOP_ID, SessionHandler.getShopID(view.getMainContext()));
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
-        shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
+        if (selectedAddress != null) {
+            shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
+            shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
+        } else {
+            shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
+            shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
+        }
         addAdditionalOptionsConfigurations(shippingParams);
     }
 
@@ -377,12 +404,16 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public boolean editShippingParamsValid() {
         if (view.getZipCode().isEmpty()) {
+            UnifyTracking.eventCreateShopFillLogisticError();
             view.zipCodeEmpty();
             return false;
         } else if (activatedServices.isEmpty()) {
+            UnifyTracking.eventCreateShopFillLogisticError();
             view.noServiceChosen();
             return false;
-        } else return true;
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -393,6 +424,10 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public ShopShipping getShopInformation() {
         return shopInformation;
+    }
+
+    private void setShopInformation(ShopShipping shopInformation) {
+        this.shopInformation = shopInformation;
     }
 
     @Override
@@ -556,6 +591,26 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         else if (model != null) model.shopShipping.addrStreet = s;
     }
 
+    @Override
+    public void setSelectedAddress(Address address) {
+        selectedAddress = address;
+    }
+
+    @Override
+    public Address getselectedAddress() {
+        return selectedAddress;
+    }
+
+    @Override
+    public Token getToken() {
+        if (model != null) {
+            return model.getToken();
+        } else if (openShopModel != null) {
+            return openShopModel.getToken();
+        }
+        return null;
+    }
+
     private void sortCourier(EditShippingCouriers editShippingCouriers) {
         Collections.sort(editShippingCouriers.courier, new Comparator<Courier>() {
             @Override
@@ -643,7 +698,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     private Map<String, String> splitQuery(URI uri) throws UnsupportedEncodingException {
         Map<String, String> queryPairs = new LinkedHashMap<>();
         String query = uri.getQuery();
-        if (query != null){
+        if (query != null) {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
                 int idx = pair.indexOf("=");

@@ -8,6 +8,7 @@ import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
+import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 
@@ -48,9 +49,11 @@ public interface ICartView extends IBaseView {
 
     void renderInvisibleErrorPaymentCart();
 
-    void renderSuccessCheckVoucher(String descVoucher);
+    void renderSuccessCheckVoucher(String descVoucher, int instantVoucher);
 
     void renderErrorCheckVoucher(String message);
+
+    void renderErrorFromInstantVoucher(int instantVoucher);
 
     void renderErrorEmptyCart();
 
@@ -111,5 +114,7 @@ public interface ICartView extends IBaseView {
     void setCartNoGrandTotal();
 
     void refreshCartList();
+
+    void renderInstantPromo(CartPromo cartPromo);
 
 }

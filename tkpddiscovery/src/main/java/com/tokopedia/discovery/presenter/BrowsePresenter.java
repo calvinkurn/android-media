@@ -30,6 +30,7 @@ public interface BrowsePresenter {
 
     void resetBrowseProductActivityModel();
     BrowseProductActivityModel getBrowseProductActivityModel();
+    boolean isFromCategory();
 
     void setFilterAttribute(DataValue filterAttribute, int activeTab);
     boolean checkHasFilterAttributeIsNull(int activeTab);

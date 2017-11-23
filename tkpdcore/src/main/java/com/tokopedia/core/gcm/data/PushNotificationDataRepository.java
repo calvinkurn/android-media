@@ -15,6 +15,8 @@ import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -26,6 +28,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     private final PushNotificationDataStoreFactory mPushNotificationDataStoreFactory;
     private final PushNotificationMapper mPushNotificationMapper;
 
+    @Inject
     public PushNotificationDataRepository() {
         mPushNotificationDataStoreFactory = new PushNotificationDataStoreFactory(MainApplication.getAppContext());
         GsonBuilder gsonBuilder = new GsonBuilder();
