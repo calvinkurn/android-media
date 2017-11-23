@@ -335,10 +335,6 @@ public class DetailResChatFragment
                 }
 
                 int topVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
-                Log.d("milhamj","topVisibleItemPosition " + topVisibleItemPosition
-                        + " getCanLoadMore() " + detailResChatDomain.getConversationList().getCanLoadMore()
-                        + " isLoadingMore " + isLoadingMore
-                );
                 if(topVisibleItemPosition<=1 &&
                         detailResChatDomain.getConversationList().getCanLoadMore()==1 &&
                         !isLoadingMore) {
@@ -572,7 +568,6 @@ public class DetailResChatFragment
         this.detailResChatDomain.getConversationList()
                 .getConversationDomains().addAll(TOP_POSITION, conversationListDomain.getConversationDomains());
         isLoadingMore = false;
-        Log.d("milhamj", "success isLoadingMore: " + isLoadingMore);
     }
 
     @Override
@@ -587,7 +582,6 @@ public class DetailResChatFragment
         } else {
             isLoadingMore = false;
         }
-        Log.d("milhamj", "error isLoadingMore: " + isLoadingMore);
     }
 
     @Override
