@@ -115,7 +115,9 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     @CallSuper
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
