@@ -8,6 +8,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
+import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
@@ -16,12 +17,16 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,6 +51,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
     private FlightAddToCartUseCase flightAddToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
+    private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
     @NonNull
     private final BehaviorSubject<Boolean> loadingVisibility;
     private CompositeSubscription compositeSubscription;
@@ -53,11 +59,13 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     @Inject
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                   FlightAddToCartUseCase flightAddToCartUseCase,
-                                  FlightBookingCartDataMapper flightBookingCartDataMapper) {
+                                  FlightBookingCartDataMapper flightBookingCartDataMapper,
+                                  FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase) {
 
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
+        this.flightBookingGetPhoneCodeUseCase = flightBookingGetPhoneCodeUseCase;
         this.loadingVisibility = BehaviorSubject.create(false);
         this.compositeSubscription = new CompositeSubscription();
     }
@@ -67,11 +75,6 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
         if (validateFields()) {
 
         }
-    }
-
-    @Override
-    public void initialize() {
-
     }
 
     private void renderUi(FlightBookingCartData flightBookingCartData) {
@@ -118,7 +121,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
             List<SimpleViewModel> returnSimpleViewModels = new ArrayList<>();
             if (returnFare.getAdult() != null) {
                 returnSimpleViewModels.add(new SimpleViewModel(
-                        String.format("%s - %s  1x %s",
+                        String.format("%s - %s 1x %s",
                                 flightBookingCartData.getReturnTrip().getDepartureAirport(),
                                 flightBookingCartData.getReturnTrip().getArrivalAirport(),
                                 getView().getString(R.string.flightbooking_price_adult_label)
@@ -126,7 +129,8 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                         returnFare.getAdult())
                 );
             }
-            if (returnFare.getChild() != null) {
+            if (getView().getCurrentBookingParamViewModel().getSearchParam().getFlightPassengerViewModel().getChildren() > 0 &&
+                    returnFare.getChild() != null) {
                 returnSimpleViewModels.add(new SimpleViewModel(
                         String.format("%s - %s 1x %s",
                                 flightBookingCartData.getReturnTrip().getDepartureAirport(),
@@ -136,7 +140,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                         returnFare.getChild())
                 );
             }
-            if (returnFare.getInfant() != null) {
+            if (getView().getCurrentBookingParamViewModel().getSearchParam().getFlightPassengerViewModel().getInfant() > 0 && returnFare.getInfant() != null) {
                 returnSimpleViewModels.add(new SimpleViewModel(
                         String.format("%s - %s 1x %s",
                                 flightBookingCartData.getReturnTrip().getDepartureAirport(),
@@ -153,13 +157,31 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
         List<FlightBookingPassengerViewModel> passengerViewModels = buildPassengerViewModel(getView().getCurrentBookingParamViewModel().getSearchParam());
         getView().getCurrentBookingParamViewModel().setPassengerViewModels(passengerViewModels);
         getView().renderPassengersList(passengerViewModels);
-        getView().renderTotalPrices(String.valueOf(totalPrice));
+        getView().getCurrentBookingParamViewModel().setPhoneCodeViewModel(flightBookingCartData.getDefaultPhoneCode());
+        getView().renderPhoneCodeView(String.format("+%s", flightBookingCartData.getDefaultPhoneCode().getCountryPhoneCode()));
+        getView().renderFinishTimeCountDown(FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, flightBookingCartData.getRefreshTime()));
+        getView().renderTotalPrices(convertPriceValueToIdrFormat(totalPrice));
+    }
+
+    private String convertPriceValueToIdrFormat(int price) {
+        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        kursIndonesia.setMaximumFractionDigits(0);
+        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setGroupingSeparator('.');
+        formatRp.setMonetaryDecimalSeparator('.');
+        formatRp.setDecimalSeparator('.');
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+        String result = kursIndonesia.format(price);
+
+        return result.replace(",", ".");
     }
 
     @Override
     public void onPhoneCodeResultReceived(FlightBookingPhoneCodeViewModel phoneCodeViewModel) {
         getView().getCurrentBookingParamViewModel().setPhoneCodeViewModel(phoneCodeViewModel);
-        getView().renderPhoneCodeView(phoneCodeViewModel.getCountryPhoneCode());
+        getView().renderPhoneCodeView(String.format("+%s", phoneCodeViewModel.getCountryPhoneCode()));
     }
 
     @Override
@@ -208,6 +230,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                     getView().getIdEmpotencyKey(getView().getDepartureTripId())
             );
         }
+        ;
         compositeSubscription.add(flightAddToCartUseCase.createObservable(requestParams)
                 .doOnError(new Action1<Throwable>() {
                     @Override
@@ -257,6 +280,25 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                         return Observable.just(flightBookingCartData);
                     }
                 })
+                .zipWith(flightBookingGetPhoneCodeUseCase.createObservable(RequestParams.EMPTY)
+                        .flatMap(new Func1<List<FlightBookingPhoneCodeViewModel>, Observable<FlightBookingPhoneCodeViewModel>>() {
+                            @Override
+                            public Observable<FlightBookingPhoneCodeViewModel> call(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
+                                return Observable.from(flightBookingPhoneCodeViewModels);
+                            }
+                        })
+                        .filter(new Func1<FlightBookingPhoneCodeViewModel, Boolean>() {
+                            @Override
+                            public Boolean call(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
+                                return flightBookingPhoneCodeViewModel.getCountryId().equalsIgnoreCase("ID");
+                            }
+                        }).first(), new Func2<FlightBookingCartData, FlightBookingPhoneCodeViewModel, FlightBookingCartData>() {
+                    @Override
+                    public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
+                        flightBookingCartData.setDefaultPhoneCode(flightBookingPhoneCodeViewModel);
+                        return flightBookingCartData;
+                    }
+                })
                 .onBackpressureDrop()
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -270,6 +312,9 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().showGetCartDataErrorStateLayout();
+                        }
                     }
 
                     @Override
@@ -313,6 +358,26 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                 }));
     }
 
+    @Override
+    public void onRetryGetCartData() {
+        processGetCartData();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (compositeSubscription != null) {
+            compositeSubscription.unsubscribe();
+        }
+        detachView();
+    }
+
+    @Override
+    public void onFinishTransactionTimeReached() {
+        if (isViewAttached()) {
+            getView().showExpireTransactionDialog();
+        }
+    }
+
     private List<FlightBookingPassengerViewModel> buildPassengerViewModel(FlightSearchPassDataViewModel passData) {
         boolean isSingleRoute = !isRoundTrip();
         int passengerNumber = 1;
@@ -348,7 +413,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
             passengerNumber++;
 
         }
-        for (int i = 1, infantTotal = passData.getFlightPassengerViewModel().getChildren(); i <= infantTotal; i++) {
+        for (int i = 1, infantTotal = passData.getFlightPassengerViewModel().getInfant(); i <= infantTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
             viewModel.setPassengerId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.INFANT);

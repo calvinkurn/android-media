@@ -33,6 +33,12 @@
         <attr name="cmw_action" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="CountdownTimeView">
+        <attr name="ctv_minute_title" format="string" />
+        <attr name="ctv_second_title" format="string" />
+        <attr name="ctv_hour_title" format="string" />
+    </declare-styleable>
+
     <string name="mister">Tuan</string>
     <string name="misiz">Nyonya</string>
     <string name="miss">Nona</string>

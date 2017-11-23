@@ -12,6 +12,7 @@ import java.util.List;
 public class FlightBookingCartData {
     private String id;
     private int refreshTime;
+    private FlightBookingPhoneCodeViewModel defaultPhoneCode;
     private FlightSearchViewModel departureTrip;
     private FlightSearchViewModel returnTrip;
     private List<FlightBookingLuggageMetaViewModel> luggageViewModels;
@@ -75,5 +76,13 @@ public class FlightBookingCartData {
 
     public void setReturnTrip(FlightSearchViewModel returnTrip) {
         this.returnTrip = returnTrip;
+    }
+
+    public FlightBookingPhoneCodeViewModel getDefaultPhoneCode() {
+        return defaultPhoneCode;
+    }
+
+    public void setDefaultPhoneCode(FlightBookingPhoneCodeViewModel defaultPhoneCode) {
+        this.defaultPhoneCode = defaultPhoneCode;
     }
 }
