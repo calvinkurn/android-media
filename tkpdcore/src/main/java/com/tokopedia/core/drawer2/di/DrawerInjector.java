@@ -40,6 +40,7 @@ import com.tokopedia.core.drawer2.domain.TopPointsRepository;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
 import com.tokopedia.core.drawer2.domain.interactor.DepositUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
@@ -184,15 +185,21 @@ public class DrawerInjector {
                 notificationRepository
         );
 
+        NewNotificationUseCase newNotificationUseCase = new NewNotificationUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                notificationUseCase,
+                topChatNotificationUseCase
+        );
+
         return new DrawerDataManagerImpl(
                 drawerDataListener,
                 profileUseCase,
                 depositUseCase,
-                notificationUseCase,
+                newNotificationUseCase,
                 tokoCashUseCase,
                 topPointsUseCase,
-                getUserAttributesUseCase,
-                topChatNotificationUseCase);
+                getUserAttributesUseCase);
     }
 
 
