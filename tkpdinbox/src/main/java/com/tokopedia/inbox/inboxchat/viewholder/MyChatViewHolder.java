@@ -36,7 +36,10 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     TextView hour;
     TextView date;
     ImageView chatStatus;
+    private TextView name;
+    private TextView label;
     ChatRoomContract.View viewListener;
+    private static final String ROLE_USER = "User";
 
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item_mine;
@@ -44,10 +47,12 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     public MyChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
         view = itemView;
-        message = (TextView) itemView.findViewById(R.id.message);
-        hour = (TextView) itemView.findViewById(R.id.hour);
-        date = (TextView) itemView.findViewById(R.id.date);
-        chatStatus = (ImageView) itemView.findViewById(R.id.chat_status);
+        message = itemView.findViewById(R.id.message);
+        hour = itemView.findViewById(R.id.hour);
+        date = itemView.findViewById(R.id.date);
+        chatStatus = itemView.findViewById(R.id.chat_status);
+        name = itemView.findViewById(R.id.name);
+        label = itemView.findViewById(R.id.label);
         this.viewListener = viewListener;
     }
 
@@ -119,6 +124,16 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         }
 
         chatStatus.setImageResource(imageResource);
+
+        if(element.getRole().toLowerCase().equals(ROLE_USER.toLowerCase())){
+            name.setVisibility(View.GONE);
+            label.setVisibility(View.GONE);
+        }else{
+            name.setText(element.getSenderName());
+            label.setText(element.getRole());
+            name.setVisibility(View.VISIBLE);
+            label.setVisibility(View.VISIBLE);
+        }
 
         element.getSenderId();
 
