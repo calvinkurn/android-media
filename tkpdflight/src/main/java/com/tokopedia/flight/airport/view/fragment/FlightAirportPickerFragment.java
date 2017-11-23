@@ -36,6 +36,8 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     @Inject
     FlightAirportPickerPresenter flightAirportPickerPresenter;
 
+    private FlightAirportAdapter flightAirportAdapter;
+
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
     }
@@ -43,7 +45,9 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
+        View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
+        view.requestFocus();
+        return view;
     }
 
     @Override
@@ -58,7 +62,8 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     @Override
     protected BaseListAdapter<FlightAirportDB> getNewAdapter() {
-        return new FlightAirportAdapter(getContext(), this);
+        flightAirportAdapter =  new FlightAirportAdapter(getContext(), this);
+        return flightAirportAdapter;
     }
 
     @Override
@@ -78,6 +83,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     @Override
     public void onSearchTextChanged(String text) {
         super.onSearchTextChanged(text);
+        flightAirportAdapter.setFilterText(text);
         flightAirportPickerPresenter.getAirportList(text);
     }
 

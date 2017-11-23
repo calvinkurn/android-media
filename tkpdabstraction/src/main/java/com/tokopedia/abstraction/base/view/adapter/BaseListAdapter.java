@@ -76,6 +76,26 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         setEmptyWhenSearchView();
     }
 
+    @Nullable
+    protected LoadingDataBinder createLoadingDataBinder(){
+        return new LoadingDataBinder(this);
+    }
+
+    @Nullable
+    protected NoResultDataBinder createEmptyViewBinder(){
+        return new NoResultDataBinder(this);
+    }
+
+    @Nullable
+    protected NoResultDataBinder createEmptyViewSearchBinder(){
+        return new NoResultDataBinder(this);
+    }
+
+    @Nullable
+    protected RetryDataBinder createRetryDataBinder(){
+        return new RetryDataBinder(this);
+    }
+
     @Override
     public void setLoadingView(LoadingDataBinder loadingView) {
         if (loadingView == null) {
@@ -118,26 +138,6 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
             }
         });
         super.setRetryView(retryView);
-    }
-
-    @Nullable
-    protected LoadingDataBinder createLoadingDataBinder(){
-        return new LoadingDataBinder(this);
-    }
-
-    @Nullable
-    protected NoResultDataBinder createEmptyViewBinder(){
-        return new NoResultDataBinder(this);
-    }
-
-    @Nullable
-    protected NoResultDataBinder createEmptyViewSearchBinder(){
-        return new NoResultDataBinder(this);
-    }
-
-    @Nullable
-    protected RetryDataBinder createRetryDataBinder(){
-        return new RetryDataBinder(this);
     }
 
     public boolean isInFilterMode() {

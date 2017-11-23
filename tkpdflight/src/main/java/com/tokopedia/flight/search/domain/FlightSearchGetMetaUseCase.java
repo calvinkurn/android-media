@@ -48,7 +48,8 @@ public class FlightSearchGetMetaUseCase extends UseCase<FlightMetaDataDB> {
                 if (flightMetaDataDBs!=null && flightMetaDataDBs.size() > 0) {
                     return Observable.just(flightMetaDataDBs.get(0));
                 } else {
-                    return Observable.just(null);
+                    ///TODO use generic excpetion
+                    return Observable.error(new RuntimeException());
                 }
             }
         });

@@ -23,7 +23,7 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void onSuccessGetStatistic(FlightSearchStatisticModel flightSearchStatisticModel);
 
     void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList);
-    void onSuccessGetDataFromCloud(List<FlightSearchViewModel> flightSearchViewModelList, FlightMetaDataDB flightMetaDataDB);
+    void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB);
 
     void onErrorGetFlightStatistic(Throwable throwable);
 
@@ -32,7 +32,5 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel);
 
     void hideHorizontalProgress();
-
-    void loadDataFromCloud(FlightSearchApiRequestModel flightSearchApiRequestModel, boolean isReturning);
 
 }

@@ -39,11 +39,11 @@
 
         <TextView
             android:id="@+id/airline_refundable_info"
-            style="@style/TextView.Caption.Green"
+            style="@style/TextView.Caption.BlackSecondary"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/bg_rect_stroke_flight_green"
+            android:background="@drawable/bg_rect_stroke_flight_grey"
             android:paddingBottom="@dimen/padding_vvs"
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"

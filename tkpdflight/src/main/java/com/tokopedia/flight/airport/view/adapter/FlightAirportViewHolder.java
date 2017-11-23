@@ -1,6 +1,12 @@
 package com.tokopedia.flight.airport.view.adapter;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,19 +23,62 @@ public class FlightAirportViewHolder extends BaseViewHolder<FlightAirportDB> {
     private TextView city;
     private TextView airport;
 
-    public FlightAirportViewHolder(View itemView) {
+    private FilterTextListener filterTextListener;
+    private ForegroundColorSpan boldColor;
+
+    public interface FilterTextListener {
+        String getFilterText();
+    }
+
+    public FlightAirportViewHolder(View itemView, FilterTextListener filterTextListener) {
         super(itemView);
         city = (TextView) itemView.findViewById(R.id.city);
         airport = (TextView) itemView.findViewById(R.id.airport);
+        this.filterTextListener = filterTextListener;
+        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(),R.color.black_70));
     }
 
     @Override
     public void bindObject(FlightAirportDB flightAirportDB) {
-        city.setText(itemView.getContext().getString(R.string.flight_label_city, flightAirportDB.getCityName(), flightAirportDB.getCountryName()));
-        if(!TextUtils.isEmpty(flightAirportDB.getAirportId())) {
-            airport.setText(itemView.getContext().getString(R.string.flight_label_airport, flightAirportDB.getAirportId(), flightAirportDB.getAirportName()));
-        }else{
-            airport.setText(itemView.getContext().getString(R.string.flight_labe_all_airport));
+        Context context = itemView.getContext();
+        String filterText = filterTextListener.getFilterText();
+
+        String cityStr = context.getString(R.string.flight_label_city,
+                flightAirportDB.getCityName(), flightAirportDB.getCountryName());
+        city.setText(getSpandableBoldText(cityStr, filterText));
+
+        if (!TextUtils.isEmpty(flightAirportDB.getAirportId())) {
+            String airportString = context.getString(R.string.flight_label_airport,
+                    flightAirportDB.getAirportId(), flightAirportDB.getAirportName());
+            airport.setText(getSpandableBoldText(airportString, filterText));
+        } else {
+            String airportString = context.getString(R.string.flight_labe_all_airport);
+            airport.setText(airportString);
         }
+    }
+
+    private CharSequence getSpandableBoldText(String strToPut, String stringToBold) {
+        int indexStartBold = -1;
+        int indexEndBold = -1;
+        if (TextUtils.isEmpty(stringToBold)) {
+            return strToPut;
+        }
+        String strToPutLowerCase = strToPut.toLowerCase();
+        String strToBoldLowerCase = stringToBold.toLowerCase();
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(strToPut);
+        indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase);
+        if (indexStartBold != -1) {
+            indexEndBold = indexStartBold + stringToBold.length();
+        }
+        if (indexStartBold == -1) {
+            return spannableStringBuilder;
+        } else {
+            spannableStringBuilder.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    indexStartBold, indexEndBold, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableStringBuilder.setSpan(boldColor, indexStartBold, indexEndBold,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return spannableStringBuilder;
+        }
+
     }
 }
