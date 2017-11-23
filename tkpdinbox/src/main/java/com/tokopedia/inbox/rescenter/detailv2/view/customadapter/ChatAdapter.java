@@ -57,6 +57,15 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.list.add(item);
     }
 
+    public void addAllItemsOnPosition(int position, List<Visitable> items) {
+        this.list.addAll(position, items);
+        notifyItemRangeInserted(position, items.size());
+    }
+
+    public void addItemOnPosition(Visitable item, int position) {
+        this.list.add(position, item);
+    }
+
     public void clearData() {
         this.list.clear();
         notifyDataSetChanged();

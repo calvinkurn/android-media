@@ -17,6 +17,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutio
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishResolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatMoreUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionUseCase;
@@ -27,12 +28,14 @@ import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.AskHelpSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.CancelComplaintSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.EditAddressSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.FinishResolutionSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetDetailResChatMoreSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetDetailResChatSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressAcceptAdminSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressAcceptSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressMigrateVersionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ReplyDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import java.io.File;
@@ -60,6 +63,7 @@ public class DetailResChatFragmentPresenter
     DetailResChatFragmentListener.View mainView;
 
     GetResChatUseCase getResChatUseCase;
+    GetResChatMoreUseCase getResChatMoreUseCase;
     SendDiscussionUseCase sendDiscussionUseCase;
     SendDiscussionV2UseCase sendDiscussionV2UseCase;
     AcceptSolutionUseCase acceptSolutionUseCase;
@@ -75,6 +79,7 @@ public class DetailResChatFragmentPresenter
 
     @Inject
     public DetailResChatFragmentPresenter(GetResChatUseCase getResChatUseCase,
+                                          GetResChatMoreUseCase getResChatMoreUseCase,
                                           SendDiscussionUseCase sendDiscussionUseCase,
                                           SendDiscussionV2UseCase sendDiscussionV2UseCase,
                                           AcceptSolutionUseCase acceptSolutionUseCase,
@@ -84,6 +89,7 @@ public class DetailResChatFragmentPresenter
                                           EditAddressUseCase editAddressUseCase,
                                           FinishResolutionUseCase finishResolutionUseCase) {
         this.getResChatUseCase = getResChatUseCase;
+        this.getResChatMoreUseCase = getResChatMoreUseCase;
         this.acceptSolutionUseCase = acceptSolutionUseCase;
         this.sendDiscussionUseCase = sendDiscussionUseCase;
         this.sendDiscussionV2UseCase = sendDiscussionV2UseCase;
@@ -130,6 +136,17 @@ public class DetailResChatFragmentPresenter
                         String.valueOf(resolutionId),
                         PARAM_LIMIT_CONVERSATION),
                 new GetDetailResChatSubscriber(mainView));
+    }
+
+    @Override
+    public void doLoadMore(String resolutionId, String convId, DetailResChatDomain detailResChatDomain) {
+        mainView.showProgressBar();
+        getResChatMoreUseCase.execute(
+                GetResChatMoreUseCase.getResChatUseCaseParam(
+                        String.valueOf(resolutionId),
+                        PARAM_LIMIT_CONVERSATION,
+                        convId),
+                new GetDetailResChatMoreSubscriber(mainView, detailResChatDomain));
     }
 
     @Override

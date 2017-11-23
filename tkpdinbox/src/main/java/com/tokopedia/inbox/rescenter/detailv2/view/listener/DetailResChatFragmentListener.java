@@ -8,6 +8,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationListDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
@@ -30,6 +31,10 @@ public interface DetailResChatFragmentListener {
         void dismissProgressBar();
 
         void errorGetConversation(String error);
+
+        void successGetConversationMore(ConversationListDomain conversationListDomain);
+
+        void errorGetConversationMore(String error);
 
         void errorInputMessage(String error);
 
@@ -77,6 +82,8 @@ public interface DetailResChatFragmentListener {
 
         void onAddItemAdapter(List<Visitable> items);
 
+        void onAddItemWithPositionAdapter(int position, List<Visitable> items);
+
         void doAppealSolution();
 
         void doEditSolution();
@@ -111,5 +118,7 @@ public interface DetailResChatFragmentListener {
         void inputAddressAcceptAdminSolution(String addressId);
 
         void actionEditAddress(String addressId, String oldAddressId, String conversationId);
+
+        void doLoadMore(String resolutionId, String convId, DetailResChatDomain detailResChatDomain);
     }
 }
