@@ -14,6 +14,17 @@ public class NextActionResponse {
     @SerializedName("detail")
     private NextActionDetailResponse detail;
 
+    @SerializedName("problem")
+    private String problem;
+
+    public String getProblem() {
+        return problem;
+    }
+
+    public void setProblem(String problem) {
+        this.problem = problem;
+    }
+
     public String getLast() {
         return last;
     }

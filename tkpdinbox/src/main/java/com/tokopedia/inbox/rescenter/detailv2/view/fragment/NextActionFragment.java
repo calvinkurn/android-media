@@ -143,10 +143,8 @@ public class NextActionFragment
 
     @Override
     public void populateMainView(NextActionDomain nextActionDomain) {
-        if (nextActionDomain.getDetail().getLast() != null) {
-            tvProblem.setText(nextActionDomain.getDetail().getLast().getProblem());
-            tvSolution.setText(nextActionDomain.getDetail().getLast().getSolution().getName());
-        }
+        tvProblem.setText(nextActionDomain.getProblem());
+        tvSolution.setText(nextActionDomain.getDetail().getSolution());
         adapter.populateAdapter(nextActionDomain.getDetail().getStep());
     }
 }
