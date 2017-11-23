@@ -1,12 +1,10 @@
 package com.tokopedia.flight.search.presenter;
 
-import android.view.View;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.domain.FlightSearchSortWithMetaUseCase;
+import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
@@ -42,7 +40,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     private FlightSortUseCase flightSortUseCase;
     private FlightSearchStatisticUseCase flightSearchStatisticUseCase;
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
-    private FlightSearchSortWithMetaUseCase flightSearchSortWithMetaUseCase;
+    private FlightSearchMetaUseCase flightSearchMetaUseCase;
     private CompositeSubscription compositeSubscription;
 
     @Inject
@@ -50,12 +48,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                  FlightSortUseCase flightSortUseCase,
                                  FlightSearchStatisticUseCase flightSearchStatisticUseCase,
                                  FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
-                                 FlightSearchSortWithMetaUseCase flightSearchSortWithMetaUseCase) {
+                                 FlightSearchMetaUseCase flightSearchMetaUseCase) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
-        this.flightSearchSortWithMetaUseCase = flightSearchSortWithMetaUseCase;
+        this.flightSearchMetaUseCase = flightSearchMetaUseCase;
     }
 
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
@@ -68,11 +66,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                     sortOptionId),
                     getSubscriberSearchFlightCache(sortOptionId));
         } else {
-            flightSearchSortWithMetaUseCase.execute(FlightSearchUseCase.generateRequestParams(
+            flightSearchMetaUseCase.execute(FlightSearchUseCase.generateRequestParams(
                     flightSearchApiRequestModel,
-                    isReturning, false, flightFilterModel,
-                    sortOptionId),
-                    getSubscriberSearchFlightCloud(sortOptionId));
+                    isReturning, false, null,
+                    FlightSortOption.NO_PREFERENCE),
+                    getSubscriberSearchFlightCloud());
         }
     }
 
@@ -85,7 +83,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 .subscribe(new OnNextSubscriber<Long>() {
                     @Override
                     public void onNext(Long aLong) {
-                        getView().loadDataFromCloud(flightSearchApiRequestModel, isReturning);
+                        if (isViewAttached()) {
+                            searchAndSortFlight(flightSearchApiRequestModel, isReturning,
+                                    false, null,
+                                    FlightSortOption.NO_PREFERENCE);
+                        }
                     }
                 });
         addSubscription(subscription);
@@ -139,7 +141,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         flightSearchStatisticUseCase.unsubscribe();
         flightBookingGetSingleResultUseCase.unsubscribe();
         flightSortUseCase.unsubscribe();
-        flightSearchSortWithMetaUseCase.unsubscribe();
+        flightSearchMetaUseCase.unsubscribe();
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
         }
@@ -188,7 +190,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         };
     }
 
-    private Subscriber<FlightSearchWithMetaViewModel> getSubscriberSearchFlightCloud(final int sortOptionId) {
+    private Subscriber<FlightSearchWithMetaViewModel> getSubscriberSearchFlightCloud() {
         return new Subscriber<FlightSearchWithMetaViewModel>() {
             @Override
             public void onCompleted() {
@@ -202,8 +204,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onNext(FlightSearchWithMetaViewModel flightSearchWithMetaViewModel) {
-                getView().onSuccessGetDataFromCloud(flightSearchWithMetaViewModel.getFlightSearchViewModelList(), flightSearchWithMetaViewModel.getFlightMetaDataDB());
-                getView().setSelectedSortItem(sortOptionId);
+                List<FlightSearchViewModel> flightSearchViewModelList = flightSearchWithMetaViewModel.getFlightSearchViewModelList();
+                boolean dataFromCloudEmpty = (flightSearchWithMetaViewModel == null || flightSearchViewModelList.size() == 0);
+                getView().onSuccessGetDataFromCloud(dataFromCloudEmpty, flightSearchWithMetaViewModel.getFlightMetaDataDB());
             }
         };
     }

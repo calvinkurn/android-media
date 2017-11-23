@@ -230,12 +230,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void loadDataFromCloud(FlightSearchApiRequestModel flightSearchApiRequestModel, boolean isReturning) {
-        flightSearchPresenter.searchAndSortFlight(flightSearchApiRequestModel, isReturning,
-                false, flightFilterModel, selectedSortOption);
-    }
-
-    @Override
     public void hideHorizontalProgress() {
         progressBar.setVisibility(View.INVISIBLE);
     }
@@ -399,7 +393,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void onSuccessGetDataFromCloud(List<FlightSearchViewModel> flightSearchViewModelList, FlightMetaDataDB flightMetaDataDB) {
+    public void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB) {
         String depAirport = flightMetaDataDB.getDepartureAirport();
         String arrivalAirport = flightMetaDataDB.getArrivalAirport();
         FlightAirportCombineModel flightAirportCombineModel = airportCombineModelList.getData(depAirport, arrivalAirport);
@@ -409,7 +403,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             flightAirportCombineModel.setHasLoad(true);
             progress += halfProgressAmount;
         }
-        boolean dataFromCloudEmpty = (flightSearchViewModelList == null || flightSearchViewModelList.size() == 0);
 
         if (flightAirportCombineModel.isNeedRefresh()) {
             if (flightMetaDataDB.isNeedRefresh()) {
@@ -443,7 +436,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         setUpProgress();
 
         // if the data is empty, but there is data need to fetch, then keep the loading state
-        if (getAdapter().getDataSize() == 0 && dataFromCloudEmpty &&
+        if (getAdapter().getDataSize() == 0 && isDataEmpty &&
                 airportCombineModelList.isRetrievingData()) {
             return;
         }
@@ -453,12 +446,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         // will update the data
         // if there is already data loaded, reload the data from cache
         // because the data might have filter/sort in it, so cannot be added directly
-        if (!dataFromCloudEmpty) {
-            if (getAdapter().getDataSize() > 0) {
-                reloadDataFromCache();
-            } else {
-                getAdapter().addData(flightSearchViewModelList);
-            }
+        if (!isDataEmpty) {
+            // we retrieve from cache, because there is possibility the filter/sort will be different
+            reloadDataFromCache();
             if (getAdapter().getDataSize() > 0 && filterAndSortBottomAction.getVisibility() == View.GONE) {
                 filterAndSortBottomAction.setVisibility(View.VISIBLE);
             }

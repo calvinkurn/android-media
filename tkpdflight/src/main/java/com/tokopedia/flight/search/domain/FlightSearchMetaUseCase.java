@@ -22,19 +22,19 @@ import rx.functions.Func2;
  * Created by alvarisi on 11/1/17.
  */
 
-public class FlightSearchSortWithMetaUseCase extends UseCase<FlightSearchWithMetaViewModel> {
-    private FlightSearchWithSortUseCase flightSearchWithSortUseCase;
+public class FlightSearchMetaUseCase extends UseCase<FlightSearchWithMetaViewModel> {
+    private FlightSearchUseCase flightSearchUseCase;
     private FlightSearchGetMetaUseCase flightSearchGetMetaUseCase;
 
     @Inject
-    public FlightSearchSortWithMetaUseCase(FlightSearchWithSortUseCase flightSearchWithSortUseCase, FlightSearchGetMetaUseCase flightSearchGetMetaUseCase) {
-        this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
+    public FlightSearchMetaUseCase(FlightSearchUseCase flightSearchUseCase, FlightSearchGetMetaUseCase flightSearchGetMetaUseCase) {
+        this.flightSearchUseCase = flightSearchUseCase;
         this.flightSearchGetMetaUseCase = flightSearchGetMetaUseCase;
     }
 
     @Override
     public Observable<FlightSearchWithMetaViewModel> createObservable(final RequestParams requestParams) {
-        return flightSearchWithSortUseCase.createObservable(requestParams).flatMap(new Func1<List<FlightSearchViewModel>, Observable<FlightSearchWithMetaViewModel>>() {
+        return flightSearchUseCase.createObservable(requestParams).flatMap(new Func1<List<FlightSearchViewModel>, Observable<FlightSearchWithMetaViewModel>>() {
             @Override
             public Observable<FlightSearchWithMetaViewModel> call(List<FlightSearchViewModel> flightSearchViewModelList) {
                 FlightSearchApiRequestModel flightSearchApiRequestModel = FlightSearchParamUtil.getInitialPassData(requestParams);
@@ -59,6 +59,7 @@ public class FlightSearchSortWithMetaUseCase extends UseCase<FlightSearchWithMet
     @Override
     public void unsubscribe() {
         super.unsubscribe();
-        flightSearchWithSortUseCase.unsubscribe();
+        flightSearchUseCase.unsubscribe();
+        flightSearchGetMetaUseCase.unsubscribe();
     }
 }
