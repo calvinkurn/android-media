@@ -8,6 +8,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailResponseData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationListDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
@@ -188,6 +189,13 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
         return resCenterDataSourceFactory
                 .createResChatCloudSource()
                 .getDetailResChatCloud(requestParams);
+    }
+
+    @Override
+    public Observable<ConversationListDomain> getConversationMore(RequestParams requestParams) {
+        return resCenterDataSourceFactory
+                .createResChatMoreCloudSource()
+                .getDetailResChatMoreCloud(requestParams);
     }
 
     @Override

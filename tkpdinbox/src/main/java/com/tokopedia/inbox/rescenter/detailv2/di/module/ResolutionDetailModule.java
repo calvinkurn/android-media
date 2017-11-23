@@ -17,6 +17,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFa
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapperV2;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetDetailResChatMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetDetailResChatMoreMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetNextActionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
@@ -36,6 +37,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetNextActionUse
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatMoreUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.LoadMoreDiscussionUseCase;
@@ -239,6 +241,16 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
+    GetResChatMoreUseCase provideGetResChatMoreUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   ResCenterRepository resCenterRepository){
+        return new GetResChatMoreUseCase(threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
     GetResCenterDetailV2UseCase provideGetResCenterDetailV2UseCase(ThreadExecutor threadExecutor,
                                                PostExecutionThread postExecutionThread,
                                                ResCenterRepository resCenterRepository){
@@ -271,6 +283,7 @@ public class ResolutionDetailModule {
             ReplyResolutionMapper replyResolutionMapper,
             ReplyResolutionSubmitMapper replyResolutionSubmitMapper,
             GetDetailResChatMapper getDetailResChatMapper,
+            GetDetailResChatMoreMapper getDetailResChatMoreMapper,
             GetNextActionMapper nextActionMapper,
             DetailResCenterMapperV2 detailResCenterMapperV2) {
 
@@ -290,6 +303,7 @@ public class ResolutionDetailModule {
                 replyResolutionMapper,
                 replyResolutionSubmitMapper,
                 getDetailResChatMapper,
+                getDetailResChatMoreMapper,
                 nextActionMapper,
                 detailResCenterMapperV2
         );
@@ -323,6 +337,12 @@ public class ResolutionDetailModule {
     @Provides
     GetDetailResChatMapper provideGetDetailResChatMapper() {
         return new GetDetailResChatMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GetDetailResChatMoreMapper provideGetDetailResChatMoreMapper() {
+        return new GetDetailResChatMoreMapper();
     }
 
     @ResolutionDetailScope

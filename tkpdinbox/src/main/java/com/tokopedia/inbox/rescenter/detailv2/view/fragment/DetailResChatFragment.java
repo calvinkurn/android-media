@@ -60,6 +60,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Butto
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationListDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
@@ -108,6 +109,8 @@ public class DetailResChatFragment
     public static final int ACTION_BY_ADMIN = 3;
     public static final int ACTION_BY_SYSTEM = 4;
 
+    private static final int TOP_POSITION = 0;
+
     private TextView tvNextStep;
     private RecyclerView rvChat, rvAttachment;
     private ProgressBar progressBar;
@@ -124,6 +127,8 @@ public class DetailResChatFragment
     private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
+    private String lastConvId;
+    private boolean isLoadingMore = false;
 
     @Inject
     DetailResChatFragmentPresenter presenter;
@@ -328,6 +333,18 @@ public class DetailResChatFragment
                 } else {
                     fabChat.show();
                 }
+
+                int topVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                if(topVisibleItemPosition<=1 &&
+                        detailResChatDomain.getConversationList().getCanLoadMore()==1 &&
+                        !isLoadingMore) {
+                    ConversationDomain topConversation = detailResChatDomain.getConversationList().
+                            getConversationDomains().
+                            get(0);
+                    lastConvId = String.valueOf(topConversation.getResConvId());
+                    presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);
+                    isLoadingMore = true;
+                }
             }
         };
     }
@@ -412,7 +429,7 @@ public class DetailResChatFragment
 
                 chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
                 chatAdapter.notifyDataSetChanged();
-                scrollChatToBottom();
+                scrollChatToBottom(false);
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
             }
         });
@@ -447,13 +464,17 @@ public class DetailResChatFragment
         fabChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scrollChatToBottom();
+                scrollChatToBottom(false);
             }
         });
     }
 
-    private void scrollChatToBottom() {
-        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+    private void scrollChatToBottom(boolean isInitChat) {
+        if (isInitChat) {
+            rvChat.scrollToPosition(chatAdapter.getItemCount() - 1);
+        } else {
+            rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        }
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
@@ -463,7 +484,7 @@ public class DetailResChatFragment
                 message,
                 null,
                 null,
-                null,
+                getConversationCreateTime(),
                 null,
                 null,
                 null,
@@ -479,7 +500,7 @@ public class DetailResChatFragment
                 message,
                 null,
                 null,
-                null,
+                getConversationCreateTime(),
                 getConversationAttachmentTemp(attachmentList),
                 null,
                 null,
@@ -542,6 +563,29 @@ public class DetailResChatFragment
                 presenter.loadConversation(resolutionId);
             }
         });
+    }
+
+    @Override
+    public void successGetConversationMore(ConversationListDomain conversationListDomain) {
+        this.detailResChatDomain.getConversationList()
+                .setCanLoadMore(conversationListDomain.getCanLoadMore());
+        this.detailResChatDomain.getConversationList()
+                .getConversationDomains().addAll(TOP_POSITION, conversationListDomain.getConversationDomains());
+        isLoadingMore = false;
+    }
+
+    @Override
+    public void errorGetConversationMore(String error) {
+        if(resolutionId!=null && lastConvId!=null) {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);
+                }
+            });
+        } else {
+            isLoadingMore = false;
+        }
     }
 
     @Override
@@ -1040,9 +1084,14 @@ public class DetailResChatFragment
     }
 
     @Override
+    public void onAddItemWithPositionAdapter(int position, List<Visitable> items) {
+        chatAdapter.addAllItemsOnPosition(position, items);
+    }
+
+    @Override
     public void onRefreshChatAdapter() {
         chatAdapter.notifyDataSetChanged();
-        scrollChatToBottom();
+        scrollChatToBottom(true);
     }
 
     @Override
