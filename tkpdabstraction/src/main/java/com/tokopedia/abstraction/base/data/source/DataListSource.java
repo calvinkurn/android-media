@@ -31,7 +31,7 @@ public abstract class DataListSource<T, U> extends DataSource<List<T>, List<U>>{
     }
 
     public Observable<List<U>> getCacheDataList(final HashMap<String, Object> params) {
-        return super.getData(params);
+        return super.getCacheData(params);
     }
 
     @Override
