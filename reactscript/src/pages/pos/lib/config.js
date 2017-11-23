@@ -4,7 +4,7 @@ export const config = {
 
 export const icons = {
     error_icon: 'https://ecs7.tokopedia.net/img/android_o2o/Error-Icon.png',
-    arrow_back: 'https://ecs7.tokopedia.net/img/android_o2o/android_o2o/arrow_back.png',
+    arrow_back: 'https://ecs7.tokopedia.net/img/android_o2o/arrow_back.png',
     anz: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-ANZ.png',
     bca: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-BCA.png',
     bni: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-BNI.png',
