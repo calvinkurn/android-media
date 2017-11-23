@@ -2,6 +2,7 @@ package com.tokopedia.core.manage.general.districtrecommendation.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
@@ -257,6 +259,28 @@ public class DistrictRecommendationFragment
     public void showLoading() {
         tvMessage.setVisibility(View.GONE);
         pbLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setInitialLoading() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.CENTER_VERTICAL);
+            params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            pbLoading.setLayoutParams(params);
+        }
+    }
+
+    @Override
+    public void setLoadMoreLoading() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            params.removeRule(RelativeLayout.CENTER_VERTICAL);
+            pbLoading.setLayoutParams(params);
+        }
     }
 
     @Override

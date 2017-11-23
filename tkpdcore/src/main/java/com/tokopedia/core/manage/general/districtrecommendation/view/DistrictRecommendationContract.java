@@ -20,6 +20,10 @@ public interface DistrictRecommendationContract {
 
         void updateRecommendation();
 
+        void setInitialLoading();
+
+        void setLoadMoreLoading();
+
         void showLoading();
 
         void hideLoading();

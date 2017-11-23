@@ -55,6 +55,7 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     public void searchAddress(String query) {
         addresses.clear();
         lastPage = 0;
+        getView().setInitialLoading();
         query(query);
     }
 
@@ -104,6 +105,7 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     @Override
     public void searchNextIfAvailable(String keyword) {
         if (hasNext) {
+            getView().setLoadMoreLoading();
             query(keyword);
         }
     }

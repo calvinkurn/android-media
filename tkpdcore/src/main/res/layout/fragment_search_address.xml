@@ -1,39 +1,42 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationFragment">
 
-    <android.support.v7.widget.SearchView
-        android:id="@+id/search_address"
+    <FrameLayout
+        android:id="@+id/fl_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_vs"
-        android:background="@color/grey_100"
-        app:iconifiedByDefault="false"
-        app:queryBackground="@color/transparent"
-        app:queryHint="@string/hint_district_recommendation_search"
-        app:searchIcon="@drawable/ic_search_grey" />
+        android:layout_alignParentTop="true"
+        android:background="@color/white">
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/search_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_vs"
+            android:background="@color/grey_100"
+            app:iconifiedByDefault="false"
+            app:queryBackground="@color/transparent"
+            app:queryHint="@string/hint_district_recommendation_search"
+            app:searchIcon="@drawable/ic_search_grey" />
+    </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_suggestion"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:layout_above="@+id/pb_loading"
+        android:layout_below="@+id/fl_search" />
 
     <TextView
         android:id="@+id/tv_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="@dimen/padding_large"
         android:text="@string/hint_advice_search_address" />
@@ -41,7 +44,15 @@
     <LinearLayout
         android:id="@+id/network_error_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"></LinearLayout>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/fl_search"
+        android:orientation="vertical" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
