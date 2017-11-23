@@ -127,9 +127,9 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     protected void initView() {
         presenter.generateDetailResCenterFragment();
         if (isSeller) {
-            toolbar.setTitle("Kompalin dari " + userName);
+            toolbar.setTitle(getString(R.string.complaint_from) + userName);
         } else {
-            toolbar.setTitle("Komplain ke " + shopName);
+            toolbar.setTitle(getString(R.string.complaint_to) + shopName);
         }
         inflateFragment();
     }

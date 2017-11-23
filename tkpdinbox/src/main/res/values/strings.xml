@@ -199,4 +199,6 @@ yang ditemukan</string>
     <string name="string_tokopedia_system">Sistem Tokopedia</string>
     <string name="string_tokopedia">Toped</string>
     <string name="detail">Detail</string>
+    <string name="complaint_from">Komplain dari</string>
+    <string name="complaint_to">Komplain ke</string>
 </resources>
