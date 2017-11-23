@@ -1,5 +1,6 @@
 package com.tokopedia.flight.search.view.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,9 @@ import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
 
 public class FlightFilterTransitAdapter extends BaseListCheckableAdapter<TransitStat> {
 
-    public FlightFilterTransitAdapter(OnBaseListV2AdapterListener<TransitStat> onBaseListV2AdapterListener,
-                                      OnCheckableAdapterListener<TransitStat> onCheckableAdapterListener){
-        super(onBaseListV2AdapterListener, onCheckableAdapterListener);
+    public FlightFilterTransitAdapter(Context context, OnBaseListV2AdapterListener<TransitStat> onBaseListV2AdapterListener,
+                                      OnCheckableAdapterListener<TransitStat> onCheckableAdapterListener) {
+        super(context, onBaseListV2AdapterListener, onCheckableAdapterListener);
     }
 
     @Override

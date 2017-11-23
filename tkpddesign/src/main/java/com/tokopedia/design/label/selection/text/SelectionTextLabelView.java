@@ -5,6 +5,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.tokopedia.design.label.selection.SelectionItem;
 import com.tokopedia.design.label.selection.SelectionLabelView;
@@ -32,4 +33,5 @@ public class SelectionTextLabelView extends SelectionLabelView<SelectionItem<Str
     public SelectionTextLabelView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
 }

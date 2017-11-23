@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -29,9 +30,11 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
     private List<T> data = new ArrayList<>();
     protected OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener;
 
+    protected Context context;
+
     private int totalItem;
     private boolean isInFilterMode;
-    private NoResultDataBinder emptyNoResultDataBinder;
+    private NoResultDataBinder emptyWhenSearchDataBinder;
     private LoadingDataBinder loadingDataBinder;
 
     private int pageToLoad = 1;
@@ -42,13 +45,14 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         void loadData(int page, int currentDataSize, int rowPerPage);
     }
 
-    public BaseListAdapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
-        this(null, DEFAULT_ROW_PER_PAGE, onBaseListV2AdapterListener);
+    public BaseListAdapter(Context context, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
+        this(context, null, DEFAULT_ROW_PER_PAGE, onBaseListV2AdapterListener);
     }
 
-    public BaseListAdapter(@Nullable List<T> data, int rowPerPage,
+    public BaseListAdapter(Context context, @Nullable List<T> data, int rowPerPage,
                            OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
         super(false);
+        this.context = context;
         initData(data);
         this.rowPerPage = rowPerPage <= 0 ? DEFAULT_ROW_PER_PAGE : rowPerPage;
         this.onBaseListV2AdapterListener = onBaseListV2AdapterListener;
@@ -68,40 +72,8 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         setLoadingView(createLoadingDataBinder());
         setEmptyView(createEmptyViewBinder());
         setRetryView(createRetryDataBinder());
-    }
 
-    @Override
-    public void setLoadingView(LoadingDataBinder loadingView) {
-        if (loadingView == null) {
-            loadingView = new LoadingDataBinder(this);
-        }
-        this.loadingDataBinder = loadingView;
-        super.setLoadingView(loadingDataBinder);
-    }
-
-    @Override
-    public void setEmptyView(NoResultDataBinder emptyView) {
-        if (emptyView == null) {
-            emptyView = new NoResultDataBinder(this);
-        }
-        emptyView.setIsFullScreen(true);
-        super.setEmptyView(emptyView);
-    }
-
-    @Override
-    public void setRetryView(RetryDataBinder retryView) {
-        if (retryView == null) {
-            retryView = new RetryDataBinder(this);
-        }
-        retryView.setIsFullScreen(true);
-        retryView.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
-            @Override
-            public void onRetryClicked() {
-                showLoading(true);
-                loadStartPage();
-            }
-        });
-        super.setRetryView(retryView);
+        setEmptyWhenSearchView();
     }
 
     @Nullable
@@ -122,6 +94,50 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
     @Nullable
     protected RetryDataBinder createRetryDataBinder(){
         return new RetryDataBinder(this);
+    }
+
+    @Override
+    public void setLoadingView(LoadingDataBinder loadingView) {
+        if (loadingView == null) {
+            loadingView = new LoadingDataBinder(this);
+        }
+        this.loadingDataBinder = loadingView;
+        super.setLoadingView(loadingDataBinder);
+    }
+
+    @Override
+    public void setEmptyView(NoResultDataBinder emptyView) {
+        if (emptyView == null) {
+            emptyView = new NoResultDataBinder(this);
+        }
+        emptyView.setIsFullScreen(true);
+        super.setEmptyView(emptyView);
+    }
+
+    private void setEmptyWhenSearchView() {
+        if (emptyWhenSearchDataBinder == null) {
+            emptyWhenSearchDataBinder = createEmptyViewSearchBinder();
+        }
+        if (emptyWhenSearchDataBinder == null) {
+            emptyWhenSearchDataBinder = new NoResultDataBinder(this);
+        }
+        emptyWhenSearchDataBinder.setIsFullScreen(true);
+    }
+
+    @Override
+    public void setRetryView(RetryDataBinder retryView) {
+        if (retryView == null) {
+            retryView = new RetryDataBinder(this);
+        }
+        retryView.setIsFullScreen(true);
+        retryView.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+            @Override
+            public void onRetryClicked() {
+                showLoading(true);
+                loadStartPage();
+            }
+        });
+        super.setRetryView(retryView);
     }
 
     public boolean isInFilterMode() {
@@ -147,6 +163,8 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
             } else {
                 this.notifyItemRangeInserted(prevSize, addedSize);
             }
+        } else {
+            notifyDataSetChanged();
         }
     }
 
@@ -271,7 +289,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
             case VIEW_EMPTY:
                 return super.onCreateViewHolder(parent, viewType);
             case VIEW_EMPTY_SEARCH:
-                return getEmptyDataWhenSearchBinder().newViewHolder(parent);
+                return emptyWhenSearchDataBinder.newViewHolder(parent);
             default:
                 return onCreateItemViewHolder(parent, viewType);
         }
@@ -292,7 +310,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
                 super.onBindViewHolder(holder, position);
                 break;
             case VIEW_EMPTY_SEARCH:
-                getEmptyDataWhenSearchBinder().bindViewHolder((NoResultDataBinder.ViewHolder) holder, position);
+                emptyWhenSearchDataBinder.bindViewHolder((NoResultDataBinder.ViewHolder) holder, position);
                 break;
             default:
                 bindItemViewHolder(position, holder);
@@ -348,16 +366,6 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         if (viewHolder instanceof BaseViewHolder) {
             ((BaseViewHolder<T>) viewHolder).bindObject(t);
         }
-    }
-
-    private NoResultDataBinder getEmptyDataWhenSearchBinder() {
-        if (emptyNoResultDataBinder == null) {
-            emptyNoResultDataBinder = createEmptyViewSearchBinder();
-        }
-        if (emptyNoResultDataBinder == null) {
-            emptyNoResultDataBinder = new NoResultDataBinder(this);
-        }
-        return emptyNoResultDataBinder;
     }
 
 

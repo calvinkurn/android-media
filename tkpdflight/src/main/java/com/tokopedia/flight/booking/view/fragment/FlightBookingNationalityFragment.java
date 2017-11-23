@@ -38,7 +38,7 @@ public class FlightBookingNationalityFragment extends BaseSearchListFragment<Fli
 
     @Override
     protected BaseListAdapter<FlightBookingPhoneCodeViewModel> getNewAdapter() {
-        return new FlightBookingNationalityAdapter(this);
+        return new FlightBookingNationalityAdapter(getContext(), this);
     }
 
     @Override

@@ -1,13 +1,22 @@
 package com.tokopedia.flight.search.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.binder.BaseEmptyDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.binder.BaseRetryDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.binder.DataBindAdapter;
+import com.tokopedia.abstraction.base.view.adapter.binder.EmptyDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
@@ -17,30 +26,24 @@ import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
-import java.util.List;
-
 /**
  * Created by User on 10/26/2017.
  */
 
 public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> {
 
-    public interface ListenerOnDetailClicked{
+    private OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
+    private String errorMessage;
+
+    public interface OnBaseFlightSearchAdapterListener{
+        void onResetFilterClicked();
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
     }
 
-    private ListenerOnDetailClicked listenerOnDetailClicked;
-
-    public void setListenerOnDetailClicked(ListenerOnDetailClicked listenerOnDetailClicked) {
-        this.listenerOnDetailClicked = listenerOnDetailClicked;
-    }
-
-    public FlightSearchAdapter(OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
-    }
-
-    public FlightSearchAdapter(@Nullable List<FlightSearchViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightSearchAdapter(Context context, OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener,
+                               OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener) {
+        super(context, onBaseListV2AdapterListener);
+        this.onBaseFlightSearchAdapterListener = onBaseFlightSearchAdapterListener;
     }
 
     public class FlightSearchViewHolder extends BaseViewHolder<FlightSearchViewModel> {
@@ -74,15 +77,13 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
         public void bindObject(final FlightSearchViewModel flightSearchViewModel) {
             tvDeparture.setText(String.format("%s %s", flightSearchViewModel.getDepartureTime(), flightSearchViewModel.getDepartureAirport()));
             tvArrival.setText(String.format("%s %s", flightSearchViewModel.getArrivalTime(), flightSearchViewModel.getArrivalAirport()));
-            tvPrice.setText(flightSearchViewModel.getTotal());
+            tvPrice.setText(flightSearchViewModel.getFare().getAdult());
             setDuration(flightSearchViewModel);
             setAirline(flightSearchViewModel);
             View.OnClickListener detailClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(listenerOnDetailClicked != null){
-                        listenerOnDetailClicked.onDetailClicked(flightSearchViewModel);
-                    }
+                    onBaseFlightSearchAdapterListener.onDetailClicked(flightSearchViewModel);
                 }
             };
             tvPrice.setOnClickListener(detailClickListener);
@@ -141,7 +142,77 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
                 airlineRefundableInfo.setText(flightSearchViewModel.isRefundable().getValueRes());
             }
         }
+    }
 
+    @Nullable
+    @Override
+    protected NoResultDataBinder createEmptyViewBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(this, R.drawable.ic_flight_empty_state);
+        emptyDataBinder.setEmptyContentText(context.getString(R.string.flight_there_is_no_flight_available));
+        emptyDataBinder.setEmptyButtonItemText(context.getString(R.string.change_date));
+        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                Toast.makeText(context, "Belum dihandle", Toast.LENGTH_LONG).show();
+            }
+        });
+        return emptyDataBinder;
+    }
+
+    @Nullable
+    @Override
+    protected NoResultDataBinder createEmptyViewSearchBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(this, R.drawable.ic_flight_empty_state);
+        emptyDataBinder.setEmptyContentText(context.getString(R.string.flight_there_is_zero_flight_for_the_filter));
+        emptyDataBinder.setEmptyButtonItemText(context.getString(R.string.reset_filter));
+        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                onBaseFlightSearchAdapterListener.onResetFilterClicked();
+            }
+        });
+        return emptyDataBinder;
+    }
+
+    @Nullable
+    @Override
+    protected RetryDataBinder createRetryDataBinder() {
+        return new FlightBaseRetryDataBinder(this);
+    }
+
+    private class FlightBaseRetryDataBinder extends BaseRetryDataBinder{
+
+        public FlightBaseRetryDataBinder(DataBindAdapter dataBindAdapter) {
+            super(dataBindAdapter, R.drawable.ic_flight_empty_state);
+        }
+
+        @Override
+        public void bindViewHolder(RetryDataBinder.ViewHolder holder, int position) {
+            super.bindViewHolder(holder, position);
+            if (holder instanceof ViewHolder) {
+                TextView tvRetryDescription = ((ViewHolder) holder).getRetryDescription();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    tvRetryDescription.setVisibility(View.GONE);
+                } else {
+                    tvRetryDescription.setText(errorMessage);
+                    tvRetryDescription.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override
@@ -149,4 +220,5 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
         View view = getLayoutView(parent, R.layout.item_flight_search);
         return new FlightSearchViewHolder(view);
     }
+
 }

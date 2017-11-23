@@ -104,8 +104,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
             durMinStat = flightSearchStatisticModel.getMinDuration();
             durMaxStat = flightSearchStatisticModel.getMaxDuration();
         }
-        return (this.priceMin != priceMinStat || this.priceMax != priceMaxStat ||
-                this.durationMin != durMinStat || this.durationMax != durMaxStat ||
+        return (this.priceMin > priceMinStat || this.priceMax < priceMaxStat ||
+                this.durationMin > durMinStat || this.durationMax < durMaxStat ||
                 (this.transitTypeList != null && this.transitTypeList.size() > 0) ||
                 (this.airlineList != null && this.airlineList.size() > 0) ||
                 (this.departureTimeList != null && this.departureTimeList.size() > 0) ||

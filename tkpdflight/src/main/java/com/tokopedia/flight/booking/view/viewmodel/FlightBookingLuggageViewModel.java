@@ -66,6 +66,11 @@ public class FlightBookingLuggageViewModel implements Parcelable, ItemType {
     }
 
     @Override
+    public String toString() {
+        return weightFmt + " - " + priceFmt;
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(priceFmt);
@@ -75,5 +80,16 @@ public class FlightBookingLuggageViewModel implements Parcelable, ItemType {
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FlightBookingLuggageViewModel &&
+                ((FlightBookingLuggageViewModel) obj).getId().equals(id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

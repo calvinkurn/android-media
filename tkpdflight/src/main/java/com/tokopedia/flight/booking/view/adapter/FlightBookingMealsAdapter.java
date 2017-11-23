@@ -1,6 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolde
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -17,16 +16,8 @@ import java.util.List;
  */
 
 public class FlightBookingMealsAdapter extends BaseListCheckableAdapter<FlightBookingMealViewModel> {
-    public FlightBookingMealsAdapter(OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
-    }
-
-    public FlightBookingMealsAdapter(OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener, OnCheckableAdapterListener<FlightBookingMealViewModel> onCheckableAdapterListener) {
-        super(onBaseListV2AdapterListener, onCheckableAdapterListener);
-    }
-
-    public FlightBookingMealsAdapter(@Nullable List<FlightBookingMealViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener, OnCheckableAdapterListener<FlightBookingMealViewModel> onCheckableAdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener, onCheckableAdapterListener);
+    public FlightBookingMealsAdapter(Context context, OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
     @Override
@@ -34,26 +25,18 @@ public class FlightBookingMealsAdapter extends BaseListCheckableAdapter<FlightBo
         return new FlightBookingMealsViewHolder(getLayoutView(parent, R.layout.item_flight_booking_meals), this);
     }
 
-    public ArrayList<String> getListChecked(){
-        List<FlightBookingMealViewModel> list = getCheckedDataList();
-        if (list == null || list.size() == 0) {
-            return new ArrayList<>();
-        }
-        ArrayList<String> idCheckedList = new ArrayList<>();
-        for (int i = 0, sizei = list.size(); i<sizei; i++) {
-            idCheckedList.add(list.get(i).getId());
-        }
-        return idCheckedList;
+    public List<FlightBookingMealViewModel> getListChecked() {
+        return getCheckedDataList();
     }
 
-    public void setListChecked(List<String> list){
+    public void setListChecked(List<FlightBookingMealViewModel> list) {
         List<FlightBookingMealViewModel> checkedDataList = getCheckedDataList();
         if (checkedDataList == null || checkedDataList.size() == 0) {
             return;
         }
         HashSet<Integer> checkedPositionList = new HashSet<>();
-        for (int i = 0, sizei = checkedDataList.size(); i<sizei; i++) {
-            if (list.contains(checkedDataList.get(i).getId())){
+        for (int i = 0, sizei = checkedDataList.size(); i < sizei; i++) {
+            if (list.contains(checkedDataList.get(i))) {
                 checkedPositionList.add(i);
             }
         }

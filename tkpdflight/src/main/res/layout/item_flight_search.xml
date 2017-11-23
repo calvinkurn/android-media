@@ -39,11 +39,11 @@
 
         <TextView
             android:id="@+id/airline_refundable_info"
-            style="@style/TextView.Caption.Green"
+            style="@style/TextView.Caption.BlackSecondary"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/bg_rect_stroke_flight_green"
+            android:background="@drawable/bg_rect_stroke_flight_grey"
             android:paddingBottom="@dimen/padding_vvs"
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"
@@ -178,20 +178,36 @@
 
             <TextView
                 android:id="@+id/saving_price"
-                style="@style/TextView.Caption.BlackDisabled"
+                style="@style/TextView.Caption.BlackSecondary"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:visibility="gone"
-                tools:text="Rp. 25000"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:textSize="10sp"
+                tools:text="Rp.25000"/>
 
-            <TextView
-                android:id="@+id/total_price"
-                style="@style/TextView.Subheading.Bold"
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginBottom="@dimen/margin_vvvs"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                tools:text="Rp 25.000" />
+                android:layout_marginRight="@dimen/activity_horizontal_margin">
+                <TextView
+                    android:id="@+id/total_price"
+                    style="@style/TextView.Subheading.Bold"
+                    tools:text="Rp 25.000" />
+
+                <TextView
+                    style="@style/TextView.Caption.BlackSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/total_price"
+                    android:layout_toRightOf="@id/total_price"
+                    android:layout_alignBaseline="@id/total_price"
+                    android:textSize="10sp"
+                    android:text="/org" />
+            </RelativeLayout>
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -214,14 +230,8 @@
 
                     <TextView
                         style="@style/TextView.Caption.Green"
-                        android:text="@string/flight_label_see_detail" />
+                        android:text="@string/flight_label_see_detail"/>
 
-                    <ImageView
-                        android:layout_width="@dimen/image_width_xxs"
-                        android:layout_height="@dimen/image_width_xxs"
-                        android:layout_marginLeft="@dimen/margin_vs"
-                        android:layout_marginStart="@dimen/margin_vs"
-                        android:src="@drawable/ic_arrow_down_detail_flight" />
                 </LinearLayout>
             </FrameLayout>
 

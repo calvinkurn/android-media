@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+
 /**
  * Created by hendry on 7/14/2017.
  */
@@ -31,5 +33,10 @@ public class FlightAirportDataCacheSource extends DataCacheSource {
     @Override
     protected long getExpiredTimeInSec() {
         return ONE_WEEK;
+    }
+
+    @Override
+    public Observable<Boolean> isExpired() {
+        return Observable.just(false);
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.adapter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
@@ -15,12 +16,12 @@ import java.util.List;
  */
 
 public abstract class FlightBaseListAdapter<T extends ItemType> extends BaseListAdapter<T> {
-    public FlightBaseListAdapter(OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
-        super(onBaseListV2AdapterListener);
+    public FlightBaseListAdapter(Context context, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
+        super(context, onBaseListV2AdapterListener);
     }
 
-    public FlightBaseListAdapter(@Nullable List<T> data, int rowPerPage, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
-        super(data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightBaseListAdapter(Context context, @Nullable List<T> data, int rowPerPage, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
+        super(context, data, rowPerPage, onBaseListV2AdapterListener);
     }
 
     @Nullable

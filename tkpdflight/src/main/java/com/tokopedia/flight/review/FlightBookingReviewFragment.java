@@ -61,16 +61,16 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewTotalPrice = (TextView) view.findViewById(R.id.total_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 
-        FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter();
+        FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(getContext());
         recyclerViewDepartureFlight.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDepartureFlight.setAdapter(departureFlightAdapter);
-        FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter();
+        FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(getContext());
         recyclerViewReturnFlight.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewReturnFlight.setAdapter(returnFlightAdapter);
-        FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter();
+        FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(getContext());
         recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter);
-        FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter();
+        FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter(getContext());
         recyclerViewDetailPrice.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
