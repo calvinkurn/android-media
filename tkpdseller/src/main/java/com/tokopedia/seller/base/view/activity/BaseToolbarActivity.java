@@ -55,6 +55,10 @@ abstract class BaseToolbarActivity extends BaseActivity {
         setupFragment(savedInstanceState);
         if (isToolbarWhite()) {
             setToolbarColorWhite();
+        }else{
+            // look at {@link setupLayout}
+            // set black to 70%
+            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black_70));
         }
         if (getSupportActionBar() != null && isShowCloseButton()) {
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, closeButtonDrawable()));
@@ -112,7 +116,9 @@ abstract class BaseToolbarActivity extends BaseActivity {
     @CallSuper
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
