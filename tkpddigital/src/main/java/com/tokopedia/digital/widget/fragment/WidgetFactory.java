@@ -18,7 +18,11 @@ public class WidgetFactory {
     public static final String STYLE_99 = "style_99";
 
     public static Fragment buildFragment(Category category, int position, boolean useCache) {
-        String operatorStyle = category.getAttributes().getClientNumber().getOperatorStyle();
+        String operatorStyle = "";
+        if (category.getAttributes().getClientNumber().getOperatorStyle() != null) {
+            operatorStyle = category.getAttributes().getClientNumber().getOperatorStyle();
+        }
+
         switch (operatorStyle) {
             case STYLE_ONE:
             case STYLE_99:
