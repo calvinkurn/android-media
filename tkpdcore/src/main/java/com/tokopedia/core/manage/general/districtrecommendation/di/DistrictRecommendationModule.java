@@ -20,7 +20,7 @@ import dagger.Provides;
 @Module
 public class DistrictRecommendationModule {
 
-    private static final int RETRY_COUNT = 3;
+    private static final int RETRY_COUNT = 0;
     private Token token;
 
     public DistrictRecommendationModule(Token token) {

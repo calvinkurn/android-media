@@ -54,6 +54,7 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     @Override
     public void searchAddress(String query) {
         addresses.clear();
+        getView().updateRecommendation();
         lastPage = 0;
         getView().setInitialLoading();
         query(query);
@@ -70,8 +71,8 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().hideLoading();
                 if (isViewAttached()) {
+                    getView().hideLoading();
                     String message;
                     if (e instanceof UnknownHostException || e instanceof ConnectException ||
                             e instanceof SocketTimeoutException) {
@@ -89,15 +90,17 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
 
             @Override
             public void onStart() {
-                super.onStart();
+
             }
 
             @Override
             public void onNext(AddressResponse addressResponse) {
-                getView().hideLoading();
-                addresses.addAll(addressResponse.getAddresses());
-                hasNext = addressResponse.isNextAvailable();
-                getView().updateRecommendation();
+                if (isViewAttached()) {
+                    getView().hideLoading();
+                    addresses.addAll(addressResponse.getAddresses());
+                    hasNext = addressResponse.isNextAvailable();
+                    getView().updateRecommendation();
+                }
             }
         });
     }

@@ -313,7 +313,9 @@ public class DistrictRecommendationFragment
 
             @Override
             public void onNext(String query) {
-                presenter.searchAddress(query);
+                if (isAdded()) {
+                    presenter.searchAddress(query);
+                }
             }
         };
     }
