@@ -77,7 +77,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return createNewResponse(response, bodyResponse);
     }
 
-    private void checkResponse(String string, Response response) {
+    protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
@@ -355,6 +355,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         String freshAccessToken = SessionHandler.getAccessToken();
         return chain.request().newBuilder()
                 .header("authorization", "Bearer " + freshAccessToken)
+                .header("accounts-authorization", "Bearer " + freshAccessToken)
                 .build();
     }
 }
