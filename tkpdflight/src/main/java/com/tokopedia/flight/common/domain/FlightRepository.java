@@ -36,4 +36,6 @@ public interface FlightRepository {
     Observable<FlightSearchSingleRouteDB> getFlightSearchById(boolean isReturning, String id);
 
     Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey);
+
+    Observable<Boolean> getAirportListBackground();
 }

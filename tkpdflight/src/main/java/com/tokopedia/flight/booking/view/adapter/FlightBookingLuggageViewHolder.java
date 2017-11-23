@@ -16,7 +16,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel
 public class FlightBookingLuggageViewHolder extends BaseViewHolder<FlightBookingLuggageViewModel> {
 
     public interface ListenerCheckedLuggage {
-        boolean isItemChecked(String selectedItem);
+        boolean isItemChecked(FlightBookingLuggageViewModel selectedItem);
     }
 
     private ListenerCheckedLuggage listenerCheckedLuggage;
@@ -36,7 +36,7 @@ public class FlightBookingLuggageViewHolder extends BaseViewHolder<FlightBooking
     public void bindObject(FlightBookingLuggageViewModel flightBookingLuggageViewModel) {
         boolean isItemChecked = false;
         if (listenerCheckedLuggage != null) {
-            isItemChecked = listenerCheckedLuggage.isItemChecked(flightBookingLuggageViewModel.getId());
+            isItemChecked = listenerCheckedLuggage.isItemChecked(flightBookingLuggageViewModel);
         }
 
         weight.setText(flightBookingLuggageViewModel.getWeightFmt());

@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdType{
+public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdType {
     public static final int TYPE = 532;
     private String id;
     private String title;
@@ -37,11 +37,7 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
         }
     };
 
-    public String getIdBooking() {
-        return id;
-    }
-
-    public void setIdBooking(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -86,5 +82,15 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
         dest.writeString(id);
         dest.writeString(title);
         dest.writeString(price);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FlightBookingMealViewModel && ((FlightBookingMealViewModel) obj).getId().equalsIgnoreCase(id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

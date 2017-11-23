@@ -1,7 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
@@ -9,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,17 +17,14 @@ import java.util.List;
 
 public class FlightBookingLuggageAdapter extends BaseListAdapter<FlightBookingLuggageViewModel> implements FlightBookingLuggageViewHolder.ListenerCheckedLuggage {
 
-    private String selectedLuggage = "";
+    private List<FlightBookingLuggageViewModel> selectedLuggage;
 
     public FlightBookingLuggageAdapter(Context context, OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
         super(context, onBaseListV2AdapterListener);
+        selectedLuggage = new ArrayList<>();
     }
 
-    public FlightBookingLuggageAdapter(Context context, @Nullable List<FlightBookingLuggageViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> onBaseListV2AdapterListener) {
-        super(context, data, rowPerPage, onBaseListV2AdapterListener);
-    }
-
-    public void setSelectedLuggage(String selectedLuggage) {
+    public void setSelectedLuggage(List<FlightBookingLuggageViewModel> selectedLuggage) {
         this.selectedLuggage = selectedLuggage;
     }
 
@@ -40,7 +37,7 @@ public class FlightBookingLuggageAdapter extends BaseListAdapter<FlightBookingLu
     }
 
     @Override
-    public boolean isItemChecked(String selectedItem) {
-        return selectedItem.equals(selectedLuggage);
+    public boolean isItemChecked(FlightBookingLuggageViewModel selectedItem) {
+        return selectedLuggage.contains(selectedItem);
     }
 }
