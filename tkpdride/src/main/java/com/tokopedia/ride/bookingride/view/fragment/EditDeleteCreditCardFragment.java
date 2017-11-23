@@ -126,7 +126,7 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements EditCa
 
     @OnClick(R2.id.btn_allow_auto_debit)
     public void actionAutoDebitButtonClicked() {
-        ScroogePGUtil.openScroogePage(this, paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody(), getString(R.string.toolbar_title_add_credit_card));
+        ScroogePGUtil.openScroogePage(this, paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody(), getString(R.string.toolbar_title_auto_debit));
     }
 
     @Override
@@ -161,7 +161,7 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements EditCa
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
-            if (requestCode == ScroogePGUtil.RESULT_CODE_DELETE_CC_FAIL) {
+            if (resultCode == ScroogePGUtil.RESULT_CODE_DELETE_CC_FAIL) {
                 //show success message
                 showErrorMessage(getString(R.string.error_message_delete_cc_fail));
             } else {

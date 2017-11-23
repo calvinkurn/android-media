@@ -40,7 +40,6 @@ import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.ride.bookingride.view.activity.ManagePaymentOptionsActivity.TYPE_CHANGE_PAYMENT_OPTION;
 import static com.tokopedia.ride.bookingride.view.activity.ManagePaymentOptionsActivity.TYPE_MANAGE_PAYMENT_OPTION;
 import static com.tokopedia.ride.scrooge.ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE;
-import static com.tokopedia.ride.scrooge.ScroogePGUtil.RESULT_CODE_ADD_CC_SUCCESS;
 
 /**
  * Created by Vishal
@@ -174,7 +173,7 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
         //referesh payment method list in case of success of delete card and add card
         if ((requestCode == REQUEST_CODE_EDIT_CARD_DETAIL && resultCode == Activity.RESULT_OK) ||
-                (requestCode == REQUEST_CODE_OPEN_SCROOGE_PAGE && resultCode == RESULT_CODE_ADD_CC_SUCCESS)) {
+                (requestCode == REQUEST_CODE_OPEN_SCROOGE_PAGE)) {
             presenter.deletePaymentMethodCache();
             presenter.getPaymentMethodsFromCloud();
         }

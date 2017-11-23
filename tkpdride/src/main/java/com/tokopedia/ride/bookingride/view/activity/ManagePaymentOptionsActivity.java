@@ -75,6 +75,16 @@ public class ManagePaymentOptionsActivity extends BaseActivity implements HasCom
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Fragment fragment = (Fragment) getFragmentManager().findFragmentById(R.id.fl_container);
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
     public RideComponent getComponent() {
         if (rideComponent == null)
             initInjector();

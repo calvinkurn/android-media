@@ -26,6 +26,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
@@ -541,6 +542,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void openInterruptConfirmationWebView(String tosUrl) {
         if (!isOpenInterruptWebviewDialog) {
+            RideGATracking.eventOpenInterruptScreen(tosUrl);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
             if (previousDialog != null) {

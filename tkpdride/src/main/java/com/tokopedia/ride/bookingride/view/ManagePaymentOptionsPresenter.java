@@ -126,7 +126,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
                 visitable.setActive(paymentMethod.getActive());
                 visitable.setName(paymentMethod.getLabel());
                 visitable.setType(paymentMethod.getMode());
-                visitable.setImageUrl(paymentMethod.getCardTypeImage());
+                visitable.setImageUrl(paymentMethod.getImage());
                 visitable.setExpiryMonth(paymentMethod.getExpiryMonth());
                 visitable.setExpiryYear(paymentMethod.getExpiryYear());
                 visitable.setDeleteUrl(paymentMethod.getDeleteUrl());

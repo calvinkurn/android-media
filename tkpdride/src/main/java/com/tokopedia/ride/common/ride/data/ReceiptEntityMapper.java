@@ -39,6 +39,7 @@ public class ReceiptEntityMapper {
             String totalCharged = entity.getCurrencyCode() + " 0";
             if (entity.getPayment() != null) {
                 totalCharged = formatNumber(entity.getPayment().getTotalAmount(), entity.getPayment().getCurrencyCode());
+                receipt.setPaymentMethod(transformPaymentMethod(entity.getPayment().getPaymentMethod()));
             }
             receipt.setTotalCharged(totalCharged);
 
@@ -47,7 +48,7 @@ public class ReceiptEntityMapper {
             receipt.setCashbackDisplayFormat(formatNumber(entity.getCashbackAmount(), entity.getCurrencyCode()));
             receipt.setDiscountDisplayFormat(formatNumber(entity.getDiscountAmount(), entity.getCurrencyCode()));
             receipt.setTipList(transformTipList(entity.getTipList()));
-            receipt.setPaymentMethod(transformPaymentMethod(entity.getPaymentMethod()));
+
 
             if (entity.getRideOffer() != null) {
                 receipt.setUberSignupUrl(entity.getRideOffer().getUrl());

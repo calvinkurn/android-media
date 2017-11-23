@@ -151,7 +151,7 @@
     <string name="interrupt_tos_cancel">Cancel</string>
     <string name="interrupt_tos_accept">Accept</string>
     <string name="edit">EDIT</string>
-    <string name="delete">DELETE</string>
+    <string name="btn_edit_cc_delete">DELETE</string>
     <string name="menu_remove">Remove</string>
     <string name="change_destination">CHANGE</string>
     <string name="change_destination_insufficient_balance_title">Oops, you don\'t have enought Tokocash balance to change your destination</string>
@@ -189,4 +189,5 @@
     <string name="cancel_dialog_delete_card">CANCEL</string>
     <string name="interrupt_aut_debit_proceed">Proceed</string>
     <string name="allow_auto_debit">ALLOW AUTO DEBIT</string>
+    <string name="toolbar_title_auto_debit">Auto Debit</string>
 </resources>

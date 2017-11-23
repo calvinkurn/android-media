@@ -78,7 +78,7 @@
             android:layout_margin="@dimen/margin_sm"
             android:background="@drawable/rounded_filled_theme_bttn_orange"
             android:gravity="center"
-            android:text="@string/delete"
+            android:text="@string/btn_edit_cc_delete"
             android:textColor="@color/white" />
 
         <TextView
@@ -90,9 +90,9 @@
             android:layout_marginRight="@dimen/margin_sm"
             android:background="@drawable/button_rounded"
             android:gravity="center"
-            android:visibility="gone"
             android:text="@string/allow_auto_debit"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -102,7 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_54"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <RelativeLayout
@@ -144,7 +144,7 @@
                     android:layout_marginLeft="@dimen/margin_med"
                     android:background="@drawable/rounded_filled_theme_bttn_orange"
                     android:gravity="center"
-                    android:text="@string/delete"
+                    android:text="@string/btn_edit_cc_delete"
                     android:textColor="@color/white" />
 
             </LinearLayout>

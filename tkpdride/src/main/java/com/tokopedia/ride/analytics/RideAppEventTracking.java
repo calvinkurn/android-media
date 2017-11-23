@@ -47,6 +47,7 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventClickSubmit = "click submit";
         String EventClickTNC = "click tnc";
         String EventClickSignup = "click sign up uber";
+        String EventOpenInterrupt = "open interrupt screen";
     }
 
     interface Label {

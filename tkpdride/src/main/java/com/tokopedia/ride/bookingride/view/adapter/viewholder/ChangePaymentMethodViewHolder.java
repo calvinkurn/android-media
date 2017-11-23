@@ -31,7 +31,7 @@ public class ChangePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
     @BindView(R2.id.img_tick)
     ImageView tickImage;
     @BindView(R2.id.tokocash_balance)
-    TextView tokocashBalance;
+    TextView otherInfoTextView;
 
     private PaymentMethodItemClickListener itemClickListener;
     private PaymentMethodViewModel paymentMethodViewModel;
@@ -48,10 +48,14 @@ public class ChangePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
         paymentMethodViewModel = element;
 
         if (paymentMethodViewModel.getTokoCashBalance() != null && paymentMethodViewModel.getTokoCashBalance().length() > 0) {
-            tokocashBalance.setText("(" + paymentMethodViewModel.getTokoCashBalance() + ")");
-            tokocashBalance.setVisibility(View.VISIBLE);
+            otherInfoTextView.setText("(" + paymentMethodViewModel.getTokoCashBalance() + ")");
+            otherInfoTextView.setVisibility(View.VISIBLE);
         } else {
-            tokocashBalance.setVisibility(View.GONE);
+            if (paymentMethodViewModel.isSaveWebView()) {
+                otherInfoTextView.setText("(Auto debit not allowed)");
+            } else {
+                otherInfoTextView.setVisibility(View.GONE);
+            }
         }
 
         paymentMethodName.setText(element.getName());
@@ -59,7 +63,7 @@ public class ChangePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
         if (element.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET)) {
             imageView.setImageResource(R.drawable.ic_tokocash_icon);
         } else {
-            Glide.with(context).load(element.getImageUrl())
+            Glide.with(context).load(element.getBankImage())
                     .asBitmap()
                     .fitCenter()
                     .dontAnimate()

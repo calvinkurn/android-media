@@ -46,7 +46,7 @@ public class AutoDetbitConfirmationDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 dismiss();
-                ScroogePGUtil.openScroogePage(getActivity(), paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody(), getString(R.string.toolbar_title_add_credit_card));
+                ScroogePGUtil.openScroogePage(getActivity(), paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody(), getString(R.string.toolbar_title_auto_debit));
             }
         });
 

@@ -140,9 +140,9 @@ public class ScroogeActivity extends AppCompatActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                super.shouldOverrideUrlLoading(view, url);
                 Intent responseIntent = new Intent();
 
+                boolean returnVal = true;
                 if (url.equalsIgnoreCase(ADD_CC_SUCESS_CALLBACK)) {
                     responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
                     setResult(ScroogePGUtil.RESULT_CODE_ADD_CC_SUCCESS, responseIntent);
@@ -163,9 +163,12 @@ public class ScroogeActivity extends AppCompatActivity {
                     responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
                     setResult(ScroogePGUtil.RESULT_CODE_SUCCESS, responseIntent);
                     finish();
+                } else {
+                    super.shouldOverrideUrlLoading(view, url);
+                    returnVal = true;
                 }
 
-                return false;
+                return returnVal;
             }
         });
 
