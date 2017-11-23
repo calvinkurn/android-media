@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Base.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+
+    </style>
+
+    <style name="Base.Toolbar.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:itemTextAppearance">@style/TextAppearance</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="titleTextAppearance">@style/ToolbarText</item>
+        <item name="subtitleTextAppearance">@style/ToolbarSubtitleText</item>
+    </style>
+
+    <style name="TextAppearance">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="ToolbarText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/font_subheading</item>
+    </style>
+
+    <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">@dimen/font_caption</item>
+    </style>
+
+    <style name="BaseTabBar">
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabMode">fixed</item>
+    </style>
+</resources>
