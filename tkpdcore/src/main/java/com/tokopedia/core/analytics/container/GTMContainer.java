@@ -17,6 +17,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -33,9 +34,7 @@ import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -206,7 +205,7 @@ public class GTMContainer implements IGTMContainer {
 
         GTMDataLayer.pushGeneral(context, new EventTracking("InternalPromotion", "Internal Promotion", "view", promotion.getPromotionName()).getEvent());
 
-        GTMDataLayer.pushEvent(context, "internalPromo", DataLayer.mapOf("ecommerce", DataLayer.mapOf(
+        GTMDataLayer.pushEvent(context, AppEventTracking.Event.EVENT_INTERNAL_PROMO, DataLayer.mapOf("ecommerce", DataLayer.mapOf(
                 "promoView",
                 DataLayer.mapOf("promotions", DataLayer.listOf(promotion.getPromotionDataEvent()))))
         );
@@ -221,7 +220,7 @@ public class GTMContainer implements IGTMContainer {
 
         GTMDataLayer.pushGeneral(context, new EventTracking("InternalPromotion", "Internal Promotion", "click", promotion.getPromotionName()).getEvent());
 
-        GTMDataLayer.pushEvent(context, "internalPromo", DataLayer.mapOf("ecommerce", DataLayer.mapOf(
+        GTMDataLayer.pushEvent(context, AppEventTracking.Event.EVENT_INTERNAL_PROMO, DataLayer.mapOf("ecommerce", DataLayer.mapOf(
                 "promoClick",
                 DataLayer.mapOf("promotions", DataLayer.listOf(promotion.getPromotionDataEvent()))))
         );
@@ -303,7 +302,7 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public String getString(String key) {
         if (ContainerHolderSingleton.isContainerHolderAvailable())
-            if(GTMContainer.getContainer()!=null)
+            if (GTMContainer.getContainer() != null)
                 return GTMContainer.getContainer().getString(key);
         return "";
     }
@@ -433,5 +432,38 @@ public class GTMContainer implements IGTMContainer {
         if (ContainerHolderSingleton.isContainerHolderAvailable())
             return GTMContainer.getContainer().getDouble(key);
         return -1;
+    }
+
+    @Override
+    public void eventClickHotlistProductFeatured(Hotlist hotlist) {
+        GTMDataLayer.pushGeneral(context,
+                DataLayer.mapOf("event",AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "eventCategory",AppEventTracking.Category.CATEGORY_HOTLIST,
+                        "eventAction",String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
+                        "eventLabel",String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
+                        "ecommerce",DataLayer.mapOf(
+                                "click", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf(
+                                                "list", "hotlist"),
+                                                "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
+                                )
+                        )
+                )
+        ));
+    }
+
+    @Override
+    public void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
+        GTMDataLayer.pushGeneral(context,
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "ecommerce", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf(
+                                        "list", "hotlist"),
+                                "impressions",
+                                DataLayer.listOf(
+                                        hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
+                        )
+                )
+        );
     }
 }

@@ -1,12 +1,12 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
 import android.graphics.Color;
-import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -21,20 +21,12 @@ import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
-public class TopAdsProductAdListActivity extends TActivity
+public class TopAdsProductAdListActivity extends BaseSimpleActivity
         implements TopAdsAdListFragment.OnAdListFragmentListener {
 
-    private ShowCaseDialog showCaseDialog;
+    private static final String TAG = "TopAdsProductAdListActi";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        GroupAd groupAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_GROUP);
-        inflateView(R.layout.activity_top_ads_payment_credit);
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsProductAdListFragment.createInstance(groupAd), TopAdsProductAdListFragment.class.getSimpleName())
-                .commit();
-    }
+    private ShowCaseDialog showCaseDialog;
 
     @Override
     public String getScreenName() {
@@ -56,7 +48,7 @@ public class TopAdsProductAdListActivity extends TActivity
             return;
         }
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar.getHeight() > 0) {
             final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
             int height = toolbar.getHeight();
@@ -64,22 +56,18 @@ public class TopAdsProductAdListActivity extends TActivity
 
             showCaseList.add(
                     new ShowCaseObject(
-                            findViewById(android.R.id.content),
+                            topAdsProductAdListFragment.getSearchView(),
                             getString(R.string.topads_showcase_product_list_title_1),
                             getString(R.string.topads_showcase_product_list_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
-                            Color.WHITE)
-                            .withCustomTarget(new int[]{width - (int)(height * 1.8), 0,
-                                    width - (int)(height * 0.8), height}));
+                            Color.WHITE));
 
             showCaseList.add(
                     new ShowCaseObject(
-                            findViewById(android.R.id.content),
+                            topAdsProductAdListFragment.getFilterView(),
                             getString(R.string.topads_showcase_product_list_title_2),
                             getString(R.string.topads_showcase_product_list_desc_2),
-                            ShowCaseContentPosition.UNDEFINED,
-                            Color.WHITE)
-                            .withCustomTarget(new int[]{width - (int)(height * 0.9), 0,width, height}));
+                            ShowCaseContentPosition.UNDEFINED));
 
             RecyclerView recyclerView = topAdsProductAdListFragment.getRecyclerView();
             recyclerView.postDelayed(new Runnable() {
@@ -123,5 +111,27 @@ public class TopAdsProductAdListActivity extends TActivity
             }));
         }
 
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
+        if(fragment != null){
+            return fragment;
+        }else{
+            GroupAd groupAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_GROUP);
+            fragment = TopAdsProductAdListFragment.createInstance(groupAd);
+            return fragment;
+        }
+    }
+
+    @Override
+    protected String getTagFragment() {
+        return TAG;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

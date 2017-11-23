@@ -49,7 +49,6 @@ public class CloudNotificationSource {
             public void call(NotificationModel notificationModel) {
                 if (notificationModel != null && notificationModel.isSuccess()) {
                     NotificationData notificationData = notificationModel.getNotificationData();
-                    drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notificationData.getInbox().getInboxMessage());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
                     drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, notificationData.getResolution());

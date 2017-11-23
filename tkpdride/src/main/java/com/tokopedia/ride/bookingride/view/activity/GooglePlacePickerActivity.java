@@ -50,7 +50,7 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
     }
 
     @Override
-    public String getScreenName() {
+    public String  getScreenName() {
         if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
             return AppScreen.SCREEN_RIDE_DEST_CHANGE;
         } else {
@@ -110,6 +110,7 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
 
     @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (getFragmentManager().findFragmentById(R.id.container) instanceof SelectLocationOnMapFragment) {
             getFragmentManager().popBackStack();
 

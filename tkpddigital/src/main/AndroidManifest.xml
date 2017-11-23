@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.digital">
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
@@ -26,23 +27,46 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".product.activity.DigitalWebActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/DigitalWebView"/>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".widget.activity.DigitalCategoryListActivity"
             android:label="@string/title_activity_category_list_digital_module"
+            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.ActivateTokoCashActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".tokocash.activity.TopUpTokoCashActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.HistoryTokocashActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.DetailTransactionActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".product.activity.DigitalUssdActivity"/>
+
+        <activity
+            android:name=".tokocash.activity.WalletToDepositActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.WalletToDepositThanksActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.WalletAccountSettingActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".tokocash.activity.HelpHistoryDetailActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".product.activity.DigitalUssdActivity"></activity>
-
-        <activity android:name=".tokocash.activity.ActivateTokoCashActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".product.activity.DigitalSearchNumberActivity"
-            android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.activity.DigitalSearchNumberActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

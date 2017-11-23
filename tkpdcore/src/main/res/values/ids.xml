@@ -198,6 +198,7 @@
     <item name="tv_promo_product" type="id" />
     <item name="tv_promo_expired" type="id" />
     <item name="toolbar_title" type="id" />
+    <item name="swipe_refresh_layout" type="id" />
 
 
 </resources>

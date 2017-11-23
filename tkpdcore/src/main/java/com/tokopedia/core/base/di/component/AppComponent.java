@@ -31,6 +31,8 @@ import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -62,11 +64,11 @@ public interface AppComponent {
 
     void inject(TActivity baseActivity);
 
-    @ApplicationContext
-    Context context();
-
     @TopAdsQualifier
     Retrofit topAdsRetrofit();
+
+    @ApplicationContext
+    Context context();
 
     @AceQualifier
     Retrofit aceRetrofit();
@@ -79,6 +81,12 @@ public interface AppComponent {
 
     @MojitoQualifier
     Retrofit mojitoRetrofit();
+
+    @MojitoGetWishlistQualifier
+    Retrofit mojitoGetWishlistRetrofit();
+
+    @MojitoWishlistActionQualifier
+    Retrofit mojitoWishlistActionRetrofit();
 
     @HadesQualifier
     Retrofit hadesRetrofit();

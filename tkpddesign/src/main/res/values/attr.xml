@@ -132,6 +132,8 @@
     </declare-styleable>
 
     <declare-styleable name="BottomActionView">
+        <attr name="bav_1_display" format="boolean"/>
+        <attr name="bav_2_display" format="boolean"/>
         <attr name="bav_icon_1" format="reference" />
         <attr name="bav_label_1" format="reference" />
         <attr name="bav_icon_2" format="reference" />

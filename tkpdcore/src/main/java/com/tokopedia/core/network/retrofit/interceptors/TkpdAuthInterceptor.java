@@ -77,7 +77,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return createNewResponse(response, bodyResponse);
     }
 
-    private void checkResponse(String string, Response response) {
+    protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
@@ -124,7 +124,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
-    Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
+    protected Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
 
         String contentTypeHeader = null;
         if (!"GET".equals(originRequest.method())
@@ -202,7 +202,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             json = new JSONObject(response);
             JSONArray errorMessage = json.optJSONArray("message_error");
-            return errorMessage.length() > 0;
+            if (errorMessage != null)
+                return errorMessage.length() > 0;
+            else
+                return false;
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
@@ -355,6 +358,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         String freshAccessToken = SessionHandler.getAccessToken();
         return chain.request().newBuilder()
                 .header("authorization", "Bearer " + freshAccessToken)
+                .header("accounts-authorization", "Bearer " + freshAccessToken)
                 .build();
     }
 }

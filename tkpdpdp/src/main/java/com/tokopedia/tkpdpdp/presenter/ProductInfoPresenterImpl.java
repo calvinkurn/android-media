@@ -15,6 +15,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -44,10 +45,12 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
         ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
         // [variable for add product before share]
         if(isAddingProduct){
-            viewListener.inflateFragment(ProductShareFragment.newInstance(isAddingProduct), ProductShareFragment.TAG);
-        // [variable for add product before share]
+            viewListener.navigateToActivity(ShareActivity.createIntent(context,shareDa,isAddingProduct));
+            viewListener.closeView();
+            // [variable for add product before share]
         }else if(shareDa !=null){
-            viewListener.inflateFragment(ProductShareFragment.newInstance(shareDa), ProductShareFragment.TAG);
+            viewListener.navigateToActivity(ShareActivity.createIntent(context,shareDa));
+            viewListener.closeView();
         } else if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
             viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
                             .setProductKey(uri.getPathSegments().get(1))
@@ -60,6 +63,10 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                             .newInstance(generateProductPass(bundle, uri)),
                     ProductDetailFragment.class.getSimpleName());
         } else {
+            if (uri == null) {
+                return;
+            }
+
             List<String> uriSegments = uri.getPathSegments();
             String iden = uriSegments.get(1);
             for (int i = 2; i < uriSegments.size(); i++) {
@@ -70,9 +77,12 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                     new Select().from(CategoryDB.class)
                             .where(CategoryDB_Table.categoryIdentifier.eq(iden))
                             .querySingle();
-            String dep_id = dep.getDepartmentId()+"";
-            Intent moveIntent = BrowseProductRouter.getDefaultBrowseIntent(context);
-            moveIntent.putExtra("d_id", dep_id);
+            if (dep == null) {
+                return;
+            }
+
+            String depId = String.valueOf(dep.getDepartmentId());
+            Intent moveIntent = BrowseProductRouter.getIntermediaryIntent(context,depId);
 
             viewListener.navigateToActivity(moveIntent);
         }

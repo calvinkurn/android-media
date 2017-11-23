@@ -8,6 +8,10 @@
     android:background="@drawable/bg_product_list"
     android:clickable="true">
 
+    <!-- HAPUS INI KELAS DARI tkpdcore -->
+    <!-- use gridview_hotlist_product from tkpddiscovery -->
+    <!-- DELETE THIS FILE -->
+
     <android.support.v7.widget.CardView
         android:id="@+id/image_card"
         android:layout_width="match_parent"

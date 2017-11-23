@@ -46,6 +46,7 @@ public class ProductReviewPresenterImpl implements ProductReviewPresenter {
     public void getMostHelpfulReview() {
         HashMap<String,String> hashMap = new HashMap<>();
         hashMap.put("product_id", view.getProductID());
+        hashMap.put("shop_id", view.getShopId());
         if(view.getNAV().equals(ReputationProduct.SIX_MONTH_REPUTATION)){
             hashMap.put("month_range", String.valueOf(6));
         }
