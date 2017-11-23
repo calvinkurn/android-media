@@ -13,6 +13,7 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -71,13 +72,17 @@ public interface FlightBookingContract {
         void getRenderReturnPrice(List<SimpleViewModel> prices);
 
         void renderTotalPrices(String totalPrice);
+
+        void showGetCartDataErrorStateLayout();
+
+        void renderFinishTimeCountDown(Date date);
+
+        void showExpireTransactionDialog();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void onButtonSubmitClicked();
-
-        void initialize();
 
         void onPhoneCodeResultReceived(FlightBookingPhoneCodeViewModel phoneCodeViewModel);
 
@@ -90,5 +95,12 @@ public interface FlightBookingContract {
         void processGetCartData();
 
         void onResume();
+
+        void onRetryGetCartData();
+
+        void onDestroyView();
+
+        void onFinishTransactionTimeReached();
+
     }
 }

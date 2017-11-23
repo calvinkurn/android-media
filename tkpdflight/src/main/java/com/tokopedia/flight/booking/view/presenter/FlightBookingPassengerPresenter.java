@@ -3,7 +3,6 @@ package com.tokopedia.flight.booking.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
@@ -26,11 +25,10 @@ import javax.inject.Inject;
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
 
-    private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
 
     @Inject
-    public FlightBookingPassengerPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase) {
-        this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
+    public FlightBookingPassengerPresenter() {
+
     }
 
 

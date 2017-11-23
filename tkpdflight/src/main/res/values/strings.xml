@@ -134,7 +134,7 @@
     <string name="flight_label_detail_price">Rincian Harga</string>
     <string name="flight_label_continued_payment">Lanjut Pembayaran</string>
     <string name="flight_label_return_flight">Penerbangan Pulang</string>
-    <string name="flight_booking_toolbar_title">Isi data pemesan</string>
+    <string name="flight_booking_toolbar_title">Isi Data Pemesan</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>
     <string name="flight_duration_hh">%1$d Jm</string>
@@ -168,8 +168,8 @@
     <string name="flight_booking_passenger_change_label">Ubah</string>
     <string name="flight_booking_passenger_fill_data_label">Isi Data</string>
     <string name="flight_booking_list_passenger_birthdate_label">Tanggal Lahir</string>
-    <string name="flight_booking_list_passenger_luggage_label">Bagasi</string>
-    <string name="flight_booking_list_passenger_meals_label">Makanan</string>
+    <string name="flight_booking_list_passenger_luggage_label">Bagasi </string>
+    <string name="flight_booking_list_passenger_meals_label">Makanan </string>
     <string name="flightbooking_price_adult_label">Dewasa</string>
     <string name="flightbooking_price_child_label">Anak</string>
     <string name="flightbooking_price_infant_label">Bayi</string>
@@ -181,4 +181,15 @@
     <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
     <string name="change_date">Ubah Tanggal</string>
     <string name="reset_filter">Reset Filter</string>
+    <string name="flight_booking_passenger_name_hint">Nama (sesuai KTP/SIM/Passport)</string>
+    <string name="flight_booking_passenger_name_secondary_hint">Isi Nama Lengkap</string>
+    <string name="flight_booking_passenger_birthdate_hint">Tanggal Lahir</string>
+    <string name="flight_booking_passenger_birthdate_secondary_hint">Pilih Tanggal Lahir</string>
+    <string name="flight_booking_passenger_luggage_label">Bagasi</string>
+    <string name="flight_booking_passenger_meal_label">Makanan</string>
+    <string name="flight_booking_passenger_submit_button">Simpan</string>
+    <string name="flight_booking_expired_booking_label">Data Pemesanan telah kadaluarsa</string>
+    <string name="flight_booking_contact_name_secondary_hint">Isi Nama Lengkap</string>
+    <string name="flight_booking_contact_email_secondary_hint">Isi Alamat Email</string>
+    <string name="flight_booking_contact_telp_hint">Isi nomor telepon</string>
 </resources>
