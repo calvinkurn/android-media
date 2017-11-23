@@ -118,8 +118,8 @@ dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    //compile rootProject.ext.miscDependencies.dagger
-    //apt rootProject.ext.miscDependencies.daggerCompiler
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
     //compile 'com.android.support:appcompat-v7:25.3.1'
     //compile 'com.android.support.constraint:constraint-layout:1.0.2'
     //compile 'com.android.support:support-v4:25.3.1'
