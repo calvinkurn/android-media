@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'io.fabric'
 apply from: "../buildconfig/reactnative/react.gradle"
 
 def getDpiId(String density) {
@@ -54,6 +55,15 @@ def renameAPKFile(variant, density, versionCode) {
 
 def getAPKArchiveFolder(variant) {
     return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+}
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
 }
 
 android {
