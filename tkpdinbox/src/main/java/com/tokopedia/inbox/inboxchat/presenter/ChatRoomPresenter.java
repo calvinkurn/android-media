@@ -135,7 +135,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void onGoToDetail(String id, String role) {
-        if (!role.equals(ADMIN.toLowerCase())) {
+        if (role!=null && id!=null &&!role.equals(ADMIN.toLowerCase())) {
             if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(id), "");

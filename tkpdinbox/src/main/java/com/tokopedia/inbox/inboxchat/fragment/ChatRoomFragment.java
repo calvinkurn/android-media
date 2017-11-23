@@ -113,16 +113,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
         View rootView = inflater.inflate(R.layout.fragment_chat_room, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initVar();
-        toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
+        toolbar = getActivity().findViewById(R.id.app_bar);
         mainHeader = toolbar.findViewById(R.id.main_header);
         mainHeader.setVisibility(View.INVISIBLE);
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progress);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.reply_list);
+        progressBar = rootView.findViewById(R.id.progress);
+        recyclerView = rootView.findViewById(R.id.reply_list);
         replyView = rootView.findViewById(R.id.add_comment_area);
-        sendButton = (ImageView) rootView.findViewById(R.id.send_but);
-        replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
+        sendButton = rootView.findViewById(R.id.send_but);
+        replyColumn = rootView.findViewById(R.id.new_comment);
         sendButton.requestFocus();
-        attachButton = (ImageView) rootView.findViewById(R.id.add_url);
+        attachButton = rootView.findViewById(R.id.add_url);
         notifier = rootView.findViewById(R.id.notifier);
         replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
@@ -268,10 +268,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         if (toolbar != null) {
             mainHeader.setVisibility(View.VISIBLE);
-            avatar = (ImageView) toolbar.findViewById(R.id.user_avatar);
-            user = (TextView) toolbar.findViewById(R.id.title);
-            onlineDesc = (TextView) toolbar.findViewById(R.id.subtitle);
-            label = (TextView) toolbar.findViewById(R.id.label);
+            avatar = toolbar.findViewById(R.id.user_avatar);
+            user = toolbar.findViewById(R.id.title);
+            onlineDesc = toolbar.findViewById(R.id.subtitle);
+            label = toolbar.findViewById(R.id.label);
             ImageHandler.loadImageCircle2(getActivity(), avatar, getArguments().getString(PARAM_SENDER_IMAGE), R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             if (!TextUtils.isEmpty(getArguments().getString(PARAM_SENDER_TAG, ""))
@@ -360,7 +360,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void run() {
                     notifier.setVisibility(View.VISIBLE);
-                    TextView title = (TextView) notifier.findViewById(R.id.title);
+                    TextView title = notifier.findViewById(R.id.title);
                     View action = notifier.findViewById(R.id.action);
                     title.setText(R.string.error_no_connection_retrying);
                     action.setVisibility(View.VISIBLE);
@@ -447,7 +447,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public boolean isMyMessage(int fromUid) {
-        return String.valueOf(fromUid).equals(sessionHandler.getLoginID(MainApplication.getAppContext()));
+        return String.valueOf(fromUid).equals(SessionHandler.getLoginID(MainApplication.getAppContext()));
     }
 
     @Override
@@ -502,12 +502,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     public void restackList(Bundle data) {
 
-        if (toolbar != null) {
+        if (toolbar  != null) {
             mainHeader.setVisibility(View.VISIBLE);
-            avatar = (ImageView) toolbar.findViewById(R.id.user_avatar);
-            user = (TextView) toolbar.findViewById(R.id.title);
-            onlineDesc = (TextView) toolbar.findViewById(R.id.subtitle);
-            label = (TextView) toolbar.findViewById(R.id.label);
+            avatar = toolbar.findViewById(R.id.user_avatar);
+            user = toolbar.findViewById(R.id.title);
+            onlineDesc = toolbar.findViewById(R.id.subtitle);
+            label = toolbar.findViewById(R.id.label);
             ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             label.setText(getArguments().getString(PARAM_SENDER_TAG));
@@ -591,7 +591,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    TextView title = (TextView) notifier.findViewById(R.id.title);
+                    TextView title = notifier.findViewById(R.id.title);
                     title.setText(R.string.connected_websocket);
                     View action = notifier.findViewById(R.id.action);
                     action.setVisibility(View.GONE);
