@@ -44,7 +44,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected TextView titleSuggestionBid;
     protected V detailAd;
     private TextInputLayout maxPriceInputLayout;
-    private PrefixEditText maxPriceEditText;
+    protected PrefixEditText maxPriceEditText;
     private RadioGroup budgetRadioGroup;
     private RadioButton budgetLifeTimeRadioButton;
     private RadioButton budgetPerDayRadioButton;
@@ -53,7 +53,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     private PrefixEditText budgetPerDayEditText;
     private String suggestionBidText;
     private String prefixSuggestion;
-    private boolean isFirstTime; // when first time, all edit text should be empty without validation
+    protected boolean isFirstTime; // when first time, all edit text should be empty without validation
     private String IS_FIRST_TIME = "IS_FIRST_TIME";
 
     protected void onClickedNext() {
@@ -125,6 +125,14 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         if(data == null)
             return;
         setSuggestionBidText(data.getData().get(0).getMedianFmt());
+    }
+
+    protected void setSuggestionBidText(@Nullable TextView text, @Nullable GetSuggestionResponse data){
+        if(data == null || text == null)
+            return;
+        this.suggestionBidText = data.getData().get(0).getMedianFmt();
+
+        text.setText(getSuggestionBidRaw());
     }
 
     @Override
@@ -238,6 +246,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     }
 
     protected void setDefaultSuggestionBidText() {
+        if(getSuggestionBidRaw() != null && !getSuggestionBidRaw().isEmpty()){
+            return;
+        }
         titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
         titleSuggestionBidUse.setVisibility(View.GONE);
     }
