@@ -226,5 +226,10 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
                 .getNextAction(requestParams);
     }
 
+    @Override
+    public Observable<ResolutionActionDomainData> inputAddressV2(RequestParams requestParams) {
+        return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
+                .inputAddressV2(requestParams);
+    }
 
 }

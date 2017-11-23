@@ -1,9 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.subscriber;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
@@ -139,6 +143,28 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             customerDomain,
                             conversationDomain,
                             isShowTitle));
+                }
+            } else if(actionType.equals(INPUT_ADDRESS)) {
+                boolean isShowTitle;
+                if (lastAction == conversationDomain.getAction().getBy()) {
+                    isShowTitle = false;
+                } else {
+                    lastAction = conversationDomain.getAction().getBy();
+                    isShowTitle = true;
+                }
+                if (actionBy == conversationDomain.getAction().getBy()) {
+                    items.add(new ChatInputAddressRightViewModel(
+                            shopDomain,
+                            customerDomain,
+                            conversationDomain,
+                            MainApplication.getAppContext().getResources().getString(R.string.string_address_format)));
+                } else {
+                    items.add(new ChatInputAddressLeftViewModel(
+                            shopDomain,
+                            customerDomain,
+                            conversationDomain,
+                            isShowTitle,
+                            MainApplication.getAppContext().getResources().getString(R.string.string_address_format)));
                 }
             } else if (actionType.equals(REPORT_RESOLUTION)
                     || actionType.equals(ENTER_RETUR_SESSION_RESOLUTION)
