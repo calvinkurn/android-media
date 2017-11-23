@@ -7,9 +7,9 @@
 
     <include
         android:id="@+id/include_loading"
+        layout="@layout/loader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/loader"
         android:gravity="center"
         android:visibility="gone" />
 
@@ -30,34 +30,35 @@
             <com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout
                 android:id="@+id/fragment_shipping_header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <com.tokopedia.seller.shopsettings.shipping.customview.ShippingAddressLayout
                 android:id="@+id/shipping_address_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:id="@+id/fragment_shipping_main_layout"
-                android:animateLayoutChanges="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_small"
                 android:layout_marginBottom="@dimen/padding_small"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:layout_marginTop="@dimen/padding_small"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"></LinearLayout>
+
             <TextView
                 android:id="@+id/submit_button_create_shop"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"
+                android:layout_gravity="center"
+                android:background="@drawable/button_buy_from_cart"
                 android:gravity="center"
                 android:padding="@dimen/margin_small"
-                android:layout_gravity="center"
-                android:textStyle="bold"
-                android:background="@drawable/button_buy_from_cart"
-                android:visibility="gone"
+                android:text="@string/submit_but"
                 android:textColor="@color/white"
-                android:text="@string/submit_but"/>
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
+
 </RelativeLayout>

@@ -10,11 +10,11 @@ import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordFilterStatusFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordGroupsFragment;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,4 +87,5 @@ public class TopAdsKeywordFilterActivity extends BaseFilterActivity
         getCurrentFragment(position, TopAdsKeywordGroupsFragment.class).setActive(false);
         topAdsFilterListFragment.setActive(position, false);
     }
+
 }

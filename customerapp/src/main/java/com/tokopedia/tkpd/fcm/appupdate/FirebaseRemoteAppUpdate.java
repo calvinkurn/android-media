@@ -11,6 +11,7 @@ import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 /**
  * Created by okasurya on 7/25/17.
@@ -29,31 +30,35 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
 
     public FirebaseRemoteAppUpdate(Activity activity) {
         this.activity = activity;
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        firebaseRemoteConfig = RemoteConfigFetcher.initRemoteConfig(activity);
     }
 
     @Override
     public void checkApplicationUpdate(final OnUpdateListener listener) {
-        firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
-        firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
-                .addOnCompleteListener(this.activity, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            firebaseRemoteConfig.activateFetched();
+        if(firebaseRemoteConfig != null) {
+            firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
+            firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
+                    .addOnCompleteListener(this.activity, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                firebaseRemoteConfig.activateFetched();
+                            }
+                            DetailUpdate detailUpdate = getDetailUpdate();
+                            if (detailUpdate.isNeedUpdate() && BuildConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
+                                listener.onNeedUpdate(detailUpdate);
+                            } else {
+                                listener.onNotNeedUpdate();
+                            }
                         }
-                        DetailUpdate detailUpdate = getDetailUpdate();
-                        if(detailUpdate.isNeedUpdate() && BuildConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
-                            listener.onNeedUpdate(detailUpdate);
+                    })
+                    .addOnFailureListener(this.activity, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            listener.onError(e);
                         }
-                    }
-                })
-                .addOnFailureListener(this.activity, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        listener.onError(e);
-                    }
-                });
+                    });
+        }
     }
 
     private DetailUpdate getDetailUpdate() {

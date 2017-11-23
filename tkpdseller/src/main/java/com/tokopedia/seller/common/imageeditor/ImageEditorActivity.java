@@ -29,7 +29,6 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
 
     public static final int REQUEST_CODE = 520;
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
-    public static final String EXTRA_WATERMARK_TEXT = "WTRMK_TEXT";
     public static final String EXTRA_DELETE_CACHE_WHEN_EXIT = "DEL_CACHE";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
@@ -46,22 +45,20 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     private int imageIndex;
 
     private TkpdProgressDialog progressDialog;
-    private String watermarkText;
 
-    public static void start(Context context, Fragment fragment, ArrayList<String> imageUrls, String watermarkText, boolean delCacheWhenExit) {
-        Intent intent = createInstance(context, imageUrls, watermarkText, delCacheWhenExit);
+    public static void start(Context context, Fragment fragment, ArrayList<String> imageUrls, boolean delCacheWhenExit) {
+        Intent intent = createInstance(context, imageUrls, delCacheWhenExit);
         fragment.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static void start(Activity activity, ArrayList<String> imageUrls, String watermarkText, boolean delCacheWhenExit) {
-        Intent intent = createInstance(activity, imageUrls, watermarkText, delCacheWhenExit);
+    public static void start(Activity activity, ArrayList<String> imageUrls, boolean delCacheWhenExit) {
+        Intent intent = createInstance(activity, imageUrls, delCacheWhenExit);
         activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static Intent createInstance(Context context, ArrayList<String> imageUrls, String watermarkText, boolean delCacheWhenExit) {
+    public static Intent createInstance(Context context, ArrayList<String> imageUrls, boolean delCacheWhenExit) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
-        intent.putExtra(EXTRA_WATERMARK_TEXT, watermarkText);
         intent.putExtra(EXTRA_DELETE_CACHE_WHEN_EXIT, delCacheWhenExit);
         return intent;
     }
@@ -74,7 +71,6 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        watermarkText = getIntent().getStringExtra(EXTRA_WATERMARK_TEXT);
         if (savedInstanceState == null) {
             if (getIntent().hasExtra(EXTRA_IMAGE_URLS)) {
                 imageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
@@ -140,9 +136,16 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
 
     private void replaceEditorFragment(FragmentManager fragmentManager){
         fragmentManager.beginTransaction()
-                .replace(R.id.container, ImageEditorFragment.newInstance(
-                        imageUrls.get(imageIndex)), ImageEditorFragment.TAG)
+                .replace(R.id.container, getNewEditorFragment(), ImageEditorFragment.TAG)
                 .commit();
+    }
+
+    protected ImageEditorFragment getNewEditorFragment(){
+        return ImageEditorFragment.newInstance( getImageUrl());
+    }
+
+    protected String getImageUrl(){
+        return imageUrls.get(imageIndex);
     }
 
     private void showProgressDialog() {
@@ -173,8 +176,14 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     @Override
     public void onSuccessCrop(String path){
         // save the new path
+        if (resultImageUrls == null) {
+            return;
+        }
+        if (imageIndex >= resultImageUrls.size()) {
+            imageIndex = resultImageUrls.size() - 1;
+        }
         resultImageUrls.set(imageIndex, path);
-        savedCroppedPaths.add(path);
+        addCroppedPath(path);
         imageIndex++;
         if (imageIndex == imageUrls.size()) {
             finishEditing(true);
@@ -184,6 +193,10 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
             replaceEditorFragment(fragmentManager);
             setUpToolbarTitle();
         }
+    }
+
+    public void addCroppedPath(String path){
+        savedCroppedPaths.add(path);
     }
 
     private void finishEditing(boolean isResultOK) {
