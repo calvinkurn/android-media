@@ -133,9 +133,9 @@ public interface AppEventTracking {
         String TOP_ADS_SELLER_APP = "topAdsSellerApp";
         String CLICK_CREATE_SHOP = "clickCreateShop";
 
-        String PRODUCT_PAGE = "ClickProductDetailPage";
-        String SEND_MESSAGE_PAGE = "ClickMessageRoom";
-        String SHOP_PAGE = "ClickShopPage";
+        String PRODUCT_PAGE = "clickPDP";
+        String SEND_MESSAGE_PAGE = "ClickChatDetail";
+        String SHOP_PAGE = "clickMessageShop";
 
         String CLICK_APP_SHARE_REFERRAL = "clickReferral";
         String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
