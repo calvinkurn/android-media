@@ -544,6 +544,16 @@ public class DetailResChatFragment
     }
 
     @Override
+    public void showChatProgressBar() {
+        chatAdapter.showLoading();
+    }
+
+    @Override
+    public void dismissChatProgressBar() {
+        chatAdapter.removeLoading();
+    }
+
+    @Override
     public void errorInputMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
         chatAdapter.deleteLastItem();

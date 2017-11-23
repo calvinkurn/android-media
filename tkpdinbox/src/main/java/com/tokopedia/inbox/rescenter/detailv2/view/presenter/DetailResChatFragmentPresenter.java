@@ -141,7 +141,7 @@ public class DetailResChatFragmentPresenter
 
     @Override
     public void doLoadMore(String resolutionId, String convId, DetailResChatDomain detailResChatDomain) {
-        mainView.showProgressBar();
+        mainView.showChatProgressBar();
         getResChatMoreUseCase.execute(
                 GetResChatMoreUseCase.getResChatUseCaseParam(
                         String.valueOf(resolutionId),

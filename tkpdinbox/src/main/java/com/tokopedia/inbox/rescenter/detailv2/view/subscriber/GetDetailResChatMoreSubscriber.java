@@ -31,7 +31,7 @@ public class GetDetailResChatMoreSubscriber extends Subscriber<ConversationListD
 
     @Override
     public void onNext(ConversationListDomain conversationListDomain) {
-        mainView.dismissProgressBar();
+        mainView.dismissChatProgressBar();
         mainView.successGetConversationMore(conversationListDomain);
         List<Visitable> visitableList = GetDetailResChatSubscriber.initChatData(conversationListDomain,
                 detailResChatDomain.getShop(),
@@ -48,7 +48,7 @@ public class GetDetailResChatMoreSubscriber extends Subscriber<ConversationListD
 
     @Override
     public void onError(Throwable e) {
-        mainView.dismissProgressBar();
+        mainView.dismissChatProgressBar();
         e.printStackTrace();
         mainView.errorGetConversationMore(ErrorHandler.getErrorMessage(e));
     }
