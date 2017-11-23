@@ -32,26 +32,26 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
         return getDataList(map);
     }
 
-    public static HashMap<String, Object> generateGetParam(String query){
+    public static HashMap<String, Object> generateGetParam(String query) {
         HashMap<String, Object> map = new HashMap<>();
         map.put(FlightAirportDataListFileSource.KEYWORD, query);
         return map;
     }
 
-    public static HashMap<String, Object> generateGetCacheParam(String id){
+    public static HashMap<String, Object> generateGetCacheParam(String id) {
         HashMap<String, Object> map = new HashMap<>();
         map.put(FlightAirportDataListDBSource.ID, id);
         return map;
     }
 
-    public static String getQueryFromMap(HashMap<String, Object> params){
+    public static String getQueryFromMap(HashMap<String, Object> params) {
         if (params == null) {
             return "";
         }
         return (String) params.get(FlightAirportDataListFileSource.KEYWORD);
     }
 
-    public static String getIDFromMap(HashMap<String, Object> params){
+    public static String getIDFromMap(HashMap<String, Object> params) {
         if (params == null) {
             return "";
         }
