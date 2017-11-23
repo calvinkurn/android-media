@@ -1,20 +1,13 @@
 package com.tokopedia.flight.airport.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filterable;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
-
-import org.w3c.dom.Text;
-
-import java.util.List;
 
 /**
  * Created by zulfikarrahman on 10/24/17.
