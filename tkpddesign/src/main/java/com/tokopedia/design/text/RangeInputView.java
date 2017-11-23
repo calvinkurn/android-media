@@ -245,7 +245,7 @@ public class RangeInputView extends BaseCustomView {
     protected void refreshInputText() {
         setValueText(minValue, maxValue);
         if (onValueChangedListener != null) {
-            onValueChangedListener.onValueChanged(minValue, maxValue);
+            onValueChangedListener.onValueChanged(minValue, maxValue, minBound, maxBound);
         }
     }
 
@@ -417,6 +417,6 @@ public class RangeInputView extends BaseCustomView {
     }
 
     public interface OnValueChangedListener {
-        void onValueChanged(int minValue, int maxValue);
+        void onValueChanged(int minValue, int maxValue, int minBound, int maxBound);
     }
 }

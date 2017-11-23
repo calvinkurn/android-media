@@ -1,6 +1,8 @@
-package com.tokopedia.flight.review;
+package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.review.domain.FlightBookingReviewSubmitUseCase;
+import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;

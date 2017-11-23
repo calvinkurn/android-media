@@ -1,4 +1,4 @@
-package com.tokopedia.flight.review;
+package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;

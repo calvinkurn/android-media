@@ -1,4 +1,4 @@
-package com.tokopedia.flight.review;
+package com.tokopedia.flight.review.view.adapter;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +20,34 @@ import java.util.List;
  * Created by zulfikarrahman on 11/10/17.
  */
 
-public class FlightBookingReviewPassengerViewHolder extends BaseViewHolder {
+public class FlightBookingReviewPassengerViewHolder extends BaseViewHolder<FlightDetailPassenger> {
 
     private ReviewPassengerDetailAdapter reviewPassengerDetailAdapter;
     private TextView passengerNumber;
     private TextView passengerName;
     private TextView passengerCategory;
     private RecyclerView recyclerViewPassengerDetail;
+
+    @Override
+    public void bindObject(FlightDetailPassenger flightDetailPassenger) {
+        passengerNumber.setText(String.format("%d.", getAdapterPosition() + 1));
+        passengerName.setText(flightDetailPassenger.getPassengerName());
+        passengerCategory.setText(getPassengerType(flightDetailPassenger.getPassengerType()));
+        reviewPassengerDetailAdapter.addData(flightDetailPassenger.getInfoPassengerList());
+    }
+
+    String getPassengerType(int flightDetailPassenger) {
+        switch (flightDetailPassenger){
+            case FlightBookingPassenger.ADULT:
+                return getString(R.string.flight_label_adult);
+            case FlightBookingPassenger.CHILDREN:
+                return getString(R.string.flight_label_child);
+            case FlightBookingPassenger.INFANT:
+                return getString(R.string.flight_label_infant);
+            default:
+                return "";
+        }
+    }
 
     public FlightBookingReviewPassengerViewHolder(View layoutView) {
         super(layoutView);
@@ -37,13 +61,8 @@ public class FlightBookingReviewPassengerViewHolder extends BaseViewHolder {
         recyclerViewPassengerDetail.setAdapter(reviewPassengerDetailAdapter);
     }
 
-    @Override
-    public void bindObject(Object o) {
-        passengerNumber.setText(String.format("%d.", getAdapterPosition() + 1));
-    }
-
     private class ReviewPassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetailViewHolder> {
-        List<Object> infoList;
+        List<SimpleViewModel> infoList;
 
         public ReviewPassengerDetailAdapter() {
             infoList = new ArrayList<>();
@@ -65,7 +84,7 @@ public class FlightBookingReviewPassengerViewHolder extends BaseViewHolder {
             return infoList.size();
         }
 
-        public void addData(List<Object> infos) {
+        public void addData(List<SimpleViewModel> infos) {
             infoList.clear();
             infoList.addAll(infos);
             notifyDataSetChanged();
@@ -82,7 +101,9 @@ public class FlightBookingReviewPassengerViewHolder extends BaseViewHolder {
             descInfo = (TextView) itemView.findViewById(R.id.desc_info);
         }
 
-        public void bindData(Object info) {
+        public void bindData(SimpleViewModel info) {
+            titleInfo.setText(info.getDescription());
+            descInfo.setText(info.getLabel());
         }
     }
 }

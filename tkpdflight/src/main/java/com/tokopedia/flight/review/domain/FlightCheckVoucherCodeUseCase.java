@@ -1,4 +1,4 @@
-package com.tokopedia.flight.review;
+package com.tokopedia.flight.review.domain;
 
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;

@@ -1,7 +1,8 @@
-package com.tokopedia.flight.review;
+package com.tokopedia.flight.review.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +14,13 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
+import com.tokopedia.flight.review.view.presenter.FlightBookingReviewContract;
+import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
+import com.tokopedia.flight.review.view.presenter.FlightBookingReviewPresenter;
+import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPriceAdapter;
 
 import javax.inject.Inject;
 
@@ -22,6 +29,8 @@ import javax.inject.Inject;
  */
 
 public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View {
+
+    public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
 
     private TextView reviewTime;
     private TextView reviewDetailDepartureFlight;
@@ -35,6 +44,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
+    FlightBookingReviewModel flightBookingReviewModel;
+
+    public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel){
+        FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_DATA_REVIEW, flightBookingReviewModel);
+        flightBookingReviewFragment.setArguments(bundle);
+        return flightBookingReviewFragment;
+    }
 
     @Override
     protected String getScreenName() {
@@ -45,6 +63,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     protected void initInjector() {
         getComponent(FlightBookingComponent.class)
                 .inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        flightBookingReviewModel = getArguments().getParcelable(EXTRA_DATA_REVIEW);
     }
 
     @Nullable
@@ -61,25 +85,47 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewTotalPrice = (TextView) view.findViewById(R.id.total_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 
-        FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(getContext());
-        recyclerViewDepartureFlight.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewDepartureFlight.setAdapter(departureFlightAdapter);
-        FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(getContext());
-        recyclerViewReturnFlight.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewReturnFlight.setAdapter(returnFlightAdapter);
-        FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(getContext());
-        recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter);
-        FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter(getContext());
-        recyclerViewDetailPrice.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
+        initView();
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 flightBookingReviewPresenter.submitData();
             }
         });
+        reviewDetailReturnFlight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(FlightDetailActivity.createIntent(getActivity(), flightBookingReviewModel.getDetailViewModelListReturn()));
+            }
+        });
+        reviewDetailDepartureFlight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(FlightDetailActivity.createIntent(getActivity(), flightBookingReviewModel.getDetailViewModelListDeparture()));
+            }
+        });
         return view;
+    }
+
+    void initView() {
+        FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(getContext());
+        departureFlightAdapter.addData(flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList());
+        recyclerViewDepartureFlight.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewDepartureFlight.setAdapter(departureFlightAdapter);
+        FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(getContext());
+        returnFlightAdapter.addData(flightBookingReviewModel.getDetailViewModelListReturn().getRouteList());
+        recyclerViewReturnFlight.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewReturnFlight.setAdapter(returnFlightAdapter);
+        FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(getContext());
+        flightBookingReviewPassengerAdapter.addData(flightBookingReviewModel.getDetailPassengers());
+        recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter);
+        FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter(getContext());
+        flightBookingReviewPriceAdapter.addData(flightBookingReviewModel.getFlightReviewFares());
+        recyclerViewDetailPrice.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
+
+        reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
     }
 
     private void checkVoucherCode(String voucherCode) {
