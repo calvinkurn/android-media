@@ -12,7 +12,7 @@
         <TextView
             android:id="@+id/action_help"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:background="@drawable/btn_transparent_disable"
             android:layout_gravity="center"
@@ -25,7 +25,7 @@
         <TextView
             android:id="@+id/action_edit_solution"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:layout_gravity="center"
             android:background="@drawable/btn_transparent_disable"
@@ -40,7 +40,7 @@
     <TextView
         android:id="@+id/action_cancel_resolution"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="50dp"
         android:background="@color/tkpd_main_green"
         android:layout_gravity="center"
         android:gravity="center"
@@ -52,7 +52,7 @@
     <TextView
         android:id="@+id/action_input_address"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:background="@color/tkpd_main_green"
         android:gravity="center"
@@ -64,7 +64,7 @@
     <TextView
         android:id="@+id/action_input_awb_number"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="50dp"
         android:background="@color/tkpd_main_green"
         android:layout_gravity="center"
         android:gravity="center"
@@ -76,19 +76,19 @@
     <TextView
         android:id="@+id/action_accept_product"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:background="@color/tkpd_main_green"
         android:gravity="center"
         android:text="@string/action_accept_product"
         android:textColor="@color/white"
         android:textSize="@dimen/font_medium"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/action_accept_solution"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="50dp"
         android:background="@color/tkpd_main_green"
         android:layout_gravity="center"
         android:gravity="center"

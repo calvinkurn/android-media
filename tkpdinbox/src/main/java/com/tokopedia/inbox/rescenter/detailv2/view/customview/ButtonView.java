@@ -75,9 +75,20 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     @Override
     public void renderData(@NonNull ButtonData data) {
         setButtonData(data);
+        setButtonText(data);
         setButtonSheetDialog();
         setVisibility(isAnyButtonVisible() ? VISIBLE : GONE);
         listener.setOnDiscussionButtonPosition(isAnyButtonVisible());
+    }
+
+    private void setButtonText(ButtonData data) {
+        actionEdit.setText(data.getEditLabel());
+        actionAcceptProduct.setText(data.getFinishComplaintLabel());
+        actionHelp.setText(data.getAskHelpLabel());
+        actionAcceptSolutionVertical.setText(data.getAcceptLabel());
+        actionCancelResolutionVertical.setText(data.getCancelLabel());
+        actionInputAwbNumber.setText(data.getInputAwbLabel());
+        actionInputAddress.setText(data.getInputAddressLabel());
     }
 
     private void setButtonSheetDialog() {

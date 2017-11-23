@@ -162,6 +162,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setShowAcceptSolution(domainModel.getAccept() == 1);
         data.setShowAcceptAdminSolution(domainModel.getAcceptByAdmin() == 1);
         data.setAcceptProductDialogText(domainModel.getAcceptText());
+        data.setFinishComplaintLabel(domainModel.getFinishLabel());
         data.setAcceptReturSolution(domainModel.getAcceptReturn() == 1);
         data.setAskHelpLabel(domainModel.getReportLabel());
         data.setCancelLabel(domainModel.getCancelLabel());
