@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -21,6 +22,9 @@ public class FlightDateUtil {
         return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);
     }
 
+    public static String formatToUi(String dateStr) {
+        return formatDate(DEFAULT_FORMAT, DEFAULT_VIEW_FORMAT, dateStr);
+    }
     public static String formatDate(String currentFormat, String newFormat, String dateString, Locale locale) {
 
         try {
@@ -79,4 +83,10 @@ public class FlightDateUtil {
         return cal.getTime();
     }
 
+    public static Date addTimeToCurrentDate(int field, int value) {
+        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        now
+                .add(field, value);
+        return now.getTime();
+    }
 }
