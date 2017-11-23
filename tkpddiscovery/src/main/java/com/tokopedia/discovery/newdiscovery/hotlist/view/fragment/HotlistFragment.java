@@ -157,7 +157,7 @@ public class HotlistFragment extends SearchSectionFragment
 
 
     @Override
-    protected String getScreenName() {
+    public String getScreenName() {
         return AppScreen.SCREEN_BROWSE_HOT_LIST;
     }
 

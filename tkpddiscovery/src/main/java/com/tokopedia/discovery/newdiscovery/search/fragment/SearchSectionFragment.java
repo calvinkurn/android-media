@@ -336,7 +336,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
             Intent intent = RevampedDynamicFilterActivity.createInstance(
-                    getActivity(), getFilters(), getFlagFilterHelper()
+                    getActivity(), getScreenName(), getFlagFilterHelper()
             );
             startActivityForResult(intent, getFilterRequestCode());
             getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);

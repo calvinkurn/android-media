@@ -13,7 +13,6 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
-import com.tokopedia.discovery.newdiscovery.category.presentation.base.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.subscriber.AddWishlistActionSubscriber;
@@ -26,6 +25,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseC
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
+import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
 import java.util.ArrayList;
