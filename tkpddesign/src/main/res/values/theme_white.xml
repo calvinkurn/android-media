@@ -11,14 +11,14 @@
         <item name="android:background">@android:color/white</item>
         <item name="actionModeBackground">@android:color/white</item>
         <item name="android:actionModeBackground">@android:color/white</item>
-        <item name="android:textColorPrimary">@color/black_70</item>
-        <item name="android:actionMenuTextColor">@color/black_70</item>
-        <item name="android:textColorSecondary">@color/black_70</item>
+        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
+        <item name="android:actionMenuTextColor">@color/font_black_primary_70</item>
+        <item name="android:textColorSecondary">@color/font_black_primary_70</item>
     </style>
 
     <style name="TabBar.White" parent="BaseTabBar">
         <item name="android:background">@android:color/white</item>
-        <item name="tabTextColor">@color/tkpd_grey_text</item>
+        <item name="tabTextColor">@color/grey_title</item>
         <item name="tabIndicatorColor">@color/tkpd_main_green</item>
         <item name="tabSelectedTextColor">@color/tkpd_main_green</item>
     </style>
