@@ -484,8 +484,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void openInterruptConfirmationWebView(String tosUrl) {
+    public void openInterruptConfirmationWebView(String url) {
         if (!isOpenInterruptWebviewDialog) {
+            RideGATracking.eventOpenInterruptScreen(url);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
             if (previousDialog != null) {
@@ -493,7 +494,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             }
 
             fragmentTransaction.addToBackStack(null);
-            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(url);
             dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
             //using state loss, because sometimes this dialog comes on top of location enablegit
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
