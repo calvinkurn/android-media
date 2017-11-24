@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -62,6 +63,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     private WebSocket ws;
     private int attempt;
     boolean inActionMode;
+    private CountDownTimer countDownTimer;
 
     @Inject
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
@@ -94,7 +96,20 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
         listener = new ChatWebSocketListenerImpl(getView().getInterface());
-        recreateWebSocket();
+
+        countDownTimer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                createWebSocket();
+            }
+        };
+
+        createWebSocket();
     }
 
     public void getMessage() {
@@ -218,6 +233,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         getMessageListUseCase.unsubscribe();
         searchMessageUseCase.unsubscribe();
         deleteMessageListUseCase.unsubscribe();
+        countDownTimer.cancel();
     }
 
 
@@ -384,20 +400,20 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
 
     @Override
-    public void recreateWebSocket() {
-//        if(attempt > 5) {
-//            getView().notifyConnectionWebSocket();
-//        }else {
+    public void createWebSocket() {
         try {
             Request request = new Request.Builder().url(magicString)
                     .header("Origin", TkpdBaseURL.WEB_DOMAIN)
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
-//        }
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void recreateWebSocket() {
+        countDownTimer.start();
     }
 
     @Override
