@@ -9,7 +9,11 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="144dp">
 
         <include layout="@layout/item_detail_chat_title"
             android:id="@+id/layout_title"/>
@@ -91,7 +95,6 @@
         <include layout="@layout/item_detail_chat_date"
             android:id="@+id/layout_date_1"/>
 
-
         <LinearLayout
             android:layout_marginTop="@dimen/margin_vs"
             android:id="@+id/ff_bubble_left_2"
@@ -99,7 +102,7 @@
             android:layout_height="wrap_content"
             android:minWidth="120dp"
             android:minHeight="25dp"
-            android:background="@drawable/bg_bubble_left"
+            android:background="@drawable/bg_bubble_left_white"
             android:orientation="vertical">
 
             <LinearLayout
@@ -126,17 +129,23 @@
             </LinearLayout>
 
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_300"
+                />
             <FrameLayout
                 android:id="@+id/fl_see_all_product"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@drawable/bg_bubble_button">
+                android:padding="@dimen/margin_vvs"
+                >
 
                 <Button
                     android:id="@+id/btn_see_all_product"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/transparent"
+                    android:background="@color/white"
                     android:text="@string/string_see_all_product"
                     android:textSize="@dimen/fontvs"
                     android:textAllCaps="false"
@@ -155,7 +164,7 @@
             android:layout_height="wrap_content"
             android:minWidth="120dp"
             android:minHeight="25dp"
-            android:background="@drawable/bg_bubble_left"
+            android:background="@drawable/bg_bubble_left_white"
             android:padding="@dimen/padding_small">
 
             <LinearLayout
