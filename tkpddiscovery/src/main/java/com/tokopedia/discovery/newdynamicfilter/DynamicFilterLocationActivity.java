@@ -28,14 +28,14 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
 
     public static void moveTo(AppCompatActivity activity,
                               String pageTitle,
-                              List<Option> optionList,
+                              String templateName,
                               boolean isSearchable,
                               String searchHint) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterLocationActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
-            intent.putParcelableArrayListExtra(EXTRA_OPTION_LIST, new ArrayList<>(optionList));
+            intent.putExtra(EXTRA_OPTION_LIST, templateName);
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             activity.startActivityForResult(intent, REQUEST_CODE);

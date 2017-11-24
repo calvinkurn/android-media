@@ -46,7 +46,7 @@ public class FilterDetailActivityRouter {
             DynamicFilterLocationActivity
                     .moveTo(activity,
                             filter.getTitle(),
-                            filter.getOptions(),
+                            filter.getTemplateName(),
                             filter.getSearch().getSearchable() == 1,
                             filter.getSearch().getPlaceholder());
 
