@@ -38,6 +38,8 @@
         app:bav_icon_2="@drawable/ic_flight_search_sort"
         app:bav_label_1="@string/flight_search_filter_label"
         app:bav_label_2="@string/flight_search_sort_label"
+        app:bav_1_display="true"
+        app:bav_2_display="true"
         app:layout_anchor="@id/recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal"
         app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior" />
