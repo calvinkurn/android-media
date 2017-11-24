@@ -141,6 +141,8 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     public void updateOptionMenuColor(Menu menu) {
         if (isToolbarWhite()) {
             MenuTintUtils.tintAllIcons(menu, TEXT_COLOR_BACKGROUND_WHITE);
+        }else{
+            MenuTintUtils.tintAllIcons(menu, R.color.white);
         }
     }
 
