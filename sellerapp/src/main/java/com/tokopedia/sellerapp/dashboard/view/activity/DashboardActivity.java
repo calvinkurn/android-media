@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -47,6 +48,7 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     protected void onResume() {
         super.onResume();
+        FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         new GCMHandler(this).actionRegisterOrUpdateDevice(this);
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }

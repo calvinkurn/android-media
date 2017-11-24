@@ -540,6 +540,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onResume() {
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
+        FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
             content.clear();
