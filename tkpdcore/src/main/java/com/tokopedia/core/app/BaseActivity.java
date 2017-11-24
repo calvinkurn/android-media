@@ -72,9 +72,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
-    @Inject
+
     protected SessionHandler sessionHandler;
-    @Inject
+
     protected GCMHandler gcmHandler;
 
     private Boolean isPause = false;
@@ -94,8 +94,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-
+        sessionHandler = new SessionHandler(getBaseContext());
         categoryDatabaseManager = new CategoryDatabaseManager();
+        gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();

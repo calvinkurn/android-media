@@ -101,6 +101,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
         registerFCMDeviceID();
+        finishSplashScreen();
     }
 //        }, TIME_DELAY);
 
@@ -126,7 +127,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         return new GCMHandlerListener() {
             @Override
             public void onGCMSuccess(String regId) {
-                bypassV2Login();
+                //bypassV2Login();
             }
         };
     }
