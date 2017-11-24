@@ -30,11 +30,6 @@ public class FlightSelectPassengerActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setContentInsetStartWithNavigation(0);

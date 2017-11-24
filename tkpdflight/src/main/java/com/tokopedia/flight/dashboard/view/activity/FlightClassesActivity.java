@@ -52,9 +52,4 @@ public class FlightClassesActivity extends BaseSimpleActivity implements HasComp
         setResult(RESULT_OK, getIntent());
         finish();
     }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
 }

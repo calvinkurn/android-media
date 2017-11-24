@@ -45,11 +45,6 @@ public class FlightBookingActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
     public FlightBookingComponent getComponent() {
         if (getApplication() instanceof FlightModuleRouter) {
             return DaggerFlightBookingComponent.builder()

@@ -36,6 +36,6 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
 
     @Override
     protected int getLayoutRes() {
-        return isToolbarWhite() ? R.layout.activity_base_tab_white : R.layout.activity_base_tab;
+        return R.layout.activity_base_tab;
     }
 }

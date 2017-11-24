@@ -206,11 +206,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
     public void onTransitLabelClicked() {
         replaceFragment(FlightFilterTransitFragment.newInstance(), FlightFilterTransitFragment.TAG);
     }
