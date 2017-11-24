@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.DepositSourceFactory;
@@ -79,6 +80,8 @@ public class DrawerInjector {
                                                          LocalCacheHandler drawerCache) {
 
         GlobalCacheManager profileCache = new GlobalCacheManager();
+        JobExecutor jobExecutor = new JobExecutor();
+        PostExecutionThread uiThread = new UIThread();
 
         ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
                 context,
@@ -97,14 +100,14 @@ public class DrawerInjector {
                                 .build())
         );
 
-        GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(new JobExecutor(),
+        GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,
                 new UIThread(), userAttributesRepository);
 
         ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
 
         ProfileUseCase profileUseCase = new ProfileUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 profileRepository
         );
 
@@ -119,8 +122,8 @@ public class DrawerInjector {
         TopPointsRepository topPointsRepository = new TopPointsRepositoryImpl(topPointsSourceFactory);
 
         TopPointsUseCase topPointsUseCase = new TopPointsUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 topPointsRepository
         );
 
@@ -140,8 +143,8 @@ public class DrawerInjector {
 
         TokoCashRepository tokoCashRepository = new TokoCashRepositoryImpl(tokoCashSourceFactory);
         TokoCashUseCase tokoCashUseCase = new TokoCashUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 tokoCashRepository
         );
 
@@ -162,8 +165,8 @@ public class DrawerInjector {
                 (notificationSourceFactory, topChatNotificationSource);
 
         NotificationUseCase notificationUseCase = new NotificationUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 notificationRepository
         );
 
@@ -175,19 +178,19 @@ public class DrawerInjector {
 
         DepositRepository depositRepository = new DepositRepositoryImpl(depositSourceFactory);
         DepositUseCase depositUseCase = new DepositUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 depositRepository);
 
         TopChatNotificationUseCase topChatNotificationUseCase = new TopChatNotificationUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 notificationRepository
         );
 
         NewNotificationUseCase newNotificationUseCase = new NewNotificationUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 notificationUseCase,
                 topChatNotificationUseCase
         );

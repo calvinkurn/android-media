@@ -32,7 +32,7 @@ public class NewNotificationUseCase extends UseCase<NotificationModel> {
 
     @Override
     public Observable<NotificationModel> createObservable(RequestParams requestParams) {
-        final Observable<NotificationModel> notif = notificationUseCase.createObservable(requestParams);
+        Observable<NotificationModel> notif = notificationUseCase.createObservable(requestParams);
         Observable<TopChatNotificationModel> notifTopChat = topChatNotificationUseCase.createObservable
                 (requestParams);
 
