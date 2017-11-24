@@ -112,6 +112,9 @@ public interface Constants {
         String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
         String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
+        String WALLET_HOME = "tokopedia://wallet";
+        String WALLET_ACTIVATION = "tokopedia://wallet/activation";
+        String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
@@ -134,6 +137,7 @@ public interface Constants {
         String HTTP = "http";
         String HTTPS = HTTP + "s";
         String APPLINKS = "tokopedia";
+        String APPLINKS_SELLER = "sellerapp";
     }
 
     interface Settings {
@@ -147,5 +151,9 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
+    }
+
+    interface AppLinkQueryParameter {
+        String WALLET_TOP_UP_VISIBILITY = "top_up_visible";
     }
 }
