@@ -301,13 +301,18 @@ public class OTPPresenter implements OTP.Presenter {
                         new Func2<PaymentStatusDomain, CreateOrderDomain, PaymentStatusDomain>() {
                             @Override
                             public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, CreateOrderDomain createOrderDomain) {
-                                if (paymentStatusDomain.getState() == 3 && createOrderDomain.isStatus()) {
-                                    paymentStatusDomain.setOrderId(createOrderDomain.getOrderId());
-                                    paymentStatusDomain.setInvoiceRef(createOrderDomain.getInvoiceRef());
-                                    return paymentStatusDomain;
+                                if(paymentStatusDomain.getState() == 3) {
+                                    if (createOrderDomain.isStatus()) {
+                                        paymentStatusDomain.setOrderId(createOrderDomain.getOrderId());
+                                        paymentStatusDomain.setInvoiceRef(createOrderDomain.getInvoiceRef());
+                                    } else {
+                                        paymentStatusDomain.setOrderId(0);
+                                        paymentStatusDomain.setInvoiceRef(paymentStatusDomain.getTransactionId());
+                                    }
                                 } else {
                                     throw new RuntimeException("Payment Failed");
                                 }
+                                return paymentStatusDomain;
                             }
                         }
                 );
