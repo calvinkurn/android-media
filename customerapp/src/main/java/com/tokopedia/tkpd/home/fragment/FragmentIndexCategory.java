@@ -483,6 +483,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void onPause() {
+        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
     public void onStop() {
         if (isTickerRotating()) {
             stopSlideTicker();
@@ -926,7 +932,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         brandsPresenter.onDestroy();
         tokoCashPresenter.onDestroy();
         rechargeCategoryPresenter.onDestroy();
-        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 
     //region recharge

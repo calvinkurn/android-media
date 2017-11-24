@@ -460,16 +460,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
 
-        if (getExtraFilter() != null) {
-            adsParams.getParam().putAll(getExtraFilter());
-        }
-        if (getSelectedFilter() != null) {
-            adsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getSelectedSort() != null) {
-            adsParams.getParam().putAll(getSelectedSort());
-        }
-
+        enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
     }
@@ -480,15 +471,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getDepartmentId());
 
-        if (getExtraFilter() != null) {
-            adsParams.getParam().putAll(getExtraFilter());
-        }
-        if (getSelectedFilter() != null) {
-            adsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getSelectedSort() != null) {
-            adsParams.getParam().putAll(getSelectedSort());
-        }
+        enrichWithFilterAndSortParams(adsParams);
 
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
