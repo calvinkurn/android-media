@@ -63,6 +63,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dynamic_filter_detail);
+        retrieveOptionListData();
         fetchDataFromIntent();
         bindView();
         initTopBar();
@@ -71,8 +72,11 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         initSearchView();
     }
 
-    private void fetchDataFromIntent() {
+    protected void retrieveOptionListData() {
         optionList = getIntent().getParcelableArrayListExtra(EXTRA_OPTION_LIST);
+    }
+
+    private void fetchDataFromIntent() {
         isSearchable = getIntent().getBooleanExtra(EXTRA_IS_SEARCHABLE, false);
         searchHint = getIntent().getStringExtra(EXTRA_SEARCH_HINT);
         pageTitle = getIntent().getStringExtra(EXTRA_PAGE_TITLE);

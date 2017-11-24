@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.ToastNetworkHandler;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.helper.KeyboardHelper;
@@ -173,8 +174,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                             throw new RuntimeException("error get filter cache");
                         } else {
                             Type listType = new TypeToken<List<Filter>>() {}.getType();
-                            Gson gson = new Gson();
-                            return gson.fromJson(data, listType);
+                            List<Filter> filterList = new Gson().fromJson(data, listType);
+                            storeLocationFilterOptions(getLocationFilter(filterList));
+                            return filterList;
                         }
                     }
                 })
@@ -199,6 +201,17 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                         adapter.setFilterList(list);
                     }
                 });
+    }
+
+    private void storeLocationFilterOptions(Filter locationFilter) {
+        Type listType = new TypeToken<List<Option>>() {}.getType();
+        Gson gson = new Gson();
+        String optionData = gson.toJson(locationFilter.getOptions(), listType);
+
+        DynamicFilterDbManager cache = new DynamicFilterDbManager();
+        cache.setFilterID(locationFilter.getTemplateName());
+        cache.setFilterData(optionData);
+        cache.store();
     }
 
     private void removeFiltersWithEmptyOption(List<Filter> filterList) {
@@ -233,6 +246,13 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 optionMap.put(option.getValue(), option);
             }
         }
+    }
+
+    private Filter getLocationFilter(List<Filter> filterList) {
+        for (Filter filter : filterList) {
+            if (filter.isLocationFilter()) return filter;
+        }
+        return null;
     }
 
     private Filter getSizeFilter(List<Filter> filterList) {

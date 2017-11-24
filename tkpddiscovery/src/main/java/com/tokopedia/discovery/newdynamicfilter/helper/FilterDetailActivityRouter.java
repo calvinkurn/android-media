@@ -8,6 +8,7 @@ import com.tokopedia.discovery.newdynamicfilter.DynamicFilterColorActivity;
 import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailBrandActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailGeneralActivity;
+import com.tokopedia.discovery.newdynamicfilter.DynamicFilterLocationActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterRatingActivity;
 
 /**
@@ -35,6 +36,14 @@ public class FilterDetailActivityRouter {
 
         } else if (filter.isBrandFilter()) {
             DynamicFilterDetailBrandActivity
+                    .moveTo(activity,
+                            filter.getTitle(),
+                            filter.getOptions(),
+                            filter.getSearch().getSearchable() == 1,
+                            filter.getSearch().getPlaceholder());
+
+        } else if (filter.isLocationFilter()) {
+            DynamicFilterLocationActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),

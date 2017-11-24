@@ -22,6 +22,7 @@ public class Filter implements Parcelable {
     private static final String TEMPLATE_NAME_COLOR = "template_color";
     private static final String TEMPLATE_NAME_PRICE = "template_price";
     private static final String TEMPLATE_NAME_BRAND = "template_brand";
+    private static final String TEMPLATE_NAME_LOCATION = "template_location";
 
     @SerializedName("title")
     @Expose
@@ -61,6 +62,10 @@ public class Filter implements Parcelable {
 
     public boolean isSizeFilter() {
         return TEMPLATE_NAME_SIZE.equals(templateName);
+    }
+
+    public boolean isLocationFilter() {
+        return TEMPLATE_NAME_LOCATION.equals(templateName);
     }
 
     public boolean isBrandFilter() {
