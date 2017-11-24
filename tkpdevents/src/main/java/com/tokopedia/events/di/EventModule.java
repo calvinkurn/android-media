@@ -30,7 +30,6 @@ import retrofit2.Retrofit;
 
 @Module
 public class EventModule {
-    //private static final int CACHE_SIZE = 10485760;
 
    public EventModule(){
 

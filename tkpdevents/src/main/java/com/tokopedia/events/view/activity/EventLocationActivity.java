@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class EventLocationActivity extends TActivity implements HasComponent<EventComponent>, SearchInputView.Listener, EventsLocationContract.View, EventLocationAdapter.ActionListener {
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
@@ -41,7 +40,6 @@ public class EventLocationActivity extends TActivity implements HasComponent<Eve
     EventComponent eventComponent;
     @Inject
     public EventLocationsPresenter mPresenter;
-    private Unbinder unbinder;
 
     private EventLocationAdapter eventLocationAdapter;
     private List<EventLocationViewModel> eventLocationViewModels;
@@ -54,65 +52,16 @@ public class EventLocationActivity extends TActivity implements HasComponent<Eve
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_location);
-        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         initInjector();
         executeInjector();
-        unbinder = ButterKnife.bind(this);
         mPresenter.attachView(this);
         ButterKnife.bind(this);
         mPresenter.getLocationsListList();
         searchInputView.setListener(this);
+        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+
 
     }
-
-//    @Override
-//    protected void setupURIPass(Uri data) {
-//
-//    }
-//
-//    @Override
-//    protected void setupBundlePass(Bundle extras) {
-//
-//    }
-//
-//    @Override
-//    protected void initialPresenter() {
-//
-//    }
-//
-//    @Override
-//    protected int getLayoutId() {
-//        return R.layout.activity_event_location;
-//    }
-//
-//    @Override
-//    protected void initVar() {
-//        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
-//        initInjector();
-//        executeInjector();
-//        unbinder = ButterKnife.bind(this);
-//        mPresenter.attachView(this);
-//        ButterKnife.bind(this);
-//        mPresenter.getLocationsListList();
-//
-//
-//    }
-//
-//    @Override
-//    protected void setActionVar() {
-//
-//    }
-//
-//    @Override
-//    protected void initView() {
-//
-//
-//    }
-//
-//    @Override
-//    protected void setViewListener() {
-//        searchInputView.setListener(this);
-//    }
 
     @Override
     public void onSearchSubmitted(String text) {

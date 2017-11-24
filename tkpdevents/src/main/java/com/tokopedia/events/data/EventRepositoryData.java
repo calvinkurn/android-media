@@ -4,7 +4,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
+import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.domain.EventRepository;
+import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 
@@ -82,6 +84,19 @@ public class EventRepositoryData implements EventRepository {
                     public List<EventsCategoryDomain> call(EventResponseEntity eventResponseEntity) {
                         EventEntityMaper eventEntityMaper = new EventEntityMaper();
                         return eventEntityMaper.tranform(eventResponseEntity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<EventDetailsDomain> getEventDetails(String url) {
+        return eventsDataStoreFactory
+                .createCloudDataStore()
+                .getEventDetails(url).map(new Func1<EventsDetailsEntity, EventDetailsDomain>() {
+                    @Override
+                    public EventDetailsDomain call(EventsDetailsEntity eventsDetailsEntity) {
+                        EventEntityMaper eventEntityMaper = new EventEntityMaper();
+                        return eventEntityMaper.tranformEventDetails(eventsDetailsEntity);
                     }
                 });
     }

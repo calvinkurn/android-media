@@ -2,20 +2,13 @@ package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
-import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -24,7 +17,6 @@ import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
-import com.tokopedia.events.view.adapter.CategoryTabsPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;

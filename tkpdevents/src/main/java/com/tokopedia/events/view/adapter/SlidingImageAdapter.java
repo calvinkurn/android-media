@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.events.R;
-import com.tokopedia.events.view.activity.AppBarFlexiImageScrollsActivity;
+import com.tokopedia.events.view.activity.EventDetailsActivity;
 
 import java.util.ArrayList;
 
@@ -56,7 +56,7 @@ public class SlidingImageAdapter extends PagerAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(context, AppBarFlexiImageScrollsActivity.class));
+                context.startActivity(new Intent(context, EventDetailsActivity.class));
             }
         });
         return imageLayout;

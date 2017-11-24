@@ -5,7 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tokopedia.events.data.entity.response.EventLocationResponseEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
+import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.HomeResponseEntity;
+import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 
@@ -39,7 +41,7 @@ public class EventEntityMaper {
 
 
     public List<EventLocationDomain> tranformLocationList(List<EventLocationResponseEntity> eventLocationResponseEntities) {
-        List<EventLocationDomain> EventLocationList = new ArrayList<>();
+        List<EventLocationDomain> eventLocationList = new ArrayList<>();
         EventLocationDomain eventLocationDomain;
         for (EventLocationResponseEntity eventLocationResponseEntity:eventLocationResponseEntities) {
             eventLocationDomain =new EventLocationDomain();
@@ -53,9 +55,30 @@ public class EventEntityMaper {
             eventLocationDomain.setStatus(eventLocationResponseEntity.getStatus());
             eventLocationDomain.setSearchName(eventLocationResponseEntity.getSearchName());
 
-            EventLocationList.add(eventLocationDomain);
+            eventLocationList.add(eventLocationDomain);
         }
 
-        return EventLocationList;
+        return eventLocationList;
+    }
+
+    public EventDetailsDomain tranformEventDetails(EventsDetailsEntity eventsDetailsEntity) {
+        EventDetailsDomain eventDetailsDomain=new EventDetailsDomain();
+        eventDetailsDomain.setId(eventsDetailsEntity.getId());
+        eventDetailsDomain.setCityName(eventsDetailsEntity.getCityName());
+        eventDetailsDomain.setCategoryId(eventsDetailsEntity.getCategoryId());
+        eventDetailsDomain.setConvenienceFee(eventsDetailsEntity.getConvenienceFee());
+        eventDetailsDomain.setDisplayName(eventsDetailsEntity.getDisplayName());
+        eventDetailsDomain.setDuration(eventsDetailsEntity.getDuration());
+        eventDetailsDomain.setImageApp(eventsDetailsEntity.getImageApp());
+        eventDetailsDomain.setHasSeatLayout(eventsDetailsEntity.getHasSeatLayout());
+        eventDetailsDomain.setIsFoodAvailable(eventsDetailsEntity.getIsFoodAvailable());
+        eventDetailsDomain.setIsPromo(eventsDetailsEntity.getIsPromo());
+        eventDetailsDomain.setTnc(eventsDetailsEntity.getTnc());
+        eventDetailsDomain.setTitle(eventsDetailsEntity.getTitle());
+        eventDetailsDomain.setSalesPrice(eventsDetailsEntity.getSalesPrice());
+        eventDetailsDomain.setShortDesc(eventsDetailsEntity.getShortDesc());
+        eventDetailsDomain.setLongRichDesc(eventsDetailsEntity.getLongRichDesc());
+
+        return eventDetailsDomain;
     }
 }

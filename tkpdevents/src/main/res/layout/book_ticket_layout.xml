@@ -16,7 +16,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collasing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="270dp"
             android:fitsSystemWindows="true"
             app:contentScrim="@color/white"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
@@ -54,7 +54,7 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="76sp"
+            android:layout_height="76dp"
             android:overScrollMode="ifContentScrolls"
             android:paddingTop="8dp"
             app:tabGravity="center"
@@ -67,12 +67,9 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_book_ticket"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:background="@color/white"
-        android:fitsSystemWindows="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <include
         android:id="@+id/pay_tickets"

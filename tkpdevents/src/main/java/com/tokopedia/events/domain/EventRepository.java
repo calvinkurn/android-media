@@ -3,6 +3,7 @@ package com.tokopedia.events.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
+import com.tokopedia.events.domain.model.EventDetailsDomain;
 
 import java.util.List;
 
@@ -21,5 +22,8 @@ public interface EventRepository {
     Observable<List<EventLocationDomain>> getEventsLocationList(TKPDMapParam<String, Object> params);
 
     Observable<List<EventsCategoryDomain>> getEventsListByLocation(String location);
+
+    Observable<EventDetailsDomain> getEventDetails(String url);
+
 
 }

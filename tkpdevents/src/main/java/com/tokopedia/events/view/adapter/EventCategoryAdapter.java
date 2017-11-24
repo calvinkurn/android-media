@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.events.R;
-import com.tokopedia.events.view.activity.AppBarFlexiImageScrollsActivity;
+import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
@@ -79,7 +79,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(context, AppBarFlexiImageScrollsActivity.class));
+                context.startActivity(new Intent(context, EventDetailsActivity.class));
             }
         });
     }

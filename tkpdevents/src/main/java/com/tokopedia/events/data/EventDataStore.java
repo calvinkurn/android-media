@@ -3,6 +3,7 @@ package com.tokopedia.events.data;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
+import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 
 import rx.Observable;
 
@@ -19,6 +20,9 @@ public interface EventDataStore {
     Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params);
 
     Observable<EventResponseEntity> getEventsListByLocation(String location);
+
+    Observable<EventsDetailsEntity> getEventDetails(String url);
+
 
 
 }
