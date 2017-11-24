@@ -127,16 +127,22 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
 
         chatStatus.setImageResource(imageResource);
 
-        if(element.getRole().toLowerCase().equals(ROLE_USER.toLowerCase())){
+        if(element.getRole()!=null){
+            if(element.getRole().toLowerCase().equals(ROLE_USER.toLowerCase())){
+                name.setVisibility(View.GONE);
+                label.setVisibility(View.GONE);
+                dot.setVisibility(View.GONE);
+            }else{
+                name.setText(element.getSenderName());
+                label.setText(element.getRole());
+                name.setVisibility(View.VISIBLE);
+                dot.setVisibility(View.VISIBLE);
+                label.setVisibility(View.VISIBLE);
+            }
+        }else {
             name.setVisibility(View.GONE);
             label.setVisibility(View.GONE);
             dot.setVisibility(View.GONE);
-        }else{
-            name.setText(element.getSenderName());
-            label.setText(element.getRole());
-            name.setVisibility(View.VISIBLE);
-            dot.setVisibility(View.VISIBLE);
-            label.setVisibility(View.VISIBLE);
         }
 
         element.getSenderId();
