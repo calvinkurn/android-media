@@ -618,5 +618,11 @@ public class ProductFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.shouldLoadAds(false);
         adapter.showEmpty();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }
 

@@ -695,4 +695,10 @@ public class ProductListFragment extends SearchSectionFragment
             PreFilterHelper.addPreFilteredCategory(getFilters(), getFlagFilterHelper(), categoryId);
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

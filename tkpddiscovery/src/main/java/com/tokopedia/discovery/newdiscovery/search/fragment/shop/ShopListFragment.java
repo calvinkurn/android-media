@@ -478,4 +478,10 @@ public class ShopListFragment extends SearchSectionFragment
     public void backToTop() {
         recyclerView.smoothScrollToPosition(0);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

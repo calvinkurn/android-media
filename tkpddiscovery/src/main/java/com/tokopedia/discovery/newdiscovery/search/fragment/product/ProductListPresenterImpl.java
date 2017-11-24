@@ -250,4 +250,13 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
         requestParams.putBoolean(BrowseApi.REFINED, isForceSearch);
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getProductUseCase.unsubscribe();
+        addWishlistActionUseCase.unsubscribe();
+        removeWishlistActionUseCase.unsubscribe();
+        getDynamicFilterUseCase.unsubscribe();
+    }
 }
