@@ -232,4 +232,9 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
                 .inputAddressV2(requestParams);
     }
 
+    @Override
+    public Observable<ResolutionActionDomainData> editAddressV2(RequestParams requestParams) {
+        return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
+                .editAddressV2(requestParams);
+    }
 }

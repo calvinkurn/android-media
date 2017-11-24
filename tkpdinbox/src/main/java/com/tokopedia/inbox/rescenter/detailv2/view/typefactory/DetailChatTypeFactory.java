@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.typefactory;
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionFinalLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressRightViewModel;
@@ -39,6 +40,8 @@ public interface DetailChatTypeFactory {
     int type(ChatInputAddressLeftViewModel viewModel);
 
     int type(ChatInputAddressRightViewModel viewModel);
+
+    int type(ChatActionFinalLeftViewModel viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

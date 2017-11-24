@@ -8,6 +8,7 @@ import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.ResolutionCenterActionMapper;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
@@ -111,5 +112,13 @@ public class CloudActionResCenterDataStore {
         return resolutionApi.inputAddress(
                 params.getString(InputAddressUseCase.PARAM_RESOLUTION_ID, ""),
                 params.getParameters()).map(resolutionCenterActionMapper);
+    }
+
+    public Observable<ResolutionActionDomainData> editAddressV2(RequestParams params) {
+        return resolutionApi.editAddress(
+                params.getString(EditAddressUseCase.PARAM_RESOLUTION_ID, ""),
+                params.getString(EditAddressUseCase.PARAM_CONVERSATION_ID, ""),
+                params.getParameters())
+                .map(resolutionCenterActionMapper);
     }
 }

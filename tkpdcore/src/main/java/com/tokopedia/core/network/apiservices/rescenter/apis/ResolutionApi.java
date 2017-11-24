@@ -135,6 +135,11 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> inputAddress(@Path("resolution_id") String resolutionID,
                                                          @FieldMap TKPDMapParam<String, Object> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_CONVERSATION_ADDRESS_EDIT)
+    Observable<Response<TkpdResponse>> editAddress(@Path("resolution_id") String resolutionID, @Path("conversation_id") String conversationID,
+                                                    @FieldMap TKPDMapParam<String, Object> params);
+
 
     //Version 1
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_DETAIL)

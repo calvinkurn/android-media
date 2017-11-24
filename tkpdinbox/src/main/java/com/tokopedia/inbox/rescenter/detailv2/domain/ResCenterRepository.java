@@ -85,4 +85,6 @@ public interface ResCenterRepository {
     Observable<NextActionDomain> getNextAction(RequestParams requestParams);
 
     Observable<ResolutionActionDomainData> inputAddressV2(RequestParams requestParams);
+
+    Observable<ResolutionActionDomainData> editAddressV2(RequestParams requestParams);
 }
