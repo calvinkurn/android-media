@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -260,6 +261,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         t.start();
 
         checkAppUpdate();
+        checkIsHaveApplinkComeFromDeeplink();
     }
 
     @Override
@@ -317,7 +319,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             @Override
             public void onSuccessGetUserAttr(UserAttribute.Data data) {
-                if(data!=null)
+                if (data != null)
                     TrackingUtils.setMoEUserAttributes(data);
             }
         };
@@ -736,9 +738,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
-                new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
-                        .getAlertDialog().show();
-                UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
+                if (!isPausing()){
+                    new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
+                            .getAlertDialog().show();
+                    UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
+                }
             }
 
             @Override
@@ -756,8 +760,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
         if (intent.getBooleanExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
             if (getApplication() instanceof TkpdCoreRouter) {
+                if (!isPausing())
                 ((TkpdCoreRouter) getApplication()).getApplinkUnsupported(ParentIndexHome.this).showAndCheckApplinkUnsupported();
             }
+        }
+    }
+
+    private void checkIsHaveApplinkComeFromDeeplink() {
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(HomeRouter.EXTRA_APPLINK))) {
+            String applink = getIntent().getStringExtra(HomeRouter.EXTRA_APPLINK);
+            ((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
         }
     }
 
