@@ -20,7 +20,7 @@ public class Summary {
     private String additionalPrice;
     @SerializedName("total_item")
     @Expose
-    private Integer totalItem;
+    private int totalItem;
     @SerializedName("total_weight")
     @Expose
     private String totalWeight;
@@ -60,11 +60,11 @@ public class Summary {
         this.additionalPrice = additionalPrice;
     }
 
-    public Integer getTotalItem() {
+    public int getTotalItem() {
         return totalItem;
     }
 
-    public void setTotalItem(Integer totalItem) {
+    public void setTotalItem(int totalItem) {
         this.totalItem = totalItem;
     }
 

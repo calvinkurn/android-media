@@ -8,7 +8,7 @@ public class Product {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -20,16 +20,16 @@ public class Product {
     private String price;
     @SerializedName("quantity")
     @Expose
-    private Integer quantity;
+    private int quantity;
     @SerializedName("note")
     @Expose
     private String note;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -57,11 +57,11 @@ public class Product {
         this.price = price;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

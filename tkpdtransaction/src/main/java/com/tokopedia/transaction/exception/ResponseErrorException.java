@@ -9,7 +9,7 @@ public class ResponseErrorException extends Exception {
     private static final long serialVersionUID = 713361211323198507L;
 
     public ResponseErrorException() {
-        super("General Error");
+        super("General OrderDetailResponseError");
     }
 
     public ResponseErrorException(String detailMessage) {

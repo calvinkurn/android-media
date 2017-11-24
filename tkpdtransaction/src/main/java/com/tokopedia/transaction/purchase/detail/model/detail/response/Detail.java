@@ -11,7 +11,7 @@ public class Detail {
     private String paymentVerifiedDate;
     @SerializedName("partial_order")
     @Expose
-    private Integer partialOrder;
+    private int partialOrder;
     @SerializedName("preorder")
     @Expose
     private Preorder preorder;
@@ -39,11 +39,11 @@ public class Detail {
         this.paymentVerifiedDate = paymentVerifiedDate;
     }
 
-    public Integer getPartialOrder() {
+    public int getPartialOrder() {
         return partialOrder;
     }
 
-    public void setPartialOrder(Integer partialOrder) {
+    public void setPartialOrder(int partialOrder) {
         this.partialOrder = partialOrder;
     }
 

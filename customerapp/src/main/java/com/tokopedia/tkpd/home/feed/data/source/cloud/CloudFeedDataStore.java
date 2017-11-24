@@ -68,9 +68,9 @@ public class CloudFeedDataStore {
             @Override
             public void call(Response<String> stringResponse) {
                 if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
-                    throw new RuntimeException("Server Error!");
+                    throw new RuntimeException("Server OrderDetailResponseError!");
                 } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
-                    throw new RuntimeException("Client Error!");
+                    throw new RuntimeException("Client OrderDetailResponseError!");
                 }
             }
         };

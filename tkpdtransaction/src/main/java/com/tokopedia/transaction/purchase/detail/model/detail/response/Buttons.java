@@ -8,179 +8,115 @@ public class Buttons {
 
     @SerializedName("ask_seller")
     @Expose
-    private Integer askSeller;
+    private int askSeller;
     @SerializedName("request_cancel")
     @Expose
-    private Integer requestCancel;
+    private int requestCancel;
     @SerializedName("receive_confirmation")
     @Expose
-    private Integer receiveConfirmation;
+    private int receiveConfirmation;
     @SerializedName("finish_order")
     @Expose
-    private Integer finishOrder;
+    private int finishOrder;
     @SerializedName("complaint")
     @Expose
-    private Integer complaint;
+    private int complaint;
     @SerializedName("cancel_peluang")
     @Expose
-    private Integer cancelPeluang;
+    private int cancelPeluang;
     @SerializedName("order_detail")
     @Expose
-    private Integer orderDetail;
+    private int orderDetail;
     @SerializedName("ask_buyer")
     @Expose
-    private Integer askBuyer;
+    private int askBuyer;
     @SerializedName("accept_order")
     @Expose
-    private Integer acceptOrder;
+    private int acceptOrder;
     @SerializedName("reject_order")
     @Expose
-    private Integer rejectOrder;
+    private int rejectOrder;
     @SerializedName("confirm_shipping")
     @Expose
-    private Integer confirmShipping;
+    private int confirmShipping;
     @SerializedName("request_pickup")
     @Expose
-    private Integer requestPickup;
+    private int requestPickup;
     @SerializedName("change_awb")
     @Expose
-    private Integer changeAwb;
+    private int changeAwb;
     @SerializedName("change_courier")
     @Expose
-    private Integer changeCourier;
+    private int changeCourier;
     @SerializedName("track")
     @Expose
-    private Integer track;
+    private int track;
     @SerializedName("view_complaint")
     @Expose
-    private Integer viewComplaint;
+    private int viewComplaint;
 
-    public Integer getAskSeller() {
+    public int getAskSeller() {
         return askSeller;
     }
 
-    public void setAskSeller(Integer askSeller) {
-        this.askSeller = askSeller;
-    }
-
-    public Integer getRequestCancel() {
+    public int getRequestCancel() {
         return requestCancel;
     }
 
-    public void setRequestCancel(Integer requestCancel) {
-        this.requestCancel = requestCancel;
-    }
-
-    public Integer getReceiveConfirmation() {
+    public int getReceiveConfirmation() {
         return receiveConfirmation;
     }
 
-    public void setReceiveConfirmation(Integer receiveConfirmation) {
-        this.receiveConfirmation = receiveConfirmation;
-    }
-
-    public Integer getFinishOrder() {
+    public int getFinishOrder() {
         return finishOrder;
     }
 
-    public void setFinishOrder(Integer finishOrder) {
-        this.finishOrder = finishOrder;
-    }
-
-    public Integer getComplaint() {
+    public int getComplaint() {
         return complaint;
     }
 
-    public void setComplaint(Integer complaint) {
-        this.complaint = complaint;
-    }
-
-    public Integer getCancelPeluang() {
+    public int getCancelPeluang() {
         return cancelPeluang;
     }
 
-    public void setCancelPeluang(Integer cancelPeluang) {
-        this.cancelPeluang = cancelPeluang;
-    }
-
-    public Integer getOrderDetail() {
+    public int getOrderDetail() {
         return orderDetail;
     }
 
-    public void setOrderDetail(Integer orderDetail) {
-        this.orderDetail = orderDetail;
-    }
-
-    public Integer getAskBuyer() {
+    public int getAskBuyer() {
         return askBuyer;
     }
 
-    public void setAskBuyer(Integer askBuyer) {
-        this.askBuyer = askBuyer;
-    }
-
-    public Integer getAcceptOrder() {
+    public int getAcceptOrder() {
         return acceptOrder;
     }
 
-    public void setAcceptOrder(Integer acceptOrder) {
-        this.acceptOrder = acceptOrder;
-    }
-
-    public Integer getRejectOrder() {
+    public int getRejectOrder() {
         return rejectOrder;
     }
 
-    public void setRejectOrder(Integer rejectOrder) {
-        this.rejectOrder = rejectOrder;
-    }
-
-    public Integer getConfirmShipping() {
+    public int getConfirmShipping() {
         return confirmShipping;
     }
 
-    public void setConfirmShipping(Integer confirmShipping) {
-        this.confirmShipping = confirmShipping;
-    }
-
-    public Integer getRequestPickup() {
+    public int getRequestPickup() {
         return requestPickup;
     }
 
-    public void setRequestPickup(Integer requestPickup) {
-        this.requestPickup = requestPickup;
-    }
-
-    public Integer getChangeAwb() {
+    public int getChangeAwb() {
         return changeAwb;
     }
 
-    public void setChangeAwb(Integer changeAwb) {
-        this.changeAwb = changeAwb;
-    }
-
-    public Integer getChangeCourier() {
+    public int getChangeCourier() {
         return changeCourier;
     }
 
-    public void setChangeCourier(Integer changeCourier) {
-        this.changeCourier = changeCourier;
-    }
-
-    public Integer getTrack() {
+    public int getTrack() {
         return track;
     }
 
-    public void setTrack(Integer track) {
-        this.track = track;
-    }
-
-    public Integer getViewComplaint() {
+    public int getViewComplaint() {
         return viewComplaint;
-    }
-
-    public void setViewComplaint(Integer viewComplaint) {
-        this.viewComplaint = viewComplaint;
     }
 
 }

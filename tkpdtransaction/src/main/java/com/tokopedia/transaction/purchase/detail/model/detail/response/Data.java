@@ -9,13 +9,13 @@ public class Data {
 
     @SerializedName("order_id")
     @Expose
-    private Integer orderId;
+    private int orderId;
     @SerializedName("order_status")
     @Expose
-    private Integer orderStatus;
+    private int orderStatus;
     @SerializedName("reso_id")
     @Expose
-    private Integer resoId;
+    private int resoId;
     @SerializedName("invoice")
     @Expose
     private String invoice;
@@ -38,27 +38,27 @@ public class Data {
     @Expose
     private Buttons buttons;
 
-    public Integer getOrderId() {
+    public int getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Integer orderId) {
+    public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
 
-    public Integer getOrderStatus() {
+    public int getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Integer orderStatus) {
+    public void setOrderStatus(int orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public Integer getResoId() {
+    public int getResoId() {
         return resoId;
     }
 
-    public void setResoId(Integer resoId) {
+    public void setResoId(int resoId) {
         this.resoId = resoId;
     }
 
