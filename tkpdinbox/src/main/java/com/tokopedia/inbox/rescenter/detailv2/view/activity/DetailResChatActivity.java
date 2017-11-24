@@ -102,9 +102,9 @@ public class DetailResChatActivity
     @Override
     protected void initView() {
         if (isSeller) {
-            toolbar.setTitle(getString(R.string.complaint_from) + userName);
+            toolbar.setTitle(getString(R.string.complaint_from) +" "+ userName);
         } else {
-            toolbar.setTitle(getString(R.string.complaint_to) + shopName);
+            toolbar.setTitle(getString(R.string.complaint_to) +" "+ shopName);
         }
         presenter.initFragment(isSeller);
     }

@@ -208,9 +208,12 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         List<ProductItem> productItems = new ArrayList<>();
         for (ComplainedProductData complainedProductData : complainedProductDataList) {
             ProductItem productItem = new ProductItem();
-            productItem.setProductID(String.valueOf(complainedProductData.getId()));
-            productItem.setProductImageUrl(complainedProductData.getProduct().getThumb());
-            productItem.setProductName(complainedProductData.getProduct().getName());
+            productItem.setProductID(complainedProductData.getId() != 0 ?
+                    String.valueOf(complainedProductData.getId()) : "");
+            productItem.setProductImageUrl(complainedProductData.getProduct().getThumb() != null ?
+                    complainedProductData.getProduct().getThumb() : "");
+            productItem.setProductName(complainedProductData.getProduct().getName() != null ?
+                    complainedProductData.getProduct().getName() : "");
             productItems.add(productItem);
         }
         productData.setProductList(productItems);
@@ -286,7 +289,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         AddressData addressData = sellerAddressData.getAddress();
         addressReturData.setAddressID(String.valueOf(addressData.getAddressId()));
         addressReturData.setAddressReturDate(sellerAddressData.getCreateTimeStr());
-        String addressTextBuilder = "<b>" + addressData.getReceiver()+ "</b>" + "<br>" +
+        String addressTextBuilder = "<b>" + addressData.getReceiver() + "</b>" + "<br>" +
                 addressData.getAddress() + "<br>" +
                 addressData.getDistrict() + ", " + addressData.getCity() + "<br>" +
                 addressData.getProvince() + "<br>" +
