@@ -42,29 +42,31 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
     ChatProveAdapter proveAdapter;
     ChatProductAdapter productAdapter;
     FrameLayout flSeeAllProducts;
+    View separator;
 
     public ChatCreateLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
         this.mainView = mainView;
-        tvTitle = (TextView) itemView.findViewById(R.id.tv_create_title);
-        tvBuyerSolution = (TextView) itemView.findViewById(R.id.tv_buyer_solution);
-        tvBuyerText = (TextView) itemView.findViewById(R.id.tv_buyer_text);
-        tvSellerChoice = (TextView) itemView.findViewById(R.id.tv_seller_choice);
-        rvProve = (RecyclerView) itemView.findViewById(R.id.rv_prove);
-        rvProduct = (RecyclerView) itemView.findViewById(R.id.rv_complained_product);
-        btnSeeAllProduct = (Button) itemView.findViewById(R.id.btn_see_all_product);
-        flSeeAllProducts = (FrameLayout) itemView.findViewById(R.id.fl_see_all_product);
+        tvTitle = itemView.findViewById(R.id.tv_create_title);
+        tvBuyerSolution = itemView.findViewById(R.id.tv_buyer_solution);
+        tvBuyerText = itemView.findViewById(R.id.tv_buyer_text);
+        tvSellerChoice = itemView.findViewById(R.id.tv_seller_choice);
+        rvProve = itemView.findViewById(R.id.rv_prove);
+        rvProduct = itemView.findViewById(R.id.rv_complained_product);
+        btnSeeAllProduct = itemView.findViewById(R.id.btn_see_all_product);
+        flSeeAllProducts = itemView.findViewById(R.id.fl_see_all_product);
+        separator = itemView.findViewById(R.id.separator);
 
         layoutTitle = itemView.findViewById(R.id.layout_title);
         layoutDate1 = itemView.findViewById(R.id.layout_date_1);
         layoutDate2 = itemView.findViewById(R.id.layout_date_2);
         layoutDate3 = itemView.findViewById(R.id.layout_date_3);
 
-        tvUserTitle = (TextView) layoutTitle.findViewById(R.id.tv_user_title);
-        tvUsername = (TextView) layoutTitle.findViewById(R.id.tv_username);
-        tvDate1 = (TextView) layoutDate1.findViewById(R.id.tv_date);
-        tvDate2 = (TextView) layoutDate2.findViewById(R.id.tv_date);
-        tvDate3 = (TextView) layoutDate3.findViewById(R.id.tv_date);
+        tvUserTitle = layoutTitle.findViewById(R.id.tv_user_title);
+        tvUsername = layoutTitle.findViewById(R.id.tv_username);
+        tvDate1 = layoutDate1.findViewById(R.id.tv_date);
+        tvDate2 = layoutDate2.findViewById(R.id.tv_date);
+        tvDate3 = layoutDate3.findViewById(R.id.tv_date);
     }
 
     @Override
@@ -84,6 +86,10 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         tvDate1.setText(date);
         tvDate2.setText(date);
         tvDate3.setText(date);
+
+        separator.setVisibility(element.getConversationDomain().getAttachment().size() < 2 ?
+                View.GONE :
+                View.VISIBLE);
 
         flSeeAllProducts.setVisibility(
                 element.getConversationDomain().getAttachment().size() < 2 ?
