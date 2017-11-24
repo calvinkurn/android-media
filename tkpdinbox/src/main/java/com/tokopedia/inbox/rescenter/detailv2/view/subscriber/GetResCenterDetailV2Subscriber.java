@@ -133,7 +133,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
     private ProveData mappingProveData(FirstData data) {
         ProveData proveData = new ProveData();
         proveData.setRemark(data.getBuyerRemark());
-        proveData.setAttachment(data.getAttachments() != null ? mappingAttachmentData(data.getAttachments()) : null);
+        proveData.setAttachment(mappingAttachmentData(data.getAttachments()));
         return proveData;
     }
 
@@ -163,6 +163,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setShowAcceptAdminSolution(domainModel.getAcceptByAdmin() == 1);
         data.setAcceptProductDialogText(domainModel.getAcceptText());
         data.setFinishComplaintLabel(domainModel.getFinishLabel());
+        data.setFinishComplaintDialogText(domainModel.getFinishText());
         data.setAcceptReturSolution(domainModel.getAcceptReturn() == 1);
         data.setAskHelpLabel(domainModel.getReportLabel());
         data.setCancelLabel(domainModel.getCancelLabel());
@@ -268,7 +269,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         awbData.setShipmentID(String.valueOf(userAwbData.getShipping().getId()));
         awbData.setShipmentRef(userAwbData.getAwb());
         awbData.setAwbDate(userAwbData.getCreateTimeStr());
-        awbData.setAttachments(userAwbData.getAttachments() != null ? mappingAwbAttachments(userAwbData.getAttachments()) : null);
+        awbData.setAttachments(mappingAwbAttachments(userAwbData.getAttachments()));
         return awbData;
     }
 

@@ -129,13 +129,11 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getNextAction() != null ?
                         mappingNextActionDomain(response.getNextAction()) :
                         null,
-                response.getLogs() != null ?
-                        mappingLogDataList(response.getLogs()) :
-                        null);
+                mappingLogDataList(response.getLogs()));
     }
 
     private FirstData mappingFirstData(FirstResponse response) {
-        return new FirstData(response.getBuyerRemark(), response.getAttachments() != null ? mappingAttachments(response.getAttachments()) : null);
+        return new FirstData(response.getBuyerRemark(), mappingAttachments(response.getAttachments()));
     }
 
     private LastData mappingLastData(LastResponse response) {
@@ -151,9 +149,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         null,
                 response.getProblem(),
                 response.getStatus(),
-                response.getComplainedProducts() != null ?
-                        mappingComplainedProductList(response.getComplainedProducts()) :
-                        null);
+                mappingComplainedProductList(response.getComplainedProducts()));
     }
 
     private SellerAddressData mappingSellerAddressData(SellerAddressResponse response) {
@@ -195,9 +191,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getTrackable(),
                 response.getCreateTime(),
                 response.getCreateTimeStr(),
-                response.getAttachments() != null ?
-                        mappingAttachments(response.getAttachments()) :
-                        null);
+                mappingAttachments(response.getAttachments()));
     }
 
     private List<AttachmentDataDomain> mappingAttachments(List<AttachmentResponse> responseList) {
@@ -369,9 +363,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getLast() != null ?
                         mappingLastDomain(response.getLast()) :
                         null,
-                response.getStep() != null ?
-                        mappingNextActionDetailStepDomainList(response.getStep()) :
-                        null);
+                mappingNextActionDetailStepDomainList(response.getStep()));
     }
 
     private LastDomain mappingLastDomain(com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastResponse response) {

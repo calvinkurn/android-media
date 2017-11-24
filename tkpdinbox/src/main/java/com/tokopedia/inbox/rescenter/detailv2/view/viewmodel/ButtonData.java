@@ -30,7 +30,45 @@ public class ButtonData implements Parcelable{
     private String appealLabel;
     private String inputAwbLabel;
     private String finishComplaintLabel;
+    private String finishComplaintDialogText;
 
+
+    protected ButtonData(Parcel in) {
+        showEdit = in.readByte() != 0;
+        showAcceptSolution = in.readByte() != 0;
+        showAcceptProduct = in.readByte() != 0;
+        acceptReturSolution = in.readByte() != 0;
+        showAppealSolution = in.readByte() != 0;
+        showAskHelp = in.readByte() != 0;
+        askHelpDialogText = in.readString();
+        showCancel = in.readByte() != 0;
+        cancelDialogText = in.readString();
+        showInputAddress = in.readByte() != 0;
+        showInputAwb = in.readByte() != 0;
+        showAcceptAdminSolution = in.readByte() != 0;
+        acceptDialogText = in.readString();
+        askHelpLabel = in.readString();
+        cancelLabel = in.readString();
+        acceptLabel = in.readString();
+        editLabel = in.readString();
+        inputAddressLabel = in.readString();
+        appealLabel = in.readString();
+        inputAwbLabel = in.readString();
+        finishComplaintLabel = in.readString();
+        finishComplaintDialogText = in.readString();
+    }
+
+    public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
+        @Override
+        public ButtonData createFromParcel(Parcel in) {
+            return new ButtonData(in);
+        }
+
+        @Override
+        public ButtonData[] newArray(int size) {
+            return new ButtonData[size];
+        }
+    };
 
     public boolean isShowEdit() {
         return showEdit;
@@ -209,6 +247,14 @@ public class ButtonData implements Parcelable{
     }
 
 
+    public void setFinishComplaintDialogText(String finishComplaintDialogText) {
+        this.finishComplaintDialogText = finishComplaintDialogText;
+    }
+
+    public String getFinishComplaintDialogText() {
+        return finishComplaintDialogText;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -237,42 +283,6 @@ public class ButtonData implements Parcelable{
         dest.writeString(appealLabel);
         dest.writeString(inputAwbLabel);
         dest.writeString(finishComplaintLabel);
+        dest.writeString(finishComplaintDialogText);
     }
-
-
-    protected ButtonData(Parcel in) {
-        showEdit = in.readByte() != 0;
-        showAcceptSolution = in.readByte() != 0;
-        showAcceptProduct = in.readByte() != 0;
-        acceptReturSolution = in.readByte() != 0;
-        showAppealSolution = in.readByte() != 0;
-        showAskHelp = in.readByte() != 0;
-        askHelpDialogText = in.readString();
-        showCancel = in.readByte() != 0;
-        cancelDialogText = in.readString();
-        showInputAddress = in.readByte() != 0;
-        showInputAwb = in.readByte() != 0;
-        showAcceptAdminSolution = in.readByte() != 0;
-        acceptDialogText = in.readString();
-        askHelpLabel = in.readString();
-        cancelLabel = in.readString();
-        acceptLabel = in.readString();
-        editLabel = in.readString();
-        inputAddressLabel = in.readString();
-        appealLabel = in.readString();
-        inputAwbLabel = in.readString();
-        finishComplaintLabel = in.readString();
-    }
-
-    public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
-        @Override
-        public ButtonData createFromParcel(Parcel in) {
-            return new ButtonData(in);
-        }
-
-        @Override
-        public ButtonData[] newArray(int size) {
-            return new ButtonData[size];
-        }
-    };
 }
