@@ -210,4 +210,13 @@ public class ProductPresenter extends BaseDaggerPresenter<ProductContract.View> 
         void onSuccess(List<ProductItem> productItemList);
         void onFailed();
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getProductUseCase.unsubscribe();
+        addWishlistActionUseCase.unsubscribe();
+        removeWishlistActionUseCase.unsubscribe();
+        getDynamicFilterUseCase.unsubscribe();
+    }
 }

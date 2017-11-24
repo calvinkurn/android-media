@@ -187,4 +187,12 @@ public class CatalogPresenter extends BaseDaggerPresenter<CatalogFragmentContrac
             requestParams.putAll(getView().getExtraFilter());
         return requestParams;
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getBrowseCatalogUseCase.unsubscribe();
+        getBrowseCatalogLoadMoreUseCase.unsubscribe();
+        getDynamicFilterUseCase.unsubscribe();
+    }
 }

@@ -564,4 +564,10 @@ public class CatalogFragment extends SearchSectionFragment implements
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
         topAdsRecyclerAdapter.hideLoading();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

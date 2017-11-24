@@ -272,4 +272,12 @@ public class ProductListPresenterImpl extends BaseDaggerPresenter<ProductListFra
                 });
     }
 
+    @Override
+    public void detachView() {
+        super.detachView();
+        getProductUseCase.unsubscribe();
+        addWishlistActionUseCase.unsubscribe();
+        removeWishlistActionUseCase.unsubscribe();
+        getDynamicFilterUseCase.unsubscribe();
+    }
 }
