@@ -5,18 +5,15 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
+import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
@@ -66,6 +63,7 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
 
     @Override
     protected void onClickedNext() {
+        if (firstTimeCheck()) return;
         if(!isError()) {
             super.onClickedNext();
             if (stepperListener != null) {
@@ -102,6 +100,9 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
         setSuggestionBidText(s);
+        if(isFirstTime){
+            setSuggestionBidText(maxPriceEditText, s);
+        }
     }
 
     @Override

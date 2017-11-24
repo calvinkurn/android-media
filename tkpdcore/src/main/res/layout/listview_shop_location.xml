@@ -33,7 +33,7 @@
 		/>
 		
 		<TextView
-		android:id="@+id/detail_shop_phone_all" 
+		android:id="@+id/detail_shop_phone_all"
 		android:layout_width="match_parent"
     	android:layout_height="wrap_content"
     	android:drawableLeft="@drawable/ic_shop_phone"

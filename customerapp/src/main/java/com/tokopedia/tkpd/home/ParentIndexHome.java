@@ -497,6 +497,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 //                return onSearchOptionSelected();
             case R.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
+                    UnifyTracking.eventClickCart();
                     Intent intent = SessionRouter.getLoginActivityIntent(getApplicationContext());
                     intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
