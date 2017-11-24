@@ -16,7 +16,7 @@ public class FilterModelDB extends BaseModel {
 
     @PrimaryKey
     @Column
-    public String filterID;
+    public String filterId;
 
     @Column
     public String filterData;
