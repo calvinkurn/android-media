@@ -10,17 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tkpd_main_green"
-            android:minHeight="?android:attr/actionBarSize"
-            android:theme="@style/AppBarTheme"
-            app:layout_scrollFlags="scroll|snap|enterAlways"
-            app:subtitleTextAppearance="@style/ToolbarSubtitleText"
-            app:titleTextAppearance="@style/ToolbarText" />
+            android:elevation="@dimen/toolbar_elevation"
+            android:theme="?toolbarTheme"
+            app:layout_scrollFlags="scroll|snap|enterAlways" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -28,6 +24,6 @@
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -51,31 +51,42 @@
         <activity
             android:name=".booking.view.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".booking.view.activity.FlightBookingLuggageActivity"
             android:label="@string/flight_booking_luggage_toolbar_title"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".booking.view.activity.FlightBookingMealsActivity"
             android:label="@string/flight_booking_meal_toolbar_title"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".booking.view.activity.FlightBookingPassengerActivity"
-            android:label="Isi Penumpang" />
+            android:label="Isi Penumpang"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
             android:label="@string/activity_label_flight_booking_phone_code"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".booking.view.activity.FlightBookingNationalityActivity"
             android:label="@string/activity_label_flight_nationality"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".booking.view.activity.FlightBookingIssuingCountryActivity"
             android:label="@string/activity_label_flight_issuing_country"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".review.view.activity.FlightBookingReviewActivity" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".review.view.activity.FlightBookingReviewActivity"
+            android:label="@string/activity_label_flight_issuing_country"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
-
 </manifest>
