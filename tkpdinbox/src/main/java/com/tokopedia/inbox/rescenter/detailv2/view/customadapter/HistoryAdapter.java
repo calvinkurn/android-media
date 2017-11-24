@@ -67,24 +67,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         this.listener = listener;
     }
 
-    public class HistoryViewHolder extends RecyclerView.ViewHolder {
-
-        TextView history, tvUsername, tvTime, tvDateNumber, tvMonth;
-        ImageView indicator;
-        View lineIndicator;
-
-        public HistoryViewHolder(View itemView) {
-            super(itemView);
-            history = (TextView) itemView.findViewById(R.id.tv_history_text);
-            indicator = (ImageView) itemView.findViewById(R.id.indicator);
-            lineIndicator = itemView.findViewById(R.id.line_indicator);
-            tvUsername = (TextView) itemView.findViewById(R.id.tv_username);
-            tvTime = (TextView) itemView.findViewById(R.id.tv_time);
-            tvDateNumber = (TextView) itemView.findViewById(R.id.tv_date_number);
-            tvMonth = (TextView) itemView.findViewById(R.id.tv_month);
-        }
-    }
-
     @Override
     public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -119,6 +101,24 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             return getHistoryItems().size() < 2 ? getHistoryItems().size() : 2;
         } else {
             return getHistoryItems().size();
+        }
+    }
+
+    public class HistoryViewHolder extends RecyclerView.ViewHolder {
+
+        TextView history, tvUsername, tvTime, tvDateNumber, tvMonth;
+        ImageView indicator;
+        View lineIndicator;
+
+        public HistoryViewHolder(View itemView) {
+            super(itemView);
+            history = (TextView) itemView.findViewById(R.id.tv_history_text);
+            indicator = (ImageView) itemView.findViewById(R.id.indicator);
+            lineIndicator = itemView.findViewById(R.id.line_indicator);
+            tvUsername = (TextView) itemView.findViewById(R.id.tv_username);
+            tvTime = (TextView) itemView.findViewById(R.id.tv_time);
+            tvDateNumber = (TextView) itemView.findViewById(R.id.tv_date_number);
+            tvMonth = (TextView) itemView.findViewById(R.id.tv_month);
         }
     }
 }

@@ -11,12 +11,42 @@ import java.util.List;
  */
 public class LastData implements Parcelable {
 
+    public static final Parcelable.Creator<LastData> CREATOR = new Parcelable.Creator<LastData>() {
+        @Override
+        public LastData createFromParcel(Parcel source) {
+            return new LastData(source);
+        }
+
+        @Override
+        public LastData[] newArray(int size) {
+            return new LastData[size];
+        }
+    };
     private SellerAddressData sellerAddress;
     private UserAwbData userAwb;
     private LastSolutionData solution;
     private String problem;
     private String status;
     private List<ComplainedProductData> complainedProducts;
+
+    public LastData(SellerAddressData sellerAddress, UserAwbData userAwb, LastSolutionData solution, String problem, String status, List<ComplainedProductData> complainedProducts) {
+        this.sellerAddress = sellerAddress;
+        this.userAwb = userAwb;
+        this.solution = solution;
+        this.problem = problem;
+        this.status = status;
+        this.complainedProducts = complainedProducts;
+
+    }
+
+    protected LastData(Parcel in) {
+        this.sellerAddress = in.readParcelable(SellerAddressData.class.getClassLoader());
+        this.userAwb = in.readParcelable(UserAwbData.class.getClassLoader());
+        this.solution = in.readParcelable(LastSolutionData.class.getClassLoader());
+        this.problem = in.readString();
+        this.status = in.readString();
+        this.complainedProducts = in.createTypedArrayList(ComplainedProductData.CREATOR);
+    }
 
     public SellerAddressData getSellerAddress() {
         return sellerAddress;
@@ -66,16 +96,6 @@ public class LastData implements Parcelable {
         this.complainedProducts = complainedProducts;
     }
 
-    public LastData(SellerAddressData sellerAddress, UserAwbData userAwb, LastSolutionData solution, String problem, String status, List<ComplainedProductData> complainedProducts) {
-        this.sellerAddress = sellerAddress;
-        this.userAwb = userAwb;
-        this.solution = solution;
-        this.problem = problem;
-        this.status = status;
-        this.complainedProducts = complainedProducts;
-
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -90,25 +110,4 @@ public class LastData implements Parcelable {
         dest.writeString(this.status);
         dest.writeTypedList(this.complainedProducts);
     }
-
-    protected LastData(Parcel in) {
-        this.sellerAddress = in.readParcelable(SellerAddressData.class.getClassLoader());
-        this.userAwb = in.readParcelable(UserAwbData.class.getClassLoader());
-        this.solution = in.readParcelable(LastSolutionData.class.getClassLoader());
-        this.problem = in.readString();
-        this.status = in.readString();
-        this.complainedProducts = in.createTypedArrayList(ComplainedProductData.CREATOR);
-    }
-
-    public static final Parcelable.Creator<LastData> CREATOR = new Parcelable.Creator<LastData>() {
-        @Override
-        public LastData createFromParcel(Parcel source) {
-            return new LastData(source);
-        }
-
-        @Override
-        public LastData[] newArray(int size) {
-            return new LastData[size];
-        }
-    };
 }

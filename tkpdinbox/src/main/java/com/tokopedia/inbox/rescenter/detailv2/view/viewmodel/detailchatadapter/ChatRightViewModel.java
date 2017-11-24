@@ -1,19 +1,10 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactory;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationActionDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationFlagDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.CustomerDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ShopDomain;
-
-import java.util.List;
 
 /**
  * Created by yoasfs on 10/10/17.

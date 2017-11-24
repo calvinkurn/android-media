@@ -11,12 +11,28 @@ import java.util.List;
 
 public class ConversationListDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationListDomain> CREATOR = new Parcelable.Creator<ConversationListDomain>() {
+        @Override
+        public ConversationListDomain createFromParcel(Parcel source) {
+            return new ConversationListDomain(source);
+        }
+
+        @Override
+        public ConversationListDomain[] newArray(int size) {
+            return new ConversationListDomain[size];
+        }
+    };
     private int canLoadMore;
     private List<ConversationDomain> conversationDomains;
 
     public ConversationListDomain(int canLoadMore, List<ConversationDomain> conversationDomains) {
         this.canLoadMore = canLoadMore;
         this.conversationDomains = conversationDomains;
+    }
+
+    protected ConversationListDomain(Parcel in) {
+        this.canLoadMore = in.readInt();
+        this.conversationDomains = in.createTypedArrayList(ConversationDomain.CREATOR);
     }
 
     public int getCanLoadMore() {
@@ -45,21 +61,4 @@ public class ConversationListDomain implements Parcelable {
         dest.writeInt(this.canLoadMore);
         dest.writeTypedList(this.conversationDomains);
     }
-
-    protected ConversationListDomain(Parcel in) {
-        this.canLoadMore = in.readInt();
-        this.conversationDomains = in.createTypedArrayList(ConversationDomain.CREATOR);
-    }
-
-    public static final Parcelable.Creator<ConversationListDomain> CREATOR = new Parcelable.Creator<ConversationListDomain>() {
-        @Override
-        public ConversationListDomain createFromParcel(Parcel source) {
-            return new ConversationListDomain(source);
-        }
-
-        @Override
-        public ConversationListDomain[] newArray(int size) {
-            return new ConversationListDomain[size];
-        }
-    };
 }

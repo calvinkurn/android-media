@@ -14,14 +14,10 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.createreso.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
-import com.tokopedia.inbox.rescenter.product.ListProductActivity;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by yoasfs on 26/10/17.

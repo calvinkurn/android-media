@@ -79,7 +79,7 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
                         getTimeTickerListener());
             }
             timeTickerUtil.startTimer(duration);
-        } else if(detailData.isCanAskHelp()) {
+        } else if (detailData.isCanAskHelp()) {
             btnGetHelp.setVisibility(VISIBLE);
             tvTitle.setText(getResources().getString(R.string.string_help_info_2));
             btnGetHelp.setOnClickListener(new OnClickListener() {

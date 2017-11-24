@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter;
 
-
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactory;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
@@ -8,24 +7,19 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Custo
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ShopDomain;
 
 /**
- * Created by yoasfs on 23/10/17.
+ * Created by yoasfs on 10/10/17.
  */
 
-public class ChatLeftViewModel implements Visitable<DetailChatTypeFactory> {
+public class ChatAwbRightViewModel implements Visitable<DetailChatTypeFactory> {
 
     private ShopDomain shop;
     private CustomerDomain customer;
     private ConversationDomain conversation;
-    private boolean isShowTitle;
 
-    public ChatLeftViewModel() {
-    }
-
-    public ChatLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, boolean isShowTitle) {
+    public ChatAwbRightViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation) {
         this.shop = shop;
         this.customer = customer;
         this.conversation = conversation;
-        this.isShowTitle = isShowTitle;
     }
 
     public ShopDomain getShop() {
@@ -50,14 +44,6 @@ public class ChatLeftViewModel implements Visitable<DetailChatTypeFactory> {
 
     public void setConversation(ConversationDomain conversation) {
         this.conversation = conversation;
-    }
-
-    public boolean isShowTitle() {
-        return isShowTitle;
-    }
-
-    public void setShowTitle(boolean showTitle) {
-        isShowTitle = showTitle;
     }
 
     @Override

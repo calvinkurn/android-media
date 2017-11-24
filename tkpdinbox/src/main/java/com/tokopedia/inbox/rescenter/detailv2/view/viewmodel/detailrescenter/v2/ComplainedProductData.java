@@ -9,6 +9,17 @@ import android.os.Parcelable;
  */
 public class ComplainedProductData implements Parcelable {
 
+    public static final Parcelable.Creator<ComplainedProductData> CREATOR = new Parcelable.Creator<ComplainedProductData>() {
+        @Override
+        public ComplainedProductData createFromParcel(Parcel source) {
+            return new ComplainedProductData(source);
+        }
+
+        @Override
+        public ComplainedProductData[] newArray(int size) {
+            return new ComplainedProductData[size];
+        }
+    };
     private int id;
     private int count;
     private ProductData product;
@@ -19,6 +30,13 @@ public class ComplainedProductData implements Parcelable {
         this.count = count;
         this.product = product;
         this.trouble = trouble;
+    }
+
+    protected ComplainedProductData(Parcel in) {
+        this.id = in.readInt();
+        this.count = in.readInt();
+        this.product = in.readParcelable(ProductData.class.getClassLoader());
+        this.trouble = in.readParcelable(TroubleData.class.getClassLoader());
     }
 
     public int getId() {
@@ -65,23 +83,4 @@ public class ComplainedProductData implements Parcelable {
         dest.writeParcelable(this.product, flags);
         dest.writeParcelable(this.trouble, flags);
     }
-
-    protected ComplainedProductData(Parcel in) {
-        this.id = in.readInt();
-        this.count = in.readInt();
-        this.product = in.readParcelable(ProductData.class.getClassLoader());
-        this.trouble = in.readParcelable(TroubleData.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<ComplainedProductData> CREATOR = new Parcelable.Creator<ComplainedProductData>() {
-        @Override
-        public ComplainedProductData createFromParcel(Parcel source) {
-            return new ComplainedProductData(source);
-        }
-
-        @Override
-        public ComplainedProductData[] newArray(int size) {
-            return new ComplainedProductData[size];
-        }
-    };
 }

@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 public class AddressData implements Parcelable {
 
+    public static final Parcelable.Creator<AddressData> CREATOR = new Parcelable.Creator<AddressData>() {
+        @Override
+        public AddressData createFromParcel(Parcel source) {
+            return new AddressData(source);
+        }
+
+        @Override
+        public AddressData[] newArray(int size) {
+            return new AddressData[size];
+        }
+    };
     private int addressId;
     private String address;
     private String district;
@@ -28,6 +39,18 @@ public class AddressData implements Parcelable {
         this.country = country;
         this.postalCode = postalCode;
         this.receiver = receiver;
+    }
+
+    protected AddressData(Parcel in) {
+        this.addressId = in.readInt();
+        this.address = in.readString();
+        this.district = in.readString();
+        this.city = in.readString();
+        this.province = in.readString();
+        this.phone = in.readString();
+        this.country = in.readString();
+        this.postalCode = in.readString();
+        this.receiver = in.readString();
     }
 
     public int getAddressId() {
@@ -119,28 +142,4 @@ public class AddressData implements Parcelable {
         dest.writeString(this.postalCode);
         dest.writeString(this.receiver);
     }
-
-    protected AddressData(Parcel in) {
-        this.addressId = in.readInt();
-        this.address = in.readString();
-        this.district = in.readString();
-        this.city = in.readString();
-        this.province = in.readString();
-        this.phone = in.readString();
-        this.country = in.readString();
-        this.postalCode = in.readString();
-        this.receiver = in.readString();
-    }
-
-    public static final Parcelable.Creator<AddressData> CREATOR = new Parcelable.Creator<AddressData>() {
-        @Override
-        public AddressData createFromParcel(Parcel source) {
-            return new AddressData(source);
-        }
-
-        @Override
-        public AddressData[] newArray(int size) {
-            return new AddressData[size];
-        }
-    };
 }

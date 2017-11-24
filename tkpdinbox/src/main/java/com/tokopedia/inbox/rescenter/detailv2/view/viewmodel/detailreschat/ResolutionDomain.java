@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ResolutionDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ResolutionDomain> CREATOR = new Parcelable.Creator<ResolutionDomain>() {
+        @Override
+        public ResolutionDomain createFromParcel(Parcel source) {
+            return new ResolutionDomain(source);
+        }
+
+        @Override
+        public ResolutionDomain[] newArray(int size) {
+            return new ResolutionDomain[size];
+        }
+    };
     private int id;
     private int freeReturn;
     private int status;
@@ -17,6 +28,12 @@ public class ResolutionDomain implements Parcelable {
         this.id = id;
         this.freeReturn = freeReturn;
         this.status = status;
+    }
+
+    protected ResolutionDomain(Parcel in) {
+        this.id = in.readInt();
+        this.freeReturn = in.readInt();
+        this.status = in.readInt();
     }
 
     public int getId() {
@@ -54,22 +71,4 @@ public class ResolutionDomain implements Parcelable {
         dest.writeInt(this.freeReturn);
         dest.writeInt(this.status);
     }
-
-    protected ResolutionDomain(Parcel in) {
-        this.id = in.readInt();
-        this.freeReturn = in.readInt();
-        this.status = in.readInt();
-    }
-
-    public static final Parcelable.Creator<ResolutionDomain> CREATOR = new Parcelable.Creator<ResolutionDomain>() {
-        @Override
-        public ResolutionDomain createFromParcel(Parcel source) {
-            return new ResolutionDomain(source);
-        }
-
-        @Override
-        public ResolutionDomain[] newArray(int size) {
-            return new ResolutionDomain[size];
-        }
-    };
 }

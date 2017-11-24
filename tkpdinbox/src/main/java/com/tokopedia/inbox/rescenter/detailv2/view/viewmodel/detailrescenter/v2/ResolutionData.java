@@ -9,6 +9,17 @@ import android.os.Parcelable;
  */
 public class ResolutionData implements Parcelable {
 
+    public static final Parcelable.Creator<ResolutionData> CREATOR = new Parcelable.Creator<ResolutionData>() {
+        @Override
+        public ResolutionData createFromParcel(Parcel source) {
+            return new ResolutionData(source);
+        }
+
+        @Override
+        public ResolutionData[] newArray(int size) {
+            return new ResolutionData[size];
+        }
+    };
     private int id;
     private StatusData status;
     private CreateByData createBy;
@@ -31,6 +42,19 @@ public class ResolutionData implements Parcelable {
         this.updateBy = updateBy;
         this.updateTime = updateTime;
         this.freeReturn = freeReturn;
+    }
+
+    protected ResolutionData(Parcel in) {
+        this.id = in.readInt();
+        this.status = in.readParcelable(StatusData.class.getClassLoader());
+        this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
+        this.createTime = in.readString();
+        this.createTimeStr = in.readString();
+        this.expireTime = in.readString();
+        this.expireTimeStr = in.readString();
+        this.updateBy = in.readParcelable(CreateByData.class.getClassLoader());
+        this.updateTime = in.readString();
+        this.freeReturn = in.readInt();
     }
 
     public int getId() {
@@ -131,29 +155,4 @@ public class ResolutionData implements Parcelable {
         dest.writeString(this.updateTime);
         dest.writeInt(this.freeReturn);
     }
-
-    protected ResolutionData(Parcel in) {
-        this.id = in.readInt();
-        this.status = in.readParcelable(StatusData.class.getClassLoader());
-        this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
-        this.createTime = in.readString();
-        this.createTimeStr = in.readString();
-        this.expireTime = in.readString();
-        this.expireTimeStr = in.readString();
-        this.updateBy = in.readParcelable(CreateByData.class.getClassLoader());
-        this.updateTime = in.readString();
-        this.freeReturn = in.readInt();
-    }
-
-    public static final Parcelable.Creator<ResolutionData> CREATOR = new Parcelable.Creator<ResolutionData>() {
-        @Override
-        public ResolutionData createFromParcel(Parcel source) {
-            return new ResolutionData(source);
-        }
-
-        @Override
-        public ResolutionData[] newArray(int size) {
-            return new ResolutionData[size];
-        }
-    };
 }

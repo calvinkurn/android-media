@@ -206,4 +206,8 @@ yang ditemukan</string>
     <string name="string_admin_solution_final_title">Admin Tokopedia memberikan solusi akhir:</string>
     <string name="string_admin_solution_reason">Alasan:</string>
     <string name="string_admin_solution_final">Admin memberikan solusi akhir</string>
+    <string name="string_track_awb">Lacak Paket</string>
+    <string name="string_edit_awb">Edit Resi</string>
+    <string name="string_awb_attachment">Lampiran:</string>
+    <string name="string_awb_format">Nomor Resi: %1$s (%2$s)</string>
 </resources>

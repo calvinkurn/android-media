@@ -8,12 +8,28 @@ import android.os.Parcelable;
  */
 
 public class LastDomain implements Parcelable {
+    public static final Parcelable.Creator<LastDomain> CREATOR = new Parcelable.Creator<LastDomain>() {
+        @Override
+        public LastDomain createFromParcel(Parcel source) {
+            return new LastDomain(source);
+        }
+
+        @Override
+        public LastDomain[] newArray(int size) {
+            return new LastDomain[size];
+        }
+    };
     private LastSolutionDomain solution;
     private String problem;
 
     public LastDomain(LastSolutionDomain solution, String problem) {
         this.solution = solution;
         this.problem = problem;
+    }
+
+    protected LastDomain(Parcel in) {
+        this.solution = in.readParcelable(LastSolutionDomain.class.getClassLoader());
+        this.problem = in.readString();
     }
 
     public LastSolutionDomain getSolution() {
@@ -42,21 +58,4 @@ public class LastDomain implements Parcelable {
         dest.writeParcelable(this.solution, flags);
         dest.writeString(this.problem);
     }
-
-    protected LastDomain(Parcel in) {
-        this.solution = in.readParcelable(LastSolutionDomain.class.getClassLoader());
-        this.problem = in.readString();
-    }
-
-    public static final Parcelable.Creator<LastDomain> CREATOR = new Parcelable.Creator<LastDomain>() {
-        @Override
-        public LastDomain createFromParcel(Parcel source) {
-            return new LastDomain(source);
-        }
-
-        @Override
-        public LastDomain[] newArray(int size) {
-            return new LastDomain[size];
-        }
-    };
 }

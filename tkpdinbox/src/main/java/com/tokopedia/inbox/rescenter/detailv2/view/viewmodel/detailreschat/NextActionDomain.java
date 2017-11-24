@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class NextActionDomain implements Parcelable {
 
+    public static final Creator<NextActionDomain> CREATOR = new Creator<NextActionDomain>() {
+        @Override
+        public NextActionDomain createFromParcel(Parcel source) {
+            return new NextActionDomain(source);
+        }
+
+        @Override
+        public NextActionDomain[] newArray(int size) {
+            return new NextActionDomain[size];
+        }
+    };
     private String last;
     private NextActionDetailDomain detail;
     private String problem;
@@ -18,6 +29,17 @@ public class NextActionDomain implements Parcelable {
         this.last = last;
         this.detail = detail;
         this.problem = problem;
+    }
+
+    protected NextActionDomain(Parcel in) {
+        this.last = in.readString();
+        this.detail = in.readParcelable(NextActionDetailDomain.class.getClassLoader());
+        this.problem = in.readString();
+        this.isSuccess = in.readByte() != 0;
+    }
+
+    public static Creator<NextActionDomain> getCREATOR() {
+        return CREATOR;
     }
 
     public String getProblem() {
@@ -52,10 +74,6 @@ public class NextActionDomain implements Parcelable {
         isSuccess = success;
     }
 
-    public static Creator<NextActionDomain> getCREATOR() {
-        return CREATOR;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -68,23 +86,4 @@ public class NextActionDomain implements Parcelable {
         dest.writeString(this.problem);
         dest.writeByte(this.isSuccess ? (byte) 1 : (byte) 0);
     }
-
-    protected NextActionDomain(Parcel in) {
-        this.last = in.readString();
-        this.detail = in.readParcelable(NextActionDetailDomain.class.getClassLoader());
-        this.problem = in.readString();
-        this.isSuccess = in.readByte() != 0;
-    }
-
-    public static final Creator<NextActionDomain> CREATOR = new Creator<NextActionDomain>() {
-        @Override
-        public NextActionDomain createFromParcel(Parcel source) {
-            return new NextActionDomain(source);
-        }
-
-        @Override
-        public NextActionDomain[] newArray(int size) {
-            return new NextActionDomain[size];
-        }
-    };
 }

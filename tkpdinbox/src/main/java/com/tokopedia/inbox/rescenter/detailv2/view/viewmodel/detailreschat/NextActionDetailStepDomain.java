@@ -9,13 +9,28 @@ import android.os.Parcelable;
 
 public class NextActionDetailStepDomain implements Parcelable {
 
-    private int status;
+    public static final Parcelable.Creator<NextActionDetailStepDomain> CREATOR = new Parcelable.Creator<NextActionDetailStepDomain>() {
+        @Override
+        public NextActionDetailStepDomain createFromParcel(Parcel source) {
+            return new NextActionDetailStepDomain(source);
+        }
 
+        @Override
+        public NextActionDetailStepDomain[] newArray(int size) {
+            return new NextActionDetailStepDomain[size];
+        }
+    };
+    private int status;
     private String name;
 
     public NextActionDetailStepDomain(int status, String name) {
         this.status = status;
         this.name = name;
+    }
+
+    protected NextActionDetailStepDomain(Parcel in) {
+        this.status = in.readInt();
+        this.name = in.readString();
     }
 
     public int getStatus() {
@@ -44,21 +59,4 @@ public class NextActionDetailStepDomain implements Parcelable {
         dest.writeInt(this.status);
         dest.writeString(this.name);
     }
-
-    protected NextActionDetailStepDomain(Parcel in) {
-        this.status = in.readInt();
-        this.name = in.readString();
-    }
-
-    public static final Parcelable.Creator<NextActionDetailStepDomain> CREATOR = new Parcelable.Creator<NextActionDetailStepDomain>() {
-        @Override
-        public NextActionDetailStepDomain createFromParcel(Parcel source) {
-            return new NextActionDetailStepDomain(source);
-        }
-
-        @Override
-        public NextActionDetailStepDomain[] newArray(int size) {
-            return new NextActionDetailStepDomain[size];
-        }
-    };
 }

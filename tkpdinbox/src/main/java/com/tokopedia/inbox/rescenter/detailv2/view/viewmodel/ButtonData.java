@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 
 public class ButtonData implements Parcelable {
+    public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
+        @Override
+        public ButtonData createFromParcel(Parcel source) {
+            return new ButtonData(source);
+        }
+
+        @Override
+        public ButtonData[] newArray(int size) {
+            return new ButtonData[size];
+        }
+    };
     private boolean showEdit;
     private boolean showAcceptSolution;
     private boolean showAcceptProduct;
@@ -21,7 +32,6 @@ public class ButtonData implements Parcelable {
     private boolean showInputAwb;
     private boolean showAcceptAdminSolution;
     private String acceptDialogText;
-
     private String askHelpLabel;
     private String cancelLabel;
     private String acceptLabel;
@@ -29,6 +39,32 @@ public class ButtonData implements Parcelable {
     private String inputAddressLabel;
     private String appealLabel;
     private String inputAwbLabel;
+
+    public ButtonData() {
+    }
+
+    protected ButtonData(Parcel in) {
+        this.showEdit = in.readByte() != 0;
+        this.showAcceptSolution = in.readByte() != 0;
+        this.showAcceptProduct = in.readByte() != 0;
+        this.acceptReturSolution = in.readByte() != 0;
+        this.showAppealSolution = in.readByte() != 0;
+        this.showAskHelp = in.readByte() != 0;
+        this.askHelpDialogText = in.readString();
+        this.showCancel = in.readByte() != 0;
+        this.cancelDialogText = in.readString();
+        this.showInputAddress = in.readByte() != 0;
+        this.showInputAwb = in.readByte() != 0;
+        this.showAcceptAdminSolution = in.readByte() != 0;
+        this.acceptDialogText = in.readString();
+        this.askHelpLabel = in.readString();
+        this.cancelLabel = in.readString();
+        this.acceptLabel = in.readString();
+        this.editLabel = in.readString();
+        this.inputAddressLabel = in.readString();
+        this.appealLabel = in.readString();
+        this.inputAwbLabel = in.readString();
+    }
 
     public boolean isShowEdit() {
         return showEdit;
@@ -78,53 +114,52 @@ public class ButtonData implements Parcelable {
         this.showAskHelp = showAskHelp;
     }
 
-
-    public void setAskHelpDialogText(String askHelpDialogText) {
-        this.askHelpDialogText = askHelpDialogText;
-    }
-
     public String getAskHelpDialogText() {
         return askHelpDialogText;
     }
 
-    public void setShowCancel(boolean showCancel) {
-        this.showCancel = showCancel;
+    public void setAskHelpDialogText(String askHelpDialogText) {
+        this.askHelpDialogText = askHelpDialogText;
     }
 
     public boolean isShowCancel() {
         return showCancel;
     }
 
-    public void setCancelDialogText(String cancelDialogText) {
-        this.cancelDialogText = cancelDialogText;
+    public void setShowCancel(boolean showCancel) {
+        this.showCancel = showCancel;
     }
 
     public String getCancelDialogText() {
         return cancelDialogText;
     }
 
-    public void setShowInputAddress(boolean showInputAddress) {
-        this.showInputAddress = showInputAddress;
+    public void setCancelDialogText(String cancelDialogText) {
+        this.cancelDialogText = cancelDialogText;
     }
 
     public boolean isShowInputAddress() {
         return showInputAddress;
     }
 
-    public void setShowInputAwb(boolean showInputAwb) {
-        this.showInputAwb = showInputAwb;
+    public void setShowInputAddress(boolean showInputAddress) {
+        this.showInputAddress = showInputAddress;
     }
 
     public boolean isShowInputAwb() {
         return showInputAwb;
     }
 
-    public void setShowAcceptAdminSolution(boolean showAcceptAdminSolution) {
-        this.showAcceptAdminSolution = showAcceptAdminSolution;
+    public void setShowInputAwb(boolean showInputAwb) {
+        this.showInputAwb = showInputAwb;
     }
 
     public boolean isShowAcceptAdminSolution() {
         return showAcceptAdminSolution;
+    }
+
+    public void setShowAcceptAdminSolution(boolean showAcceptAdminSolution) {
+        this.showAcceptAdminSolution = showAcceptAdminSolution;
     }
 
     public void setAcceptProductDialogText(String acceptDialogText) {
@@ -195,9 +230,6 @@ public class ButtonData implements Parcelable {
         this.inputAwbLabel = inputAwbLabel;
     }
 
-    public ButtonData() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -226,39 +258,4 @@ public class ButtonData implements Parcelable {
         dest.writeString(this.appealLabel);
         dest.writeString(this.inputAwbLabel);
     }
-
-    protected ButtonData(Parcel in) {
-        this.showEdit = in.readByte() != 0;
-        this.showAcceptSolution = in.readByte() != 0;
-        this.showAcceptProduct = in.readByte() != 0;
-        this.acceptReturSolution = in.readByte() != 0;
-        this.showAppealSolution = in.readByte() != 0;
-        this.showAskHelp = in.readByte() != 0;
-        this.askHelpDialogText = in.readString();
-        this.showCancel = in.readByte() != 0;
-        this.cancelDialogText = in.readString();
-        this.showInputAddress = in.readByte() != 0;
-        this.showInputAwb = in.readByte() != 0;
-        this.showAcceptAdminSolution = in.readByte() != 0;
-        this.acceptDialogText = in.readString();
-        this.askHelpLabel = in.readString();
-        this.cancelLabel = in.readString();
-        this.acceptLabel = in.readString();
-        this.editLabel = in.readString();
-        this.inputAddressLabel = in.readString();
-        this.appealLabel = in.readString();
-        this.inputAwbLabel = in.readString();
-    }
-
-    public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
-        @Override
-        public ButtonData createFromParcel(Parcel source) {
-            return new ButtonData(source);
-        }
-
-        @Override
-        public ButtonData[] newArray(int size) {
-            return new ButtonData[size];
-        }
-    };
 }

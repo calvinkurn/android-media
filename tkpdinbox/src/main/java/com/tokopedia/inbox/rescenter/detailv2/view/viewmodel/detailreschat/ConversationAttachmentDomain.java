@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ConversationAttachmentDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationAttachmentDomain> CREATOR = new Parcelable.Creator<ConversationAttachmentDomain>() {
+        @Override
+        public ConversationAttachmentDomain createFromParcel(Parcel source) {
+            return new ConversationAttachmentDomain(source);
+        }
+
+        @Override
+        public ConversationAttachmentDomain[] newArray(int size) {
+            return new ConversationAttachmentDomain[size];
+        }
+    };
     private String type;
     private String thumb;
     private String full;
@@ -17,6 +28,12 @@ public class ConversationAttachmentDomain implements Parcelable {
         this.type = type;
         this.thumb = thumb;
         this.full = full;
+    }
+
+    protected ConversationAttachmentDomain(Parcel in) {
+        this.type = in.readString();
+        this.thumb = in.readString();
+        this.full = in.readString();
     }
 
     public String getType() {
@@ -54,22 +71,4 @@ public class ConversationAttachmentDomain implements Parcelable {
         dest.writeString(this.thumb);
         dest.writeString(this.full);
     }
-
-    protected ConversationAttachmentDomain(Parcel in) {
-        this.type = in.readString();
-        this.thumb = in.readString();
-        this.full = in.readString();
-    }
-
-    public static final Parcelable.Creator<ConversationAttachmentDomain> CREATOR = new Parcelable.Creator<ConversationAttachmentDomain>() {
-        @Override
-        public ConversationAttachmentDomain createFromParcel(Parcel source) {
-            return new ConversationAttachmentDomain(source);
-        }
-
-        @Override
-        public ConversationAttachmentDomain[] newArray(int size) {
-            return new ConversationAttachmentDomain[size];
-        }
-    };
 }

@@ -11,17 +11,14 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ShopD
  * Created by yoasfs on 23/10/17.
  */
 
-public class ChatLeftViewModel implements Visitable<DetailChatTypeFactory> {
+public class ChatAwbLeftViewModel implements Visitable<DetailChatTypeFactory> {
 
     private ShopDomain shop;
     private CustomerDomain customer;
     private ConversationDomain conversation;
     private boolean isShowTitle;
 
-    public ChatLeftViewModel() {
-    }
-
-    public ChatLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, boolean isShowTitle) {
+    public ChatAwbLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, boolean isShowTitle) {
         this.shop = shop;
         this.customer = customer;
         this.conversation = conversation;

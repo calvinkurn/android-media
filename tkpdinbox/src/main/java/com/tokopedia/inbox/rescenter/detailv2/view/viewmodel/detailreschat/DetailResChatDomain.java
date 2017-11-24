@@ -3,14 +3,23 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
-
 /**
  * Created by yoasfs on 10/10/17.
  */
 
 public class DetailResChatDomain implements Parcelable {
 
+    public static final Creator<DetailResChatDomain> CREATOR = new Creator<DetailResChatDomain>() {
+        @Override
+        public DetailResChatDomain createFromParcel(Parcel source) {
+            return new DetailResChatDomain(source);
+        }
+
+        @Override
+        public DetailResChatDomain[] newArray(int size) {
+            return new DetailResChatDomain[size];
+        }
+    };
     private NextActionDomain nextAction;
     private ShopDomain shop;
     private CustomerDomain customer;
@@ -40,6 +49,19 @@ public class DetailResChatDomain implements Parcelable {
         this.conversationList = conversationList;
         this.order = order;
         this.last = last;
+    }
+
+    protected DetailResChatDomain(Parcel in) {
+        this.nextAction = in.readParcelable(NextActionDomain.class.getClassLoader());
+        this.shop = in.readParcelable(ShopDomain.class.getClassLoader());
+        this.customer = in.readParcelable(CustomerDomain.class.getClassLoader());
+        this.resolution = in.readParcelable(ResolutionDomain.class.getClassLoader());
+        this.button = in.readParcelable(ButtonDomain.class.getClassLoader());
+        this.actionBy = in.readInt();
+        this.conversationList = in.readParcelable(ConversationListDomain.class.getClassLoader());
+        this.order = in.readParcelable(OrderDomain.class.getClassLoader());
+        this.last = in.readParcelable(LastDomain.class.getClassLoader());
+        this.success = in.readByte() != 0;
     }
 
     public NextActionDomain getNextAction() {
@@ -140,29 +162,4 @@ public class DetailResChatDomain implements Parcelable {
         dest.writeParcelable(this.last, flags);
         dest.writeByte(this.success ? (byte) 1 : (byte) 0);
     }
-
-    protected DetailResChatDomain(Parcel in) {
-        this.nextAction = in.readParcelable(NextActionDomain.class.getClassLoader());
-        this.shop = in.readParcelable(ShopDomain.class.getClassLoader());
-        this.customer = in.readParcelable(CustomerDomain.class.getClassLoader());
-        this.resolution = in.readParcelable(ResolutionDomain.class.getClassLoader());
-        this.button = in.readParcelable(ButtonDomain.class.getClassLoader());
-        this.actionBy = in.readInt();
-        this.conversationList = in.readParcelable(ConversationListDomain.class.getClassLoader());
-        this.order = in.readParcelable(OrderDomain.class.getClassLoader());
-        this.last = in.readParcelable(LastDomain.class.getClassLoader());
-        this.success = in.readByte() != 0;
-    }
-
-    public static final Creator<DetailResChatDomain> CREATOR = new Creator<DetailResChatDomain>() {
-        @Override
-        public DetailResChatDomain createFromParcel(Parcel source) {
-            return new DetailResChatDomain(source);
-        }
-
-        @Override
-        public DetailResChatDomain[] newArray(int size) {
-            return new DetailResChatDomain[size];
-        }
-    };
 }

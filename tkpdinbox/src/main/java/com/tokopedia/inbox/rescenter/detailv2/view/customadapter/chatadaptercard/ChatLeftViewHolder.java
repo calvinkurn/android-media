@@ -15,8 +15,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmen
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
 
-import org.w3c.dom.Text;
-
 /**
  * Created by yoasfs on 23/10/17.
  */

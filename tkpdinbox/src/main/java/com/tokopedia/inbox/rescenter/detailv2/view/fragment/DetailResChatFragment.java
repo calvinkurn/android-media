@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -49,13 +48,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactoryImpl;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
@@ -94,6 +87,10 @@ public class DetailResChatFragment
         implements DetailResChatFragmentListener.View {
 
     public static final int NEXT_STATUS_CURRENT = 1;
+    public static final int ACTION_BY_USER = 1;
+    public static final int ACTION_BY_SELLER = 2;
+    public static final int ACTION_BY_ADMIN = 3;
+    public static final int ACTION_BY_SYSTEM = 4;
     private static final int COUNT_MAX_ATTACHMENT = 5;
     private static final int REQUEST_EDIT_SOLUTION = 123;
     private static final int REQUEST_APPEAL_SOLUTION = 234;
@@ -103,14 +100,9 @@ public class DetailResChatFragment
     private static final int REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION = 789;
     private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 890;
     private static final int REQUEST_EDIT_ADDRESS = 901;
-
-    public static final int ACTION_BY_USER = 1;
-    public static final int ACTION_BY_SELLER = 2;
-    public static final int ACTION_BY_ADMIN = 3;
-    public static final int ACTION_BY_SYSTEM = 4;
-
     private static final int TOP_POSITION = 0;
-
+    @Inject
+    DetailResChatFragmentPresenter presenter;
     private TextView tvNextStep;
     private RecyclerView rvChat, rvAttachment;
     private ProgressBar progressBar;
@@ -123,7 +115,6 @@ public class DetailResChatFragment
     private View actionButtonLayout;
     private ImageUploadHandler uploadImageDialog;
     private FloatingActionButton fabChat;
-
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
     private String resolutionId;
@@ -131,9 +122,6 @@ public class DetailResChatFragment
     private boolean isLoadingMore = false;
     private int oldAddressId;
     private int conversationId;
-
-    @Inject
-    DetailResChatFragmentPresenter presenter;
 
     public static DetailResChatFragment newBuyerInstance(String resolutionId) {
         DetailResChatFragment fragment = new DetailResChatFragment();
@@ -337,8 +325,8 @@ public class DetailResChatFragment
                 }
 
                 int topVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
-                if(topVisibleItemPosition<=1 &&
-                        detailResChatDomain.getConversationList().getCanLoadMore()==1 &&
+                if (topVisibleItemPosition <= 1 &&
+                        detailResChatDomain.getConversationList().getCanLoadMore() == 1 &&
                         !isLoadingMore) {
                     ConversationDomain topConversation = detailResChatDomain.getConversationList().
                             getConversationDomains().
@@ -365,8 +353,8 @@ public class DetailResChatFragment
 
     private RelativeLayout.LayoutParams getButtonInitParams() {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,50, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,50, getResources().getDisplayMetrics()));
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics()));
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.setMargins(
                 0,
@@ -480,7 +468,7 @@ public class DetailResChatFragment
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
-        return  new ConversationDomain(
+        return new ConversationDomain(
                 0,
                 null,
                 message,
@@ -496,7 +484,7 @@ public class DetailResChatFragment
     }
 
     private ConversationDomain getTempConversationDomain(String message, List<AttachmentViewModel> attachmentList) {
-        return  new ConversationDomain(
+        return new ConversationDomain(
                 0,
                 null,
                 message,
@@ -588,7 +576,7 @@ public class DetailResChatFragment
 
     @Override
     public void errorGetConversationMore(String error) {
-        if(resolutionId!=null && lastConvId!=null) {
+        if (resolutionId != null && lastConvId != null) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
@@ -741,8 +729,8 @@ public class DetailResChatFragment
         Button button = new Button(getActivity());
         button.setBackground(getActivity().getResources().getDrawable(R.drawable.bg_chat_button_action));
         button.setTextColor(getActivity().getResources().getColor(R.color.tkpd_main_green));
-        button.setLayoutParams(new LinearLayout.LayoutParams((int)getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_width),
-                (int)getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_height)));
+        button.setLayoutParams(new LinearLayout.LayoutParams((int) getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_width),
+                (int) getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_height)));
         button.setGravity(Gravity.CENTER);
         button.setText(name);
         button.setAllCaps(false);
@@ -751,7 +739,7 @@ public class DetailResChatFragment
 
     private View addButtonSeparator() {
         View spaceView = new View(getActivity());
-        spaceView.setLayoutParams(new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.margin_vs),
+        spaceView.setLayoutParams(new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.margin_vs),
                 LinearLayout.LayoutParams.MATCH_PARENT));
         return spaceView;
     }

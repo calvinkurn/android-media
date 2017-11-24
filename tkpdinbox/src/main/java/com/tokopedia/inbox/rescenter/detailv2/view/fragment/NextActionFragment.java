@@ -30,19 +30,17 @@ public class NextActionFragment
         implements NextActionFragmentListener.View {
 
 
+    @Inject
+    NextActionFragmentPresenter presenter;
     private NextActionDomain nextActionDomain;
     private String resolutionId;
-
     private TextView tvProblem, tvSolution;
     private RecyclerView rvNextAction;
     private NextActionAdapter adapter;
     private ProgressBar progressBar;
 
-    @Inject
-    NextActionFragmentPresenter presenter;
-
     public static NextActionFragment newInstance(String resolutionId,
-                                                    NextActionDomain nextActionDomain) {
+                                                 NextActionDomain nextActionDomain) {
         NextActionFragment fragment = new NextActionFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(NextActionActivity.PARAM_NEXT_ACTION, nextActionDomain);

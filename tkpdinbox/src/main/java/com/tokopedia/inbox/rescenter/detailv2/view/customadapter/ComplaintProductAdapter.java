@@ -54,24 +54,12 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
         this.limit = limit;
     }
 
-    public void setProductItems(List<ProductItem> productItems) {
-        this.productItems = productItems;
-    }
-
     public List<ProductItem> getProductItems() {
         return productItems;
     }
 
-    public class ComplaintProductVH extends RecyclerView.ViewHolder {
-
-        ImageView productImage;
-        TextView productName;
-
-        public ComplaintProductVH(View itemView) {
-            super(itemView);
-            productImage = (ImageView) itemView.findViewById(R.id.iv_product_image);
-            productName = (TextView) itemView.findViewById(R.id.tv_product_name);
-        }
+    public void setProductItems(List<ProductItem> productItems) {
+        this.productItems = productItems;
     }
 
     @Override
@@ -94,6 +82,18 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
             return getProductItems().size() < 3 ? getProductItems().size() : 3;
         } else {
             return getProductItems().size();
+        }
+    }
+
+    public class ComplaintProductVH extends RecyclerView.ViewHolder {
+
+        ImageView productImage;
+        TextView productName;
+
+        public ComplaintProductVH(View itemView) {
+            super(itemView);
+            productImage = (ImageView) itemView.findViewById(R.id.iv_product_image);
+            productName = (TextView) itemView.findViewById(R.id.tv_product_name);
         }
     }
 

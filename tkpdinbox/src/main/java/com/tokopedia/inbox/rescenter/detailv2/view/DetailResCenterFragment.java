@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -92,14 +91,11 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     ProveView proveView;
     HistoryView historyView;
     TextView tvNextStep;
-
-    private TkpdProgressDialog normalLoading;
-
-    private String resolutionID;
-    private DetailViewModel viewData;
-
     @Inject
     DetailResCenterFragmentImpl presenter;
+    private TkpdProgressDialog normalLoading;
+    private String resolutionID;
+    private DetailViewModel viewData;
 
     public static DetailResCenterFragment createInstance(String resolutionID) {
         DetailResCenterFragment fragment = new DetailResCenterFragment();
@@ -657,8 +653,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     private RelativeLayout.LayoutParams getButtonInitParams() {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,130, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,60, getResources().getDisplayMetrics()));
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics()));
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.setMargins(
                 0,

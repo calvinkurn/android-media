@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 public class LogData implements Parcelable {
 
+    public static final Parcelable.Creator<LogData> CREATOR = new Parcelable.Creator<LogData>() {
+        @Override
+        public LogData createFromParcel(Parcel source) {
+            return new LogData(source);
+        }
+
+        @Override
+        public LogData[] newArray(int size) {
+            return new LogData[size];
+        }
+    };
     private int id;
     private String action;
     private LastSolutionData solution;
@@ -24,6 +35,16 @@ public class LogData implements Parcelable {
         this.createBy = createBy;
         this.createTime = createTime;
         this.createTimeStr = createTimeStr;
+    }
+
+    protected LogData(Parcel in) {
+        this.id = in.readInt();
+        this.action = in.readString();
+        this.solution = in.readParcelable(LastSolutionData.class.getClassLoader());
+        this.actionBy = in.readParcelable(CreateByData.class.getClassLoader());
+        this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
+        this.createTime = in.readString();
+        this.createTimeStr = in.readString();
     }
 
     public int getId() {
@@ -97,26 +118,4 @@ public class LogData implements Parcelable {
         dest.writeString(this.createTime);
         dest.writeString(this.createTimeStr);
     }
-
-    protected LogData(Parcel in) {
-        this.id = in.readInt();
-        this.action = in.readString();
-        this.solution = in.readParcelable(LastSolutionData.class.getClassLoader());
-        this.actionBy = in.readParcelable(CreateByData.class.getClassLoader());
-        this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
-        this.createTime = in.readString();
-        this.createTimeStr = in.readString();
-    }
-
-    public static final Parcelable.Creator<LogData> CREATOR = new Parcelable.Creator<LogData>() {
-        @Override
-        public LogData createFromParcel(Parcel source) {
-            return new LogData(source);
-        }
-
-        @Override
-        public LogData[] newArray(int size) {
-            return new LogData[size];
-        }
-    };
 }

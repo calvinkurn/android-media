@@ -10,6 +10,17 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
  */
 
 public class DetailViewModel implements Parcelable {
+    public static final Creator<DetailViewModel> CREATOR = new Creator<DetailViewModel>() {
+        @Override
+        public DetailViewModel createFromParcel(Parcel source) {
+            return new DetailViewModel(source);
+        }
+
+        @Override
+        public DetailViewModel[] newArray(int size) {
+            return new DetailViewModel[size];
+        }
+    };
     private boolean timeOut;
     private boolean success;
     private String messageError;
@@ -24,28 +35,47 @@ public class DetailViewModel implements Parcelable {
     private AddressReturData addressReturData;
     private NextActionDomain nextActionDomain;
 
-    public void setTimeOut(boolean timeOut) {
-        this.timeOut = timeOut;
+    public DetailViewModel() {
+    }
+
+    protected DetailViewModel(Parcel in) {
+        this.timeOut = in.readByte() != 0;
+        this.success = in.readByte() != 0;
+        this.messageError = in.readString();
+        this.buttonData = in.readParcelable(ButtonData.class.getClassLoader());
+        this.statusData = in.readParcelable(StatusData.class.getClassLoader());
+        this.detailData = in.readParcelable(DetailData.class.getClassLoader());
+        this.productData = in.readParcelable(ProductData.class.getClassLoader());
+        this.solutionData = in.readParcelable(SolutionData.class.getClassLoader());
+        this.proveData = in.readParcelable(ProveData.class.getClassLoader());
+        this.historyData = in.readParcelable(HistoryData.class.getClassLoader());
+        this.awbData = in.readParcelable(AwbData.class.getClassLoader());
+        this.addressReturData = in.readParcelable(AddressReturData.class.getClassLoader());
+        this.nextActionDomain = in.readParcelable(NextActionDomain.class.getClassLoader());
     }
 
     public boolean isTimeOut() {
         return timeOut;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public void setTimeOut(boolean timeOut) {
+        this.timeOut = timeOut;
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public void setMessageError(String messageError) {
-        this.messageError = messageError;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     public String getMessageError() {
         return messageError;
+    }
+
+    public void setMessageError(String messageError) {
+        this.messageError = messageError;
     }
 
     public ButtonData getButtonData() {
@@ -128,9 +158,6 @@ public class DetailViewModel implements Parcelable {
         this.proveData = proveData;
     }
 
-    public DetailViewModel() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -152,32 +179,4 @@ public class DetailViewModel implements Parcelable {
         dest.writeParcelable(this.addressReturData, flags);
         dest.writeParcelable(this.nextActionDomain, flags);
     }
-
-    protected DetailViewModel(Parcel in) {
-        this.timeOut = in.readByte() != 0;
-        this.success = in.readByte() != 0;
-        this.messageError = in.readString();
-        this.buttonData = in.readParcelable(ButtonData.class.getClassLoader());
-        this.statusData = in.readParcelable(StatusData.class.getClassLoader());
-        this.detailData = in.readParcelable(DetailData.class.getClassLoader());
-        this.productData = in.readParcelable(ProductData.class.getClassLoader());
-        this.solutionData = in.readParcelable(SolutionData.class.getClassLoader());
-        this.proveData = in.readParcelable(ProveData.class.getClassLoader());
-        this.historyData = in.readParcelable(HistoryData.class.getClassLoader());
-        this.awbData = in.readParcelable(AwbData.class.getClassLoader());
-        this.addressReturData = in.readParcelable(AddressReturData.class.getClassLoader());
-        this.nextActionDomain = in.readParcelable(NextActionDomain.class.getClassLoader());
-    }
-
-    public static final Creator<DetailViewModel> CREATOR = new Creator<DetailViewModel>() {
-        @Override
-        public DetailViewModel createFromParcel(Parcel source) {
-            return new DetailViewModel(source);
-        }
-
-        @Override
-        public DetailViewModel[] newArray(int size) {
-            return new DetailViewModel[size];
-        }
-    };
 }

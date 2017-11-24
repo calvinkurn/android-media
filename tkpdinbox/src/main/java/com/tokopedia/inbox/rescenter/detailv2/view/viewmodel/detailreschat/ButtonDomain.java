@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ButtonDomain implements Parcelable {
 
+    public static final Creator<ButtonDomain> CREATOR = new Creator<ButtonDomain>() {
+        @Override
+        public ButtonDomain createFromParcel(Parcel source) {
+            return new ButtonDomain(source);
+        }
+
+        @Override
+        public ButtonDomain[] newArray(int size) {
+            return new ButtonDomain[size];
+        }
+    };
     private int report;
     private String reportLabel;
     private String reportText;
@@ -118,6 +129,45 @@ public class ButtonDomain implements Parcelable {
         this.recomplaint = recomplaint;
         this.recomplainLabel = recomplainLabel;
         this.recomplaintText = recomplaintText;
+    }
+
+    protected ButtonDomain(Parcel in) {
+        this.report = in.readInt();
+        this.reportLabel = in.readString();
+        this.reportText = in.readString();
+        this.cancel = in.readInt();
+        this.cancelLabel = in.readString();
+        this.cancelText = in.readString();
+        this.edit = in.readInt();
+        this.editLabel = in.readString();
+        this.editText = in.readString();
+        this.inputAddress = in.readInt();
+        this.inputAddressLabel = in.readString();
+        this.inputAddressText = in.readString();
+        this.appeal = in.readInt();
+        this.appealLabel = in.readString();
+        this.appealText = in.readString();
+        this.inputAWB = in.readInt();
+        this.inputAWBLabel = in.readString();
+        this.inputAWBText = in.readString();
+        this.accept = in.readInt();
+        this.acceptLabel = in.readString();
+        this.acceptText = in.readString();
+        this.acceptReturn = in.readInt();
+        this.acceptReturnLabel = in.readString();
+        this.acceptReturnText = in.readString();
+        this.finish = in.readInt();
+        this.finishLabel = in.readString();
+        this.finishText = in.readString();
+        this.acceptByAdmin = in.readInt();
+        this.acceptByAdminLabel = in.readString();
+        this.acceptByAdminText = in.readString();
+        this.acceptByAdminReturn = in.readInt();
+        this.acceptByAdminReturnLabel = in.readString();
+        this.acceptByAdminReturnText = in.readString();
+        this.recomplaint = in.readInt();
+        this.recomplainLabel = in.readString();
+        this.recomplaintText = in.readString();
     }
 
     public int getReport() {
@@ -452,55 +502,4 @@ public class ButtonDomain implements Parcelable {
         dest.writeString(this.recomplainLabel);
         dest.writeString(this.recomplaintText);
     }
-
-    protected ButtonDomain(Parcel in) {
-        this.report = in.readInt();
-        this.reportLabel = in.readString();
-        this.reportText = in.readString();
-        this.cancel = in.readInt();
-        this.cancelLabel = in.readString();
-        this.cancelText = in.readString();
-        this.edit = in.readInt();
-        this.editLabel = in.readString();
-        this.editText = in.readString();
-        this.inputAddress = in.readInt();
-        this.inputAddressLabel = in.readString();
-        this.inputAddressText = in.readString();
-        this.appeal = in.readInt();
-        this.appealLabel = in.readString();
-        this.appealText = in.readString();
-        this.inputAWB = in.readInt();
-        this.inputAWBLabel = in.readString();
-        this.inputAWBText = in.readString();
-        this.accept = in.readInt();
-        this.acceptLabel = in.readString();
-        this.acceptText = in.readString();
-        this.acceptReturn = in.readInt();
-        this.acceptReturnLabel = in.readString();
-        this.acceptReturnText = in.readString();
-        this.finish = in.readInt();
-        this.finishLabel = in.readString();
-        this.finishText = in.readString();
-        this.acceptByAdmin = in.readInt();
-        this.acceptByAdminLabel = in.readString();
-        this.acceptByAdminText = in.readString();
-        this.acceptByAdminReturn = in.readInt();
-        this.acceptByAdminReturnLabel = in.readString();
-        this.acceptByAdminReturnText = in.readString();
-        this.recomplaint = in.readInt();
-        this.recomplainLabel = in.readString();
-        this.recomplaintText = in.readString();
-    }
-
-    public static final Creator<ButtonDomain> CREATOR = new Creator<ButtonDomain>() {
-        @Override
-        public ButtonDomain createFromParcel(Parcel source) {
-            return new ButtonDomain(source);
-        }
-
-        @Override
-        public ButtonDomain[] newArray(int size) {
-            return new ButtonDomain[size];
-        }
-    };
 }

@@ -11,6 +11,17 @@ import java.util.List;
  */
 public class UserAwbData implements Parcelable {
 
+    public static final Creator<UserAwbData> CREATOR = new Creator<UserAwbData>() {
+        @Override
+        public UserAwbData createFromParcel(Parcel source) {
+            return new UserAwbData(source);
+        }
+
+        @Override
+        public UserAwbData[] newArray(int size) {
+            return new UserAwbData[size];
+        }
+    };
     private int resConvId;
     private String awb;
     private ShippingData shipping;
@@ -29,6 +40,17 @@ public class UserAwbData implements Parcelable {
         this.createTime = createTime;
         this.createTimeStr = createTimeStr;
         this.attachments = attachments;
+    }
+
+    protected UserAwbData(Parcel in) {
+        this.resConvId = in.readInt();
+        this.awb = in.readString();
+        this.shipping = in.readParcelable(ShippingData.class.getClassLoader());
+        this.by = in.readParcelable(ByData.class.getClassLoader());
+        this.trackable = in.readInt();
+        this.createTime = in.readString();
+        this.createTimeStr = in.readString();
+        this.attachments = in.createTypedArrayList(AttachmentDataDomain.CREATOR);
     }
 
     public List<AttachmentDataDomain> getAttachments() {
@@ -111,27 +133,4 @@ public class UserAwbData implements Parcelable {
         dest.writeString(this.createTimeStr);
         dest.writeTypedList(this.attachments);
     }
-
-    protected UserAwbData(Parcel in) {
-        this.resConvId = in.readInt();
-        this.awb = in.readString();
-        this.shipping = in.readParcelable(ShippingData.class.getClassLoader());
-        this.by = in.readParcelable(ByData.class.getClassLoader());
-        this.trackable = in.readInt();
-        this.createTime = in.readString();
-        this.createTimeStr = in.readString();
-        this.attachments = in.createTypedArrayList(AttachmentDataDomain.CREATOR);
-    }
-
-    public static final Creator<UserAwbData> CREATOR = new Creator<UserAwbData>() {
-        @Override
-        public UserAwbData createFromParcel(Parcel source) {
-            return new UserAwbData(source);
-        }
-
-        @Override
-        public UserAwbData[] newArray(int size) {
-            return new UserAwbData[size];
-        }
-    };
 }

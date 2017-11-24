@@ -57,6 +57,7 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
     public class Holder extends RecyclerView.ViewHolder {
         ImageView ivImage;
         TextView tvMore;
+
         public Holder(View itemView) {
             super(itemView);
             ivImage = (ImageView) itemView.findViewById(R.id.iv_image);

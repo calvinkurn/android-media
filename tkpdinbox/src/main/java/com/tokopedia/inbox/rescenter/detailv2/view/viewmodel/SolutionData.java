@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 
 public class SolutionData implements Parcelable {
+    public static final Creator<SolutionData> CREATOR = new Creator<SolutionData>() {
+        @Override
+        public SolutionData createFromParcel(Parcel source) {
+            return new SolutionData(source);
+        }
+
+        @Override
+        public SolutionData[] newArray(int size) {
+            return new SolutionData[size];
+        }
+    };
     private String solutionText;
     private String solutionDate;
     private String solutionProvider;
@@ -15,8 +26,24 @@ public class SolutionData implements Parcelable {
     private String solutionProblem;
     private boolean editAble;
 
+    public SolutionData() {
+    }
+
+    protected SolutionData(Parcel in) {
+        this.solutionText = in.readString();
+        this.solutionDate = in.readString();
+        this.solutionProvider = in.readString();
+        this.solutionProviderName = in.readString();
+        this.solutionProblem = in.readString();
+        this.editAble = in.readByte() != 0;
+    }
+
     public String getSolutionText() {
         return solutionText;
+    }
+
+    public void setSolutionText(String solutionText) {
+        this.solutionText = solutionText;
     }
 
     public String getSolutionProblem() {
@@ -25,10 +52,6 @@ public class SolutionData implements Parcelable {
 
     public void setSolutionProblem(String solutionProblem) {
         this.solutionProblem = solutionProblem;
-    }
-
-    public void setSolutionText(String solutionText) {
-        this.solutionText = solutionText;
     }
 
     public String getSolutionDate() {
@@ -63,9 +86,6 @@ public class SolutionData implements Parcelable {
         this.editAble = editAble;
     }
 
-    public SolutionData() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -80,25 +100,4 @@ public class SolutionData implements Parcelable {
         dest.writeString(this.solutionProblem);
         dest.writeByte(this.editAble ? (byte) 1 : (byte) 0);
     }
-
-    protected SolutionData(Parcel in) {
-        this.solutionText = in.readString();
-        this.solutionDate = in.readString();
-        this.solutionProvider = in.readString();
-        this.solutionProviderName = in.readString();
-        this.solutionProblem = in.readString();
-        this.editAble = in.readByte() != 0;
-    }
-
-    public static final Creator<SolutionData> CREATOR = new Creator<SolutionData>() {
-        @Override
-        public SolutionData createFromParcel(Parcel source) {
-            return new SolutionData(source);
-        }
-
-        @Override
-        public SolutionData[] newArray(int size) {
-            return new SolutionData[size];
-        }
-    };
 }

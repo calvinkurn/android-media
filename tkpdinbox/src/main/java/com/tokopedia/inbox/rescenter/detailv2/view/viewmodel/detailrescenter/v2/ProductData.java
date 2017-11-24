@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 public class ProductData implements Parcelable {
 
+    public static final Parcelable.Creator<ProductData> CREATOR = new Parcelable.Creator<ProductData>() {
+        @Override
+        public ProductData createFromParcel(Parcel source) {
+            return new ProductData(source);
+        }
+
+        @Override
+        public ProductData[] newArray(int size) {
+            return new ProductData[size];
+        }
+    };
     private String name;
     private String thumb;
     private String variant;
@@ -20,6 +31,14 @@ public class ProductData implements Parcelable {
         this.variant = variant;
         this.amount = amount;
         this.quantity = quantity;
+    }
+
+    protected ProductData(Parcel in) {
+        this.name = in.readString();
+        this.thumb = in.readString();
+        this.variant = in.readString();
+        this.amount = in.readParcelable(AmountData.class.getClassLoader());
+        this.quantity = in.readInt();
     }
 
     public String getName() {
@@ -75,24 +94,4 @@ public class ProductData implements Parcelable {
         dest.writeParcelable(this.amount, flags);
         dest.writeInt(this.quantity);
     }
-
-    protected ProductData(Parcel in) {
-        this.name = in.readString();
-        this.thumb = in.readString();
-        this.variant = in.readString();
-        this.amount = in.readParcelable(AmountData.class.getClassLoader());
-        this.quantity = in.readInt();
-    }
-
-    public static final Parcelable.Creator<ProductData> CREATOR = new Parcelable.Creator<ProductData>() {
-        @Override
-        public ProductData createFromParcel(Parcel source) {
-            return new ProductData(source);
-        }
-
-        @Override
-        public ProductData[] newArray(int size) {
-            return new ProductData[size];
-        }
-    };
 }

@@ -15,6 +15,17 @@ import java.util.List;
 
 public class DetailResponseData implements Parcelable {
 
+    public static final Parcelable.Creator<DetailResponseData> CREATOR = new Parcelable.Creator<DetailResponseData>() {
+        @Override
+        public DetailResponseData createFromParcel(Parcel source) {
+            return new DetailResponseData(source);
+        }
+
+        @Override
+        public DetailResponseData[] newArray(int size) {
+            return new DetailResponseData[size];
+        }
+    };
     private FirstData first;
     private LastData last;
     private ButtonDomain button;
@@ -25,7 +36,6 @@ public class DetailResponseData implements Parcelable {
     private ActionByData actionBy;
     private NextActionDomain nextAction;
     private List<LogData> logs;
-
     private boolean isSuccess;
     private String errorMessage;
 
@@ -40,6 +50,19 @@ public class DetailResponseData implements Parcelable {
         this.actionBy = actionBy;
         this.nextAction = nextAction;
         this.logs = logs;
+    }
+
+    protected DetailResponseData(Parcel in) {
+        this.first = in.readParcelable(FirstData.class.getClassLoader());
+        this.last = in.readParcelable(LastData.class.getClassLoader());
+        this.button = in.readParcelable(ButtonDomain.class.getClassLoader());
+        this.shop = in.readParcelable(ShopData.class.getClassLoader());
+        this.customer = in.readParcelable(CustomerData.class.getClassLoader());
+        this.order = in.readParcelable(OrderData.class.getClassLoader());
+        this.resolution = in.readParcelable(ResolutionData.class.getClassLoader());
+        this.actionBy = in.readParcelable(ActionByData.class.getClassLoader());
+        this.nextAction = in.readParcelable(NextActionDomain.class.getClassLoader());
+        this.logs = in.createTypedArrayList(LogData.CREATOR);
     }
 
     public boolean isSuccess() {
@@ -156,29 +179,4 @@ public class DetailResponseData implements Parcelable {
         dest.writeParcelable(this.nextAction, flags);
         dest.writeTypedList(this.logs);
     }
-
-    protected DetailResponseData(Parcel in) {
-        this.first = in.readParcelable(FirstData.class.getClassLoader());
-        this.last = in.readParcelable(LastData.class.getClassLoader());
-        this.button = in.readParcelable(ButtonDomain.class.getClassLoader());
-        this.shop = in.readParcelable(ShopData.class.getClassLoader());
-        this.customer = in.readParcelable(CustomerData.class.getClassLoader());
-        this.order = in.readParcelable(OrderData.class.getClassLoader());
-        this.resolution = in.readParcelable(ResolutionData.class.getClassLoader());
-        this.actionBy = in.readParcelable(ActionByData.class.getClassLoader());
-        this.nextAction = in.readParcelable(NextActionDomain.class.getClassLoader());
-        this.logs = in.createTypedArrayList(LogData.CREATOR);
-    }
-
-    public static final Parcelable.Creator<DetailResponseData> CREATOR = new Parcelable.Creator<DetailResponseData>() {
-        @Override
-        public DetailResponseData createFromParcel(Parcel source) {
-            return new DetailResponseData(source);
-        }
-
-        @Override
-        public DetailResponseData[] newArray(int size) {
-            return new DetailResponseData[size];
-        }
-    };
 }

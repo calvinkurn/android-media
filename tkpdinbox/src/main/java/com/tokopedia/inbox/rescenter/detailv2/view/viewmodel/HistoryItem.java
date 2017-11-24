@@ -8,12 +8,35 @@ import android.os.Parcelable;
  */
 
 public class HistoryItem implements Parcelable {
+    public static final Creator<HistoryItem> CREATOR = new Creator<HistoryItem>() {
+        @Override
+        public HistoryItem createFromParcel(Parcel source) {
+            return new HistoryItem(source);
+        }
+
+        @Override
+        public HistoryItem[] newArray(int size) {
+            return new HistoryItem[size];
+        }
+    };
     private String provider;
     private int providerId;
     private String date;
     private String dateTimestamp;
     private String historyText;
     private boolean latest;
+
+    public HistoryItem() {
+    }
+
+    protected HistoryItem(Parcel in) {
+        this.provider = in.readString();
+        this.providerId = in.readInt();
+        this.date = in.readString();
+        this.dateTimestamp = in.readString();
+        this.historyText = in.readString();
+        this.latest = in.readByte() != 0;
+    }
 
     public String getDateTimestamp() {
         return dateTimestamp;
@@ -63,9 +86,6 @@ public class HistoryItem implements Parcelable {
         this.latest = latest;
     }
 
-    public HistoryItem() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -80,25 +100,4 @@ public class HistoryItem implements Parcelable {
         dest.writeString(this.historyText);
         dest.writeByte(this.latest ? (byte) 1 : (byte) 0);
     }
-
-    protected HistoryItem(Parcel in) {
-        this.provider = in.readString();
-        this.providerId = in.readInt();
-        this.date = in.readString();
-        this.dateTimestamp = in.readString();
-        this.historyText = in.readString();
-        this.latest = in.readByte() != 0;
-    }
-
-    public static final Creator<HistoryItem> CREATOR = new Creator<HistoryItem>() {
-        @Override
-        public HistoryItem createFromParcel(Parcel source) {
-            return new HistoryItem(source);
-        }
-
-        @Override
-        public HistoryItem[] newArray(int size) {
-            return new HistoryItem[size];
-        }
-    };
 }

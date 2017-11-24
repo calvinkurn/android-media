@@ -5,10 +5,8 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCommonLeftViewModel;
@@ -52,7 +50,8 @@ public class ChatActionFinalLeftViewHolder extends AbstractViewHolder<ChatCommon
     }
 
     @Override
-    public void bind(ChatCommonLeftViewModel element) {final Context context = itemView.getContext();
+    public void bind(ChatCommonLeftViewModel element) {
+        final Context context = itemView.getContext();
         String date = DateFormatUtils.formatDateForResoChatV2(
                 element.getConversation().getCreateTime().getTimestamp());
 

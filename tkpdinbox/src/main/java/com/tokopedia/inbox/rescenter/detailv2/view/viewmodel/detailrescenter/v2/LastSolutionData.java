@@ -9,6 +9,17 @@ import android.os.Parcelable;
  */
 public class LastSolutionData implements Parcelable {
 
+    public static final Parcelable.Creator<LastSolutionData> CREATOR = new Parcelable.Creator<LastSolutionData>() {
+        @Override
+        public LastSolutionData createFromParcel(Parcel source) {
+            return new LastSolutionData(source);
+        }
+
+        @Override
+        public LastSolutionData[] newArray(int size) {
+            return new LastSolutionData[size];
+        }
+    };
     private int id;
     private String name;
     private String nameCustom;
@@ -27,6 +38,16 @@ public class LastSolutionData implements Parcelable {
         this.amount = amount;
         this.createTime = createTime;
         this.createTimeStr = createTimeStr;
+    }
+
+    protected LastSolutionData(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.nameCustom = in.readString();
+        this.actionBy = in.readInt();
+        this.amount = in.readParcelable(AmountData.class.getClassLoader());
+        this.createTime = in.readString();
+        this.createTimeStr = in.readString();
     }
 
     public int getReceivedFlag() {
@@ -108,26 +129,4 @@ public class LastSolutionData implements Parcelable {
         dest.writeString(this.createTime);
         dest.writeString(this.createTimeStr);
     }
-
-    protected LastSolutionData(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.nameCustom = in.readString();
-        this.actionBy = in.readInt();
-        this.amount = in.readParcelable(AmountData.class.getClassLoader());
-        this.createTime = in.readString();
-        this.createTimeStr = in.readString();
-    }
-
-    public static final Parcelable.Creator<LastSolutionData> CREATOR = new Parcelable.Creator<LastSolutionData>() {
-        @Override
-        public LastSolutionData createFromParcel(Parcel source) {
-            return new LastSolutionData(source);
-        }
-
-        @Override
-        public LastSolutionData[] newArray(int size) {
-            return new LastSolutionData[size];
-        }
-    };
 }

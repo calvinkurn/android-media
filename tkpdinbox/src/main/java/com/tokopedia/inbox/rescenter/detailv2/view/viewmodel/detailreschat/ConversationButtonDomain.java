@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ConversationButtonDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationButtonDomain> CREATOR = new Parcelable.Creator<ConversationButtonDomain>() {
+        @Override
+        public ConversationButtonDomain createFromParcel(Parcel source) {
+            return new ConversationButtonDomain(source);
+        }
+
+        @Override
+        public ConversationButtonDomain[] newArray(int size) {
+            return new ConversationButtonDomain[size];
+        }
+    };
     private int trackAwb;
     private int editAwb;
     private int editAddress;
@@ -17,6 +28,12 @@ public class ConversationButtonDomain implements Parcelable {
         this.trackAwb = trackAwb;
         this.editAwb = editAwb;
         this.editAddress = editAddress;
+    }
+
+    protected ConversationButtonDomain(Parcel in) {
+        this.trackAwb = in.readInt();
+        this.editAwb = in.readInt();
+        this.editAddress = in.readInt();
     }
 
     public int getTrackAwb() {
@@ -54,22 +71,4 @@ public class ConversationButtonDomain implements Parcelable {
         dest.writeInt(this.editAwb);
         dest.writeInt(this.editAddress);
     }
-
-    protected ConversationButtonDomain(Parcel in) {
-        this.trackAwb = in.readInt();
-        this.editAwb = in.readInt();
-        this.editAddress = in.readInt();
-    }
-
-    public static final Parcelable.Creator<ConversationButtonDomain> CREATOR = new Parcelable.Creator<ConversationButtonDomain>() {
-        @Override
-        public ConversationButtonDomain createFromParcel(Parcel source) {
-            return new ConversationButtonDomain(source);
-        }
-
-        @Override
-        public ConversationButtonDomain[] newArray(int size) {
-            return new ConversationButtonDomain[size];
-        }
-    };
 }

@@ -46,6 +46,7 @@ public class ChatProveAdapter extends RecyclerView.Adapter<ChatProveAdapter.Hold
 
     public class Holder extends RecyclerView.ViewHolder {
         ImageView ivImage;
+
         public Holder(View itemView) {
             super(itemView);
             ivImage = (ImageView) itemView.findViewById(R.id.iv_image);

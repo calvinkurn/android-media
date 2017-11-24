@@ -8,12 +8,28 @@ import android.os.Parcelable;
  */
 
 public class OrderDomain implements Parcelable {
+    public static final Parcelable.Creator<OrderDomain> CREATOR = new Parcelable.Creator<OrderDomain>() {
+        @Override
+        public OrderDomain createFromParcel(Parcel source) {
+            return new OrderDomain(source);
+        }
+
+        @Override
+        public OrderDomain[] newArray(int size) {
+            return new OrderDomain[size];
+        }
+    };
     private int openAmount;
     private int shippingPrices;
 
     public OrderDomain(int openAmount, int shippingPrices) {
         this.openAmount = openAmount;
         this.shippingPrices = shippingPrices;
+    }
+
+    protected OrderDomain(Parcel in) {
+        this.openAmount = in.readInt();
+        this.shippingPrices = in.readInt();
     }
 
     public int getOpenAmount() {
@@ -42,21 +58,4 @@ public class OrderDomain implements Parcelable {
         dest.writeInt(this.openAmount);
         dest.writeInt(this.shippingPrices);
     }
-
-    protected OrderDomain(Parcel in) {
-        this.openAmount = in.readInt();
-        this.shippingPrices = in.readInt();
-    }
-
-    public static final Parcelable.Creator<OrderDomain> CREATOR = new Parcelable.Creator<OrderDomain>() {
-        @Override
-        public OrderDomain createFromParcel(Parcel source) {
-            return new OrderDomain(source);
-        }
-
-        @Override
-        public OrderDomain[] newArray(int size) {
-            return new OrderDomain[size];
-        }
-    };
 }

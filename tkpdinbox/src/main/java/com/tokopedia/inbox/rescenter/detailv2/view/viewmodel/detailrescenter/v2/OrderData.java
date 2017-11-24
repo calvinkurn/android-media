@@ -9,6 +9,17 @@ import android.os.Parcelable;
  */
 public class OrderData implements Parcelable {
 
+    public static final Parcelable.Creator<OrderData> CREATOR = new Parcelable.Creator<OrderData>() {
+        @Override
+        public OrderData createFromParcel(Parcel source) {
+            return new OrderData(source);
+        }
+
+        @Override
+        public OrderData[] newArray(int size) {
+            return new OrderData[size];
+        }
+    };
     private int id;
     private InvoiceData invoice;
     private int openAmount;
@@ -23,6 +34,15 @@ public class OrderData implements Parcelable {
         this.shippingPrice = shippingPrice;
         this.awb = awb;
         this.pdf = pdf;
+    }
+
+    protected OrderData(Parcel in) {
+        this.id = in.readInt();
+        this.invoice = in.readParcelable(InvoiceData.class.getClassLoader());
+        this.openAmount = in.readInt();
+        this.shippingPrice = in.readInt();
+        this.awb = in.readString();
+        this.pdf = in.readString();
     }
 
     public int getId() {
@@ -87,25 +107,4 @@ public class OrderData implements Parcelable {
         dest.writeString(this.awb);
         dest.writeString(this.pdf);
     }
-
-    protected OrderData(Parcel in) {
-        this.id = in.readInt();
-        this.invoice = in.readParcelable(InvoiceData.class.getClassLoader());
-        this.openAmount = in.readInt();
-        this.shippingPrice = in.readInt();
-        this.awb = in.readString();
-        this.pdf = in.readString();
-    }
-
-    public static final Parcelable.Creator<OrderData> CREATOR = new Parcelable.Creator<OrderData>() {
-        @Override
-        public OrderData createFromParcel(Parcel source) {
-            return new OrderData(source);
-        }
-
-        @Override
-        public OrderData[] newArray(int size) {
-            return new OrderData[size];
-        }
-    };
 }

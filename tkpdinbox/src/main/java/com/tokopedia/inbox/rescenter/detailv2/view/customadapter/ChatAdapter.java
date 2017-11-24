@@ -76,15 +76,15 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemRemoved(position);
     }
 
-    public void showLoading(){
-        if(!isChatLoadingShown) {
+    public void showLoading() {
+        if (!isChatLoadingShown) {
             addItemOnPosition(loadingModel, 0);
             isChatLoadingShown = true;
         }
     }
 
     public void removeLoading() {
-        if(isChatLoadingShown) {
+        if (isChatLoadingShown) {
             removeItemOnPosition(0);
             isChatLoadingShown = false;
         }
@@ -94,7 +94,8 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.list.clear();
         notifyDataSetChanged();
     }
+
     public void deleteLastItem() {
-        this.list.remove(this.list.size()-1);
+        this.list.remove(this.list.size() - 1);
     }
 }

@@ -8,12 +8,28 @@ import android.os.Parcelable;
  * Created by yfsx on 07/11/17.
  */
 public class ShippingData implements Parcelable {
+    public static final Parcelable.Creator<ShippingData> CREATOR = new Parcelable.Creator<ShippingData>() {
+        @Override
+        public ShippingData createFromParcel(Parcel source) {
+            return new ShippingData(source);
+        }
+
+        @Override
+        public ShippingData[] newArray(int size) {
+            return new ShippingData[size];
+        }
+    };
     private int id;
     private String name;
 
     public ShippingData(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    protected ShippingData(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
     }
 
     public int getId() {
@@ -42,21 +58,4 @@ public class ShippingData implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.name);
     }
-
-    protected ShippingData(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-    }
-
-    public static final Parcelable.Creator<ShippingData> CREATOR = new Parcelable.Creator<ShippingData>() {
-        @Override
-        public ShippingData createFromParcel(Parcel source) {
-            return new ShippingData(source);
-        }
-
-        @Override
-        public ShippingData[] newArray(int size) {
-            return new ShippingData[size];
-        }
-    };
 }

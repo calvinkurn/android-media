@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ShopDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ShopDomain> CREATOR = new Parcelable.Creator<ShopDomain>() {
+        @Override
+        public ShopDomain createFromParcel(Parcel source) {
+            return new ShopDomain(source);
+        }
+
+        @Override
+        public ShopDomain[] newArray(int size) {
+            return new ShopDomain[size];
+        }
+    };
     private int id;
     private String name;
     private String url;
@@ -21,6 +32,14 @@ public class ShopDomain implements Parcelable {
         this.url = url;
         this.imageThumb = imageThumb;
         this.image = image;
+    }
+
+    protected ShopDomain(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.url = in.readString();
+        this.imageThumb = in.readString();
+        this.image = in.readString();
     }
 
     public int getId() {
@@ -76,24 +95,4 @@ public class ShopDomain implements Parcelable {
         dest.writeString(this.imageThumb);
         dest.writeString(this.image);
     }
-
-    protected ShopDomain(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.url = in.readString();
-        this.imageThumb = in.readString();
-        this.image = in.readString();
-    }
-
-    public static final Parcelable.Creator<ShopDomain> CREATOR = new Parcelable.Creator<ShopDomain>() {
-        @Override
-        public ShopDomain createFromParcel(Parcel source) {
-            return new ShopDomain(source);
-        }
-
-        @Override
-        public ShopDomain[] newArray(int size) {
-            return new ShopDomain[size];
-        }
-    };
 }

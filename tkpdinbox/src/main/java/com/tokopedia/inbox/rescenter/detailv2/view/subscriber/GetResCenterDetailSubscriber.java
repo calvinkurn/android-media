@@ -121,7 +121,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
 
     private AddressReturData mappingAddressReturData(AddressDomainModel domainModel) {
         AddressReturData data = new AddressReturData();
-        data.setAddressText("<b>" + domainModel.getReceiver()+ "</b>" + "<br>" +
+        data.setAddressText("<b>" + domainModel.getReceiver() + "</b>" + "<br>" +
                 domainModel.getStreet() + "<br>" +
                 domainModel.getDistrict() + ", " + domainModel.getCity() + "<br>" +
                 domainModel.getProvince() + "<br>" +
@@ -197,7 +197,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
     private HistoryData mappingHistoryData(ResolutionHistoryDomainModel domainModel) {
         HistoryData data = new HistoryData();
         List<HistoryItem> viewModels = new ArrayList<>();
-        for (int i = 0; i < domainModel.getList().size() ; i++) {
+        for (int i = 0; i < domainModel.getList().size(); i++) {
             ResolutionHistoryItemDomainModel item = domainModel.getList().get(i);
             HistoryItem viewModel = new HistoryItem();
             viewModel.setHistoryText(item.getRemark());

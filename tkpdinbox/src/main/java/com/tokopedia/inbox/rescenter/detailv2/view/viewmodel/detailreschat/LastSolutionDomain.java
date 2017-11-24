@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 
 public class LastSolutionDomain implements Parcelable {
+    public static final Parcelable.Creator<LastSolutionDomain> CREATOR = new Parcelable.Creator<LastSolutionDomain>() {
+        @Override
+        public LastSolutionDomain createFromParcel(Parcel source) {
+            return new LastSolutionDomain(source);
+        }
+
+        @Override
+        public LastSolutionDomain[] newArray(int size) {
+            return new LastSolutionDomain[size];
+        }
+    };
     private int id;
     private String name;
     private int amount;
@@ -16,6 +27,12 @@ public class LastSolutionDomain implements Parcelable {
         this.id = id;
         this.name = name;
         this.amount = amount;
+    }
+
+    protected LastSolutionDomain(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.amount = in.readInt();
     }
 
     public int getId() {
@@ -53,22 +70,4 @@ public class LastSolutionDomain implements Parcelable {
         dest.writeString(this.name);
         dest.writeInt(this.amount);
     }
-
-    protected LastSolutionDomain(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.amount = in.readInt();
-    }
-
-    public static final Parcelable.Creator<LastSolutionDomain> CREATOR = new Parcelable.Creator<LastSolutionDomain>() {
-        @Override
-        public LastSolutionDomain createFromParcel(Parcel source) {
-            return new LastSolutionDomain(source);
-        }
-
-        @Override
-        public LastSolutionDomain[] newArray(int size) {
-            return new LastSolutionDomain[size];
-        }
-    };
 }

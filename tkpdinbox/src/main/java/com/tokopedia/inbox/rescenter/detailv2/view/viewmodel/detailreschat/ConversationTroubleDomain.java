@@ -9,10 +9,25 @@ import android.os.Parcelable;
 
 public class ConversationTroubleDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationTroubleDomain> CREATOR = new Parcelable.Creator<ConversationTroubleDomain>() {
+        @Override
+        public ConversationTroubleDomain createFromParcel(Parcel source) {
+            return new ConversationTroubleDomain(source);
+        }
+
+        @Override
+        public ConversationTroubleDomain[] newArray(int size) {
+            return new ConversationTroubleDomain[size];
+        }
+    };
     private String string;
 
     public ConversationTroubleDomain(String string) {
         this.string = string;
+    }
+
+    protected ConversationTroubleDomain(Parcel in) {
+        this.string = in.readString();
     }
 
     public String getString() {
@@ -32,20 +47,4 @@ public class ConversationTroubleDomain implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.string);
     }
-
-    protected ConversationTroubleDomain(Parcel in) {
-        this.string = in.readString();
-    }
-
-    public static final Parcelable.Creator<ConversationTroubleDomain> CREATOR = new Parcelable.Creator<ConversationTroubleDomain>() {
-        @Override
-        public ConversationTroubleDomain createFromParcel(Parcel source) {
-            return new ConversationTroubleDomain(source);
-        }
-
-        @Override
-        public ConversationTroubleDomain[] newArray(int size) {
-            return new ConversationTroubleDomain[size];
-        }
-    };
 }

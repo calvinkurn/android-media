@@ -191,12 +191,12 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                 actionInputAddress.getVisibility() == VISIBLE;
     }
 
-    public void setButtonData(ButtonData buttonData) {
-        this.buttonData = buttonData;
-    }
-
     public ButtonData getButtonData() {
         return buttonData;
+    }
+
+    public void setButtonData(ButtonData buttonData) {
+        this.buttonData = buttonData;
     }
 
     private boolean canAcceptProduct() {
@@ -257,7 +257,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
             dialog.dismiss();
             if (canAcceptSolution() && !canAcceptAdminSolution()) {
                 listener.setOnActionAcceptSolutionClick();
-            } else if (canAcceptAdminSolution() && !canAcceptSolution()){
+            } else if (canAcceptAdminSolution() && !canAcceptSolution()) {
                 listener.setOnActionAcceptAdminSolutionClick();
             }
         }

@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ConversationAddressDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationAddressDomain> CREATOR = new Parcelable.Creator<ConversationAddressDomain>() {
+        @Override
+        public ConversationAddressDomain createFromParcel(Parcel source) {
+            return new ConversationAddressDomain(source);
+        }
+
+        @Override
+        public ConversationAddressDomain[] newArray(int size) {
+            return new ConversationAddressDomain[size];
+        }
+    };
     private int addressId;
     private String address;
     private String district;
@@ -37,6 +48,18 @@ public class ConversationAddressDomain implements Parcelable {
         this.country = country;
         this.postalCode = postalCode;
         this.receiver = receiver;
+    }
+
+    protected ConversationAddressDomain(Parcel in) {
+        this.addressId = in.readInt();
+        this.address = in.readString();
+        this.district = in.readString();
+        this.city = in.readString();
+        this.province = in.readString();
+        this.phone = in.readString();
+        this.country = in.readString();
+        this.postalCode = in.readString();
+        this.receiver = in.readString();
     }
 
     public int getAddressId() {
@@ -128,28 +151,4 @@ public class ConversationAddressDomain implements Parcelable {
         dest.writeString(this.postalCode);
         dest.writeString(this.receiver);
     }
-
-    protected ConversationAddressDomain(Parcel in) {
-        this.addressId = in.readInt();
-        this.address = in.readString();
-        this.district = in.readString();
-        this.city = in.readString();
-        this.province = in.readString();
-        this.phone = in.readString();
-        this.country = in.readString();
-        this.postalCode = in.readString();
-        this.receiver = in.readString();
-    }
-
-    public static final Parcelable.Creator<ConversationAddressDomain> CREATOR = new Parcelable.Creator<ConversationAddressDomain>() {
-        @Override
-        public ConversationAddressDomain createFromParcel(Parcel source) {
-            return new ConversationAddressDomain(source);
-        }
-
-        @Override
-        public ConversationAddressDomain[] newArray(int size) {
-            return new ConversationAddressDomain[size];
-        }
-    };
 }

@@ -36,7 +36,7 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
         super(itemView);
         this.mainView = mainView;
         tvMessage = (TextView) itemView.findViewById(R.id.tv_message);
-        tvTitle = (TextView) itemView.findViewById(R.id.tv_title) ;
+        tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         layoutTitle = itemView.findViewById(R.id.layout_title);
         tvUserTitle = (TextView) layoutTitle.findViewById(R.id.tv_user_title);
         tvUsername = (TextView) layoutTitle.findViewById(R.id.tv_username);
