@@ -24,4 +24,5 @@
     <color name="colorStockEmpty">#fff7bc</color>
 
     <color name="redTransparant">#AAd50000</color>
+    <color name="watermark_text_color">#26DDDDDD</color>
 </resources>

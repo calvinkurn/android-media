@@ -73,8 +73,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 212001301;
-        defaultVersionName = "2.13";
+        defaultVersionCode = 216001101;
+        defaultVersionName = "2.16";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -184,7 +184,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
     }
 
     compileOptions {
@@ -206,14 +206,12 @@ android {
         }
     }
 
-//    variantFilter { variant ->
-//        def names = variant.flavors*.name
-//        // To check for a certain build type, use variant.buildType.name == "<buildType>"
-//        if (names.contains("staging") && names.contains("demo")) {
-//            // Gradle ignores any variants that satisfy the conditions above.
-//            setIgnore(true)
-//        }
-//    }
+    variantFilter { variant ->
+
+        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
+            variant.setIgnore(true);
+        }
+    }
 }
 
 dependencies {
@@ -254,7 +252,6 @@ dependencies {
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
-    compile project(':tkpdtopads')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpdride')

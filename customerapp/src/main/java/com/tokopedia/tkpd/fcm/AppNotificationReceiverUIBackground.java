@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -22,9 +24,10 @@ import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
+import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
+import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
@@ -122,7 +125,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                                 == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                             listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                         } else {
+
                             prepareAndExecuteApplinkNotification(data);
+
                         }
                     } else {
                         prepareAndExecuteApplinkNotification(data);
@@ -131,10 +136,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL)) {
+            if (data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL)) {
                 prepareAndExecuteApplinkPromoNotification(data);
-            }
-            else {
+            } else {
                 prepareAndExecuteApplinkNotification(data);
             }
         }
@@ -183,6 +187,21 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 }
                 break;
 
+            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                    NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                    listener.onGetNotif(data);
+                }else {
+                    String applink  = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                    String fullname = data
+                            .getString("full_name");
+                    applink += "?" + "fullname=" + fullname;
+                    data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                    ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                    applinkBuildAndShowNotification.showApplinkNotification(data);
+                }
+                break;
             default:
                 ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
                 applinkBuildAndShowNotification.showApplinkNotification(data);
@@ -225,8 +244,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(applink);
+        return ((TkpdCoreRouter) mContext.getApplicationContext())
+                .isSupportedDelegateDeepLink(applink);
+
     }
 
     private void prepareAndExecutePromoNotification(Bundle data) {

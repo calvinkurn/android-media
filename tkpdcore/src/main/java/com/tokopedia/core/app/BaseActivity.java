@@ -72,9 +72,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
-    @Inject
+
     protected SessionHandler sessionHandler;
-    @Inject
+
     protected GCMHandler gcmHandler;
 
     private Boolean isPause = false;
@@ -94,8 +94,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-
+        sessionHandler = new SessionHandler(getBaseContext());
         categoryDatabaseManager = new CategoryDatabaseManager();
+        gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
@@ -229,6 +230,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
             } else {
+                invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -355,12 +357,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
+                            invalidateCategoryCache();
                             Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
                     }
                 });
+    }
+
+    private void invalidateCategoryCache() {
+        ((TkpdCoreRouter) getApplication()).invalidateCategoryMenuData();
     }
 
     public void checkIfForceLogoutMustShow() {

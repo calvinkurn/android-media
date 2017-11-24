@@ -2,6 +2,7 @@ package com.tokopedia.core.base.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -131,6 +132,10 @@ public class RequestParams {
     }
 
     public void putAll(Map<String, Object> params){
+        parameters.putAll(params);
+    }
+
+    public void putAll(HashMap<String, String> params){
         parameters.putAll(params);
     }
 }
