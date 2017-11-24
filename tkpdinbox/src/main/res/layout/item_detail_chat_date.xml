@@ -11,6 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vvvs"
         android:textColor="@color/black_38"
+        android:textSize="@dimen/text_size_xsmall"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:lineSpacingExtra="9sp"
         context:text="date"
         />
+
 </RelativeLayout>

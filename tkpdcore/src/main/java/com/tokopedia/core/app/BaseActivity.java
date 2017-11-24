@@ -61,6 +61,8 @@ import rx.schedulers.Schedulers;
  * Created by nisie on 2/7/17.
  */
 
+
+
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {

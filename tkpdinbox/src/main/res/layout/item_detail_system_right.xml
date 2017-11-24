@@ -9,6 +9,7 @@
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="end"
         android:orientation="vertical">
 
         <FrameLayout
@@ -44,7 +45,7 @@
             </LinearLayout>
         </FrameLayout>
 
-        <include layout="@layout/item_detail_chat_date_right"
+        <include layout="@layout/item_detail_chat_date"
             android:id="@+id/layout_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -29,7 +29,7 @@
                 android:paddingRight="@dimen/padding_small"
                 android:text="@string/title_section_prove"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/text_size_s_medium"
                 />
 
             <View
@@ -66,6 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_section_prove_status"
+            android:textSize="@dimen/text_size_xsmall"
             android:textColor="@color/black_38"/>
 
         <TextView

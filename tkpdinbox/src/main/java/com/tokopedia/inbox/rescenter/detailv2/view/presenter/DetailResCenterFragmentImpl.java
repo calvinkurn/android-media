@@ -11,7 +11,8 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDeta
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
-import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailV2Subscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.
+        GetResCenterDetailV2Subscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.TrackAwbReturProductSubscriber;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
