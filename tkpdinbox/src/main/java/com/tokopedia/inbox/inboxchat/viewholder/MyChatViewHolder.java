@@ -38,6 +38,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     ImageView chatStatus;
     private TextView name;
     private TextView label;
+    private TextView dot;
     ChatRoomContract.View viewListener;
     private static final String ROLE_USER = "User";
 
@@ -53,6 +54,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         chatStatus = itemView.findViewById(R.id.chat_status);
         name = itemView.findViewById(R.id.name);
         label = itemView.findViewById(R.id.label);
+        dot = itemView.findViewById(R.id.dot);
         this.viewListener = viewListener;
     }
 
@@ -128,10 +130,12 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         if(element.getRole().toLowerCase().equals(ROLE_USER.toLowerCase())){
             name.setVisibility(View.GONE);
             label.setVisibility(View.GONE);
+            dot.setVisibility(View.GONE);
         }else{
             name.setText(element.getSenderName());
             label.setText(element.getRole());
             name.setVisibility(View.VISIBLE);
+            dot.setVisibility(View.VISIBLE);
             label.setVisibility(View.VISIBLE);
         }
 

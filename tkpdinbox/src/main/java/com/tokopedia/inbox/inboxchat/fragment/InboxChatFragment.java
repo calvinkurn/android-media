@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -239,6 +240,14 @@ public class InboxChatFragment extends BaseDaggerFragment
 
         adapter = new NewInboxChatAdapter(typeFactory, presenter);
 
+        searchInputView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                searchInputView.getSearchTextView().setCursorVisible(true);
+                return false;
+            }
+        });
+
         mainList.setAdapter(adapter);
         mainList.setLayoutManager(layoutManager);
         mainList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -444,6 +453,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void dropKeyboard() {
+        searchInputView.getSearchTextView().setCursorVisible(false);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 

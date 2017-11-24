@@ -20,9 +20,23 @@
         android:lineSpacingExtra="3sp"
         android:textColor="@color/black_38"
         android:textSize="11sp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="3dp"
         android:textStyle="normal"
         tools:text="Pengguna" />
+
+    <TextView
+        android:id="@+id/dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/date"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="3sp"
+        android:textColor="@color/grey_500"
+        android:textSize="11sp"
+        android:textStyle="normal"
+        android:layout_marginLeft="3dp"
+        android:layout_toLeftOf="@id/label"
+        tools:text="●"/>
 
     <TextView
         android:id="@+id/name"
@@ -34,7 +48,7 @@
         android:textColor="@color/black_54"
         android:textSize="11sp"
         android:textStyle="normal"
-        android:layout_toLeftOf="@id/label"
+        android:layout_toLeftOf="@id/dot"
         tools:text="AHAJA"/>
 
     <TextView
@@ -52,7 +66,6 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main"
         android:layout_width="wrap_content"
-        android:maxWidth="@dimen/chat_width"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -67,6 +80,7 @@
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="@dimen/chat_width"
             android:textIsSelectable="true"
             android:textColor="@color/white"
             android:textColorLink="@color/white"
