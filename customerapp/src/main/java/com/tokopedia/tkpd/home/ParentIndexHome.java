@@ -760,7 +760,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
         if (intent.getBooleanExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
-            if (getApplication() instanceof TkpdCoreRouter && !isPausing())
+            if (getApplication() instanceof TkpdCoreRouter && !isPausing()) {
                 ((TkpdCoreRouter) getApplication()).getApplinkUnsupported(ParentIndexHome.this).showAndCheckApplinkUnsupported();
             }
         }
