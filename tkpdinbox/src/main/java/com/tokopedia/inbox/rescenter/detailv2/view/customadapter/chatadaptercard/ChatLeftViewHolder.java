@@ -13,6 +13,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
+import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
 
 import org.w3c.dom.Text;
 
@@ -67,12 +68,15 @@ public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel> {
         if (element.getConversation().getAction().getBy() == ACTION_BY_SELLER) {
             tvUserTitle.setText("Penjual");
             tvUsername.setText(element.getShop().getName());
+            ChatTitleColorUtil.sellerColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_ADMIN) {
             tvUserTitle.setText("Admin");
             tvUsername.setText("Admin");
+            ChatTitleColorUtil.adminColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_USER) {
             tvUserTitle.setText("Pembeli");
             tvUsername.setText(element.getCustomer().getName());
+            ChatTitleColorUtil.buyerColorTitle(tvUserTitle, tvUsername);
         }
     }
 

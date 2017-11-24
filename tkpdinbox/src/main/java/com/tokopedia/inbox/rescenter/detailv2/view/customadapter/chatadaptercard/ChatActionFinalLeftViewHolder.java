@@ -5,11 +5,14 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCommonLeftViewModel;
+import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
 
 /**
  * Created by yoasfs on 23/10/17.
@@ -60,6 +63,9 @@ public class ChatActionFinalLeftViewHolder extends AbstractViewHolder<ChatCommon
         tvUserTitle2.setText(context.getResources().getString(R.string.string_tokopedia_system));
         tvUserName2.setText(context.getResources().getString(R.string.string_tokopedia));
         tvDate2.setText(date);
+
+        ChatTitleColorUtil.adminColorTitle(tvUserTitle1, tvUserName1);
+        ChatTitleColorUtil.systemColorTitle(tvUserTitle2, tvUserName2);
 
         tvContent.setText(element.getConversation().getSolution().getName());
         tvReason.setText(element.getConversation().getMessage());

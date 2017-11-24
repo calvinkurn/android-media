@@ -13,6 +13,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmen
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAddressDomain;
+import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
 
 /**
  * Created by yoasfs on 23/10/17.
@@ -65,12 +66,15 @@ public class ChatInputAddressLeftViewHolder extends AbstractViewHolder<ChatInput
         if (element.getConversation().getAction().getBy() == ACTION_BY_SELLER) {
             tvUserTitle.setText("Penjual");
             tvUsername.setText(element.getShop().getName());
+            ChatTitleColorUtil.sellerColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_ADMIN) {
             tvUserTitle.setText("Admin");
             tvUsername.setText("Admin");
+            ChatTitleColorUtil.adminColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_USER) {
             tvUserTitle.setText("Pembeli");
             tvUsername.setText(element.getCustomer().getName());
+            ChatTitleColorUtil.buyerColorTitle(tvUserTitle, tvUsername);
         }
     }
 
