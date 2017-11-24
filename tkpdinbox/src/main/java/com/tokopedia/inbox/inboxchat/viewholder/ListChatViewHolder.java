@@ -191,15 +191,17 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                int position = getAdapterPosition();
-                if (element.isChecked()) {
-                    setReadState();
-                    presenter.onDeselect(position);
-                } else {
-                    setSelectedState();
-                    presenter.onSelected(position);
-                }
+                if(element.getSpanMode() == ChatListViewModel.NO_SPAN){
+                    int position = getAdapterPosition();
+                    if (element.isChecked()) {
+                        setReadState();
+                        presenter.onDeselect(position);
+                    } else {
+                        setSelectedState();
+                        presenter.onSelected(position);
+                    }
 
+                }
                 return true;
             }
         };
