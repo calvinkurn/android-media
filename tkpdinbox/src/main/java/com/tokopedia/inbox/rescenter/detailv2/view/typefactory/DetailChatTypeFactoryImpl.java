@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatActionFinalLeftViewHolder;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatActionResetLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatAwbLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatAwbRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatCommonLeftViewHolder;
@@ -19,6 +20,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatSystemRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionFinalLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionResetLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatAwbLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatAwbRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCommonLeftViewModel;
@@ -109,6 +111,11 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory implements
     }
 
     @Override
+    public int type(ChatActionResetLeftViewModel viewModel) {
+        return ChatActionResetLeftViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == ChatLeftViewHolder.LAYOUT) {
@@ -135,6 +142,8 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory implements
             viewHolder = new ChatActionFinalLeftViewHolder(view, mainView);
         } else if (type == ChatAwbRightViewHolder.LAYOUT) {
             viewHolder = new ChatAwbRightViewHolder(view, mainView);
+        } else if (type == ChatActionResetLeftViewHolder.LAYOUT) {
+            viewHolder = new ChatActionResetLeftViewHolder(view, mainView);
         } else if (type == ChatAwbLeftViewHolder.LAYOUT) {
             viewHolder = new ChatAwbLeftViewHolder(view, mainView);
         } else {

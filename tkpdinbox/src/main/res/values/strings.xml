@@ -198,6 +198,8 @@ yang ditemukan</string>
     <string name="string_complaint_title_identifier">$store_name</string>
     <string name="string_tokopedia_system">Sistem Tokopedia</string>
     <string name="string_tokopedia">Toped</string>
+    <string name="string_tokopedia_buyer_title">Pembeli</string>
+    <string name="string_tokopedia_seller_title">Penjual</string>
     <string name="string_tokopedia_admin_title">Admin</string>
     <string name="string_tokopedia_admin_username">Tokopedia Admin</string>
     <string name="detail">Detail</string>
@@ -211,5 +213,6 @@ yang ditemukan</string>
     <string name="string_track_awb">Lacak Paket</string>
     <string name="string_edit_awb">Edit Resi</string>
     <string name="string_awb_attachment">Lampiran:</string>
+    <string name="string_reason">Alasan:</string>
     <string name="string_awb_format">Nomor Resi: %1$s (%2$s)</string>
 </resources>

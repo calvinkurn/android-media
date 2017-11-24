@@ -78,15 +78,15 @@ public class ChatAwbLeftViewHolder extends AbstractViewHolder<ChatAwbLeftViewMod
         btnTrack.setVisibility(element.getConversation().getButton().getTrackAwb() == 1 ? View.VISIBLE : View.GONE);
 
         if (element.getConversation().getAction().getBy() == ACTION_BY_SELLER) {
-            tvUserTitle.setText("Penjual");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_seller_title));
             tvUsername.setText(element.getShop().getName());
             ChatTitleColorUtil.sellerColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_ADMIN) {
-            tvUserTitle.setText("Admin");
-            tvUsername.setText("Admin");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_title));
+            tvUsername.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_username));
             ChatTitleColorUtil.adminColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_USER) {
-            tvUserTitle.setText("Pembeli");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_buyer_title));
             tvUsername.setText(element.getCustomer().getName());
             ChatTitleColorUtil.buyerColorTitle(tvUserTitle, tvUsername);
         }

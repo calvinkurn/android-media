@@ -6,6 +6,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionFinalLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionResetLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatAwbLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatAwbRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCommonLeftViewModel;
@@ -95,7 +96,7 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             conversationDomain,
                             isShowTitle));
                 }
-            } else if (actionType.equals(EDIT_SOLUTION)) {
+            } else if (actionType.equals(EDIT_SOLUTION) || actionType.equals(APPEAL_RESOLUTION)) {
                 boolean isShowTitle;
                 if (lastAction == conversationDomain.getAction().getBy()) {
                     isShowTitle = false;
@@ -115,6 +116,11 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             conversationDomain,
                             isShowTitle));
                 }
+            } else if (actionType.equals(ACTION_RESET)) {
+                items.add(new ChatActionResetLeftViewModel(
+                        shopDomain,
+                        customerDomain,
+                        conversationDomain));
             } else if (actionType.equals(INPUT_ADDRESS) || actionType.equals(EDIT_ADDRESS)) {
                 boolean isShowTitle;
                 if (lastAction == conversationDomain.getAction().getBy()) {

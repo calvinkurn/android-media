@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -64,15 +65,15 @@ public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel> {
         layoutTitle.setVisibility(element.isShowTitle() ? View.VISIBLE : View.GONE);
 
         if (element.getConversation().getAction().getBy() == ACTION_BY_SELLER) {
-            tvUserTitle.setText("Penjual");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_seller_title));
             tvUsername.setText(element.getShop().getName());
             ChatTitleColorUtil.sellerColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_ADMIN) {
-            tvUserTitle.setText("Admin");
-            tvUsername.setText("Admin");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_title));
+            tvUsername.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_username));
             ChatTitleColorUtil.adminColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_USER) {
-            tvUserTitle.setText("Pembeli");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_buyer_title));
             tvUsername.setText(element.getCustomer().getName());
             ChatTitleColorUtil.buyerColorTitle(tvUserTitle, tvUsername);
         }
