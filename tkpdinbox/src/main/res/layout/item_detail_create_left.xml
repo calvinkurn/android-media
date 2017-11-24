@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vs"
-            android:background="@drawable/bg_bubble_left_white"
+            android:background="@drawable/bg_bubble_left"
             android:minHeight="25dp"
             android:minWidth="120dp"
             android:orientation="vertical">
@@ -129,25 +129,18 @@
 
             </LinearLayout>
 
-            <View
-                android:id="@+id/separator"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey_300"
-                />
-
             <FrameLayout
                 android:id="@+id/fl_see_all_product"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:padding="@dimen/margin_vs"
+                android:background="@drawable/bg_bubble_left_white"
                 >
 
                 <Button
                     android:id="@+id/btn_see_all_product"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/white"
+                    android:background="@color/transparent"
                     android:text="@string/string_see_all_product"
                     android:textAllCaps="false"
                     android:textColor="@color/tkpd_main_green"
@@ -165,7 +158,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vs"
-            android:background="@drawable/bg_bubble_left_white"
+            android:background="@drawable/bg_bubble_left"
             android:minHeight="25dp"
             android:minWidth="120dp"
             android:padding="@dimen/padding_small">

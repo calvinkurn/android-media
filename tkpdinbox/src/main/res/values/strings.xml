@@ -179,7 +179,7 @@ yang ditemukan</string>
     <string name="string_cancel_finish_title">Selesaikan Komplain?</string>
     <string name="string_error_min_max_words">Minimal 7 karakter dan maksimal 5000 karakter</string>
     <string name="string_help_info">Anda dapat meminta bantuan \n<b>Customer Service Tokopedia</b> dalam waktu:</string>
-    <string name="string_help_info_2">Anda dapat meminta bantuan \n<b>Customer Service Tokopedia</b>:</string>
+    <string name="string_help_info_2"><![CDATA[Anda dapat meminta bantuan <br><b>Customer Service Tokopedia</b>:]]></string>
     <string name="string_ic_discussion">Diskusi</string>
     <string name="string_change">Ubah</string>
     <string name="string_get_help">Minta Bantuan</string>

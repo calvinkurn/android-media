@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbData;
+
+import static com.moe.pushlibrary.utils.MoEHelperUtils.getDate;
 
 /**
  * Created by hangnadi on 3/13/17.
@@ -75,7 +78,12 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     }
 
     private String generateInformationText(AwbData data) {
-        return getContext().getString(R.string.template_awb_additional_text, data.getAwbDate());
+        return getContext().getString(R.string.template_awb_additional_text, formatDate(data
+                .getAwbDate()));
+    }
+
+    private String formatDate(String awbDate) {
+        return DateFormatUtils.formatDateForResoChatV2(awbDate);
     }
 
     private class AwbViewOnClickListener implements OnClickListener {

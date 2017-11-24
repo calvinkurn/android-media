@@ -42,7 +42,6 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
     ChatProveAdapter proveAdapter;
     ChatProductAdapter productAdapter;
     FrameLayout flSeeAllProducts;
-    View separator;
 
     public ChatCreateLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
@@ -55,7 +54,6 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         rvProduct = itemView.findViewById(R.id.rv_complained_product);
         btnSeeAllProduct = itemView.findViewById(R.id.btn_see_all_product);
         flSeeAllProducts = itemView.findViewById(R.id.fl_see_all_product);
-        separator = itemView.findViewById(R.id.separator);
 
         layoutTitle = itemView.findViewById(R.id.layout_title);
         layoutDate1 = itemView.findViewById(R.id.layout_date_1);
@@ -86,10 +84,6 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         tvDate1.setText(date);
         tvDate2.setText(date);
         tvDate3.setText(date);
-
-        separator.setVisibility(element.getConversationDomain().getAttachment().size() < 2 ?
-                View.GONE :
-                View.VISIBLE);
 
         flSeeAllProducts.setVisibility(
                 element.getConversationDomain().getAttachment().size() < 2 ?

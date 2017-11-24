@@ -196,12 +196,15 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
 
     private List<AttachmentDataDomain> mappingAttachments(List<AttachmentResponse> responseList) {
         List<AttachmentDataDomain> domainList = new ArrayList<>();
-        for (AttachmentResponse response : responseList) {
-            AttachmentDataDomain domain = new AttachmentDataDomain(response.getFullUrl(), response.getThumbnail());
-            domainList.add(domain);
+        if (responseList != null) {
+            for (AttachmentResponse response : responseList) {
+                AttachmentDataDomain domain = new AttachmentDataDomain(response.getFullUrl(), response.getThumbnail());
+                domainList.add(domain);
+            }
         }
         return domainList;
     }
+
     private ShippingData mappingShippingData(ShippingResponse response) {
         return new ShippingData(response.getId(), response.getName());
     }
@@ -304,7 +307,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
         return new CustomerData(
                 response.getId(),
                 response.getName(),
-                response.getPicture() !=null ?
+                response.getPicture() != null ?
                         mappingPictureData(response.getPicture()) :
                         null);
     }
@@ -331,7 +334,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getStatus() != null ?
                         mappingStatusData(response.getStatus()) :
                         null,
-                response.getCreateBy() != null?
+                response.getCreateBy() != null ?
                         mappingCreatedByData(response.getCreateBy()) :
                         null,
                 response.getCreateTime(),

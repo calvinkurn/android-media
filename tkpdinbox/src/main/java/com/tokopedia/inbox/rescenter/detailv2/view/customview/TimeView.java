@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -43,10 +44,9 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
-        tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        tvTitle = view.findViewById(R.id.tv_title);
         timeTickerView = findViewById(R.id.time_ticker);
-        btnGetHelp = (Button) view.findViewById(R.id.btn_get_help);
-
+        btnGetHelp = view.findViewById(R.id.btn_get_help);
     }
 
     @Override
@@ -73,15 +73,18 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
     public void renderData(@NonNull DetailData detailData) {
         long duration = getDuration(detailData.getResponseDeadline());
         if (duration > 0) {
+            setVisibility(VISIBLE);
             timeTickerView.setVisibility(VISIBLE);
             if (timeTickerUtil == null) {
                 timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
                         getTimeTickerListener());
             }
             timeTickerUtil.startTimer(duration);
-        } else if(detailData.isCanAskHelp()) {
+        } else if (detailData.isCanAskHelp()) {
+            setVisibility(VISIBLE);
             btnGetHelp.setVisibility(VISIBLE);
-            tvTitle.setText(getResources().getString(R.string.string_help_info_2));
+            tvTitle.setText(MethodChecker.fromHtml(getResources().getString(R.string
+                    .string_help_info_2)));
             btnGetHelp.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -89,9 +92,8 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
                 }
             });
         } else {
-            refreshMainPage();
+            setVisibility(GONE);
         }
-        setVisibility(VISIBLE);
     }
 
     private void refreshMainPage() {

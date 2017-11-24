@@ -275,6 +275,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
 
     private List<AwbAttachmentViewModel> mappingAwbAttachments(List<AttachmentDataDomain> attachmentDataList) {
         List<AwbAttachmentViewModel> attachmentViewModels = new ArrayList<>();
+        if(attachmentDataList!= null)
         for (AttachmentDataDomain attachmentData : attachmentDataList) {
             AwbAttachmentViewModel awbAttachmentViewModel = new AwbAttachmentViewModel();
             awbAttachmentViewModel.setImageThumbUrl(attachmentData.getThumbnail());

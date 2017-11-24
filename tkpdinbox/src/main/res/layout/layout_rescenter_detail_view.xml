@@ -25,14 +25,14 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:text="@string/detail_rescenter_date"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/text_size_xsmall" />
 
             <TextView
                 android:id="@+id/tv_complaint_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#464646"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/text_size_small" />
 
         </LinearLayout>
 
@@ -51,7 +51,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:text="@string/detail_rescenter_customer"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/text_size_xsmall" />
 
             <TextView
                 android:id="@+id/tv_people_name"
@@ -60,7 +60,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/text_size_small" />
 
         </LinearLayout>
 
@@ -79,7 +79,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:text="@string/detail_rescenter_shop"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/text_size_xsmall" />
 
             <TextView
                 android:id="@+id/tv_shop_name"
@@ -88,7 +88,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/text_size_small" />
 
         </LinearLayout>
     </LinearLayout>
@@ -113,7 +113,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:text="@string/detail_rescenter_awb_selling"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/text_size_xsmall" />
 
             <TextView
                 android:id="@+id/tv_awb_number"
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/tkpd_main_green"
                 android:textIsSelectable="true"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/text_size_small" />
 
         </LinearLayout>
 
@@ -139,7 +139,7 @@
                 android:layout_marginRight="@dimen/margin_small"
                 android:text="@string/detail_rescenter_invoice_selling"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/text_size_xsmall" />
 
             <TextView
                 android:id="@+id/tv_invoice"
@@ -148,7 +148,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/fonts"
+                android:textSize="@dimen/text_size_small"
                 />
         </LinearLayout>
 
