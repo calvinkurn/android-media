@@ -102,7 +102,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         setPresenter(categoryPresenter);
         categoryPresenter.attachView(this);
         categoryPresenter.setDiscoveryView(this);
-        categoryName = getResources().getString(R.string.title_activity_browse_category);
+        categoryName = "";
         loadInitialData();
     }
 
@@ -189,10 +189,12 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             categorySectionItems.add(new CategorySectionItem(
                     getResources().getString(R.string.catalog_tab_title), getCatalogFragment(
                     productViewModel.getCategoryHeaderModel().getDepartementId())));
+            tabLayout.setVisibility(View.VISIBLE);
         } else {
             categorySectionItems.add(new CategorySectionItem(
                     getResources().getString(R.string.product_tab_title), productFragment));
             tabLayout.setVisibility(View.GONE);
+
         }
         CategorySectionPagerAdapter categorySectionPagerAdapter = new CategorySectionPagerAdapter(getSupportFragmentManager());
         categorySectionPagerAdapter.setData(categorySectionItems);

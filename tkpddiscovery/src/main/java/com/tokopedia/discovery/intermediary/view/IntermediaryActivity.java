@@ -33,7 +33,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
-    public static final String CATEGORY_DEFAULT_TITLE = "Direktori";
+    public static final String CATEGORY_DEFAULT_TITLE = "";
 
     private String departmentId = "";
     private String categoryName = CATEGORY_DEFAULT_TITLE;

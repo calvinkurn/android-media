@@ -52,7 +52,8 @@
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                 app:tabIndicatorColor="@color/tkpd_green_header"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/tkpd_green_header" />
+                app:tabSelectedTextColor="@color/tkpd_green_header"
+                android:visibility="gone"/>
 
             <View
                 android:layout_width="match_parent"
