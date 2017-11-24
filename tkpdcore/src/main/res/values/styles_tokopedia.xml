@@ -296,7 +296,16 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
     <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
+        <item name="android:textColor">@color/black_54</item>
         <item name="android:textSize">12sp</item>
     </style>
 
@@ -306,6 +315,12 @@
         <item name="android:textColor">@color/black_70</item>
     </style>
 
+    <style name="WebViewToolbarSubtitleText"
+           parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_54</item>
+    </style>
     <!--
         <style name="UserVoiceTheme" parent="Theme.AppCompat.Light">
             <item name="android:popupMenuStyle">@style/PopupMenu.Tokopedia</item>

@@ -9,7 +9,7 @@ import java.util.List;
  * Created by nabillasabbaha on 8/8/17.
  */
 
-public interface IDigitalWidgetStyle1View {
+public interface IDigitalWidgetStyle1View extends BaseDigitalWidgetView {
 
     void renderDataProducts(List<Product> products);
 
@@ -21,12 +21,13 @@ public interface IDigitalWidgetStyle1View {
 
     void renderProduct(Product product);
 
-    void renderDataRecent(List<String> results);
-
     void renderOperator(Operator operatorModel);
+
+    void renderLastTypedClientNumber();
 
     void renderErrorProduct(String message);
 
     void renderDefaultError();
 
+    void renderVerifiedNumber();
 }

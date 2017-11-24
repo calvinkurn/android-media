@@ -31,6 +31,8 @@
     <dimen name="padding_vvvs">2dp</dimen>
     <dimen name="padding_ms">8dp</dimen>
     <dimen name="padding_small">10dp</dimen>
+
+    <dimen name="padding_small_sm">12dp</dimen>
     <dimen name="padding_detail">15dp</dimen>
     <dimen name="med_dp">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
@@ -72,6 +74,7 @@
     <!-- Inbox Message -->
     <dimen name="checked_indicator_msg">100dp</dimen>
     <dimen name="message_width">300dp</dimen>
+    <dimen name="chat_width">270dp</dimen>
     <dimen name="message_corner">12dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
@@ -187,6 +190,7 @@
 
     <dimen name="padding_left_schedule_shop_close">5dp</dimen>
     <dimen name="bottom_navigation_elevation">20dp</dimen>
+    <dimen name="bottom_navigation_height_elevation">21dp</dimen>
     <dimen name="margin_top_ticker">25dp</dimen>
     <dimen name="viewpager_margin">-42dp</dimen>
     <dimen name="slider_margin">22dp</dimen>
@@ -216,4 +220,5 @@
     <dimen name="feature_product_item_component_spacing">3dp</dimen>
     <dimen name="toolbar_shadow_height">5dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
+    <dimen name="share_header_height">52dp</dimen>
 </resources>

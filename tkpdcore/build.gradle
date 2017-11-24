@@ -6,6 +6,7 @@ apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
+apply plugin: 'com.apollographql.android'
 
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
@@ -139,12 +140,11 @@ dependencies {
     compile rootProject.ext.networkDependencies.glide
 
     compile rootProject.ext.analyticsDependencies.appsflyer
-    compile rootProject.ext.analyticsDependencies.localytics
-    compile (rootProject.ext.analyticsDependencies.moengage){
+    compile(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
     compile rootProject.ext.analyticsDependencies.moengageFCM
-    compile (rootProject.ext.analyticsDependencies.moengageMSG){
+    compile(rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
 
@@ -153,7 +153,7 @@ dependencies {
 
     compile rootProject.ext.viewDependencies.recyclerMultiSelect
     compile rootProject.ext.viewDependencies.appIntro
-    compile (rootProject.ext.viewDependencies.ahBottomNavigation){
+    compile(rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'
     }
 
@@ -162,7 +162,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
     compile rootProject.ext.miscDependencies.gson
-    compile (rootProject.ext.miscDependencies.facebook){
+    compile(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.miscDependencies.rxAndroid
@@ -173,7 +173,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    compile (rootProject.ext.debugToolsDependencies.chuck) {
+    compile(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
@@ -182,6 +182,10 @@ dependencies {
     compile(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
+
+    compile rootProject.ext.apolloDependencies.apolloRxSupport
+    compile rootProject.ext.apolloDependencies.apolloRuntime
+    compile rootProject.ext.apolloDependencies.apolloAndroidSupport
 }
 
 apply plugin: 'com.google.gms.google-services'

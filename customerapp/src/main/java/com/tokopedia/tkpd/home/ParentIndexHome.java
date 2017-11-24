@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,11 +25,12 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
+import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
@@ -102,6 +104,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+    private GetUserAttributesUseCase getUserAttributesUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
     List<String> content;
@@ -110,11 +113,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     @DeepLink(Constants.Applinks.HOME)
-    public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
+    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ParentIndexHome.class)
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class)
                 .setData(uri.build())
-                .putExtras(extras);
+                .putExtras(extras));
+        return taskStackBuilder;
     }
 
     @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
@@ -122,6 +127,15 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    @DeepLink({Constants.Applinks.FAVORITE})
+    public static Intent getFavoriteApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE)
                 .setData(uri.build())
                 .putExtras(extras);
     }
@@ -162,18 +176,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 mViewPager.setCurrentItem(initStateFragment);
             }
         }
-
-        sendNotifLocalyticsCallback();
-
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
+        checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
     }
 
     @Override
@@ -299,7 +302,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void setMoengageUserAttributes() {
-        cacheHandler.getUserDataCache(new AnalyticsCacheHandler.GetUserDataListener() {
+
+        AnalyticsCacheHandler.GetUserDataListener listener
+                = new AnalyticsCacheHandler.GetUserDataListener() {
             @Override
             public void onSuccessGetUserData(ProfileData result) {
                 TrackingUtils.setMoEUserAttributes(result);
@@ -309,7 +314,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onError(Throwable e) {
                 e.printStackTrace();
             }
-        });
+
+            @Override
+            public void onSuccessGetUserAttr(UserAttribute.Data data) {
+                if(data!=null)
+                    TrackingUtils.setMoEUserAttributes(data);
+            }
+        };
+
+        cacheHandler.getUserDataCache(listener);
+        cacheHandler.getUserAttrGraphQLCache(listener);
+
     }
 
     public void initCreate() {
@@ -336,18 +351,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     break;
             }
 
-
-            /**
-             * send Localytics user attributes
-             * by : Hafizh Herdi
-             */
-            getUserCache();
         } else {
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
             indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
-            if (initStateFragment == INIT_STATE_FRAGMENT_HOTLIST){
+            if (initStateFragment == INIT_STATE_FRAGMENT_HOTLIST) {
                 mViewPager.setCurrentItem(1);
             } else {
                 mViewPager.setCurrentItem(0);
@@ -356,20 +365,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         mViewPager.setOffscreenPageLimit(3);
         adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
-    }
-
-    /**
-     * send Localytics user attributes
-     * by : Hafizh Herdi
-     */
-    private void getUserCache() {
-        try {
-            LocalCacheHandler cacheUser = new LocalCacheHandler(this, TkpdState.CacheName.CACHE_USER);
-            TrackingUtils.eventLocaUserAttributes(SessionHandler.getLoginID(this), cacheUser.getString("user_name"), "");
-        } catch (Exception e) {
-            CommonUtils.dumper(TAG + " error connecting to GCM Service");
-            TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
-        }
     }
 
     private void setView() {
@@ -502,6 +497,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 //                return onSearchOptionSelected();
             case R.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
+                    UnifyTracking.eventClickCart();
                     Intent intent = SessionRouter.getLoginActivityIntent(getApplicationContext());
                     intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
@@ -568,8 +564,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
         super.onResume();
-
-        sendNotifLocalyticsCallback();
 
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
@@ -751,7 +745,20 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onError(Exception e) {
                 e.printStackTrace();
             }
+
+            @Override
+            public void onNotNeedUpdate() {
+                checkIsNeedUpdateIfComeFromUnsupportedApplink(ParentIndexHome.this.getIntent());
+            }
         });
+    }
+
+    private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
+        if (intent.getBooleanExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
+            if (getApplication() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter) getApplication()).getApplinkUnsupported(ParentIndexHome.this).showAndCheckApplinkUnsupported();
+            }
+        }
     }
 
 }

@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -41,10 +43,13 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
@@ -64,20 +69,24 @@ import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.TokoCashUtil;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
-import com.tokopedia.digital.widget.model.mapper.LastOrderMapper;
 import com.tokopedia.digital.widget.model.mapper.StatusMapper;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
@@ -86,7 +95,7 @@ import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
-import com.tokopedia.tkpd.home.ReactNativeOfficialStoresActivity;
+import com.tokopedia.tkpd.home.ReactNativeActivity;
 import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
@@ -164,33 +173,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private BottomSheetView bottomSheetDialogTokoCash;
     private Trace trace;
+    private IntentFilter intentFilerTokoCash;
 
     private DrawerTokoCash tokoCashData;
 
-    RemoteConfigFetcher remoteConfigFetcher;
     FirebaseRemoteConfig firebaseRemoteConfig;
-
-    @Override
-    public void onTopUpTokoCashClicked() {
-        /* Jangan komentar. memang ini HARDCODE dan Jorok */
-        Intent intent = DigitalProductActivity.newInstance(
-                getActivity(), new DigitalCategoryDetailPassData.Builder()
-                        .appLinks("tokopedia://digital/form?category_id=103")
-                        .categoryId("103")
-                        .categoryName("Tokocash")
-                        .build()
-        );
-        startActivity(intent);
-
-    }
-
-    @Override
-    public void onActivationTokoCashClicked() {
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
-            startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
-        }
-    }
 
     @Override
     public void onRequestPendingCashBack() {
@@ -200,6 +187,18 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onShowTokoCashBottomSheet() {
         bottomSheetDialogTokoCash.show();
+    }
+
+    @Override
+    public void actionAppLinkWalletHeader(String redirectUrl, String appLinkScheme) {
+        WalletRouterUtil.navigateWallet(
+                getActivity().getApplication(),
+                this,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkScheme,
+                redirectUrl,
+                new Bundle()
+        );
     }
 
     private class ViewHolder {
@@ -217,7 +216,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         LinearLayout wrapperLinearLayout;
         DigitalWidgetView digitalWidgetView;
         BannerView bannerView;
-        View pulsaPlaceHolder;
 
         private ViewHolder() {
         }
@@ -267,17 +265,16 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void initData() {
+
         loadDummyPromos();
         rechargeCategoryPresenter.fetchDataRechargeCategory();
+
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
         topPicksPresenter.fetchTopPicks();
         brandsPresenter.fetchBrands();
         fetchRemoteConfig();
-        if (SessionHandler.isV4Login(getActivity())) {
-            rechargeCategoryPresenter.fetchLastOrder();
-        }
     }
 
     private void loadDummyPromos() {
@@ -287,7 +284,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void fetchRemoteConfig() {
-        remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
+        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
         remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
             @Override
             public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
@@ -297,10 +294,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onError(Exception e) {
                 e.printStackTrace();
-                FragmentIndexCategory.this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
             }
         });
     }
+
 
     private void getAnnouncement() {
         if (!category.isTickerClosed()) {
@@ -309,6 +306,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 public void onSuccess(final ArrayList<Ticker.Tickers> tickersResponse) {
                     holder.tickerContainer.setVisibility(View.VISIBLE);
                     if (tickersResponse.size() > 1) {
+                        tickerShowed.clear();
                         tickerIncrementPage = runnableIncrementTicker();
                         tickerShowed.clear();
                         tickerHandler = new Handler();
@@ -410,10 +408,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this,
                 new RechargeNetworkInteractorImpl(
                         new DigitalWidgetRepository(
-                                new DigitalEndpointService()),
-                        new LastOrderMapper(),
+                                new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
                         new CategoryMapper(),
                         new StatusMapper()));
+
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
         tokoCashPresenter = new TokoCashPresenterImpl(this);
@@ -431,9 +429,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             }
         });
         tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
-        getActivity().registerReceiver(tokoCashBroadcastReceiver, new IntentFilter(
-                TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH
-        ));
+        intentFilerTokoCash = new IntentFilter(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
     }
 
     private void startSlideTicker() {
@@ -483,6 +479,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().registerReceiver(tokoCashBroadcastReceiver, intentFilerTokoCash);
     }
 
     @Override
@@ -530,7 +527,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
-
+        category.fetchCacheTokocash();
     }
 
     private void initCategoryRecyclerView() {
@@ -581,15 +578,19 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         UnifyTracking.eventClickCategoriesIcon(itemModel.getName());
 
         if (itemModel.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
-                && tokoCashData.getLink() != 1) {
-            String urlActivation = getTokoCashActionRedirectUrl(tokoCashData
-                    .getDrawerTokoCashAction());
-            String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
-                    getContext());
-            openActivationTokoCashWebView(seamlessUrl);
+                && tokoCashData.getDrawerWalletAction().getTypeAction()
+                != DrawerWalletAction.TYPE_ACTION_BALANCE) {
+            WalletRouterUtil.navigateWallet(
+                    getActivity().getApplication(),
+                    this,
+                    IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                    tokoCashData.getDrawerWalletAction().getAppLinkActionButton(),
+                    tokoCashData.getDrawerWalletAction().getRedirectUrlActionButton(),
+                    new Bundle()
+            );
         } else {
-            DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-            if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {
+            if (getActivity() != null && ((TkpdCoreRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(itemModel.getAppLinks())) {
                 DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                         .appLinks(itemModel.getAppLinks())
                         .categoryId(itemModel.getCategoryId())
@@ -641,9 +642,24 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         Map<String, String> values = new HashMap<>();
         values.put(getString(R.string.value_category_name), title);
 
-        TrackingUtils.eventLoca("event : " + getString(R.string.event_click_category), values);
-
         UnifyTracking.eventHomeCategory(title);
+    }
+
+    /**
+     * TokoCash Header show from Cache
+     * Created by Nabilla Sabbaha 20171113
+     */
+    @Override
+    public void onSuccessFetchTokoCashDataFromCache(TokoCashModel tokoCashModel) {
+        this.tokoCashData = TokoCashUtil.convertToViewModel(
+                tokoCashModel.getTokoCashData());
+        holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
+        holder.tokoCashHeaderView.renderData(tokoCashData, false, "");
+    }
+
+    @Override
+    public void onErrorFetchTokoCashDataFromCache(String message) {
+
     }
 
     /**
@@ -686,7 +702,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 if (firebaseRemoteConfig != null
                         && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
                     getActivity().startActivity(
-                            ReactNativeOfficialStoresActivity.createReactNativeActivity(
+                            ReactNativeActivity.createOfficialStoresReactNativeActivity(
                                     getActivity(), ReactConst.Screen.OFFICIAL_STORE,
                                     getString(R.string.react_native_banner_official_title)
                             )
@@ -782,7 +798,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     .setBody(String.format(getString(R.string.toko_cash_pending_body),
                             cashBackData.getAmountText()))
                     .setImg(R.drawable.group_2)
-                    .setUrlButton(tokoCashData.getRedirectUrl(),
+                    .setUrlButton(tokoCashData.getDrawerWalletAction().getRedirectUrlActionButton(),
                             getString(R.string.toko_cash_pending_proceed_button))
                     .build());
             holder.tokoCashHeaderView.showPendingTokoCash(cashBackData.getAmountText());
@@ -801,7 +817,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 String seamlessUrl;
                 seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
                         getContext());
-                if (getActivity() instanceof Activity) {
+                if (getActivity() != null) {
                     if ((getActivity()).getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) (getActivity()).getApplication())
                                 .goToWallet(getActivity(), seamlessUrl);
@@ -837,9 +853,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     homeCatMenuPresenter.fetchHomeCategoryMenu(true);
                     topPicksPresenter.fetchTopPicks();
                     brandsPresenter.fetchBrands();
-                    if (SessionHandler.isV4Login(getActivity())) {
-                        rechargeCategoryPresenter.fetchLastOrder();
-                    }
                 }
             });
         }
@@ -879,7 +892,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
             if (messageSnackbar != null) {
                 messageSnackbar.resumeRetrySnackbar();
@@ -899,7 +911,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         super.setUserVisibleHint(isVisibleToUser);
     }
-
 
     public void sendAppsFlyerData() {
         TrackingUtils.fragmentBasedAFEvent(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT);
@@ -921,7 +932,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     //region recharge
     //Modified by Nabilla Sabbaha 3/10/2017
     @Override
-    public void renderDataRechargeCategory(List<com.tokopedia.digital.widget.model.category.Category> rechargeCategory) {
+    public void renderDataRechargeCategory(List<com.tokopedia.digital.widget.model.category.Category> rechargeCategory, boolean useCache) {
         holder.wrapperScrollview.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         holder.wrapperScrollview.setFocusable(true);
         holder.wrapperScrollview.setFocusableInTouchMode(true);
@@ -938,7 +949,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             }
         });
         holder.digitalWidgetView.setListener(getWidgetActionListener());
-        holder.digitalWidgetView.renderDataWidget(rechargeCategory, getFragmentManager());
+        holder.digitalWidgetView.renderDataWidget(rechargeCategory, useCache, getFragmentManager());
     }
 
     @NonNull
@@ -986,16 +997,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     //endregion recharge
 
-    private void setLocalyticFlow() {
-        try {
-            String screenName = AppScreen.SCREEN_HOME_CATEGORY;
-            ScreenTracking.screenLoca(screenName);
-            ScreenTracking.eventLoca(screenName);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void scrollUntilBottomBanner() {
         holder.wrapperScrollview.smoothScrollTo(0, holder.bannerView != null ? holder.bannerView.getBottom() : 0);
     }
@@ -1032,21 +1033,24 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         delegate.dispatchFrom(getActivity(), intent);
     }
 
+    @Override
     public void onReceivedTokoCashData(final DrawerTokoCash tokoCashData) {
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
-        final FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
-        config.setDefaults(R.xml.remote_config_default);
-        config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    config.activateFetched();
-                    holder.tokoCashHeaderView.renderData(tokoCashData, config
-                            .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
-                    FragmentIndexCategory.this.tokoCashData = tokoCashData;
+        final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(getActivity());
+        if(config != null) {
+            config.setDefaults(R.xml.remote_config_default);
+            config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        config.activateFetched();
+                        holder.tokoCashHeaderView.renderData(tokoCashData, config
+                                .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
+                        FragmentIndexCategory.this.tokoCashData = tokoCashData;
+                    }
                 }
-            }
-        });
+            });
+        }
         holder.tokoCashHeaderView.renderData(tokoCashData, false, getActivity()
                 .getString(R.string.tokocash));
         this.tokoCashData = tokoCashData;
@@ -1054,12 +1058,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onTokoCashDataError(String errorMessage) {
-
-    }
-
-    private String getTokoCashActionRedirectUrl(DrawerTokoCashAction tokoCashData) {
-        if (tokoCashData == null) return "";
-        else return tokoCashData.getRedirectUrl();
     }
 
     @Override
@@ -1074,4 +1072,22 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (trace != null)
             trace.stop();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState");
+        storeLastStateTabSelected();
+        super.onSaveInstanceState(outState);
+    }
+
+    protected void storeLastStateTabSelected() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(
+                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+        );
+        int position = holder.digitalWidgetView.getPosition();
+        localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED,
+                position);
+        localCacheHandler.applyEditor();
+    }
+
 }

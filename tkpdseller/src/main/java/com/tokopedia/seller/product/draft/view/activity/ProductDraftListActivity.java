@@ -46,8 +46,10 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
     private static final String INSTAGRAM_MEDIA_LIST = "insta_media_list";
     private static final String LOCAL_PATH_IMAGE_LIST = "loca_img_list";
     private static final String DESC_IMAGE_LIST = "desc_img_list";
+    private static final String HAS_SAVED_INSTA_TO_DRAFT = "saved_insta_to_draft";
 
     private TkpdProgressDialog progressDialog;
+    private boolean hasSaveInstagramToDraft;
 
     @Inject
     ProductDraftSaveBulkPresenter productDraftSaveBulkPresenter;
@@ -83,44 +85,49 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, ProductDraftListFragment.newInstance(), TAG)
                     .commit();
+        } else {
+            hasSaveInstagramToDraft = savedInstanceState.getBoolean(HAS_SAVED_INSTA_TO_DRAFT);
         }
-        if (getIntent().hasExtra(LOCAL_PATH_IMAGE_LIST)) {
-            ArrayList<String> localPathList = getIntent().getStringArrayListExtra(LOCAL_PATH_IMAGE_LIST);
-            ArrayList<String> descList = getIntent().getStringArrayListExtra(DESC_IMAGE_LIST);
-            saveValidImagesToDraft(localPathList, descList);
-        } else if (getIntent().hasExtra(INSTAGRAM_MEDIA_LIST)) {
-            showProgressDialog();
-            List<InstagramMediaModel> images = getIntent().getParcelableArrayListExtra(INSTAGRAM_MEDIA_LIST);
-            final ArrayList<String> standardResoImageUrlList = new ArrayList<>();
-            final ArrayList<String> imageDescriptionList = new ArrayList<>();
-            for (int i = 0; i < images.size(); i++) {
-                InstagramMediaModel instagramMediaModel = images.get(i);
-                standardResoImageUrlList.add(instagramMediaModel.standardResolution);
-                imageDescriptionList.add(instagramMediaModel.captionText);
-            }
-            ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
-            imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList,
-                    ProductManageSellerFragment.DEFAULT_NEED_COMPRESS_TKPD,
-                    new ImageDownloadHelper.OnImageDownloadListener() {
-                        @Override
-                        public void onError(Throwable e) {
-                            hideProgressDialog();
-                            NetworkErrorHelper.showCloseSnackbar(
-                                    getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
-                        }
 
-                        @Override
-                        public void onSuccess(ArrayList<String> localPaths) {
-                            hideProgressDialog();
-                            // if the path is different with the original,
-                            // means no all draft is saved to local for some reasons
-                            if (localPaths == null || localPaths.size() == 0 ||
-                                    localPaths.size() != standardResoImageUrlList.size()) {
-                                throw new NullPointerException();
+        if (!hasSaveInstagramToDraft) {
+            if (getIntent().hasExtra(LOCAL_PATH_IMAGE_LIST)) {
+                ArrayList<String> localPathList = getIntent().getStringArrayListExtra(LOCAL_PATH_IMAGE_LIST);
+                ArrayList<String> descList = getIntent().getStringArrayListExtra(DESC_IMAGE_LIST);
+                saveValidImagesToDraft(localPathList, descList);
+            } else if (getIntent().hasExtra(INSTAGRAM_MEDIA_LIST)) {
+                showProgressDialog();
+                List<InstagramMediaModel> images = getIntent().getParcelableArrayListExtra(INSTAGRAM_MEDIA_LIST);
+                final ArrayList<String> standardResoImageUrlList = new ArrayList<>();
+                final ArrayList<String> imageDescriptionList = new ArrayList<>();
+                for (int i = 0; i < images.size(); i++) {
+                    InstagramMediaModel instagramMediaModel = images.get(i);
+                    standardResoImageUrlList.add(instagramMediaModel.standardResolution);
+                    imageDescriptionList.add(instagramMediaModel.captionText);
+                }
+                ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
+                imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList,
+                        ProductManageSellerFragment.DEFAULT_NEED_COMPRESS_TKPD,
+                        new ImageDownloadHelper.OnImageDownloadListener() {
+                            @Override
+                            public void onError(Throwable e) {
+                                hideProgressDialog();
+                                NetworkErrorHelper.showCloseSnackbar(
+                                        getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
                             }
-                            saveValidImagesToDraft(localPaths, imageDescriptionList);
-                        }
-                    });
+
+                            @Override
+                            public void onSuccess(ArrayList<String> localPaths) {
+                                hideProgressDialog();
+                                // if the path is different with the original,
+                                // means no all draft is saved to local for some reasons
+                                if (localPaths == null || localPaths.size() == 0 ||
+                                        localPaths.size() != standardResoImageUrlList.size()) {
+                                    throw new NullPointerException();
+                                }
+                                saveValidImagesToDraft(localPaths, imageDescriptionList);
+                            }
+                        });
+            }
         }
     }
 
@@ -241,6 +248,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
     @Override
     public void onSaveBulkDraftSuccess(List<Long> productIds) {
         hideProgressDialog();
+        hasSaveInstagramToDraft = true;
         if (productIds.size() == 1) {
             ProductDraftAddActivity.start(this,
                     productIds.get(0).toString());
@@ -272,4 +280,9 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(HAS_SAVED_INSTA_TO_DRAFT, hasSaveInstagramToDraft);
+    }
 }

@@ -75,18 +75,18 @@ public class WidgetRadioChooserView extends LinearLayout {
         radioGroup.check(radioGroup.getChildAt(0).getId());
         Operator operatorModel = operators.get(radioGroup.getChildAt(0).getId());
         listener.onCheckChange(operatorModel);
-        checkRadioButtonBasedOnLastOrder(operators, radioGroup, lastOrder, lastOperatorSelected);
-        radioGroup.setOnTouchListener(getOnTouchListener());
+        initCheckRadioButtonBasedOnLastOrder(operators, radioGroup, lastOrder, lastOperatorSelected);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 listener.onResetClientNumber();
                 listener.onCheckChange(operators.get(i));
+                listener.onTrackingOperator();
             }
         });
     }
 
-    private void checkRadioButtonBasedOnLastOrder(List<Operator> operators,
+    private void initCheckRadioButtonBasedOnLastOrder(List<Operator> operators,
                                                   RadioGroup radioGroup, LastOrder lastOrder,
                                                   String lastOperatorSelected) {
         if (lastOrder != null && lastOrder.getAttributes() != null && radioGroup != null) {
@@ -108,16 +108,15 @@ public class WidgetRadioChooserView extends LinearLayout {
         }
     }
 
-    private View.OnTouchListener getOnTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    listener.onTrackingOperator();
+    public void checkRadioButtonBasedOnLastOrder(List<Operator> operators, LastOrder lastOrder) {
+        if (lastOrder.getAttributes() != null && radioGroup != null) {
+            for (int i = 0; i < operators.size(); i++) {
+                if (operators.get(i).getId() == lastOrder.getAttributes().getOperatorId()) {
+                    radioGroup.check(radioGroup.getChildAt(i).getId());
+                    listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
                 }
-                return false;
             }
-        };
+        }
     }
 
     public interface RadioChoserListener {

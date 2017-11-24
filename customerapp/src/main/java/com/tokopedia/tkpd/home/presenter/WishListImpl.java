@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
@@ -160,13 +159,6 @@ public class WishListImpl implements WishList {
         mPaging.nextPage();
         params.putInt(SearchWishlistUsecase.KEY_PAGE, mPaging.getPage());
         searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
-    }
-
-    @Override
-    public void setLocalyticFlow(Context context, String screenName) {
-        if (context != null) {
-            ScreenTracking.screenLoca(screenName);
-        }
     }
 
     @Override
@@ -388,7 +380,6 @@ public class WishListImpl implements WishList {
 
     @Override
     public void onResume(Context context) {
-        setLocalyticFlow(context, context.getString(R.string.home_wishlist));
         if (isAfterRotation()) {
             handleAfterRotation(context);
         } else {
@@ -463,6 +454,7 @@ public class WishListImpl implements WishList {
             product.setBadges(wishlists.get(i).getBadges());
             product.setLabels(wishlists.get(i).getLabels());
             product.setShopLocation(wishlists.get(i).getShop().getLocation());
+            product.setOfficial(wishlists.get(i).getShop().getOfficial());
             products.add(product);
         }
 

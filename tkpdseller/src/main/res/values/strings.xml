@@ -159,9 +159,9 @@
     <string name="exit_editing_images_dialog_title">Keluar dari edit gambar?</string>
 
 
-    <string name="import_from_instagram_text_description">Impor dari Instagram</string>
-    <string name="added_from_gallery_text_description">Tambah dari Galeri</string>
-    <string name="added_from_camera_text_description">Tambah dari Kamera</string>
+    <string name="import_from_instagram_text_description">Ambil gambar dari Instagram</string>
+    <string name="added_from_gallery_text_description">Tambah gambar dari Galeri</string>
+    <string name="added_from_camera_text_description">Tambah gambar dari Kamera</string>
 
     <string name="product_manage_label_add_product_to_sell">Tambah produk Anda untuk dapat mulai berjualan.</string>
     <string name="product_manage_label_add_product">+ Tambah Produk</string>
@@ -197,4 +197,13 @@
     <string name="open_shop_title_shop_shipping">Atur Pengiriman</string>
     <string name="postal_code_not_filled">Kode pos harus diisi</string>
     <string name="shop_setting_city_not_filled">Kota harus diisi</string>
+    <string name="edit_from_instagram_text_description">Ubah gambar dari Instagram</string>
+    <string name="edit_from_gallery_text_description">Ubah gambar dari Galeri</string>
+    <string name="edit_from_camera_text_description">Ubah gambar dari Kamera</string>
+    <string name="hint_city_or_district">Tulis kota / kecamatan tujuan pengiriman</string>
+    <string name="hint_post_code">Tulis 5 digit kode pos</string>
+    <string name="hint_choose_city">Pilih kota/kecamatan</string>
+    <string name="title_multiple_select">Multi Select</string>
+    <string name="crop_image_menu_watermark">watermark</string>
+    <string name="crop_image_watermark_cannot_be_changed">*Watermark tidak dapat diubah setelah disimpan.</string>
 </resources>

@@ -35,8 +35,7 @@ import java.util.Random;
  */
 public class FileUtils {
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
-    public static final String CROP_TEMP = "crop_temp";
-    public static final String JPG = ".jpg";
+    public static final String PNG = ".png";
 
     /**
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/
@@ -103,7 +102,7 @@ public class FileUtils {
         if (bitmap != null) {
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
             byte[] bytes;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
             bytes = bao.toByteArray();
             return writeImageToTkpdPath(bytes, fileName);
         } else {
@@ -124,60 +123,10 @@ public class FileUtils {
         return null;
     }
 
-    public static File writeTempStateStoreBitmap(Context context, Bitmap bitmap) {
-        try {
-            File file = File.createTempFile(CROP_TEMP + (System.currentTimeMillis() / 1000L), JPG, context.getCacheDir());
-            writeBitmapToUri(context, bitmap, Uri.fromFile(file), Bitmap.CompressFormat.JPEG, 100);
-            return file;
-        } catch (Exception e) {
-            Log.w("AIC", "Failed to write bitmap to temp file for image-cropper save instance state", e);
-            return null;
-        }
-    }
-
-    /**
-     * Write given bitmap to a temp file.
-     * If file already exists no-op as we already saved the file in this session.
-     * Uses JPEG 95% compression.
-     *
-     * @param uri the uri to write the bitmap to, if null
-     * @return the uri where the image was saved in, either the given uri or new pointing to temp file.
-     */
-    public static Uri writeTempStateStoreBitmap(Context context, Bitmap bitmap, Uri uri) {
-        try {
-            boolean needSave = true;
-            if (uri == null) {
-                uri = Uri.fromFile(File.createTempFile(CROP_TEMP + (System.currentTimeMillis() / 1000L), JPG, context.getCacheDir()));
-            } else if (new File(uri.getPath()).exists()) {
-                needSave = false;
-            }
-            if (needSave) {
-                writeBitmapToUri(context, bitmap, uri, Bitmap.CompressFormat.JPEG, 100);
-            }
-            return uri;
-        } catch (Exception e) {
-            Log.w("AIC", "Failed to write bitmap to temp file for image-cropper save instance state", e);
-            return null;
-        }
-    }
-
-    /**
-     * Write the given bitmap to the given uri using the given compression.
-     */
-    public static void writeBitmapToUri(Context context, Bitmap bitmap, Uri uri, Bitmap.CompressFormat compressFormat, int compressQuality) throws FileNotFoundException {
-        OutputStream outputStream = null;
-        try {
-            outputStream = context.getContentResolver().openOutputStream(uri);
-            bitmap.compress(compressFormat, compressQuality, outputStream);
-        } finally {
-            closeSafe(outputStream);
-        }
-    }
-
-    public static boolean isInTkpdCache(File file){
+    public static boolean isInTkpdCache(File file) {
         File tkpdCacheDirectory = getTkpdCacheDirectory();
         String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
-        if (file.getAbsolutePath().contains(tkpdcacheDirPath) && file.exists()) {
+        if (file.exists() && file.getAbsolutePath().contains(tkpdcacheDirPath)) {
             return true;
         }
         return false;
@@ -187,7 +136,7 @@ public class FileUtils {
         if (filesToDelete == null || filesToDelete.size() == 0) {
             return;
         }
-        for (int i = 0, sizei = filesToDelete.size(); i<sizei; i++) {
+        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
             String filePathToDelete = filesToDelete.get(i);
             deleteAllCacheTkpdFile(filePathToDelete);
         }
@@ -200,21 +149,6 @@ public class FileUtils {
         File fileToDelete = new File(fileToDeletePath);
         if (isInTkpdCache(fileToDelete)) {
             fileToDelete.delete();
-        }
-    }
-
-    /**
-     * Close the given closeable object (Stream) in a safe way: check if it is null and catch-log
-     * exception thrown.
-     *
-     * @param closeable the closable object to close
-     */
-    private static void closeSafe(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException ignored) {
-            }
         }
     }
 
@@ -237,7 +171,7 @@ public class FileUtils {
     @NonNull
     public static File getTkpdImageCacheFile(String fileName) {
         File tkpdCachedirectory = getTkpdCacheDirectory();
-        return new File(tkpdCachedirectory.getAbsolutePath() + "/"+ fileName + ".jpg");
+        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + PNG);
     }
 
     // URI starts with "content://gmail-ls/"
@@ -263,10 +197,12 @@ public class FileUtils {
                 is = context.getContentResolver().openInputStream(uri);
                 String path = getPathFromMediaUri(context, uri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
-                bmp = ImageHandler.RotatedBitmap(bmp, path);
+                if (!TextUtils.isEmpty(path)) {
+                    bmp = ImageHandler.RotatedBitmap(bmp, path);
+                }
                 String fileName = FileUtils.generateUniqueFileName();
                 File file = writeImageToTkpdPath(bmp, fileName);
-                if (file!= null) {
+                if (file != null) {
                     return file.getAbsolutePath();
                 } else {
                     return null;
@@ -284,24 +220,24 @@ public class FileUtils {
         return null;
     }
 
-    public static String writeToTempImageAndGetPathUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return getPathFromMediaUri(inContext, Uri.parse(path));
-    }
-
     public static String getPathFromMediaUri(Context context, Uri contentUri) {
 
         String res = "";
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
         if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                res = cursor.getString(column_index);
+            try {
+                if (cursor.moveToFirst()) {
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    res = cursor.getString(column_index);
+                    return res;
+                }
+            } catch (Exception e) {
+                return null;
             }
-            cursor.close();
+            finally {
+                cursor.close();
+            }
         } else {
             return contentUri.getPath();
         }
@@ -486,7 +422,7 @@ public class FileUtils {
         Bitmap tempPicToUpload = compressImageToBitmap(imagePathToCompress, maxWidth, maxHeight, compressionQuality);
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         if (tempPicToUpload != null) {
-            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, compressionQuality, bao);
+            tempPicToUpload.compress(Bitmap.CompressFormat.PNG, compressionQuality, bao);
             return bao.toByteArray();
         }
         return null;

@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics.container;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.TagManager;
+import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
@@ -104,4 +105,8 @@ public interface IGTMContainer {
     void pushUserId(String userId);
 
     void sendButtonClick(String loginError, String login, String loginError1, String label);
+
+    void eventClickHotlistProductFeatured(Hotlist hotlist);
+
+    void eventImpressionHotlistProductFeatured(Hotlist hotlist);
 }

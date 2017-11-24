@@ -1,5 +1,6 @@
 package com.tokopedia.payment.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -117,6 +118,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         presenter.proccessUriPayment();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void setViewListener() {
         progressBar.setIndeterminate(true);
         scroogeWebView.getSettings().setJavaScriptEnabled(true);
@@ -286,7 +288,6 @@ public class TopPayActivity extends Activity implements ITopPayView {
                     + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY))) {
                 String deepLinkUrl = Constant.TempRedirectPayment.APP_LINK_SCHEME_WEB_VIEW
                         + "?url=" + URLEncoder.encode(url);
-                setIntent(getIntent().putExtra("applink_from_notif", true));
                 paymentModuleRouter.actionAppLinkPaymentModule(
                         TopPayActivity.this, deepLinkUrl
                 );

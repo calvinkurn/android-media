@@ -75,6 +75,7 @@ public abstract class EndlessScrollRecycleListener extends RecyclerView.OnScroll
             loading = true;
         }
 
+        onScroll(lastVisibleItemPosition);
     }
 
     public void resetState() {
@@ -85,4 +86,5 @@ public abstract class EndlessScrollRecycleListener extends RecyclerView.OnScroll
 
     public abstract void onLoadMore(int page, int totalItemsCount);
 
+    public abstract void onScroll(int lastVisiblePosition);
 }

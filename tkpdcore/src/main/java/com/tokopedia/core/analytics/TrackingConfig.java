@@ -1,16 +1,8 @@
 package com.tokopedia.core.analytics;
 
-import android.app.Application;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-
-import com.localytics.android.MessagingListener;
-import com.localytics.android.PlacesCampaign;
-import com.localytics.android.PushCampaign;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
-import com.tokopedia.core.analytics.container.ILocalyticsContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
@@ -26,7 +18,6 @@ public abstract class TrackingConfig {
     public enum AnalyticsKind {
         GTM,
         APPSFLYER,
-        LOCALYTICS,
         MOENGAGE
     }
 
@@ -47,14 +38,6 @@ public abstract class TrackingConfig {
     }
 
     /**
-     * Get Localytics Engine Instance
-     * @return Localytics Instance
-     */
-    static ILocalyticsContainer getLocaEngine(){
-        return Jordan.init(MainApplication.getAppContext()).getLocalyticsContainer();
-    }
-
-    /**
      * Get MoEngage Engine Instance
      * @return MoEngage Instance
      */
@@ -72,7 +55,7 @@ public abstract class TrackingConfig {
 
     /**
      * Initialize container to start at first time apps launched
-     * @param what type container (GTM, Appsflyer, Localytics)
+     * @param what type container (GTM, Appsflyer, MoEngage)
      */
     public static void runFirstTime(AnalyticsKind what){
         switch (what){
@@ -81,51 +64,6 @@ public abstract class TrackingConfig {
                 break;
             case APPSFLYER:
                 Jordan.init(MainApplication.getAppContext()).runFirstTimeAppsFlyer(SessionHandler.isV4Login(MainApplication.getAppContext()) ? SessionHandler.getLoginID(MainApplication.getAppContext()) : "00000");
-                break;
-            case LOCALYTICS:
-                Jordan.init(MainApplication.getAppContext()).getLocalyticsContainer().register((Application) MainApplication.getAppContext(), "673352445777", new MessagingListener() {
-                    @Override
-                    public void localyticsWillDisplayInAppMessage() {
-
-                    }
-
-                    @Override
-                    public void localyticsDidDisplayInAppMessage() {
-
-                    }
-
-                    @Override
-                    public void localyticsWillDismissInAppMessage() {
-
-                    }
-
-                    @Override
-                    public void localyticsDidDismissInAppMessage() {
-
-                    }
-
-                    @Override
-                    public boolean localyticsShouldShowPushNotification(@NonNull PushCampaign pushCampaign) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean localyticsShouldShowPlacesPushNotification(@NonNull PlacesCampaign placesCampaign) {
-                        return false;
-                    }
-
-                    @NonNull
-                    @Override
-                    public NotificationCompat.Builder localyticsWillShowPlacesPushNotification(@NonNull NotificationCompat.Builder builder, @NonNull PlacesCampaign placesCampaign) {
-                        return builder;
-                    }
-
-                    @NonNull
-                    @Override
-                    public NotificationCompat.Builder localyticsWillShowPushNotification(@NonNull NotificationCompat.Builder builder, @NonNull PushCampaign pushCampaign) {
-                        return builder;
-                    }
-                });
                 break;
             case MOENGAGE:
                 Jordan.init(MainApplication.getAppContext()).getMoEngageContainer().initialize();
@@ -139,6 +77,5 @@ public abstract class TrackingConfig {
      */
     public static void enableDebugging(boolean debugState) {
         getGTMEngine().getTagManager().setVerboseLoggingEnabled(debugState);
-        getLocaEngine().setDebugging(debugState);
     }
 }

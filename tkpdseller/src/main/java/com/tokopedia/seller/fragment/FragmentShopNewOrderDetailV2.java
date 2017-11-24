@@ -401,11 +401,17 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             holder.viewDefaultDestination.setVisibility(View.VISIBLE);
             holder.viewPickupLocationCourier.setVisibility(View.GONE);
         }
-        if (payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
-            holder.PartialButton.setVisibility(View.VISIBLE);
-        holder.Deadline.setText(payment.getPaymentProcessDueDate());
-        if (payment.getPaymentProcessDayLeft() < 0)
-            holder.AcceptButton.setVisibility(View.GONE);
+
+        if(payment != null){
+            if (payment.getPaymentProcessDayLeft() != null && payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
+                holder.PartialButton.setVisibility(View.VISIBLE);
+            else if (payment.getPaymentProcessDayLeft() < 0)
+                holder.AcceptButton.setVisibility(View.GONE);
+            holder.Deadline.setText(payment.getPaymentProcessDueDate());
+        }else{
+            holder.Deadline.setText(orderDetail.getDetailPayDueDate());
+        }
+
         if (permission.equals("0")) {
             holder.AcceptButton.setVisibility(View.GONE);
             holder.RejectButton.setVisibility(View.GONE);
@@ -464,7 +470,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                                                     .replace("XXX",
                                                             order.getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER);
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    order.getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }
 

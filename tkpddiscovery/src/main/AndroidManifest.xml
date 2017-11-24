@@ -66,7 +66,17 @@
         <activity
             android:name=".intermediary.view.adapter.YoutubeIntermediaryActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".categorynav.view.CategoryNavigationActivity"></activity>
+        <activity android:name=".categorynav.view.CategoryNavigationActivity" />
+        <activity
+            android:name=".newdiscovery.hotlist.view.activity.HotlistActivity"
+            android:label="@string/title_activity_hotlist"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".newdiscovery.search.SearchActivity"
+            android:label=""
+            android:screenOrientation="portrait" />
+        <activity android:name=".newdiscovery.category.presentation.CategoryActivity"></activity>
     </application>
 
 </manifest>

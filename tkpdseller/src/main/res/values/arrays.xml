@@ -36,8 +36,8 @@
     </string-array>
 
     <string-array name="product_stock_status_entries">
-        <item>Stock Tersedia</item>
-        <item>Stock Kosong</item>
+        <item>Stok Tersedia</item>
+        <item>Stok Kosong</item>
     </string-array>
     <string-array name="product_stock_status_values">
         <item>@string/product_stock_available_value</item>

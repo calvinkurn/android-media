@@ -162,12 +162,12 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/location"
+            android:id="@+id/ic_location"
             android:layout_width="@dimen/small_badge_size"
             android:layout_height="@dimen/small_badge_size"
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/margin_vs"
-            android:src="@drawable/ic_set_location"
+            android:src="@drawable/ic_icon_location_grey"
             android:visibility="visible"/>
 
         <TextView

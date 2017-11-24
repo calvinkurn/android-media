@@ -2,14 +2,16 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
@@ -17,9 +19,13 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -32,6 +38,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
@@ -54,8 +61,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
     private static final String TYPE_TOPPICKS = "toppick";
-    private final int page;
+    private static final String TYPE_INSPIRATION = "inspirasi";
+    private static final String TYPE_TOPADS = "topads";
+    private static final String TYPE_KOL = "kolpost";
+    private static final String TYPE_KOL_FOLLOWED = "followedkolpost";
+    private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
 
+
+    private final int page;
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener, int page) {
         this.viewListener = viewListener;
@@ -108,7 +121,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private void addMainData(ArrayList<Visitable> listFeedView,
                              FeedDomain feedDomain, FeedResult feedResult) {
         addFeedData(listFeedView, feedDomain.getListFeed());
-        addInspirationData(listFeedView, feedDomain.getListInspiration());
         checkCanLoadNext(feedResult, listFeedView);
     }
 
@@ -131,8 +143,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     protected ArrayList<Visitable> convertToViewModel(FeedDomain feedDomain) {
         ArrayList<Visitable> listFeedView = new ArrayList<>();
         addFeedData(listFeedView, feedDomain.getListFeed());
-        if (listFeedView.size() > 1 && !(listFeedView.get(0) instanceof PromoCardViewModel))
-            addInspirationData(listFeedView, feedDomain.getListInspiration());
         return listFeedView;
     }
 
@@ -188,15 +198,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return badgeList;
     }
 
-    private void addInspirationData(ArrayList<Visitable> listFeedView,
-                                    List<DataInspirationDomain> listInspiration) {
-        for (DataInspirationDomain domain : listInspiration) {
-            InspirationViewModel model = convertToInspirationViewModel(domain);
-            if (model.getListProduct() != null && model.getListProduct().size() > 0)
-                listFeedView.add(model);
-        }
-    }
-
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
         if (listFeedDomain != null)
@@ -233,10 +234,96 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ToppicksViewModel toppicks = convertToToppicksViewModel(domain);
                         if (toppicks.getList() != null && !toppicks.getList().isEmpty())
                             listFeedView.add(toppicks);
+                        break;
+                    case TYPE_INSPIRATION:
+                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
+                        if (inspirationViewModel != null
+                                && inspirationViewModel.getListProduct() != null
+                                && !inspirationViewModel.getListProduct().isEmpty())
+                            listFeedView.add(inspirationViewModel);
+                        break;
+                    case TYPE_TOPADS:
+                        break;
+                    case TYPE_KOL_FOLLOWED:
+                    case TYPE_KOL:
+                        if (domain.getContent() != null
+                                && domain.getContent().getKolPostDomain() != null) {
+                            KolViewModel kolViewModel = convertToKolViewModel(domain);
+                            listFeedView.add(kolViewModel);
+                        }
+                        break;
+                    case TYPE_KOL_RECOMMENDATION:
+                        if (domain.getContent() != null
+                                && domain.getContent().getKolRecommendations() != null
+                                && domain.getContent().getKolRecommendations()
+                                .getListRecommendation() != null
+                                && !domain.getContent().getKolRecommendations()
+                                .getListRecommendation().isEmpty()) {
+                            KolRecommendationViewModel kolRecommendationViewModel =
+                                    convertToKolRecommendationViewModel(domain.getContent().getKolRecommendations());
+                            listFeedView.add(kolRecommendationViewModel);
+                        }
+                        break;
                     default:
                         break;
                 }
             }
+
+    }
+
+    private FeedTopAdsViewModel convertToTopadsViewModel(int page) {
+        return new FeedTopAdsViewModel(page);
+    }
+
+    private KolRecommendationViewModel convertToKolRecommendationViewModel(KolRecommendationDomain domain) {
+        return new KolRecommendationViewModel(
+                domain.getExploreLink(),
+                domain.getHeaderTitle(),
+                convertToListKolRecommend(domain.getListRecommendation())
+        );
+    }
+
+    private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend(List<KolRecommendationItemDomain> kolRecommendations) {
+        ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
+        for (KolRecommendationItemDomain recommendationDomain : kolRecommendations) {
+            list.add(new KolRecommendItemViewModel(
+                    recommendationDomain.getUserId(),
+                    recommendationDomain.getUserName(),
+                    recommendationDomain.getUserPhoto(),
+                    recommendationDomain.getUrl(),
+                    recommendationDomain.getInfo(),
+                    recommendationDomain.isFollowed()
+            ));
+        }
+        return list;
+    }
+
+    private KolViewModel convertToKolViewModel(DataFeedDomain domain) {
+        KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
+        return new KolViewModel(
+                kolPostDomain.getHeaderTitle(),
+                kolPostDomain.getUserName(),
+                kolPostDomain.getUserPhoto(),
+                kolPostDomain.getLabel(),
+                kolPostDomain.isFollowed(),
+                kolPostDomain.getImageUrl(),
+                kolPostDomain.getCaption(),
+                kolPostDomain.getDescription(),
+                kolPostDomain.isLiked(),
+                kolPostDomain.getLikeCount(),
+                kolPostDomain.getCommentCount(),
+                page,
+                kolPostDomain.getUserUrl(),
+                kolPostDomain.getItemId(),
+                kolPostDomain.getId(),
+                TimeConverter.generateTime(kolPostDomain.getCreateTime()),
+                "",
+                kolPostDomain.getProductPrice(),
+                false,
+                kolPostDomain.getTagsType(),
+                kolPostDomain.getContentLink(),
+                kolPostDomain.getUserId()
+        );
     }
 
     private ToppicksViewModel convertToToppicksViewModel(DataFeedDomain domain) {
@@ -296,7 +383,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 productDomain.getData().getUrl_app(),
                 productDomain.getData().getShop().getName(),
                 productDomain.getBrand_logo(),
-                productDomain.getData().getShop().getUrl_app(),
+                productDomain.getData().getShop().getUrl(),
                 convertLabels(productDomain.getData().getLabels()),
                 isFreeReturn(productDomain.getData().getBadges()));
     }
@@ -346,28 +433,34 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         );
     }
 
-    private InspirationViewModel convertToInspirationViewModel(
-            DataInspirationDomain domain) {
-        return new InspirationViewModel(domain.getTitle(),
-                convertToRecommendationListViewModel(domain));
+    private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain) {
+        if (domain.getContent() != null
+                && !domain.getContent().getInspirationDomains().isEmpty()) {
+            return new InspirationViewModel(
+                    domain.getContent().getInspirationDomains().get(0).getTitle(),
+                    convertToRecommendationListViewModel(domain.getContent()
+                            .getInspirationDomains().get(0).getListInspirationItem()));
+        } else {
+            return null;
+        }
     }
 
     private ArrayList<InspirationProductViewModel> convertToRecommendationListViewModel(
-            DataInspirationDomain domains) {
+            List<InspirationItemDomain> domains) {
         ArrayList<InspirationProductViewModel> listRecommendation = new ArrayList<>();
-        if (domains.getRecommendation() != null && domains.getRecommendation().size() == 4)
-            for (InspirationRecommendationDomain recommendationDomain : domains.getRecommendation()) {
+        if (domains != null && domains.size() == 4)
+            for (InspirationItemDomain recommendationDomain : domains) {
                 listRecommendation.add(convertToRecommendationViewModel(recommendationDomain));
             }
         return listRecommendation;
     }
 
     private InspirationProductViewModel convertToRecommendationViewModel(
-            InspirationRecommendationDomain recommendationDomain) {
+            InspirationItemDomain recommendationDomain) {
         return new InspirationProductViewModel(recommendationDomain.getId(),
                 recommendationDomain.getName(),
                 recommendationDomain.getPrice(),
-                recommendationDomain.getImage_url(),
+                recommendationDomain.getImageUrl(),
                 recommendationDomain.getUrl(),
                 page);
     }

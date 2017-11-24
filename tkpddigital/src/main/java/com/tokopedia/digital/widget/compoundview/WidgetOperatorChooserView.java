@@ -33,6 +33,8 @@ public class WidgetOperatorChooserView extends LinearLayout {
 
     private OperatorChoserListener listener;
 
+    private boolean resetClientNumber;
+
     public WidgetOperatorChooserView(Context context) {
         super(context);
         init();
@@ -63,16 +65,17 @@ public class WidgetOperatorChooserView extends LinearLayout {
                 getContext(), android.R.layout.simple_spinner_item, operators);
         spinnerOperator.setAdapter(adapterOperator);
         spinnerOperator.setOnItemSelectedListener(getItemSelectedListener(operators));
-        spinnerOperator.setOnTouchListener(getOnTouchListener());
-        setLastOrderSelectedOperator(operators, lastOrder, categoryId, lastOperatorSelected);
+        initSetLastOrderSelectedOperator(operators, lastOrder, categoryId, lastOperatorSelected);
     }
 
     private AdapterView.OnItemSelectedListener getItemSelectedListener(final List<Operator> operators) {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                listener.onResetOperator();
+                listener.onResetOperator(resetClientNumber);
                 listener.onCheckChangeOperator(operators.get(i));
+                listener.onTrackingOperator();
+                resetClientNumber = true;
             }
 
             @Override
@@ -82,19 +85,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
         };
     }
 
-    private OnTouchListener getOnTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    listener.onTrackingOperator();
-                }
-                return false;
-            }
-        };
-    }
-
-    private void setLastOrderSelectedOperator(List<Operator> operators,
+    private void initSetLastOrderSelectedOperator(List<Operator> operators,
                                               LastOrder lastOrder, int categoryId,
                                               String lastOperatorSelected) {
         if (SessionHandler.isV4Login(getContext()) && lastOrder != null &&
@@ -106,6 +97,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
                                 String.valueOf(lastOrder.getAttributes().getOperatorId()
                                 ))) {
                     spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
                 }
             }
         } else {
@@ -113,6 +105,25 @@ public class WidgetOperatorChooserView extends LinearLayout {
                 Operator model = operators.get(i);
                 if (String.valueOf(model.getId()).equalsIgnoreCase(lastOperatorSelected)) {
                     spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
+                }
+            }
+        }
+    }
+
+    public void setLastOrderSelectedOperator(List<Operator> operators,
+                                              LastOrder lastOrder, int categoryId) {
+        if (SessionHandler.isV4Login(getContext())  &&
+                lastOrder.getAttributes().getCategoryId() == categoryId) {
+            for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
+                Operator model = operators.get(i);
+                if (String.valueOf(model.getId())
+                        .equalsIgnoreCase(
+                                String.valueOf(lastOrder.getAttributes().getOperatorId()
+                                ))) {
+                    resetClientNumber = false;
+                    spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
                 }
             }
         }
@@ -121,7 +132,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
     public interface OperatorChoserListener {
         void onCheckChangeOperator(Operator rechargeOperatorModel);
 
-        void onResetOperator();
+        void onResetOperator(boolean resetClientNumber);
 
         void onTrackingOperator();
     }

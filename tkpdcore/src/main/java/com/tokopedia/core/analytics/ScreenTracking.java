@@ -64,10 +64,8 @@ public class ScreenTracking extends TrackingUtils {
         public void execute() {
             if (mOpenScreenAnalytics == null || TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
                 ScreenTracking.eventAuthScreen(authEvent, this.mActivity.getClass().getSimpleName());
-                ScreenTracking.screenLoca(this.mActivity.getClass().getSimpleName());
             } else {
                 ScreenTracking.eventAuthScreen(authEvent, mOpenScreenAnalytics.getScreenName());
-                ScreenTracking.screenLoca(mOpenScreenAnalytics.getScreenName());
             }
         }
     }
@@ -86,10 +84,6 @@ public class ScreenTracking extends TrackingUtils {
                 .sendScreen(screen);
     }
 
-    public static void screenLoca(String screenName){
-        getLocaEngine().tagScreen(screenName);
-    }
-
     public static void sendAFGeneralScreenEvent(String screenName){
         Map<String, Object> afValue = new HashMap<>();
         afValue.put(AFInAppEventParameterName.DESCRIPTION, screenName);
@@ -100,14 +94,6 @@ public class ScreenTracking extends TrackingUtils {
         getGTMEngine()
                 .eventAuthenticate(authenticated)
                 .sendScreen(screenName);
-    }
-
-    public static void sendLocaCartEvent(Map<String, String> attributes){
-        String screenName = MainApplication.getAppContext().getString(R.string.cart_pg_1);
-        eventLoca(screenName, attributes);
-        screenLoca(screenName);
-        eventLocaInAppMessaging("event : Viewed " + screenName);
-
     }
 
     public static void sendAFPDPEvent(final ProductDetailData data, final String eventName){

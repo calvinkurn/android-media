@@ -91,5 +91,6 @@
     <color name="empty_stock_pdp">#80000000</color>
 
     <color name="promo_widget_pdp">#f8f8f8</color>
+    <color name="white_70">#bfffffff</color>
 
 </resources>

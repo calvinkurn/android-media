@@ -1,5 +1,11 @@
 package com.tokopedia.core.base.presentation;
 
+import android.content.Context;
+
+import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+
 /**
  * @author kulomady on 11/20/16.
  */
@@ -38,5 +44,9 @@ public abstract class BaseDaggerPresenter<T extends CustomerView> implements Cus
 
     public boolean isViewAttached() {
         return view != null;
+    }
+
+    public AppComponent getComponent(Context context) {
+        return ((MainApplication) context).getAppComponent();
     }
 }

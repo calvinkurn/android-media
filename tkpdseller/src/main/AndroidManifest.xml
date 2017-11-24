@@ -25,6 +25,13 @@
             android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
             android:label="@string/title_shop_setting"
             android:screenOrientation="portrait" />
+      
+        <activity
+            android:name=".common.imageeditor.GalleryCropActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".common.imageeditor.GalleryCropWatermarkActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
@@ -64,6 +71,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".instoped.InstopedSellerCropperActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".instoped.InstopedSellerCropWatermarkActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -127,6 +137,17 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.tokopedia.seller.common.imageeditor.ImageEditorActivity"
+            android:label="@string/title_activity_image_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"/>
+        <activity
+            android:name="com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity"
+            android:label="@string/title_activity_image_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"/>
 
         <activity
             android:name=".product.edit.view.activity.ProductEditActivity"

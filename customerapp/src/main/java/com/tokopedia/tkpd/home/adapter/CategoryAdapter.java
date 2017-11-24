@@ -164,9 +164,6 @@ public class CategoryAdapter extends ProductAdapter{
                     itemView.getContext().getString(data.textRes)
             );
 
-            TrackingUtils.eventLoca("event : " +
-                    itemView.getContext().getString(R.string.event_click_category), values);
-
             CommonUtils.dumper("LocalTag : Event - CategoryApi : "
                     + itemView.getContext().getString(data.textRes));
         }

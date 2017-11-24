@@ -8,6 +8,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.seller.product.manage.constant.StatusProductOption;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
 
     public interface ClickOptionCallback {
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
+
         boolean isActionModeActive();
     }
 
@@ -59,13 +61,15 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
     @Override
     protected void bindData(final int position, final RecyclerView.ViewHolder viewHolder) {
         super.bindData(position, viewHolder);
+        final ProductManageViewModel productManageViewModel = data.get(position);
+        final boolean statusUnderSupervision = productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (callback != null) {
-                    callback.onItemClicked(data.get(position));
+                    callback.onItemClicked(productManageViewModel);
                 }
-                if(clickOptionCallback != null && clickOptionCallback.isActionModeActive()) {
+                if (clickOptionCallback != null && clickOptionCallback.isActionModeActive() && !statusUnderSupervision) {
                     boolean checked = ((BaseMultipleCheckViewHolder<ProductManageViewModel>) viewHolder).isChecked();
                     ((BaseMultipleCheckViewHolder<ProductManageViewModel>) viewHolder).setChecked(!checked);
                     updateChecked(data.get(position), position, !checked);

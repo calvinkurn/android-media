@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.R;
@@ -106,6 +107,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (isPriceValid()) {
+                    UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
                     listenerDialogEditPrice.onSubmitEditPrice(productId,
                             formatDecimal(spinnerCounterInputViewPrice.getCounterValue()),
                             spinnerCounterInputViewPrice.getSpinnerValue(),
@@ -120,6 +122,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 dismiss();
+                UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
             }
         });
 

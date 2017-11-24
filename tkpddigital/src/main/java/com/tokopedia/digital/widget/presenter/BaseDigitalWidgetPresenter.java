@@ -3,42 +3,23 @@ package com.tokopedia.digital.widget.presenter;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.digital.widget.model.lastorder.LastOrder;
 import com.tokopedia.digital.widget.model.product.Product;
 
 /**
  * Created by nabillasabbaha on 8/8/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPresenter {
 
     private final Context context;
 
-    private final LocalCacheHandler localCacheHandlerLastOrder;
     private LocalCacheHandler localCacheHandlerLastClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     public BaseDigitalWidgetPresenter(Context context) {
         this.context = context;
-        localCacheHandlerLastOrder = new LocalCacheHandler(context,
-                TkpdCache.DIGITAL_WIDGET_LAST_ORDER);
-    }
-
-    @Override
-    public boolean isAlreadyHaveLastOrderOnCache() {
-        return null != localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
-    }
-
-    @Override
-    public LastOrder getLastOrderFromCache() {
-        if (isAlreadyHaveLastOrderOnCache()) {
-            String temp = localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
-            return CacheUtil.convertStringToModel(temp, LastOrder.class);
-        } else {
-            return null;
-        }
     }
 
     @Override
@@ -62,21 +43,6 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
         return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
                 TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
         );
-    }
-
-    @Override
-    public boolean isAlreadyHaveLastOrderOnCacheByCategoryId(int categoryId) {
-        if (isAlreadyHaveLastOrderOnCache()) {
-            String temp = localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
-            try {
-                LastOrder lastOrder = CacheUtil.convertStringToModel(temp, LastOrder.class);
-                return (lastOrder.getAttributes().getCategoryId() == categoryId);
-            } catch (Exception e) {
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 
     @Override
@@ -128,4 +94,5 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
         return localCacheHandlerLastClientNumber.getString(
                 TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, "");
     }
+
 }

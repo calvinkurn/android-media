@@ -8,9 +8,5 @@ public interface RechargeCategoryPresenter {
 
     void fetchDataRechargeCategory();
 
-    void fetchRecentNumberList();
-
-    void fetchLastOrder();
-
     void onDestroy();
 }

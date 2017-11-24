@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdynamicfilter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -71,8 +72,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     }
 
     private void fetchDataFromIntent() {
-        optionList = Parcels.unwrap(
-                getIntent().getParcelableExtra(EXTRA_OPTION_LIST));
+        optionList = getIntent().getParcelableArrayListExtra(EXTRA_OPTION_LIST);
         isSearchable = getIntent().getBooleanExtra(EXTRA_IS_SEARCHABLE, false);
         searchHint = getIntent().getStringExtra(EXTRA_SEARCH_HINT);
         pageTitle = getIntent().getStringExtra(EXTRA_PAGE_TITLE);
@@ -181,7 +181,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
 
     private void applyFilter() {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_RESULT, Parcels.wrap(optionList));
+        intent.putParcelableArrayListExtra(EXTRA_RESULT, new ArrayList<>(optionList));
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -191,6 +191,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         clearSearchInput();
         KeyboardHandler.hideSoftKeyboard(this);
         searchResultEmptyView.setVisibility(View.GONE);
+        buttonApply.setVisibility(View.VISIBLE);
     }
 
     private void clearSearchInput() {
