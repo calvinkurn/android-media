@@ -10,15 +10,16 @@
         android:id="@+id/image_passenger_icon"
         style="@style/WidgetSelectPassengerViewIcon"
         android:layout_gravity="center_vertical"
-        android:layout_marginRight="@dimen/margin_small"
         android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
         tools:src="@drawable/ic_passenger_adult" />
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
+        android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatTextView
