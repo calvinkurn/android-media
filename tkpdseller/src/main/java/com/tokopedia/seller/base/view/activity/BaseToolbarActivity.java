@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -27,10 +28,10 @@ import com.tokopedia.seller.common.utils.MenuTintUtils;
  * Created by nathan on 7/11/17.
  */
 
-public abstract class BaseToolbarActivity extends BaseActivity {
+abstract class BaseToolbarActivity extends BaseActivity {
 
     private final static int TOOLBAR_ELEVATION = 10;
-    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black;
+    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black_70;
     protected Toolbar toolbar;
 
     protected abstract void setupFragment(Bundle savedInstanceState);
@@ -54,10 +55,18 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         setupFragment(savedInstanceState);
         if (isToolbarWhite()) {
             setToolbarColorWhite();
+        }else{
+            // look at {@link setupLayout}
+            // set black to 70%
+            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black_70));
         }
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, closeButtonDrawable()));
         }
+    }
+
+    @DrawableRes protected int closeButtonDrawable(){
+        return R.drawable.ic_filter_detail_close;
     }
 
     protected int getThemeActivity() {
@@ -107,7 +116,9 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     @CallSuper
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

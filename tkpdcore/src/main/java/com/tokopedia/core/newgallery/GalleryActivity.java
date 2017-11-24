@@ -18,11 +18,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
-import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
@@ -106,8 +104,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     private Fragment galeryActivityFragment;
     private String imagePathCamera;
     private boolean isCameraOpen = false;
-
-    private FabSpeedDial fabSpeedDial;
 
     private TkpdProgressDialog progressDialog;
     private boolean compressToTkpd;
@@ -249,8 +245,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         setContentView(R.layout.activity_gallery);
         unbinder = ButterKnife.bind(this);
 
-        fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -270,7 +264,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
         imageGalleryPresenter = new ImageGalleryImpl(this);
 
-        fabSpeedDial.setVisibility(View.GONE);
     }
 
     private void onCameraClicked() {
@@ -371,7 +364,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
             initFragment(FRAGMENT);
 
-        if (forceOpenCamera && checkNotNull(fabSpeedDial)) {
+        if (forceOpenCamera ) {
             // fabSpeedDial.performClick();
             onCameraClicked();
         }

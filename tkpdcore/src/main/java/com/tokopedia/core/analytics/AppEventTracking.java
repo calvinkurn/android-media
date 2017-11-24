@@ -132,11 +132,22 @@ public interface AppEventTracking {
         String SELLER_WIDGET = "sellerWidget";
         String TOP_ADS_SELLER_APP = "topAdsSellerApp";
         String CLICK_CREATE_SHOP = "clickCreateShop";
+
+        String PRODUCT_PAGE = "ClickProductDetailPage";
+        String SEND_MESSAGE_PAGE = "ClickMessageRoom";
+        String SHOP_PAGE = "ClickShopPage";
+
         String CLICK_APP_SHARE_REFERRAL = "clickReferral";
         String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
+
+        String HOME_WISHLIST = "homeWishlist";
+        String HOMEPAGE_UNIFY = "userInteractionHomepage";
+        String EVENT_CLICK_TOP_NAV = "eventTopNav";
         String EVENT_MANAGE_PRODUCT = "eventManageProduct";
 
         String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
+        String EVENT_INTERNAL_PROMO = "internalPromo";
+        String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
     }
@@ -229,15 +240,19 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_ATC = "Gold Merchant ATC";
         String GOLD_MERCHANT_CHECKOUT = "Gold Merchant Checkout";
         String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
+
+        String PRODUCT_PAGE = "product page";
+        String SEND_MESSAGE_PAGE = "send message page";
+        String SHOP_PAGE = "shop page";
         String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
-        String HOMEPAGE_TOKOCASH_WIDGET = "Homepage TokoCash Widget";
+        String HOMEPAGE_UNIFY = "homepage tab";
+        String EVENT_TOP_NAV = "top nav";
+        String CATEGORY_HOTLIST = "hotlist";
     }
 
     interface Action {
         String CLICK = "Click";
-        String CLICK_ACTIVATE   = "click activate";
-        String CLICK_SALDO     = "click saldo";
         String CLICK_VIEW_ALL    = "click view all";
         String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
@@ -268,12 +283,6 @@ public interface AppEventTracking {
         String SUCCESS = "Success";
         String LOAD = "Load";
         String SCROLL = "Scroll";
-        String SEARCH_POPULAR = "Popular Search";
-        String SEARCH_RECENT = "Recent Search";
-        String SEARCH_HOTLIST = "Search HotList";
-        String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
-        String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
-        String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
         String UPLOAD_SUCCESS = "Success Upload";
         String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
         String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
@@ -317,7 +326,13 @@ public interface AppEventTracking {
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
         String SUBMIT = "Submit";
+
+        String PRODUCT_PAGE = "click";
+        String SEND_MESSAGE_PAGE = "click on kirim";
+        String SHOP_PAGE = "click on kirim pesan";
         String CLICK_DASHBOARD_CARD = "Click - Dashboard Card";
+        String WISHLIST_SEARCH_ITEM = "wishlist - search item";
+        String CLICK_CART_BUTTON = "click cart button";
         String CLICK_TOP_NAV = "click top nav";
         String CLICK_PRODUCT_LIST = "click product list";
         String CLICK_SORT_PRODUCT = "click sort product";
@@ -332,21 +347,29 @@ public interface AppEventTracking {
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
-        String CLICK_ACTIVATE = "click activate";
-        String CLICK_SALDO = "click saldo";
         String CLICK_REMOVE_WISHLIST = "wishlist - remove item";
         String CLICK_SHOP_FAVORITE = "favorite - click shop";
         String CLICK_EMPTY_SEARCH_WISHLIST = "wishlist - click empty cari product";
         String CLICK_SEARCH_ITEM_WISHLIST = "wishlist - search item";
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
+        String CLICK_SALDO = "click saldo";
+        String CLICK_ACTIVATE = "click activate";
+        String SEARCH_PRODUCT = "search product";
+        String SEARCH_POPULAR = "search product - popular";
+        String SEARCH_RECENT = "search product - recent";
+        String SEARCH_HOTLIST = "search product - hotlist";
+        String SEARCH_AUTOCOMPLETE = "search product - autocomplete";
+        String SEARCH_PRODUCT_SUGGESTION = "search product - suggestion";
+        String SEARCH_SHOP = "search shop";
+        String SEARCH_AUTOCOMPLETE_SHOP = "search shop - autocomplete";
     }
 
     interface EventLabel {
-        String HOME = "Home";
-        String FAVORITE = "Favorite";
-        String PRODUCT_FEED = "Product Feed";
-        String HOTLIST = "Hotlist";
+        String HOME = "homepage";
+        String FAVORITE = "favorite";
+        String PRODUCT_FEED = "feed";
+        String HOTLIST = "hotlist";
         String VIEW_ALL_WISHLIST = "View All Wishlist";
         String VIEW_ALL_RECENT = "View All Wishlist";
         String ADD_TO_WISHLIST_LABEL = "Add To Wishlist - ";
@@ -622,6 +645,8 @@ public interface AppEventTracking {
         String ADD_PROMO_PRODUCT = "Add Produk Promo";
         String ADD_PROMO_KEYWORD_POSITIF = "Add Positive Keyword";
         String ADD_PROMO_KEYWORD_NEGATIVE = "Add Negative Keyword";
+
+        String PRODUCT_PAGE =  "message shop";
         String APP_SHARE_LABEL="Share";
         String FEATURED_PRODUCT = "Featured Product";
         String ADD_FEATURED_PRODUCT = "Add Featured Product";
