@@ -33,7 +33,7 @@ public class InputAddressUseCase extends UseCase<ResolutionActionDomainData> {
 
     @Override
     public Observable<ResolutionActionDomainData> createObservable(RequestParams requestParams) {
-        return repository.inputAddress(requestParams.getParameters());
+        return repository.inputAddressV2(requestParams);
     }
 
     public static RequestParams getInputAddressParam(String addressId, String resolutionId, int paramByPass) {

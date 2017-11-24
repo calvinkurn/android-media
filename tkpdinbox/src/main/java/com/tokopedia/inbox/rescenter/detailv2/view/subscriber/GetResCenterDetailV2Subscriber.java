@@ -207,14 +207,13 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         ProductData productData = new ProductData();
         List<ProductItem> productItems = new ArrayList<>();
         for (ComplainedProductData complainedProductData : complainedProductDataList) {
-            ProductItem productItem = new ProductItem();
-            productItem.setProductID(complainedProductData.getId() != 0 ?
-                    String.valueOf(complainedProductData.getId()) : "");
-            productItem.setProductImageUrl(complainedProductData.getProduct().getThumb() != null ?
-                    complainedProductData.getProduct().getThumb() : "");
-            productItem.setProductName(complainedProductData.getProduct().getName() != null ?
-                    complainedProductData.getProduct().getName() : "");
-            productItems.add(productItem);
+            if (complainedProductData.getProduct() != null) {
+                ProductItem productItem = new ProductItem();
+                productItem.setProductID(String.valueOf(complainedProductData.getId()));
+                productItem.setProductImageUrl(complainedProductData.getProduct().getThumb());
+                productItem.setProductName(complainedProductData.getProduct().getName());
+                productItems.add(productItem);
+            }
         }
         productData.setProductList(productItems);
         return productData;

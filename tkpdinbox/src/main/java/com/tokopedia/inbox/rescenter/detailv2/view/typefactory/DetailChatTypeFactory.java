@@ -4,6 +4,8 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
@@ -33,6 +35,10 @@ public interface DetailChatTypeFactory {
     int type(ChatSystemRightViewModel viewModel);
 
     int type(ChatCommonLeftViewModel viewModel);
+
+    int type(ChatInputAddressLeftViewModel viewModel);
+
+    int type(ChatInputAddressRightViewModel viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

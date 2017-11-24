@@ -103,6 +103,39 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> cancelResolution(@Path("resolution_id") String resolutionID,
                                                         @FieldMap TKPDMapParam<String, Object> params);
 
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_REPLY_RESOLUTION)
+    Observable<Response<TkpdResponse>> replyResolution(@Path("resolution_id") String resolutionID,
+                                                       @FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_REPLY_RESOLUTION)
+    Observable<Response<TkpdResponse>> replyResolutionSubmit(@Path("resolution_id") String resolutionID,
+                                                             @FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_FINISH_RESOLUTION)
+    Observable<Response<TkpdResponse>> finishResolution(@Path("resolution_id") String resolutionID,
+                                                        @FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_ASK_HELP_RESOLUTION)
+    Observable<Response<TkpdResponse>> askHelpResolution(@Path("resolution_id") String resolutionID,
+                                                         @FieldMap TKPDMapParam<String, Object> params);
+
+    @Multipart
+    @POST("")
+    Observable<Response<TkpdResponse>> uploadVideo(@Url String url,
+                                                   @PartMap Map<String, RequestBody> params,
+                                                   @Part MultipartBody.Part file);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_CONVERSATION_ADDRESS)
+    Observable<Response<TkpdResponse>> inputAddress(@Path("resolution_id") String resolutionID,
+                                                         @FieldMap TKPDMapParam<String, Object> params);
+
+
     //Version 1
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_DETAIL)
     Observable<Response<TkpdResponse>> getResCenterDetail(@Path("resolution_id") String resolutionID,
@@ -141,30 +174,5 @@ public interface ResolutionApi {
                                                         @Path("trouble_id") String troubleID,
                                                         @QueryMap TKPDMapParam<String, Object> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenterV2.ACTION_REPLY_RESOLUTION)
-    Observable<Response<TkpdResponse>> replyResolution(@Path("resolution_id") String resolutionID,
-                                                       @FieldMap TKPDMapParam<String, Object> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenterV2.ACTION_REPLY_RESOLUTION)
-    Observable<Response<TkpdResponse>> replyResolutionSubmit(@Path("resolution_id") String resolutionID,
-                                                             @FieldMap TKPDMapParam<String, Object> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenterV2.ACTION_FINISH_RESOLUTION)
-    Observable<Response<TkpdResponse>> finishResolution(@Path("resolution_id") String resolutionID,
-                                                             @FieldMap TKPDMapParam<String, Object> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenterV2.ACTION_ASK_HELP_RESOLUTION)
-    Observable<Response<TkpdResponse>> askHelpResolution(@Path("resolution_id") String resolutionID,
-                                                        @FieldMap TKPDMapParam<String, Object> params);
-
-    @Multipart
-    @POST("")
-    Observable<Response<TkpdResponse>> uploadVideo(@Url String url,
-                                                   @PartMap Map<String, RequestBody> params,
-                                                   @Part MultipartBody.Part file);
 
 }
