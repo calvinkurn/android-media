@@ -1039,6 +1039,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_shop_desc">Deskripsi Toko</string>
     <string name="title_open_shop">Buka Toko</string>
     <string name="domain">https://www.tokopedia.com/</string>
+    <string name="domain_short">www.tokopedia.com/</string>
     <string name="title_activity_contact_us">Hubungi Kami</string>
     <string name="title_select_city">Pilih Asal Kota</string>
 
@@ -1742,6 +1743,9 @@ di Tokopedia Sekarang!</string>
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
     <!-- End of Strings related Share Mods -->
     <string name="shop_name_available">Nama toko tersedia</string>
+    <string name="shop_name_not_available">Nama toko sudah terpakai</string>
+    <string name="domain_name_available">Nama domain tersedia</string>
+    <string name="domain_name_not_available">Nama domain sudah terpakai</string>
     <string name="prompt_send_comment">Apakah anda yakin ingin mengirim komentar ini?</string>
 
     <string name="title_edit_stok_reject_order">Atur Stok Kosong pada produk</string>

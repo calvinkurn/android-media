@@ -88,7 +88,7 @@ ext {
     viewDependencies = [
             ahBottomNavigation : "com.aurelhubert:ahbottomnavigation:1.4.0",
             recyclerMultiSelect: "com.bignerdranch.android:recyclerview-multiselect:0.2@aar",
-            appIntro           : "com.github.apl-devs:appintro:v4.2.2"
+            appIntro           : "com.github.apl-devs:appintro:v4.2.2",
     ]
 
     serviceDependencies = [

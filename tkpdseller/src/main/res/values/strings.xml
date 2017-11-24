@@ -55,6 +55,15 @@
     <string name="title_shop_score_indicator">Indikator Performa Toko</string>
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
     <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
+    <string name="title_shop_setting_location">Lokasi Pengiriman</string>
+    <string name="description_shop_setting_location">Lengkapi informasi lokasi pengiriman untuk memilih layanan jasa pengiriman yang tersedia di lokasi Anda.</string>
+    <string name="hint_shop_setting_location_city">Kota Asal Pengiriman</string>
+    <string name="hint_shop_setting_location_zip_code">Kode Pos</string>
+    <string name="title_shop_setting">Pengaturan Toko</string>
+    <string name="title_shop_setting_location_pickup">Lokasi pickup (Opsional)</string>
+    <string name="description_shop_setting_location_pickup"><![CDATA[Wajib diisi untuk aktifkan jasa pengiriman Go-JEK, Grab, & Ninja Xpress. Pastikan lokasi yang Anda tandai di peta sesuai dengan Alamat Pickup.]]></string>
+    <string name="action_shop_setting_location_pickup">Lokasi Pickup</string>
+    <string name="title_shop_setting_location_address">Alamat Pickup</string>
 
     <string name="list_sold_product_text">Daftar Produk Terjual</string>
 
@@ -158,6 +167,36 @@
     <string name="product_manage_label_add_product">+ Tambah Produk</string>
     <string name="product_manage_label_supervision">Pengawasan</string>
 
+    <string name="edit_from_instagram_text_description">Ubah dari Instagram</string>
+    <string name="edit_from_gallery_text_description">Ubah dari Galeri</string>
+    <string name="edit_from_camera_text_description">Ubah dari Kamera</string>
+
+    <!-- Open Shop -->
+    <string name="shop_name">Nama Toko</string>
+    <string name="domain_name">Nama Domain</string>
+    <string name="fill_domain_and_shop">Isi nama domain dan toko</string>
+
+    <!-- Shop Setting -->
+    <string name="label_shop_open_welcome">Halo,</string>
+    <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik</string>
+    <string name="label_shop_setting_slogan">Slogan Toko</string>
+    <string name="label_shop_setting_desc_shop">Deskripsi Toko</string>
+    <string name="label_shop_setting_logo">Logo</string>
+    <string name="label_shop_setting_error_should_pick_image">Logo harus diisi</string>
+    <string name="label_shop_setting_info_max_file_size">Besar file maksimum:</string>
+    <string name="label_shop_setting_info_size_image">10 Megabytes (10 MB)</string>
+    <string name="label_shop_setting_info_allowed_file">File yang diperbolehkan:</string>
+    <string name="label_shop_setting_type_file_image">.JPG .JPEG .PNG</string>
+    <string name="label_shop_setting_browse_file">Browse File</string>
+    <string name="label_shop_setting_error_slogan_should_fill">Slogan toko harus diisi</string>
+    <string name="label_shop_setting_error_desc_should_fill">Deskripsi toko harus diisi</string>
+    <string name="title_shop_setting_logistic">Layanan Jasa Pengiriman</string>
+    <string name="description_shop_setting_logistic">Aktifkan pilihan kurir yang tersedia</string>
+    <string name="open_shop_title_shop_information">Informasi Toko</string>
+    <string name="open_shop_title_shop_location">Lokasi Toko</string>
+    <string name="open_shop_title_shop_shipping">Atur Pengiriman</string>
+    <string name="postal_code_not_filled">Kode pos harus diisi</string>
+    <string name="shop_setting_city_not_filled">Kota harus diisi</string>
     <string name="edit_from_instagram_text_description">Ubah gambar dari Instagram</string>
     <string name="edit_from_gallery_text_description">Ubah gambar dari Galeri</string>
     <string name="edit_from_camera_text_description">Ubah gambar dari Kamera</string>

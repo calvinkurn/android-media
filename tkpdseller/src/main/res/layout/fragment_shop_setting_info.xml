@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            style="@style/ImageView.ShopSettingTitleImage"
+            android:src="@drawable/ic_icon_toko" />
+
+        <TextView
+            android:id="@+id/welcome_shop_label"
+            style="@style/TextView.ShopSettingTitleShop"
+            android:text="@string/label_shop_open_welcome" />
+
+        <TextView
+            style="@style/TextView.ShopSettingTitleShop.Content"
+            android:text="@string/label_shop_open_info_title_shop" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/shop_slogan_input_layout"
+            style="@style/TextInputLayout.ShopSetting"
+            android:layout_marginBottom="22dp">
+
+            <EditText
+                android:id="@+id/shop_slogan_input_text"
+                style="@style/EditText.ShopSetting"
+                android:hint="@string/label_shop_setting_slogan" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/shop_desc_input_layout"
+            style="@style/TextInputLayout.ShopSetting.DescShop"
+            android:layout_marginBottom="@dimen/margin_sm">
+
+            <EditText
+                android:id="@+id/shop_desc_input_text"
+                style="@style/EditText.ShopSetting"
+                android:hint="@string/label_shop_setting_desc_shop" />
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            style="@style/TextView.ShopSettingHint.Logo"
+            android:text="@string/label_shop_setting_logo" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp">
+
+            <FrameLayout
+                android:id="@+id/image_picker_container"
+                style="@style/View.ShopSetting.ImagePicker">
+
+                <ImageView
+                    android:id="@+id/image_picker"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_add_photo_box" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/error_image_empty"
+                style="@style/TextView.ShopSettingHint.ErrorImagePicker"
+                android:layout_below="@+id/image_picker_container"
+                android:text="@string/label_shop_setting_error_should_pick_image"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/container_info_picker_image"
+                style="@style/View.ShopSetting.InfoImagePicker"
+                android:layout_toRightOf="@+id/image_picker_container">
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.InfoPickImageTitle"
+                    android:text="@string/label_shop_setting_info_max_file_size" />
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.InfoPickImageContent"
+                    android:text="@string/label_shop_setting_info_size_image" />
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.InfoPickImageTitle"
+                    android:text="@string/label_shop_setting_info_allowed_file" />
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.InfoPickImageContent"
+                    android:text="@string/label_shop_setting_type_file_image" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/container_browse_file"
+                style="@style/View.ShopSetting.BrowseImage"
+                android:layout_alignBottom="@+id/image_picker_container"
+                android:layout_alignLeft="@id/container_info_picker_image">
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.LabelBrowseImage"
+                    android:text="@string/label_shop_setting_browse_file" />
+            </FrameLayout>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/button_next"
+            style="@style/Button.Submit.Green"
+            android:text="@string/title_next" />
+
+    </LinearLayout>
+</ScrollView>

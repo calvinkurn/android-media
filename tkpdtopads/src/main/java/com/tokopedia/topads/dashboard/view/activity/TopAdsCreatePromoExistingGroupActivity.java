@@ -8,11 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupFragment;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
-import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +22,17 @@ import java.util.List;
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity {
-    List<Fragment> fragmentList;
+public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity implements HasComponent<AppComponent> {
+    protected List<Fragment> fragmentList;
 
     @NonNull
     @Override
     protected List<Fragment> getListFragment() {
-        if(fragmentList == null){
+        if (fragmentList == null) {
             fragmentList = new ArrayList<>();
             fragmentList.add(new TopAdsNewProductListExistingGroupFragment());
             return fragmentList;
-        }else{
+        } else {
             return fragmentList;
         }
     }
@@ -45,8 +46,8 @@ public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity 
             itemIdToAdd = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
         }
         stepperModel = new TopAdsCreatePromoExistingGroupModel();
-        ((TopAdsCreatePromoExistingGroupModel)stepperModel).setGroupId(groupId);
-        ((TopAdsCreatePromoExistingGroupModel)stepperModel).setIdToAdd(itemIdToAdd);
+        ((TopAdsCreatePromoExistingGroupModel) stepperModel).setGroupId(groupId);
+        ((TopAdsCreatePromoExistingGroupModel) stepperModel).setIdToAdd(itemIdToAdd);
         super.onCreate(savedInstanceState);
     }
 
@@ -68,5 +69,11 @@ public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity 
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         setResult(Activity.RESULT_OK, intent);
+    }
+
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
@@ -19,12 +17,17 @@ import java.util.List;
  * Created by zulfikarrahman on 7/27/17.
  */
 
-public abstract class BaseStepperActivity extends BaseToolbarActivity implements StepperListener, HasComponent<AppComponent> {
+public abstract class BaseStepperActivity extends BaseToolbarActivity implements StepperListener {
     public static final String STEPPER_MODEL_EXTRA = "STEPPER_MODEL_EXTRA";
+    private static final int START_PAGE_POSITION = 1;
 
-    protected StepperModel stepperModel;
     private RoundCornerProgressBar progressStepper;
-    int currentPosition = 1;
+
+    private int currentPosition = START_PAGE_POSITION;
+    protected StepperModel stepperModel;
+
+    @NonNull
+    protected abstract List<Fragment> getListFragment();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,13 +35,13 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
         progressStepper = (RoundCornerProgressBar) findViewById(R.id.stepper_progress);
         progressStepper.setMax(getListFragment().size());
         progressStepper.setProgress(currentPosition);
-        updateToolbarTitle();
+        updateToolbarTitle(START_PAGE_POSITION);
     }
 
     @Override
     protected void setupFragment(Bundle savedinstancestate) {
-        if(getListFragment().size() >= currentPosition) {
-            Fragment fragment = getListFragment().get(currentPosition -1);
+        if (getListFragment().size() >= currentPosition) {
+            Fragment fragment = getListFragment().get(currentPosition - 1);
             Bundle bundle = new Bundle();
             bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
             fragment.setArguments(bundle);
@@ -56,27 +59,20 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     @Override
     public void goToNextPage(StepperModel stepperModel) {
-        incrementPage();
         this.stepperModel = stepperModel;
-        setupFragment(null);
-    }
-
-    private void incrementPage() {
         currentPosition++;
-        progressStepper.setProgress(currentPosition);
-        updateToolbarTitle();
+        goToPosition(currentPosition);
     }
 
-    @Override
-    public void finishPage() {
-        finish();
-    }
-
-    private void decrementPage() {
+    private void goToPreviousPage() {
         currentPosition--;
-        progressStepper.setProgress(currentPosition);
+        goToPosition(currentPosition);
+    }
+
+    private void goToPosition(int position) {
+        progressStepper.setProgress(position);
+        updateToolbarTitle(position);
         setupFragment(null);
-        updateToolbarTitle();
     }
 
     @Override
@@ -85,9 +81,9 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     }
 
     private void onBackEvent() {
-        if(currentPosition > 1) {
-            decrementPage();
-        }else {
+        if (currentPosition > 1) {
+            goToPreviousPage();
+        } else {
             super.onBackPressed();
         }
     }
@@ -95,24 +91,20 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if(itemId == android.R.id.home){
+        if (itemId == android.R.id.home) {
             onBackEvent();
             return false;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @NonNull
-    protected abstract List<Fragment> getListFragment();
-
-
-    public void updateToolbarTitle() {
-        getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
+    private void updateToolbarTitle(int position) {
+        getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, position, getListFragment().size()));
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public void finishPage() {
+        finish();
     }
 
     @Override

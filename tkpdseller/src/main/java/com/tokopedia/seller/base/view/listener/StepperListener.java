@@ -7,6 +7,9 @@ import com.tokopedia.seller.base.view.model.StepperModel;
  */
 
 public interface StepperListener {
+
     void goToNextPage(StepperModel object);
+
     void finishPage();
+
 }

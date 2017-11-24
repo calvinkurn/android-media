@@ -24,6 +24,8 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.seller.common.widget.PrefixEditText;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;
 
 /**

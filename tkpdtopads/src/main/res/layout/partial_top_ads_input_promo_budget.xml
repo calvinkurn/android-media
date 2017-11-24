@@ -9,7 +9,7 @@
     style="@style/TextInputLayout"
     tools:showIn="@layout/partial_top_ads_edit_promo_budget_without_info">
 
-    <com.tokopedia.topads.dashboard.view.widget.PrefixEditText
+    <com.tokopedia.seller.common.widget.PrefixEditText
         android:id="@+id/edit_text_budget_per_day"
         style="@style/EditText.Currency"
         android:layout_width="match_parent"

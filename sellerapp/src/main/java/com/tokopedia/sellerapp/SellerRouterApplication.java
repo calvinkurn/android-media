@@ -81,6 +81,9 @@ import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
+import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
+import com.tokopedia.seller.shop.common.di.component.ShopComponent;
+import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -125,6 +128,9 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
     private TopAdsComponent topAdsComponent;
 
+    private DaggerShopComponent.Builder daggerShopBuilder;
+    private ShopComponent shopComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -135,6 +141,7 @@ public abstract class SellerRouterApplication extends MainApplication
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
+        daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
     @Override
@@ -158,6 +165,14 @@ public abstract class SellerRouterApplication extends MainApplication
             topAdsComponent = daggerTopAdsBuilder.appComponent(getApplicationComponent()).build();
         }
         return topAdsComponent;
+    }
+
+    @Override
+    public ShopComponent getShopComponent() {
+        if(shopComponent == null){
+            shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return shopComponent;
     }
 
     @Override
