@@ -37,7 +37,7 @@ public class DynamicFilterDbManager implements DbFlowOperation<FilterModelDB> {
     @Override
     public void store() {
         FilterModelDB cache = new FilterModelDB();
-        cache.filterID = getFilterID();
+        cache.filterId = getFilterID();
         cache.filterData = getFilterData();
         cache.save();
     }
