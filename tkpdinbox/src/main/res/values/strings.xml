@@ -198,8 +198,14 @@ yang ditemukan</string>
     <string name="string_complaint_title_identifier">$store_name</string>
     <string name="string_tokopedia_system">Sistem Tokopedia</string>
     <string name="string_tokopedia">Toped</string>
+    <string name="string_tokopedia_admin_title">Admin</string>
+    <string name="string_tokopedia_admin_username">Tokopedia Admin</string>
     <string name="detail">Detail</string>
     <string name="string_address_format">Alamat Pengiriman:\na&#47;n: %1$s\n%2$s\n%3$s, %4$s, %5$s\n%6$s\nTelp: %7$s</string>
     <string name="complaint_from">Komplain dari</string>
     <string name="complaint_to">Komplain ke</string>
+    <string name="string_btn_change_address">Ubah Alamat</string>
+    <string name="string_admin_solution_final_title">Admin Tokopedia memberikan solusi akhir:</string>
+    <string name="string_admin_solution_reason">Alasan:</string>
+    <string name="string_admin_solution_final">Admin memberikan solusi akhir</string>
 </resources>

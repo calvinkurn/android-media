@@ -78,6 +78,8 @@ public interface DetailResChatFragmentListener {
 
         void intentToSeeAllProducts();
 
+        void intentToEditAddress(int conversationId, int oldAddressId);
+
         void initNextStep(NextActionDomain nextActionDomain);
 
         void initActionButton(ButtonDomain buttonDomain);

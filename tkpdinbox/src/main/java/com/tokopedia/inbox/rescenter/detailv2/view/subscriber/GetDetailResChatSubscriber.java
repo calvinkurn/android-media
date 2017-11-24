@@ -5,6 +5,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionFinalLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressRightViewModel;
@@ -144,7 +145,7 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             conversationDomain,
                             isShowTitle));
                 }
-            } else if(actionType.equals(INPUT_ADDRESS)) {
+            } else if(actionType.equals(INPUT_ADDRESS) || actionType.equals(EDIT_ADDRESS)) {
                 boolean isShowTitle;
                 if (lastAction == conversationDomain.getAction().getBy()) {
                     isShowTitle = false;
@@ -166,6 +167,8 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             isShowTitle,
                             MainApplication.getAppContext().getResources().getString(R.string.string_address_format)));
                 }
+            } else if(actionType.equals(ACTION_FINAL)) {
+                items.add(new ChatActionFinalLeftViewModel(conversationDomain, actionType));
             } else if (actionType.equals(REPORT_RESOLUTION)
                     || actionType.equals(ENTER_RETUR_SESSION_RESOLUTION)
                     || actionType.equals(FINISH)

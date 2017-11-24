@@ -117,11 +117,14 @@ public class DetailResChatFragment
     private ImageUploadHandler uploadImageDialog;
     private FloatingActionButton fabChat;
 
-    private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
+    private String resolutionId;
     private String lastConvId;
     private boolean isLoadingMore = false;
+    private int oldAddressId;
+    private int conversationId;
+
     private Dialog resCenterDialog;
     @Inject
     DetailResChatFragmentPresenter presenter;
@@ -959,6 +962,13 @@ public class DetailResChatFragment
     }
 
     @Override
+    public void intentToEditAddress(int conversationId, int oldAddressId) {
+        doEditAddress();
+        this.conversationId = conversationId;
+        this.oldAddressId = oldAddressId;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case DetailResChatActivity.REQUEST_GO_DETAIL:
@@ -1005,15 +1015,15 @@ public class DetailResChatFragment
                     presenter.inputAddressMigrateVersion(destination != null ? destination.getAddressId() : null);
                 }
                 break;
-//            case REQUEST_EDIT_ADDRESS:
-//                if (resultCode == Activity.RESULT_OK) {
-//                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
-//                    presenter.actionEditAddress(
-//                            destination != null ? destination.getAddressId() : null,
-//                            viewData.getAddressReturData().getAddressID(),
-//                            viewData.getAddressReturData().getConversationID()
-//                    );
-//                }
+            case REQUEST_EDIT_ADDRESS:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.actionEditAddress(
+                            destination != null ? destination.getAddressId() : null,
+                            String.valueOf(oldAddressId),
+                            String.valueOf(conversationId)
+                    );
+                }
             default:
                 break;
         }
