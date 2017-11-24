@@ -200,4 +200,8 @@ yang ditemukan</string>
     <string name="string_tokopedia">Toped</string>
     <string name="detail">Detail</string>
     <string name="string_address_format">Alamat Pengiriman:\na&#47;n: %1$s\n%2$s\n%3$s, %4$s, %5$s\n%6$s\nTelp: %7$s</string>
+
+    <!--Track Shipping-->
+    <string name="string_awb_number">No. Resi :</string>
+    <string name="string_receiver_name">Nama Penerima :</string>
 </resources>

@@ -33,6 +33,7 @@ import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetai
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
@@ -605,7 +606,11 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionTrackAwbClick(String shipmentID, String shipmentRef) {
-        presenter.trackReturProduck(shipmentID, shipmentRef);
+        startActivity(TrackShippingActivity.newInstance(
+                getActivity(),
+                shipmentID,
+                shipmentRef)
+        );
     }
 
     @Override

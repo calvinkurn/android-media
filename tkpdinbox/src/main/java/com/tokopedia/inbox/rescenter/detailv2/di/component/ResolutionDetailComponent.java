@@ -10,6 +10,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.UploadImageRepository;
 import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.fragment.DetailResChatFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.fragment.NextActionFragment;
+import com.tokopedia.inbox.rescenter.detailv2.view.fragment.TrackShippingFragment;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
 
 import dagger.Component;
@@ -26,6 +27,8 @@ public interface ResolutionDetailComponent {
     void inject(DetailResChatFragment fragment);
 
     void inject(NextActionFragment fragment);
+
+    void inject(TrackShippingFragment fragment);
 
     TrackAwbReturProductUseCase trackAwbReturProductUseCase();
 
