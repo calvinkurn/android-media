@@ -251,12 +251,7 @@ public class ProductListFragment extends SearchSectionFragment
                 !getSearchParameter().getDepartmentId().equals("0")) {
             adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().getDepartmentId());
         }
-        if (getSelectedFilter() != null) {
-            adsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getSelectedSort() != null) {
-            adsParams.getParam().putAll(getSelectedSort());
-        }
+        enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
     }
 
@@ -544,6 +539,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    protected void updateDepartmentId(String deptId) {
+        getSearchParameter().setDepartmentId(deptId);
+    }
+
+    @Override
     protected void reloadData() {
         adapter.clearData();
         initTopAdsParams();
@@ -655,7 +655,9 @@ public class ProductListFragment extends SearchSectionFragment
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
             String preFilteredSc = getSearchParameter().getDepartmentId();
-            addPreFilteredCategory(preFilteredSc);
+            if (!TextUtils.isEmpty(preFilteredSc)) {
+                addPreFilteredCategory(preFilteredSc);
+            }
             Intent intent = RevampedDynamicFilterActivity.createInstance(
                     getActivity(), getFilters(), getFlagFilterHelper()
             );
