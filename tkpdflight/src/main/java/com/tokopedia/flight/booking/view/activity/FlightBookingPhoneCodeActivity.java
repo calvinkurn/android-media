@@ -32,9 +32,4 @@ public class FlightBookingPhoneCodeActivity extends BaseSimpleActivity implement
                 .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
                 .build();
     }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
 }

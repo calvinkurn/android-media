@@ -36,11 +36,6 @@ public class FlightAirportPickerActivity extends BaseSimpleActivity implements H
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
     protected boolean isShowCloseButton() {
         return true;
     }

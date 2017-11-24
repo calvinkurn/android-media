@@ -222,7 +222,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         menu.clear();
         inflater.inflate(R.menu.menu_flight_dashboard, menu);
         if (getActivity() instanceof BaseSimpleActivity) {
-            ((BaseSimpleActivity) getActivity()).updateOptionMenuColor(menu);
+            ((BaseSimpleActivity) getActivity()).updateOptionMenuColorWhite(menu);
         }
     }
 
