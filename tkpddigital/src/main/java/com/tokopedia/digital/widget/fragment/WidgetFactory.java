@@ -19,7 +19,8 @@ public class WidgetFactory {
 
     public static Fragment buildFragment(Category category, int position, boolean useCache) {
         String operatorStyle = "";
-        if (category.getAttributes().getClientNumber().getOperatorStyle() != null) {
+        if (category.getAttributes() != null && category.getAttributes().getClientNumber() != null &&
+                category.getAttributes().getClientNumber().getOperatorStyle() != null) {
             operatorStyle = category.getAttributes().getClientNumber().getOperatorStyle();
         }
 
