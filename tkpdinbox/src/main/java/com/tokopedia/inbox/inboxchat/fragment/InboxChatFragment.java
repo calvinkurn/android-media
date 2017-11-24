@@ -240,11 +240,18 @@ public class InboxChatFragment extends BaseDaggerFragment
 
         adapter = new NewInboxChatAdapter(typeFactory, presenter);
 
-        searchInputView.setOnTouchListener(new View.OnTouchListener() {
+        searchInputView.getSearchTextView().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 searchInputView.getSearchTextView().setCursorVisible(true);
                 return false;
+            }
+        });
+
+        searchInputView.getSearchTextView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchInputView.getSearchTextView().setCursorVisible(true);
             }
         });
 
