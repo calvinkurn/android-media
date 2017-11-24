@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/WidgetSelectPassengerView"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_passenger_icon"
+        style="@style/WidgetSelectPassengerViewIcon"
+        tools:src="@drawable/ic_passenger_adult" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_title"
+            style="@style/WidgetSelectPassengerViewTitle"
+            tools:text="Dewasa" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_subtitle"
+            style="@style/WidgetSelectPassengerViewSubtitle"
+            tools:text="(Lebih dari 12 tahun)" />
+    </LinearLayout>
+
+    <com.tokopedia.flight.dashboard.view.widget.NumberPickerWithCounterView
+        android:id="@+id/number_picker_passenger"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.75" />
+</LinearLayout>

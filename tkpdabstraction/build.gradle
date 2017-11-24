@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
+
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile getTkpdDesign()
+
+    compile rootProject.ext.supportLibDependencies.appCompactV7
+    compile rootProject.ext.miscDependencies.roundCornerProgressBar
+    compile rootProject.ext.networkDependencies.glide
+    compile rootProject.ext.miscDependencies.gson
+    compile rootProject.ext.miscDependencies.rxAndroid
+    compile rootProject.ext.miscDependencies.rxJava
+    compile rootProject.ext.networkDependencies.converterGson
+    compile rootProject.ext.networkDependencies.retrofit
+    compile rootProject.ext.networkDependencies.adapterRxJava
+    compile rootProject.ext.networkDependencies.loggingInterceptor
+
+    compile rootProject.ext.miscDependencies.multiDex
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.debugToolsDependencies.stetho
+}

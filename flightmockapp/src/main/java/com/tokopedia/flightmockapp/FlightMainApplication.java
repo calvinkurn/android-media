@@ -1,0 +1,122 @@
+package com.tokopedia.flightmockapp;
+
+import android.app.Activity;
+
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdFlightGeneratedDatabaseHolder;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.utils.GlobalConfig;
+import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.common.di.component.DaggerFlightComponent;
+import com.tokopedia.flight.common.di.component.FlightComponent;
+
+import java.io.IOException;
+import java.util.Map;
+
+/**
+ * Created by User on 10/24/2017.
+ */
+
+public class FlightMainApplication extends BaseMainApplication implements FlightModuleRouter, AbstractionRouter{
+
+    private FlightComponent flightComponent;
+
+    @Override
+    public void onCreate() {
+        GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        super.onCreate();
+        initDBFlow();
+    }
+
+    private void initDBFlow() {
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdFlightGeneratedDatabaseHolder.class)
+                .build());
+    }
+
+    @Override
+    public FlightComponent getFlightComponent() {
+        if (flightComponent == null) {
+            flightComponent = DaggerFlightComponent.builder().baseAppComponent(getBaseAppComponent()).build();
+        }
+        return flightComponent;
+    }
+
+    @Override
+    public void goToForceUpdate(Activity activity) {
+
+    }
+
+    @Override
+    public void onForceLogout(Activity activity) {
+
+    }
+
+    @Override
+    public void showTimezoneErrorSnackbar() {
+        ServerErrorHandler.showTimezoneErrorSnackbar();
+    }
+
+    @Override
+    public void showMaintenancePage() {
+        ServerErrorHandler.showMaintenancePage();
+    }
+
+    @Override
+    public void showForceLogoutDialog() {
+        ServerErrorHandler.showMaintenancePage();
+    }
+
+    @Override
+    public void sendForceLogoutAnalytics(String url) {
+        ServerErrorHandler.sendForceLogoutAnalytics(url);
+    }
+
+    @Override
+    public void showServerErrorSnackbar() {
+        ServerErrorHandler.showServerErrorSnackbar();
+    }
+
+    @Override
+    public void sendErrorNetworkAnalytics(String url, int code) {
+        ServerErrorHandler.sendErrorNetworkAnalytics(url, code);
+    }
+
+    @Override
+    public void refreshLogin() {
+        SessionRefresh sessionRefresh = new SessionRefresh();
+        try {
+            sessionRefresh.refreshLogin();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void refreshToken() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            accessTokenRefresh.refreshToken();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Map<String, String> generateHeaders(String path, String strParam, String method, String authKey, String contentTypeHeader) {
+        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
+    }
+
+
+    @Override
+    public String getAuthKey() {
+        return AuthUtil.KEY.KEY_WSV4;
+    }
+
+    @Override
+    public String getFreshToken() {
+        return SessionHandler.getAccessToken();
+    }
+}

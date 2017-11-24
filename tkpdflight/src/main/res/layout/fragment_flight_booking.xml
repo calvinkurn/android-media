@@ -1,0 +1,185 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f8f8f8"
+    android:fillViewport="true"
+    tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/pb_full_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            tools:visibility="gone" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/container_full_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_med"
+                    android:paddingEnd="@dimen/padding_ms"
+                    android:paddingLeft="@dimen/padding_ms"
+                    android:paddingRight="@dimen/padding_ms"
+                    android:paddingStart="@dimen/padding_ms"
+                    android:paddingTop="@dimen/padding_med">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/flight_booking_finish_transaction_label" />
+
+                    <com.tokopedia.flight.booking.widget.CountdownTimeView
+                        android:id="@+id/countdown_finish_transaction"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        app:ctv_hour_title="Jam"
+                        app:ctv_minute_title="Menit"
+                        app:ctv_second_title="Detik" />
+                </LinearLayout>
+
+                <com.tokopedia.flight.booking.widget.CardWithActionView
+                    android:id="@+id/cwa_departure_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:cmv_title="@string/flight_booking_departure_trip_card_title"
+                    app:cmw_action="Detail"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.flight.booking.widget.CardWithActionView
+                    android:id="@+id/cwa_return_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:cmv_title="@string/flight_booking_return_trip_card_title"
+                    app:cmw_action="Detail"
+                    tools:visibility="gone" />
+
+                <include
+                    layout="@layout/partial_flight_booking_contact_form"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_med"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_sm"
+                        android:text="@string/flight_booking_passenger_data_label"
+                        android:textSize="@dimen/font_headline"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_passengers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_sm"
+                        android:text="@string/flight_booking_price_detail"
+                        android:textSize="@dimen/font_headline"
+                        android:textStyle="bold" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_price_lists"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_ms" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/bg_line_separator" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_sm"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/flight_booking_total_price_label"
+                            android:textSize="@dimen/font_title" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/tv_total_price"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textSize="@dimen/font_headline"
+                            android:textStyle="bold"
+                            tools:text="Rp45.846.900" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/bg_line_separator" />
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/button_submit"
+                        style="@style/Button.Submit.Orange"
+                        android:text="@string/flight_booking_submit_button_label" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

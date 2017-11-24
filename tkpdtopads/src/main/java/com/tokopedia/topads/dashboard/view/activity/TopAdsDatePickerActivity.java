@@ -1,9 +1,9 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.seller.base.view.activity.BaseTabActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 
@@ -13,7 +13,9 @@ import java.util.Date;
  * Created by Nathaniel on 1/20/2017.
  */
 @Deprecated
-public abstract class TopAdsDatePickerActivity<T> extends BaseTopAdsDatePickerActivity<T> {
+public abstract class TopAdsDatePickerActivity<T> extends BaseTabActivity {
+
+    protected T presenter;
 
     protected Date startDate;
     protected Date endDate;
@@ -22,43 +24,13 @@ public abstract class TopAdsDatePickerActivity<T> extends BaseTopAdsDatePickerAc
     protected abstract BaseDatePickerPresenter getDatePickerPresenter();
 
     @Override
-    protected void setupURIPass(Uri uri) {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initialPresenter();
     }
 
-    @Override
-    protected void setupBundlePass(Bundle bundle) {
-
-    }
-
-    @Override
     protected void initialPresenter() {
         datePickerPresenter = getDatePickerPresenter();
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -89,9 +61,9 @@ public abstract class TopAdsDatePickerActivity<T> extends BaseTopAdsDatePickerAc
         }
     }
 
-    protected void onDatePickerChoose(int selectionDatePickerType, int selectionDatePeriodIndex){
+    protected void onDatePickerChoose(int selectionDatePickerType, int selectionDatePeriodIndex) {
 
-    };
+    }
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(this, startDate, endDate);

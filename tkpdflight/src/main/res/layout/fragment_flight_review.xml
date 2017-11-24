@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_submit"
+        android:layout_alignParentTop="true">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_200"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_med">
+
+                <TextView
+                    style="@style/TextView.Caption.BlackSecondary"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/review_time"
+                    android:text="@string/flight_label_finish_review_time" />
+
+                <TextView
+                    android:id="@+id/review_time"
+                    style="@style/TextView.Body1.Bold"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    tools:text="2 Menit 59 Detik" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextView.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_med"
+                    android:background="@drawable/bg_stroke_dash_green_flight"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/flight_label_warn_to_check_again" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_med">
+
+                    <TextView
+                        style="@style/TextView.Title.Bold"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/review_detail_departure_flight"
+                        android:text="@string/flight_label_departure_flight" />
+
+                    <TextView
+                        android:id="@+id/review_detail_departure_flight"
+                        style="@style/TextView.Body1.Green.Bold"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        tools:text="Detail" />
+                </RelativeLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_departure_flight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_med"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_med">
+
+                    <TextView
+                        style="@style/TextView.Title.Bold"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/review_detail_return_flight"
+                        android:text="@string/flight_label_return_flight" />
+
+                    <TextView
+                        android:id="@+id/review_detail_return_flight"
+                        style="@style/TextView.Body1.Green.Bold"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        tools:text="Detail" />
+                </RelativeLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_return_flight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_med"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextView.Title.Bold"
+                    android:padding="@dimen/padding_med"
+                    android:text="@string/flight_label_passenger_data" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_data_passenger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+
+            <com.tokopedia.design.voucher.VoucherCartView
+                android:id="@+id/voucher_check_view"
+                android:layout_marginTop="@dimen/margin_med"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.tokopedia.design.voucher.VoucherCartView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_med"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextView.Title.Bold"
+                    android:padding="@dimen/padding_med"
+                    android:text="@string/flight_label_detail_price" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_detail_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_med">
+
+                    <TextView
+                        style="@style/TextView.Body1.Bold"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/total_price"
+                        android:text="@string/flight_label_price_total" />
+
+                    <TextView
+                        android:id="@+id/total_price"
+                        style="@style/TextView.Title.Bold"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        tools:text="Rp. 500.0000" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/button_submit"
+        style="@style/Button.Submit.Orange"
+        android:layout_alignParentBottom="true"
+        android:text="@string/flight_label_continued_payment" />
+</RelativeLayout>
+

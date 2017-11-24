@@ -1,0 +1,180 @@
+apply plugin: 'com.android.application'
+
+def getDpiId(String density) {
+
+    def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
+    if (density != null)
+        return DPI_ID.get(density);
+    return 0;
+}
+
+def getAPKArchiveFolder(variant) {
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+}
+
+def allowSplit() {
+    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+            !project.hasProperty('tkpdBuildType');
+}
+
+def allowDistribution() {
+    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
+    }
+    return "false";
+}
+
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+
+def renameAPKFile(variant, density, versionCode) {
+
+    def fileName = variant.name.toUpperCase()
+    fileName += "-" + variant.mergedFlavor.versionName;
+    fileName += "-V" + versionCode;
+    fileName += "-" + density;
+    fileName += ".apk";
+    return fileName;
+}
+
+def archiveAPK(variant, output) {
+
+    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+    def originZipAlignedApkFile = output.outputFile;
+    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
+    copy {
+        from "$originZipAlignedApkFile"
+        into getAPKArchiveFolder(variant)
+        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
+    }
+}
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
+android {
+
+    project.ext {
+        defaultVersionCode = 212001301;
+        defaultVersionName = "2.13";
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion '25'
+    useLibrary 'org.apache.http.legacy'
+    sourceSets {
+
+        packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+        }
+
+        main {
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
+        }
+
+        instrumentTest.setRoot('tests')
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            zipAlignEnabled false
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", "true"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", "true"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
+            ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+            if (allowSplit()) {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                    }
+                    variant.assemble.doLast {
+                        variant.outputs.each { output ->
+                            if (output.zipAlign) {
+                                archiveAPK(variant, output);
+                            }
+                        }
+                    }
+                }
+            } else {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
+                    }
+                }
+            }
+        }
+    }
+
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled = true
+        applicationId "com.tokopedia.flightapp"
+        versionCode getTkpdVersionCode()
+        versionName getTkpdVersionName()
+        vectorDrawables.useSupportLibrary = true
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+        packagingOptions {
+            exclude "lib/arm64-v8a/libgnustl_shared.so"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+
+}
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile rootProject.ext.supportLibDependencies.design
+    compile project(':tkpdflight')
+}

@@ -1,27 +1,14 @@
 package com.tokopedia.core.util;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
 
 /**
  * Created by Nisie on 2/26/16.
  */
-abstract public class DataBinder<T extends RecyclerView.ViewHolder> {
+@Deprecated
+public abstract class DataBinder<T extends RecyclerView.ViewHolder> extends com.tokopedia.abstraction.base.view.adapter.binder.DataBinder<T> {
 
-    private DataBindAdapter mDataBindAdapter;
-
-    public DataBinder(DataBindAdapter dataBindAdapter) {
-        mDataBindAdapter = dataBindAdapter;
+    public DataBinder(com.tokopedia.abstraction.base.view.adapter.binder.DataBindAdapter dataBindAdapter) {
+        super(dataBindAdapter);
     }
-
-    abstract public T newViewHolder(ViewGroup parent);
-
-    abstract public void bindViewHolder(T holder, int position);
-
-    abstract public int getItemCount();
-
-    public final void notifyDataSetChanged() {
-        mDataBindAdapter.notifyDataSetChanged();
-    }
-
 }

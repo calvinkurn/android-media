@@ -12,6 +12,7 @@
     <dimen name="font_body1">14sp</dimen>
     <dimen name="font_caption">12sp</dimen>
     <dimen name="font_button">14sp</dimen>
+    <dimen name="font_paragraph_small">10sp</dimen>
 
     <dimen name="font_loading_height_display4">112dp</dimen>
     <dimen name="font_loading_height_display3">56dp</dimen>
@@ -62,6 +63,10 @@
     <dimen name="padding_med">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
 
+    <dimen name="small_icon_size">24dp</dimen>
+    <dimen name="icon_size">36dp</dimen>
+    <dimen name="large_icon_size">48dp</dimen>
+
     <dimen name="text_input_margin_offset">-4dp</dimen>
     <dimen name="spinner_decimal_spinner_width">80dp</dimen>
 
@@ -73,9 +78,7 @@
 
     <dimen name="image_smiley_size">35dp</dimen>
 
-    <dimen name="price_seekbar_button_size">30dp</dimen>
-    <dimen name="price_range_separator_margin">16dp</dimen>
-    <dimen name="deletable_item_button_size">30dp</dimen>
+    <dimen name="price_seekbar_button_size">@dimen/image_width_s</dimen>
     <dimen name="deletable_item_max_width">78dp</dimen>
     <dimen name="deletable_item_max_height">14dp</dimen>
     <dimen name="empty_search_result_icon_height">145dp</dimen>
@@ -86,4 +89,13 @@
     <dimen name="alphabetical_sidebar_magnifier_padding">10dp</dimen>
     <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
     <dimen name="alphabetical_section_header_padding">16dp</dimen>
+
+    <dimen name="lv_min_title_width">100dp</dimen>
+
+    <dimen name="empty_min_width">200dp</dimen>
+    <dimen name="empty_max_width">250dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 </resources>

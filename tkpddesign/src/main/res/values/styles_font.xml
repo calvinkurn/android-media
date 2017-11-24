@@ -131,6 +131,9 @@
     <style name="TextView.Caption.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
+    <style name="TextView.Caption.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="TextView.Caption.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
@@ -148,6 +151,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
     <style name="TextView.Button.MediumGreen">
-        <item name="android:textColor">@color/medium_green</item>
+        <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
 </resources>
