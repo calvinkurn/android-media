@@ -323,7 +323,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         if (getDataSize() == 0) {
             return 1;
         } else {
-            return getDataSize() + super.getItemCount();
+            return getDataSize() + loading;
         }
     }
 
