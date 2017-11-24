@@ -183,9 +183,10 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    public void loadData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
+    public void loadData(final SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams) {
         RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, true);
         enrichWithFilterAndSortParams(requestParams);
+        enrichWithForceSearchParam(requestParams, isForceSearch);
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
@@ -246,4 +247,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 });
     }
 
+    private void enrichWithForceSearchParam(RequestParams requestParams, boolean isForceSearch) {
+        requestParams.putBoolean(BrowseApi.REFINED, isForceSearch);
+    }
 }
