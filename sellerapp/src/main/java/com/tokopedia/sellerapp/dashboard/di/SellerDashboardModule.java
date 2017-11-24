@@ -13,6 +13,8 @@ import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopChatNotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
@@ -23,7 +25,6 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
@@ -156,8 +157,21 @@ public class SellerDashboardModule {
     @Provides
     TopChatNotificationUseCase provideTopChatNotificationUseCase(ThreadExecutor threadExecutor,
                                                                  PostExecutionThread postExecutionThread,
+
                                                                  NotificationRepository notificationRepository) {
         return new TopChatNotificationUseCase(threadExecutor, postExecutionThread,
                 notificationRepository);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    NewNotificationUseCase provideNewNotificationUseCase(ThreadExecutor threadExecutor,
+                                                         PostExecutionThread postExecutionThread,
+                                                         NotificationUseCase
+                                                                 notificationUseCase,
+                                                         TopChatNotificationUseCase
+                                                                 topChatNotificationUseCase) {
+        return new NewNotificationUseCase(threadExecutor, postExecutionThread,
+                notificationUseCase, topChatNotificationUseCase);
     }
 }
