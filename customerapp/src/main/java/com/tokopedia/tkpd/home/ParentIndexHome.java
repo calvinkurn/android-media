@@ -178,6 +178,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
+        checkIsHaveApplinkComeFromDeeplink(getIntent());
     }
 
     @Override
@@ -261,7 +262,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         t.start();
 
         checkAppUpdate();
-        checkIsHaveApplinkComeFromDeeplink();
+        checkIsHaveApplinkComeFromDeeplink(getIntent());
     }
 
     @Override
@@ -766,9 +767,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
     }
 
-    private void checkIsHaveApplinkComeFromDeeplink() {
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(HomeRouter.EXTRA_APPLINK))) {
-            String applink = getIntent().getStringExtra(HomeRouter.EXTRA_APPLINK);
+    private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
+        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
+            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
+            if (!isPausing())
             ((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
         }
     }
