@@ -197,6 +197,10 @@ android {
     }
 
     productFlavors {
+        staging {
+
+        }
+
         live {
 
         }
@@ -206,14 +210,12 @@ android {
         }
     }
 
-//    variantFilter { variant ->
-//        def names = variant.flavors*.name
-//        // To check for a certain build type, use variant.buildType.name == "<buildType>"
-//        if (names.contains("staging") && names.contains("demo")) {
-//            // Gradle ignores any variants that satisfy the conditions above.
-//            setIgnore(true)
-//        }
-//    }
+    variantFilter { variant ->
+
+        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
+            variant.setIgnore(true);
+        }
+    }
 }
 
 dependencies {

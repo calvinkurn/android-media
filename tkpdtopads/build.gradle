@@ -85,6 +85,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
+    compile rootProject.ext.miscDependencies.chips
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

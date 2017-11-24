@@ -28,7 +28,7 @@
                 app:subtitleTextAppearance="@style/ToolbarSubtitleText"
                 app:titleTextAppearance="@style/ToolbarText" />
 
-            <include layout="@layout/partial_base_tab_white_indicator" />
+            <include layout="@layout/partial_base_tab_layout_white" />
         </android.support.design.widget.AppBarLayout>
 
 
