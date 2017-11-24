@@ -73,11 +73,6 @@ public class FlightSearchActivity extends BaseSimpleActivity
     }
 
     @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
     protected Fragment getNewFragment() {
         return FlightSearchFragment.newInstance(passDataViewModel);
     }
