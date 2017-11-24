@@ -16,6 +16,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCa
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetShopUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.ToggleFavoriteActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragmentView;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
@@ -33,7 +34,7 @@ import rx.Subscriber;
  * Created by henrypriyono on 10/13/17.
  */
 
-public class ShopListPresenterImpl extends BaseDaggerPresenter<ShopListFragmentView> implements ShopListPresenter {
+public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<ShopListFragmentView> implements ShopListPresenter {
 
     @Inject
     GetShopUseCase getShopUseCase;
@@ -87,11 +88,12 @@ public class ShopListPresenterImpl extends BaseDaggerPresenter<ShopListFragmentV
     }
 
     @Override
-    public void requestDynamicFilter() {
-        getDynamicFilterUseCase.execute(getParamDynamicFilterParam(), new GetDynamicFilterSubscriber(getView()));
+    protected void getFilterFromNetwork(RequestParams requestParams) {
+        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
     }
 
-    private RequestParams getParamDynamicFilterParam() {
+    @Override
+    protected RequestParams getDynamicFilterParam() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SHOP);
@@ -104,23 +106,12 @@ public class ShopListPresenterImpl extends BaseDaggerPresenter<ShopListFragmentV
     @Override
     public void loadShop(SearchParameter searchParameter,
                          ShopListPresenterImpl.LoadMoreListener loadMoreListener) {
-        getShopUseCase.execute(
-                enrichWithFilterAndSortParam(GetShopUseCase.createInitializeSearchParam(searchParameter)),
-                createSubscriber(loadMoreListener)
-        );
-    }
 
-    private RequestParams enrichWithFilterAndSortParam(RequestParams requestParams) {
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
-        if (getView().getExtraFilter() != null) {
-            requestParams.putAll(getView().getExtraFilter());
-        }
-        return requestParams;
+        RequestParams requestParams
+                = enrichWithFilterAndSortParams(GetShopUseCase.createInitializeSearchParam(searchParameter));
+        removeDefaultCategoryParam(requestParams);
+
+        getShopUseCase.execute(requestParams, createSubscriber(loadMoreListener));
     }
 
     private Subscriber<ShopViewModel> createSubscriber(final LoadMoreListener loadMoreListener) {

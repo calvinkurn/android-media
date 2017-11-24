@@ -422,7 +422,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private void resetSelectedCategory() {
-        selectedCategoryId = BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC;
+        selectedCategoryId = null;
         selectedCategoryRootId = null;
         selectedCategoryName = null;
     }

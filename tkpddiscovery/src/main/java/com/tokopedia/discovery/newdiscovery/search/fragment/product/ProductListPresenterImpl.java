@@ -20,6 +20,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCa
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
@@ -40,7 +41,7 @@ import javax.inject.Inject;
  * Created by henrypriyono on 10/11/17.
  */
 
-public class ProductListPresenterImpl extends BaseDaggerPresenter<ProductListFragmentView> implements ProductListPresenter {
+public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl<ProductListFragmentView> implements ProductListPresenter {
 
     @Inject
     GetProductUseCase getProductUseCase;
@@ -69,17 +70,8 @@ public class ProductListPresenterImpl extends BaseDaggerPresenter<ProductListFra
     }
 
     @Override
-    public void requestDynamicFilter(HashMap<String, String> additionalParams) {
-        RequestParams params = getDynamicFilterParam();
-        params = enrichWithFilterAndSortParams(params);
-        removeDefaultCategoryParam(params);
-        getDynamicFilterUseCase.execute(enrichWithAdditionalParams(params, additionalParams), new GetDynamicFilterSubscriber(getView()));
-    }
-
-    private void removeDefaultCategoryParam(RequestParams params) {
-        if (params.getString(BrowseApi.SC, "").equals(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC)) {
-            params.clearValue(BrowseApi.SC);
-        }
+    protected void getFilterFromNetwork(RequestParams requestParams) {
+        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
     }
 
     @Override
@@ -120,7 +112,8 @@ public class ProductListPresenterImpl extends BaseDaggerPresenter<ProductListFra
         requestDynamicFilter(new HashMap<String, String>());
     }
 
-    private RequestParams getDynamicFilterParam() {
+    @Override
+    protected RequestParams getDynamicFilterParam() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_PRODUCT);
@@ -132,25 +125,6 @@ public class ProductListPresenterImpl extends BaseDaggerPresenter<ProductListFra
         } else {
             requestParams.putString(BrowseApi.SC, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC);
         }
-        return requestParams;
-    }
-
-    private RequestParams enrichWithFilterAndSortParams(RequestParams requestParams) {
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
-        if (getView().getExtraFilter() != null) {
-            requestParams.putAll(getView().getExtraFilter());
-        }
-        return requestParams;
-    }
-
-    private RequestParams enrichWithAdditionalParams(RequestParams requestParams,
-                                                     HashMap<String, String> additionalParams) {
-        requestParams.putAll(additionalParams);
         return requestParams;
     }
 
