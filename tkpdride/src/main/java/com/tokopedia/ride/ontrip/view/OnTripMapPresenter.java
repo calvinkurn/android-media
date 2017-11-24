@@ -54,6 +54,7 @@ import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.UpdateDestination;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
@@ -187,7 +188,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onNext(Product product) {
                 if (isViewAttached()) {
                     getView().saveActiveProductName(product.getDisplayName());
-                    if (product.getDisplayName().equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))) {
+                    if (RideUtils.isUberMoto(product.getDisplayName())) {
                         getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
                     } else {
                         getView().setDriverIcon(rideRequest, R.drawable.car_map_icon);
@@ -804,10 +805,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         if (isViewAttached()) {
             if (activeRideRequest == null) {
                 if (!TextUtils.isEmpty(getView().getActiveProductNameInCache())) {
-                    if (getView()
-                            .getActiveProductNameInCache()
-                            .equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))
-                            ) {
+                    if (RideUtils.isUberMoto(getView().getActiveProductNameInCache())) {
                         getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
                     } else {
                         getView().setDriverIcon(rideRequest, R.drawable.car_map_icon);
@@ -891,10 +889,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void detachView() {
-        createRideRequestUseCase.unsubscribe();
-        getOverviewPolylineUseCase.unsubscribe();
-        getRideRequestMapUseCase.unsubscribe();
-        updateRideRequestUseCase.unsubscribe();
+        //createRideRequestUseCase.unsubscribe();
+        //getOverviewPolylineUseCase.unsubscribe();
+        //getRideRequestMapUseCase.unsubscribe();
+        //updateRideRequestUseCase.unsubscribe();
         super.detachView();
     }
 
@@ -1081,7 +1079,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void onPause() {
-        RxUtils.unsubscribeIfNotNull(subscription);
+        //RxUtils.unsubscribeIfNotNull(subscription);
     }
 
     @Override

@@ -112,6 +112,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     TextView pendingFareValueTextView;
     @BindView(R2.id.fare_sep)
     View seperator;
+    @BindView(R2.id.tv_trip_id)
+    TextView tripIdTextView;
 
     ProgressDialog mProgressDialog;
 
@@ -229,8 +231,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @Override
     public void renderHistory(RideHistoryViewModel rideHistoryViewModel) {
-        System.out.println("Vishal renderHistory " + rideHistory.getStartAddress());
-
+        tripIdTextView.setText(getString(R.string.prefx_trip_id) + " " + rideHistory.getRequestId());
         requestTimeTextView.setText(RideUtils.convertTime(rideHistory.getRequestTime()));
         rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());

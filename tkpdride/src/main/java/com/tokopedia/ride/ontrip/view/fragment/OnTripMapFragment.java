@@ -80,6 +80,7 @@ import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.PendingPayment;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
@@ -864,7 +865,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         if (confirmBookingViewModel != null) {
             markerId = R.drawable.car_map_icon;
-            markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
+            markerId = (RideUtils.isUberMoto(confirmBookingViewModel.getProductDisplayName())) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
         }
 
         MarkerOptions options;

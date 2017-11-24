@@ -62,7 +62,6 @@
     <string name="auto_complete_saved_addresses">Recent Addresses</string>
     <string name="apply_promo_empty_promo_error">Field must not empty</string>
     <string name="contact_driver">Contact Driver</string>
-    <string name="uber_moto_display_name">uberMotor</string>
     <string name="apply_promo_promo_code">Promo Code :</string>
     <string name="apply_promo_read_promo_details">Read offer details</string>
     <string name="apply_promo_code_here">Here</string>
@@ -190,4 +189,5 @@
     <string name="interrupt_aut_debit_proceed">Proceed</string>
     <string name="allow_auto_debit">ALLOW AUTO DEBIT</string>
     <string name="toolbar_title_auto_debit">Auto Debit</string>
+    <string name="prefx_trip_id">Trip Id:</string>
 </resources>

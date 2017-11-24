@@ -82,4 +82,13 @@ public class RideUtils {
             return currency + " " + number;
         }
     }
+
+    public static boolean isUberMoto(String productDisplayName) {
+        boolean isMoto = false;
+        if (productDisplayName != null) {
+            isMoto = productDisplayName.toLowerCase().contains("ubermo");
+        }
+
+        return isMoto;
+    }
 }
