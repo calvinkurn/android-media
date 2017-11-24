@@ -280,7 +280,7 @@ public class FCMCacheManager {
         LocalCacheHandler.clearSingleCacheKey(context, GCM_STORAGE, GCM_ID_TIMESTAMP);
     }
 
-    public static void checkAndSyncFcmId(Context context) {
+    public static void checkAndSyncFcmId(final Context context) {
         if (FCMCacheManager.isFcmExpired(context)) {
             // force FCM token refresh to be called
             Observable.defer(new Func0<Observable<Boolean>>() {

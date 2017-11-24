@@ -49,7 +49,6 @@ public class DashboardActivity extends DrawerPresenterActivity
     protected void onResume() {
         super.onResume();
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        new GCMHandler(this).actionRegisterOrUpdateDevice(this);
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 
