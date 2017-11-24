@@ -33,7 +33,7 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionCancelResolutionClick();
 
-    void setOnActionAcceptProductClick();
+    void setOnActionFinishResolutionClick();
 
     void setOnActionAcceptSolutionClick();
 

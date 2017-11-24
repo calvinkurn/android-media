@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -91,11 +92,15 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     ProveView proveView;
     HistoryView historyView;
     TextView tvNextStep;
-    @Inject
-    DetailResCenterFragmentImpl presenter;
+
     private TkpdProgressDialog normalLoading;
+    private Dialog resCenterDialog;
+
     private String resolutionID;
     private DetailViewModel viewData;
+
+    @Inject
+    DetailResCenterFragmentImpl presenter;
 
     public static DetailResCenterFragment createInstance(String resolutionID) {
         DetailResCenterFragment fragment = new DetailResCenterFragment();
@@ -187,18 +192,18 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     protected void initView(View view) {
         loading = view.findViewById(R.id.loading);
         mainView = view.findViewById(R.id.main_view);
-        buttonView = (ButtonView) view.findViewById(R.id.button_view);
-        cvNextStep = (CardView) view.findViewById(R.id.cv_next_step);
-        awbReturView = (AwbReturView) view.findViewById(R.id.awb_view);
-        addressReturView = (AddressReturView) view.findViewById(R.id.address_retur_view);
-        detailView = (DetailView) view.findViewById(R.id.detail_view);
-        timeView = (TimeView) view.findViewById(R.id.time_view);
-        tvNextStep = (TextView) view.findViewById(R.id.tv_next_step);
-        listProductView = (ListProductView) view.findViewById(R.id.product_view);
-        solutionView = (SolutionView) view.findViewById(R.id.solution_view);
-        proveView = (ProveView) view.findViewById(R.id.prove_view);
-        historyView = (HistoryView) view.findViewById(R.id.history_view);
-        cvDiscussion = (CardView) view.findViewById(R.id.cv_discussion);
+        buttonView = view.findViewById(R.id.button_view);
+        cvNextStep = view.findViewById(R.id.cv_next_step);
+        awbReturView = view.findViewById(R.id.awb_view);
+        addressReturView = view.findViewById(R.id.address_retur_view);
+        detailView = view.findViewById(R.id.detail_view);
+        timeView = view.findViewById(R.id.time_view);
+        tvNextStep = view.findViewById(R.id.tv_next_step);
+        listProductView = view.findViewById(R.id.product_view);
+        solutionView = view.findViewById(R.id.solution_view);
+        proveView = view.findViewById(R.id.prove_view);
+        historyView = view.findViewById(R.id.history_view);
+        cvDiscussion = view.findViewById(R.id.cv_discussion);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         cvNextStep.setVisibility(View.GONE);
@@ -421,75 +426,44 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionCancelResolutionClick() {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.layout_dialog_cancel_complain);
-        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
-        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
-        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
-        Button btnAccept = (Button) dialog.findViewById(R.id.btn_cancel_solution);
-        tvSolution.setText(MethodChecker.fromHtml(getViewData().getButtonData().getCancelDialogText()));
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.cancelResolution();
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        showActionDialog(getViewData().getButtonData().getCancelLabel(),
+                getViewData().getButtonData().getCancelDialogText(),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.cancelResolution();
+                        if(resCenterDialog!= null)
+                            resCenterDialog.dismiss();
+                    }
+                });
     }
 
     @Override
-    public void setOnActionAcceptProductClick() {
-        showConfirmationDialog(getActivity().getString(R.string.msg_rescen_finish),
-                new ConfirmationDialog.Listener() {
+    public void setOnActionFinishResolutionClick() {
+        showActionDialog(getViewData().getButtonData().getFinishComplaintLabel(),
+                getViewData().getButtonData().getFinishComplaintDialogText(),
+                new View.OnClickListener() {
                     @Override
-                    public void onSubmitButtonClick() {
+                    public void onClick(View v) {
                         presenter.finishReturProduct();
+                        if(resCenterDialog!= null)
+                            resCenterDialog.dismiss();
                     }
                 });
     }
 
     @Override
     public void setOnActionAcceptSolutionClick() {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.layout_dialog_accept_solution);
-        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
-        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
-        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
-        Button btnAccept = (Button) dialog.findViewById(R.id.btn_accept_solution);
-        tvSolution.setText(MethodChecker.fromHtml(getViewData().getButtonData().getAskHelpDialogText()));
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.acceptSolution();
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        showActionDialog(getViewData().getButtonData().getAcceptLabel(),
+                getViewData().getButtonData().getAcceptDialogText(),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.acceptSolution();
+                        if(resCenterDialog!= null)
+                            resCenterDialog.dismiss();
+                    }
+                });
     }
 
     @Override
@@ -518,33 +492,16 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionHelpClick() {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.layout_dialog_ask_help);
-        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
-        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
-        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
-        Button btnAccept = (Button) dialog.findViewById(R.id.btn_yes);
-        tvSolution.setText(MethodChecker.fromHtml(getViewData().getButtonData().getAskHelpDialogText()));
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        btnAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.askHelpResolution();
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        showActionDialog(getViewData().getButtonData().getAskHelpLabel(),
+                getViewData().getButtonData().getAskHelpDialogText(),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.askHelpResolution();
+                        if(resCenterDialog!= null)
+                            resCenterDialog.dismiss();
+                    }
+                });
     }
 
     @Override
@@ -653,8 +610,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     private RelativeLayout.LayoutParams getButtonInitParams() {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics()));
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,130, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,60, getResources().getDisplayMetrics()));
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.setMargins(
                 0,
@@ -729,6 +686,33 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void hideTimeTicker() {
         timeView.setVisibility(View.GONE);
+    }
+
+    private void showActionDialog(String title, String solution, View.OnClickListener action) {
+        resCenterDialog = new Dialog(getActivity());
+        resCenterDialog.setContentView(R.layout.layout_rescenter_dialog);
+        TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
+        TextView tvSolution = resCenterDialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = resCenterDialog.findViewById(R.id.iv_close);
+        Button btnBack = resCenterDialog.findViewById(R.id.btn_back);
+        Button btnAccept = resCenterDialog.findViewById(R.id.btn_yes);
+        String newTitle = title + " ?";
+        tvTitle.setText(newTitle);
+        tvSolution.setText(MethodChecker.fromHtml(solution));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resCenterDialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resCenterDialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(action);
+        resCenterDialog.show();
     }
 
     @Override
