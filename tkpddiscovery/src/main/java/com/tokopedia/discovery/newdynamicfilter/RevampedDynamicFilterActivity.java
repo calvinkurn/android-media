@@ -187,7 +187,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                     @Override
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
-                        ToastNetworkHandler.showToast(RevampedDynamicFilterActivity.this, getString(R.string.error_get_dynamic_filter));
+                        ToastNetworkHandler.showToast(RevampedDynamicFilterActivity.this, getString(R.string.error_get_local_dynamic_filter));
                         finish();
                     }
 
