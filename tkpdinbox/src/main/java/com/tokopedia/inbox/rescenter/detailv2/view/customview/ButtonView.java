@@ -1,16 +1,11 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customview;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
@@ -25,10 +20,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
 public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView> {
 
     private ButtonData buttonData;
-    private View actionResponse;
-    private BottomSheetDialog dialog;
     private TextView actionEdit;
-    private TextView actionAcceptProduct;
+    private TextView actionFinishResolution;
     private TextView actionAcceptSolutionVertical;
     private TextView actionHelp;
     private TextView actionCancelResolutionVertical;
@@ -50,7 +43,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
 
     @Override
     protected int getLayoutView() {
-        return R.layout.layout_rescenter_button_view;
+        return R.layout.layout_rescenter_button_bottom_sheet_view;
     }
 
     @Override
@@ -63,7 +56,15 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
-        actionResponse = view.findViewById(R.id.action_response);
+
+        actionEdit = view.findViewById(R.id.action_edit_solution);
+        actionAcceptSolutionVertical = view.findViewById(R.id.action_accept_solution);
+        actionFinishResolution = view.findViewById(R.id.action_accept_product);
+        actionHelp = view.findViewById(R.id.action_help);
+        actionCancelResolutionVertical = view.findViewById(R.id.action_cancel_resolution);
+        actionInputAwbNumber = view.findViewById(R.id.action_input_awb_number);
+        actionInputAddress = view.findViewById(R.id.action_input_address);
+
     }
 
     @Override
@@ -74,33 +75,26 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     @Override
     public void renderData(@NonNull ButtonData data) {
         setButtonData(data);
+        setButtonText(data);
         setButtonSheetDialog();
         setVisibility(isAnyButtonVisible() ? VISIBLE : GONE);
         listener.setOnDiscussionButtonPosition(isAnyButtonVisible());
-        actionResponse.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.show();
-            }
-        });
+    }
+
+    private void setButtonText(ButtonData data) {
+        actionEdit.setText(data.getEditLabel());
+        actionFinishResolution.setText(data.getFinishComplaintLabel());
+        actionHelp.setText(data.getAskHelpLabel());
+        actionAcceptSolutionVertical.setText(data.getAcceptLabel());
+        actionCancelResolutionVertical.setText(data.getCancelLabel());
+        actionInputAwbNumber.setText(data.getInputAwbLabel());
+        actionInputAddress.setText(data.getInputAddressLabel());
     }
 
     private void setButtonSheetDialog() {
-        dialog = new BottomSheetDialog(getContext());
-        View bottomSheetView = ((Activity) getContext()).getLayoutInflater()
-                .inflate(R.layout.layout_rescenter_button_bottom_sheet_view, null);
-
-        actionEdit = (TextView) bottomSheetView.findViewById(R.id.action_edit_solution);
-        actionAcceptSolutionVertical = (TextView) bottomSheetView.findViewById(R.id.action_accept_solution);
-        actionAcceptProduct = (TextView) bottomSheetView.findViewById(R.id.action_accept_product);
-        actionHelp = (TextView) bottomSheetView.findViewById(R.id.action_help);
-        actionCancelResolutionVertical = (TextView) bottomSheetView.findViewById(R.id.action_cancel_resolution);
-        actionInputAwbNumber = (TextView) bottomSheetView.findViewById(R.id.action_input_awb_number);
-        actionInputAddress = (TextView) bottomSheetView.findViewById(R.id.action_input_address);
-        View separator = bottomSheetView.findViewById(R.id.separator);
 
         actionEdit.setOnClickListener(new ActionEditSolutionClickListener());
-        actionAcceptProduct.setOnClickListener(new ActionAcceptProductClickListener());
+        actionFinishResolution.setOnClickListener(new ActionFinishResolutionClickListener());
         actionHelp.setOnClickListener(new ActionHelpClickListener());
         actionAcceptSolutionVertical.setOnClickListener(new ActionAcceptSolutionClickListener());
         actionCancelResolutionVertical.setOnClickListener(new ActionCancelResolutionClickListener());
@@ -112,7 +106,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                         VISIBLE : GONE
         );
 
-        actionAcceptProduct.setVisibility(
+        actionFinishResolution.setVisibility(
                 canAcceptProduct() ?
                         VISIBLE : GONE
         );
@@ -142,13 +136,8 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                         VISIBLE : GONE
         );
 
-        separator.setVisibility(
-                actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE ?
-                        VISIBLE : GONE
-        );
-
         if (actionInputAwbNumber.getVisibility() == VISIBLE ||
-                actionAcceptProduct.getVisibility() == VISIBLE ||
+                actionFinishResolution.getVisibility() == VISIBLE ||
                 actionAcceptSolutionVertical.getVisibility() == VISIBLE ||
                 actionInputAddress.getVisibility() == VISIBLE) {
             actionCancelResolutionVertical.setBackgroundResource(R.drawable.btn_transparent_disable);
@@ -158,7 +147,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
             actionCancelResolutionVertical.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         }
 
-        if (actionAcceptProduct.getVisibility() == VISIBLE ||
+        if (actionFinishResolution.getVisibility() == VISIBLE ||
                 actionAcceptSolutionVertical.getVisibility() == VISIBLE) {
             actionInputAwbNumber.setBackgroundResource(R.drawable.btn_transparent_disable);
             actionInputAwbNumber.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
@@ -166,24 +155,11 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
             actionInputAwbNumber.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
             actionInputAwbNumber.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         }
-
-        dialog.setContentView(bottomSheetView);
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
-                FrameLayout frameLayout = (FrameLayout) dialog.findViewById(R.id.design_bottom_sheet);
-                if (frameLayout != null) {
-                    BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
-                    behavior.setHideable(false);
-                }
-            }
-        });
     }
 
     private boolean isAnyButtonVisible() {
         return actionEdit.getVisibility() == VISIBLE ||
-                actionAcceptProduct.getVisibility() == VISIBLE ||
+                actionFinishResolution.getVisibility() == VISIBLE ||
                 actionAcceptSolutionVertical.getVisibility() == VISIBLE ||
                 actionCancelResolutionVertical.getVisibility() == VISIBLE ||
                 actionHelp.getVisibility() == VISIBLE ||
@@ -191,12 +167,12 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                 actionInputAddress.getVisibility() == VISIBLE;
     }
 
-    public void setButtonData(ButtonData buttonData) {
-        this.buttonData = buttonData;
-    }
-
     public ButtonData getButtonData() {
         return buttonData;
+    }
+
+    public void setButtonData(ButtonData buttonData) {
+        this.buttonData = buttonData;
     }
 
     private boolean canAcceptProduct() {
@@ -254,10 +230,9 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private class ActionAcceptSolutionClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
-            dialog.dismiss();
             if (canAcceptSolution() && !canAcceptAdminSolution()) {
                 listener.setOnActionAcceptSolutionClick();
-            } else if (canAcceptAdminSolution() && !canAcceptSolution()){
+            } else if (canAcceptAdminSolution() && !canAcceptSolution()) {
                 listener.setOnActionAcceptAdminSolutionClick();
             }
         }
@@ -266,7 +241,6 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private class ActionEditSolutionClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
-            dialog.dismiss();
             if (canEdit() && !canAppealSolution()) {
                 listener.setOnActionEditSolutionClick();
             } else if (canAppealSolution() && !canEdit()) {
@@ -275,18 +249,16 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         }
     }
 
-    private class ActionAcceptProductClickListener implements OnClickListener {
+    private class ActionFinishResolutionClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
-            dialog.dismiss();
-            listener.setOnActionAcceptProductClick();
+            listener.setOnActionFinishResolutionClick();
         }
     }
 
     private class ActionHelpClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
-            dialog.dismiss();
             listener.setOnActionHelpClick();
         }
     }
@@ -294,7 +266,6 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private class ActionInputAwbNumberClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
-            dialog.dismiss();
             listener.setOnActionInputAwbNumberClick();
         }
     }
@@ -303,7 +274,6 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
 
         @Override
         public void onClick(View view) {
-            dialog.dismiss();
             listener.setOnActionCancelResolutionClick();
         }
     }
@@ -311,7 +281,6 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private class ActionInputAddressClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
-            dialog.dismiss();
             listener.setOnActionInputAddressClick();
         }
     }

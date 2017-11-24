@@ -9,6 +9,17 @@ import android.os.Parcelable;
  */
 public class ShopData implements Parcelable {
 
+    public static final Parcelable.Creator<ShopData> CREATOR = new Parcelable.Creator<ShopData>() {
+        @Override
+        public ShopData createFromParcel(Parcel source) {
+            return new ShopData(source);
+        }
+
+        @Override
+        public ShopData[] newArray(int size) {
+            return new ShopData[size];
+        }
+    };
     private int id;
     private String name;
     private PictureData picture;
@@ -17,6 +28,12 @@ public class ShopData implements Parcelable {
         this.id = id;
         this.name = name;
         this.picture = picture;
+    }
+
+    protected ShopData(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.picture = in.readParcelable(PictureData.class.getClassLoader());
     }
 
     public int getId() {
@@ -54,22 +71,4 @@ public class ShopData implements Parcelable {
         dest.writeString(this.name);
         dest.writeParcelable(this.picture, flags);
     }
-
-    protected ShopData(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.picture = in.readParcelable(PictureData.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<ShopData> CREATOR = new Parcelable.Creator<ShopData>() {
-        @Override
-        public ShopData createFromParcel(Parcel source) {
-            return new ShopData(source);
-        }
-
-        @Override
-        public ShopData[] newArray(int size) {
-            return new ShopData[size];
-        }
-    };
 }

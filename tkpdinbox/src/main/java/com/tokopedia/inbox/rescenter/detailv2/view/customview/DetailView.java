@@ -109,7 +109,7 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     public void generateDeadlineBackgroundView(View v) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadii(new float[] { 8, 8, 8, 8, 8, 8, 8, 8 });
+        shape.setCornerRadii(new float[]{8, 8, 8, 8, 8, 8, 8, 8});
         shape.setColor(ContextCompat.getColor(getContext(), R.color.colorBlue));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             v.setBackground(shape);

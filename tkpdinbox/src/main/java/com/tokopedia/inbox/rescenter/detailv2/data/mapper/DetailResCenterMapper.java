@@ -45,6 +45,7 @@ import rx.functions.Func1;
  * Created by hangnadi on 3/9/17.
  */
 
+@Deprecated
 public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, DetailResCenter> {
 
     public DetailResCenterMapper() {

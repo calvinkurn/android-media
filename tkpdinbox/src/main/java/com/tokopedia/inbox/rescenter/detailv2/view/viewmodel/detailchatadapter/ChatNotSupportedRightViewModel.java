@@ -3,8 +3,6 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactory;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.CustomerDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ShopDomain;
 
 /**
  * Created by yoasfs on 10/10/17.

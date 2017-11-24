@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 public class ByData implements Parcelable {
 
+    public static final Parcelable.Creator<ByData> CREATOR = new Parcelable.Creator<ByData>() {
+        @Override
+        public ByData createFromParcel(Parcel source) {
+            return new ByData(source);
+        }
+
+        @Override
+        public ByData[] newArray(int size) {
+            return new ByData[size];
+        }
+    };
     private int id;
     private String name;
     private PictureData picture;
@@ -18,6 +29,13 @@ public class ByData implements Parcelable {
         this.name = name;
         this.picture = picture;
         this.role = role;
+    }
+
+    protected ByData(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.picture = in.readParcelable(PictureData.class.getClassLoader());
+        this.role = in.readParcelable(RoleData.class.getClassLoader());
     }
 
     public int getId() {
@@ -64,23 +82,4 @@ public class ByData implements Parcelable {
         dest.writeParcelable(this.picture, flags);
         dest.writeParcelable(this.role, flags);
     }
-
-    protected ByData(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.picture = in.readParcelable(PictureData.class.getClassLoader());
-        this.role = in.readParcelable(RoleData.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<ByData> CREATOR = new Parcelable.Creator<ByData>() {
-        @Override
-        public ByData createFromParcel(Parcel source) {
-            return new ByData(source);
-        }
-
-        @Override
-        public ByData[] newArray(int size) {
-            return new ByData[size];
-        }
-    };
 }

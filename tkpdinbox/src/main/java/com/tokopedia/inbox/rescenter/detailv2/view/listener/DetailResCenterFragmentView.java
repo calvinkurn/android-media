@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.listener;
 
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 
@@ -34,7 +33,7 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionCancelResolutionClick();
 
-    void setOnActionAcceptProductClick();
+    void setOnActionFinishResolutionClick();
 
     void setOnActionAcceptSolutionClick();
 

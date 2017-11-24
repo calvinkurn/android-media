@@ -24,14 +24,13 @@ import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
  */
 
 public class DetailResCenterActivity extends BasePresenterActivity<DetailResCenterPresenter>
-    implements DetailViewListener, HasComponent {
+        implements DetailViewListener, HasComponent {
 
-    private static final String EXTRA_PARAM_RESOLUTION_CENTER_DETAIL = "resolution_id";
-    private static final String TAG_DETAIL_FRAGMENT_RESOLUTION_CENTER = DetailResCenterFragment.class.getSimpleName();
     public static final String PARAM_SHOP_NAME = "shop_name";
     public static final String PARAM_USER_NAME = "user_name";
     public static final String PARAM_IS_SELLER = "is_seller";
-
+    private static final String EXTRA_PARAM_RESOLUTION_CENTER_DETAIL = "resolution_id";
+    private static final String TAG_DETAIL_FRAGMENT_RESOLUTION_CENTER = DetailResCenterFragment.class.getSimpleName();
     private String resolutionID;
     private Fragment detailResCenterFragment;
     private String shopName;
@@ -61,7 +60,6 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
         intent.putExtra(PARAM_IS_SELLER, true);
         return intent;
     }
-
 
 
     @DeepLink(Constants.Applinks.RESCENTER)
@@ -127,9 +125,9 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     protected void initView() {
         presenter.generateDetailResCenterFragment();
         if (isSeller) {
-            toolbar.setTitle("Kompalin dari " + userName);
+            toolbar.setTitle(getString(R.string.complaint_from) + " " + userName);
         } else {
-            toolbar.setTitle("Komplain ke " + shopName);
+            toolbar.setTitle(getString(R.string.complaint_to) + " " + shopName);
         }
         inflateFragment();
     }

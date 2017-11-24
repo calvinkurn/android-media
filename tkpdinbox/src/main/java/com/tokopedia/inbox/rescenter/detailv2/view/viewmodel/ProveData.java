@@ -11,8 +11,27 @@ import java.util.List;
 
 public class ProveData implements Parcelable {
 
+    public static final Parcelable.Creator<ProveData> CREATOR = new Parcelable.Creator<ProveData>() {
+        @Override
+        public ProveData createFromParcel(Parcel source) {
+            return new ProveData(source);
+        }
+
+        @Override
+        public ProveData[] newArray(int size) {
+            return new ProveData[size];
+        }
+    };
     private String remark;
     private List<AttachmentData> attachment;
+
+    public ProveData() {
+    }
+
+    protected ProveData(Parcel in) {
+        this.remark = in.readString();
+        this.attachment = in.createTypedArrayList(AttachmentData.CREATOR);
+    }
 
     public String getRemark() {
         return remark;
@@ -40,24 +59,4 @@ public class ProveData implements Parcelable {
         dest.writeString(this.remark);
         dest.writeTypedList(this.attachment);
     }
-
-    public ProveData() {
-    }
-
-    protected ProveData(Parcel in) {
-        this.remark = in.readString();
-        this.attachment = in.createTypedArrayList(AttachmentData.CREATOR);
-    }
-
-    public static final Parcelable.Creator<ProveData> CREATOR = new Parcelable.Creator<ProveData>() {
-        @Override
-        public ProveData createFromParcel(Parcel source) {
-            return new ProveData(source);
-        }
-
-        @Override
-        public ProveData[] newArray(int size) {
-            return new ProveData[size];
-        }
-    };
 }

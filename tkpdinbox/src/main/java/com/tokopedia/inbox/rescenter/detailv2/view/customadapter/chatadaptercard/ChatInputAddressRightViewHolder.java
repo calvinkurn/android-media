@@ -2,17 +2,16 @@ package com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercar
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.domain.model.AddressDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressRightViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAddressDomain;
 
 /**
@@ -28,6 +27,8 @@ public class ChatInputAddressRightViewHolder extends AbstractViewHolder<ChatInpu
     View layoutDate;
     TextView tvMessage, tvDate, tvTitle;
     ChatProveAdapter adapter;
+    Button btnChangeAddress;
+    FrameLayout ffChangeAddress;
 
     public ChatInputAddressRightViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
@@ -36,12 +37,14 @@ public class ChatInputAddressRightViewHolder extends AbstractViewHolder<ChatInpu
         tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         layoutDate = itemView.findViewById(R.id.layout_date);
         tvDate = (TextView) layoutDate.findViewById(R.id.tv_date);
+        btnChangeAddress = (Button) itemView.findViewById(R.id.btn_change_address);
+        ffChangeAddress = (FrameLayout) itemView.findViewById(R.id.ff_change_address);
     }
 
     @Override
-    public void bind(ChatInputAddressRightViewModel element) {
+    public void bind(final ChatInputAddressRightViewModel element) {
         tvTitle.setText(element.getConversation().getMessage());
-        ConversationAddressDomain addressDomain = element.getConversation().getAddress();
+        final ConversationAddressDomain addressDomain = element.getConversation().getAddress();
         tvMessage.setText(String.format(element.getAddressFormat(),
                 addressDomain.getReceiver(),
                 addressDomain.getAddress(),
@@ -52,6 +55,15 @@ public class ChatInputAddressRightViewHolder extends AbstractViewHolder<ChatInpu
                 addressDomain.getPostalCode()));
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
+        ffChangeAddress.setVisibility(element.getConversation().getButton().getEditAddress() == 1 ?
+                View.VISIBLE : View.GONE);
+
+        btnChangeAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainView.intentToEditAddress(element.getConversation().getResConvId(), addressDomain.getAddressId());
+            }
+        });
     }
 
 }

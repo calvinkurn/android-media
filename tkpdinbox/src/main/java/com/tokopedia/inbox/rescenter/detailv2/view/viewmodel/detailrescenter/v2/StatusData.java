@@ -9,12 +9,28 @@ import android.os.Parcelable;
  */
 public class StatusData implements Parcelable {
 
+    public static final Parcelable.Creator<StatusData> CREATOR = new Parcelable.Creator<StatusData>() {
+        @Override
+        public StatusData createFromParcel(Parcel source) {
+            return new StatusData(source);
+        }
+
+        @Override
+        public StatusData[] newArray(int size) {
+            return new StatusData[size];
+        }
+    };
     private int id;
     private String name;
 
     public StatusData(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    protected StatusData(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
     }
 
     public int getId() {
@@ -43,21 +59,4 @@ public class StatusData implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.name);
     }
-
-    protected StatusData(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-    }
-
-    public static final Parcelable.Creator<StatusData> CREATOR = new Parcelable.Creator<StatusData>() {
-        @Override
-        public StatusData createFromParcel(Parcel source) {
-            return new StatusData(source);
-        }
-
-        @Override
-        public StatusData[] newArray(int size) {
-            return new StatusData[size];
-        }
-    };
 }

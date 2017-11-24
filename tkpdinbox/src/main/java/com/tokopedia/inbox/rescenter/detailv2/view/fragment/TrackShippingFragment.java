@@ -144,6 +144,7 @@ public class TrackShippingFragment extends BaseDaggerFragment implements TrackSh
     @Override
     public void onTrackingSuccess(TrackingDialogViewModel trackingDialogViewModel) {
         hideLoading();
+        //TODO apply data to view and adapter
     }
 
     @Override

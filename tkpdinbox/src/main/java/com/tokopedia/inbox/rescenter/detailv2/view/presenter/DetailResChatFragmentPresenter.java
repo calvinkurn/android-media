@@ -34,7 +34,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressAccept
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressAcceptSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressMigrateVersionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ReplyDiscussionSubscriber;
-import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
@@ -54,14 +53,9 @@ public class DetailResChatFragmentPresenter
 
     public static final int PARAM_MIN_REPLY_CHAR_COUNT = 7;
     public static final int PARAM_MAX_REPLY_CHAR_COUNT = 5000;
-    public static final int PARAM_LIMIT_CONVERSATION= 20;
+    public static final int PARAM_LIMIT_CONVERSATION = 20;
     private static final int MAXIMAL_VIDEO_CONTENT_ALLOW = 1;
-    private String[] extensions = {
-            "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
-    };
-
     DetailResChatFragmentListener.View mainView;
-
     GetResChatUseCase getResChatUseCase;
     GetResChatMoreUseCase getResChatMoreUseCase;
     SendDiscussionUseCase sendDiscussionUseCase;
@@ -73,9 +67,11 @@ public class DetailResChatFragmentPresenter
     EditAddressUseCase editAddressUseCase;
     FinishResolutionUseCase finishResolutionUseCase;
     ImageUploadHandler uploadImageDialog;
-
     String resolutionId;
     Context context;
+    private String[] extensions = {
+            "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
+    };
 
     @Inject
     public DetailResChatFragmentPresenter(GetResChatUseCase getResChatUseCase,

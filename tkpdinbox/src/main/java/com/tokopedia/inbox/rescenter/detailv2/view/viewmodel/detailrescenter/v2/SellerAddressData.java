@@ -9,6 +9,17 @@ import android.os.Parcelable;
  */
 public class SellerAddressData implements Parcelable {
 
+    public static final Parcelable.Creator<SellerAddressData> CREATOR = new Parcelable.Creator<SellerAddressData>() {
+        @Override
+        public SellerAddressData createFromParcel(Parcel source) {
+            return new SellerAddressData(source);
+        }
+
+        @Override
+        public SellerAddressData[] newArray(int size) {
+            return new SellerAddressData[size];
+        }
+    };
     private AddressData address;
     private ByData by;
     private String createTime;
@@ -21,6 +32,14 @@ public class SellerAddressData implements Parcelable {
         this.createTime = createTime;
         this.createTimeStr = createTimeStr;
         this.conversationId = conversationId;
+    }
+
+    protected SellerAddressData(Parcel in) {
+        this.address = in.readParcelable(AddressData.class.getClassLoader());
+        this.by = in.readParcelable(ByData.class.getClassLoader());
+        this.createTime = in.readString();
+        this.createTimeStr = in.readString();
+        this.conversationId = in.readInt();
     }
 
     public AddressData getAddress() {
@@ -76,24 +95,4 @@ public class SellerAddressData implements Parcelable {
         dest.writeString(this.createTimeStr);
         dest.writeInt(this.conversationId);
     }
-
-    protected SellerAddressData(Parcel in) {
-        this.address = in.readParcelable(AddressData.class.getClassLoader());
-        this.by = in.readParcelable(ByData.class.getClassLoader());
-        this.createTime = in.readString();
-        this.createTimeStr = in.readString();
-        this.conversationId = in.readInt();
-    }
-
-    public static final Parcelable.Creator<SellerAddressData> CREATOR = new Parcelable.Creator<SellerAddressData>() {
-        @Override
-        public SellerAddressData createFromParcel(Parcel source) {
-            return new SellerAddressData(source);
-        }
-
-        @Override
-        public SellerAddressData[] newArray(int size) {
-            return new SellerAddressData[size];
-        }
-    };
 }

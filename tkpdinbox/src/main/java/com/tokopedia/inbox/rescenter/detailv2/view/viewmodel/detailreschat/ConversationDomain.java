@@ -12,6 +12,17 @@ import java.util.List;
 
 public class ConversationDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationDomain> CREATOR = new Parcelable.Creator<ConversationDomain>() {
+        @Override
+        public ConversationDomain createFromParcel(Parcel source) {
+            return new ConversationDomain(source);
+        }
+
+        @Override
+        public ConversationDomain[] newArray(int size) {
+            return new ConversationDomain[size];
+        }
+    };
     private int resConvId;
     private ConversationActionDomain action;
     private String message;
@@ -49,6 +60,22 @@ public class ConversationDomain implements Parcelable {
         this.product = product;
         this.button = button;
         this.flag = flag;
+    }
+
+    protected ConversationDomain(Parcel in) {
+        this.resConvId = in.readInt();
+        this.action = in.readParcelable(ConversationActionDomain.class.getClassLoader());
+        this.message = in.readString();
+        this.address = in.readParcelable(ConversationAddressDomain.class.getClassLoader());
+        this.shippingDetail = in.readParcelable(ConversationShippingDetailDomain.class.getClassLoader());
+        this.createTime = in.readParcelable(ConversationCreateTimeDomain.class.getClassLoader());
+        this.attachment = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
+        this.trouble = in.readParcelable(ConversationTroubleDomain.class.getClassLoader());
+        this.solution = in.readParcelable(ConversationSolutionDomain.class.getClassLoader());
+        this.product = new ArrayList<ConversationProductDomain>();
+        in.readList(this.product, ConversationProductDomain.class.getClassLoader());
+        this.button = in.readParcelable(ConversationButtonDomain.class.getClassLoader());
+        this.flag = in.readParcelable(ConversationFlagDomain.class.getClassLoader());
     }
 
     public int getResConvId() {
@@ -167,32 +194,4 @@ public class ConversationDomain implements Parcelable {
         dest.writeParcelable(this.button, flags);
         dest.writeParcelable(this.flag, flags);
     }
-
-    protected ConversationDomain(Parcel in) {
-        this.resConvId = in.readInt();
-        this.action = in.readParcelable(ConversationActionDomain.class.getClassLoader());
-        this.message = in.readString();
-        this.address = in.readParcelable(ConversationAddressDomain.class.getClassLoader());
-        this.shippingDetail = in.readParcelable(ConversationShippingDetailDomain.class.getClassLoader());
-        this.createTime = in.readParcelable(ConversationCreateTimeDomain.class.getClassLoader());
-        this.attachment = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
-        this.trouble = in.readParcelable(ConversationTroubleDomain.class.getClassLoader());
-        this.solution = in.readParcelable(ConversationSolutionDomain.class.getClassLoader());
-        this.product = new ArrayList<ConversationProductDomain>();
-        in.readList(this.product, ConversationProductDomain.class.getClassLoader());
-        this.button = in.readParcelable(ConversationButtonDomain.class.getClassLoader());
-        this.flag = in.readParcelable(ConversationFlagDomain.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<ConversationDomain> CREATOR = new Parcelable.Creator<ConversationDomain>() {
-        @Override
-        public ConversationDomain createFromParcel(Parcel source) {
-            return new ConversationDomain(source);
-        }
-
-        @Override
-        public ConversationDomain[] newArray(int size) {
-            return new ConversationDomain[size];
-        }
-    };
 }

@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ConversationActionDomain implements Parcelable {
 
+    public static final Creator<ConversationActionDomain> CREATOR = new Creator<ConversationActionDomain>() {
+        @Override
+        public ConversationActionDomain createFromParcel(Parcel source) {
+            return new ConversationActionDomain(source);
+        }
+
+        @Override
+        public ConversationActionDomain[] newArray(int size) {
+            return new ConversationActionDomain[size];
+        }
+    };
     private String type;
     private int by;
     private String title;
@@ -17,6 +28,12 @@ public class ConversationActionDomain implements Parcelable {
         this.type = type;
         this.by = by;
         this.title = title;
+    }
+
+    protected ConversationActionDomain(Parcel in) {
+        this.type = in.readString();
+        this.by = in.readInt();
+        this.title = in.readString();
     }
 
     public String getTitle() {
@@ -54,22 +71,4 @@ public class ConversationActionDomain implements Parcelable {
         dest.writeInt(this.by);
         dest.writeString(this.title);
     }
-
-    protected ConversationActionDomain(Parcel in) {
-        this.type = in.readString();
-        this.by = in.readInt();
-        this.title = in.readString();
-    }
-
-    public static final Creator<ConversationActionDomain> CREATOR = new Creator<ConversationActionDomain>() {
-        @Override
-        public ConversationActionDomain createFromParcel(Parcel source) {
-            return new ConversationActionDomain(source);
-        }
-
-        @Override
-        public ConversationActionDomain[] newArray(int size) {
-            return new ConversationActionDomain[size];
-        }
-    };
 }

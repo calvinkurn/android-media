@@ -2,11 +2,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
-import com.tokopedia.inbox.rescenter.detailv2.view.fragment.DetailResChatFragment;
-import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
-
-import java.io.IOException;
 
 import rx.Subscriber;
 

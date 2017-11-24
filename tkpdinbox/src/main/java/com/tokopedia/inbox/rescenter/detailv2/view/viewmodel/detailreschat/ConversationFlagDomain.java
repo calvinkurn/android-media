@@ -9,12 +9,28 @@ import android.os.Parcelable;
 
 public class ConversationFlagDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationFlagDomain> CREATOR = new Parcelable.Creator<ConversationFlagDomain>() {
+        @Override
+        public ConversationFlagDomain createFromParcel(Parcel source) {
+            return new ConversationFlagDomain(source);
+        }
+
+        @Override
+        public ConversationFlagDomain[] newArray(int size) {
+            return new ConversationFlagDomain[size];
+        }
+    };
     private int system;
     private int solution;
 
     public ConversationFlagDomain(int system, int solution) {
         this.system = system;
         this.solution = solution;
+    }
+
+    protected ConversationFlagDomain(Parcel in) {
+        this.system = in.readInt();
+        this.solution = in.readInt();
     }
 
     public int getSystem() {
@@ -43,21 +59,4 @@ public class ConversationFlagDomain implements Parcelable {
         dest.writeInt(this.system);
         dest.writeInt(this.solution);
     }
-
-    protected ConversationFlagDomain(Parcel in) {
-        this.system = in.readInt();
-        this.solution = in.readInt();
-    }
-
-    public static final Parcelable.Creator<ConversationFlagDomain> CREATOR = new Parcelable.Creator<ConversationFlagDomain>() {
-        @Override
-        public ConversationFlagDomain createFromParcel(Parcel source) {
-            return new ConversationFlagDomain(source);
-        }
-
-        @Override
-        public ConversationFlagDomain[] newArray(int size) {
-            return new ConversationFlagDomain[size];
-        }
-    };
 }

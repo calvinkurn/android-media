@@ -108,6 +108,7 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
     public class ItemHolder extends RecyclerView.ViewHolder {
         ImageView ivIndicatorArrow, ivIndicatorCircle;
         TextView tvAction;
+
         public ItemHolder(View itemView) {
             super(itemView);
             ivIndicatorArrow = (ImageView) itemView.findViewById(R.id.iv_indicator_arrow);

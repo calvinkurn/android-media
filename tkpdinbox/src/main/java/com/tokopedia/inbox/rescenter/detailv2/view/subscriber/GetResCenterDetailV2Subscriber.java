@@ -25,12 +25,12 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailResponseData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.FirstData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastSolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LogData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.OrderData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ResolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.SellerAddressData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ShopData;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastSolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.UserAwbData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
 
@@ -44,17 +44,15 @@ import java.util.List;
 
 public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponseData> {
 
-    private final DetailResCenterFragmentView fragmentView;
-
     public static final int ACTION_BY_BUYER = 1;
     public static final int ACTION_BY_SELLER = 2;
     public static final int ACTION_BY_ADMIN = 3;
     public static final int ACTION_BY_SYSTEM = 4;
-
     public static final String BUYER = "Pembeli";
     public static final String SELLER = "Penjual";
     public static final String ADMIN = "Admin";
     public static final String SYSTEM = "Sistem";
+    private final DetailResCenterFragmentView fragmentView;
 
     public GetResCenterDetailV2Subscriber(DetailResCenterFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -133,7 +131,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
     private ProveData mappingProveData(FirstData data) {
         ProveData proveData = new ProveData();
         proveData.setRemark(data.getBuyerRemark());
-        proveData.setAttachment(data.getAttachments() != null ? mappingAttachmentData(data.getAttachments()) : null);
+        proveData.setAttachment(mappingAttachmentData(data.getAttachments()));
         return proveData;
     }
 
@@ -162,6 +160,8 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setShowAcceptSolution(domainModel.getAccept() == 1);
         data.setShowAcceptAdminSolution(domainModel.getAcceptByAdmin() == 1);
         data.setAcceptProductDialogText(domainModel.getAcceptText());
+        data.setFinishComplaintLabel(domainModel.getFinishLabel());
+        data.setFinishComplaintDialogText(domainModel.getFinishText());
         data.setAcceptReturSolution(domainModel.getAcceptReturn() == 1);
         data.setAskHelpLabel(domainModel.getReportLabel());
         data.setCancelLabel(domainModel.getCancelLabel());
@@ -267,12 +267,13 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         awbData.setShipmentID(String.valueOf(userAwbData.getShipping().getId()));
         awbData.setShipmentRef(userAwbData.getAwb());
         awbData.setAwbDate(userAwbData.getCreateTimeStr());
-        awbData.setAttachments(userAwbData.getAttachments() != null ? mappingAwbAttachments(userAwbData.getAttachments()) : null);
+        awbData.setAttachments(mappingAwbAttachments(userAwbData.getAttachments()));
         return awbData;
     }
 
     private List<AwbAttachmentViewModel> mappingAwbAttachments(List<AttachmentDataDomain> attachmentDataList) {
         List<AwbAttachmentViewModel> attachmentViewModels = new ArrayList<>();
+        if(attachmentDataList!= null)
         for (AttachmentDataDomain attachmentData : attachmentDataList) {
             AwbAttachmentViewModel awbAttachmentViewModel = new AwbAttachmentViewModel();
             awbAttachmentViewModel.setImageThumbUrl(attachmentData.getThumbnail());
@@ -287,7 +288,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         AddressData addressData = sellerAddressData.getAddress();
         addressReturData.setAddressID(String.valueOf(addressData.getAddressId()));
         addressReturData.setAddressReturDate(sellerAddressData.getCreateTimeStr());
-        String addressTextBuilder = "<b>" + addressData.getReceiver()+ "</b>" + "<br>" +
+        String addressTextBuilder = "<b>" + addressData.getReceiver() + "</b>" + "<br>" +
                 addressData.getAddress() + "<br>" +
                 addressData.getDistrict() + ", " + addressData.getCity() + "<br>" +
                 addressData.getProvince() + "<br>" +

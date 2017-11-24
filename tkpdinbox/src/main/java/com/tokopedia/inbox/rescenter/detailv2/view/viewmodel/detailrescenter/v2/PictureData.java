@@ -8,14 +8,30 @@ import android.os.Parcelable;
  */
 public class PictureData implements Parcelable {
 
+    public static final Parcelable.Creator<PictureData> CREATOR = new Parcelable.Creator<PictureData>() {
+        @Override
+        public PictureData createFromParcel(Parcel source) {
+            return new PictureData(source);
+        }
+
+        @Override
+        public PictureData[] newArray(int size) {
+            return new PictureData[size];
+        }
+    };
     private String fullUrl;
     private String thumbnail;
+
 
     public PictureData(String fullUrl, String thumbnail) {
         this.fullUrl = fullUrl;
         this.thumbnail = thumbnail;
     }
 
+    protected PictureData(Parcel in) {
+        this.fullUrl = in.readString();
+        this.thumbnail = in.readString();
+    }
 
     public String getFullUrl() {
         return fullUrl;
@@ -43,21 +59,4 @@ public class PictureData implements Parcelable {
         dest.writeString(this.fullUrl);
         dest.writeString(this.thumbnail);
     }
-
-    protected PictureData(Parcel in) {
-        this.fullUrl = in.readString();
-        this.thumbnail = in.readString();
-    }
-
-    public static final Parcelable.Creator<PictureData> CREATOR = new Parcelable.Creator<PictureData>() {
-        @Override
-        public PictureData createFromParcel(Parcel source) {
-            return new PictureData(source);
-        }
-
-        @Override
-        public PictureData[] newArray(int size) {
-            return new PictureData[size];
-        }
-    };
 }

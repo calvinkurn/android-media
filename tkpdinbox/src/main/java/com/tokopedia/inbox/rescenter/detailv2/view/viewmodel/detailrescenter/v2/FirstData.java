@@ -10,12 +10,28 @@ import java.util.List;
  */
 public class FirstData implements Parcelable {
 
+    public static final Creator<FirstData> CREATOR = new Creator<FirstData>() {
+        @Override
+        public FirstData createFromParcel(Parcel source) {
+            return new FirstData(source);
+        }
+
+        @Override
+        public FirstData[] newArray(int size) {
+            return new FirstData[size];
+        }
+    };
     private String buyerRemark;
     private List<AttachmentDataDomain> attachments;
 
     public FirstData(String buyerRemark, List<AttachmentDataDomain> attachments) {
         this.buyerRemark = buyerRemark;
         this.attachments = attachments;
+    }
+
+    protected FirstData(Parcel in) {
+        this.buyerRemark = in.readString();
+        this.attachments = in.createTypedArrayList(AttachmentDataDomain.CREATOR);
     }
 
     public String getBuyerRemark() {
@@ -44,21 +60,4 @@ public class FirstData implements Parcelable {
         dest.writeString(this.buyerRemark);
         dest.writeTypedList(this.attachments);
     }
-
-    protected FirstData(Parcel in) {
-        this.buyerRemark = in.readString();
-        this.attachments = in.createTypedArrayList(AttachmentDataDomain.CREATOR);
-    }
-
-    public static final Creator<FirstData> CREATOR = new Creator<FirstData>() {
-        @Override
-        public FirstData createFromParcel(Parcel source) {
-            return new FirstData(source);
-        }
-
-        @Override
-        public FirstData[] newArray(int size) {
-            return new FirstData[size];
-        }
-    };
 }

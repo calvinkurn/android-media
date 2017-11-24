@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 public class CreateByData implements Parcelable {
 
+    public static final Parcelable.Creator<CreateByData> CREATOR = new Parcelable.Creator<CreateByData>() {
+        @Override
+        public CreateByData createFromParcel(Parcel source) {
+            return new CreateByData(source);
+        }
+
+        @Override
+        public CreateByData[] newArray(int size) {
+            return new CreateByData[size];
+        }
+    };
     private int id;
     private String name;
     private PictureData picture;
@@ -16,6 +27,12 @@ public class CreateByData implements Parcelable {
         this.id = id;
         this.name = name;
         this.picture = picture;
+    }
+
+    protected CreateByData(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.picture = in.readParcelable(PictureData.class.getClassLoader());
     }
 
     public int getId() {
@@ -53,22 +70,4 @@ public class CreateByData implements Parcelable {
         dest.writeString(this.name);
         dest.writeParcelable(this.picture, flags);
     }
-
-    protected CreateByData(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.picture = in.readParcelable(PictureData.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<CreateByData> CREATOR = new Parcelable.Creator<CreateByData>() {
-        @Override
-        public CreateByData createFromParcel(Parcel source) {
-            return new CreateByData(source);
-        }
-
-        @Override
-        public CreateByData[] newArray(int size) {
-            return new CreateByData[size];
-        }
-    };
 }

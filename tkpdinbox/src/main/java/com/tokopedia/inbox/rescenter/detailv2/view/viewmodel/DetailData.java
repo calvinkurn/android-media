@@ -8,6 +8,17 @@ import android.os.Parcelable;
  */
 
 public class DetailData implements Parcelable {
+    public static final Creator<DetailData> CREATOR = new Creator<DetailData>() {
+        @Override
+        public DetailData createFromParcel(Parcel source) {
+            return new DetailData(source);
+        }
+
+        @Override
+        public DetailData[] newArray(int size) {
+            return new DetailData[size];
+        }
+    };
     private String awbNumber;
     private String complaintDate;
     private String invoice;
@@ -23,6 +34,27 @@ public class DetailData implements Parcelable {
     private boolean cancel;
     private boolean finish;
     private boolean canAskHelp;
+
+    public DetailData() {
+    }
+
+    protected DetailData(Parcel in) {
+        this.awbNumber = in.readString();
+        this.complaintDate = in.readString();
+        this.invoice = in.readString();
+        this.shopID = in.readString();
+        this.shopName = in.readString();
+        this.responseDeadline = in.readString();
+        this.deadlineVisibility = in.readByte() != 0;
+        this.buyerID = in.readString();
+        this.buyerName = in.readString();
+        this.invoiceUrl = in.readString();
+        this.orderID = in.readString();
+        this.received = in.readByte() != 0;
+        this.cancel = in.readByte() != 0;
+        this.finish = in.readByte() != 0;
+        this.canAskHelp = in.readByte() != 0;
+    }
 
     public boolean isCanAskHelp() {
         return canAskHelp;
@@ -47,7 +79,6 @@ public class DetailData implements Parcelable {
     public void setComplaintDate(String complaintDate) {
         this.complaintDate = complaintDate;
     }
-
 
     public String getInvoice() {
         return invoice;
@@ -89,20 +120,20 @@ public class DetailData implements Parcelable {
         this.buyerID = buyerID;
     }
 
-    public void setBuyerName(String buyerName) {
-        this.buyerName = buyerName;
-    }
-
     public String getBuyerName() {
         return buyerName;
     }
 
-    public void setShopID(String shopID) {
-        this.shopID = shopID;
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 
     public String getShopID() {
         return shopID;
+    }
+
+    public void setShopID(String shopID) {
+        this.shopID = shopID;
     }
 
     public String getInvoiceUrl() {
@@ -129,23 +160,20 @@ public class DetailData implements Parcelable {
         this.received = received;
     }
 
-    public DetailData() {
+    public boolean isCancel() {
+        return cancel;
     }
 
     public void setCancel(boolean cancel) {
         this.cancel = cancel;
     }
 
-    public boolean isCancel() {
-        return cancel;
+    public boolean isFinish() {
+        return finish;
     }
 
     public void setFinish(boolean finish) {
         this.finish = finish;
-    }
-
-    public boolean isFinish() {
-        return finish;
     }
 
     @Override
@@ -171,34 +199,4 @@ public class DetailData implements Parcelable {
         dest.writeByte(this.finish ? (byte) 1 : (byte) 0);
         dest.writeByte(this.canAskHelp ? (byte) 1 : (byte) 0);
     }
-
-    protected DetailData(Parcel in) {
-        this.awbNumber = in.readString();
-        this.complaintDate = in.readString();
-        this.invoice = in.readString();
-        this.shopID = in.readString();
-        this.shopName = in.readString();
-        this.responseDeadline = in.readString();
-        this.deadlineVisibility = in.readByte() != 0;
-        this.buyerID = in.readString();
-        this.buyerName = in.readString();
-        this.invoiceUrl = in.readString();
-        this.orderID = in.readString();
-        this.received = in.readByte() != 0;
-        this.cancel = in.readByte() != 0;
-        this.finish = in.readByte() != 0;
-        this.canAskHelp = in.readByte() != 0;
-    }
-
-    public static final Creator<DetailData> CREATOR = new Creator<DetailData>() {
-        @Override
-        public DetailData createFromParcel(Parcel source) {
-            return new DetailData(source);
-        }
-
-        @Override
-        public DetailData[] newArray(int size) {
-            return new DetailData[size];
-        }
-    };
 }

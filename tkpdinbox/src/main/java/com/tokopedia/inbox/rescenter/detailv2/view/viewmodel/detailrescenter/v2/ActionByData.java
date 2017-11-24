@@ -8,12 +8,28 @@ import android.os.Parcelable;
  */
 public class ActionByData implements Parcelable {
 
+    public static final Parcelable.Creator<ActionByData> CREATOR = new Parcelable.Creator<ActionByData>() {
+        @Override
+        public ActionByData createFromParcel(Parcel source) {
+            return new ActionByData(source);
+        }
+
+        @Override
+        public ActionByData[] newArray(int size) {
+            return new ActionByData[size];
+        }
+    };
     private int id;
     private String name;
 
     public ActionByData(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    protected ActionByData(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
     }
 
     public int getId() {
@@ -42,21 +58,4 @@ public class ActionByData implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.name);
     }
-
-    protected ActionByData(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-    }
-
-    public static final Parcelable.Creator<ActionByData> CREATOR = new Parcelable.Creator<ActionByData>() {
-        @Override
-        public ActionByData createFromParcel(Parcel source) {
-            return new ActionByData(source);
-        }
-
-        @Override
-        public ActionByData[] newArray(int size) {
-            return new ActionByData[size];
-        }
-    };
 }

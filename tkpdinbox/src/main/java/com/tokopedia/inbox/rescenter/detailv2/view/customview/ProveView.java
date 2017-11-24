@@ -21,11 +21,11 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProveData;
 
 public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> {
 
+    ProveAdapter adapter;
     private RecyclerView rvAttachment;
     private TextView tvRemark;
     private Context context;
 
-    ProveAdapter adapter;
     public ProveView(Context context) {
         super(context);
     }

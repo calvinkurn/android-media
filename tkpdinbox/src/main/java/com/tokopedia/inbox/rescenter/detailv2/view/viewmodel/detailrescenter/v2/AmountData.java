@@ -7,14 +7,30 @@ import android.os.Parcelable;
  * Created by yfsx on 08/11/17.
  */
 public class AmountData implements Parcelable {
+    public static final Parcelable.Creator<AmountData> CREATOR = new Parcelable.Creator<AmountData>() {
+        @Override
+        public AmountData createFromParcel(Parcel source) {
+            return new AmountData(source);
+        }
+
+        @Override
+        public AmountData[] newArray(int size) {
+            return new AmountData[size];
+        }
+    };
     private String idr;
     private int integer;
+
 
     public AmountData(String idr, int integer) {
         this.idr = idr;
         this.integer = integer;
     }
 
+    protected AmountData(Parcel in) {
+        this.idr = in.readString();
+        this.integer = in.readInt();
+    }
 
     public String getIdr() {
         return idr;
@@ -42,21 +58,4 @@ public class AmountData implements Parcelable {
         dest.writeString(this.idr);
         dest.writeInt(this.integer);
     }
-
-    protected AmountData(Parcel in) {
-        this.idr = in.readString();
-        this.integer = in.readInt();
-    }
-
-    public static final Parcelable.Creator<AmountData> CREATOR = new Parcelable.Creator<AmountData>() {
-        @Override
-        public AmountData createFromParcel(Parcel source) {
-            return new AmountData(source);
-        }
-
-        @Override
-        public AmountData[] newArray(int size) {
-            return new AmountData[size];
-        }
-    };
 }

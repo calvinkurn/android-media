@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -11,6 +12,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
+import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
 
 /**
  * Created by yoasfs on 23/10/17.
@@ -35,7 +37,7 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
         super(itemView);
         this.mainView = mainView;
         tvMessage = (TextView) itemView.findViewById(R.id.tv_message);
-        tvTitle = (TextView) itemView.findViewById(R.id.tv_title) ;
+        tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         layoutTitle = itemView.findViewById(R.id.layout_title);
         tvUserTitle = (TextView) layoutTitle.findViewById(R.id.tv_user_title);
         tvUsername = (TextView) layoutTitle.findViewById(R.id.tv_username);
@@ -55,14 +57,17 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
         layoutTitle.setVisibility(element.isShowTitle() ? View.VISIBLE : View.GONE);
 
         if (element.getConversation().getAction().getBy() == ACTION_BY_SELLER) {
-            tvUserTitle.setText("Penjual");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_seller_title));
             tvUsername.setText(element.getShop().getName());
+            ChatTitleColorUtil.sellerColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_ADMIN) {
-            tvUserTitle.setText("Admin");
-            tvUsername.setText("Admin");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_title));
+            tvUsername.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_username));
+            ChatTitleColorUtil.adminColorTitle(tvUserTitle, tvUsername);
         } else if (element.getConversation().getAction().getBy() == ACTION_BY_USER) {
-            tvUserTitle.setText("Pembeli");
+            tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_buyer_title));
             tvUsername.setText(element.getCustomer().getName());
+            ChatTitleColorUtil.buyerColorTitle(tvUserTitle, tvUsername);
         }
     }
 

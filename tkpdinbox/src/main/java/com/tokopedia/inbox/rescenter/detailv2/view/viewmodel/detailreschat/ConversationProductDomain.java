@@ -11,6 +11,17 @@ import java.util.List;
 
 public class ConversationProductDomain implements Parcelable {
 
+    public static final Creator<ConversationProductDomain> CREATOR = new Creator<ConversationProductDomain>() {
+        @Override
+        public ConversationProductDomain createFromParcel(Parcel source) {
+            return new ConversationProductDomain(source);
+        }
+
+        @Override
+        public ConversationProductDomain[] newArray(int size) {
+            return new ConversationProductDomain[size];
+        }
+    };
     private List<ConversationAttachmentDomain> image;
     private String message;
     private int resId;
@@ -21,6 +32,13 @@ public class ConversationProductDomain implements Parcelable {
         this.message = message;
         this.resId = resId;
         this.name = name;
+    }
+
+    protected ConversationProductDomain(Parcel in) {
+        this.image = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
+        this.message = in.readString();
+        this.resId = in.readInt();
+        this.name = in.readString();
     }
 
     public List<ConversationAttachmentDomain> getImage() {
@@ -67,23 +85,4 @@ public class ConversationProductDomain implements Parcelable {
         dest.writeInt(this.resId);
         dest.writeString(this.name);
     }
-
-    protected ConversationProductDomain(Parcel in) {
-        this.image = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
-        this.message = in.readString();
-        this.resId = in.readInt();
-        this.name = in.readString();
-    }
-
-    public static final Creator<ConversationProductDomain> CREATOR = new Creator<ConversationProductDomain>() {
-        @Override
-        public ConversationProductDomain createFromParcel(Parcel source) {
-            return new ConversationProductDomain(source);
-        }
-
-        @Override
-        public ConversationProductDomain[] newArray(int size) {
-            return new ConversationProductDomain[size];
-        }
-    };
 }

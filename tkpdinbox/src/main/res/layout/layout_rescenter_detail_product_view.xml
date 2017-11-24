@@ -14,7 +14,7 @@
         android:paddingRight="@dimen/padding_small"
         android:text="@string/title_section_product_resolution"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/text_size_s_medium"
         />
 
     <View
@@ -48,6 +48,7 @@
         android:text="@string/action_see_more_product_complaint"
         android:drawableRight="@drawable/ic_chevron_right"
         android:textColor="@color/tkpd_main_green"
+        android:fontFamily="sans-serif-medium"
         android:textSize="@dimen/font_small"
         />
 

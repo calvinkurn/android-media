@@ -8,10 +8,31 @@ import android.os.Parcelable;
  */
 
 public class AddressReturData implements Parcelable {
+    public static final Creator<AddressReturData> CREATOR = new Creator<AddressReturData>() {
+        @Override
+        public AddressReturData createFromParcel(Parcel source) {
+            return new AddressReturData(source);
+        }
+
+        @Override
+        public AddressReturData[] newArray(int size) {
+            return new AddressReturData[size];
+        }
+    };
     private String addressReturDate;
     private String addressText;
     private String addressID;
     private String conversationID;
+
+    public AddressReturData() {
+    }
+
+    protected AddressReturData(Parcel in) {
+        this.addressReturDate = in.readString();
+        this.addressText = in.readString();
+        this.addressID = in.readString();
+        this.conversationID = in.readString();
+    }
 
     public String getAddressReturDate() {
         return addressReturDate;
@@ -27,9 +48,6 @@ public class AddressReturData implements Parcelable {
 
     public void setAddressText(String addressText) {
         this.addressText = addressText;
-    }
-
-    public AddressReturData() {
     }
 
     public String getAddressID() {
@@ -60,23 +78,4 @@ public class AddressReturData implements Parcelable {
         dest.writeString(this.addressID);
         dest.writeString(this.conversationID);
     }
-
-    protected AddressReturData(Parcel in) {
-        this.addressReturDate = in.readString();
-        this.addressText = in.readString();
-        this.addressID = in.readString();
-        this.conversationID = in.readString();
-    }
-
-    public static final Creator<AddressReturData> CREATOR = new Creator<AddressReturData>() {
-        @Override
-        public AddressReturData createFromParcel(Parcel source) {
-            return new AddressReturData(source);
-        }
-
-        @Override
-        public AddressReturData[] newArray(int size) {
-            return new AddressReturData[size];
-        }
-    };
 }

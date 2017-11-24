@@ -227,18 +227,14 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                     response.getCreateTime() != null ?
                             mappingConversationCreateTimeDomain(response.getCreateTime()) :
                             null,
-                    response.getAttachment() != null ?
-                            mappingConversationAttachmentDomain(response.getAttachment()) :
-                            null,
+                    mappingConversationAttachmentDomain(response.getAttachment()),
                     response.getTrouble() != null ?
                             mappingConversationTroubleDomain(response.getTrouble()) :
                             null,
                     response.getSolution() != null ?
                             mappingConversationSolutionDomain(response.getSolution()) :
                             null,
-                    response.getProduct() != null ?
-                            mappingConversationProductDomain(response.getProduct()) :
-                            null,
+                    mappingConversationProductDomain(response.getProduct()),
                     response.getButton() != null ?
                             mappingConversationButtonDomain(response.getButton()) :
                             null,
@@ -261,11 +257,12 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
     private List<ConversationAttachmentDomain> mappingConversationAttachmentDomain(
             List<ConversationAttachmentResponse> responseList) {
         List<ConversationAttachmentDomain> domainList = new ArrayList<>();
-        for (ConversationAttachmentResponse response : responseList) {
-            domainList.add(new ConversationAttachmentDomain(response.getType(),
-                    response.getThumb(),
-                    response.getFull()));
-        }
+        if (responseList != null)
+            for (ConversationAttachmentResponse response : responseList) {
+                domainList.add(new ConversationAttachmentDomain(response.getType(),
+                        response.getThumb(),
+                        response.getFull()));
+            }
         return domainList;
     }
 
@@ -304,11 +301,10 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
     private List<ConversationProductDomain> mappingConversationProductDomain(
             List<ConversationProductResponse> responseList) {
         List<ConversationProductDomain> domainList = new ArrayList<>();
-        for (ConversationProductResponse response : responseList) {
+        if (responseList != null)
+            for (ConversationProductResponse response : responseList) {
             domainList.add(new ConversationProductDomain(
-                    response.getImage() != null ?
-                            mappingConversationAttachmentDomainList(response.getImage()) :
-                            null,
+                    mappingConversationAttachmentDomainList(response.getImage()),
                     response.getMessage(),
                     response.getResId(),
                     response.getName()));
@@ -316,9 +312,10 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
         return domainList;
     }
 
-    private List<ConversationAttachmentDomain> mappingConversationAttachmentDomainList(List<ConversationAttachmentResponse>  responseList) {
+    private List<ConversationAttachmentDomain> mappingConversationAttachmentDomainList(List<ConversationAttachmentResponse> responseList) {
         List<ConversationAttachmentDomain> domainList = new ArrayList<>();
-        for (ConversationAttachmentResponse response : responseList) {
+        if (responseList != null)
+            for (ConversationAttachmentResponse response : responseList) {
             domainList.add(new ConversationAttachmentDomain(null, response.getThumb(), response.getFull()));
         }
         return domainList;

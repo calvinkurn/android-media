@@ -8,12 +8,28 @@ import android.os.Parcelable;
  */
 public class RoleData implements Parcelable {
 
+    public static final Parcelable.Creator<RoleData> CREATOR = new Parcelable.Creator<RoleData>() {
+        @Override
+        public RoleData createFromParcel(Parcel source) {
+            return new RoleData(source);
+        }
+
+        @Override
+        public RoleData[] newArray(int size) {
+            return new RoleData[size];
+        }
+    };
     private int id;
     private String name;
 
     public RoleData(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    protected RoleData(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
     }
 
     public int getId() {
@@ -42,21 +58,4 @@ public class RoleData implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.name);
     }
-
-    protected RoleData(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-    }
-
-    public static final Parcelable.Creator<RoleData> CREATOR = new Parcelable.Creator<RoleData>() {
-        @Override
-        public RoleData createFromParcel(Parcel source) {
-            return new RoleData(source);
-        }
-
-        @Override
-        public RoleData[] newArray(int size) {
-            return new RoleData[size];
-        }
-    };
 }

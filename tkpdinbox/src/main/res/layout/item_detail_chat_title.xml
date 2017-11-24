@@ -20,7 +20,7 @@
                 android:id="@+id/tv_user_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_title_admin"
+                android:background="@drawable/bg_title_system"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textSize="@dimen/font_caption"
@@ -45,6 +45,7 @@
                 android:layout_gravity="center|left"
                 android:textColor="@color/black_54"
                 android:gravity="center"
+                android:textSize="@dimen/text_size_xsmall"
                 android:foregroundGravity="center"
                 android:textStyle="bold"
                 context:text="user"/>

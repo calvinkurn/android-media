@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ConversationShippingDetailDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationShippingDetailDomain> CREATOR = new Parcelable.Creator<ConversationShippingDetailDomain>() {
+        @Override
+        public ConversationShippingDetailDomain createFromParcel(Parcel source) {
+            return new ConversationShippingDetailDomain(source);
+        }
+
+        @Override
+        public ConversationShippingDetailDomain[] newArray(int size) {
+            return new ConversationShippingDetailDomain[size];
+        }
+    };
     private String awbNumber;
     private int id;
     private String name;
@@ -17,6 +28,12 @@ public class ConversationShippingDetailDomain implements Parcelable {
         this.awbNumber = awbNumber;
         this.id = id;
         this.name = name;
+    }
+
+    protected ConversationShippingDetailDomain(Parcel in) {
+        this.awbNumber = in.readString();
+        this.id = in.readInt();
+        this.name = in.readString();
     }
 
     public String getAwbNumber() {
@@ -54,22 +71,4 @@ public class ConversationShippingDetailDomain implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.name);
     }
-
-    protected ConversationShippingDetailDomain(Parcel in) {
-        this.awbNumber = in.readString();
-        this.id = in.readInt();
-        this.name = in.readString();
-    }
-
-    public static final Parcelable.Creator<ConversationShippingDetailDomain> CREATOR = new Parcelable.Creator<ConversationShippingDetailDomain>() {
-        @Override
-        public ConversationShippingDetailDomain createFromParcel(Parcel source) {
-            return new ConversationShippingDetailDomain(source);
-        }
-
-        @Override
-        public ConversationShippingDetailDomain[] newArray(int size) {
-            return new ConversationShippingDetailDomain[size];
-        }
-    };
 }

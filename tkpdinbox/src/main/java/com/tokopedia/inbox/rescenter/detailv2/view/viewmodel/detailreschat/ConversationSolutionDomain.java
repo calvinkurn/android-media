@@ -9,6 +9,17 @@ import android.os.Parcelable;
 
 public class ConversationSolutionDomain implements Parcelable {
 
+    public static final Parcelable.Creator<ConversationSolutionDomain> CREATOR = new Parcelable.Creator<ConversationSolutionDomain>() {
+        @Override
+        public ConversationSolutionDomain createFromParcel(Parcel source) {
+            return new ConversationSolutionDomain(source);
+        }
+
+        @Override
+        public ConversationSolutionDomain[] newArray(int size) {
+            return new ConversationSolutionDomain[size];
+        }
+    };
     private int id;
     private String name;
     private int amount;
@@ -19,6 +30,13 @@ public class ConversationSolutionDomain implements Parcelable {
         this.name = name;
         this.amount = amount;
         this.string = string;
+    }
+
+    protected ConversationSolutionDomain(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.amount = in.readInt();
+        this.string = in.readString();
     }
 
     public int getId() {
@@ -65,23 +83,4 @@ public class ConversationSolutionDomain implements Parcelable {
         dest.writeInt(this.amount);
         dest.writeString(this.string);
     }
-
-    protected ConversationSolutionDomain(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.amount = in.readInt();
-        this.string = in.readString();
-    }
-
-    public static final Parcelable.Creator<ConversationSolutionDomain> CREATOR = new Parcelable.Creator<ConversationSolutionDomain>() {
-        @Override
-        public ConversationSolutionDomain createFromParcel(Parcel source) {
-            return new ConversationSolutionDomain(source);
-        }
-
-        @Override
-        public ConversationSolutionDomain[] newArray(int size) {
-            return new ConversationSolutionDomain[size];
-        }
-    };
 }

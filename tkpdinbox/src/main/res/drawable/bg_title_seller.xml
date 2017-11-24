@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/tkpd_status_red" />
+    <solid android:color="@color/color_chat_seller" />
 
     <corners android:radius="5dp"/>
 

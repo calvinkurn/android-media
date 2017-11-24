@@ -19,7 +19,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
 
 public class NextActionActivity
         extends BasePresenterActivity<NextActionActivityListener.Presenter>
-        implements NextActionActivityListener.View, HasComponent{
+        implements NextActionActivityListener.View, HasComponent {
 
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
     public static final String PARAM_NEXT_ACTION = "next_action";

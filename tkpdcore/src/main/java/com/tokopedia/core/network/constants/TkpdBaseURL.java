@@ -857,9 +857,9 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_CONVERSATION_MORE_V2 = GET_RESOLUTION_CONVERSATION_V2 + "/more";
         public static final String POST_RESOLUTION_CONVERSATION_REPLY = BASE_RESOLUTION_DETAIL_V1 + "/reply";
         public static final String POST_RESOLUTION_CONVERSATION_ADDRESS = BASE_RESOLUTION_DETAIL_V1 + "/address";
-        public static final String POST_RESOLUTION_CONVERSATION_ADDRESS_EDIT = POST_RESOLUTION_CONVERSATION_ADDRESS + "/{conversation_id}/edit_address";
+        public static final String POST_RESOLUTION_CONVERSATION_ADDRESS_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/conversation/{conversation_id}/edit_address";
         public static final String POST_RESOLUTION_CONVERSATION_AWB = BASE_RESOLUTION_DETAIL_V1 + "/awb";
-        public static final String POST_RESOLUTION_CONVERSATION_AWB_EDIT = POST_RESOLUTION_CONVERSATION_AWB + "/{conversation_id}/edit_awb";
+        public static final String POST_RESOLUTION_CONVERSATION_AWB_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/conversation/{conversation_id}/edit_awb";
         public static final String GET_RESOLUTION_CONVERSATION_V2_MORE = BASE_DETAIL_RESOLUTION_V2 + "/more";
 
 
