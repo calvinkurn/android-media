@@ -271,12 +271,17 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        RideGATracking.eventBackPress(getScreenName());
     }
 
     @Override

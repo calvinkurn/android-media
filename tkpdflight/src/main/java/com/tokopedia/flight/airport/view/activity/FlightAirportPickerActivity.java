@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
@@ -22,6 +23,11 @@ public class FlightAirportPickerActivity extends BaseSimpleActivity implements H
         Intent intent = new Intent(activity, FlightAirportPickerActivity.class);
         intent.putExtra(EXTRA_TOOLBAR_TITLE, title);
         return intent;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_airport_picker;
     }
 
     @Override
@@ -51,5 +57,6 @@ public class FlightAirportPickerActivity extends BaseSimpleActivity implements H
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getIntent().getStringExtra(EXTRA_TOOLBAR_TITLE));
+        toolbar.setContentInsetStartWithNavigation(0);
     }
 }

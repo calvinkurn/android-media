@@ -26,6 +26,17 @@ public class Product {
     @SerializedName("group_name")
     @Expose
     private String groupName;
+    @SerializedName("department_id")
+    @Expose
+    private int departmentId;
+
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
 
     public int getId() {
         return id;

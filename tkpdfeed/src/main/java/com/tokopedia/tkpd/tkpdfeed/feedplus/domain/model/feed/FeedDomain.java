@@ -16,19 +16,14 @@ public class FeedDomain {
     private final List<DataFeedDomain> listFeed;
 
     @Nullable
-    private final List<DataInspirationDomain> listInspiration;
-
-    @Nullable
     private final boolean hasNext;
 
     @Nullable
     private List<RecentViewProductDomain> recentProduct;
 
     public FeedDomain(@Nullable List<DataFeedDomain> listFeed,
-                      @Nullable List<DataInspirationDomain> listInspiration,
                       boolean hasNext) {
         this.listFeed = listFeed;
-        this.listInspiration = listInspiration;
         this.hasNext = hasNext;
     }
 
@@ -41,10 +36,10 @@ public class FeedDomain {
         return hasNext;
     }
 
-    @Nullable
-    public List<DataInspirationDomain> getListInspiration() {
-        return listInspiration;
-    }
+//    @Nullable
+//    public List<DataInspirationDomain> getListInspiration() {
+//        return listInspiration;
+//    }
 
     public void setRecentProduct(@Nullable List<RecentViewProductDomain> recentProduct) {
         this.recentProduct = recentProduct;

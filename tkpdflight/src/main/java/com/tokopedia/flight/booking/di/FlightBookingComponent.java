@@ -5,7 +5,7 @@ import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
-import com.tokopedia.flight.review.FlightBookingReviewFragment;
+import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 
 import dagger.Component;
 

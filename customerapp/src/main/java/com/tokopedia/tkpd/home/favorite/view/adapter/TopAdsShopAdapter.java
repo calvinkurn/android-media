@@ -146,7 +146,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             public void onClick(View view) {
                 Context context = view.getContext();
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
-                UnifyTracking.eventFavoriteViewRecommendation(item.getShopName());
+                UnifyTracking.eventFavoriteViewRecommendation();
                 Intent intent = new Intent(context, ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(
                         item.getShopId(),

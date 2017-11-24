@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
@@ -66,8 +67,7 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private AppCompatTextView tvHeaderTitle;
-        private AppCompatTextView tvChangePassengerData;
+        private LabelView headerLabel;
         private LinearLayout passengerDetailLayout;
         private AppCompatTextView tvPassengerName;
         private RecyclerView rvPassengerDetail;
@@ -78,16 +78,16 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
         }
 
         private void findViews(View view) {
-            tvHeaderTitle = (AppCompatTextView) view.findViewById(R.id.tv_header_title);
-            tvChangePassengerData = (AppCompatTextView) view.findViewById(R.id.tv_change_passenger_data);
+            headerLabel = (LabelView) view.findViewById(R.id.header_label);
             passengerDetailLayout = (LinearLayout) view.findViewById(R.id.passenger_detail_layout);
             tvPassengerName = (AppCompatTextView) view.findViewById(R.id.tv_passenger_name);
             rvPassengerDetail = (RecyclerView) view.findViewById(R.id.rv_list_details);
         }
 
         public void bind(final FlightBookingPassengerViewModel viewModel) {
-            tvHeaderTitle.setText(String.valueOf(viewModel.getHeaderTitle()));
-            tvChangePassengerData.setOnClickListener(new View.OnClickListener() {
+            headerLabel.setTitle(String.valueOf(viewModel.getHeaderTitle()));
+            headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.colorPrimary));
+            headerLabel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
@@ -97,7 +97,7 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
             });
             if (viewModel.getPassengerName() != null) {
                 passengerDetailLayout.setVisibility(View.VISIBLE);
-                tvChangePassengerData.setText(itemView.getContext().getString(R.string.flight_booking_passenger_change_label));
+                headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_change_label));
                 String passengerName = viewModel.getPassengerName();
                 if (viewModel.getPassengerTitle() != null && viewModel.getPassengerTitle().length() > 0) {
                     passengerName = String.format("%s %s", viewModel.getPassengerTitle(), passengerName);
@@ -140,7 +140,7 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
 
             } else {
                 passengerDetailLayout.setVisibility(View.GONE);
-                tvChangePassengerData.setText(itemView.getContext().getString(R.string.flight_booking_passenger_fill_data_label));
+                headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_fill_data_label));
             }
         }
     }

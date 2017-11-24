@@ -48,6 +48,7 @@ public class TopAdsDetailGroupDomainMapper implements Func1<Response<DataRespons
         model.setPriceDaily(apiResponse.getPriceDaily() == null ? 0 : apiResponse.getPriceDaily());
         model.setStickerId(apiResponse.getStickerId());
         model.setGroupTotal(apiResponse.getGroupTotal());
+        model.setKeywordTotal(apiResponse.getKeywordTotal());
         return model;
     }
 }

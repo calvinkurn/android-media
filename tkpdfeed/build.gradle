@@ -132,4 +132,7 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

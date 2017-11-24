@@ -33,4 +33,9 @@ public class TopAdsKeywordEditDetailPositiveActivity extends BaseSimpleActivity 
     public AppComponent getComponent() {
         return getApplicationComponent();
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }

@@ -38,6 +38,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
@@ -640,11 +641,13 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
-        List<Badge> badges = data.badges;
-        for (int i = 0; i < badges.size(); i++) {
-            Badge badge = badges.get(i);
-            if (badge.getTitle().equals("Free Returns")) {
-                LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
+        if(data.badges != null) {
+            List<Badge> badges = data.badges;
+            for (int i = 0; i < badges.size(); i++) {
+                Badge badge = badges.get(i);
+                if (badge.getTitle().equals("Free Returns")) {
+                    LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
+                }
             }
         }
     }
@@ -753,7 +756,6 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent shareIntent = new Intent(ShopInfoActivity.this, ShareActivity.class);
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setType(ShareData.SHOP_TYPE)
                         .setName(getString(R.string.message_share_shop))
@@ -761,8 +763,7 @@ public class ShopInfoActivity extends BaseActivity
                         .setUri(shopModel.info.shopUrl)
                         .setId(shopModel.info.shopId)
                         .build();
-                shareIntent.putExtra(ShareData.TAG, shareData);
-                startActivity(shareIntent);
+                startActivity(ShareActivity.createIntent(ShopInfoActivity.this,shareData));
             }
         };
     }
@@ -860,10 +861,12 @@ public class ShopInfoActivity extends BaseActivity
                         .getAskSellerIntent(this,
                                 shopModel.info.shopId,
                                 shopModel.info.shopName,
-                                TkpdInboxRouter.SHOP);
+                                TkpdInboxRouter.SHOP,
+                                shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
         } else {
+            UnifyTracking.eventShopSendChat();
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);

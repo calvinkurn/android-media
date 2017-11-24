@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Display;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
+import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
@@ -196,7 +198,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void setShopAvatar(String imagePath) {
-        if (imagePath != "") {
+        if (!TextUtils.isEmpty(imagePath)) {
             imageText.setVisibility(View.GONE);
             ImageHandler.loadImageFit2(getActivity()
                     , shopAvatar
@@ -207,22 +209,21 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     public void startUploadDialog() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        ImageEditDialogFragment dialogFragment = ImageEditDialogFragment.newInstance(0);
-        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
-
+        ImageAddDialogFragment dialogFragment = ImageAddDialogFragment.newInstance(0);
+        dialogFragment.show(fm, ImageAddDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageAddListener(new ImageAddDialogFragment.OnImageAddListener() {
             @Override
-            public void clickEditProductFromCamera(int position) {
+            public void clickAddProductFromCamera(int position) {
                 ShopCreateFragmentPermissionsDispatcher.goToCameraWithCheck(ShopCreateFragment.this, 0);
             }
 
             @Override
-            public void clickEditProductFromGallery(int position) {
+            public void clickAddProductFromGallery(int position) {
                 ShopCreateFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopCreateFragment.this, 0);
             }
 
             @Override
-            public void clickEditProductFromInstagram(int position) {
+            public void clickAddProductFromInstagram(int position) {
                 InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ShopCreateFragment.this,
                         INSTAGRAM_SELECT_REQUEST_CODE, 1);
             }
@@ -484,8 +485,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
             showPhoneVerification(false);
         }
         if (imageLocation != null) {
-            ImageHandler.LoadImage(shopAvatar, imageLocation);
-            imageText.setVisibility(View.GONE);
+            setShopAvatar(imageLocation);
         }
     }
 

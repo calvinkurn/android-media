@@ -29,7 +29,7 @@ public class GenerateHostCloudSource {
 
     public Observable<GenerateHostDomain> generateHost(TKPDMapParam<String, Object> params) {
         try {
-            return resCenterActService.getApi().generateTokenHost(
+            return resCenterActService.getApi().generateTokenHostWithoutHeader(
                     AuthUtil.generateParamsNetwork2(context, params))
                     .map(generateHostMapper);
         } catch (Exception e) {

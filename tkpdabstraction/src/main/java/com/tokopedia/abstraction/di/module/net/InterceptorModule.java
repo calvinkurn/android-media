@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.di.qualifier.AuthKeyQualifier;
 import com.tokopedia.abstraction.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.di.scope.ApplicationScope;
@@ -30,7 +31,7 @@ public class InterceptorModule {
     @AuthKeyQualifier
     @ApplicationScope
     @Provides
-    String provideAuthKey(Context context){
+    String provideAuthKey(@ApplicationContext Context context){
         if(context instanceof AbstractionRouter){
             return ((AbstractionRouter)context).getAuthKey();
         }else{
@@ -38,10 +39,9 @@ public class InterceptorModule {
         }
     }
 
-    @AuthKeyQualifier
     @ApplicationScope
     @Provides
-    AbstractionRouter provideAbstractionRouter(Context context){
+    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
         if(context instanceof AbstractionRouter){
             return ((AbstractionRouter)context);
         }else{
@@ -52,7 +52,7 @@ public class InterceptorModule {
     @FreshAccessTokenQualifier
     @ApplicationScope
     @Provides
-    String provideFreshToken(Context context){
+    String provideFreshToken(@ApplicationContext Context context){
         if(context instanceof AbstractionRouter){
             return ((AbstractionRouter)context).getFreshToken();
         }else{
