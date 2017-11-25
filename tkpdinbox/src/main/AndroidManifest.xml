@@ -140,6 +140,11 @@
             android:label="@string/title_activity_rescenter_discussion"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".rescenter.detailv2.view.activity.TrackShippingActivity"
+            android:label="@string/title_track_shipping"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->
@@ -153,8 +158,6 @@
         <service
             android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
             android:exported="false" />
-
-        <activity android:name=".rescenter.detailv2.view.activity.TrackShippingActivity"></activity>
     </application>
 
 </manifest>
