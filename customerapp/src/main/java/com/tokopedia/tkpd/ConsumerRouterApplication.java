@@ -564,34 +564,37 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
 
-        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
-                    customSubject, customMessage, source);
-        else
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
+        else
+            return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
+                customSubject, customMessage, source);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String customMessage, String source, String avatar) {
 
-        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
-                    customSubject, customMessage, source);
-        else
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
+        else
+            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
+                    customSubject, customMessage, source);
     }
 
 
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String source,
                                    String avatar) {
-        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
-        else
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
+        else
+            return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
 
 
     }
@@ -599,10 +602,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
-        else
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
+        else
+            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
+
 
     }
 
@@ -789,10 +794,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return InboxMessageActivity.getCallingIntent(context);
-        else
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return InboxChatActivity.getCallingIntent(context);
+        else
+            return InboxMessageActivity.getCallingIntent(context);
+
     }
 
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {

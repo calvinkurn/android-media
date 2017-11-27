@@ -24,6 +24,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -62,7 +63,8 @@ public class InboxChatActivity extends DrawerPresenterActivity
             homeIntent = HomeRouter.getHomeActivity(context);
         }
         Intent destination;
-        if (TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
             destination = new Intent(context, InboxChatActivity.class)
                     .setData(uri.build())
                     .putExtras(extras);
@@ -88,7 +90,8 @@ public class InboxChatActivity extends DrawerPresenterActivity
             homeIntent = HomeRouter.getHomeActivity(context);
         }
         Intent destination;
-        if (TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
             destination = new Intent(context, InboxChatActivity.class)
                     .setData(uri.build())
                     .putExtras(extras);

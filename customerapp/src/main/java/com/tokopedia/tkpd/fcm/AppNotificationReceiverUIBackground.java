@@ -23,8 +23,10 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
@@ -190,7 +192,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 break;
 
             case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if (TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                        && ((RemoteConfigRouter) MainApplication.getInstance() ).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                     if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
                             && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
                         NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
