@@ -59,6 +59,8 @@ import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
+import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
+import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -527,20 +529,34 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source, avatar);
+        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+            return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
+                    customSubject, customMessage, source);
+        else
+            return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+                    customSubject, customMessage, source, avatar);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
+        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, source);
+        else
+            return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
+
+
     }
 
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
-        return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
+        if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+            return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
+        else
+            return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
+
+
     }
 
     @Override
@@ -629,7 +645,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getInboxMessageIntent(Context context) {
         if (!TrackingUtils.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return getTimeMachineIntent(context);
+            return InboxMessageActivity.getCallingIntent(context);
         else
             return InboxChatActivity.getCallingIntent(context);
     }
