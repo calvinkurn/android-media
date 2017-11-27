@@ -53,9 +53,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
-                        app:ctv_hour_title="Jam"
-                        app:ctv_minute_title="Menit"
-                        app:ctv_second_title="Detik" />
+                        app:ctv_hour_title="@string/flight_label_hours"
+                        app:ctv_minute_title="@string/flight_label_minute"
+                        app:ctv_second_title="@string/flight_label_second" />
                 </LinearLayout>
 
                 <com.tokopedia.flight.booking.widget.CardWithActionView

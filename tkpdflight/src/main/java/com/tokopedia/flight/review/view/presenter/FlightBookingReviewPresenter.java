@@ -1,6 +1,7 @@
 package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightBookingReviewSubmitUseCase;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -26,8 +27,8 @@ public class FlightBookingReviewPresenter extends BaseDaggerPresenter<FlightBook
     }
 
     @Override
-    public void checkVoucherCode(String voucherCode) {
-        flightCheckVoucherCodeUseCase.execute(RequestParams.create(), getSubscriberCheckVoucherCode());
+    public void checkVoucherCode(String cartId, String voucherCode) {
+        flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode());
     }
 
     @Override
@@ -35,8 +36,8 @@ public class FlightBookingReviewPresenter extends BaseDaggerPresenter<FlightBook
         flightBookingReviewSubmitUseCase.execute(RequestParams.create(), getSubscriberSubmitData());
     }
 
-    private Subscriber<Boolean> getSubscriberCheckVoucherCode() {
-        return new Subscriber<Boolean>() {
+    private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode() {
+        return new Subscriber<AttributesVoucher>() {
             @Override
             public void onCompleted() {
 
@@ -50,12 +51,8 @@ public class FlightBookingReviewPresenter extends BaseDaggerPresenter<FlightBook
             }
 
             @Override
-            public void onNext(Boolean isSuccess) {
-                if(isSuccess) {
-                    getView().onSuccessCheckVoucherCode();
-                }else{
-                    getView().onErrorCheckVoucherCode(new RuntimeException());
-                }
+            public void onNext(AttributesVoucher attributesVoucher) {
+                getView().onSuccessCheckVoucherCode(attributesVoucher);
             }
         };
     }

@@ -10,6 +10,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
@@ -78,6 +79,8 @@ public interface FlightBookingContract {
         void showExpireTransactionDialog();
 
         void showPriceDialogChanges(String newTotalPrice, String oldTotalPrice);
+
+        void navigateToReview(FlightBookingReviewModel flightBookingReviewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {

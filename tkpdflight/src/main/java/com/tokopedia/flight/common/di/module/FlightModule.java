@@ -12,6 +12,7 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
+import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
@@ -65,10 +66,11 @@ public class FlightModule {
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
                                                     FlightMetaDataDBSource flightMetaDataDBSource,
-                                                    FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource) {
+                                                    FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
+                                                    FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource) {
         return new FlightRepositoryImpl(flightAirportDataListSource,flightAirlineDataListSource,
                 flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource,
-                flightMetaDataDBSource, flightAirportDataListBackgroundSource);
+                flightMetaDataDBSource, flightAirportDataListBackgroundSource, flightCheckVoucheCodeDataSource);
     }
 
     @FlightScope

@@ -192,4 +192,7 @@
     <string name="flight_booking_contact_name_secondary_hint">Isi Nama Lengkap</string>
     <string name="flight_booking_contact_email_secondary_hint">Isi Alamat Email</string>
     <string name="flight_booking_contact_telp_hint">Isi nomor telepon</string>
+    <string name="flight_label_hours">Jam</string>
+    <string name="flight_label_minute">Menit</string>
+    <string name="flight_label_second">Detik</string>
 </resources>

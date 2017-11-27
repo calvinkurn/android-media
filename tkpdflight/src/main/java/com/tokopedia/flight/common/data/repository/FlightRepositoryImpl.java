@@ -11,6 +11,8 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
+import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
@@ -19,6 +21,7 @@ import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchMetaParamUtil;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.utils.TKPDMapParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +43,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightCartDataSource flightCartDataSource;
     private FlightMetaDataDBSource flightMetaDataDBSource;
     private FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource;
+    private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
 
     public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource,
                                 FlightAirlineDataListSource flightAirlineDataListSource,
@@ -48,7 +52,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightClassesDataSource flightClassesDataSource,
                                 FlightCartDataSource flightCartDataSource,
                                 FlightMetaDataDBSource flightMetaDataDBSource,
-                                FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource) {
+                                FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
+                                FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource) {
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
         this.flightSearchSingleDataListSource = flightSearchSingleDataListSource;
@@ -57,6 +62,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightCartDataSource = flightCartDataSource;
         this.flightMetaDataDBSource = flightMetaDataDBSource;
         this.flightAirportDataListBackgroundSource = flightAirportDataListBackgroundSource;
+        this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
     }
 
     @Override
@@ -160,5 +166,10 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<Boolean> getAirportListBackground() {
         return flightAirportDataListBackgroundSource.getAirportList();
+    }
+
+    @Override
+    public Observable<AttributesVoucher> checkVoucherCode(TKPDMapParam<String, String> paramsAllValueInString) {
+        return flightCheckVoucheCodeDataSource.checkVoucherCode(paramsAllValueInString);
     }
 }

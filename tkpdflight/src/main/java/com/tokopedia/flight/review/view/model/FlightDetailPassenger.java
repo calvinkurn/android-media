@@ -45,7 +45,7 @@ public class FlightDetailPassenger implements Parcelable, ItemType {
         return passengerType;
     }
 
-    public void setPassengerType(@FlightBookingPassenger int passengerType) {
+    public void setPassengerType(int passengerType) {
         this.passengerType = passengerType;
     }
 

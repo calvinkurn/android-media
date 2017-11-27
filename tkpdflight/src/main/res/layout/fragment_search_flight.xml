@@ -28,7 +28,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </LinearLayout>
 
-
     <com.tokopedia.design.button.BottomActionView
         android:id="@+id/bottom_action_filter_sort"
         android:layout_width="wrap_content"
