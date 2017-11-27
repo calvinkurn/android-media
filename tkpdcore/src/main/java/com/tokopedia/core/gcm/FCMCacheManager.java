@@ -283,9 +283,9 @@ public class FCMCacheManager {
     public static void checkAndSyncFcmId(final Context context) {
         if (FCMCacheManager.isFcmExpired(context)) {
             // force FCM token refresh to be called
-            Observable.defer(new Func0<Observable<Boolean>>() {
+            Observable.just(true).map(new Func1<Boolean, Boolean>() {
                 @Override
-                public Observable<Boolean> call() {
+                public Boolean call(Boolean aBoolean) {
                     try {
                         FirebaseInstanceId.getInstance().deleteInstanceId();
                     } catch (IOException e) {
@@ -293,27 +293,12 @@ public class FCMCacheManager {
                     } finally {
                         FirebaseInstanceId.getInstance().getToken();
                     }
-                    return Observable.just(true);
+                    return aBoolean;
                 }
             }).subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Boolean>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(Boolean aBoolean) {
-
-                        }
-                    });
+                    .subscribe();
         }
     }
 
