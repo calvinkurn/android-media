@@ -1,24 +1,23 @@
 package com.tokopedia.digital.tokocash.entity;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by nabillasabbaha on 8/23/17.
  */
 
 public class HeaderHistoryEntity {
 
+    @SerializedName("name")
+    @Expose
     private String name;
-
+    @SerializedName("type")
+    @Expose
     private String type;
-
+    @SerializedName("selected")
+    @Expose
     private boolean selected;
-
-    public HeaderHistoryEntity() {
-    }
-
-    public HeaderHistoryEntity(String name, boolean selected) {
-        this.name = name;
-        this.selected = selected;
-    }
 
     public String getName() {
         return name;
