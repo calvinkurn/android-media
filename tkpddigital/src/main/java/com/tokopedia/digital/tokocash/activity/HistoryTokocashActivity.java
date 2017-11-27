@@ -30,15 +30,16 @@ import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore
 import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.tokocash.adapter.FilterTokoCashAdapter;
 import com.tokopedia.digital.tokocash.adapter.HistoryTokoCashAdapter;
 import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.domain.IHistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.interactor.TokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.listener.TokoCashHistoryListener;
+import com.tokopedia.digital.tokocash.mapper.FilterHistoryTokoCashMapper;
 import com.tokopedia.digital.tokocash.model.HeaderHistory;
 import com.tokopedia.digital.tokocash.model.ItemHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
@@ -103,13 +104,14 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private boolean isLoadMore;
     private long startDate;
     private long endDate;
-    private FilterTokoCashAdapter adapterFilter;
+    private QuickFilterAdapter adapterFilter;
     private HistoryTokoCashAdapter adapterHistory;
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
     private CompositeSubscription compositeSubscription;
     private SnackbarRetry messageSnackbar;
     private RefreshHandler refreshHandler;
     private String stateDataAfterFilter = "";
+    private FilterHistoryTokoCashMapper headerMapper;
 
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_TRANSACTION_HISTORY)
@@ -236,7 +238,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         filterHistoryRecyclerView.setHasFixedSize(true);
         filterHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
-        adapterFilter = new FilterTokoCashAdapter();
+        adapterFilter = new QuickFilterAdapter();
         filterHistoryRecyclerView.setAdapter(adapterFilter);
     }
 
@@ -252,8 +254,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     }
 
     @NonNull
-    private FilterTokoCashAdapter.FilterTokoCashListener getFilterTokoCashListener() {
-        return new FilterTokoCashAdapter.FilterTokoCashListener() {
+    private QuickFilterAdapter.FilterTokoCashListener getFilterTokoCashListener() {
+        return new QuickFilterAdapter.FilterTokoCashListener() {
             @Override
             public void clearFilter() {
                 typeFilterSelected = "";
@@ -276,7 +278,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     @Override
     protected void initVar() {
-
+        headerMapper = new FilterHistoryTokoCashMapper();
     }
 
     @Override
@@ -365,13 +367,24 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         refreshHandler.finishRefresh();
         mainContent.setVisibility(View.VISIBLE);
         adapterFilter.setListener(getFilterTokoCashListener());
-        adapterFilter.addFilterTokoCashList(tokoCashHistoryData.getHeaderHistory());
+        adapterFilter.addFilterTokoCashList(headerMapper.transform(
+                removeTypeAllOnHeader(tokoCashHistoryData.getHeaderHistory())));
         adapterHistory.setListener(getItemHistoryListener());
         if (firstTimeLoad) {
             adapterHistory.addItemHistoryList(tokoCashHistoryData.getItemHistoryList());
         } else if (isLoadMore) {
             adapterHistory.addItemHistoryListLoadMore(tokoCashHistoryData.getItemHistoryList());
         }
+    }
+
+    @NonNull
+    private List<HeaderHistory> removeTypeAllOnHeader(List<HeaderHistory> filterList) {
+        for (int i = filterList.size() - 1; i > -1; i--) {
+            if (filterList.get(i).getType().equals(ALL_TRANSACTION_TYPE)) {
+                filterList.remove(filterList.get(i));
+            }
+        }
+        return filterList;
     }
 
     @Override
