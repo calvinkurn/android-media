@@ -86,7 +86,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Inject
     CatalogPresenter presenter;
 
-    public static Fragment createInstanceByQuery(String query) {
+    public static CatalogFragment createInstanceByQuery(String query) {
         CatalogFragment fragment = new CatalogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_QUERY, query);
@@ -94,7 +94,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         return fragment;
     }
 
-    public static Fragment createInstanceByCategoryID(String departmentId) {
+    public static CatalogFragment createInstanceByCategoryID(String departmentId) {
         CatalogFragment fragment = new CatalogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTMENT_ID, departmentId);
@@ -547,5 +547,10 @@ public class CatalogFragment extends SearchSectionFragment implements
     public void unSetTopAdsEndlessListener() {
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
         topAdsRecyclerAdapter.hideLoading();
+    }
+
+    @Override
+    public void backToTop() {
+        recyclerView.smoothScrollToPosition(0);
     }
 }

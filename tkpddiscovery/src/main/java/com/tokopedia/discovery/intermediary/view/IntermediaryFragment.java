@@ -470,7 +470,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void backToTop() {
-        nestedScrollView.fullScroll(View.FOCUS_UP);
+        nestedScrollView.fullScroll(NestedScrollView.FOCUS_UP);
     }
 
     @Override

@@ -604,6 +604,11 @@ public class ProductFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.hideLoading();
     }
 
+    @Override
+    public void backToTop() {
+        recyclerView.scrollToPosition(0);
+    }
+
     public void setProductList(List<Visitable> productList) {
         adapter.appendItems(productList);
     }

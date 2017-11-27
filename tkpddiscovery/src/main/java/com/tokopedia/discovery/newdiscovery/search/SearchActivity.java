@@ -43,8 +43,16 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 public class SearchActivity extends DiscoveryActivity
         implements SearchContract.View, RedirectionListener {
 
+    public static final int TAB_THIRD_POSITION= 2;
+    public static final int TAB_SECOND_POSITION= 1;
+    public static final int TAB_PRODUCT = 0;
+
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
+
+    private ProductListFragment productListFragment;
+    private CatalogFragment catalogFragment;
+    private ShopListFragment shopListFragment;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -179,28 +187,75 @@ public class SearchActivity extends DiscoveryActivity
     private void populateThreeTabItem(List<SearchSectionItem> searchSectionItemList,
                                       ProductViewModel productViewModel) {
 
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, getProductFragment(productViewModel)));
-        searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, getCatalogFragment(productViewModel.getQuery())));
-        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, getShopFragment(productViewModel.getQuery())));
+        productListFragment = getProductFragment(productViewModel);
+        catalogFragment = getCatalogFragment(productViewModel.getQuery());
+        shopListFragment = getShopFragment(productViewModel.getQuery());
+
+        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
+        searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
+        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case TAB_PRODUCT:
+                        productListFragment.backToTop();
+                        break;
+                    case TAB_SECOND_POSITION:
+                        catalogFragment.backToTop();
+                        break;
+                    case TAB_THIRD_POSITION:
+                        shopListFragment.backToTop();
+                        break;
+
+
+                }
+
+            }
+        });
     }
 
-    private Fragment getCatalogFragment(String query) {
+    private CatalogFragment getCatalogFragment(String query) {
         return CatalogFragment.createInstanceByQuery(query);
     }
 
-    private Fragment getProductFragment(ProductViewModel productViewModel) {
+    private ProductListFragment getProductFragment(ProductViewModel productViewModel) {
         return ProductListFragment.newInstance(productViewModel);
     }
 
-    private Fragment getShopFragment(String query) {
+    private ShopListFragment getShopFragment(String query) {
         return ShopListFragment.newInstance(query);
     }
 
     private void populateTwoTabItem(List<SearchSectionItem> searchSectionItemList,
                                     ProductViewModel productViewModel) {
 
-        searchSectionItemList.add(new SearchSectionItem(productTabTitle, getProductFragment(productViewModel)));
-        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, getShopFragment(productViewModel.getQuery())));
+        productListFragment = getProductFragment(productViewModel);
+        shopListFragment = getShopFragment(productViewModel.getQuery());
+
+        searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
+        searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case TAB_PRODUCT:
+                        productListFragment.backToTop();
+                        break;
+                    case TAB_SECOND_POSITION:
+                        shopListFragment.backToTop();
+                        break;
+
+                }
+
+            }
+        });
+
+
     }
 
     @Override
