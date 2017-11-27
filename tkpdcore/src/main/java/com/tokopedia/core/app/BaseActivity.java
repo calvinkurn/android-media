@@ -66,7 +66,6 @@ import rx.schedulers.Schedulers;
  */
 
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
-        HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
@@ -74,7 +73,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
-    private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
 
     protected SessionHandler sessionHandler;
@@ -83,7 +81,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
-    private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private CategoryDatabaseManager categoryDatabaseManager;
     private GlobalCacheManager globalCacheManager;
@@ -101,7 +98,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         sessionHandler = new SessionHandler(getBaseContext());
         categoryDatabaseManager = new CategoryDatabaseManager();
         gcmHandler = new GCMHandler(this);
-        hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
 
@@ -145,7 +141,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         initGTM();
         sendScreenAnalytics();
-        verifyFetchDepartment();// this code couldn't be mocked.
+        //verifyFetchDepartment();// this code couldn't be mocked.
 
 
         registerForceLogoutReceiver();
@@ -156,7 +152,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         ScreenTracking.sendScreen(this, this);
     }
 
-    public boolean verifyFetchDepartment() {
+/*    public boolean verifyFetchDepartment() {
         CategoryVersioningHelper.checkVersionCategory(this, new CategoryVersioningHelperListener() {
             @Override
             public void doAfterChecking() {
@@ -173,12 +169,12 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             }
         });
         return false;
-    }
+    }*/
 
-    /**
+/*    *//**
      * download department using intentservice, so that it will not affected UI
      * {@link DownloadService#startDownload(Context, DownloadResultReceiver, Bundle, int)}
-     */
+     *//*
     private void fetchDepartment() {
         if (!HadesService.getIsHadesRunning()) {
             Log.i(HADES, "START DOWNLOAAAD");
@@ -186,12 +182,12 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }
 
         registerHadesReceiver();
-    }
+    }*/
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterHadesReceiver();
+        //unregisterHadesReceiver();
 
         HockeyAppHelper.unregisterManager();
 
@@ -242,7 +238,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             AppWidgetUtil.sendBroadcastToAppWidget(this);
         }
     }
-
+/*
     @Override
     public void onHadesRunning() {
         Log.i(HADES, "LAGI JALAN NEEEEH");
@@ -291,7 +287,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     private void unregisterHadesReceiver() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(hadesBroadcastReceiver);
-    }
+    }*/
 
     private void registerForceLogoutReceiver() {
         logoutNetworkReceiver.setReceiver(this);
