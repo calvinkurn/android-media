@@ -47,24 +47,6 @@ public class InboxMessageActivity extends DrawerPresenterActivity
 
     InboxMessageResultReceiver mReceiver;
 
-    @DeepLink(Constants.Applinks.MESSAGE)
-    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent homeIntent = null;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivity(context);
-        }
-        Intent destination = new Intent(context, InboxMessageActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
