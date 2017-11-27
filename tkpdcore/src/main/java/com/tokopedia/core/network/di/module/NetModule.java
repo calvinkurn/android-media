@@ -7,6 +7,10 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
@@ -66,6 +70,22 @@ public class NetModule {
     @Provides
     public Retrofit provideMojitoRetrofit(@MojitoAuth OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
+    }
+
+    @MojitoGetWishlistQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideMojitoGetWishlistRetrofit(@MojitoSmallTimeoutNoAuth OkHttpClient okHttpClient,
+                                                     Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
+    }
+
+    @MojitoWishlistActionQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideMojitoWishlistActionRetrofit(@MojitoNoRetryAuth OkHttpClient okHttpClient,
+                                                     Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
     }
 

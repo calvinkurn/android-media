@@ -116,7 +116,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
 
         displayLastLogin(data);
 
-        favoriteButton.setVisibility(data.getShopInfo().getShopIsOwner() == 1 ? GONE : VISIBLE);
+        favoriteButton.setVisibility(data.getShopInfo().getShopIsAllowManage() == 1 ? GONE : VISIBLE);
         ivGoldShop.setVisibility(showGoldBadge(data) ? VISIBLE : GONE);
         switchOfficialStoreBadge(data.getShopInfo().getShopIsOfficial());
 
