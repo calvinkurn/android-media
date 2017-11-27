@@ -857,6 +857,7 @@ public class ShopInfoActivity extends BaseActivity
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
             if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                UnifyTracking.eventShopSendChat();
                 intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                         .getAskSellerIntent(this,
                                 shopModel.info.shopId,
@@ -865,8 +866,8 @@ public class ShopInfoActivity extends BaseActivity
                                 shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
-        } else {
-            UnifyTracking.eventShopSendChat();
+        }
+        else {
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);

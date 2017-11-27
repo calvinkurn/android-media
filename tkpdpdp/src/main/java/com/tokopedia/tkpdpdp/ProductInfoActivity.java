@@ -31,6 +31,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenter;
@@ -40,7 +41,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         DeepLinkWebViewHandleListener,
         ProductInfoView,
         DetailFragmentInteractionListener,
-        ProductInfoResultReceiver.Receiver {
+        ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess {
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
@@ -241,6 +242,12 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void onBackPressed() {
+            if(thumbnailIntializing) {
+                isBackPressed = true;
+                return;
+            }
+
+
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else if (isTaskRoot() && GlobalConfig.isSellerApp()) {
@@ -295,4 +302,26 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         startActivity(intent);
         finish();
     }
+
+    // { Work Around IF your press back and
+    //      youtube thumbnail doesn't intalized yet
+
+    boolean isBackPressed;
+
+    boolean thumbnailIntializing = false;
+    @Override
+    public void onIntializationStart() {
+        thumbnailIntializing = true;
+    }
+
+    @Override
+    public void onIntializationComplete() {
+
+        thumbnailIntializing = false;
+        if(isBackPressed) {
+            onBackPressed();
+        }
+    }
+
+    // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
 }

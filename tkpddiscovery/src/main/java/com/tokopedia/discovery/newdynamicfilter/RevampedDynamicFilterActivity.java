@@ -12,26 +12,37 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.ToastNetworkHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.helper.KeyboardHelper;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
+import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterView;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.core.discovery.model.Option.KEY_CATEGORY;
 import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
@@ -53,6 +64,8 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     public static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
     public static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
 
+    private static final String TAG = RevampedDynamicFilterActivity.class.getSimpleName();
+
     RecyclerView recyclerView;
     DynamicFilterAdapter adapter;
     TextView buttonApply;
@@ -67,6 +80,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     private String selectedCategoryId;
     private String selectedCategoryName;
     private String selectedCategoryRootId;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Deprecated
     public static void moveTo(AppCompatActivity activity,
@@ -152,11 +166,45 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     @SuppressWarnings("unchecked")
     private void loadFilterItems() {
-        List<Filter> filterList = getIntent().getParcelableArrayListExtra(EXTRA_FILTER_LIST);
-        removeFiltersWithEmptyOption(filterList);
-        mergeSizeFilterOptionsWithSameValue(filterList);
-        removeBrandFilterOptionsWithSameValue(filterList);
-        adapter.setFilterList(filterList);
+        compositeSubscription.add(
+                Observable.just(new DynamicFilterDbManager())
+                        .map(new Func1<DynamicFilterDbManager, List<Filter>>() {
+                            @Override
+                            public List<Filter> call(DynamicFilterDbManager manager) {
+                                String data = manager.getValueString(getIntent().getStringExtra(EXTRA_FILTER_LIST));
+                                if (data == null) {
+                                    throw new RuntimeException("error get filter cache");
+                                } else {
+                                    Type listType = new TypeToken<List<Filter>>() {}.getType();
+                                    Gson gson = new Gson();
+                                    return gson.fromJson(data, listType);
+                                }
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<List<Filter>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable throwable) {
+                                throwable.printStackTrace();
+                                ToastNetworkHandler.showToast(RevampedDynamicFilterActivity.this, getString(R.string.error_get_local_dynamic_filter));
+                                finish();
+                            }
+
+                            @Override
+                            public void onNext(List<Filter> list) {
+                                removeFiltersWithEmptyOption(list);
+                                mergeSizeFilterOptionsWithSameValue(list);
+                                removeBrandFilterOptionsWithSameValue(list);
+                                adapter.setFilterList(list);
+                            }
+                        })
+        );
     }
 
     private void removeFiltersWithEmptyOption(List<Filter> filterList) {
@@ -501,12 +549,18 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         }
     }
 
-    public static Intent createInstance(Context context, ArrayList<Filter> filters, FilterFlagSelectedModel model) {
+    public static Intent createInstance(Context context, String filterID, FilterFlagSelectedModel model) {
         Intent intent = new Intent(context, RevampedDynamicFilterActivity.class);
-        intent.putParcelableArrayListExtra(EXTRA_FILTER_LIST, filters);
+        intent.putExtra(EXTRA_FILTER_LIST, filterID);
         if (model != null) {
             intent.putExtra(EXTRA_SELECTED_FLAG_FILTER, model);
         }
         return intent;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
     }
 }

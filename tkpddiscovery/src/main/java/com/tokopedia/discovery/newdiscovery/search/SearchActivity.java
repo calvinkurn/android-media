@@ -100,9 +100,14 @@ public class SearchActivity extends DiscoveryActivity
         ProductViewModel productViewModel =
                 getIntent().getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
 
-        boolean forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
+        boolean forceSwipeToShop;
         String searchQuery = getIntent().getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
 
+        if(savedInstanceState!=null){
+            forceSwipeToShop = isForceSwipeToShop();
+        } else {
+            forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
+        }
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
@@ -148,19 +153,21 @@ public class SearchActivity extends DiscoveryActivity
         searchSectionPagerAdapter.setData(searchSectionItemList);
         viewPager.setAdapter(searchSectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-        if (forceSwipeToShop) {
-            swipeToShopWhenReady();
-        }
+        setActiveTab(forceSwipeToShop);
     }
 
-    private void swipeToShopWhenReady() {
+    private void setActiveTab(final boolean swipeToShop) {
         viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
         {
             @Override
             public void onGlobalLayout()
             {
                 viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                viewPager.setCurrentItem(getShopTabPosition());
+                if(swipeToShop){
+                    viewPager.setCurrentItem(getShopTabPosition());
+                } else {
+                    viewPager.setCurrentItem(getActiveTabPosition());
+                }
             }
         });
     }
@@ -221,7 +228,8 @@ public class SearchActivity extends DiscoveryActivity
 
             @Override
             public void onPageSelected(int position) {
-
+                setForceSwipeToShop(false);
+                setActiveTabPosition(position);
             }
 
             @Override

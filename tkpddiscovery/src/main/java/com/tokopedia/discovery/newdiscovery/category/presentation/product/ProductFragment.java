@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -300,8 +301,8 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getScreenName() {
+        return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY;
     }
 
     @Override
