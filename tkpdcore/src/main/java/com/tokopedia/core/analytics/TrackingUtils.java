@@ -104,6 +104,7 @@ public class TrackingUtils extends TrackingConfig {
                         .setTotalActiveProduct(profileData.shopInfoMoengage().info() != null ? profileData.shopInfoMoengage().info().total_active_product() + "" : "")
                         .setShopScore(profileData.shopInfoMoengage().info() != null ? profileData.shopInfoMoengage().info().shop_score() + "" : "")
                         .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MM_YYYY, extractFirstSegment(profileData.profile().bday() != null ? profileData.profile().bday() : "", "T")))
+                        .setGender(profileData.profile().gender() != null ? profileData.profile().gender() : "0")
                         .build();
 
                 getMoEngine().setUserData(customerWrapper, "GRAPHQL");
