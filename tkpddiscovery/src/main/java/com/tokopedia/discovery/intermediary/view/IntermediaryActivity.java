@@ -27,7 +27,7 @@ import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
-public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener {
+public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener,YoutubeViewHolder.YouTubeThumbnailLoadInProcess{
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
@@ -242,6 +242,37 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         return frameLayout;
     }
 
+
+    // { Work Around IF your press back and
+    //      youtube thumbnail doesn't intalized yet
+
+        boolean isBackPressed;
+        @Override
+        public void onBackPressed() {
+            if(!thumbnailIntializing) {
+                super.onBackPressed();
+            } else {
+                isBackPressed = true;
+                return;
+            }
+
+        }
+
+        boolean thumbnailIntializing = false;
+        @Override
+        public void onIntializationStart() {
+            thumbnailIntializing = true;
+        }
+
+        @Override
+        public void onIntializationComplete() {
+            if(isBackPressed) {
+                super.onBackPressed();
+            }
+            thumbnailIntializing = false;
+        }
+
+    // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
     protected boolean isLightToolbarThemes() {
         return true;
     }

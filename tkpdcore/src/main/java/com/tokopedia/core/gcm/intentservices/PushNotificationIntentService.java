@@ -50,12 +50,14 @@ public class PushNotificationIntentService extends IntentService {
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
+            FCMCacheManager.setFcmExpired(getApplicationContext());
         }
 
         @Override
         public void onNext(FCMTokenUpdateEntity entity) {
             CommonUtils.dumper(entity.toString());
             if (entity.getSuccess()) {
+                FCMCacheManager.storeFcmTimestamp(getApplicationContext());
                 FCMCacheManager.storeRegId(entity.getToken(), getBaseContext());
             }
         }
