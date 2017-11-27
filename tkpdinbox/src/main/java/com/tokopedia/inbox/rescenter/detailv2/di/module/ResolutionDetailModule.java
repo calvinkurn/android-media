@@ -13,6 +13,7 @@ import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapperV2;
@@ -50,6 +51,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionV2
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadImageV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadVideoUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.view.fragment.TrackShippingFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
@@ -85,12 +87,18 @@ public class ResolutionDetailModule {
 
     private DetailResCenterFragmentView viewListener;
 
+    private TrackShippingFragment trackShippingFragment;
+
     public ResolutionDetailModule() {
 
     }
 
     public ResolutionDetailModule(DetailResCenterFragmentView viewListener) {
         this.viewListener = viewListener;
+    }
+
+    public ResolutionDetailModule(TrackShippingFragment viewListener) {
+        this.trackShippingFragment = viewListener;
     }
 
     @ResolutionDetailScope
