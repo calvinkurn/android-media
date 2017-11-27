@@ -358,9 +358,14 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (SessionHandler.isFirstTimeAskedPermissionStorage(GalleryActivity.this)
                 || (Build.VERSION.SDK_INT >= 23
                 && shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)))
-            GalleryActivityPermissionsDispatcher.checkPermissionWithCheck(this);
+            GalleryActivityPermissionsDispatcher.initContentWithCheck(this);
         else
             RequestPermissionUtil.onFinishActivityIfNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void initContent() {
         if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
             initFragment(FRAGMENT);
 
@@ -506,11 +511,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         super.onSaveInstanceState(outState);
         outState.putString(IMAGE_PATH_CAMERA, imagePathCamera);
         outState.putBoolean(IS_CAMERA_OPEN, isCameraOpen);
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void checkPermission() {
-        CommonUtils.dumper("NISNISNIS GaleryActivity Storage");
     }
 
     public void WarningDialog() {

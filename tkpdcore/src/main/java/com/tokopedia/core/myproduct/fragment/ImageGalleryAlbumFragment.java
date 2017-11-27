@@ -86,8 +86,6 @@ public class ImageGalleryAlbumFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         imageGalleryView.fetchImageFromDb();
-
-
         return parentView;
     }
 
