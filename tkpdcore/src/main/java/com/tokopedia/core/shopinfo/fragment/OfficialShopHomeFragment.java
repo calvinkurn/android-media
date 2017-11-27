@@ -166,14 +166,14 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
 
     @Override
     public void onSaveState(Bundle state) {
-        if(productModel != null) {
+        if (productModel != null) {
             state.putParcelable(STATE_PRODUCT_MODEL, productModel);
         }
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-        if(!savedState.isEmpty()){
+        if (!savedState.isEmpty()) {
             onGetProduct((ProductModel) savedState.getParcelable(STATE_PRODUCT_MODEL));
         }
     }
@@ -297,7 +297,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     }
 
     private void loadUrl(String url) {
-        if(SessionHandler.isV4Login(getActivity())) {
+        if (SessionHandler.isV4Login(getActivity())) {
             webView.loadAuthUrl(!url.contains(SEAMLESS) ?
                     URLGenerator.generateURLSessionLogin(encodeUrl(url), getActivity()) : url);
         } else {
@@ -401,8 +401,8 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
                 GetShopProductParam getShopProductParam = buildProductListParameter(uri);
                 mOfficialShopInteractionListener.OnProductListPageRedirected(getShopProductParam);
             }
-        } else if(url.contains("shop-static")) {
-            return false;
+        } else if (url.contains("shop-static")) {
+            webView.loadUrl(url);
         } else if (uri.getScheme().startsWith("http")) {
             mOfficialShopInteractionListener.OnWebViewPageRedirected(url);
         }

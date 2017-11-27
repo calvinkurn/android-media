@@ -17,7 +17,6 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
-import android.webkit.WebView;
 
 import com.tokopedia.core.util.TkpdWebView;
 
