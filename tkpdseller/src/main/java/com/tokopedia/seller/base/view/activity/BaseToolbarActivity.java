@@ -59,11 +59,9 @@ public abstract class BaseToolbarActivity extends BaseActivity {
          */
         if (isToolbarWhite()) {
             setToolbarColorWhite();
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black_70));
             toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
             toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
         }else{
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
             toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText);
             toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText);
         }

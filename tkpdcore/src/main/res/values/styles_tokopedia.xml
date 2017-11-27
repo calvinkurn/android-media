@@ -299,6 +299,7 @@
 
     <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
     </style>
 
     <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
@@ -308,6 +309,7 @@
 
     <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
     </style>
 
     <style name="WebViewToolbarText" parent="MediumText">

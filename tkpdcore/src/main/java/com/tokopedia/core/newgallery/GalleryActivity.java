@@ -55,6 +55,7 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -107,6 +108,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     private TkpdProgressDialog progressDialog;
     private boolean compressToTkpd;
+    private boolean isFirstTime;
 
     /**
      * Call this to get image from image gallery
@@ -239,6 +241,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        isFirstTime = savedInstanceState == null;
+
         onRestoreSavedState(savedInstanceState);
 
         fetchExtras(getIntent());
@@ -312,6 +316,11 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (fragment != null && fragment instanceof ImageGalleryFragment) {
             ((ImageGalleryFragment) fragment).addItems(data);
         }
+    }
+
+    @Override
+    public boolean isNeedPermission() {
+        return PermissionUtils.hasSelfPermissions(this, new String[] {"android.permission.CAMERA","android.permission.READ_EXTERNAL_STORAGE"});
     }
 
     @Override
