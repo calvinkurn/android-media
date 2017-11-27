@@ -184,6 +184,11 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         notifyItemRemoved(list.size()-1);
     }
 
+
+    public boolean containLoading() {
+        return this.list.contains(loadingModel);
+    }
+
     public void showEmptyFull(boolean b) {
         if (b) {
             this.list.add(emptyChatModel);
@@ -354,4 +359,5 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
             }
         }
     }
+
 }

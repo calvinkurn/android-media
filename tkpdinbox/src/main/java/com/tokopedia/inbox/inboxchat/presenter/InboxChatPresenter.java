@@ -114,7 +114,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void getMessage() {
         if (viewModel != null) viewModel.setKeyword("");
-        showLoading();
+        if(!getView().getAdapter().containLoading()) {
+            showLoading();
+        }
         getView().disableActions();
         getView().removeError();
         isRequesting = true;
