@@ -26,6 +26,8 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.util.Linkify;
@@ -78,6 +80,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.cart.activity.InsuranceTacActivity;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -273,6 +276,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tosAgreementText.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tosAgreementText.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                getActivity().startActivity(InsuranceTacActivity.createInstance(getActivity(),
+                        "https://www.google.co.id/"));
+            }
+        }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvInsuranceTos.setMovementMethod(LinkMovementMethod.getInstance());
         return tosAgreementText;
     }
 
