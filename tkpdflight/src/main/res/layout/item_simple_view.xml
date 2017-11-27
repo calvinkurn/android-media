@@ -2,19 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tv_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        tools:text="as"
-        android:layout_weight="1" />
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tv_description"
-        android:layout_width="0dp"
+    <com.tokopedia.design.label.LabelView
+        android:id="@+id/header_label"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:background="@drawable/selectable_background_tokopedia"
+        android:paddingBottom="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_med" />
 </LinearLayout>

@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 public class FlightDateUtil {
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd";
+    public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd hh:mm:ss";
     public static final String DEFAULT_VIEW_FORMAT = "dd MMM yyyy";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 

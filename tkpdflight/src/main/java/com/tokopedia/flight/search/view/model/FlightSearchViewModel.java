@@ -245,6 +245,10 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         return fare;
     }
 
+    public void setFare(Fare fare) {
+        this.fare = fare;
+    }
+
     public void setArrivalAirportCity(String arrivalAirportCity) {
         this.arrivalAirportCity = arrivalAirportCity;
     }

@@ -15,6 +15,7 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
     private String id;
     private String title;
     private String price;
+    private int priceNumeric;
 
     public FlightBookingMealViewModel() {
     }
@@ -23,6 +24,7 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
         id = in.readString();
         title = in.readString();
         price = in.readString();
+        priceNumeric = in.readInt();
     }
 
     public static final Creator<FlightBookingMealViewModel> CREATOR = new Creator<FlightBookingMealViewModel>() {
@@ -73,18 +75,6 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(title);
-        dest.writeString(price);
-    }
-
-    @Override
     public boolean equals(Object obj) {
         return obj instanceof FlightBookingMealViewModel && ((FlightBookingMealViewModel) obj).getId().equalsIgnoreCase(id);
     }
@@ -92,5 +82,26 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    public int getPriceNumeric() {
+        return priceNumeric;
+    }
+
+    public void setPriceNumeric(int priceNumeric) {
+        this.priceNumeric = priceNumeric;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(title);
+        parcel.writeString(price);
+        parcel.writeInt(priceNumeric);
     }
 }
