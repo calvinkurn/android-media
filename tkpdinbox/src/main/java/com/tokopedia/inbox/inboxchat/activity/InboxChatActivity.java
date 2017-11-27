@@ -209,7 +209,6 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     @Override
     public void onSuccessGetTopChatNotification(int notifUnreads) {
-        super.onSuccessGetTopChatNotification(notifUnreads);
         if(notifUnreads > 0) {
             TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
             titleTextView.setText("Chat (" + notifUnreads + ")");

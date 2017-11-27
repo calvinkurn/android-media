@@ -37,7 +37,7 @@ public class DynamicFilterDbManager implements DbFlowOperation<FilterModelDB> {
     @Override
     public void store() {
         FilterModelDB cache = new FilterModelDB();
-        cache.filterID = getFilterID();
+        cache.filterId = getFilterID();
         cache.filterData = getFilterData();
         cache.save();
     }
@@ -75,7 +75,7 @@ public class DynamicFilterDbManager implements DbFlowOperation<FilterModelDB> {
     @Override
     public String getValueString(String key) {
         FilterModelDB cache = new Select().from(FilterModelDB.class)
-                .where(FilterModelDB_Table.filterID.is(key))
+                .where(FilterModelDB_Table.filterId.is(key))
                 .querySingle();
         return cache != null ? cache.filterData : null;
     }

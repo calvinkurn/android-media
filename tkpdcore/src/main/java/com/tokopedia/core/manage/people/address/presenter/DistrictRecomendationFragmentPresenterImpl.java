@@ -33,6 +33,11 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
     }
 
     @Override
+    public void detachView() {
+        view = null;
+    }
+
+    @Override
     public void searchAddress(String query) {
         addresses.clear();
         lastPage = 0;
@@ -46,28 +51,36 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
                 new DistrictRecommendationRetrofitInteractor.DistrictRecommendationListener() {
                     @Override
                     public void onSuccess(AddressResponse model) {
-                        view.hideLoading();
-                        addresses.addAll(model.getAddresses());
-                        hasNext = model.isNextAvailable();
-                        view.updateRecommendation();
+                        if (view != null) {
+                            view.hideLoading();
+                            addresses.addAll(model.getAddresses());
+                            hasNext = model.isNextAvailable();
+                            view.updateRecommendation();
+                        }
                     }
 
                     @Override
                     public void onFailed(String error) {
-                        view.hideLoading();
-                        view.showMessage(error);
+                        if (view != null) {
+                            view.hideLoading();
+                            view.showMessage(error);
+                        }
                     }
 
                     @Override
                     public void onTimeout(String timeoutError) {
-                        view.hideLoading();
-                        view.showNoConnection(timeoutError);
+                        if (view != null) {
+                            view.hideLoading();
+                            view.showNoConnection(timeoutError);
+                        }
                     }
 
                     @Override
                     public void onNoConnection() {
-                        view.hideLoading();
-                        view.showNoConnection("");
+                        if (view != null) {
+                            view.hideLoading();
+                            view.showNoConnection("");
+                        }
                     }
                 });
     }

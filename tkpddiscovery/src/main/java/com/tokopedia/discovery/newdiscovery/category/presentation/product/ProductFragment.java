@@ -234,12 +234,7 @@ public class ProductFragment extends SearchSectionFragment
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,
                 productViewModel.getCategoryHeaderModel().getDepartementId());
-        if (getSelectedFilter() != null) {
-            adsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getSelectedSort() != null) {
-            adsParams.getParam().putAll(getSelectedSort());
-        }
+        enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
     }
 

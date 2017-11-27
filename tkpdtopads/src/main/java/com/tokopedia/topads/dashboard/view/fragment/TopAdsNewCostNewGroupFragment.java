@@ -100,6 +100,9 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
         setSuggestionBidText(s);
+        if(isFirstTime){
+            setSuggestionBidText(maxPriceEditText, s);
+        }
     }
 
     @Override

@@ -438,12 +438,7 @@ public class HotlistFragment extends SearchSectionFragment
         params.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_HOTLIST);
         params.getParam().put(TopAdsParams.KEY_HOTLIST_ID, getQueryModel().getHotlistID());
         params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getQueryModel().getCategoryID());
-        if (getSelectedFilter() != null) {
-            params.getParam().putAll(getSelectedFilter());
-        }
-        if (getSelectedSort() != null) {
-            params.getParam().putAll(getSelectedSort());
-        }
+        enrichWithFilterAndSortParams(params);
         return params;
     }
 

@@ -9,7 +9,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,7 +21,6 @@ import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.helper.KeyboardHelper;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
@@ -46,6 +44,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.core.discovery.model.Option.KEY_CATEGORY;
 import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
@@ -84,6 +83,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     private String selectedCategoryId;
     private String selectedCategoryName;
     private String selectedCategoryRootId;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Deprecated
     public static void moveTo(AppCompatActivity activity,
@@ -170,41 +170,45 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     @SuppressWarnings("unchecked")
     private void loadFilterItems() {
-        Observable.just(new DynamicFilterDbManager())
-                .map(new Func1<DynamicFilterDbManager, List<Filter>>() {
-                    @Override
-                    public List<Filter> call(DynamicFilterDbManager manager) {
-                        String data = manager.getValueString(getIntent().getStringExtra(EXTRA_FILTER_LIST));
-                        if (data == null) {
-                            throw new RuntimeException("error get filter cache");
-                        } else {
-                            Type listType = new TypeToken<List<Filter>>() {}.getType();
-                            List<Filter> filterList = new Gson().fromJson(data, listType);
-                            return filterList;
-                        }
-                    }
-                })
-                .subscribe(new Subscriber<List<Filter>>() {
-                    @Override
-                    public void onCompleted() {
+        compositeSubscription.add(
+                Observable.just(new DynamicFilterDbManager())
+                        .map(new Func1<DynamicFilterDbManager, List<Filter>>() {
+                            @Override
+                            public List<Filter> call(DynamicFilterDbManager manager) {
+                                String data = manager.getValueString(getIntent().getStringExtra(EXTRA_FILTER_LIST));
+                                if (data == null) {
+                                    throw new RuntimeException("error get filter cache");
+                                } else {
+                                    Type listType = new TypeToken<List<Filter>>() {}.getType();
+                                    Gson gson = new Gson();
+                                    return gson.fromJson(data, listType);
+                                }
+                            }
+                        })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<List<Filter>>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                        ToastNetworkHandler.showToast(RevampedDynamicFilterActivity.this, getString(R.string.error_get_dynamic_filter));
-                        finish();
-                    }
+                            @Override
+                            public void onError(Throwable throwable) {
+                                throwable.printStackTrace();
+                                ToastNetworkHandler.showToast(RevampedDynamicFilterActivity.this, getString(R.string.error_get_local_dynamic_filter));
+                                finish();
+                            }
 
-                    @Override
-                    public void onNext(List<Filter> list) {
-                        removeFiltersWithEmptyOption(list);
-                        mergeSizeFilterOptionsWithSameValue(list);
-                        removeBrandFilterOptionsWithSameValue(list);
-                        adapter.setFilterList(list);
-                    }
-                });
+                            @Override
+                            public void onNext(List<Filter> list) {
+                                removeFiltersWithEmptyOption(list);
+                                mergeSizeFilterOptionsWithSameValue(list);
+                                removeBrandFilterOptionsWithSameValue(list);
+                                adapter.setFilterList(list);
+                            }
+                        })
+        );
     }
 
     private void removeFiltersWithEmptyOption(List<Filter> filterList) {
@@ -458,7 +462,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private void resetSelectedCategory() {
-        selectedCategoryId = BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC;
+        selectedCategoryId = null;
         selectedCategoryRootId = null;
         selectedCategoryName = null;
     }
@@ -599,5 +603,11 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             intent.putExtra(EXTRA_SELECTED_FLAG_FILTER, model);
         }
         return intent;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
     }
 }
