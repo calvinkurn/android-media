@@ -1,0 +1,74 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_med"
+    tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Harga Tiket Telah Berubah"
+        android:textSize="@dimen/font_title"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="Perubahan harga tiket terjadi karena pengaruh nilai tukar mata uang dan sisa kursi." />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="Harga Sebelumnya" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_old_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:textSize="@dimen/font_subheading"
+        android:textStyle="bold"
+        tools:text="Rp45.876.900" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="Harga Sekarang" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_new_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:textSize="@dimen/font_subheading"
+        android:textStyle="bold"
+        tools:text="Rp46.876.900" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_continue_process"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_med"
+        android:gravity="right"
+        android:text="Lanjut Pembayaran"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_find_another_flight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_med"
+        android:gravity="right"
+        android:text="Cari Penerbangan Lain"
+        android:textStyle="bold" />
+
+
+</LinearLayout>
