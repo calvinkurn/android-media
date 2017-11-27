@@ -53,6 +53,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     private TextView buttonReset;
     private View buttonClose;
     private TextView topBarTitle;
+    private View loadingView;
 
     private boolean isSearchable;
     private String searchHint;
@@ -110,6 +111,15 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
                 applyFilter();
             }
         });
+        loadingView = findViewById(R.id.loading_view);
+    }
+
+    protected void showLoading() {
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    protected void hideLoading() {
+        loadingView.setVisibility(View.GONE);
     }
 
     private void initTopBar() {
@@ -183,7 +193,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
 
     protected abstract void loadFilterItems(List<Option> options);
 
-    private void applyFilter() {
+    protected void applyFilter() {
         Intent intent = new Intent();
         intent.putParcelableArrayListExtra(EXTRA_RESULT, new ArrayList<>(optionList));
         setResult(RESULT_OK, intent);

@@ -28,6 +28,7 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
 import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterDbHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
@@ -72,6 +73,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     TextView buttonReset;
     View buttonClose;
     View mainLayout;
+    View loadingView;
 
     HashMap<String, Boolean> savedCheckedState = new HashMap<>();
     HashMap<String, String> savedTextInput = new HashMap<>();
@@ -127,6 +129,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             }
         });
         mainLayout = findViewById(R.id.main_layout);
+        loadingView = findViewById(R.id.loading_view);
     }
 
     private void initKeyboardVisibilityListener() {
@@ -175,7 +178,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                         } else {
                             Type listType = new TypeToken<List<Filter>>() {}.getType();
                             List<Filter> filterList = new Gson().fromJson(data, listType);
-                            storeLocationFilterOptions(getLocationFilter(filterList));
                             return filterList;
                         }
                     }
@@ -201,17 +203,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                         adapter.setFilterList(list);
                     }
                 });
-    }
-
-    private void storeLocationFilterOptions(Filter locationFilter) {
-        Type listType = new TypeToken<List<Option>>() {}.getType();
-        Gson gson = new Gson();
-        String optionData = gson.toJson(locationFilter.getOptions(), listType);
-
-        DynamicFilterDbManager cache = new DynamicFilterDbManager();
-        cache.setFilterID(locationFilter.getTemplateName());
-        cache.setFilterData(optionData);
-        cache.store();
     }
 
     private void removeFiltersWithEmptyOption(List<Filter> filterList) {
@@ -246,13 +237,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 optionMap.put(option.getValue(), option);
             }
         }
-    }
-
-    private Filter getLocationFilter(List<Filter> filterList) {
-        for (Filter filter : filterList) {
-            if (filter.isLocationFilter()) return filter;
-        }
-        return null;
     }
 
     private Filter getSizeFilter(List<Filter> filterList) {
@@ -350,6 +334,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 case AbstractDynamicFilterDetailActivity.REQUEST_CODE:
                     handleResultFromDetailPage(data);
                     break;
+                case DynamicFilterLocationActivity.REQUEST_CODE:
+                    handleResultFromLocationPage();
+                    break;
                 case DynamicFilterCategoryActivity.REQUEST_CODE:
                     handleResultFromCategoryPage(data);
                     break;
@@ -364,6 +351,34 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         for (Option option : optionList) {
             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
         }
+        hideLoading();
+    }
+
+    private void handleResultFromLocationPage() {
+        Observable.create(new Observable.OnSubscribe<List<Option>>() {
+            @Override
+            public void call(Subscriber<? super List<Option>> subscriber) {
+                subscriber.onNext(FilterDbHelper.loadLocationFilterOptions());
+            }
+        }).subscribe(new Subscriber<List<Option>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Option> optionList) {
+                for (Option option : optionList) {
+                    OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+                }
+                hideLoading();
+            }
+        });
     }
 
     private void handleResultFromCategoryPage(Intent data) {
@@ -373,6 +388,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
         selectedCategoryName
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
+        hideLoading();
     }
 
     private void applyFilter() {
@@ -467,6 +483,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     @Override
     public void onExpandableItemClicked(Filter filter) {
+        showLoading();
         selectedExpandableItemPosition = adapter.getItemPosition(filter);
         if (filter.isCategoryFilter()) {
             FilterDetailActivityRouter
@@ -475,6 +492,14 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             enrichWithInputState(filter);
             FilterDetailActivityRouter.launchDetailActivity(this, filter);
         }
+    }
+
+    private void showLoading() {
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading() {
+        loadingView.setVisibility(View.GONE);
     }
 
     private void enrichWithInputState(Filter filter) {

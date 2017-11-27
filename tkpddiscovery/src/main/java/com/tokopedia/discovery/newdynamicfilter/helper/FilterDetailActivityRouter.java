@@ -11,6 +11,9 @@ import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailGeneralActivi
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterLocationActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterRatingActivity;
 
+import rx.Observable;
+import rx.Subscriber;
+
 /**
  * Created by henrypriyono on 8/16/17.
  */
@@ -43,13 +46,7 @@ public class FilterDetailActivityRouter {
                             filter.getSearch().getPlaceholder());
 
         } else if (filter.isLocationFilter()) {
-            DynamicFilterLocationActivity
-                    .moveTo(activity,
-                            filter.getTitle(),
-                            filter.getTemplateName(),
-                            filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder());
-
+            launchLocationFilterPage(activity, filter);
         } else {
             DynamicFilterDetailGeneralActivity
                     .moveTo(activity,
@@ -58,6 +55,35 @@ public class FilterDetailActivityRouter {
                             filter.getSearch().getSearchable() == 1,
                             filter.getSearch().getPlaceholder());
         }
+    }
+
+    private static void launchLocationFilterPage(final AppCompatActivity activity, final Filter filter) {
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                FilterDbHelper.storeLocationFilterOptions(filter.getOptions());
+                subscriber.onNext(true);
+            }
+        }).subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                DynamicFilterLocationActivity
+                        .moveTo(activity,
+                                filter.getTitle(),
+                                filter.getSearch().getSearchable() == 1,
+                                filter.getSearch().getPlaceholder());
+            }
+        });
     }
 
     public static void launchCategoryActivity(AppCompatActivity activity,

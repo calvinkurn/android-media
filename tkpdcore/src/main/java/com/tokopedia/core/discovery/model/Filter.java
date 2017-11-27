@@ -14,6 +14,8 @@ import java.util.List;
  * @author kulomady on 12/22/16.
  */
 public class Filter implements Parcelable {
+
+    public static final String TEMPLATE_NAME_LOCATION = "template_location";
     
     private static final String TEMPLATE_NAME_SEPARATOR = "template_separator";
     private static final String TEMPLATE_NAME_RATING = "template_rating";
@@ -22,7 +24,6 @@ public class Filter implements Parcelable {
     private static final String TEMPLATE_NAME_COLOR = "template_color";
     private static final String TEMPLATE_NAME_PRICE = "template_price";
     private static final String TEMPLATE_NAME_BRAND = "template_brand";
-    private static final String TEMPLATE_NAME_LOCATION = "template_location";
 
     @SerializedName("title")
     @Expose

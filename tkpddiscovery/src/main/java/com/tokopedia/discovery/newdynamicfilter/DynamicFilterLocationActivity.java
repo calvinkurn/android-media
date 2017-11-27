@@ -8,37 +8,67 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterDbHelper;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by henrypriyono on 11/24/17.
  */
 
 public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralActivity {
+
+    public static final int REQUEST_CODE = 222;
+
     @Override
     protected void retrieveOptionListData() {
-        String data = new DynamicFilterDbManager()
-                .getValueString(getIntent().getStringExtra(EXTRA_OPTION_LIST));
-        Type listType = new TypeToken<List<Option>>() {}.getType();
-        optionList = new Gson().fromJson(data, listType);
+        optionList = FilterDbHelper.loadLocationFilterOptions();
     }
 
     public static void moveTo(AppCompatActivity activity,
                               String pageTitle,
-                              String templateName,
                               boolean isSearchable,
                               String searchHint) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterLocationActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
-            intent.putExtra(EXTRA_OPTION_LIST, templateName);
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
+    }
+
+    @Override
+    protected void applyFilter() {
+        showLoading();
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                FilterDbHelper.storeLocationFilterOptions(optionList);
+                subscriber.onNext(true);
+            }
+        }).subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
     }
 }
