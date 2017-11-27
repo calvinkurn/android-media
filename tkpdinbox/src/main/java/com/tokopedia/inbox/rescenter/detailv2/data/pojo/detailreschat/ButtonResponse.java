@@ -17,6 +17,9 @@ public class ButtonResponse {
     @SerializedName("reportText")
     private String reportText;
 
+    @SerializedName("reportOrder")
+    private int reportOrder;
+
     @SerializedName("cancelComplaint")
     private int cancel;
 
@@ -25,6 +28,9 @@ public class ButtonResponse {
 
     @SerializedName("cancelComplaintText")
     private String cancelText;
+
+    @SerializedName("cancelComplaintOrder")
+    private int cancelOrder;
 
     @SerializedName("editSolution")
     private int edit;
@@ -35,6 +41,9 @@ public class ButtonResponse {
     @SerializedName("editSolutionText")
     private String editText;
 
+    @SerializedName("editSolutionOrder")
+    private int editOrder;
+
     @SerializedName("inputAddress")
     private int inputAddress;
 
@@ -43,6 +52,9 @@ public class ButtonResponse {
 
     @SerializedName("inputAddressText")
     private String inputAddressText;
+
+    @SerializedName("inputAddressOrder")
+    private int inputAddressOrder;
 
     @SerializedName("appealSolution")
     private int appeal;
@@ -53,6 +65,9 @@ public class ButtonResponse {
     @SerializedName("appealSolutionText")
     private String appealText;
 
+    @SerializedName("appealSolutionOrder")
+    private int appealOrder;
+
     @SerializedName("inputAWB")
     private int inputAWB;
 
@@ -61,6 +76,9 @@ public class ButtonResponse {
 
     @SerializedName("inputAWBText")
     private String inputAWBText;
+
+    @SerializedName("inputAWBOrder")
+    private int inputAWBOrder;
 
     @SerializedName("acceptSolution")
     private int accept;
@@ -71,6 +89,9 @@ public class ButtonResponse {
     @SerializedName("acceptSolutionText")
     private String acceptText;
 
+    @SerializedName("acceptSolutionOrder")
+    private int acceptOrder;
+
     @SerializedName("acceptSolutionRetur")
     private int acceptReturn;
 
@@ -79,6 +100,9 @@ public class ButtonResponse {
 
     @SerializedName("acceptSolutionReturText")
     private String acceptReturnText;
+
+    @SerializedName("acceptSolutionReturOrder")
+    private int acceptReturnOrder;
 
     @SerializedName("finishComplaint")
     private int finish;
@@ -89,6 +113,9 @@ public class ButtonResponse {
     @SerializedName("finishComplaintText")
     private String finishText;
 
+    @SerializedName("finishComplaintOrder")
+    private int finishOrder;
+
     @SerializedName("acceptSolutionAdmin")
     private int acceptByAdmin;
 
@@ -97,6 +124,9 @@ public class ButtonResponse {
 
     @SerializedName("acceptSolutionAdminText")
     private String acceptByAdminText;
+
+    @SerializedName("acceptSolutionAdminOrder")
+    private int acceptByAdminOrder;
 
     @SerializedName("acceptSolutionAdminRetur")
     private int acceptByAdminReturn;
@@ -107,6 +137,9 @@ public class ButtonResponse {
     @SerializedName("acceptSolutionAdminReturText")
     private String acceptByAdminReturnText;
 
+    @SerializedName("acceptSolutionAdminReturOrder")
+    private int acceptByAdminReturnOrder;
+
     @SerializedName("recomplaint")
     private int recomplaint;
 
@@ -115,6 +148,9 @@ public class ButtonResponse {
 
     @SerializedName("recomplaintText")
     private String recomplaintText;
+
+    @SerializedName("recomplaintOrder")
+    private int recomplaintOrder;
 
     public int getReport() {
         return report;
@@ -138,6 +174,14 @@ public class ButtonResponse {
 
     public void setReportText(String reportText) {
         this.reportText = reportText;
+    }
+
+    public int getReportOrder() {
+        return reportOrder;
+    }
+
+    public void setReportOrder(int reportOrder) {
+        this.reportOrder = reportOrder;
     }
 
     public int getCancel() {
@@ -164,6 +208,14 @@ public class ButtonResponse {
         this.cancelText = cancelText;
     }
 
+    public int getCancelOrder() {
+        return cancelOrder;
+    }
+
+    public void setCancelOrder(int cancelOrder) {
+        this.cancelOrder = cancelOrder;
+    }
+
     public int getEdit() {
         return edit;
     }
@@ -186,6 +238,14 @@ public class ButtonResponse {
 
     public void setEditText(String editText) {
         this.editText = editText;
+    }
+
+    public int getEditOrder() {
+        return editOrder;
+    }
+
+    public void setEditOrder(int editOrder) {
+        this.editOrder = editOrder;
     }
 
     public int getInputAddress() {
@@ -212,6 +272,14 @@ public class ButtonResponse {
         this.inputAddressText = inputAddressText;
     }
 
+    public int getInputAddressOrder() {
+        return inputAddressOrder;
+    }
+
+    public void setInputAddressOrder(int inputAddressOrder) {
+        this.inputAddressOrder = inputAddressOrder;
+    }
+
     public int getAppeal() {
         return appeal;
     }
@@ -234,6 +302,14 @@ public class ButtonResponse {
 
     public void setAppealText(String appealText) {
         this.appealText = appealText;
+    }
+
+    public int getAppealOrder() {
+        return appealOrder;
+    }
+
+    public void setAppealOrder(int appealOrder) {
+        this.appealOrder = appealOrder;
     }
 
     public int getInputAWB() {
@@ -260,6 +336,14 @@ public class ButtonResponse {
         this.inputAWBText = inputAWBText;
     }
 
+    public int getInputAWBOrder() {
+        return inputAWBOrder;
+    }
+
+    public void setInputAWBOrder(int inputAWBOrder) {
+        this.inputAWBOrder = inputAWBOrder;
+    }
+
     public int getAccept() {
         return accept;
     }
@@ -282,6 +366,14 @@ public class ButtonResponse {
 
     public void setAcceptText(String acceptText) {
         this.acceptText = acceptText;
+    }
+
+    public int getAcceptOrder() {
+        return acceptOrder;
+    }
+
+    public void setAcceptOrder(int acceptOrder) {
+        this.acceptOrder = acceptOrder;
     }
 
     public int getAcceptReturn() {
@@ -308,6 +400,14 @@ public class ButtonResponse {
         this.acceptReturnText = acceptReturnText;
     }
 
+    public int getAcceptReturnOrder() {
+        return acceptReturnOrder;
+    }
+
+    public void setAcceptReturnOrder(int acceptReturnOrder) {
+        this.acceptReturnOrder = acceptReturnOrder;
+    }
+
     public int getFinish() {
         return finish;
     }
@@ -330,6 +430,14 @@ public class ButtonResponse {
 
     public void setFinishText(String finishText) {
         this.finishText = finishText;
+    }
+
+    public int getFinishOrder() {
+        return finishOrder;
+    }
+
+    public void setFinishOrder(int finishOrder) {
+        this.finishOrder = finishOrder;
     }
 
     public int getAcceptByAdmin() {
@@ -356,6 +464,14 @@ public class ButtonResponse {
         this.acceptByAdminText = acceptByAdminText;
     }
 
+    public int getAcceptByAdminOrder() {
+        return acceptByAdminOrder;
+    }
+
+    public void setAcceptByAdminOrder(int acceptByAdminOrder) {
+        this.acceptByAdminOrder = acceptByAdminOrder;
+    }
+
     public int getAcceptByAdminReturn() {
         return acceptByAdminReturn;
     }
@@ -380,6 +496,14 @@ public class ButtonResponse {
         this.acceptByAdminReturnText = acceptByAdminReturnText;
     }
 
+    public int getAcceptByAdminReturnOrder() {
+        return acceptByAdminReturnOrder;
+    }
+
+    public void setAcceptByAdminReturnOrder(int acceptByAdminReturnOrder) {
+        this.acceptByAdminReturnOrder = acceptByAdminReturnOrder;
+    }
+
     public int getRecomplaint() {
         return recomplaint;
     }
@@ -402,5 +526,13 @@ public class ButtonResponse {
 
     public void setRecomplaintText(String recomplaintText) {
         this.recomplaintText = recomplaintText;
+    }
+
+    public int getRecomplaintOrder() {
+        return recomplaintOrder;
+    }
+
+    public void setRecomplaintOrder(int recomplaintOrder) {
+        this.recomplaintOrder = recomplaintOrder;
     }
 }

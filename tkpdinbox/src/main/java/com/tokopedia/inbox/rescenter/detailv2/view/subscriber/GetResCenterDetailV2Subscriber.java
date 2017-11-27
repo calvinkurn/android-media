@@ -9,6 +9,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AttachmentData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbAttachmentViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonViewItem;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryData;
@@ -36,6 +37,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Butto
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -52,6 +55,17 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
     public static final String SELLER = "Penjual";
     public static final String ADMIN = "Admin";
     public static final String SYSTEM = "Sistem";
+
+    public static final String BUTTON_FINISH_COMPLAINT = "button_finish_complaint";
+    public static final String BUTTON_ACCEPT_SOLUTION = "button_accept_solution";
+    public static final String BUTTON_CHANGE_SOLUTION = "button_change_solution";
+    public static final String BUTTON_APPEAL_SOLUTION = "button_appeal_solution";
+    public static final String BUTTON_INPUT_ADDRESS = "button_input_address";
+    public static final String BUTTON_INPUT_AWB = "button_input_awb";
+    public static final String BUTTON_RECOMPLAINT = "button_recomplaint";
+    public static final String BUTTON_REPORT = "button_report";
+    public static final String BUTTON_CANCEL = "button_cancel";
+
     private final DetailResCenterFragmentView fragmentView;
 
     public GetResCenterDetailV2Subscriber(DetailResCenterFragmentView fragmentView) {
@@ -170,6 +184,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setInputAddressLabel(domainModel.getInputAddressLabel());
         data.setAppealLabel(domainModel.getAppealLabel());
         data.setInputAwbLabel(domainModel.getInputAWBLabel());
+        data.setButtonViewItemList(mappingButtonViewItem(domainModel));
         return data;
     }
 
@@ -299,4 +314,80 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         return addressReturData;
     }
 
+    private List<ButtonViewItem> mappingButtonViewItem(ButtonDomain domainModel) {
+        List<ButtonViewItem> itemList = new ArrayList<>();
+        if (domainModel.getFinish() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getFinishLabel(),
+                    BUTTON_FINISH_COMPLAINT,
+                    domainModel.getFinishOrder());
+            itemList.add(data);
+        }
+        if (domainModel.getAccept() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getAcceptLabel(),
+                    BUTTON_ACCEPT_SOLUTION,
+                    domainModel.getAcceptOrder());
+            itemList.add(data);
+        }
+        if (domainModel.getEdit() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getEditLabel(),
+                    BUTTON_CHANGE_SOLUTION,
+                    domainModel.getEditOrder());
+            itemList.add(data);
+        }
+        if (domainModel.getAppeal() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getAppealLabel(),
+                    BUTTON_APPEAL_SOLUTION,
+                    domainModel.getAppealOrder());
+            itemList.add(data);
+        }
+        if (domainModel.getInputAddress() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getInputAddressLabel(),
+                    BUTTON_INPUT_ADDRESS,
+                    domainModel.getInputAddressOrder());
+            itemList.add(data);
+        }
+        if (domainModel.getInputAWB() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getInputAWBLabel(),
+                    BUTTON_INPUT_AWB,
+                    domainModel.getInputAWBOrder());
+            itemList.add(data);
+        }
+        if (domainModel.getRecomplaint() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getRecomplainLabel(),
+                    BUTTON_RECOMPLAINT,
+                    domainModel.getRecomplaintOrder());
+            itemList.add(data);
+        }
+        if (domainModel.getReport() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getReportLabel(),
+                    BUTTON_REPORT,
+                    domainModel.getReportOrder());
+            itemList.add(data);
+        }
+        if (domainModel.getCancel() != 0) {
+            ButtonViewItem data = new ButtonViewItem(
+                    domainModel.getCancelLabel(),
+                    BUTTON_CANCEL,
+                    domainModel.getCancelOrder());
+            itemList.add(data);
+        }
+//        Collections.sort(itemList, new ButtonOrderComparator());
+        return itemList;
+    }
+
+
+    private class ButtonOrderComparator implements Comparator<ButtonViewItem> {
+        @Override
+        public int compare(ButtonViewItem button1, ButtonViewItem button2) {
+            return button1.getOrder() - button2.getOrder();
+        }
+    }
 }

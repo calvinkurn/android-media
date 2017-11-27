@@ -3,6 +3,8 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Created by hangnadi on 3/10/17.
  */
@@ -32,43 +34,8 @@ public class ButtonData implements Parcelable{
     private String finishComplaintLabel;
     private String finishComplaintDialogText;
 
+    private List<ButtonViewItem> buttonViewItemList;
 
-    protected ButtonData(Parcel in) {
-        showEdit = in.readByte() != 0;
-        showAcceptSolution = in.readByte() != 0;
-        showAcceptProduct = in.readByte() != 0;
-        acceptReturSolution = in.readByte() != 0;
-        showAppealSolution = in.readByte() != 0;
-        showAskHelp = in.readByte() != 0;
-        askHelpDialogText = in.readString();
-        showCancel = in.readByte() != 0;
-        cancelDialogText = in.readString();
-        showInputAddress = in.readByte() != 0;
-        showInputAwb = in.readByte() != 0;
-        showAcceptAdminSolution = in.readByte() != 0;
-        acceptDialogText = in.readString();
-        askHelpLabel = in.readString();
-        cancelLabel = in.readString();
-        acceptLabel = in.readString();
-        editLabel = in.readString();
-        inputAddressLabel = in.readString();
-        appealLabel = in.readString();
-        inputAwbLabel = in.readString();
-        finishComplaintLabel = in.readString();
-        finishComplaintDialogText = in.readString();
-    }
-
-    public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
-        @Override
-        public ButtonData createFromParcel(Parcel in) {
-            return new ButtonData(in);
-        }
-
-        @Override
-        public ButtonData[] newArray(int size) {
-            return new ButtonData[size];
-        }
-    };
 
     public boolean isShowEdit() {
         return showEdit;
@@ -255,6 +222,14 @@ public class ButtonData implements Parcelable{
         return finishComplaintDialogText;
     }
 
+    public List<ButtonViewItem> getButtonViewItemList() {
+        return buttonViewItemList;
+    }
+
+    public void setButtonViewItemList(List<ButtonViewItem> buttonViewItemList) {
+        this.buttonViewItemList = buttonViewItemList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -262,27 +237,66 @@ public class ButtonData implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (showEdit ? 1 : 0));
-        dest.writeByte((byte) (showAcceptSolution ? 1 : 0));
-        dest.writeByte((byte) (showAcceptProduct ? 1 : 0));
-        dest.writeByte((byte) (acceptReturSolution ? 1 : 0));
-        dest.writeByte((byte) (showAppealSolution ? 1 : 0));
-        dest.writeByte((byte) (showAskHelp ? 1 : 0));
-        dest.writeString(askHelpDialogText);
-        dest.writeByte((byte) (showCancel ? 1 : 0));
-        dest.writeString(cancelDialogText);
-        dest.writeByte((byte) (showInputAddress ? 1 : 0));
-        dest.writeByte((byte) (showInputAwb ? 1 : 0));
-        dest.writeByte((byte) (showAcceptAdminSolution ? 1 : 0));
-        dest.writeString(acceptDialogText);
-        dest.writeString(askHelpLabel);
-        dest.writeString(cancelLabel);
-        dest.writeString(acceptLabel);
-        dest.writeString(editLabel);
-        dest.writeString(inputAddressLabel);
-        dest.writeString(appealLabel);
-        dest.writeString(inputAwbLabel);
-        dest.writeString(finishComplaintLabel);
-        dest.writeString(finishComplaintDialogText);
+        dest.writeByte(this.showEdit ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showAcceptSolution ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showAcceptProduct ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.acceptReturSolution ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showAppealSolution ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showAskHelp ? (byte) 1 : (byte) 0);
+        dest.writeString(this.askHelpDialogText);
+        dest.writeByte(this.showCancel ? (byte) 1 : (byte) 0);
+        dest.writeString(this.cancelDialogText);
+        dest.writeByte(this.showInputAddress ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showInputAwb ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showAcceptAdminSolution ? (byte) 1 : (byte) 0);
+        dest.writeString(this.acceptDialogText);
+        dest.writeString(this.askHelpLabel);
+        dest.writeString(this.cancelLabel);
+        dest.writeString(this.acceptLabel);
+        dest.writeString(this.editLabel);
+        dest.writeString(this.inputAddressLabel);
+        dest.writeString(this.appealLabel);
+        dest.writeString(this.inputAwbLabel);
+        dest.writeString(this.finishComplaintLabel);
+        dest.writeString(this.finishComplaintDialogText);
+        dest.writeTypedList(this.buttonViewItemList);
     }
+
+    protected ButtonData(Parcel in) {
+        this.showEdit = in.readByte() != 0;
+        this.showAcceptSolution = in.readByte() != 0;
+        this.showAcceptProduct = in.readByte() != 0;
+        this.acceptReturSolution = in.readByte() != 0;
+        this.showAppealSolution = in.readByte() != 0;
+        this.showAskHelp = in.readByte() != 0;
+        this.askHelpDialogText = in.readString();
+        this.showCancel = in.readByte() != 0;
+        this.cancelDialogText = in.readString();
+        this.showInputAddress = in.readByte() != 0;
+        this.showInputAwb = in.readByte() != 0;
+        this.showAcceptAdminSolution = in.readByte() != 0;
+        this.acceptDialogText = in.readString();
+        this.askHelpLabel = in.readString();
+        this.cancelLabel = in.readString();
+        this.acceptLabel = in.readString();
+        this.editLabel = in.readString();
+        this.inputAddressLabel = in.readString();
+        this.appealLabel = in.readString();
+        this.inputAwbLabel = in.readString();
+        this.finishComplaintLabel = in.readString();
+        this.finishComplaintDialogText = in.readString();
+        this.buttonViewItemList = in.createTypedArrayList(ButtonViewItem.CREATOR);
+    }
+
+    public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
+        @Override
+        public ButtonData createFromParcel(Parcel source) {
+            return new ButtonData(source);
+        }
+
+        @Override
+        public ButtonData[] newArray(int size) {
+            return new ButtonData[size];
+        }
+    };
 }
