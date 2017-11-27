@@ -16,6 +16,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by henrypriyono on 11/24/17.
@@ -53,7 +55,9 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
                 FilterDbHelper.storeLocationFilterOptions(optionList);
                 subscriber.onNext(true);
             }
-        }).subscribe(new Subscriber<Boolean>() {
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 

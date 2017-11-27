@@ -43,7 +43,9 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.discovery.model.Option.KEY_CATEGORY;
 import static com.tokopedia.core.discovery.model.Option.METRIC_INTERNATIONAL;
@@ -341,8 +343,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                     handleResultFromCategoryPage(data);
                     break;
             }
+            adapter.notifyItemChanged(selectedExpandableItemPosition);
         }
-        adapter.notifyItemChanged(selectedExpandableItemPosition);
+        hideLoading();
     }
 
     private void handleResultFromDetailPage(Intent data) {
@@ -351,7 +354,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         for (Option option : optionList) {
             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
         }
-        hideLoading();
     }
 
     private void handleResultFromLocationPage() {
@@ -360,7 +362,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             public void call(Subscriber<? super List<Option>> subscriber) {
                 subscriber.onNext(FilterDbHelper.loadLocationFilterOptions());
             }
-        }).subscribe(new Subscriber<List<Option>>() {
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Option>>() {
             @Override
             public void onCompleted() {
 
@@ -376,6 +380,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 for (Option option : optionList) {
                     OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
                 }
+                adapter.notifyItemChanged(selectedExpandableItemPosition);
                 hideLoading();
             }
         });
@@ -388,7 +393,6 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
         selectedCategoryName
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
-        hideLoading();
     }
 
     private void applyFilter() {

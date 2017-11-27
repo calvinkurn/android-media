@@ -13,6 +13,8 @@ import com.tokopedia.discovery.newdynamicfilter.DynamicFilterRatingActivity;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by henrypriyono on 8/16/17.
@@ -64,7 +66,9 @@ public class FilterDetailActivityRouter {
                 FilterDbHelper.storeLocationFilterOptions(filter.getOptions());
                 subscriber.onNext(true);
             }
-        }).subscribe(new Subscriber<Boolean>() {
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
