@@ -302,7 +302,7 @@ public class ProductFragment extends SearchSectionFragment
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY;
+        return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY + getDepartmentId();
     }
 
     @Override
