@@ -75,7 +75,6 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
         variantName = intent.getStringExtra(EXTRA_VARIANT_NAME);
         variantId = intent.getLongExtra(EXTRA_VARIANT_OPTION_ID, 0L);
         toolbar.setTitle(variantName);
-        toolbar.setNavigationIcon(R.drawable.ic_close_24dp);
     }
 
     @Override
