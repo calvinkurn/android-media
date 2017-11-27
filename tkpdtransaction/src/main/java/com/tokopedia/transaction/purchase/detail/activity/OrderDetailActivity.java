@@ -252,6 +252,22 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void onAskBuyer(OrderDetailData orderData) {
+        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                .getAskBuyerIntent(this,
+                        orderData.getShopId(),
+                        orderData.getShopName(),
+                        orderData.getInvoiceNumber(),
+                        MethodChecker.fromHtml(
+                                getString(R.string.dialog_message_ask_seller)
+                                        .replace("XXX",
+                                                orderData.getInvoiceUrl())
+                        ).toString(),
+                        TkpdInboxRouter.TX_ASK_BUYER);
+        startActivity(intent);
+    }
+
+    @Override
     public void onOrderFinished(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         finish();

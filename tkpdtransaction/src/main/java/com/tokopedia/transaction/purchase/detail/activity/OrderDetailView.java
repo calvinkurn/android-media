@@ -23,6 +23,8 @@ public interface OrderDetailView {
 
     void onAskSeller(OrderDetailData data);
 
+    void onAskBuyer(OrderDetailData data);
+
     void onOrderFinished(String message);
 
     void showMainViewLoadingPage();

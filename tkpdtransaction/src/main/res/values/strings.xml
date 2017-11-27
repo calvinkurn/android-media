@@ -10,14 +10,20 @@
     <string name="hint_dialog_alert_request_cancel_order_et_reason">Alasan</string>
     <string name="label_error_request_cancel_order_reason_empty">Alasan pembatalan harus diisi</string>
     <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
+    <string name="title_look">Lihat</string>
+    <string name="title_status">Status</string>
     <string name="toko_cash_info">TokoCash</string>
 
     <string name="label_payment_setting">Pengaturan Pembayaran</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
     <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
+    <string name="label_order_shipping_address">Alamat Pengiriman</string>
+    <string name="label_response_limit">Batas Respon</string>
+    <string name="label_accept_partial_order">Terima Sebagian</string>
     <string name="shipment_data_not_complete">Data tidak lengkap.</string>
     <string name="label_title_empty_cart">Keranjang belanja Anda Kosong.</string>
+    <string name="label_order_detail_shipping_courier">Kurir Pengiriman : </string>
     <string name="label_title_error_default_initial_cart_data">Terjadi Kesalahan</string>
     <string name="label_title_error_timeout_initial_cart_data">Koneksi Timeout</string>
     <string name="label_title_error_no_connection_initial_cart_data">Terjadi kesalahan koneksi</string>
@@ -36,6 +42,8 @@
     <string name="label_message_success_update_cart_insurance">Berhasil mengubah asuransi</string>
     <string name="label_error_default_top_pay">Proses pembayaran gagal, mohon ulangi lagi</string>
     <string name="label_tag_product_item_cart_preorder">Preorder</string>
+    <string name="label_dropshipper">Dropshipper</string>
+    <string name="label_dropshipper_name">Nama Dropshipper</string>
     <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
     <string name="label_hint_cart_item_dropshipper_phone">No. Telp pengirim</string>
     <string name="title_tab_purchase_summary">PEMBELIAN</string>
@@ -57,6 +65,8 @@
     <string name="label_transaction_bank_account_destination">Rekening Tujuan</string>
     <string name="label_transaction_bank_account_source">Rekening Anda</string>
     <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
+    <string name="label_transaction_date_purchase">Tanggal Pembelian</string>
+    <string name="label_purchase_of">Pembelian Oleh : </string>
     <string name="label_transaction_total_payment">Total Pembayaran</string>
     <string name="label_transaction_info_deposit_tokopedia">Saldo Tokopedia Anda saat ini</string>
     <string name="label_transaction_hint_form_voucher_code">Kode Promo</string>
@@ -113,4 +123,20 @@
     <string name="menu_credit_card_authentication">Pengaturan Autentikasi</string>
     <string name="text_complaint_dialog">Klik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\n Klik <b>Kembali</b> untuk membatalkan aksi ini</string>
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
+
+    <string name="button_order_detail_accept_order">Terima Pesanan</string>
+    <string name="button_order_detail_change_courier">Ganti Kurir</string>
+    <string name="button_order_detail_request_pickup">Request Pickup</string>
+    <string name="button_order_detail_confirm">Konfirmasi</string>
+    <string name="button_order_detail_finish">Selesai</string>
+    <string name="button_order_detail_change_awb">Ganti Awb</string>
+    <string name="button_order_detail_view_complaint">Lihat Komplain</string>
+    <string name="button_order_detail_confirm_shipping">Confirm Shipping</string>
+    <string name="button_order_detail_track">Lacak</string>
+    <string name="button_order_detail_ask_seller">Tanya Penjual</string>
+    <string name="button_order_detail_ask_buyer">Tanya Pembeli</string>
+    <string name="button_order_detail_reject_order">Tolak Pesanan</string>
+    <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
+    <string name="button_order_detail_complaint">Komplain</string>
+    <string name="button_order_detail_cancel_chance">Batalkan Peluang</string>
 </resources>

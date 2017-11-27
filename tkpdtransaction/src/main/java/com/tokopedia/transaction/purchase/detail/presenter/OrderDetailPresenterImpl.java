@@ -90,6 +90,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void processAskBuyer(Context context, OrderDetailData data) {
+        mainView.onAskBuyer(data);
+    }
+
+    @Override
     public void processRequestCancelOrder(Context context, OrderDetailData data) {
 
     }

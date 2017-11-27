@@ -13,7 +13,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Accept Order"
+        android:text="@string/button_order_detail_accept_order"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -23,7 +23,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Change Courier"
+        android:text="@string/button_order_detail_change_courier"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -33,7 +33,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Request Pickup"
+        android:text="@string/button_order_detail_request_pickup"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -43,7 +43,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Konfirmasi"
+        android:text="@string/button_order_detail_confirm"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -53,7 +53,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Finish Order"
+        android:text="@string/button_order_detail_finish"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -63,7 +63,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Change Awb"
+        android:text="@string/button_order_detail_change_awb"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -73,7 +73,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="View Complaint"
+        android:text="@string/button_order_detail_view_complaint"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -83,7 +83,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Confirm Shipping"
+        android:text="@string/button_order_detail_confirm_shipping"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -93,7 +93,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
-        android:text="Track"
+        android:text="@string/button_order_detail_track"
         android:textAllCaps="false" />
 
     <Button
@@ -102,7 +102,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
-        android:text="Ask Seller"
+        android:text="@string/button_order_detail_ask_seller"
         android:textAllCaps="false" />
 
     <Button
@@ -111,7 +111,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Ask Buyer"
+        android:text="@string/button_order_detail_ask_buyer"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -121,7 +121,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
-        android:text="Reject Order"
+        android:text="@string/button_order_detail_reject_order"
         android:textAllCaps="false" />
 
     <Button
@@ -130,7 +130,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
-        android:text="Request Cancel"
+        android:text="@string/button_order_detail_request_cancel"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
@@ -140,7 +140,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
-        android:text="Complaint"
+        android:text="@string/button_order_detail_complaint"
         android:textAllCaps="false" />
 
 
@@ -150,7 +150,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="Cancel Peluang"
+        android:text="@string/button_order_detail_cancel_chance"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 

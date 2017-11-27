@@ -31,6 +31,8 @@ public interface OrderDetailPresenter {
 
     void processAskSeller(Context context, OrderDetailData data);
 
+    void processAskBuyer(Context context, OrderDetailData data);
+
     void processRequestCancelOrder(Context context, OrderDetailData data);
 
     void processFinish(Context context, String orderId);

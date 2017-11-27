@@ -110,7 +110,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button askBuyerButton;
         askBuyerButton = (Button) mainView.findViewById(R.id.ask_buyer_button);
-        askBuyerButton.setOnClickListener(onAskBuyer(context));
+        askBuyerButton.setOnClickListener(onAskBuyer(context, presenter, data));
         switchVisibilty(askBuyerButton, buttonData.getAskBuyerVisibility());
 
         Button rejectOrder;
@@ -230,10 +230,13 @@ public class OrderDetailButtonLayout extends LinearLayout{
         };
     }
 
-    private View.OnClickListener onAskBuyer(final Context context) {
+    private View.OnClickListener onAskBuyer(final Context context,
+                                            final OrderDetailPresenter presenter,
+                                            final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.processAskBuyer(context, data);
             }
         };
     }
