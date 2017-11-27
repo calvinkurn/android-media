@@ -29,6 +29,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -64,6 +65,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     private String searchHint;
     private String pageTitle;
     private boolean isAutoTextChange = false;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +73,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         setContentView(R.layout.activity_dynamic_filter_detail);
         bindView();
         showLoading();
-        retrieveOptionListData()
+        subscription = retrieveOptionListData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
@@ -303,6 +305,14 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
             }
 
             loadFilterItems(resultList);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (subscription != null) {
+            subscription.unsubscribe();
         }
     }
 }
