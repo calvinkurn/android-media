@@ -61,7 +61,7 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
                 FilterDbHelper.storeLocationFilterOptions(optionList);
                 subscriber.onNext(true);
             }
-        }).subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
             @Override

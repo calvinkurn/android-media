@@ -74,7 +74,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         bindView();
         showLoading();
         subscription = retrieveOptionListData()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override

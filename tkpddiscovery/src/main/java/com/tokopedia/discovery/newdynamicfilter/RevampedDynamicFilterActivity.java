@@ -366,7 +366,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             public void call(Subscriber<? super List<Option>> subscriber) {
                 subscriber.onNext(FilterDbHelper.loadLocationFilterOptions());
             }
-        }).subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Option>>() {
             @Override

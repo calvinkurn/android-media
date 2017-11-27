@@ -66,7 +66,7 @@ public class FilterDetailActivityRouter {
                 FilterDbHelper.storeLocationFilterOptions(filter.getOptions());
                 subscriber.onNext(true);
             }
-        }).subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
             @Override
