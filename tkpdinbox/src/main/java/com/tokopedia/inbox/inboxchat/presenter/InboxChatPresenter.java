@@ -171,7 +171,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             }
         }
 
-        if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
+        if (!result.isHasNext() && result.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
 
@@ -219,7 +219,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             }
         }
 
-        if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
+        if (!result.isHasNext() && result.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
 
