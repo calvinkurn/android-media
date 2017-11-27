@@ -26,7 +26,7 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.indicator);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         viewPager.setOffscreenPageLimit(getPageLimit());
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
@@ -35,6 +35,11 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
     protected void setupFragment(Bundle savedinstancestate) {
         pagerAdapter = getViewPagerAdapter();
         viewPager.setAdapter(pagerAdapter);
+    }
+
+    @Override
+    protected boolean isAllowElevation() {
+        return false;
     }
 
     @Override

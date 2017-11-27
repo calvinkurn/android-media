@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsProductAdFactory;
@@ -15,7 +16,6 @@ import com.tokopedia.topads.dashboard.data.source.cloud.CloudTopAdsSearchProduct
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
-import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsProductAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsSearchProductRepository;

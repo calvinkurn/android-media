@@ -28,4 +28,11 @@ public class OkHttpRetryPolicy {
         return new OkHttpRetryPolicy(45, 45, 45, 0);
     }
 
+    public static OkHttpRetryPolicy createdOkHttpRetryPolicyQuickTimeOut() {
+        return new OkHttpRetryPolicy(1, 1, 1, 0);
+    }
+
+    public static OkHttpRetryPolicy createdOkHttpRetryPolicyQuickNoRetry() {
+        return new OkHttpRetryPolicy(45, 45, 45, 0);
+    }
 }

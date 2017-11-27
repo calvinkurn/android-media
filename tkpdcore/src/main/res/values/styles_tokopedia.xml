@@ -296,7 +296,16 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
     <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
+        <item name="android:textColor">@color/black_54</item>
         <item name="android:textSize">12sp</item>
     </style>
 
