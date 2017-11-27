@@ -133,15 +133,21 @@ public interface AppEventTracking {
         String TOP_ADS_SELLER_APP = "topAdsSellerApp";
         String CLICK_CREATE_SHOP = "clickCreateShop";
 
-        String PRODUCT_PAGE = "ClickProductDetailPage";
-        String SEND_MESSAGE_PAGE = "ClickMessageRoom";
-        String SHOP_PAGE = "ClickShopPage";
+        String PRODUCT_PAGE = "clickPDP";
+        String SEND_MESSAGE_PAGE = "ClickChatDetail";
+        String SHOP_PAGE = "clickMessageShop";
 
         String CLICK_APP_SHARE_REFERRAL = "clickReferral";
         String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
+
+        String HOME_WISHLIST = "homeWishlist";
+        String HOMEPAGE_UNIFY = "userInteractionHomepage";
+        String EVENT_CLICK_TOP_NAV = "eventTopNav";
         String EVENT_MANAGE_PRODUCT = "eventManageProduct";
 
         String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
+        String EVENT_INTERNAL_PROMO = "internalPromo";
+        String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
     }
@@ -240,6 +246,9 @@ public interface AppEventTracking {
         String SHOP_PAGE = "shop page";
         String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
+        String HOMEPAGE_UNIFY = "homepage tab";
+        String EVENT_TOP_NAV = "top nav";
+        String CATEGORY_HOTLIST = "hotlist";
     }
 
     interface Action {
@@ -274,12 +283,6 @@ public interface AppEventTracking {
         String SUCCESS = "Success";
         String LOAD = "Load";
         String SCROLL = "Scroll";
-        String SEARCH_POPULAR = "Popular Search";
-        String SEARCH_RECENT = "Recent Search";
-        String SEARCH_HOTLIST = "Search HotList";
-        String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
-        String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
-        String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
         String UPLOAD_SUCCESS = "Success Upload";
         String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
         String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
@@ -328,6 +331,8 @@ public interface AppEventTracking {
         String SEND_MESSAGE_PAGE = "click on kirim";
         String SHOP_PAGE = "click on kirim pesan";
         String CLICK_DASHBOARD_CARD = "Click - Dashboard Card";
+        String WISHLIST_SEARCH_ITEM = "wishlist - search item";
+        String CLICK_CART_BUTTON = "click cart button";
         String CLICK_TOP_NAV = "click top nav";
         String CLICK_PRODUCT_LIST = "click product list";
         String CLICK_SORT_PRODUCT = "click sort product";
@@ -350,13 +355,21 @@ public interface AppEventTracking {
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
         String CLICK_SALDO = "click saldo";
         String CLICK_ACTIVATE = "click activate";
+        String SEARCH_PRODUCT = "search product";
+        String SEARCH_POPULAR = "search product - popular";
+        String SEARCH_RECENT = "search product - recent";
+        String SEARCH_HOTLIST = "search product - hotlist";
+        String SEARCH_AUTOCOMPLETE = "search product - autocomplete";
+        String SEARCH_PRODUCT_SUGGESTION = "search product - suggestion";
+        String SEARCH_SHOP = "search shop";
+        String SEARCH_AUTOCOMPLETE_SHOP = "search shop - autocomplete";
     }
 
     interface EventLabel {
-        String HOME = "Home";
-        String FAVORITE = "Favorite";
-        String PRODUCT_FEED = "Product Feed";
-        String HOTLIST = "Hotlist";
+        String HOME = "homepage";
+        String FAVORITE = "favorite";
+        String PRODUCT_FEED = "feed";
+        String HOTLIST = "hotlist";
         String VIEW_ALL_WISHLIST = "View All Wishlist";
         String VIEW_ALL_RECENT = "View All Wishlist";
         String ADD_TO_WISHLIST_LABEL = "Add To Wishlist - ";

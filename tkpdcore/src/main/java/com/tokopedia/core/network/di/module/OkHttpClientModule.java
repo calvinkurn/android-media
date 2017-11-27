@@ -10,6 +10,8 @@ import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -126,6 +128,43 @@ public class OkHttpClientModule {
                 chuckInterceptor,
                 debugInterceptor,
                 apiCacheInterceptor);
+    }
+
+    @MojitoNoRetryAuth
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientMojitoNoRetryAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                             @Named(AuthUtil.KEY.KEY_MOJITO) GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
+                                                             OkHttpRetryPolicy okHttpRetryPolicy,
+                                                             ChuckInterceptor chuckInterceptor,
+                                                             DebugInterceptor debugInterceptor,
+                                                             ApiCacheInterceptor apiCacheInterceptor) {
+
+        return OkHttpFactory.create().buildDaggerClientAuth(fingerprintInterceptor,
+                globalTkpdAuthInterceptor,
+                OkHttpRetryPolicy.createdOkHttpRetryPolicyQuickNoRetry(),
+                chuckInterceptor,
+                debugInterceptor,
+                apiCacheInterceptor);
+    }
+
+    @MojitoSmallTimeoutNoAuth
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientMojitoSmallTimeoutNoAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                                    @Named(AuthUtil.KEY.KEY_MOJITO) GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
+                                                                    ChuckInterceptor chuckInterceptor,
+                                                                    DebugInterceptor debugInterceptor,
+                                                                    ApiCacheInterceptor apiCacheInterceptor) {
+
+        return OkHttpFactory.create().buildDaggerClientNoAuth(
+                fingerprintInterceptor,
+                globalTkpdAuthInterceptor,
+                OkHttpRetryPolicy.createdOkHttpRetryPolicyQuickTimeOut(),
+                chuckInterceptor,
+                debugInterceptor,
+                apiCacheInterceptor
+        );
     }
 
     @WsV4Auth

@@ -183,7 +183,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
         intent.putExtras(bundle);
         viewListener.navigateToActivity(intent);
     }

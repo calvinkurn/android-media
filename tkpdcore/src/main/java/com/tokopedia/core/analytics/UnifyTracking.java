@@ -28,10 +28,10 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventHomeTab(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.CLICK,
-                label
+                AppEventTracking.Event.HOMEPAGE_UNIFY,
+                AppEventTracking.Category.HOMEPAGE_UNIFY,
+                String.format("click %s", label),
+                ""
         ).getEvent());
     }
 
@@ -564,9 +564,18 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventDiscoverySearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
-                AppEventTracking.Action.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.SEARCH_PRODUCT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDiscoverySearchShop(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.SEARCH_SHOP,
                 label
         ).getEvent());
     }
@@ -576,6 +585,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.SEARCH,
                 AppEventTracking.Category.SEARCH,
                 AppEventTracking.Action.VOICE_SEARCH,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSearchWishlist(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.HOME_WISHLIST,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.WISHLIST_SEARCH_ITEM,
                 label
         ).getEvent());
     }
@@ -1559,8 +1577,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickPopularSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_POPULAR,
                 label
         ).getEvent());
@@ -1568,8 +1586,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickRecentSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_RECENT,
                 label
         ).getEvent());
@@ -1577,8 +1595,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickHotListSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_HOTLIST,
                 label
         ).getEvent());
@@ -1586,8 +1604,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickAutoCompleteSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_AUTOCOMPLETE,
                 label
         ).getEvent());
@@ -1595,19 +1613,19 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickAutoCompleteShopSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_AUTOCOMPLETE_SHOP,
                 label
         ).getEvent());
     }
 
-    public static void eventClickAutoCompleteCategory(String catId, String label) {
+    public static void eventClickAutoCompleteCategory(String catName, String catId, String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
-                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_CATEGORY,
-                catId + " | " + label
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.SEARCH_PRODUCT_SUGGESTION,
+                label + " | " + label + " | " +catName + " | " + catId
         ).getEvent());
     }
 
@@ -2553,6 +2571,15 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventDeleteFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
+    }
+
+    public static void eventClickCart() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.CLICK_CART_BUTTON,
+                ""
+        ).getEvent());
     }
 
     public static void eventProductManage(String action, String label){

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:context="http://schemas.android.com/tools"
-    android:background="@color/white"
-    android:orientation="horizontal">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:context="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:paddingTop="@dimen/padding_small"
+              android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center|top">
+        android:layout_gravity="center|top"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_month"
@@ -19,27 +20,27 @@
             android:layout_gravity="center"
             android:textAllCaps="true"
             android:textColor="@color/tkpd_main_green"
-            context:text="AUG" />
+            context:text="AUG"/>
 
         <TextView
             android:id="@+id/tv_date_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            context:text="24"
-            android:textSize="@dimen/fontxl"
             android:layout_gravity="center"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/fontxl"
             android:textStyle="bold"
-            android:textColor="@color/tkpd_main_green"/>
+            context:text="24"/>
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/indicator_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_alignBottom="@id/tv_history_text"
         android:layout_alignTop="@id/tv_date"
-        android:layout_alignBottom="@id/tv_history_text">
+        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small">
 
         <ImageView
             android:id="@+id/indicator"
@@ -51,10 +52,10 @@
         <View
             android:id="@+id/line_indicator"
             android:layout_width="1dp"
-            android:layout_marginTop="2dp"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/indicator"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
             android:background="@color/black_12"
             />
 
@@ -71,22 +72,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_vs"
-            context:text="Pembeli"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fontvs"
             android:textStyle="bold"
+            context:text="Pembeli"
             />
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            context:text="12.34 WIB"
             android:layout_alignParentRight="true"
             android:textColor="@color/black_38"
             android:textSize="@dimen/fontvs"
+            context:text="12.34 WIB"
             />
-
 
 
         <TextView
@@ -102,8 +102,7 @@
             android:paddingBottom="@dimen/padding_small"
             android:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
             android:textColor="@color/black_70"
-            android:textSize="@dimen/fontvs" />
-
+            android:textSize="@dimen/fontvs"/>
 
 
     </RelativeLayout>
