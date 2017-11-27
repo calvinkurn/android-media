@@ -9,6 +9,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
+import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.subscriber.GetBrowseCatalogLoadMoreSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.subscriber.GetBrowseCatalogSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
@@ -20,7 +21,7 @@ import javax.inject.Inject;
  * Created by hangnadi on 10/12/17.
  */
 
-public class CatalogPresenter extends BaseDaggerPresenter<CatalogFragmentContract.View>
+public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<CatalogFragmentContract.View>
         implements CatalogFragmentContract.Presenter{
 
     @Inject
@@ -57,14 +58,8 @@ public class CatalogPresenter extends BaseDaggerPresenter<CatalogFragmentContrac
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
         requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
 
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
-        if (getView().getExtraFilter() != null)
-            requestParams.putAll(getView().getExtraFilter());
+        enrichWithFilterAndSortParams(requestParams);
+        removeDefaultCategoryParam(requestParams);
         return requestParams;
     }
 
@@ -85,23 +80,18 @@ public class CatalogPresenter extends BaseDaggerPresenter<CatalogFragmentContrac
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
         requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
 
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
-        if (getView().getExtraFilter() != null)
-            requestParams.putAll(getView().getExtraFilter());
+        enrichWithFilterAndSortParams(requestParams);
+        removeDefaultCategoryParam(requestParams);
         return requestParams;
     }
 
     @Override
-    public void requestDynamicFilter() {
-        getDynamicFilterUseCase.execute(getParamDynamicFilterParam(), new GetDynamicFilterSubscriber(getView()));
+    protected void getFilterFromNetwork(RequestParams requestParams) {
+        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
     }
 
-    private RequestParams getParamDynamicFilterParam() {
+    @Override
+    protected RequestParams getDynamicFilterParam() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG);
@@ -149,14 +139,8 @@ public class CatalogPresenter extends BaseDaggerPresenter<CatalogFragmentContrac
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
         requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
 
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
-        if (getView().getExtraFilter() != null)
-            requestParams.putAll(getView().getExtraFilter());
+        enrichWithFilterAndSortParams(requestParams);
+        removeDefaultCategoryParam(requestParams);
         return requestParams;
     }
 
@@ -177,14 +161,8 @@ public class CatalogPresenter extends BaseDaggerPresenter<CatalogFragmentContrac
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
         requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
 
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
-        if (getView().getExtraFilter() != null)
-            requestParams.putAll(getView().getExtraFilter());
+        enrichWithFilterAndSortParams(requestParams);
+        removeDefaultCategoryParam(requestParams);
         return requestParams;
     }
 }

@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -130,8 +131,8 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getScreenName() {
+        return AppScreen.SCREEN_SEARCH_PAGE_CATALOG_TAB;
     }
 
     @Override
@@ -460,16 +461,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
 
-        if (getExtraFilter() != null) {
-            adsParams.getParam().putAll(getExtraFilter());
-        }
-        if (getSelectedFilter() != null) {
-            adsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getSelectedSort() != null) {
-            adsParams.getParam().putAll(getSelectedSort());
-        }
-
+        enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
     }
@@ -480,15 +472,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getDepartmentId());
 
-        if (getExtraFilter() != null) {
-            adsParams.getParam().putAll(getExtraFilter());
-        }
-        if (getSelectedFilter() != null) {
-            adsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getSelectedSort() != null) {
-            adsParams.getParam().putAll(getSelectedSort());
-        }
+        enrichWithFilterAndSortParams(adsParams);
 
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
