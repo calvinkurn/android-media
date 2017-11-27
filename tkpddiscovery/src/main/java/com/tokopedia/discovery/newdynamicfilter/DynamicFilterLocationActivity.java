@@ -28,8 +28,14 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
     public static final int REQUEST_CODE = 222;
 
     @Override
-    protected void retrieveOptionListData() {
-        optionList = FilterDbHelper.loadLocationFilterOptions();
+    protected Observable<Boolean> retrieveOptionListData() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                optionList = FilterDbHelper.loadLocationFilterOptions();
+                subscriber.onNext(true);
+            }
+        });
     }
 
     public static void moveTo(AppCompatActivity activity,
@@ -70,6 +76,7 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
 
             @Override
             public void onNext(Boolean aBoolean) {
+                hideLoading();
                 setResult(RESULT_OK);
                 finish();
             }

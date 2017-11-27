@@ -27,6 +27,11 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by henrypriyono on 8/16/17.
  */
@@ -64,17 +69,43 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dynamic_filter_detail);
-        retrieveOptionListData();
-        fetchDataFromIntent();
         bindView();
-        initTopBar();
-        initRecyclerView();
-        loadFilterItems(optionList);
-        initSearchView();
+        showLoading();
+        retrieveOptionListData()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        fetchDataFromIntent();
+                        initTopBar();
+                        initRecyclerView();
+                        loadFilterItems(optionList);
+                        initSearchView();
+                        initListeners();
+                        hideLoading();
+                    }
+                });
     }
 
-    protected void retrieveOptionListData() {
-        optionList = getIntent().getParcelableArrayListExtra(EXTRA_OPTION_LIST);
+    protected Observable<Boolean> retrieveOptionListData() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                optionList = getIntent().getParcelableArrayListExtra(EXTRA_OPTION_LIST);
+                subscriber.onNext(true);
+            }
+        });
     }
 
     private void fetchDataFromIntent() {
@@ -91,27 +122,30 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         topBarTitle = (TextView) findViewById(R.id.top_bar_title);
         buttonClose = findViewById(R.id.top_bar_close_button);
         buttonClose.setBackgroundResource(R.drawable.ic_filter_detail_back);
+        buttonReset = (TextView) findViewById(R.id.top_bar_button_reset);
+        buttonApply = (TextView) findViewById(R.id.button_apply);
+        loadingView = findViewById(R.id.loading_view);
+    }
+
+    private void initListeners() {
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        buttonReset = (TextView) findViewById(R.id.top_bar_button_reset);
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 resetFilter();
             }
         });
-        buttonApply = (TextView) findViewById(R.id.button_apply);
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 applyFilter();
             }
         });
-        loadingView = findViewById(R.id.loading_view);
     }
 
     protected void showLoading() {
