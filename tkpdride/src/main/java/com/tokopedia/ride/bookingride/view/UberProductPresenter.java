@@ -175,6 +175,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                             getView().hideErrorMessage();
                             getView().showProductList();
                             getView().renderProductList(productsList);
+                            getView().showFareListHeader();
                             //renderNearbyCarsAroundSource(productEstimates);
                         }
                         getMinimalProductEstimateAndRender(productEstimates);
@@ -286,6 +287,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                         List<Visitable> visitables = new ArrayList<>();
                                         visitables.addAll(rideProductViewModels);
                                         getView().renderProductList(visitables);
+                                        getView().showFareListHeader();
                                     } else {
                                         getView().hideProductList();
                                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found),

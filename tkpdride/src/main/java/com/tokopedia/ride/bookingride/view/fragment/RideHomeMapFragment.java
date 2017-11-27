@@ -324,6 +324,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setMapViewListener() {
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
+
         MapsInitializer.initialize(this.getActivity());
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
