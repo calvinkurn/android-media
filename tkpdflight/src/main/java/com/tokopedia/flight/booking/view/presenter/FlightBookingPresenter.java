@@ -18,6 +18,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -73,7 +74,9 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     @Override
     public void onButtonSubmitClicked() {
         if (validateFields()) {
-
+            FlightBookingReviewModel flightBookingReviewModel = new FlightBookingReviewModel(getView().getCurrentBookingParamViewModel(),
+                    getView().getCurrentCartPassData());
+            getView().navigateToReview(flightBookingReviewModel);
         }
     }
 
@@ -448,7 +451,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
         } else if (getView().getContactEmail().length() == 0) {
             isValid = false;
             getView().showContactEmailEmptyError(R.string.flight_booking_contact_email_empty_error);
-        } else if (isValidEmail(getView().getContactEmail())) {
+        } else if (!isValidEmail(getView().getContactEmail())) {
             isValid = false;
             getView().showContactEmailInvalidError(R.string.flight_booking_contact_email_invalid_error);
         } else if (getView().getContactPhoneNumber().length() == 0) {

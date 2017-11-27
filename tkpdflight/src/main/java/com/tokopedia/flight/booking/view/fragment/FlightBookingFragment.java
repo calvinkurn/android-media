@@ -49,6 +49,8 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
@@ -467,6 +469,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
         snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
         snackBar.show();
+    }
+
+    @Override
+    public void navigateToReview(FlightBookingReviewModel flightBookingReviewModel) {
+        startActivity(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel));
     }
 
     @Override
