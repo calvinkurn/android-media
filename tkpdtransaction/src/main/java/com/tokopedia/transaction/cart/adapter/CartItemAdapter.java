@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartInsurance;
@@ -318,6 +319,21 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onClick(View v) {
                 cartItemActionListener.onShopDetailInfoClicked(cartData.getCartShop());
+            }
+        });
+
+        holder.imgInsuranceInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetView bottomSheetView = new BottomSheetView(hostFragment.getActivity());
+                bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                        .BottomSheetFieldBuilder()
+                        .setTitle("Asuransi Pengiriman")
+                        .setBody("Ini adalah bottom sheet asuransi pengiriman")
+                        .setImg(R.drawable.ic_insurance_bottomsheet)
+                        .build());
+
+                bottomSheetView.show();
             }
         });
     }
@@ -806,6 +822,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         LinearLayout totalPriceLayout;
         @BindView(R2.id.total_price_progress_bar)
         ProgressBar totalPriceProgressBar;
+        @BindView(R2.id.img_insurance_info)
+        ImageView imgInsuranceInfo;
 
         public ViewHolder(View itemView) {
             super(itemView);

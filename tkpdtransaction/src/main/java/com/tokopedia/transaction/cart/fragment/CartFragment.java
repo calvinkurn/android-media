@@ -10,18 +10,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -178,6 +184,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView instantInsertVoucherButton;
     @BindView(R2.id.instant_promo_placeholder)
     CardView instantPromoPlaceHolder;
+    @BindView(R2.id.tv_insurance_tos)
+    TextView tvInsuranceTos;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
@@ -244,8 +252,28 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initView(View view) {
+        Spannable tosAgreementText = formatInsuranceTacText();
+
+        tvInsuranceTos.setText(tosAgreementText);
+        tvInsuranceTos.setVisibility(View.VISIBLE);
+
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         stopNestedScrollingView();
+    }
+
+    @NonNull
+    private Spannable formatInsuranceTacText() {
+        String formatText = getString(R.string.text_tos_agreement);
+        String messageTosAgreement = getString(R.string.message_tos_agreement);
+        int startSpan = messageTosAgreement.indexOf(formatText);
+        int endSpan = messageTosAgreement.indexOf(formatText) + formatText.length();
+        Spannable tosAgreementText = new SpannableString(messageTosAgreement);
+        int color = ContextCompat.getColor(context, R.color.tkpd_green_header);
+        tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tosAgreementText.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return tosAgreementText;
     }
 
     @Override

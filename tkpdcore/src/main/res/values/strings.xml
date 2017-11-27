@@ -789,6 +789,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="msg_tokopedia_indomaret_fee">"Tambahan biaya Rp 2.500,-"</string>
     <string name="title_admin_fee">Biaya administrasi</string>
     <string name="title_gratis">GRATIS</string>
+    <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
+    <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
     <!-- Strings related to add to cart -->
 
 

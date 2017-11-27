@@ -284,6 +284,14 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tv_insurance_tos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:visibility="gone"
+                            tools:text="Dengan membayar, saya menyetujui syarat dan ketentuan asuransi" />
+
+                        <TextView
                             android:id="@+id/btn_checkout"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/btn_height"

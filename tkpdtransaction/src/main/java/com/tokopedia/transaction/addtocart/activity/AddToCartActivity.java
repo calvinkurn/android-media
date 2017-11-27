@@ -48,6 +48,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.listener.AddToCartViewListener;
@@ -166,6 +167,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     TextView arrowMaxHour;
     @BindView(R2.id.desc_max_hour)
     TextView descMaxHour;
+    @BindView(R2.id.img_insurance_info)
+    ImageView imgInsuranceInfo;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -756,6 +759,19 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             etQuantity.setText(String
                     .valueOf(Integer.parseInt(etQuantity.getText().toString()) - 1));
         } else etQuantity.setText("1");
+    }
+
+    @OnClick(R2.id.img_insurance_info)
+    void showInsuranceInfo() {
+        BottomSheetView bottomSheetView = new BottomSheetView(this);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle("Asuransi Pengiriman")
+                .setBody("Ini adalah bottom sheet asuransi pengiriman")
+                .setImg(R.drawable.ic_insurance_bottomsheet)
+                .build());
+
+        bottomSheetView.show();
     }
 
     private OrderData createFinalOrderData() {
