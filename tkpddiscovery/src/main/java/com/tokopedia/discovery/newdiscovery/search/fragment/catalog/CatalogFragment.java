@@ -553,4 +553,10 @@ public class CatalogFragment extends SearchSectionFragment implements
     public void backToTop() {
         recyclerView.smoothScrollToPosition(0);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

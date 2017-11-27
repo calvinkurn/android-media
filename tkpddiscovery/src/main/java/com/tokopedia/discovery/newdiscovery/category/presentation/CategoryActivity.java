@@ -262,5 +262,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        categoryPresenter.detachView();
+    }
 }
