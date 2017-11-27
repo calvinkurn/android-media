@@ -78,6 +78,11 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
     }
 
     @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return ProductVariantDetailFragment.newInstance();
     }
