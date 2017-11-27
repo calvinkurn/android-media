@@ -220,6 +220,11 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView {
     }
 
     @Override
+    public boolean isNeedPermission() {
+        return true;
+    }
+
+    @Override
     protected boolean isLightToolbarThemes() {
         return true;
     }

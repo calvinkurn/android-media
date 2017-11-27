@@ -111,17 +111,25 @@ public class NetworkErrorHelper {
     }
 
     public static void showSnackbar(Activity activity) {
-        SnackbarManager.make(activity,
-                activity.getResources().getString(R.string.msg_network_error),
-                Snackbar.LENGTH_SHORT)
-                .show();
+        if (activity != null) {
+            SnackbarManager.make(activity,
+                    activity.getResources().getString(R.string.msg_network_error),
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     public static void showSnackbar(Activity activity, String error) {
-        SnackbarManager.make(activity,
-                error,
-                Snackbar.LENGTH_SHORT)
-                .show();
+        if (activity != null) {
+            if (error != null && !error.isEmpty()) {
+                SnackbarManager.make(activity,
+                        error,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            } else {
+                showSnackbar(activity);
+            }
+        }
     }
 
     public static void showEmptyState(Context context, final View rootview, final RetryClickedListener listener) {
@@ -143,6 +151,8 @@ public class NetworkErrorHelper {
                         listener.onRetryClicked();
                     }
                 });
+            } else {
+                retryButon.setVisibility(View.GONE);
             }
         }
     }
@@ -208,7 +218,9 @@ public class NetworkErrorHelper {
             View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
             View retryButon = retryLoad.findViewById(R.id.button_retry);
             TextView msgRetry = (TextView) retryLoad.findViewById(R.id.message_retry);
-            msgRetry.setText(message);
+            if (message != null) {
+                msgRetry.setText(message);
+            }
             if (listener != null) {
                 retryButon.setOnClickListener(new View.OnClickListener() {
 
@@ -218,6 +230,8 @@ public class NetworkErrorHelper {
                         listener.onRetryClicked();
                     }
                 });
+            } else {
+                retryButon.setVisibility(View.GONE);
             }
         }
 

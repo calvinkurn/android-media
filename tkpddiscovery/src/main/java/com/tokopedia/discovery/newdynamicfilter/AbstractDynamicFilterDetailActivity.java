@@ -59,14 +59,6 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     private String pageTitle;
     private boolean isAutoTextChange = false;
 
-    protected static ArrayList<Parcelable> mappingParcelableOption(List<Option> optionList) {
-        ArrayList<Parcelable> parcelables = new ArrayList<>();
-        for (Option option : optionList) {
-            parcelables.add(option);
-        }
-        return parcelables;
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,7 +181,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
 
     private void applyFilter() {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_RESULT, Parcels.wrap(optionList));
+        intent.putParcelableArrayListExtra(EXTRA_RESULT, new ArrayList<>(optionList));
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -199,6 +191,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         clearSearchInput();
         KeyboardHandler.hideSoftKeyboard(this);
         searchResultEmptyView.setVisibility(View.GONE);
+        buttonApply.setVisibility(View.VISIBLE);
     }
 
     private void clearSearchInput() {
