@@ -1884,6 +1884,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
+    <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="failed_create_ticket">Gagal membuat tiket</string>
     <string name="permission_camera">Kamera</string>
     <string name="permission_read_storage">Media penyimpanan</string>

@@ -49,6 +49,8 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
+import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
