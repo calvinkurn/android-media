@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -22,7 +23,10 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
@@ -188,18 +192,21 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 break;
 
             case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                    NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
-                    listener.onGetNotif(data);
-                }else {
-                    String applink  = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                    String fullname = data
-                            .getString("full_name");
-                    applink += "?" + "fullname=" + fullname;
-                    data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                    ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
-                    applinkBuildAndShowNotification.showApplinkNotification(data);
+                if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                        && ((RemoteConfigRouter) MainApplication.getInstance() ).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                        NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                        listener.onGetNotif(data);
+                    } else {
+                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                        String fullname = data
+                                .getString("full_name");
+                        applink += "?" + "fullname=" + fullname;
+                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                        ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                        applinkBuildAndShowNotification.showApplinkNotification(data);
+                    }
                 }
                 break;
             default:
