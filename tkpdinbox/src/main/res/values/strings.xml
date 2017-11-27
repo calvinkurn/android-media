@@ -207,6 +207,7 @@ yang ditemukan</string>
     <string name="complaint_from">Komplain dari</string>
     <string name="complaint_to">Komplain ke</string>
     <string name="string_btn_change_address">Ubah Alamat</string>
+    <string name="string_admin_solution_early_title">Admin Tokopedia memberikan solusi awal:</string>
     <string name="string_admin_solution_final_title">Admin Tokopedia memberikan solusi akhir:</string>
     <string name="string_admin_solution_reason">Alasan:</string>
     <string name="string_admin_solution_final">Admin memberikan solusi akhir</string>

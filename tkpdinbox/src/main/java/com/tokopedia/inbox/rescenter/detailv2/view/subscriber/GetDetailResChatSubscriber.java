@@ -5,6 +5,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionEarlyLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionFinalLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionResetLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatAwbLeftViewModel;
@@ -165,6 +166,8 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                 }
             } else if (actionType.equals(ACTION_FINAL)) {
                 items.add(new ChatActionFinalLeftViewModel(conversationDomain, actionType));
+            } else if (actionType.equals(ACTION_EARLY)) {
+                items.add(new ChatActionEarlyLeftViewModel(conversationDomain, actionType));
             } else if (actionType.equals(REPORT_RESOLUTION)
                     || actionType.equals(ENTER_RETUR_SESSION_RESOLUTION)
                     || actionType.equals(FINISH)

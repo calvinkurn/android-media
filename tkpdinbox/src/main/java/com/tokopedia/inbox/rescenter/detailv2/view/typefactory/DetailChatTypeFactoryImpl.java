@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatActionEarlyLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatActionFinalLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatActionResetLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatAwbLeftViewHolder;
@@ -19,6 +20,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatSystemLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatSystemRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionEarlyLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionFinalLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionResetLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatAwbLeftViewModel;
@@ -116,6 +118,11 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory implements
     }
 
     @Override
+    public int type(ChatActionEarlyLeftViewModel viewModel) {
+        return ChatActionEarlyLeftViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == ChatLeftViewHolder.LAYOUT) {
@@ -146,6 +153,8 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory implements
             viewHolder = new ChatActionResetLeftViewHolder(view, mainView);
         } else if (type == ChatAwbLeftViewHolder.LAYOUT) {
             viewHolder = new ChatAwbLeftViewHolder(view, mainView);
+        } else if (type == ChatActionEarlyLeftViewHolder.LAYOUT) {
+            viewHolder = new ChatActionEarlyLeftViewHolder(view, mainView);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }
