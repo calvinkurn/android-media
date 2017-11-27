@@ -293,4 +293,7 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.playServicesDependencies.firebase
+    compile rootProject.ext.playServicesDependencies.remoteConfig
 }
