@@ -17,4 +17,6 @@ public interface DistrictRecomendationFragmentPresenter {
     ArrayList<Address> getAddresses();
 
     void clearData();
+
+    void detachView();
 }

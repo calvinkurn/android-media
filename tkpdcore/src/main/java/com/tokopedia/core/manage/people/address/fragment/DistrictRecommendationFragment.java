@@ -289,6 +289,7 @@ public class DistrictRecommendationFragment
     public void onDestroy() {
         super.onDestroy();
         compositeSubscription.unsubscribe();
+        presenter.detachView();
     }
 
     private interface OnQueryListener {

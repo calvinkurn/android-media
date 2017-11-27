@@ -19,11 +19,11 @@ import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistIni
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.AddWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistInitializeSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistLoadMoreSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RefreshHotlistSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RemoveWishlistActionSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.discovery.newdiscovery.util.WishlistActionListener;

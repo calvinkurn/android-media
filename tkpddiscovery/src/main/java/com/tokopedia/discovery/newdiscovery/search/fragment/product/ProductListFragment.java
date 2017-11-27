@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -344,8 +345,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getScreenName() {
+        return AppScreen.SCREEN_SEARCH_PAGE_PRODUCT_TAB;
     }
 
     @Override
@@ -659,7 +660,7 @@ public class ProductListFragment extends SearchSectionFragment
                 addPreFilteredCategory(preFilteredSc);
             }
             Intent intent = RevampedDynamicFilterActivity.createInstance(
-                    getActivity(), getFilters(), getFlagFilterHelper()
+                    getActivity(), getScreenName(), getFlagFilterHelper()
             );
             startActivityForResult(intent, getFilterRequestCode());
             getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);

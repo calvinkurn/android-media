@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -250,8 +251,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getScreenName() {
+        return AppScreen.SCREEN_SEARCH_PAGE_SHOP_TAB;
     }
 
     @Override

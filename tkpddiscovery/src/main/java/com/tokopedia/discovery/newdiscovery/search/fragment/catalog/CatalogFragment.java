@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -130,8 +131,8 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getScreenName() {
+        return AppScreen.SCREEN_SEARCH_PAGE_CATALOG_TAB;
     }
 
     @Override

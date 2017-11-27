@@ -2,7 +2,6 @@ package com.tokopedia.core.drawer2.data.source;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
-import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.TopChatNotificationModel;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
@@ -43,6 +42,8 @@ public class TopChatNotificationSource {
             public void call(TopChatNotificationModel topChatNotificationModel) {
                 drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE,
                         topChatNotificationModel.getNotifUnreads());
+                drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, drawerCache.getInt
+                        (DrawerNotification.CACHE_TOTAL_NOTIF) + topChatNotificationModel.getNotifUnreads());
                 drawerCache.applyEditor();
             }
         };
