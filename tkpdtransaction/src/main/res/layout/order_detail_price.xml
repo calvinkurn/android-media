@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Jumlah Barang"
+            android:text="@string/label_item_quantity"
             android:textStyle="bold" />
 
         <TextView
@@ -37,7 +37,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Belanja"
+            android:text="@string/label_transaction_total_cart"
             android:textStyle="bold" />
 
         <TextView
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ongkos Kirim"
+            android:text="@string/label_delivery_price"
             android:textStyle="bold" />
 
         <TextView
@@ -81,7 +81,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Biaya Asuransi"
+            android:text="@string/label_insurance_price"
             android:textStyle="bold" />
 
         <TextView
@@ -103,7 +103,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Biaya Tambahan"
+            android:text="@string/label_additional_cost"
             android:textStyle="bold" />
 
         <TextView
@@ -130,7 +130,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Pembayaran"
+            android:text="@string/label_transaction_total_payment"
             android:textStyle="bold" />
 
         <TextView

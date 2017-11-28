@@ -90,13 +90,48 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void processChangeAwb(Context context, OrderDetailData data) {
+        mainView.onChangeAwb(data);
+    }
+
+    @Override
+    public void processSellerConfirmShipping(Context context, OrderDetailData data) {
+        mainView.onSellerConfirmShipping(data);
+    }
+
+    @Override
     public void processAskBuyer(Context context, OrderDetailData data) {
         mainView.onAskBuyer(data);
     }
 
     @Override
     public void processRequestCancelOrder(Context context, OrderDetailData data) {
+        mainView.onRequestCancelOrder(data);
+    }
 
+    @Override
+    public void processAcceptOrder(Context context, OrderDetailData data) {
+        mainView.onAcceptOrder(data);
+    }
+
+    @Override
+    public void processRequestPickup(Context context, OrderDetailData data) {
+        mainView.onRequestPickup(data);
+    }
+
+    @Override
+    public void processChangeCourier(Context context, OrderDetailData data) {
+        mainView.onChangeCourier(data);
+    }
+
+    @Override
+    public void processRejectOrder(Context context, OrderDetailData data) {
+        mainView.onRejectOrder(data);
+    }
+
+    @Override
+    public void onCancelSearch(Context context, OrderDetailData data) {
+        mainView.onCancelSearchPeluang(data);
     }
 
     @Override

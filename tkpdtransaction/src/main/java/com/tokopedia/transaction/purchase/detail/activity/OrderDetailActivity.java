@@ -274,6 +274,47 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void onRequestCancelOrder(OrderDetailData data) {
+        //TODO Bundle important things here, dont put entire model in the bundle!!
+
+    }
+
+    @Override
+    public void onSellerConfirmShipping(OrderDetailData data) {
+        //TODO Bundle important things here, dont put entire model in the bundle!!
+    }
+
+    @Override
+    public void onAcceptOrder(OrderDetailData data) {
+        //TODO Bundle important things here, dont put entire model in the bundle!!
+    }
+
+    @Override
+    public void onRequestPickup(OrderDetailData data) {
+        //TODO Bundle important things here, dont put entire model in the bundle!!
+    }
+
+    @Override
+    public void onChangeCourier(OrderDetailData data) {
+        //TODO Bundle important things here, dont put entire model in the bundle!!
+    }
+
+    @Override
+    public void onRejectOrder(OrderDetailData data) {
+        //TODO Bundle important things here, dont put entire model in the bundle!!
+    }
+
+    @Override
+    public void onCancelSearchPeluang(OrderDetailData data) {
+        //TODO Bundle important things here, dont put entire model in the bundle!!
+    }
+
+    @Override
+    public void onChangeAwb(OrderDetailData data) {
+        //TODO Bundle important things here, dont put entire model in the bundle!!
+    }
+
+    @Override
     public void showMainViewLoadingPage() {
         progressDialog.showDialog();
         getMainScrollView().setVisibility(View.GONE);
@@ -289,6 +330,11 @@ public class OrderDetailActivity extends TActivity
     public void onViewComplaint(String resoId) {
         Intent intent =  InboxRouter.getDetailResCenterActivityIntent(this, resoId);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

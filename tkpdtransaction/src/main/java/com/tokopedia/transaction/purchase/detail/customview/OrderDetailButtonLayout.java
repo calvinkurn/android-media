@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
@@ -85,27 +84,27 @@ public class OrderDetailButtonLayout extends LinearLayout{
         ButtonData buttonData = data.getButtonData();
         Button acceptOrder;
         acceptOrder = (Button) mainView.findViewById(R.id.accept_order);
-        acceptOrder.setOnClickListener(onAcceptOrder(context));
+        acceptOrder.setOnClickListener(onAcceptOrder(context, presenter, data));
         switchVisibilty(acceptOrder, buttonData.getAcceptOrderVisibility());
 
         Button changeCourier;
         changeCourier = (Button) mainView.findViewById(R.id.change_courier);
-        changeCourier.setOnClickListener(onChangeCourier(context));
+        changeCourier.setOnClickListener(onChangeCourier(context, presenter, data));
         switchVisibilty(changeCourier, buttonData.getChangeCourier());
 
         Button requestPickup;
         requestPickup = (Button) mainView.findViewById(R.id.request_pickup);
-        requestPickup.setOnClickListener(onRequestPickup(context));
+        requestPickup.setOnClickListener(onRequestPickup(context, presenter, data));
         switchVisibilty(requestPickup, buttonData.getRequestPickupVisibility());
 
         Button changeAwb;
         changeAwb = (Button) mainView.findViewById(R.id.change_awb) ;
-        changeAwb.setOnClickListener(onChangeAwbClickedListener(context));
+        changeAwb.setOnClickListener(onChangeAwbClickedListener(context, presenter, data));
         switchVisibilty(changeAwb, buttonData.getChangeAwbVisibility());
 
         Button confirmShipping;
         confirmShipping = (Button) mainView.findViewById(R.id.confirm_shipping);
-        confirmShipping.setOnClickListener(onConfirmShipping(context));
+        confirmShipping.setOnClickListener(onConfirmShipping(context, presenter, data));
         switchVisibilty(confirmShipping, buttonData.getConfirmShippingVisibility());
 
         Button askBuyerButton;
@@ -115,7 +114,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button rejectOrder;
         rejectOrder = (Button) mainView.findViewById(R.id.reject_order_button);
-        rejectOrder.setOnClickListener(onRejectOrder(context));
+        rejectOrder.setOnClickListener(onRejectOrder(context, presenter, data));
         switchVisibilty(rejectOrder, buttonData.getRejectOrderVisibility());
 
         Button requestCancel;
@@ -125,7 +124,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button cancelChance;
         cancelChance = (Button) mainView.findViewById(R.id.cancel_chance);
-        cancelChance.setOnClickListener(onCancelSearch(context));
+        cancelChance.setOnClickListener(onCancelSearch(context, presenter, data));
         switchVisibilty(cancelChance, buttonData.getCancelPeluangVisibility());
 
         Button viewComplaint = (Button)mainView.findViewById(R.id.view_complaint_button);
@@ -188,44 +187,57 @@ public class OrderDetailButtonLayout extends LinearLayout{
         };
     }
 
-    private View.OnClickListener onAcceptOrder(final Context context) {
+    private View.OnClickListener onAcceptOrder(final Context context,
+                                               final OrderDetailPresenter presenter,
+                                               final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.processAcceptOrder(context, data);
             }
         };
     }
 
-    private View.OnClickListener onChangeCourier(final Context context) {
+    private View.OnClickListener onChangeCourier(final Context context,
+                                                 final OrderDetailPresenter presenter,
+                                                 final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                presenter.processChangeCourier(context, data);
             }
         };
     }
 
-    private View.OnClickListener onRequestPickup(final Context context) {
+    private View.OnClickListener onRequestPickup(final Context context,
+                                                 final OrderDetailPresenter presenter,
+                                                 final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                presenter.processRequestPickup(context, data);
             }
         };
     }
 
-    private View.OnClickListener onChangeAwbClickedListener(final Context context) {
+    private View.OnClickListener onChangeAwbClickedListener(final Context context,
+                                                            final OrderDetailPresenter presenter,
+                                                            final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.processChangeAwb(context, data);
             }
         };
     }
 
-    private View.OnClickListener onConfirmShipping(final Context context) {
+    private View.OnClickListener onConfirmShipping(final Context context,
+                                                   final OrderDetailPresenter presenter,
+                                                   final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.processSellerConfirmShipping(context, data);
             }
         };
     }
@@ -241,10 +253,13 @@ public class OrderDetailButtonLayout extends LinearLayout{
         };
     }
 
-    private View.OnClickListener onRejectOrder(final Context context) {
+    private View.OnClickListener onRejectOrder(final Context context,
+                                               final OrderDetailPresenter presenter,
+                                               final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.processRejectOrder(context, data);
             }
         };
     }
@@ -271,10 +286,13 @@ public class OrderDetailButtonLayout extends LinearLayout{
         };
     }
 
-    private View.OnClickListener onCancelSearch(final Context context) {
+    private View.OnClickListener onCancelSearch(final Context context,
+                                                final OrderDetailPresenter presenter,
+                                                final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.onCancelSearch(context, data);
             }
         };
     }

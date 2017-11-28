@@ -27,6 +27,22 @@ public interface OrderDetailView {
 
     void onOrderFinished(String message);
 
+    void onRequestCancelOrder(OrderDetailData data);
+
+    void onSellerConfirmShipping(OrderDetailData data);
+
+    void onAcceptOrder(OrderDetailData data);
+
+    void onRequestPickup(OrderDetailData data);
+
+    void onChangeCourier(OrderDetailData data);
+
+    void onRejectOrder(OrderDetailData data);
+
+    void onCancelSearchPeluang(OrderDetailData data);
+
+    void onChangeAwb(OrderDetailData data);
+
     void showMainViewLoadingPage();
 
     void hideMainViewLoadingPage();

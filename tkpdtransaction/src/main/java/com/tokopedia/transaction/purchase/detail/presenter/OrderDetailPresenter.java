@@ -31,9 +31,23 @@ public interface OrderDetailPresenter {
 
     void processAskSeller(Context context, OrderDetailData data);
 
+    void processChangeAwb(Context context, OrderDetailData data);
+
+    void processSellerConfirmShipping(Context context, OrderDetailData data);
+
     void processAskBuyer(Context context, OrderDetailData data);
 
     void processRequestCancelOrder(Context context, OrderDetailData data);
+
+    void processAcceptOrder(Context context, OrderDetailData data);
+
+    void processRequestPickup(Context context, OrderDetailData data);
+
+    void processChangeCourier(Context context, OrderDetailData data);
+
+    void processRejectOrder(Context context, OrderDetailData data);
+
+    void onCancelSearch(Context context, OrderDetailData data);
 
     void processFinish(Context context, String orderId);
 
