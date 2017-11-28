@@ -14,7 +14,17 @@
     <string name="title_try_again_caps">COBA LAGI</string>
     <string name="title_try_again">Coba Lagi</string>
     <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
+
+    <!-- NETWORK DEFAULT ERROR MESSAGE -->
     <string name="msg_no_connection">Tidak ada koneksi internet</string>
+    <string name="default_request_error_timeout">Koneksi timeout. Silakan coba beberapa saat lagi</string>
+    <string name="default_request_error_internal_server">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_forbidden_auth">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_bad_request">Silakan coba kembali</string>
+    <string name="default_request_error_null_data">Data Kosong. Mohon ulangi beberapa saat lagi</string>
+    <string name="default_request_error_unknown_short">Terjadi kesalahan</string>
+
     <string name="error_no_connection2">Mohon periksa koneksi internet Anda</string>
     <string name="close">Tutup</string>
     <string name="msg_server_error_2">Terjadi Kendala Pada Server, Silahkan Laporkan</string>

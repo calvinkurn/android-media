@@ -24,6 +24,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
@@ -458,8 +459,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onLoadSearchError(Throwable t) {
         super.onLoadSearchError(t);
-        //TODO, get message from custom throwable
-        flightSearchAdapter.setErrorMessage(t.getMessage());
+        String message = FlightErrorUtil.getMessageFromException(t);
+        flightSearchAdapter.setErrorMessage(message);
     }
 
     private int divideTo(int number, int pieces) {
@@ -511,7 +512,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onErrorGetFlightStatistic(Throwable throwable) {
-        String message = throwable.getMessage();
+        String message = FlightErrorUtil.getMessageFromException(throwable);
         if (!TextUtils.isEmpty(message)) {
             NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
         }

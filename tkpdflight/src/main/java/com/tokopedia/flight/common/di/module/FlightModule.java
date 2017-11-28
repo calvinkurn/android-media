@@ -1,10 +1,12 @@
 package com.tokopedia.flight.common.di.module;
 
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
+import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
@@ -46,6 +48,7 @@ public class FlightModule {
                                             FlightAuthInterceptor flightAuthInterceptor) {
         return okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(flightAuthInterceptor)
+                .addInterceptor(new ErrorResponseInterceptor(FlightErrorResponse.class))
                 .build();
     }
 
