@@ -835,6 +835,7 @@ public interface AppEventTracking {
         String CLICKED_NEW_ORDER = "Seller_Clicked_Neworder";
         String EVENT_ADDR_ADD = "Address_Added";
         String EVENT_USER_ATTR = "User_Attribute_Name";
+        String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
     }
 
 

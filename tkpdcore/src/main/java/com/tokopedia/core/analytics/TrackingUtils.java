@@ -311,6 +311,14 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
+    public static void sendMoEngageOpenSellerScreen() {
+        PayloadBuilder builder = new PayloadBuilder();
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.SELLER_SCREEN_OPEN
+        );
+    }
+
     public static void sendMoEngageAddToCart(@NonNull Product product) {
         try {
             PayloadBuilder builder = new PayloadBuilder();
