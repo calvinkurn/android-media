@@ -32,8 +32,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingLuggageActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingMealsActivity;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerLuggageAdapter;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerMealAdapter;
+import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
@@ -219,19 +218,35 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void renderPassengerMeals(List<FlightBookingMealMetaViewModel> flightBookingMealRouteViewModels,
+    public void renderPassengerMeals(final List<FlightBookingMealMetaViewModel> flightBookingMealRouteViewModels,
                                      List<FlightBookingMealMetaViewModel> selecteds) {
-        mealsContainer.setVisibility(View.GONE);
-        FlightBookingPassengerMealAdapter adapter = new FlightBookingPassengerMealAdapter();
-        adapter.setInteractionListener(new FlightBookingPassengerMealAdapter.OnAdapterInteractionListener() {
-            @Override
-            public void onItemDeleteMeal(FlightBookingMealMetaViewModel viewModel) {
-                presenter.onDeleteMeal(viewModel);
-            }
+        mealsContainer.setVisibility(View.VISIBLE);
 
+        List<SimpleViewModel> viewModels = new ArrayList<>();
+        if (flightBookingMealRouteViewModels != null)
+            for (FlightBookingMealMetaViewModel flightBookingLuggageRouteViewModel : flightBookingMealRouteViewModels) {
+                SimpleViewModel viewModel = new SimpleViewModel(
+                        flightBookingLuggageRouteViewModel.getDescription(),
+                        "Pilih"
+                );
+                for (FlightBookingMealMetaViewModel selected : selecteds) {
+                    if (selected.getKey().equalsIgnoreCase(flightBookingLuggageRouteViewModel.getKey())) {
+                        ArrayList<String> selectedMeals = new ArrayList<>();
+                        for (FlightBookingMealViewModel flightBookingMealViewModel : selected.getMealViewModels()) {
+                            selectedMeals.add(flightBookingMealViewModel.getTitle());
+                        }
+                        viewModel.setDescription(TextUtils.join(",", selectedMeals));
+                        break;
+                    }
+                }
+                viewModels.add(viewModel);
+            }
+        FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setArrowVisible(true);
+        adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
-            public void onItemOptionClicked(FlightBookingMealMetaViewModel viewModel) {
-                presenter.onOptionMeal(viewModel);
+            public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
+                presenter.onOptionMeal(flightBookingMealRouteViewModels.get(adapterPosition));
             }
         });
         LinearLayoutManager flightSimpleAdapterLayoutManager
@@ -240,8 +255,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvMeals.setHasFixedSize(true);
         rvMeals.setNestedScrollingEnabled(false);
         rvMeals.setAdapter(adapter);
-        adapter.setViewModels(flightBookingMealRouteViewModels);
-        adapter.setSelecetedViewModels(selecteds);
+        adapter.setDescriptionTextColor(getResources().getColor(R.color.colorPrimary));
+        adapter.setViewModels(viewModels);
         adapter.notifyDataSetChanged();
     }
 
@@ -249,26 +264,32 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public void renderPassengerLuggages(final List<FlightBookingLuggageMetaViewModel> flightBookingLuggageRouteViewModels,
                                         List<FlightBookingLuggageMetaViewModel> selecteds) {
         luggageContainer.setVisibility(View.VISIBLE);
-        FlightBookingPassengerLuggageAdapter adapter = new FlightBookingPassengerLuggageAdapter();
+
         List<SimpleViewModel> viewModels = new ArrayList<>();
         if (flightBookingLuggageRouteViewModels != null)
-            for (FlightBookingLuggageMetaViewModel flightBookingLuggageRouteViewModel : flightBookingLuggageRouteViewModels) {
+            for (FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
-                        flightBookingLuggageRouteViewModel.getDescription(),
+                        flightBookingLuggageMetaViewModel.getDescription(),
                         "Pilih"
                 );
                 for (FlightBookingLuggageMetaViewModel selected : selecteds) {
-                    if (selected.getKey().equalsIgnoreCase(flightBookingLuggageRouteViewModel.getKey())) {
-                        viewModel.setDescription(TextUtils.join(",", selected.getLuggages()));
+                    if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
+                        ArrayList<String> selectedLuggages = new ArrayList<>();
+                        for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : selected.getLuggages()) {
+                            selectedLuggages.add(flightBookingLuggageViewModel.getWeightFmt() + " - " + flightBookingLuggageViewModel.getPriceFmt());
+                        }
+                        viewModel.setDescription(TextUtils.join(",", selectedLuggages));
                         break;
                     }
                 }
                 viewModels.add(viewModel);
             }
-        adapter.setInteractionListener(new FlightBookingPassengerLuggageAdapter.OnAdapterInteractionListener() {
+        FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setArrowVisible(true);
+        adapter.setInteractionListener(new FlightSimpleAdapter.OnAdapterInteractionListener() {
             @Override
-            public void onItemClickListener(int id) {
-                presenter.onPassengerLuggageClick(flightBookingLuggageRouteViewModels.get(id));
+            public void onItemClick(int adapterPosition, SimpleViewModel viewModel) {
+                presenter.onPassengerLuggageClick(flightBookingLuggageRouteViewModels.get(adapterPosition));
             }
         });
         LinearLayoutManager flightSimpleAdapterLayoutManager
@@ -277,7 +298,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvLuggages.setHasFixedSize(true);
         rvLuggages.setNestedScrollingEnabled(false);
         rvLuggages.setAdapter(adapter);
-        adapter.setSimpleViewModels(viewModels);
+        adapter.setDescriptionTextColor(getResources().getColor(R.color.colorPrimary));
+        adapter.setViewModels(viewModels);
         adapter.notifyDataSetChanged();
     }
 

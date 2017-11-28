@@ -15,13 +15,11 @@ public class FlightBookingLuggageViewModel implements Parcelable, ItemType {
     private String priceFmt;
     private String weightFmt;
 
-    public FlightBookingLuggageViewModel() {
-    }
-
     protected FlightBookingLuggageViewModel(Parcel in) {
         id = in.readString();
         priceFmt = in.readString();
         weightFmt = in.readString();
+        priceNumeric = in.readInt();
     }
 
     public static final Creator<FlightBookingLuggageViewModel> CREATOR = new Creator<FlightBookingLuggageViewModel>() {
@@ -35,6 +33,19 @@ public class FlightBookingLuggageViewModel implements Parcelable, ItemType {
             return new FlightBookingLuggageViewModel[size];
         }
     };
+
+    public int getPriceNumeric() {
+        return priceNumeric;
+    }
+
+    public void setPriceNumeric(int priceNumeric) {
+        this.priceNumeric = priceNumeric;
+    }
+
+    private int priceNumeric;
+
+    public FlightBookingLuggageViewModel() {
+    }
 
     public String getId() {
         return id;
@@ -61,20 +72,8 @@ public class FlightBookingLuggageViewModel implements Parcelable, ItemType {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public String toString() {
         return weightFmt + " - " + priceFmt;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(priceFmt);
-        dest.writeString(weightFmt);
     }
 
     @Override
@@ -91,5 +90,18 @@ public class FlightBookingLuggageViewModel implements Parcelable, ItemType {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(priceFmt);
+        parcel.writeString(weightFmt);
+        parcel.writeInt(priceNumeric);
     }
 }

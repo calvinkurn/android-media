@@ -8,10 +8,13 @@ import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.search.data.cloud.model.request.FlightSearchSingleRequestData;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
+import com.tokopedia.usecase.utils.TKPDMapParam;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,4 +51,7 @@ public interface FlightApi {
                                                            @Header("Idempotency-Key") String idemPotencyKeyHeader,
                                                            @Header("x-tkpd-userid") String userId
     );
+
+    @GET(FlightUrl.FLIGHT_CHECK_VOUCHER_CODE)
+    Observable<Response<DataResponse<AttributesVoucher>>> checkVoucherCode(@QueryMap HashMap<String, String> paramsAllValueInString);
 }

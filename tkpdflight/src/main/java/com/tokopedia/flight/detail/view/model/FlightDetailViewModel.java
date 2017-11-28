@@ -47,21 +47,25 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
     }
 
     public FlightDetailViewModel build(FlightSearchViewModel flightSearchViewModel){
-        setId(flightSearchViewModel.getId());
-        setDepartureAirport(flightSearchViewModel.getDepartureAirport());
-        setDepartureAirportCity(flightSearchViewModel.getDepartureAirportCity());
-        setArrivalAirport(flightSearchViewModel.getArrivalAirport());
-        setArrivalAirportCity(flightSearchViewModel.getArrivalAirportCity());
-        setTotalTransit(flightSearchViewModel.getTotalTransit());
-        setTotal(flightSearchViewModel.getTotal());
-        setTotalNumeric(flightSearchViewModel.getTotalNumeric());
-        setBeforeTotal(flightSearchViewModel.getBeforeTotal());
-        setIsRefundable(flightSearchViewModel.isRefundable());
-        setAdultNumericPrice(flightSearchViewModel.getFare().getAdultNumeric());
-        setChildNumericPrice(flightSearchViewModel.getFare().getChildNumeric());
-        setInfantNumericPrice(flightSearchViewModel.getFare().getInfantNumeric());
-        setRouteList(flightSearchViewModel.getRouteList());
-        return this;
+        if(flightSearchViewModel != null) {
+            setId(flightSearchViewModel.getId());
+            setDepartureAirport(flightSearchViewModel.getDepartureAirport());
+            setDepartureAirportCity(flightSearchViewModel.getDepartureAirportCity());
+            setArrivalAirport(flightSearchViewModel.getArrivalAirport());
+            setArrivalAirportCity(flightSearchViewModel.getArrivalAirportCity());
+            setTotalTransit(flightSearchViewModel.getTotalTransit());
+            setTotal(flightSearchViewModel.getTotal());
+            setTotalNumeric(flightSearchViewModel.getTotalNumeric());
+            setBeforeTotal(flightSearchViewModel.getBeforeTotal());
+            setIsRefundable(flightSearchViewModel.isRefundable());
+            setAdultNumericPrice(flightSearchViewModel.getFare().getAdultNumeric());
+            setChildNumericPrice(flightSearchViewModel.getFare().getChildNumeric());
+            setInfantNumericPrice(flightSearchViewModel.getFare().getInfantNumeric());
+            setRouteList(flightSearchViewModel.getRouteList());
+            return this;
+        }else{
+            return null;
+        }
     }
 
     public FlightDetailViewModel build(FlightSearchPassDataViewModel flightSearchPassDataViewModel){
