@@ -20,14 +20,17 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewMod
 public class FlightClassesActivity extends BaseSimpleActivity implements HasComponent<FlightDashboardComponent>,
         FlightClassesfragment.OnFragmentInteractionListener {
     public static final String EXTRA_FLIGHT_CLASS = "EXTRA_FLIGHT_CLASS";
+    public static final String EXTRA_FLIGHT_SELECTED_CLASS = "EXTRA_FLIGHT_SELECTED_CLASS";
 
-    public static Intent getCallingIntent(Activity activity) {
-        return new Intent(activity, FlightClassesActivity.class);
+    public static Intent getCallingIntent(Activity activity, int selectedId) {
+        Intent intent = new Intent(activity, FlightClassesActivity.class);
+        intent.putExtra(EXTRA_FLIGHT_SELECTED_CLASS, selectedId);
+        return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightClassesfragment.newInstance();
+        return FlightClassesfragment.newInstance(getIntent().getIntExtra(EXTRA_FLIGHT_SELECTED_CLASS, -1));
     }
 
     @Override

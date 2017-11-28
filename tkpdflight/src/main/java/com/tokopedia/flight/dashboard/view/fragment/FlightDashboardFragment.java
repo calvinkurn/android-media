@@ -156,7 +156,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = FlightClassesActivity.getCallingIntent(getActivity());
+                Intent intent = FlightClassesActivity.getCallingIntent(getActivity(), viewModel.getFlightClass() != null ? viewModel.getFlightClass().getId() : -1);
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_CLASSES);
             }
         });
