@@ -44,6 +44,9 @@ public class OrderDetailActivity extends TActivity
         implements OrderDetailView,
         FinishOrderDialog.FinishOrderDialogListener, ComplaintDialog.ComplaintDialogListener{
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
+    private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
+    private static final int BUYER_MODE = 1;
+    private static final int SELLER_MODE = 2;
 
     @Inject
     OrderDetailPresenterImpl presenter;
@@ -53,6 +56,14 @@ public class OrderDetailActivity extends TActivity
     public static Intent createInstance(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
         intent.putExtra(EXTRA_ORDER_ID, orderId);
+        intent.putExtra(EXTRA_USER_MODE, BUYER_MODE);
+        return intent;
+    }
+
+    public static Intent createSellerInstance(Context context, String orderId) {
+        Intent intent = new Intent(context, OrderDetailActivity.class);
+        intent.putExtra(EXTRA_ORDER_ID, orderId);
+        intent.putExtra(EXTRA_USER_MODE, SELLER_MODE);
         return intent;
     }
 
@@ -63,7 +74,7 @@ public class OrderDetailActivity extends TActivity
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
         initInjector();
         presenter.setMainViewListener(this);
-        presenter.fetchData(this, getExtraOrderId());
+        presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
     }
 
     private void initInjector() {
@@ -203,7 +214,9 @@ public class OrderDetailActivity extends TActivity
                 new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.fetchData(OrderDetailActivity.this, getExtraOrderId());
+                presenter.fetchData(OrderDetailActivity.this,
+                        getExtraOrderId(),
+                        getExtraUserMode());
             }
         });
         NetworkErrorHelper.showSnackbar(this, errorMessage);
@@ -354,6 +367,10 @@ public class OrderDetailActivity extends TActivity
 
     private String getExtraOrderId() {
         return getIntent().getStringExtra(EXTRA_ORDER_ID);
+    }
+
+    private int getExtraUserMode() {
+        return getIntent().getIntExtra(EXTRA_ORDER_ID, 0);
     }
 
     @Override

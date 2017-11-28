@@ -32,7 +32,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void fetchData(Context context, String orderId) {
+    public void fetchData(Context context, String orderId, int userMode) {
         mainView.showMainViewLoadingPage();
         TKPDMapParam<String, String> temporaryHash = new TKPDMapParam<>();
         temporaryHash.put("order_id", orderId);
@@ -42,7 +42,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         TKPDMapParam<String, Object> params = new TKPDMapParam<>();
         params.putAll(temporaryHash);
         params.put("os_type", 1);
-        params.put("request_by", 1);
+        params.put("request_by", userMode);
         orderDetailInteractor.requestDetailData(orderDetailDataSubscriber(), params);
     }
 

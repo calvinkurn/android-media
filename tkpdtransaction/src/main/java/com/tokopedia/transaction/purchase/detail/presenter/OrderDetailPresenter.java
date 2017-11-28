@@ -13,7 +13,7 @@ public interface OrderDetailPresenter {
 
     void setMainViewListener(OrderDetailView view);
 
-    void fetchData(Context context, String orderId);
+    void fetchData(Context context, String orderId, int userMode);
 
     void processInvoice(Context context, OrderDetailData data);
 
