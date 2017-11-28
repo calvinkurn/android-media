@@ -12,9 +12,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -24,7 +22,6 @@ import javax.inject.Inject;
  */
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
-
 
     @Inject
     public FlightBookingPassengerPresenter() {
@@ -89,24 +86,12 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         Date maxDate, minDate, selectedDate;
 
         if (isChildPassenger()) {
-            Calendar twelveYearsAgo = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            twelveYearsAgo
-                    .add(Calendar.DATE, -4380);
-            minDate = twelveYearsAgo.getTime();
-            Calendar twoYearsAgo = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            twoYearsAgo
-                    .add(Calendar.DATE, -730);
-            maxDate = twoYearsAgo.getTime();
+            minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
+            maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
             selectedDate = maxDate;
         } else {
-            Calendar twoYearsAgo = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            twoYearsAgo
-                    .add(Calendar.DATE, -730);
-            minDate = twoYearsAgo.getTime();
-            Calendar today = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            today
-                    .add(Calendar.DATE, -1);
-            maxDate = today.getTime();
+            minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
+            maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, -1);
             selectedDate = maxDate;
         }
         if (getView().getPassengerBirthDate().length() > 0) {
@@ -117,7 +102,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void onBirthdateChange(int year, int month, int date) {
-        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, date);
@@ -203,9 +188,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     private boolean validateFields() {
         boolean isValid = true;
-        Calendar twoYearsAgo = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-        twoYearsAgo
-                .add(Calendar.DATE, -730);
+        Date twoYearsAgo = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
         if (getView().getPassengerName().isEmpty() || getView().getPassengerName().length() == 0) {
             isValid = false;
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_name_empty_error);
@@ -217,11 +200,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
         } else if (isChildPassenger() &&
                 FlightDateUtil.removeTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate()))
-                        .compareTo(FlightDateUtil.removeTime(twoYearsAgo.getTime())) > 0) {
+                        .compareTo(FlightDateUtil.removeTime(twoYearsAgo)) > 0) {
             isValid = false;
             getView().showPassengerChildBirthdateShouldMoreThan2Years(R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years);
         } else if (isInfantPassenger() && FlightDateUtil.removeTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate()))
-                .compareTo(FlightDateUtil.removeTime(twoYearsAgo.getTime())) < 0) {
+                .compareTo(FlightDateUtil.removeTime(twoYearsAgo)) < 0) {
             isValid = false;
             getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
         }
