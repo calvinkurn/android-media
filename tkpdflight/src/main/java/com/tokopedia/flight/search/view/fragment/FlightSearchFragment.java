@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.view.fragment;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
@@ -508,6 +510,19 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         showLoading();
         setUIMarkFilter();
         reloadDataFromCache();
+    }
+
+    @Override
+    public void onChangeDateClicked() {
+//        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+//            @Override
+//            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+//                // TODO on date set
+//            }
+//        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+//        DatePicker datePicker1 = datePicker.getDatePicker();
+//        datePicker1.setMinDate(minDate.getTime());
+//        datePicker.show();
     }
 
     @Override
