@@ -195,4 +195,10 @@
     <string name="flight_label_hours">Jam</string>
     <string name="flight_label_minute">Menit</string>
     <string name="flight_label_second">Detik</string>
+    <string name="flight_price_detail_prefixl_meal_label">Makanan </string>
+    <string name="flight_price_detail_prefix_luggage_label">Bagasi</string>
+    <string name="flight_booking_close_label">Tutup</string>
+    <string name="flight_booking_trip_info_format">| %d %s</string>
+    <string name="flight_booking_trip_info_airport_format">| %s %s - %s %s</string>
+    <string name="flight_booking_id_empotency_format">%s_%s</string>
 </resources>
