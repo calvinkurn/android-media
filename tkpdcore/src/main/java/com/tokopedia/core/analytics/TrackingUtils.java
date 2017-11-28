@@ -27,6 +27,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -308,6 +309,20 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(
                 builder.build(),
                 AppEventTracking.EventMoEngage.CAT_SCREEN_OPEN
+        );
+    }
+
+    public static void sendMoEngageFavoriteEvent(ShopModel model) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, model.info.shopName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, model.info.shopId);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, model.info.shopLocation);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial()==1);
+        getMoEngine().sendEvent(
+                builder.build(),
+                model.info.shopAlreadyFavorited == 0 ?
+                AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
+                        AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE
         );
     }
 

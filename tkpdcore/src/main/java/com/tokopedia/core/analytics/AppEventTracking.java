@@ -833,6 +833,8 @@ public interface AppEventTracking {
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
         String CLICKED_NEW_ORDER = "Seller_Clicked_Neworder";
+        String SELLER_ADDED_FAVORITE = "Seller_Added_To_Favourite";
+        String SELLER_REMOVE_FAVORITE = "Seller_Removed_From_Favorite";
         String EVENT_ADDR_ADD = "Address_Added";
         String EVENT_USER_ATTR = "User_Attribute_Name";
         String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
