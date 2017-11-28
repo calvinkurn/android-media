@@ -18,11 +18,17 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditGroupMainPageFragm
 
 public class TopAdsEditGroupMainPageActivity extends BaseSimpleActivity {
 
-    public static Intent createIntent(Context context, GroupAd groupAd, String adId){
+    public static Intent createIntent(Context context, GroupAd groupAd, String adId, boolean isForceRefresh){
         Intent intent = new Intent(context, TopAdsEditGroupMainPageActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, groupAd);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, isForceRefresh);
         return intent;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 
     @Override

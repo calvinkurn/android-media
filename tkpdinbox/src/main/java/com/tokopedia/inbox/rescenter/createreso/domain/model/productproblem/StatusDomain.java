@@ -1,4 +1,5 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem;
+
 import java.util.List;
 
 import javax.annotation.Nullable;

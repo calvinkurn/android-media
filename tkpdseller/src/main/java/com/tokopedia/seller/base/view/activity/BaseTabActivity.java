@@ -2,6 +2,7 @@ package com.tokopedia.seller.base.view.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
@@ -15,6 +16,7 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
 
     protected ViewPager viewPager;
     protected TabLayout tabLayout;
+    private PagerAdapter pagerAdapter;
 
     protected abstract PagerAdapter getViewPagerAdapter();
 
@@ -31,11 +33,19 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
 
     @Override
     protected void setupFragment(Bundle savedinstancestate) {
-        viewPager.setAdapter(getViewPagerAdapter());
+        pagerAdapter = getViewPagerAdapter();
+        viewPager.setAdapter(pagerAdapter);
     }
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_tab;
+        return isToolbarWhite() ? R.layout.activity_base_tab_white : R.layout.activity_base_tab;
+    }
+
+    protected Fragment getCurrentFragment() {
+        if (pagerAdapter == null) {
+            return null;
+        }
+        return (Fragment) pagerAdapter.instantiateItem(viewPager, tabLayout.getSelectedTabPosition());
     }
 }

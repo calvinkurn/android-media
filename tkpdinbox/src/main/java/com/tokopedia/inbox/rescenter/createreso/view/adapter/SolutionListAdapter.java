@@ -53,7 +53,7 @@ public class SolutionListAdapter extends RecyclerView.Adapter<SolutionListAdapte
         return solutionViewModelList.size();
     }
 
-    public class ItemHolder extends RecyclerView.ViewHolder{
+    public class ItemHolder extends RecyclerView.ViewHolder {
 
         CardView cardView;
         TextView tvSolution;

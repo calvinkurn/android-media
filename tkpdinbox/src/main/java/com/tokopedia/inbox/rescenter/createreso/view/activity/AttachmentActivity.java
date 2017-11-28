@@ -14,7 +14,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
  * Created by yoasfs on 30/08/17.
  */
 
-public class AttachmentActivity  extends BasePresenterActivity<AttachmentActivityListener.Presenter> implements AttachmentActivityListener.View {
+public class AttachmentActivity extends BasePresenterActivity<AttachmentActivityListener.Presenter> implements AttachmentActivityListener.View {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
 

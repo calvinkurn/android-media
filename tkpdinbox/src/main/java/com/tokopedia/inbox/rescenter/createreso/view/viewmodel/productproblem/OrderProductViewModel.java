@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by yoasfs on 14/08/17.
  */
 
-public class OrderProductViewModel implements Parcelable{
+public class OrderProductViewModel implements Parcelable {
     private String name;
     private String thumb;
     private String variant;

@@ -1,5 +1,7 @@
 package com.tokopedia.digital.widget.model.mapper;
 
+import android.support.v4.util.Pair;
+
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.model.status.Attributes;
 import com.tokopedia.digital.widget.model.status.Status;
@@ -9,29 +11,23 @@ import rx.functions.Func1;
 
 /**
  * Created by nabillasabbaha on 10/4/17.
+ * Modified by rizkyfadillah on 11/9/17
  */
 
-public class StatusMapper implements Func1<StatusEntity, Status> {
+public class StatusMapper implements Func1<Pair<StatusEntity, Boolean>, Status> {
 
     @Override
-    public Status call(StatusEntity statusEntity) {
+    public Status call(Pair<StatusEntity, Boolean> pair) {
         Status status = new Status();
-        status.setType(statusEntity.getType());
+        status.setType(pair.first.getType());
 
-        if (statusEntity.getAttributes() != null) {
-            Attributes attributes = new Attributes();
-            attributes.setMaintenance(statusEntity.getAttributes().isMaintenance());
-
-            if (statusEntity.getAttributes().getVersion() != null) {
-                Version version = new Version();
-                version.setCategory(statusEntity.getAttributes().getVersion().getCategory());
-                version.setMinimumAndroidBuild(statusEntity.getAttributes().getVersion().getMinimumAndroidBuild());
-                version.setOperator(statusEntity.getAttributes().getVersion().getOperator());
-                version.setProduct(statusEntity.getAttributes().getVersion().getProduct());
-                attributes.setVersion(version);
+        if (pair.first.getAttributes() != null) {
+            if (pair.first.getAttributes().getVersion() != null) {
+                status.setMinimunAndroidBuild(Integer.valueOf(pair.first.getAttributes().getVersion()
+                        .getMinimumAndroidBuild()));
             }
-
-            status.setAttributes(attributes);
+            status.setMaintenance(pair.first.getAttributes().isMaintenance());
+            status.setUseCache(pair.second);
         }
 
         return status;

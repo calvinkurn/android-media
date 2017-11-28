@@ -71,6 +71,10 @@ public class OrderDetailActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.order_detail_page);
+        toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+                .WebViewToolbarSubtitleText);
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
         initInjector();
         presenter.setMainViewListener(this);
@@ -96,21 +100,21 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setStatusView(OrderDetailData data) {
-        ViewGroup statusLayout = (ViewGroup) findViewById(R.id.order_detail_status_layout);
-        TextView statusTextView = (TextView) findViewById(R.id.text_view_status);
-        ImageView imageView = (ImageView) findViewById(R.id.order_detail_status_image);
+        ViewGroup statusLayout = findViewById(R.id.order_detail_status_layout);
+        TextView statusTextView = findViewById(R.id.text_view_status);
+        ImageView imageView = findViewById(R.id.order_detail_status_image);
         statusLayout.setOnClickListener(onStatusLayoutClickedListener(data.getOrderId()));
         statusTextView.setText(data.getOrderStatus());
         ImageHandler.LoadImage(imageView, data.getOrderImage());
     }
 
     private void setPriceView(OrderDetailData data) {
-        TextView itemAmount = (TextView) findViewById(R.id.item_amount);
-        TextView productPrice = (TextView) findViewById(R.id.product_price);
-        TextView deliveryPrice = (TextView) findViewById(R.id.delivery_price);
-        TextView insurancePrice = (TextView) findViewById(R.id.insurance_price);
-        TextView additionalFee = (TextView) findViewById(R.id.additional_fee);
-        TextView totalPayment = (TextView) findViewById(R.id.total_payment);
+        TextView itemAmount = findViewById(R.id.item_amount);
+        TextView productPrice = findViewById(R.id.product_price);
+        TextView deliveryPrice = findViewById(R.id.delivery_price);
+        TextView insurancePrice = findViewById(R.id.insurance_price);
+        TextView additionalFee = findViewById(R.id.additional_fee);
+        TextView totalPayment = findViewById(R.id.total_payment);
         itemAmount.setText(data.getTotalItemQuantity());
         productPrice.setText(data.getProductPrice());
         deliveryPrice.setText(data.getDeliveryPrice());
@@ -120,33 +124,30 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setButtonView(OrderDetailData data) {
-        OrderDetailButtonLayout buttonLayout = (OrderDetailButtonLayout)
-                findViewById(R.id.button_layout);
+        OrderDetailButtonLayout buttonLayout = findViewById(R.id.button_layout);
         buttonLayout.initButton(this, presenter, data);
     }
 
     private void setItemListView(OrderDetailData data) {
-        RecyclerView itemListRecycleView = (RecyclerView) findViewById(R.id.item_list);
+        RecyclerView itemListRecycleView = findViewById(R.id.item_list);
         itemListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         itemListRecycleView.setAdapter(new OrderItemAdapter(data.getItemList(), this));
         itemListRecycleView.setNestedScrollingEnabled(false);
     }
 
     private void setInvoiceView(OrderDetailData data) {
-        ViewGroup invoiceLayout = (ViewGroup) findViewById(R.id.invoice_layout);
-        TextView invoiceNumber = (TextView) findViewById(R.id.invoice_number);
+        ViewGroup invoiceLayout = findViewById(R.id.invoice_layout);
+        TextView invoiceNumber = findViewById(R.id.invoice_number);
         invoiceNumber.setText(data.getInvoiceNumber());
         invoiceLayout.setOnClickListener(onInvoiceClickedListener(data));
     }
 
     private void setDescriptionView(OrderDetailData data) {
-        TextView descriptionDate = (TextView) findViewById(R.id.description_date);
-        TextView descriptionBuyerName = (TextView) findViewById(R.id.description_buyer_name);
-        TextView descriptionCourierName = (TextView) findViewById(R.id.description_courier_name);
-        TextView descriptionShippingAddess = (TextView)
-                findViewById(R.id.description_shipping_address);
-        TextView descriptionPartialOrderStatus = (TextView)
-                findViewById(R.id.description_partial_order_status);
+        TextView descriptionDate = findViewById(R.id.description_date);
+        TextView descriptionBuyerName = findViewById(R.id.description_buyer_name);
+        TextView descriptionCourierName = findViewById(R.id.description_courier_name);
+        TextView descriptionShippingAddess = findViewById(R.id.description_shipping_address);
+        TextView descriptionPartialOrderStatus = findViewById(R.id.description_partial_order_status);
         descriptionDate.setText(data.getPurchaseDate());
         descriptionBuyerName.setText(data.getBuyerName());
         descriptionCourierName.setText(data.getCourierName());
@@ -158,13 +159,11 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setDropshipperView(OrderDetailData data) {
-        TextView dropshipperMode = (TextView) findViewById(R.id.dropshipper_mode);
-        LinearLayout dropshipperNameLayout = (LinearLayout)
-                findViewById(R.id.dropshipper_name_layout);
-        TextView dropshipperName = (TextView) findViewById(R.id.dropshipper_name);
-        LinearLayout dropshipperPhoneLayout = (LinearLayout)
-                findViewById(R.id.dropshipper_phone_layout);
-        TextView dropshipperPhone = (TextView) findViewById(R.id.dropshipper_phone);
+        TextView dropshipperMode = findViewById(R.id.dropshipper_mode);
+        LinearLayout dropshipperNameLayout = findViewById(R.id.dropshipper_name_layout);
+        TextView dropshipperName = findViewById(R.id.dropshipper_name);
+        LinearLayout dropshipperPhoneLayout = findViewById(R.id.dropshipper_phone_layout);
+        TextView dropshipperPhone = findViewById(R.id.dropshipper_phone);
         if(data.getDropshipperName() == null || data.getDropshipperName().isEmpty()) {
             dropshipperMode.setText(getString(R.string.label_title_button_no));
             dropshipperNameLayout.setVisibility(View.GONE);
@@ -177,15 +176,15 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setPreorderView(OrderDetailData data) {
-        LinearLayout preorderLayout = (LinearLayout) findViewById(R.id.preorder_layout);
-        TextView preorderTime = (TextView) findViewById(R.id.preorder_time);
+        LinearLayout preorderLayout = findViewById(R.id.preorder_layout);
+        TextView preorderTime = findViewById(R.id.preorder_time);
         if(data.isPreorder()) preorderTime.setText(data.getPreorderPeriod());
         else preorderLayout.setVisibility(View.GONE);
     }
 
     private void setResponseTimeView(OrderDetailData data) {
-        LinearLayout timeLimitLayout = (LinearLayout) findViewById(R.id.time_limit_layout);
-        TextView responseTime = (TextView) findViewById(R.id.description_response_time);
+        LinearLayout timeLimitLayout = findViewById(R.id.time_limit_layout);
+        TextView responseTime = findViewById(R.id.description_response_time);
         if(data.getResponseTimeLimit() == null || data.getResponseTimeLimit().isEmpty()) {
             timeLimitLayout.setVisibility(View.GONE);
         } else responseTime.setText(data.getResponseTimeLimit());

@@ -60,17 +60,18 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             @Override
             public void onNext(Status status) {
                 if (status != null) {
-                    if (status.getAttributes().isMaintenance() || !isVersionMatch(status)) {
+                    if (status.isMaintenance() || !isVersionMatch(status)) {
                         view.failedRenderDataRechargeCategory();
                     } else {
-                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
+                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber(status.isUseCache()),
+                                status.isUseCache());
                     }
                 }
             }
         };
     }
 
-    private Subscriber<List<Category>> getCategoryDataSubscriber() {
+    private Subscriber<List<Category>> getCategoryDataSubscriber(final boolean useCache) {
         return new Subscriber<List<Category>>() {
             @Override
             public void onCompleted() {
@@ -85,16 +86,15 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             @Override
             public void onNext(List<Category> data) {
                 categoryList = data;
-                finishPrepareRechargeModule();
+                finishPrepareRechargeModule(useCache);
             }
         };
     }
 
+
     private boolean isVersionMatch(Status status) {
         try {
-            int minApiSupport = Integer.parseInt(
-                    status.getAttributes().getVersion().getMinimumAndroidBuild()
-            );
+            int minApiSupport = status.getMinimunAndroidBuild();
             Log.d(TAG, "version code : " + getVersionCode());
             return getVersionCode() >= minApiSupport;
         } catch (PackageManager.NameNotFoundException e) {
@@ -103,10 +103,10 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
         }
     }
 
-    private void finishPrepareRechargeModule() {
+    private void finishPrepareRechargeModule(boolean useCache) {
         if (activity != null && view != null) {
             if (categoryList != null) {
-                view.renderDataRechargeCategory(categoryList);
+                view.renderDataRechargeCategory(categoryList, useCache);
             } else {
                 view.failedRenderDataRechargeCategory();
             }

@@ -306,7 +306,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
                                                 int acceptOrderButtonVisibility,
                                                 int confirmButtonVisibility) {
         if(acceptOrderButtonVisibility == 0 && confirmButtonVisibility == 0) {
-            button.setBackground(getResources().getDrawable(R.drawable.white_button_rounded));
+            button.setBackgroundResource(R.drawable.white_button_rounded);
         }
     }
 }

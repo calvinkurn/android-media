@@ -12,5 +12,6 @@ import rx.Observable;
 
 public interface CreateValidateSubmitRepository {
     Observable<CreateValidateDomain> validate(RequestParams requestParams);
+
     Observable<CreateSubmitDomain> submit(RequestParams requestParams);
 }

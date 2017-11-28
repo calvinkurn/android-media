@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:gravity="center"
-            android:text="Dimana saja dan kapan saja"
+            android:text="@string/product_share_subtitle"
             android:textColor="@color/black"
             android:textSize="@dimen/fonts"
             android:textStyle="bold" />

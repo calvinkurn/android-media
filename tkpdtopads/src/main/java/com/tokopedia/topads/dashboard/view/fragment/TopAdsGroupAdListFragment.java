@@ -6,18 +6,18 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenter;
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenterImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsGroupAdListPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/22/16.
@@ -29,6 +29,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         TopAdsGroupAdListFragment fragment = new TopAdsGroupAdListFragment();
         return fragment;
     }
+
 
     @Override
     protected void initialPresenter() {
@@ -55,7 +56,8 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     public void onItemClicked(Ad ad) {
         if (ad instanceof GroupAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (GroupAd) ad);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
             startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }

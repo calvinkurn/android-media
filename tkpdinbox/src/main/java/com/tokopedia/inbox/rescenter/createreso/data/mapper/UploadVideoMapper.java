@@ -1,11 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import android.content.Context;
-
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.UploadResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.UploadDomain;
 

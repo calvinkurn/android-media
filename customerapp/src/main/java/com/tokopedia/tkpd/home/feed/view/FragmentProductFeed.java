@@ -52,6 +52,8 @@ import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
 import com.tokopedia.tkpd.home.feed.di.component.DaggerDataFeedComponent;
 import com.tokopedia.tkpd.home.util.DefaultRetryListener;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -165,11 +167,10 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     protected void initInjector() {
-        AppComponent component = getComponent(AppComponent.class);
         DaggerDataFeedComponent feedComponent
                 = (DaggerDataFeedComponent) DaggerDataFeedComponent
                 .builder()
-                .appComponent(component).build();
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this)).build();
         feedComponent.inject(this);
     }
 

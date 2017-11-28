@@ -112,4 +112,9 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

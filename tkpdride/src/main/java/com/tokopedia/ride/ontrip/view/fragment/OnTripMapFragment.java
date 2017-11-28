@@ -174,6 +174,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     RelativeLayout destinationLayout;
     @BindView((R2.id.tv_destination_change))
     TextView changeDestinationTextView;
+    @BindView(R2.id.layout_receipt_pending)
+    RelativeLayout dialogReceiptPending;
 
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
@@ -720,6 +722,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         Intent intent = CompleteTripActivity.getCallingIntent(getActivity(), result.getRequestId(), driverAndVehicle);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void renderCompletedRequestWithoutReceipt(RideRequest result) {
+        replaceFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result, getTag()));
+        setTitle(R.string.title_trip_completed);
+
+        //show dialog the ride is completed and receipt is response is pending
+        dialogReceiptPending.setVisibility(View.VISIBLE);
     }
 
     @Override

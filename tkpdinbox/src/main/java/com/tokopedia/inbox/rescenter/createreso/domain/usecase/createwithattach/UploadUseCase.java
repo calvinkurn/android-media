@@ -47,8 +47,8 @@ public class UploadUseCase extends UseCase<UploadDomain> {
     protected GenerateHostUploadRepository generateHostUploadRepository;
 
     public UploadUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              GenerateHostUploadRepository generateHostUploadRepository) {
+                         PostExecutionThread postExecutionThread,
+                         GenerateHostUploadRepository generateHostUploadRepository) {
         super(threadExecutor, postExecutionThread);
         this.generateHostUploadRepository = generateHostUploadRepository;
     }

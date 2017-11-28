@@ -15,6 +15,7 @@ public class EditFreeReturnResponse {
     @SerializedName("link")
     @Expose
     private String link;
+
     public String getInfo() {
         return info;
     }

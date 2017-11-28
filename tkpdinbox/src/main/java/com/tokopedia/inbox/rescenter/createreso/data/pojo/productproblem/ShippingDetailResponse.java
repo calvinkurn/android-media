@@ -30,6 +30,7 @@ public class ShippingDetailResponse {
     public void setName(String name) {
         this.name = name;
     }
+
     @Override
     public String toString() {
         return "ShippingDetailResponse{" +

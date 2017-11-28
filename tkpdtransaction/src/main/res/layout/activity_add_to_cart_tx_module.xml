@@ -89,19 +89,36 @@
                             android:textSize="@dimen/fonts"
                             tools:ignore="HardcodedText"/>
 
-                        <TextView
-                            android:id="@+id/tv_preorder_info"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/preorder_layout"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_small"
-                            android:layout_marginStart="@dimen/margin_small"
-                            android:includeFontPadding="false"
-                            android:lines="1"
-                            android:text="Waktu proses : "
-                            android:textSize="@dimen/fontvs"
-                            android:textStyle="bold"
-                            android:visibility="gone"
-                            tools:ignore="HardcodedText"/>
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/margin_small"
+                                android:layout_marginStart="@dimen/margin_small"
+                                android:includeFontPadding="false"
+                                android:lines="1"
+                                android:text="@string/title_preorder_proccess_time"
+                                android:textSize="@dimen/fontvs"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_preorder_info"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/margin_small"
+                                android:layout_marginStart="@dimen/margin_small"
+                                android:includeFontPadding="false"
+                                android:lines="1"
+                                android:textSize="@dimen/fontvs"
+                                android:textStyle="bold"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>

@@ -46,6 +46,7 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
 
     protected static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
     protected static final String ARG_TAB_INDEX_POSITION = "ARG_TAB_INDEX_POSITION";
+    protected static final String ARG_USE_CACHE = "ARG_USE_CACHE";
 
     private static final String EXTRA_CHECKOUT_PASS_DATA = "EXTRA_CHECKOUT_PASS_DATA";
     private static final String STATE_CATEGORY = "STATE_CATEGORY";
@@ -59,6 +60,8 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
 
     protected Category category;
     protected int currentPosition;
+    protected boolean useCache;
+
     protected Unbinder unbinder;
     protected Bundle bundle;
     protected DigitalCheckoutPassData digitalCheckoutPassDataState;
@@ -98,6 +101,7 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
     protected void setupArguments(Bundle arguments) {
         category = arguments.getParcelable(ARG_PARAM_CATEGORY);
         currentPosition = arguments.getInt(ARG_TAB_INDEX_POSITION);
+        useCache = arguments.getBoolean(ARG_USE_CACHE);
         bundle = arguments;
     }
 
@@ -266,12 +270,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
         RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_CONTACTS);
     }
 
-    protected void setRechargeEditTextCallback(WidgetClientNumberView widgetClientNumberView) {
-        if (widgetClientNumberView != null) {
-            widgetClientNumberView.getAutocompleteView().setOnFocusChangeListener(getOnFocusListener());
-        }
-    }
-
     protected void setRechargeEditTextTouchCallback(WidgetClientNumberView widgetClientNumberView) {
         if (widgetClientNumberView != null) {
             widgetClientNumberView.getAutocompleteView().setOnTouchListener(getOnTouchListener(widgetClientNumberView));
@@ -315,20 +313,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
             }
         };
     }
-
-    private View.OnFocusChangeListener getOnFocusListener() {
-        return new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    trackingOnClientNumberFocusListener();
-//                    setParentToScroolToTop();
-                }
-            }
-        };
-    }
-
-    protected abstract void trackingOnClientNumberFocusListener();
 
     protected void showSnackbarErrorMessage(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
