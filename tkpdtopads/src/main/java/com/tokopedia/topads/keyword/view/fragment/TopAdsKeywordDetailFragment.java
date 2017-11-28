@@ -53,7 +53,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     protected void initInjector() {
         DaggerTopAdsKeywordDetailComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(getTopAdsComponent())
                 .topAdsKeywordDetailModule(new TopAdsKeywordDetailModule())
                 .build()
                 .inject(this);
@@ -141,7 +141,8 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
 
     private void onPromoGroupClicked() {
         Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ((KeywordAd)ad).getGroupId());
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getGroupId());
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
         startActivity(intent);
     }
 

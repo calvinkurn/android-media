@@ -16,7 +16,10 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.tkpd.R;
 
@@ -29,33 +32,38 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private static final String EXTRA_URL = "EXTRA_URL";
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
     private static final String KEY_APP_LINK_QUERY_URL = "url";
-    private static final String KEY_APP_LINK_PARENT_APP_LINK = "parent_applink";
 
     private String url;
-    private String parentAppLink;
 
-    public static Intent newInstance(Context context, String url, String parentAppLink) {
+    public static Intent newInstance(Context context, String url) {
         return new Intent(context, AppLinkWebsiteActivity.class)
-                .putExtra(EXTRA_URL, url).putExtra(EXTRA_PARENT_APP_LINK, parentAppLink);
+                .putExtra(EXTRA_URL, url);
     }
 
     @SuppressWarnings("unused")
     @DeepLink({Constants.Applinks.WEBVIEW})
-    public static TaskStackBuilder getInstanceIntentAppLink(Context context, Bundle extras) {
+    public static Intent getInstanceIntentAppLink(Context context, Bundle extras) {
+        String webUrl = extras.getString(
+                KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+        );
+        return AppLinkWebsiteActivity.newInstance(context, webUrl);
+    }
+
+    @SuppressWarnings("unused")
+    @DeepLink({Constants.Applinks.WEBVIEW_PARENT_HOME})
+    public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
+        String webUrl = extras.getString(
+                KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+        );
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(context);
+        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            Intent homeIntent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
             homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                     HomeRouter.INIT_STATE_FRAGMENT_HOME);
             taskStackBuilder.addNextIntent(homeIntent);
         }
-        String webUrl = extras.getString(
-                KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
-        );
-        String parentAppLink = extras.getString(KEY_APP_LINK_PARENT_APP_LINK);
-
-        Intent destination = AppLinkWebsiteActivity.newInstance(context, webUrl, parentAppLink);
+        Intent destination = AppLinkWebsiteActivity.newInstance(context, webUrl);
         taskStackBuilder.addNextIntent(destination);
         return taskStackBuilder;
     }
@@ -73,7 +81,6 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     protected void setupBundlePass(Bundle extras) {
         url = extras.getString(EXTRA_URL);
-        parentAppLink = extras.getString(EXTRA_PARENT_APP_LINK);
     }
 
     @Override
@@ -153,12 +160,11 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     public void onBackPressed() {
-        if (parentAppLink != null && !parentAppLink.isEmpty()) {
-            if (getApplication() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter) getApplication()).actionApplink(this, parentAppLink);
-                finish();
-            }
-        } else
+        if (isTaskRoot() && getApplication() instanceof TkpdCoreRouter) {
+            startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+            finish();
+        } else {
             super.onBackPressed();
+        }
     }
 }

@@ -263,7 +263,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
                     statusDomain.getStatusTroubleDomainList() != null ?
                             mappingStatusTroubleViewModel(statusDomain.getStatusTroubleDomainList()) :
                             null,
-                    statusDomain.getStatusInfoDomain() !=null ?
+                    statusDomain.getStatusInfoDomain() != null ?
                             mappingStatusInfoViewModel(statusDomain.getStatusInfoDomain()) :
                             null);
             statusViewModelList.add(statusViewModel);

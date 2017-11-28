@@ -80,7 +80,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/transparent"
-            android:text="@string/title_complain_button"
+            android:text="@string/yes"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:textColor="@color/medium_green"

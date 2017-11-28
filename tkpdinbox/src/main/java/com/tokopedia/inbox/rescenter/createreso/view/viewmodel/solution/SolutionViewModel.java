@@ -9,7 +9,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Am
  * Created by yoasfs on 24/08/17.
  */
 
-public class SolutionViewModel implements Parcelable{
+public class SolutionViewModel implements Parcelable {
 
     private int id;
     private String name;

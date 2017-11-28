@@ -20,6 +20,7 @@ public interface SolutionDetailActivityListener {
 
     interface Presenter extends CustomerPresenter<View> {
         void initFragment(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel);
+
         void initEditAppealFragment(EditAppealSolutionModel editAppealSolutionModel, SolutionViewModel solutionViewModel);
     }
 }

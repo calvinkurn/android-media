@@ -21,7 +21,7 @@ public class EditSolutionResponseDomain {
     @Nullable
     private boolean isSuccess;
 
-    public EditSolutionResponseDomain(@Nullable List<EditSolutionDomain>  solutions, @Nullable FreeReturnDomain freeReturn) {
+    public EditSolutionResponseDomain(@Nullable List<EditSolutionDomain> solutions, @Nullable FreeReturnDomain freeReturn) {
         this.solutions = solutions;
         this.freeReturn = freeReturn;
     }

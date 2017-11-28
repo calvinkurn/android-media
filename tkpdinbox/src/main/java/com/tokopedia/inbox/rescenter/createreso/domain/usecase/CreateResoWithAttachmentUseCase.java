@@ -55,7 +55,7 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
     @Override
     public Observable<CreateSubmitDomain> createObservable(RequestParams requestParams) {
         final CreateResoRequestDomain createResoRequestDomain = new CreateResoRequestDomain();
-        createResoRequestDomain.setOrderId(requestParams.getString(ORDER_ID,""));
+        createResoRequestDomain.setOrderId(requestParams.getString(ORDER_ID, ""));
         return getObservableValidateCreateReso(requestParams, createResoRequestDomain)
                 .flatMap(getObservableGenerateHost(requestParams))
                 .flatMap(addGenerateHostResultToRequestModel(createResoRequestDomain))
@@ -67,7 +67,7 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
     }
 
 
-    private Observable<CreateResoRequestDomain> getObservableValidateCreateReso (
+    private Observable<CreateResoRequestDomain> getObservableValidateCreateReso(
             RequestParams requestParams, final CreateResoRequestDomain createResoRequestDomain) {
         return createValidateUseCase.createObservable(requestParams)
                 .flatMap(addValidateResultToRequestModel(createResoRequestDomain));
@@ -119,14 +119,14 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
                         .flatMap(new Func1<AttachmentViewModel, Observable<UploadDomain>>() {
                             @Override
                             public Observable<UploadDomain> call(AttachmentViewModel attachmentViewModel) {
-                                if(attachmentViewModel.isImage()) {
+                                if (attachmentViewModel.isImage()) {
                                     return uploadUseCase.createObservable(
                                             UploadUseCase.getParam(
                                                     createResoRequestDomain,
                                                     attachmentViewModel.getAttachmentId(),
                                                     attachmentViewModel.getFileLoc()
                                             ));
-                                }else{
+                                } else {
                                     return uploadVideoUseCase.createObservable(
                                             UploadUseCase.getParam(
                                                     createResoRequestDomain,

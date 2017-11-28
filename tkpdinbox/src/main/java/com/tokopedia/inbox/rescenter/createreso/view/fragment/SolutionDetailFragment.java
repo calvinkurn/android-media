@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -30,6 +29,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailFra
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 
 import javax.inject.Inject;
 
@@ -67,7 +67,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     }
 
     public static SolutionDetailFragment newEditAppealDetailInstance(EditAppealSolutionModel editAppealSolutionModel,
-                                                             SolutionViewModel solutionViewModel) {
+                                                                     SolutionViewModel solutionViewModel) {
         SolutionDetailFragment fragment = new SolutionDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(SOLUTION_DATA, solutionViewModel);
@@ -282,10 +282,10 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     }
 
     public void updateSolutionString(EditAppealSolutionModel editAppealSolutionModel, TextView textView) {
-        textView.setText(editAppealSolutionModel.refundAmount != 0 && editAppealSolutionModel.solutionName != null?
+        textView.setText(editAppealSolutionModel.refundAmount != 0 && editAppealSolutionModel.solutionName != null ?
                 editAppealSolutionModel.solutionName.replace(
                         context.getResources().getString(R.string.string_return_value),
-                        String.valueOf(editAppealSolutionModel.refundAmount)) :
+                        CurrencyFormatter.formatDotRupiah(String.valueOf(editAppealSolutionModel.refundAmount))) :
                 editAppealSolutionModel.getName());
     }
 

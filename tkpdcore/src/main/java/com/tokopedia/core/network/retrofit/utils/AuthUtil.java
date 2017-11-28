@@ -36,10 +36,10 @@ public class AuthUtil {
     private static final String HEADER_REQUEST_METHOD = "Request-Method";
     private static final String HEADER_CONTENT_MD5 = "Content-MD5";
     private static final String HEADER_DATE = "Date";
-    private static final String HEADER_AUTHORIZATION = "Authorization";
+    public static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
-    private static final String HEADER_DEVICE = "X-Device";
+    public static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";

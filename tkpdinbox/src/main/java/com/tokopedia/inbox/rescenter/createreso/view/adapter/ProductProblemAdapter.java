@@ -66,7 +66,6 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
     }
 
 
-
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ItemHolder(LayoutInflater.from(context).inflate(R.layout.item_product_problem, parent, false));
@@ -134,7 +133,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                     }
                 }
             });
-        } else if(itemList.get(position) instanceof String) {
+        } else if (itemList.get(position) instanceof String) {
             String title = (String) itemList.get(position);
             holder.llItem.setVisibility(View.GONE);
             holder.tvTitleSection.setVisibility(View.VISIBLE);
@@ -152,6 +151,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
         ImageView ivProduct;
         LinearLayout llItem, llFreeReturn;
         TextView tvProductName, tvTitleSection, tvFreeReturn, tvProductNameFreeReturn;
+
         public ItemHolder(View itemView) {
             super(itemView);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);

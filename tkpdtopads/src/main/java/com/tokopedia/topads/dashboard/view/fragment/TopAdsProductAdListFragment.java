@@ -71,12 +71,14 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     public void onItemClicked(Ad ad) {
         if (ad instanceof ProductAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailProductActivity.class);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (ProductAd) ad);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
             startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }
 
-    @Override
+
     public void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);

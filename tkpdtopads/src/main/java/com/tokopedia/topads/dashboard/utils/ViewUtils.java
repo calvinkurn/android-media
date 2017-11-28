@@ -22,8 +22,19 @@ public class ViewUtils {
 
     public static String getClickBudgetError(Context context, double clickBudget) {
         if (clickBudget < TopAdsConstant.BUDGET_MULTIPLE_BY) {
+            return context.getString(R.string.error_top_ads_click_budget_must_be_filled);
+        }
+        return getDefaultClickBudgetError(context, clickBudget);
+    }
+
+    public static String getKeywordClickBudgetError(Context context, double clickBudget) {
+        if (clickBudget < TopAdsConstant.BUDGET_MULTIPLE_BY) {
             return context.getString(R.string.error_top_ads_click_budget_minimum, String.valueOf(TopAdsConstant.BUDGET_MULTIPLE_BY));
         }
+        return getDefaultClickBudgetError(context, clickBudget);
+    }
+
+    public static String getDefaultClickBudgetError(Context context, double clickBudget) {
         if (clickBudget % TopAdsConstant.BUDGET_MULTIPLE_BY != 0) {
             return context.getString(R.string.error_top_ads_click_budget_multiple_by, String.valueOf(TopAdsConstant.BUDGET_MULTIPLE_BY));
         }

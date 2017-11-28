@@ -156,6 +156,10 @@ public class DriverDetailFragment extends BaseFragment {
             driverEtaTextView.setVisibility(View.VISIBLE);
             int duration = (int) destination.getEta();
             driverEtaTextView.setText(String.format("ETA %s", duration > 1 ? duration + getString(R.string.mins) : duration + getString(R.string.min)));
+        } else if (status != null && status.equalsIgnoreCase(RideStatus.COMPLETED)) {
+            cancelRideLayout.setVisibility(View.GONE);
+            driverEtaTextView.setVisibility(View.VISIBLE);
+            driverEtaTextView.setText(R.string.receipt_pending);
         } else {
             cancelRideLayout.setVisibility(View.GONE);
             driverEtaTextView.setVisibility(View.GONE);

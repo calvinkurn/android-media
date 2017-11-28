@@ -28,7 +28,7 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     private EditAppealSolutionModel editAppealSolutionModel;
 
     public static Intent newBuyerEditInstance(Context context,
-                                          String resolutionID) {
+                                              String resolutionID) {
         Intent intent = new Intent(context, SolutionListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA,
@@ -38,7 +38,7 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     }
 
     public static Intent newSellerEditInstance(Context context,
-                                          String resolutionID) {
+                                               String resolutionID) {
         Intent intent = new Intent(context, SolutionListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA,
@@ -48,7 +48,7 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     }
 
     public static Intent newAppealInstance(Context context,
-                                              String resolutionID) {
+                                           String resolutionID) {
         Intent intent = new Intent(context, SolutionListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA,
@@ -82,7 +82,7 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
 
     @Override
     protected void initialPresenter() {
-        presenter = new SolutionListActivityPresenter(this ,this);
+        presenter = new SolutionListActivityPresenter(this, this);
     }
 
     @Override

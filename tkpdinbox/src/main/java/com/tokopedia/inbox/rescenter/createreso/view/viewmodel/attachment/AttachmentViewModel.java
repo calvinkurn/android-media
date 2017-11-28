@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by nisie on 3/31/17.
  */
 
-public class AttachmentViewModel implements Parcelable{
+public class AttachmentViewModel implements Parcelable {
 
     public static final int FILE_VIDEO = 2;
     public static final int FILE_IMAGE = 1;

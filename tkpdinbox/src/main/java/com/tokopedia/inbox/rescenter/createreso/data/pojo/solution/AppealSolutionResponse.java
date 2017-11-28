@@ -15,7 +15,7 @@ public class AppealSolutionResponse {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("NameCustom")
+    @SerializedName("nameCustom")
     @Expose
     private String solutionName;
     @SerializedName("amount")

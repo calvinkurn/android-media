@@ -5,14 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.FreeReturnActivityListener;
@@ -31,13 +26,14 @@ public class FreeReturnActivity extends BasePresenterActivity<FreeReturnActivity
     private String url;
 
     public static Intent newInstance(Context context,
-                                          String url) {
+                                     String url) {
         Intent intent = new Intent(context, FreeReturnActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_URL, url);
         intent.putExtras(bundle);
         return intent;
     }
+
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -55,7 +51,7 @@ public class FreeReturnActivity extends BasePresenterActivity<FreeReturnActivity
 
     @Override
     protected void initialPresenter() {
-        presenter = new FreeReturnActivityPresenter(this ,this);
+        presenter = new FreeReturnActivityPresenter(this, this);
     }
 
     @Override

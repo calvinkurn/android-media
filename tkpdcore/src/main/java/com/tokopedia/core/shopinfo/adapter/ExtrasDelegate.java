@@ -12,12 +12,20 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.router.SellerAppRouter;
 
 /**
  * Created by Tkpd_Eka on 10/13/2015.
  */
 public class ExtrasDelegate {
+
+    private String shopId;
+
+    public ExtrasDelegate() {
+    }
+
+    public ExtrasDelegate(String shopId) {
+        this.shopId = shopId;
+    }
 
     public class RetryHolder extends RecyclerView.ViewHolder{
 
@@ -55,18 +63,41 @@ public class ExtrasDelegate {
         final Context context = parent.getContext().getApplicationContext();
 
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result_shop_info, parent, false);
+        View view = null;
+        if(shopId != null)
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result_shop_info, parent, false);
+        else
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result, parent, false);
+
         ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
-        view.findViewById(R.id.button_add_product).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(context != null && context instanceof TkpdCoreRouter){
-                    if(parent.getContext() != null && parent.getContext() instanceof Activity){
-                        ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+
+        if(shopId != null && parent.getContext() != null && parent.getContext() instanceof Activity){
+            boolean inMyShop = ((TkpdCoreRouter) context).isInMyShop(context, shopId);
+            if(inMyShop){
+                view.findViewById(R.id.button_add_product).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.button_add_product).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(parent.getContext() != null && parent.getContext() instanceof Activity){
+                            ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+                        }
+                    }
+                });
+            }else{
+                view.findViewById(R.id.button_add_product).setVisibility(View.GONE);
+            }
+
+            view.findViewById(R.id.button_add_product).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(context != null && context instanceof TkpdCoreRouter){
+                        if(parent.getContext() != null && parent.getContext() instanceof Activity){
+                            ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
         return new RecyclerView.ViewHolder(view) {
             @Override
             public String toString() {

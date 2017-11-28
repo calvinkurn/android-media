@@ -31,6 +31,8 @@
     <dimen name="padding_vvvs">2dp</dimen>
     <dimen name="padding_ms">8dp</dimen>
     <dimen name="padding_small">10dp</dimen>
+
+    <dimen name="padding_small_sm">12dp</dimen>
     <dimen name="padding_detail">15dp</dimen>
     <dimen name="med_dp">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
@@ -217,4 +219,5 @@
     <dimen name="feature_product_item_component_spacing">3dp</dimen>
     <dimen name="toolbar_shadow_height">5dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
+    <dimen name="share_header_height">52dp</dimen>
 </resources>

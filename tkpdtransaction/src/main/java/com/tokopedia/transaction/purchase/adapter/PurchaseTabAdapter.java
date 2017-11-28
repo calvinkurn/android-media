@@ -30,9 +30,7 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
                 return TxSummaryFragment.createInstancePurchase();
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
-                if(verificationFragment == null)
-                    verificationFragment = TxVerificationFragment.createInstance();
-                return verificationFragment;
+                return getVerificationFragment();
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
                 return TxListFragment.instanceStatusOrder();
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
@@ -54,6 +52,8 @@ public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
     }
 
     public TxVerificationFragment getVerificationFragment() {
-        return verificationFragment;
+        if(verificationFragment != null) {
+            return verificationFragment;
+        } else return verificationFragment = TxVerificationFragment.createInstance();
     }
 }
