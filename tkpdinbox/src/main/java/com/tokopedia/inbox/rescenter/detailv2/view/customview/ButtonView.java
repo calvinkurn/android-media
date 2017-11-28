@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ButtonViewAdapter;
@@ -56,9 +55,15 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         View view = inflater.inflate(getLayoutView(), this, true);
 
         rvButton = (RecyclerView) view.findViewById(R.id.rv_button);
-        mLayoutManager = new GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, true);
+        adapter = new ButtonViewAdapter(context, listener);
+        rvButton.setAdapter(adapter);
+        mLayoutManager = new GridLayoutManager(
+                context,
+                adapter.getAdapterSpanCount(),
+                LinearLayoutManager.VERTICAL,
+                true);
+        mLayoutManager.setSpanSizeLookup(adapter.getSpanItem());
         rvButton.setLayoutManager(mLayoutManager);
-        rvButton.setHasFixedSize(true);
     }
 
     @Override
@@ -70,15 +75,8 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     public void renderData(@NonNull ButtonData data) {
         setVisibility(VISIBLE);
         setButtonData(data);
-        adapter = new ButtonViewAdapter(MainApplication.getAppContext(), listener);
-        rvButton.setAdapter(adapter);
         adapter.setButtonViewItemList(data.getButtonViewItemList());
-        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int pos) {
-                return adapter.getItemViewType(pos);
-            }
-        });
+        listener.setOnDiscussionButtonPosition(data.getButtonViewItemList().size() != 0);
     }
 
     public ButtonData getButtonData() {

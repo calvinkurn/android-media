@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,8 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     public static final String BUTTON_REPORT = "button_report";
     public static final String BUTTON_CANCEL = "button_cancel";
 
+    public static final int ADAPTER_SPAN_COUNT = 2;
+
     private Context context;
     private List<ButtonViewItem> buttonViewItemList;
     private DetailResCenterFragmentView listener;
@@ -58,10 +61,18 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         ButtonViewItem buttonViewItem = buttonViewItemList.get(position);
-        if (position == 0) {
-            setGreenButton(holder.btnAction, buttonViewItem.getLabel());
-        } else  {
-            setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
+        if (buttonViewItemList.size() != 2) {
+            if (position == 0) {
+                setGreenButton(holder.btnAction, buttonViewItem.getLabel());
+            } else {
+                setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
+            }
+        } else {
+            if (position == 1) {
+                setGreenButton(holder.btnAction, buttonViewItem.getLabel());
+            } else {
+                setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
+            }
         }
         holder.btnAction.setOnClickListener(onActionButtonListener(buttonViewItem.getType()));
     }
@@ -103,14 +114,14 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     @Override
     public int getItemViewType(int position) {
         // pos 0 always green and bottom
-        if (buttonViewItemList.size() == 1) return 1;
-        else if (buttonViewItemList.size() == 2) return 2;
+        if (buttonViewItemList.size() == 1) return 2;
+        else if (buttonViewItemList.size() == 2) return 1;
         else if (buttonViewItemList.size() == 3) {
-            if (position == 0) return 1;
-            else return 2;
+            if (position == 0) return 2;
+            else return 1;
         } else if (buttonViewItemList.size() == 4) {
-            if (position == 0 || position == 3) return 1;
-            else return 2;
+            if (position == 0 || position == 3) return 2;
+            else return 1;
         }
         return super.getItemViewType(position);
     }
@@ -122,4 +133,18 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
             btnAction = (TextView) itemView.findViewById(R.id.btn_action);
         }
     }
+
+    public static int getAdapterSpanCount() {
+        return ADAPTER_SPAN_COUNT;
+    }
+
+    public GridLayoutManager.SpanSizeLookup getSpanItem() {
+        return new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return getItemViewType(position);
+            }
+        };
+    }
+
 }
