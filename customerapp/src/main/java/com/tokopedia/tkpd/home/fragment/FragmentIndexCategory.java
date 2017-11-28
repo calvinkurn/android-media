@@ -28,12 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.Trace;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -43,8 +39,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
@@ -66,6 +60,8 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -121,7 +117,6 @@ import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
-import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -150,6 +145,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
+    private static final String KEY_TOKO_CASH_TOP_UP = "toko_cash_top_up";
+    private static final String KEY_TOKO_CASH_LABEL = "toko_cash_label";
 
     private ViewHolder holder;
 
@@ -177,7 +174,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private DrawerTokoCash tokoCashData;
 
-    FirebaseRemoteConfig firebaseRemoteConfig;
+    private RemoteConfig remoteConfig;
 
     @Override
     public void onRequestPendingCashBack() {
@@ -274,7 +271,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
         topPicksPresenter.fetchTopPicks();
         brandsPresenter.fetchBrands();
-        fetchRemoteConfig();
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     private void loadDummyPromos() {
@@ -282,22 +279,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         dummyPromoList.add(new FacadePromo.PromoItem());
         setBanner(dummyPromoList);
     }
-
-    private void fetchRemoteConfig() {
-        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
-        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
-            @Override
-            public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
-                FragmentIndexCategory.this.firebaseRemoteConfig = firebaseRemoteConfig;
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
 
     private void getAnnouncement() {
         if (!category.isTickerClosed()) {
@@ -705,8 +686,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     UnifyTracking.eventViewAllOSNonLogin();
                 }
 
-                if (firebaseRemoteConfig != null
-                        && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
+                if (remoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
                     getActivity().startActivity(
                             ReactNativeActivity.createOfficialStoresReactNativeActivity(
                                     getActivity(), ReactConst.Screen.OFFICIAL_STORE,
@@ -1041,23 +1021,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onReceivedTokoCashData(final DrawerTokoCash tokoCashData) {
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
-        final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(getActivity());
-        if(config != null) {
-            config.setDefaults(R.xml.remote_config_default);
-            config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        config.activateFetched();
-                        holder.tokoCashHeaderView.renderData(tokoCashData, config
-                                .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
-                        FragmentIndexCategory.this.tokoCashData = tokoCashData;
-                    }
-                }
-            });
-        }
-        holder.tokoCashHeaderView.renderData(tokoCashData, false, getActivity()
-                .getString(R.string.tokocash));
+        holder.tokoCashHeaderView.renderData(
+                tokoCashData,
+                remoteConfig.getBoolean(KEY_TOKO_CASH_TOP_UP, false),
+                remoteConfig.getString(KEY_TOKO_CASH_LABEL, getActivity().getString(R.string.tokocash))
+        );
         this.tokoCashData = tokoCashData;
     }
 
