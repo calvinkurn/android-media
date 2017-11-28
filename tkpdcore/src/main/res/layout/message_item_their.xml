@@ -13,9 +13,11 @@
         android:id="@+id/old_message_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_med"
-        android:layout_marginTop="@dimen/margin_vvvs"
-        android:background="@drawable/border_button_rounded"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:background="@drawable/border_button_default"
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
 
@@ -102,7 +104,6 @@
         android:layout_toRightOf="@id/user_ava"
         android:background="@drawable/left_bubble"
         android:gravity="left"
-        android:maxWidth="270dp"
         android:orientation="vertical"
         android:padding="@dimen/padding_small">
 
@@ -110,6 +111,7 @@
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="270dp"
             android:layout_gravity="left"
             android:linksClickable="true"
             android:textColor="@color/black_70"

@@ -33,5 +33,4 @@ public interface SellerDashboardView extends CustomerView {
 
     void onErrorOpenShop();
 
-    void onSuccessGetTopChatNotification(int notifUnreads);
 }
