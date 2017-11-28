@@ -72,7 +72,7 @@ public interface FlightBookingContract {
 
         void renderTotalPrices(String totalPrice);
 
-        void showGetCartDataErrorStateLayout();
+        void showGetCartDataErrorStateLayout(String errorMessage);
 
         void renderFinishTimeCountDown(Date date);
 
@@ -81,6 +81,12 @@ public interface FlightBookingContract {
         void showPriceDialogChanges(String newTotalPrice, String oldTotalPrice);
 
         void navigateToReview(FlightBookingReviewModel flightBookingReviewModel);
+
+        void showUpdateDataLoading();
+
+        void hideUpdateDataLoading();
+
+        void showUpdateDataErrorStateLayout(String errorMessage);
     }
 
     interface Presenter extends CustomerPresenter<View> {

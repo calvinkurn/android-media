@@ -1,7 +1,5 @@
 package com.tokopedia.flight.common.data.model;
 
-import android.support.annotation.StringDef;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
@@ -21,7 +19,15 @@ public class FlightError {
     @Expose
     private String title;
 
-    public @FlightErrorConstant String getId() {
+    public FlightError(String id) {
+        this.id = id;
+    }
+
+    public FlightError() {
+    }
+
+    public @FlightErrorConstant
+    String getId() {
         return id;
     }
 
@@ -31,5 +37,15 @@ public class FlightError {
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FlightError && ((FlightError) obj).getId().equalsIgnoreCase(id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }
