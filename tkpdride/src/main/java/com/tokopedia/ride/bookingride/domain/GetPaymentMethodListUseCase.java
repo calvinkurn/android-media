@@ -10,7 +10,7 @@ import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
 import rx.Observable;
 
 /**
- * Created by alvarisi on 3/14/17.
+ * Created by Vishal on 11/17/17.
  */
 
 public class GetPaymentMethodListUseCase extends UseCase<PaymentMethodList> {

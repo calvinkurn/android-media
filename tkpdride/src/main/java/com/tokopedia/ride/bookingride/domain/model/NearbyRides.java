@@ -5,7 +5,7 @@ import com.tokopedia.ride.common.ride.domain.model.Location;
 import java.util.ArrayList;
 
 /**
- * Created by alvarisi on 4/6/17.
+ * Created by Vishal on 10/6/17.
  */
 
 public class NearbyRides {

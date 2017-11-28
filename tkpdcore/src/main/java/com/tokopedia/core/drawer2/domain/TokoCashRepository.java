@@ -14,4 +14,6 @@ public interface TokoCashRepository {
     Observable<TokoCashModel> getTokoCashFromNetwork(TKPDMapParam<String, Object> params);
 
     Observable<TokoCashModel> getTokoCashFromLocal();
+
+
 }

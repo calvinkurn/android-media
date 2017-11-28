@@ -10,7 +10,7 @@ import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import rx.Observable;
 
 /**
- * Created by alvarisi on 3/14/17.
+ * Created by Vishal on 3/14/17.
  */
 
 public class GetNearbyCarsUseCase extends UseCase<NearbyRides> {

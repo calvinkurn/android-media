@@ -72,6 +72,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
+import static com.tokopedia.ride.scrooge.ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -635,6 +636,17 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                     passData.setProductId(product.getId());
                 }
                 break;
+
+            case REQUEST_CODE_OPEN_SCROOGE_PAGE:
+                if (getActivity() != null) {
+                    if (resultCode == ScroogePGUtil.RESULT_CODE_SUCCESS) {
+                        closePage();
+                    } else {
+                        NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.error_fail_pay_pending));
+                    }
+                }
+                break;
+
         }
     }
 
@@ -734,7 +746,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     @Override
-    public void opeScroogePage(String url, String postData) {
+    public void openScroogePage(String url, String postData) {
         if (getActivity() != null) {
             ScroogePGUtil.openScroogePage(getActivity(), url, true, postData, getString(R.string.title_pay_pending_fare));
         }

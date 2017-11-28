@@ -11,7 +11,7 @@ import java.util.List;
 import rx.functions.Func1;
 
 /**
- * Created by alvarisi on 4/6/17.
+ * Created by Vishal
  */
 
 public class NearbyRidesDestinationMapper implements Func1<NearbyRidesEntity, NearbyRides> {

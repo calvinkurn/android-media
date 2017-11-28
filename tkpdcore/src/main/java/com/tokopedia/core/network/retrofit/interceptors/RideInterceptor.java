@@ -40,8 +40,6 @@ public class RideInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
     private static final String AUTO_RIDE = "AUTO_RIDE";
-    private static final String X_FORWARDED_FOR = "x-forwarded-for";
-    private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
 
     private String authorizationString;
 
@@ -130,20 +128,6 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         return builder.build();
     }
 
-    /*private Request.Builder getBearerHeaderBuilder(Request request, String oAuth, String userId) {
-
-        return request.newBuilder()
-                .header("Tkpd-UserId", userId)
-                .header("Authorization", oAuth)
-                .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                //TODO remove skip payment and auto ride
-                //.header("tkpd-skip-payment", "true")
-                .header("", "true")
-                .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
-                .method(request.method(), request.body());
-    }*/
-
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
         Map<String, String> headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, HEADER_DATE_FORMAT);
@@ -156,7 +140,6 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_X_AUTHORIZATION, headerMap.get(HEADER_AUTHORIZATION));
         headerMap.put(HEADER_AUTHORIZATION, authorizationString);
         headerMap.put(AUTO_RIDE, "true");
-        //headerMap.put(X_FORWARDED_FOR, getIPAddress(true));
         return headerMap;
     }
 

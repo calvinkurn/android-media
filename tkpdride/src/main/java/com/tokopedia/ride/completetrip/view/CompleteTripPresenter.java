@@ -233,7 +233,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
             @Override
             public void onNext(PayPending payPending) {
                 getView().hideProgressbar();
-                getView().opeScroogePage(payPending.getUrl(), payPending.getPostData());
+                getView().openScroogePage(payPending.getUrl(), payPending.getPostData());
             }
         });
     }

@@ -71,7 +71,7 @@ public interface CompleteTripContract {
 
         int getTipAmount();
 
-        void opeScroogePage(String url, String postData);
+        void openScroogePage(String url, String postData);
 
         void showProgressbar();
 

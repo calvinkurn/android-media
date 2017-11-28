@@ -9,7 +9,7 @@ import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import rx.Observable;
 
 /**
- * Created by Vishal
+ * Created by Vishal on 11/6/17
  */
 
 public class RequestApiUseCase extends UseCase<String> {

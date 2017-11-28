@@ -11,7 +11,7 @@ import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewMo
 import java.util.List;
 
 /**
- * Created by alvarisi on 4/25/17.
+ * Created by Vishal on  2nd Nov, 2017.
  */
 
 public interface ManagePaymentOptionsContract {

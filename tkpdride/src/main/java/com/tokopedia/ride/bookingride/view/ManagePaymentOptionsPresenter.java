@@ -169,7 +169,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
     public void selectPaymentOption(final PaymentMethodViewModel paymentMethodViewModel) {
         if (paymentMethodViewModel.isSaveWebView()) {
             getView().showAutoDebitDialog(paymentMethodViewModel);
-            //getView().opeScroogePage(paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody());
+            //getView().openScroogePage(paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody());
         } else {
             getView().showProgressBar();
             saveUrlUseCase.setUrl(paymentMethodViewModel.getSaveurl());
