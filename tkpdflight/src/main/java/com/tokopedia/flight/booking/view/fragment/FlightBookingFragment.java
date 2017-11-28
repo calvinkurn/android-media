@@ -3,7 +3,6 @@ package com.tokopedia.flight.booking.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -101,7 +100,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     FlightBookingPresenter presenter;
 
     private FlightBookingPassengerAdapter adapter;
-    private ProgressDialog progressDialog;
     private FlightSimpleAdapter priceListAdapter;
 
 
@@ -127,9 +125,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         returnTripId = getArguments().getString(EXTRA_FLIGHT_ARRIVAL_ID);
         paramViewModel = new FlightBookingParamViewModel();
         paramViewModel.setSearchParam((FlightSearchPassDataViewModel) getArguments().getParcelable(EXTRA_SEARCH_PASS_DATA));
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
-        progressDialog.setCancelable(false);
     }
 
     @Override
@@ -315,11 +310,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
         String tripInfo = "";
         if (isTransit) {
-            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
         }
-        tripInfo += String.format("| %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         returnInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -340,11 +335,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
         String tripInfo = "";
         if (isTransit) {
-            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
         }
-        tripInfo += String.format(" | %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -476,13 +471,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private String generateIdEmpotency(String requestId) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = FlightRequestUtil.md5(timeMillis);
-        return String.format("%s_%s", requestId, token.isEmpty() ? timeMillis : token);
+        return String.format(getString(R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
     }
 
     private void showMessageErrorInSnackBar(int resId) {
         Snackbar snackBar = SnackbarManager.make(getActivity(),
                 getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", null);
+                .setAction(R.string.flight_booking_close_label, null);
         Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
         snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
         snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
