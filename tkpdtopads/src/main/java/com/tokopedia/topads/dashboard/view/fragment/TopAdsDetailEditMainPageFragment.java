@@ -20,13 +20,22 @@ public abstract class TopAdsDetailEditMainPageFragment<V extends Ad> extends Top
     @Override
     protected void initView(View view) {
         super.initView(view);
-        cost = (LabelView) view.findViewById(R.id.cost);
-        schedule = (LabelView) view.findViewById(R.id.schedule);
+        cost = view.findViewById(R.id.cost);
+        schedule = view.findViewById(R.id.schedule);
     }
 
     @Override
     protected void setViewListener() {
         super.setViewListener();
+        cost.setEnabled(false);
+        schedule.setEnabled(false);
+    }
+
+    @Override
+    public void onAdLoaded(V ad) {
+        super.onAdLoaded(ad);
+        cost.setEnabled(true);
+        schedule.setEnabled(true);
         cost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

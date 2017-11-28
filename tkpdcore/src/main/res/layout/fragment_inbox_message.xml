@@ -30,7 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical"
+                android:background="@color/white"/>
         </com.tokopedia.core.customwidget.SwipeToRefresh>
 
         <LinearLayout
@@ -39,6 +40,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/simpleSearchView"
             android:alpha="0.8"
+            tools:visibility="gone"
             android:background="#000000">
 
             <ProgressBar

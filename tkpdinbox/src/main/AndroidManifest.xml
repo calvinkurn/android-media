@@ -139,6 +139,24 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
+        <activity
+            android:name=".inboxmessageold.activity.InboxMessageActivity"
+            android:label="@string/title_inbox"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name=".inboxmessageold.activity.InboxMessageDetailActivity"
+            android:label="@string/title_inbox"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name=".inboxmessageold.activity.SendMessageActivityOld"
+            android:label="@string/title_activity_send_message"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->
@@ -152,7 +170,9 @@
         <service
             android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
             android:exported="false"/>
-
+        <service
+            android:name="com.tokopedia.inbox.inboxmessageold.intentservice.InboxMessageIntentService"
+            android:exported="false" />
 
     </application>
 
