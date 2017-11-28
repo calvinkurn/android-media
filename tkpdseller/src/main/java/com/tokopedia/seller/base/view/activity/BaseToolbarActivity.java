@@ -53,8 +53,17 @@ abstract class BaseToolbarActivity extends BaseActivity {
         }
         setupLayout(savedInstanceState);
         setupFragment(savedInstanceState);
+        /**
+         * because toolbar background is black so set title and its child black
+         * otherwise toolbar and its child is white color.
+         */
         if (isToolbarWhite()) {
             setToolbarColorWhite();
+            toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
+        }else{
+            toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText);
         }
         if (getSupportActionBar() != null && isShowCloseButton()) {
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, closeButtonDrawable()));
@@ -112,7 +121,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     @CallSuper
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -130,6 +139,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
     public void updateOptionMenuColor(Menu menu) {
         if (isToolbarWhite()) {
             MenuTintUtils.tintAllIcons(menu, TEXT_COLOR_BACKGROUND_WHITE);
+        }else{
+            MenuTintUtils.tintAllIcons(menu, R.color.white);
         }
     }
 

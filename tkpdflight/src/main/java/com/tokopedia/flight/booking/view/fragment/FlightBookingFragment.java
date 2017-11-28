@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
@@ -49,6 +51,8 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
@@ -64,9 +68,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final String EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA";
     private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
     private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
+    private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
+    private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
 
     private ProgressBar fullPageProgressBar;
     private NestedScrollView fullPageLayout;
@@ -231,17 +237,24 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CODE_PASSENGER:
+
+        switch (requestCode) {
+            case REQUEST_CODE_PASSENGER:
+                if (resultCode == Activity.RESULT_OK) {
                     FlightBookingPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightBookingPassengerActivity.EXTRA_PASSENGER);
                     presenter.onPassengerResultReceived(passengerViewModel);
-                    break;
-                case REQUEST_CODEP_PHONE_CODE:
+                }
+                break;
+            case REQUEST_CODEP_PHONE_CODE:
+                if (resultCode == Activity.RESULT_OK) {
                     FlightBookingPhoneCodeViewModel phoneCodeViewModel = data.getParcelableExtra(FLightBookingPhoneCodeFragment.EXTRA_SELECTED_PHONE_CODE);
                     presenter.onPhoneCodeResultReceived(phoneCodeViewModel);
-                    break;
-            }
+                }
+                break;
+            case REQUEST_CODE_NEW_PRICE_DIALOG:
+                if (resultCode != Activity.RESULT_OK)
+                    getActivity().finish();
+                break;
         }
     }
 
@@ -386,7 +399,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void renderCartData(FlightBookingCartData flightBookingCartData) {
+    public void setCartData(FlightBookingCartData flightBookingCartData) {
         this.flightBookingCartData = flightBookingCartData;
     }
 
@@ -396,14 +409,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void getRenderDeparturePrice(List<SimpleViewModel> prices) {
-        priceListAdapter.addViewModels(prices);
-        priceListAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void getRenderReturnPrice(List<SimpleViewModel> prices) {
-        priceListAdapter.addViewModels(prices);
+    public void getRenderPriceDetails(List<SimpleViewModel> prices) {
+        priceListAdapter.setViewModels(prices);
         priceListAdapter.notifyDataSetChanged();
     }
 
@@ -453,6 +460,19 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         dialog.create().show();
     }
 
+    @Override
+    public void showPriceDialogChanges(String newTotalPrice, String oldTotalPrice) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = FlightBookingNewPriceDialogFragment.newInstance(newTotalPrice, oldTotalPrice);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_NEW_PRICE_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
+    }
+
     private String generateIdEmpotency(String requestId) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = FlightRequestUtil.md5(timeMillis);
@@ -467,6 +487,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
         snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
         snackBar.show();
+    }
+
+    @Override
+    public void navigateToReview(FlightBookingReviewModel flightBookingReviewModel) {
+        startActivity(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel));
     }
 
     @Override

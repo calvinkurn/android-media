@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
@@ -29,6 +30,7 @@ import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.PreFilterHelper;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -258,6 +260,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
+                updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
             }
         }
@@ -336,7 +339,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
             Intent intent = RevampedDynamicFilterActivity.createInstance(
-                    getActivity(), getFilters(), getFlagFilterHelper()
+                    getActivity(), getScreenName(), getFlagFilterHelper()
             );
             startActivityForResult(intent, getFilterRequestCode());
             getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
@@ -403,6 +406,19 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return refreshLayout.isRefreshing();
     }
 
+    protected TopAdsParams enrichWithFilterAndSortParams(TopAdsParams topAdsParams) {
+        if (getSelectedSort() != null) {
+            topAdsParams.getParam().putAll(getSelectedSort());
+        }
+        if (getSelectedFilter() != null) {
+            topAdsParams.getParam().putAll(getSelectedFilter());
+        }
+        if (getExtraFilter() != null) {
+            topAdsParams.getParam().putAll(getExtraFilter());
+        }
+        return topAdsParams;
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -437,6 +453,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void onSwipeToRefresh() {
+
+    }
+
+    protected void updateDepartmentId(String deptId) {
 
     }
 

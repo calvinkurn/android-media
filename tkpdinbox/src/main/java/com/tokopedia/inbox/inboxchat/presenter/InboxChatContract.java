@@ -95,7 +95,7 @@ public class InboxChatContract {
     }
 
     interface Presenter extends CustomerPresenter<View>{
-        void recreateWebSocket();
+        void createWebSocket();
 
         void resetAttempt();
 

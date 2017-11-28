@@ -1,17 +1,25 @@
 package com.tokopedia.digital.tokocash.entity;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by nabillasabbaha on 10/9/17.
  */
 
 public class WalletTokenEntity {
 
+    @SerializedName("token")
+    @Expose
     private String token;
-
+    @SerializedName("errorMessage")
+    @Expose
     private String errorMessage;
-
+    @SerializedName("statusMessage")
+    @Expose
     private String statusMessage;
-
+    @SerializedName("responseCode")
+    @Expose
     private int responseCode;
 
     public String getToken() {

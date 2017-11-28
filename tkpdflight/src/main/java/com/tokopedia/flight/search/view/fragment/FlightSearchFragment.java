@@ -166,7 +166,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     protected final BaseListAdapter<FlightSearchViewModel> getNewAdapter() {
-        flightSearchAdapter = new FlightSearchAdapter(getContext(),this, this);
+        flightSearchAdapter = new FlightSearchAdapter(getContext(), this, this);
         return flightSearchAdapter;
     }
 
@@ -185,7 +185,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         return view;
     }
 
-    protected int getLayout(){
+    protected int getLayout() {
         return R.layout.fragment_search_flight;
     }
 
@@ -429,7 +429,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
             } else {
                 flightAirportCombineModel.setNeedRefresh(false);
-                progress += (flightMetaDataDB.getMaxRetry() - flightAirportCombineModel.getNoOfRetry())*
+                progress += (flightMetaDataDB.getMaxRetry() - flightAirportCombineModel.getNoOfRetry()) *
                         divideTo(halfProgressAmount, flightMetaDataDB.getMaxRetry());
             }
         }
@@ -441,15 +441,15 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             return;
         }
 
-        hideLoading();
-
         // will update the data
         // if there is already data loaded, reload the data from cache
         // because the data might have filter/sort in it, so cannot be added directly
-        if (!isDataEmpty) {
+        if (isDataEmpty) {
+            hideLoading();
+        } else {
             // we retrieve from cache, because there is possibility the filter/sort will be different
             reloadDataFromCache();
-            if (getAdapter().getDataSize() > 0 && filterAndSortBottomAction.getVisibility() == View.GONE) {
+            if (filterAndSortBottomAction.getVisibility() == View.GONE) {
                 filterAndSortBottomAction.setVisibility(View.VISIBLE);
             }
         }

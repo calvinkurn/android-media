@@ -60,18 +60,6 @@ public class FlightBookingLuggageMetaViewModel implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(key);
-        dest.writeString(description);
-        dest.writeTypedList(luggages);
-    }
-
-    @Override
     public int hashCode() {
         return key.hashCode();
     }
@@ -79,5 +67,17 @@ public class FlightBookingLuggageMetaViewModel implements Parcelable {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof FlightBookingLuggageMetaViewModel && ((FlightBookingLuggageMetaViewModel) obj).getKey().equalsIgnoreCase(key);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(key);
+        parcel.writeString(description);
+        parcel.writeTypedList(luggages);
     }
 }

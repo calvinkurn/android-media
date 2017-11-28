@@ -1,6 +1,7 @@
 package com.tokopedia.core.app;
 
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -49,6 +50,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
+
+import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -393,29 +397,5 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isTaskRoot()) {
-            ApplicationInfo ai = null;
-            try {
-                ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-                Bundle bundle = ai.metaData;
-                String i = bundle.getString("APPS_HOME", "");
-                if (!TextUtils.isEmpty(i)) {
-                    Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
-                            (this);
-                    startActivity(intentHome);
-                } else {
-                    super.onBackPressed();
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-                super.onBackPressed();
-            }
-        } else {
-            super.onBackPressed();
-        }
     }
 }

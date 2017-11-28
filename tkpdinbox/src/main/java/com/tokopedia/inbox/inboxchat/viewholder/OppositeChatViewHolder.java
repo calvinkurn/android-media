@@ -115,6 +115,9 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
         label.setText(element.getRole());
 
+        name.setVisibility(View.GONE);
+        label.setVisibility(View.GONE);
+
         if (element.getOldMessageTitle() != null && element.getOldMessageTitle().length() > 0) {
             oldMessageView.setVisibility(View.VISIBLE);
             oldMessage.setText(getOldMessageText(element));

@@ -1,17 +1,34 @@
 package com.tokopedia.digital.tokocash.entity;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by nabillasabbaha on 11/6/17.
  */
 
 public class AccountWalletListEntity {
 
+    @SerializedName("client_id")
+    @Expose
     private String client_id;
+    @SerializedName("client_name")
+    @Expose
     private String client_name;
+    @SerializedName("identifier")
+    @Expose
     private String identifier;
+    @SerializedName("identifier_type")
+    @Expose
     private String identifier_type;
+    @SerializedName("img_url")
+    @Expose
     private String img_url;
+    @SerializedName("auth_date_fmt")
+    @Expose
     private String auth_date_fmt;
+    @SerializedName("refresh_token")
+    @Expose
     private String refresh_token;
 
     public String getClient_id() {
