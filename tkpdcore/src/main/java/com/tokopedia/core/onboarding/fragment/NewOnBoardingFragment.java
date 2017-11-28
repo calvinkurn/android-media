@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     private TextView titleView;
     private int position;
     private String lottieAsset;
+    private View activtiyView;
 
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
@@ -97,6 +99,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((NewOnboardingActivity) (getActivity())).setNextResource();
+        activtiyView = getActivity().findViewById(R.id.main_view);
         animatorSet = new AnimatorSet();
 
         if (getArguments() != null && getArguments().size() != 0) {
@@ -160,6 +163,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             titleView.setTextColor(titleColor);
         }
 
+        Log.d("milhamj",title+"");
+
         descView.setText(description);
 
         i.setBackgroundResource(drawable);
@@ -168,6 +173,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             notifAnimation.start();
         }
         main.setBackgroundColor(bgColor);
+        activtiyView.setBackgroundColor(bgColor);
         return v;
     }
 
@@ -187,8 +193,11 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             titleView.setTextColor(titleColor);
         }
 
+        Log.d("milhamj",title+"");
+
         descView.setText(description);
 
+        activtiyView.setBackgroundColor(bgColor);
         main.setBackgroundColor(bgColor);
 
         login = (TextView) v.findViewById(R.id.button_login);

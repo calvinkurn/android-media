@@ -100,7 +100,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
     }
 
     private void setSkip() {
-        showSkipButton(true);
+        showSkipButton(false);
         setSkipText("Lewati");
         skipView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_medium));
         skipView.setTypeface(Typeface.DEFAULT_BOLD);
@@ -157,32 +157,43 @@ public class NewOnboardingActivity extends OnboardingActivity {
     }
 
     public void setNextResource() {
-        nextView.setImageResource(R.drawable.next_ic);
-        nextView.setMinimumWidth(0);
-        FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
-        float d = getResources().getDisplayMetrics().density;
-        params1.rightMargin = (int) (20*d);
+        if(nextView!=null) {
+            nextView.setImageResource(R.drawable.next_ic);
+            nextView.setMinimumWidth(0);
+            FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
+            float d = getResources().getDisplayMetrics().density;
+            params1.rightMargin = (int) (20*d);
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(@NonNull View v) {
-                if (isVibrateOn) {
-                    mVibrator.vibrate(vibrateIntensity);
-                }
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(@NonNull View v) {
+                    if (isVibrateOn) {
+                        mVibrator.vibrate(vibrateIntensity);
+                    }
 
-                boolean requestPermission = false;
-                int position = 0;
+                    boolean requestPermission = false;
+                    int position = 0;
 
-                for (int i = 0; i < permissionsArray.size(); i++) {
-                    requestPermission = pager.getCurrentItem() + 1 == permissionsArray.get(i).getPosition();
-                    position = i;
-                    break;
-                }
+                    for (int i = 0; i < permissionsArray.size(); i++) {
+                        requestPermission = pager.getCurrentItem() + 1 == permissionsArray.get(i).getPosition();
+                        position = i;
+                        break;
+                    }
 
-                if (requestPermission) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(permissionsArray.get(position).getPermission(), 1);
-                        permissionsArray.remove(position);
+                    if (requestPermission) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            requestPermissions(permissionsArray.get(position).getPermission(), 1);
+                            permissionsArray.remove(position);
+                        } else {
+                            ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
+                            pager.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pager.setCurrentItem(pager.getCurrentItem() + 1, true);
+                                }
+                            },1250);
+                            onNextPressed();
+                        }
                     } else {
                         ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
                         pager.postDelayed(new Runnable() {
@@ -193,17 +204,8 @@ public class NewOnboardingActivity extends OnboardingActivity {
                         },1250);
                         onNextPressed();
                     }
-                } else {
-                    ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
-                    pager.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            pager.setCurrentItem(pager.getCurrentItem() + 1, true);
-                        }
-                    },1250);
-                    onNextPressed();
                 }
-            }
-        });
+            });
+        }
     }
 }
