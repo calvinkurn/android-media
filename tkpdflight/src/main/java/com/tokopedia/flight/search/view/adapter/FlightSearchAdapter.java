@@ -37,6 +37,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
 
     public interface OnBaseFlightSearchAdapterListener{
         void onResetFilterClicked();
+        void onChangeDateClicked();
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
     }
 
@@ -158,7 +159,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
 
             @Override
             public void onEmptyButtonClicked() {
-                Toast.makeText(context, "Belum dihandle", Toast.LENGTH_LONG).show();
+                onBaseFlightSearchAdapterListener.onChangeDateClicked();
             }
         });
         return emptyDataBinder;

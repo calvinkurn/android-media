@@ -2,60 +2,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:minHeight="?android:attr/actionBarSize"
-        android:theme="@style/AppBarTheme"
+        android:elevation="@dimen/toolbar_elevation"
+        android:theme="?toolbarTheme"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
-        app:subtitleTextAppearance="@style/ToolbarSubtitleText"
-        app:titleTextAppearance="@style/ToolbarText">
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+    <!--<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/white"-->
+        <!--android:minHeight="?android:attr/actionBarSize"-->
+        <!--android:theme="?toolbarTheme"-->
+        <!--app:contentInsetLeft="0dp"-->
+        <!--app:contentInsetStart="0dp"-->
+        <!--app:contentInsetStartWithNavigation="0dp"-->
+        <!--app:subtitleTextAppearance="@style/ToolbarSubtitleText"-->
+        <!--app:titleTextAppearance="@style/ToolbarText">-->
 
-            <TextView
-                android:id="@+id/tv_toolbar_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/filter"
-                android:textAppearance="@style/ToolbarText"
-                android:textColor="@android:color/black"
-                android:theme="@style/AppBarTheme" />
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="horizontal">-->
 
-            <FrameLayout
-                android:id="@+id/v_reset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_sm"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:padding="@dimen/padding_ms">
+            <!--<TextView-->
+                <!--android:id="@+id/tv_toolbar_title"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/filter"-->
+                <!--android:textAppearance="@style/ToolbarText"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:theme="@style/AppBarTheme" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/reset"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@color/black_70" />
-            </FrameLayout>
+            <!--<FrameLayout-->
+                <!--android:id="@+id/v_reset"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginEnd="@dimen/margin_sm"-->
+                <!--android:layout_marginRight="@dimen/margin_sm"-->
+                <!--android:background="?attr/selectableItemBackground"-->
+                <!--android:clickable="true"-->
+                <!--android:padding="@dimen/padding_ms">-->
 
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/reset"-->
+                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+                    <!--android:textColor="@color/black_70" />-->
+            <!--</FrameLayout>-->
+
+        <!--</LinearLayout>-->
+    <!--</android.support.v7.widget.Toolbar>-->
 
     <FrameLayout
         android:id="@+id/parent_view"

@@ -77,18 +77,7 @@
             android:fitsSystemWindows="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <com.tokopedia.design.button.BottomActionView
-            android:id="@+id/bottom_action_filter_sort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
-            app:bav_icon_1="@drawable/ic_flight_search_filter"
-            app:bav_icon_2="@drawable/ic_flight_search_sort"
-            app:bav_label_1="@string/flight_search_filter_label"
-            app:bav_label_2="@string/flight_search_sort_label"
-            app:layout_anchor="@id/recycler_view"
-            app:layout_anchorGravity="bottom|center_horizontal"
-            app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior" />
+        <include layout="@layout/include_filter_bottom_action_view" />
 
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

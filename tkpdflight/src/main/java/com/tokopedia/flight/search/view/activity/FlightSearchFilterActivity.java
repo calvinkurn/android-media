@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -54,9 +56,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     private String currentTag;
     private int count;
-    private View vReset;
-
-    private TextView tvToolbarTitle;
 
     public static Intent createInstance(Context context,
                                         boolean isReturning,
@@ -95,25 +94,36 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             }
         });
 
-        vReset = findViewById(R.id.v_reset);
-        vReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment f = getCurrentFragment();
-                if (f != null && f instanceof OnFlightBaseFilterListener) {
-                    ((OnFlightBaseFilterListener) f).resetFilter();
-                }
-            }
-        });
-        tvToolbarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
-        tvToolbarTitle.setText(getTitle());
-
         DaggerFlightSearchComponent.builder()
                 .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
                 .build()
                 .inject(this);
         flightFilterPresenter.attachView(this);
         flightFilterPresenter.getFlightCount(isReturning, true, flightFilterModel);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_filter_reset, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_reset) {
+            onResetClicked();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void onResetClicked() {
+        Fragment f = getCurrentFragment();
+        if (f != null && f instanceof OnFlightBaseFilterListener) {
+            ((OnFlightBaseFilterListener) f).resetFilter();
+        }
     }
 
     private void onButtonFilterClicked() {
@@ -172,25 +182,20 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
         setUpTitleByTag(tag);
-        if (fragment instanceof OnFlightBaseFilterListener) {
-            vReset.setVisibility(View.VISIBLE);
-        } else {
-            vReset.setVisibility(View.GONE);
-        }
     }
 
     public void setUpTitleByTag(String tag) {
         currentTag = tag;
         if (TextUtils.isEmpty(tag) || getTagFragment().equals(tag)) {
-            tvToolbarTitle.setText(getTitle());
+            toolbar.setTitle(getTitle());
         } else if (FlightFilterDepartureFragment.TAG.equals(tag)) {
-            tvToolbarTitle.setText(getString(R.string.flight_search_filter_departure_time));
+            toolbar.setTitle(getString(R.string.flight_search_filter_departure_time));
         } else if (FlightFilterTransitFragment.TAG.equals(tag)) {
-            tvToolbarTitle.setText(getString(R.string.transit));
+            toolbar.setTitle(getString(R.string.transit));
         } else if (FlightFilterAirlineFragment.TAG.equals(tag)) {
-            tvToolbarTitle.setText(getString(R.string.airline));
+            toolbar.setTitle(getString(R.string.airline));
         } else if (FlightFilterRefundableFragment.TAG.equals(tag)) {
-            tvToolbarTitle.setText(getString(R.string.refundable_policy));
+            toolbar.setTitle(getString(R.string.refundable_policy));
         }
         updateButtonFilter(count);
     }
