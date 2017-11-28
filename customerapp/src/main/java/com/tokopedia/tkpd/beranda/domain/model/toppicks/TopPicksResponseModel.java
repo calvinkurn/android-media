@@ -12,6 +12,15 @@ public class TopPicksResponseModel {
     private double processTime;
     @SerializedName("data")
     private TopPicksDataModel data;
+    private boolean isSuccess;
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
 
     public double getProcessTime() {
         return processTime;

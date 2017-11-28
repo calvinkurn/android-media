@@ -1,6 +1,9 @@
 package com.tokopedia.tkpd.beranda.data.repository;
 
-import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerModel;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
+import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksResponseModel;
 
@@ -14,7 +17,11 @@ public interface HomeRepository {
 
     Observable<HomeCategoryResponseModel> getHomeCategorys();
 
-    Observable<TopPicksResponseModel> getTopPicks();
+    Observable<TopPicksResponseModel> getTopPicks(RequestParams requestParams);
 
-    Observable<HomeBannerModel> getBanners();
+    Observable<HomeBannerResponseModel> getBanners(RequestParams requestParams);
+
+    Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStore();
+
+    Observable<Ticker> getTickers();
 }

@@ -40,6 +40,10 @@ public interface MojitoApi {
     @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
     Observable<Response<Brands>> getBrands();
 
+
+    @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
+    Observable<Response<String>> getBrandsOfficialStore();
+
     @GET(TkpdBaseURL.Mojito.API_V1_BRANDS_CATEGORY)
     Observable<Response<MojitoBrandsModel>> getBrandsCategory(
             @Path(CATEGORY_ID) String categoryID

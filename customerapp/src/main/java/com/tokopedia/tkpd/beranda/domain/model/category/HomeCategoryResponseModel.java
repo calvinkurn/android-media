@@ -13,6 +13,15 @@ public class HomeCategoryResponseModel {
     private HeaderResponseModel headers;
     @SerializedName("data")
     private CategoryDataModel data;
+    private boolean isSuccess;
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
 
     public HeaderResponseModel getHeaders() {
         return headers;
