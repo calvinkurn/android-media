@@ -76,6 +76,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        screenTrack();
         if (getUserVisibleHint()) {
             setupBottomNavigation();
         }
@@ -165,7 +166,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     protected void screenTrack() {
-        ScreenTracking.screen(getScreenName());
+        if (getUserVisibleHint()) {
+            ScreenTracking.screen(getScreenName());
+        }
     }
 
     private void setupBottomNavigation() {

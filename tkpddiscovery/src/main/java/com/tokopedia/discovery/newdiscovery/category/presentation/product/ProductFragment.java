@@ -441,6 +441,10 @@ public class ProductFragment extends SearchSectionFragment
 
     @Override
     public String getDepartmentId() {
+        if (productViewModel == null ||
+                productViewModel.getCategoryHeaderModel() == null) {
+            return "0";
+        }
         return productViewModel.getCategoryHeaderModel().getDepartementId();
     }
 
