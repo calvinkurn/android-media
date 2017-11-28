@@ -125,9 +125,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
 
         /* Send optional extras to Download IntentService */
         switch (type) {
-            case DownloadServiceConstant.FETCH_DEPARTMENT:
-                Log.d(TAG, CategoryDB.class.getSimpleName() + " sedang diambil !!!");
-                break;
             case ANSWER_SECURITY_QUESTION:
                 SecurityQuestionViewModel answer = Parcels.unwrap(bundle.getParcelable(ANSWER_QUESTION_MODEL));
                 Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " try to answer security question : " + answer);
