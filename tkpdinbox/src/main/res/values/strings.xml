@@ -222,4 +222,6 @@ yang ditemukan</string>
     <string name="string_awb_number">No. Resi :</string>
     <string name="string_receiver_name">Nama Penerima :</string>
     <string name="string_status">Status :</string>
+    <string name="string_awb_attachment_title">Lampiran Foto Resi: </string>
+    <string name="string_input_awb_title">Contoh Informasi yang Harus Terlihat:</string>
 </resources>
