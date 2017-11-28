@@ -326,6 +326,15 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
+    public static void sendMoEngageShippingReceivedEvent(boolean success) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_RECEIVED, success);
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.SHIPPING_CONFIRMED
+        );
+    }
+
     public static void sendMoEngageOpenSellerScreen() {
         PayloadBuilder builder = new PayloadBuilder();
         getMoEngine().sendEvent(

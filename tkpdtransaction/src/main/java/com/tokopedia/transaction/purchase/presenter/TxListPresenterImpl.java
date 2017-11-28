@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
@@ -694,6 +695,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 
                         @Override
                         public void onSuccess(String message, JSONObject lucky) {
+                            TrackingUtils.sendMoEngageShippingReceivedEvent(true);
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
                             processReview(context, message);
@@ -702,6 +704,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 
                         @Override
                         public void onError(String message) {
+                            TrackingUtils.sendMoEngageShippingReceivedEvent(false);
                             viewListener.hideProgressLoading();
                             viewListener.showToastMessage(message);
                             dialog.dismiss();
