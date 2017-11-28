@@ -205,4 +205,13 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
         void onSuccess(List<ProductItem> productItemList);
         void onFailed();
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getProductUseCase.unsubscribe();
+        addWishlistActionUseCase.unsubscribe();
+        removeWishlistActionUseCase.unsubscribe();
+        getDynamicFilterUseCase.unsubscribe();
+    }
 }
