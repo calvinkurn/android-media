@@ -7,7 +7,7 @@
             android:name=".dashboard.view.activity.FlightDashboardActivity"
             android:label="@string/flight_dashboard_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Green" />
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".dashboard.view.activity.FlightSelectPassengerActivity"
             android:label="@string/select_passenger_toolbar_title"

@@ -44,6 +44,6 @@ public class FlightBookingMealsActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle(String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), flightBookingMealMetaViewModel.getDescription()));
+        updateTitle(String.format("%s %s", getString(R.string.flight_booking_meal_toolbar_title), flightBookingMealMetaViewModel.getDescription()));
     }
 }

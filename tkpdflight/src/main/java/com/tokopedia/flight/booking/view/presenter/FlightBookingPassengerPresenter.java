@@ -51,177 +51,10 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         }
 
         if (isAdultPassenger() || isChildPassenger()) {
-            getView().renderPassengerLuggages(getView().getLuggageViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
-            getView().renderPassengerMeals(getView().getMealViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
-            /*if (isRoundTrip()) {
-                flightBookingGetSingleResultUseCase
-                        .createObservable(flightBookingGetSingleResultUseCase.createRequestParam(false, getView().getDepartureId()))
-                        .zipWith(flightBookingGetSingleResultUseCase.createObservable(
-                                flightBookingGetSingleResultUseCase.createRequestParam(true, getView().getReturnTripId())),
-                                new Func2<FlightSearchViewModel, FlightSearchViewModel, Boolean>() {
-                                    @Override
-                                    public Boolean call(FlightSearchViewModel departureViewModel, FlightSearchViewModel returnViewModel) {
-                                        if (isViewAttached()) {
-                                            if (getView().getMealViewModels() != null && getView().getMealViewModels().size() > 0) {
-                                                List<FlightBookingMealRouteViewModel> flightBookingMealRouteViewModels = new ArrayList<>();
-                                                for (Route route : departureViewModel.getRouteList()) {
-                                                    List<FlightBookingMealViewModel> flightBookingMealViewModels = new ArrayList<>();
-                                                    for (FlightBookingMealViewModel mealViewModel : getView().getMealViewModels()) {
-                                                        if (mealViewModel.getId().contains(route.getDepartureAirport()) &&
-                                                                mealViewModel.getId().contains(route.getArrivalAirport())) {
-                                                            flightBookingMealViewModels.add(mealViewModel);
-                                                        }
-                                                    }
-
-                                                    if (flightBookingMealViewModels.size() > 0) {
-                                                        FlightBookingMealRouteViewModel flightBookingMealRouteViewModel = new FlightBookingMealRouteViewModel();
-                                                        flightBookingMealRouteViewModel.setRoute(route);
-                                                        flightBookingMealRouteViewModel.setMealViewModels(flightBookingMealViewModels);
-                                                        flightBookingMealRouteViewModels.add(flightBookingMealRouteViewModel);
-                                                    }
-                                                }
-                                                for (Route route : returnViewModel.getRouteList()) {
-                                                    List<FlightBookingMealViewModel> flightBookingMealViewModels = new ArrayList<>();
-                                                    for (FlightBookingMealViewModel mealViewModel : getView().getMealViewModels()) {
-                                                        if (mealViewModel.getId().contains(route.getDepartureAirport()) &&
-                                                                mealViewModel.getId().contains(route.getArrivalAirport())) {
-                                                            flightBookingMealViewModels.add(mealViewModel);
-                                                        }
-                                                        if (flightBookingMealRouteViewModels.size() > 0) {
-                                                            FlightBookingMealRouteViewModel flightBookingMealRouteViewModel = new FlightBookingMealRouteViewModel();
-                                                            flightBookingMealRouteViewModel.setRoute(route);
-                                                            flightBookingMealRouteViewModel.setMealViewModels(flightBookingMealViewModels);
-                                                            flightBookingMealRouteViewModels.add(flightBookingMealRouteViewModel);
-                                                        }
-                                                    }
-                                                }
-                                                if (flightBookingMealRouteViewModels.size() > 0) {
-                                                    getView().renderPassengerMeals(flightBookingMealRouteViewModels,
-                                                            getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
-                                                }
-                                            }
-
-                                            if (getView().getLuggageViewModels() != null && getView().getLuggageViewModels().size() > 0) {
-                                                List<FlightBookingLuggageRouteViewModel> flightBookingLuggageRouteViewModels = new ArrayList<>();
-                                                for (Route route : departureViewModel.getRouteList()) {
-                                                    List<FlightBookingLuggageViewModel> flightBookingLuggageViewModels = new ArrayList<>();
-                                                    for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : getView().getLuggageViewModels()) {
-                                                        if (flightBookingLuggageViewModel.getId().contains(route.getArrivalAirport()) &&
-                                                                flightBookingLuggageViewModel.getId().contains(route.getDepartureAirport())) {
-                                                            flightBookingLuggageViewModels.add(flightBookingLuggageViewModel);
-                                                        }
-                                                    }
-                                                    if (flightBookingLuggageViewModels.size() > 0) {
-                                                        FlightBookingLuggageRouteViewModel flightBookingLuggageRouteViewModel = new FlightBookingLuggageRouteViewModel();
-                                                        flightBookingLuggageRouteViewModel.setRoute(route);
-                                                        flightBookingLuggageRouteViewModel.setLuggage(flightBookingLuggageViewModels);
-                                                        flightBookingLuggageRouteViewModels.add(flightBookingLuggageRouteViewModel);
-                                                    }
-                                                }
-                                                for (Route route : returnViewModel.getRouteList()) {
-                                                    List<FlightBookingLuggageViewModel> flightBookingLuggageViewModels = new ArrayList<>();
-                                                    for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : getView().getLuggageViewModels()) {
-                                                        if (flightBookingLuggageViewModel.getId().contains(route.getArrivalAirport()) &&
-                                                                flightBookingLuggageViewModel.getId().contains(route.getDepartureAirport())) {
-                                                            flightBookingLuggageViewModels.add(flightBookingLuggageViewModel);
-                                                        }
-                                                    }
-                                                    if (flightBookingLuggageViewModels.size() > 0) {
-                                                        FlightBookingLuggageRouteViewModel flightBookingLuggageRouteViewModel = new FlightBookingLuggageRouteViewModel();
-                                                        flightBookingLuggageRouteViewModel.setRoute(route);
-                                                        flightBookingLuggageRouteViewModel.setLuggage(flightBookingLuggageViewModels);
-                                                        flightBookingLuggageRouteViewModels.add(flightBookingLuggageRouteViewModel);
-                                                    }
-                                                }
-
-                                                if (flightBookingLuggageRouteViewModels.size() > 0) {
-                                                    getView().renderPassengerLuggages(flightBookingLuggageRouteViewModels,
-                                                            getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
-                                                }
-                                            }
-                                        }
-                                        return true;
-                                    }
-                                })
-                        .onBackpressureDrop()
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe();
-            } else {
-                flightBookingGetSingleResultUseCase
-                        .createObservable(flightBookingGetSingleResultUseCase.createRequestParam(false, getView().getDepartureId()))
-                        .onBackpressureDrop()
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<FlightSearchViewModel>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                if (isViewAttached()) {
-
-                                }
-                            }
-
-                            @Override
-                            public void onNext(FlightSearchViewModel departureViewModel) {
-                                if (isViewAttached()) {
-                                    if (getView().getMealViewModels() != null && getView().getMealViewModels().size() > 0) {
-                                        List<FlightBookingMealRouteViewModel> flightBookingMealRouteViewModels = new ArrayList<>();
-                                        for (Route route : departureViewModel.getRouteList()) {
-                                            List<FlightBookingMealViewModel> flightBookingMealViewModels = new ArrayList<>();
-                                            for (FlightBookingMealViewModel mealViewModel : getView().getMealViewModels()) {
-                                                if (mealViewModel.getId().contains(route.getDepartureAirport()) &&
-                                                        mealViewModel.getId().contains(route.getArrivalAirport())) {
-                                                    flightBookingMealViewModels.add(mealViewModel);
-                                                }
-                                            }
-
-                                            if (flightBookingMealViewModels.size() > 0) {
-                                                FlightBookingMealRouteViewModel flightBookingMealRouteViewModel = new FlightBookingMealRouteViewModel();
-                                                flightBookingMealRouteViewModel.setRoute(route);
-                                                flightBookingMealRouteViewModel.setMealViewModels(flightBookingMealViewModels);
-                                                flightBookingMealRouteViewModels.add(flightBookingMealRouteViewModel);
-                                            }
-                                        }
-                                        if (flightBookingMealRouteViewModels.size() > 0) {
-                                            getView().renderPassengerMeals(flightBookingMealRouteViewModels,
-                                                    getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
-                                        }
-                                    }
-
-                                    if (getView().getLuggageViewModels() != null && getView().getLuggageViewModels().size() > 0) {
-                                        List<FlightBookingLuggageRouteViewModel> flightBookingLuggageRouteViewModels = new ArrayList<>();
-                                        for (Route route : departureViewModel.getRouteList()) {
-                                            List<FlightBookingLuggageViewModel> flightBookingLuggageViewModels = new ArrayList<>();
-                                            for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : getView().getLuggageViewModels()) {
-                                                if (flightBookingLuggageViewModel.getId().contains(route.getArrivalAirport()) &&
-                                                        flightBookingLuggageViewModel.getId().contains(route.getDepartureAirport())) {
-                                                    flightBookingLuggageViewModels.add(flightBookingLuggageViewModel);
-                                                }
-                                            }
-                                            if (flightBookingLuggageViewModels.size() > 0) {
-                                                FlightBookingLuggageRouteViewModel flightBookingLuggageRouteViewModel = new FlightBookingLuggageRouteViewModel();
-                                                flightBookingLuggageRouteViewModel.setRoute(route);
-                                                flightBookingLuggageRouteViewModel.setLuggage(flightBookingLuggageViewModels);
-                                                flightBookingLuggageRouteViewModels.add(flightBookingLuggageRouteViewModel);
-                                            }
-                                        }
-                                        if (flightBookingLuggageRouteViewModels.size() > 0) {
-                                            getView().renderPassengerLuggages(flightBookingLuggageRouteViewModels,
-                                                    getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
-                                        }
-                                    }
-                                }
-                            }
-                        });
-            }*/
+            if (getView().getLuggageViewModels().size() > 0)
+                getView().renderPassengerLuggages(getView().getLuggageViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
+            if (getView().getMealViewModels().size() > 0)
+                getView().renderPassengerMeals(getView().getMealViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
         }
 
         if (getView().getCurrentPassengerViewModel().getPassengerName() != null) {
@@ -351,17 +184,21 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void onOptionMeal(FlightBookingMealMetaViewModel viewModel) {
-        List<FlightBookingMealMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
-        int index = viewModels.indexOf(viewModel);
-        if (index != -1) {
-            getView().navigateToMealPicker(viewModel.getMealViewModels(), viewModels.get(index));
-        } else {
-            FlightBookingMealMetaViewModel selected = new FlightBookingMealMetaViewModel();
-            selected.setKey(viewModel.getKey());
-            selected.setDescription(viewModel.getDescription());
-            selected.setMealViewModels(new ArrayList<FlightBookingMealViewModel>());
-            getView().navigateToMealPicker(viewModel.getMealViewModels(), selected);
+        FlightBookingMealMetaViewModel existingSelected = null;
+        for (FlightBookingMealMetaViewModel viewModel1 : getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels()) {
+            if (viewModel1.getKey().equalsIgnoreCase(viewModel.getKey())) {
+                existingSelected = viewModel1;
+                break;
+            }
         }
+
+        if (existingSelected == null) {
+            existingSelected = new FlightBookingMealMetaViewModel();
+            existingSelected.setKey(viewModel.getKey());
+            existingSelected.setMealViewModels(new ArrayList<FlightBookingMealViewModel>());
+            existingSelected.setDescription(viewModel.getDescription());
+        }
+        getView().navigateToMealPicker(viewModel.getMealViewModels(), existingSelected);
     }
 
     private boolean validateFields() {

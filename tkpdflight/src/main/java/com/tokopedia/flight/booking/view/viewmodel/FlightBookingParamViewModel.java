@@ -10,9 +10,13 @@ import java.util.List;
 
 public class FlightBookingParamViewModel {
     private String id;
+    private String orderDueTimestamp;
     private FlightSearchPassDataViewModel searchParam;
     private FlightBookingPhoneCodeViewModel phoneCodeViewModel;
     private List<FlightBookingPassengerViewModel> passengerViewModels;
+    private String contactName;
+    private String contactEmail;
+    private String contactPhone;
 
     public FlightBookingParamViewModel() {
     }
@@ -47,5 +51,33 @@ public class FlightBookingParamViewModel {
 
     public String getId() {
         return id;
+    }
+
+    public void setOrderDueTimestamp(String timestamps) {
+        this.orderDueTimestamp = timestamps;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
     }
 }

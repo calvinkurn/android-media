@@ -64,13 +64,11 @@ public interface FlightBookingContract {
 
         void hideFullPageLoading();
 
-        void renderCartData(FlightBookingCartData flightBookingCartData);
+        void setCartData(FlightBookingCartData flightBookingCartData);
 
         FlightBookingCartData getCurrentCartPassData();
 
-        void getRenderDeparturePrice(List<SimpleViewModel> prices);
-
-        void getRenderReturnPrice(List<SimpleViewModel> prices);
+        void getRenderPriceDetails(List<SimpleViewModel> prices);
 
         void renderTotalPrices(String totalPrice);
 
@@ -79,6 +77,8 @@ public interface FlightBookingContract {
         void renderFinishTimeCountDown(Date date);
 
         void showExpireTransactionDialog();
+
+        void showPriceDialogChanges(String newTotalPrice, String oldTotalPrice);
 
         void navigateToReview(FlightBookingReviewModel flightBookingReviewModel);
     }

@@ -37,6 +37,7 @@ public class FlightBookingLuggageViewModelMapper {
         if (item != null) {
             viewModel = new FlightBookingLuggageViewModel();
             viewModel.setId(item.getId());
+            viewModel.setPriceNumeric(item.getPriceNumeric());
             viewModel.setPriceFmt(item.getPrice());
             viewModel.setWeightFmt(item.getDescription());
         }
