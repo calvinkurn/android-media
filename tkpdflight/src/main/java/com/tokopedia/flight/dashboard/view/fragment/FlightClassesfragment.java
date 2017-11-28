@@ -2,6 +2,7 @@ package com.tokopedia.flight.dashboard.view.fragment;
 
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
@@ -20,14 +21,20 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel> implements FlightClassesContract.View, BaseListAdapter.OnBaseListV2AdapterListener<FlightClassViewModel> {
+    public static final String EXTRA_FLIGHT_SELECTED_CLASS = "EXTRA_FLIGHT_SELECTED_CLASS";
 
     private OnFragmentInteractionListener interactionListener;
+    private int selectedId;
 
     @Inject
     FlightClassesPresenter presenter;
 
-    public static FlightClassesfragment newInstance() {
-        return new FlightClassesfragment();
+    public static FlightClassesfragment newInstance(int selectedId) {
+        FlightClassesfragment fragment = new FlightClassesfragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_FLIGHT_SELECTED_CLASS, selectedId);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -54,8 +61,16 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        selectedId = getArguments().getInt(EXTRA_FLIGHT_SELECTED_CLASS, -1);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected FlightClassesAdapter getNewAdapter() {
-        return new FlightClassesAdapter(getContext(), this);
+        FlightClassesAdapter adapter = new FlightClassesAdapter(getContext(), this);
+        adapter.setSelectedId(selectedId);
+        return adapter;
     }
 
     @Override

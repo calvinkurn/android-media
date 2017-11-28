@@ -21,9 +21,7 @@ import com.tokopedia.usecase.RequestParams;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -118,9 +116,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     private void setupViewModel() {
-        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-        Date currentDate = FlightDateUtil.addDate(now.getTime(), 1);
-        Date returnDate = FlightDateUtil.addDate(currentDate, 1);
+        Date currentDate = FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 1);
+        Date returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 2);
         String departureDateString = FlightDateUtil.dateToString(currentDate, FlightDateUtil.DEFAULT_FORMAT);
         String departureDateFmtString = FlightDateUtil.dateToString(currentDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
         String returnDateString = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT);
@@ -174,8 +171,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onDepartureDateButtonClicked() {
-        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-        Date minDate = now.getTime();
+        Date minDate = FlightDateUtil.getCurrentDate();
         Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
         getView().showDepartureDatePickerDialog(selectedDate, minDate);
     }
@@ -183,7 +179,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onDepartureDateChange(int year, int month, int dayOfMonth) {
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
-        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, dayOfMonth);
@@ -220,7 +216,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onReturnDateChange(int year, int month, int dayOfMonth) {
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
-        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, dayOfMonth);
@@ -309,10 +305,17 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
                 @Override
                 public void onNext(Boolean aBoolean) {
-                    getView().navigateToSearchPage(getView().getCurrentDashboardViewModel());
+                    if (isViewAttached()) {
+                        getView().navigateToSearchPage(getView().getCurrentDashboardViewModel());
+                    }
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        detachView();
     }
 
     private boolean validateSearchParam(FlightDashboardViewModel currentDashboardViewModel) {
@@ -329,6 +332,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else if (!validator.validateDepartureDateAtLeastToday(currentDashboardViewModel)) {
             isValid = false;
             getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+        } else if (!validator.validateAirportsShouldDifferentCity(currentDashboardViewModel)) {
+            isValid = false;
+            getView()
+                    .showAirportShouldDifferentCity(R.string.flight_dashboard_departure_should_different_city_error);
         } else if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(currentDashboardViewModel)) {
             isValid = false;
             getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);

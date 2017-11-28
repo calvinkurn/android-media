@@ -60,4 +60,9 @@ public class FlightDashboardValidator {
         return cal.getTime();
     }
 
+    public boolean validateAirportsShouldDifferentCity(FlightDashboardViewModel currentDashboardViewModel) {
+        return currentDashboardViewModel.getArrivalAirport() != null && currentDashboardViewModel.getDepartureAirport() != null
+                && !currentDashboardViewModel.getArrivalAirport().getCityId()
+                .equalsIgnoreCase(currentDashboardViewModel.getDepartureAirport().getCityId());
+    }
 }

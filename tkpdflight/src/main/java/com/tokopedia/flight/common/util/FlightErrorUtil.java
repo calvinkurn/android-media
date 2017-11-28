@@ -10,7 +10,8 @@ import com.tokopedia.flight.common.data.model.FlightException;
 public class FlightErrorUtil {
     public static String getMessageFromException(Throwable e) {
         if (e instanceof FlightException) {
-            return ((FlightException) e).getErrorList().get(0).getTitle();
+//            return ((FlightException) e).getErrorList().get(0).getTitle();
+            return ((FlightException) e).getErrorList().get(0).getTitle() + " (" + ((FlightException) e).getErrorList().get(0).getId() + ")";
         } else {
             return ErrorHandler.getErrorMessage(e);
         }

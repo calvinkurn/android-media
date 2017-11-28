@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
@@ -112,19 +113,21 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
 
                 if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
                     for (FlightBookingLuggageMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
+                        ArrayList<String> selectedLuggages = new ArrayList<>();
+                        for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getLuggages()) {
+                            selectedLuggages.add(flightBookingLuggageViewModel.getWeightFmt() + " - " + flightBookingLuggageViewModel.getPriceFmt());
+                        }
                         simpleViewModels.add(new SimpleViewModel(
-                                itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getDescription(), String.valueOf(FlightDateUtil.formatDate(
-                                FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingLuggageRouteViewModel.getLuggages())
-                        ))));
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getDescription(), TextUtils.join(" + ", selectedLuggages)
+                        ));
                     }
                 }
 
                 if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
                     for (FlightBookingMealMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
                         simpleViewModels.add(new SimpleViewModel(
-                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + flightBookingMealRouteViewModel.getDescription(), String.valueOf(FlightDateUtil.formatDate(
-                                FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingMealRouteViewModel.getMealViewModels())
-                        ))));
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label), TextUtils.join(" + ", flightBookingMealRouteViewModel.getMealViewModels())
+                        ));
                     }
                 }
 
