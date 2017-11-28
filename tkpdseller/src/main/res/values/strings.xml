@@ -167,10 +167,6 @@
     <string name="product_manage_label_add_product">+ Tambah Produk</string>
     <string name="product_manage_label_supervision">Pengawasan</string>
 
-    <string name="edit_from_instagram_text_description">Ubah dari Instagram</string>
-    <string name="edit_from_gallery_text_description">Ubah dari Galeri</string>
-    <string name="edit_from_camera_text_description">Ubah dari Kamera</string>
-
     <!-- Open Shop -->
     <string name="shop_name">Nama Toko</string>
     <string name="domain_name">Nama Domain</string>
