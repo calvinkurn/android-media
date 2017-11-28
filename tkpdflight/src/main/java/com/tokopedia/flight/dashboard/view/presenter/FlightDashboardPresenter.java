@@ -309,10 +309,17 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
                 @Override
                 public void onNext(Boolean aBoolean) {
-                    getView().navigateToSearchPage(getView().getCurrentDashboardViewModel());
+                    if (isViewAttached()) {
+                        getView().navigateToSearchPage(getView().getCurrentDashboardViewModel());
+                    }
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        detachView();
     }
 
     private boolean validateSearchParam(FlightDashboardViewModel currentDashboardViewModel) {

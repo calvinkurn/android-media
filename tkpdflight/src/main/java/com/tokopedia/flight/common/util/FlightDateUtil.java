@@ -43,7 +43,7 @@ public class FlightDateUtil {
     }
 
     public static Date stringToDate(String input) {
-        DateFormat fromFormat = new SimpleDateFormat(DEFAULT_FORMAT);
+        DateFormat fromFormat = new SimpleDateFormat(DEFAULT_FORMAT, DEFAULT_LOCALE);
         try {
             return fromFormat.parse(input);
         } catch (ParseException e) {
@@ -53,7 +53,7 @@ public class FlightDateUtil {
     }
 
     public static Date stringToDate(String format, String input) {
-        DateFormat fromFormat = new SimpleDateFormat(format);
+        DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);
         try {
             return fromFormat.parse(input);
         } catch (ParseException e) {

@@ -77,5 +77,7 @@ public interface FlightDashboardContract {
         void onArrivalAirportChange(FlightAirportDB arrivalAirport);
 
         void onSearchTicketButtonClicked();
+
+        void onDestroyView();
     }
 }

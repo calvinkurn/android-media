@@ -43,6 +43,7 @@ import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -58,8 +59,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
-    private static final int REQUEST_CODE_AIRPORT_ARRIVAL_DATE = 5;
-    private static final int REQUEST_CODE_AIRPORT_DEPARTURE_DATE = 6;
 
     private FlightDashboardViewModel viewModel;
 
@@ -164,16 +163,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         departureDateTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = FlightDatePickerActivity.getCallingIntent(getActivity(), viewModel.getDepartureDate());
-                getActivity().startActivityForResult(intent, REQUEST_CODE_AIRPORT_ARRIVAL_DATE);*/
                 presenter.onDepartureDateButtonClicked();
             }
         });
         returnDateTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = FlightDatePickerActivity.getCallingIntent(getActivity(), viewModel.getReturnDate());
-                getActivity().startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE_DATE);*/
                 presenter.onReturnDateButtonClicked();
             }
         });
@@ -300,12 +295,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureDatePickerDialog(Date selectedDate, Date minDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 presenter.onDepartureDateChange(year, month, dayOfMonth);
             }
-        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
         datePicker.show();
@@ -313,12 +310,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showReturnDatePickerDialog(Date selectedDate, Date minDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 presenter.onReturnDateChange(year, month, dayOfMonth);
             }
-        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
         datePicker.show();
@@ -407,7 +406,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private void showMessageErrorInSnackBar(int resId) {
         Snackbar snackBar = SnackbarManager.make(getActivity(),
                 getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
+                .setAction(R.string.flight_dashboard_error_close_label, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -417,5 +416,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
         snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
         snackBar.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroyView();
+        super.onDestroyView();
     }
 }

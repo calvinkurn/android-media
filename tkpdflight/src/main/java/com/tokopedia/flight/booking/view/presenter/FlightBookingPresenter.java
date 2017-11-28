@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.presenter;
 
+import android.support.annotation.NonNull;
 import android.util.Patterns;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -130,7 +131,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                                                            String label,
                                                            String price) {
         return new SimpleViewModel(
-                String.format("%s - %s  1x %s",
+                String.format(getView().getString(R.string.flight_booking_passenger_price_format),
                         departureAirport,
                         arrivalAirport,
                         label),
@@ -317,49 +318,23 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                         return flightBookingCartDataMapper.transform(entity);
                     }
                 })
-                .zipWith(flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(false, getView().getDepartureTripId())), new Func2<FlightBookingCartData, FlightSearchViewModel, FlightBookingCartData>() {
-                    @Override
-                    public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightSearchViewModel flightSearchViewModel) {
-                        flightBookingCartData.setDepartureTrip(flightSearchViewModel);
-                        return flightBookingCartData;
-                    }
-                })
-                .flatMap(new Func1<FlightBookingCartData, Observable<FlightBookingCartData>>() {
-                    @Override
-                    public Observable<FlightBookingCartData> call(FlightBookingCartData flightBookingCartData) {
-                        if (isRoundTrip()) {
-                            return Observable.just(flightBookingCartData)
-                                    .zipWith(flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(true, getView().getReturnTripId())),
-                                            new Func2<FlightBookingCartData, FlightSearchViewModel, FlightBookingCartData>() {
-                                                @Override
-                                                public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightSearchViewModel flightSearchViewModel) {
-                                                    flightBookingCartData.setReturnTrip(flightSearchViewModel);
-                                                    return flightBookingCartData;
-                                                }
-                                            });
-                        }
-                        return Observable.just(flightBookingCartData);
-                    }
-                })
-                .zipWith(flightBookingGetPhoneCodeUseCase.createObservable(RequestParams.EMPTY)
-                        .flatMap(new Func1<List<FlightBookingPhoneCodeViewModel>, Observable<FlightBookingPhoneCodeViewModel>>() {
+                .zipWith(getDepartureDataObservable(),
+                        new Func2<FlightBookingCartData, FlightSearchViewModel, FlightBookingCartData>() {
                             @Override
-                            public Observable<FlightBookingPhoneCodeViewModel> call(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
-                                return Observable.from(flightBookingPhoneCodeViewModels);
+                            public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightSearchViewModel flightSearchViewModel) {
+                                flightBookingCartData.setDepartureTrip(flightSearchViewModel);
+                                return flightBookingCartData;
                             }
                         })
-                        .filter(new Func1<FlightBookingPhoneCodeViewModel, Boolean>() {
+                .flatMap(getFlightRoundTripDataObservable())
+                .zipWith(getDefaultPhoneDataObservable(),
+                        new Func2<FlightBookingCartData, FlightBookingPhoneCodeViewModel, FlightBookingCartData>() {
                             @Override
-                            public Boolean call(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
-                                return flightBookingPhoneCodeViewModel.getCountryId().equalsIgnoreCase(DEFAULT_COUNTRY_CODE_PHONE_NUMBER);
+                            public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
+                                flightBookingCartData.setDefaultPhoneCode(flightBookingPhoneCodeViewModel);
+                                return flightBookingCartData;
                             }
-                        }).first(), new Func2<FlightBookingCartData, FlightBookingPhoneCodeViewModel, FlightBookingCartData>() {
-                    @Override
-                    public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
-                        flightBookingCartData.setDefaultPhoneCode(flightBookingPhoneCodeViewModel);
-                        return flightBookingCartData;
-                    }
-                })
+                        })
                 .onBackpressureDrop()
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -390,6 +365,50 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
         );
     }
 
+    private Observable<FlightSearchViewModel> getDepartureDataObservable() {
+        return flightBookingGetSingleResultUseCase
+                .createObservable(flightBookingGetSingleResultUseCase
+                        .createRequestParam(false, getView().getDepartureTripId()));
+    }
+
+    @NonNull
+    private Observable<FlightBookingPhoneCodeViewModel> getDefaultPhoneDataObservable() {
+        return flightBookingGetPhoneCodeUseCase.createObservable(RequestParams.EMPTY)
+                .flatMap(new Func1<List<FlightBookingPhoneCodeViewModel>, Observable<FlightBookingPhoneCodeViewModel>>() {
+                    @Override
+                    public Observable<FlightBookingPhoneCodeViewModel> call(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
+                        return Observable.from(flightBookingPhoneCodeViewModels);
+                    }
+                })
+                .filter(new Func1<FlightBookingPhoneCodeViewModel, Boolean>() {
+                    @Override
+                    public Boolean call(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
+                        return flightBookingPhoneCodeViewModel.getCountryId().equalsIgnoreCase(DEFAULT_COUNTRY_CODE_PHONE_NUMBER);
+                    }
+                }).first();
+    }
+
+    @NonNull
+    private Func1<FlightBookingCartData, Observable<FlightBookingCartData>> getFlightRoundTripDataObservable() {
+        return new Func1<FlightBookingCartData, Observable<FlightBookingCartData>>() {
+            @Override
+            public Observable<FlightBookingCartData> call(FlightBookingCartData flightBookingCartData) {
+                if (isRoundTrip()) {
+                    return Observable.just(flightBookingCartData)
+                            .zipWith(flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(true, getView().getReturnTripId())),
+                                    new Func2<FlightBookingCartData, FlightSearchViewModel, FlightBookingCartData>() {
+                                        @Override
+                                        public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightSearchViewModel flightSearchViewModel) {
+                                            flightBookingCartData.setReturnTrip(flightSearchViewModel);
+                                            return flightBookingCartData;
+                                        }
+                                    });
+                }
+                return Observable.just(flightBookingCartData);
+            }
+        };
+    }
+
     @Override
     public void onResume() {
     }
@@ -415,7 +434,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     }
 
     private String formatPassengerHeader(String prefix, int number, String postix) {
-        return String.format("%s %d (%s)",
+        return String.format(getView().getString(R.string.flight_booking_header_passenger_format),
                 prefix,
                 number,
                 postix
