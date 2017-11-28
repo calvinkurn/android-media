@@ -14,8 +14,6 @@
         <item name="subtitleTextAppearance">@style/ToolbarSubtitleText</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="TextAppearance">
         <item name="android:textColor">@android:color/black</item>
     </style>
