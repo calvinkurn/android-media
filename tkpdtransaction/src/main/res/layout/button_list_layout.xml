@@ -38,16 +38,6 @@
         android:textColor="@color/white" />
 
     <Button
-        android:id="@+id/confirm_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_margin="@dimen/margin_small"
-        android:background="@drawable/green_button_rounded_unify"
-        android:text="@string/button_order_detail_confirm"
-        android:textAllCaps="false"
-        android:textColor="@color/white" />
-
-    <Button
         android:id="@+id/finish_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
