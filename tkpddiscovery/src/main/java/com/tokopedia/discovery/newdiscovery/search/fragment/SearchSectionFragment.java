@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -159,8 +160,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (isVisibleToUser && getView() != null) {
             setupBottomNavigation();
             showBottomBarNavigation(showBottomBar);
-            ScreenTracking.screen(getScreenName());
+            screenTrack();
         }
+    }
+
+    protected void screenTrack() {
+        ScreenTracking.screen(getScreenName());
     }
 
     private void setupBottomNavigation() {
