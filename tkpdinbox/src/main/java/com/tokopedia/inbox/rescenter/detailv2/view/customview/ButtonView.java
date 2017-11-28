@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ButtonViewAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -24,6 +25,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private RecyclerView rvButton;
     private ButtonViewAdapter adapter;
     private GridLayoutManager mLayoutManager;
+    private Context context;
 
     public ButtonView(Context context) {
         super(context);
@@ -50,20 +52,12 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
 
     @Override
     protected void initView(Context context) {
+        this.context = context;
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
 
         rvButton = (RecyclerView) view.findViewById(R.id.rv_button);
-        adapter = new ButtonViewAdapter(context, listener);
-        rvButton.setAdapter(adapter);
-        mLayoutManager = new GridLayoutManager(
-                context,
-                adapter.getAdapterSpanCount(),
-                LinearLayoutManager.VERTICAL,
-                true);
-        mLayoutManager.setSpanSizeLookup(adapter.getSpanItem());
-        rvButton.setLayoutManager(mLayoutManager);
     }
 
     @Override
@@ -75,6 +69,15 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     public void renderData(@NonNull ButtonData data) {
         setVisibility(VISIBLE);
         setButtonData(data);
+        adapter = new ButtonViewAdapter(context, listener);
+        rvButton.setAdapter(adapter);
+        mLayoutManager = new GridLayoutManager(
+                context,
+                adapter.getAdapterSpanCount(),
+                LinearLayoutManager.VERTICAL,
+                true);
+        mLayoutManager.setSpanSizeLookup(adapter.getSpanItem());
+        rvButton.setLayoutManager(mLayoutManager);
         adapter.setButtonViewItemList(data.getButtonViewItemList());
         listener.setOnDiscussionButtonPosition(data.getButtonViewItemList().size() != 0);
     }

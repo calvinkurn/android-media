@@ -75,10 +75,6 @@
             android:id="@+id/cv_next_step"/>
 
         <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="@dimen/margin_vs"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
             android:id="@+id/rv_chat"
             app:stackFromEnd="true"
             android:stackFromBottom="true"

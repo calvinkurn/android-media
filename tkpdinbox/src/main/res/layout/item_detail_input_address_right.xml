@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_marginLeft="80dp"
+    android:layout_marginRight="@dimen/margin_small"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -72,8 +73,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
-
     </LinearLayout>
-
-
 </RelativeLayout>
