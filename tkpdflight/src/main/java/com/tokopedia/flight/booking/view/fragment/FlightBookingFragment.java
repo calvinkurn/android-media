@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -101,6 +102,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     private FlightBookingPassengerAdapter adapter;
     private FlightSimpleAdapter priceListAdapter;
+    private ProgressDialog progressDialog;
 
 
     public static Fragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
@@ -125,6 +127,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         returnTripId = getArguments().getString(EXTRA_FLIGHT_ARRIVAL_ID);
         paramViewModel = new FlightBookingParamViewModel();
         paramViewModel.setSearchParam((FlightSearchPassDataViewModel) getArguments().getParcelable(EXTRA_SEARCH_PASS_DATA));
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
+        progressDialog.setCancelable(false);
     }
 
     @Override
@@ -499,5 +504,28 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void onDestroyView() {
         presenter.onDestroyView();
         super.onDestroyView();
+    }
+
+    @Override
+    public void showUpdateDataLoading() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideUpdateDataLoading() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void showUpdateDataErrorStateLayout(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(), errorMessage,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.onFinishTransactionTimeReached();
+                    }
+                }
+        );
     }
 }
