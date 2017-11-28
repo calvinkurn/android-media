@@ -216,9 +216,12 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                 }
             }
         }
-
+        getView().getCurrentBookingParamViewModel().setPriceListDetails(simpleViewModels);
+        String totalPriceFmt = convertPriceValueToIdrFormat(totalPrice);
+        getView().getCurrentBookingParamViewModel().setTotalPriceFmt(totalPriceFmt);
+        getView().getCurrentBookingParamViewModel().setTotalPriceNumeric(totalPrice);
         getView().getRenderPriceDetails(simpleViewModels);
-        getView().renderTotalPrices(convertPriceValueToIdrFormat(totalPrice));
+        getView().renderTotalPrices(totalPriceFmt);
     }
 
     private String convertPriceValueToIdrFormat(int price) {

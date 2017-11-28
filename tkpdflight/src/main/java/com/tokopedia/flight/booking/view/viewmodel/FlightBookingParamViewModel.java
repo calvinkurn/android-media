@@ -17,6 +17,9 @@ public class FlightBookingParamViewModel {
     private String contactName;
     private String contactEmail;
     private String contactPhone;
+    private int totalPriceNumeric;
+    private String totalPriceFmt;
+    private List<SimpleViewModel> priceListDetails;
 
     public FlightBookingParamViewModel() {
     }
@@ -79,5 +82,33 @@ public class FlightBookingParamViewModel {
 
     public String getContactPhone() {
         return contactPhone;
+    }
+
+    public String getOrderDueTimestamp() {
+        return orderDueTimestamp;
+    }
+
+    public int getTotalPriceNumeric() {
+        return totalPriceNumeric;
+    }
+
+    public void setTotalPriceNumeric(int totalPriceNumeric) {
+        this.totalPriceNumeric = totalPriceNumeric;
+    }
+
+    public String getTotalPriceFmt() {
+        return totalPriceFmt;
+    }
+
+    public void setTotalPriceFmt(String totalPriceFmt) {
+        this.totalPriceFmt = totalPriceFmt;
+    }
+
+    public List<SimpleViewModel> getPriceListDetails() {
+        return priceListDetails;
+    }
+
+    public void setPriceListDetails(List<SimpleViewModel> priceListDetails) {
+        this.priceListDetails = priceListDetails;
     }
 }
