@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingLuggageViewHolder;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
 
 import java.util.ArrayList;

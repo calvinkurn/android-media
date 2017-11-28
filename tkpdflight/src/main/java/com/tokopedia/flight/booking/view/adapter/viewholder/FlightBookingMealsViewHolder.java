@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.view.adapter;
+package com.tokopedia.flight.booking.view.adapter.viewholder;
 
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
