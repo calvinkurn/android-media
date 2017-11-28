@@ -2,6 +2,7 @@ package com.tokopedia.discovery.intermediary.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -27,11 +29,11 @@ import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
-public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener {
+public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener,YoutubeViewHolder.YouTubeThumbnailLoadInProcess{
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
-    public static final String CATEGORY_DEFAULT_TITLE = "Direktori";
+    public static final String CATEGORY_DEFAULT_TITLE = "";
 
     private String departmentId = "";
     private String categoryName = CATEGORY_DEFAULT_TITLE;
@@ -147,10 +149,19 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
-            toolbar.setBackgroundResource(R.color.white);
-        } else {
-            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        }else {
+            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
         }
+        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(
+                    com.tokopedia.core.R.drawable.ic_webview_back_button
+            );
+        
     }
 
     public void updateTitle(String categoryName) {
@@ -242,6 +253,37 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         return frameLayout;
     }
 
+
+    // { Work Around IF your press back and
+    //      youtube thumbnail doesn't intalized yet
+
+        boolean isBackPressed;
+        @Override
+        public void onBackPressed() {
+            if(!thumbnailIntializing) {
+                super.onBackPressed();
+            } else {
+                isBackPressed = true;
+                return;
+            }
+
+        }
+
+        boolean thumbnailIntializing = false;
+        @Override
+        public void onIntializationStart() {
+            thumbnailIntializing = true;
+        }
+
+        @Override
+        public void onIntializationComplete() {
+            if(isBackPressed) {
+                super.onBackPressed();
+            }
+            thumbnailIntializing = false;
+        }
+
+    // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
     protected boolean isLightToolbarThemes() {
         return true;
     }

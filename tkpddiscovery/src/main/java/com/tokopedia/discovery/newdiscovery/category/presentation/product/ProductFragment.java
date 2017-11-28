@@ -604,6 +604,11 @@ public class ProductFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.hideLoading();
     }
 
+    @Override
+    public void backToTop() {
+        recyclerView.scrollToPosition(0);
+    }
+
     public void setProductList(List<Visitable> productList) {
         adapter.appendItems(productList);
     }
@@ -612,6 +617,12 @@ public class ProductFragment extends SearchSectionFragment
     public void showEmptyProduct() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         adapter.showEmpty();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 }
 

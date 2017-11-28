@@ -45,11 +45,11 @@ public class ProductVideoHorizontalScroll extends HorizontalScrollView {
         placeHolder = (LinearLayout) findViewById(R.id.youtube_video_place_holder);
     }
 
-    public void renderData(VideoData data) {
+    public void renderData(VideoData data, YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess loadInProcess) {
         if(YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
                 .equals(YouTubeInitializationResult.SUCCESS)) {
             for (int i = 0; i < data.getVideo().size(); i++) {
-                placeHolder.addView(new YoutubeThumbnailViewHolder(getContext(), data, i));
+                placeHolder.addView(new YoutubeThumbnailViewHolder(getContext(), data, i,loadInProcess));
             }
         } else {
             for(int i = 0; i < data.getVideo().size(); i++) {

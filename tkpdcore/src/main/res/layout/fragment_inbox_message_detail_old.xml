@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/cards_ui">
+
+            <LinearLayout
+                android:id="@+id/reputation_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/margin_vs"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small">
+
+                <ImageView
+                    android:id="@+id/rep_icon"
+                    android:layout_width="@dimen/img_thumb_s"
+                    android:layout_height="@dimen/img_thumb_s" />
+
+                <TextView
+                    android:id="@+id/rep_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/tkpd_dark_green"
+                    android:textSize="@dimen/fontvs" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/msg_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/reputation_view"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:singleLine="true" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/add_comment_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:background="@drawable/cards_ui"
+            android:paddingBottom="@dimen/padding_vs"
+            android:paddingTop="@dimen/padding_vs"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/add_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:padding="@dimen/padding_small"
+                android:src="@drawable/ic_action_attachment" />
+
+
+            <EditText
+                android:id="@+id/new_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/send_but"
+                android:layout_toRightOf="@+id/add_url"
+                android:hint="@string/prompt_new_comment"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:textSize="@dimen/font_medium" />
+
+            <ImageView
+                android:id="@+id/send_but"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:padding="@dimen/padding_small"
+                android:src="@drawable/ic_send_24dp_green" />
+
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="@dimen/comment_msg_btn_w"
+                android:layout_height="@dimen/comment_msg_btn_h"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <com.tokopedia.core.customwidget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/add_comment_area"
+            android:layout_below="@id/header">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/message_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scrollbars="vertical" />
+
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+        <TextView
+            android:id="@+id/header_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/swipe_refresh_layout"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bg_yellow_border_yelow"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/padding_vs"
+            android:singleLine="true"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

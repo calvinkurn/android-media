@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -23,7 +24,9 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -32,6 +35,7 @@ import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatPagerAdapter;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
+import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +62,18 @@ public class InboxChatActivity extends DrawerPresenterActivity
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
-        Intent destination = new Intent(context, InboxChatActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
+        Intent destination;
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+            destination = new Intent(context, InboxChatActivity.class)
+                    .setData(uri.build())
+                    .putExtras(extras);
+        } else {
+            destination = new Intent(context, InboxMessageActivity.class)
+                    .setData(uri.build())
+                    .putExtras(extras);
+        }
+
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
         return taskStackBuilder;
@@ -76,9 +89,17 @@ public class InboxChatActivity extends DrawerPresenterActivity
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
-        Intent destination = new Intent(context, InboxChatActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
+        Intent destination;
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+            destination = new Intent(context, InboxChatActivity.class)
+                    .setData(uri.build())
+                    .putExtras(extras);
+        } else {
+            destination = new Intent(context, InboxMessageActivity.class)
+                    .setData(uri.build())
+                    .putExtras(extras);
+        }
         return destination;
     }
 
@@ -209,7 +230,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     @Override
     public void onSuccessGetTopChatNotification(int notifUnreads) {
-        if(notifUnreads > 0) {
+        if (notifUnreads > 0) {
             TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
             titleTextView.setText("Chat (" + notifUnreads + ")");
         }

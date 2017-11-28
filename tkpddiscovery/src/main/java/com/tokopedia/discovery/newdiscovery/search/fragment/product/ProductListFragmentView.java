@@ -49,4 +49,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     SearchParameter getSearchParameter();
 
     void setSearchParameter(SearchParameter searchParameter);
+
+    void backToTop();
 }

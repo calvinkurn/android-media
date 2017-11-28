@@ -165,4 +165,12 @@ public class CatalogPresenter extends SearchSectionFragmentPresenterImpl<Catalog
         removeDefaultCategoryParam(requestParams);
         return requestParams;
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getBrowseCatalogUseCase.unsubscribe();
+        getBrowseCatalogLoadMoreUseCase.unsubscribe();
+        getDynamicFilterUseCase.unsubscribe();
+    }
 }
