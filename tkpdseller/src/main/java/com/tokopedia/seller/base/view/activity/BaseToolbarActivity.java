@@ -28,7 +28,7 @@ import com.tokopedia.seller.common.utils.MenuTintUtils;
  * Created by nathan on 7/11/17.
  */
 
-public abstract class BaseToolbarActivity extends BaseActivity {
+abstract class BaseToolbarActivity extends BaseActivity {
 
     private final static int TOOLBAR_ELEVATION = 10;
     private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black_70;
@@ -53,12 +53,17 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         }
         setupLayout(savedInstanceState);
         setupFragment(savedInstanceState);
+        /**
+         * because toolbar background is black so set title and its child black
+         * otherwise toolbar and its child is white color.
+         */
         if (isToolbarWhite()) {
             setToolbarColorWhite();
+            toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
         }else{
-            // look at {@link setupLayout}
-            // set black to 70%
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black_70));
+            toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText);
         }
         if (getSupportActionBar() != null && isShowCloseButton()) {
             getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, closeButtonDrawable()));
@@ -117,8 +122,6 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarText_SansSerifMedium);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.ToolbarSubtitleText_SansSerifMedium);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -136,6 +139,8 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     public void updateOptionMenuColor(Menu menu) {
         if (isToolbarWhite()) {
             MenuTintUtils.tintAllIcons(menu, TEXT_COLOR_BACKGROUND_WHITE);
+        }else{
+            MenuTintUtils.tintAllIcons(menu, R.color.white);
         }
     }
 

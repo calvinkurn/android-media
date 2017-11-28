@@ -463,10 +463,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         int discussCount = drawerNotification.getInboxTalk();
         int reviewCount = drawerNotification.getInboxReview();
+        int messageCount = drawerNotification.getInboxMessage();
 
         setCounterIfNotEmpty(newOrderLabelView, newOrderCount);
         setCounterIfNotEmpty(deliveryConfirmationLabelView, shippingConfirmation);
         setCounterIfNotEmpty(deliveryStatusLabelView, shippingStatus);
+        setCounterIfNotEmpty(messageLabelView, messageCount);
 
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
@@ -510,11 +512,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onErrorOpenShop() {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
-    }
-
-    @Override
-    public void onSuccessGetTopChatNotification(int notifUnreads) {
-        setCounterIfNotEmpty(messageLabelView, notifUnreads);
     }
 
     private void setCounterIfNotEmpty(LabelView labelView, int counter) {

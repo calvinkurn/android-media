@@ -16,9 +16,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -26,8 +26,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -242,6 +240,21 @@ public class InboxChatFragment extends BaseDaggerFragment
 
         adapter = new NewInboxChatAdapter(typeFactory, presenter);
 
+        searchInputView.getSearchTextView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                searchInputView.getSearchTextView().setCursorVisible(true);
+                return false;
+            }
+        });
+
+        searchInputView.getSearchTextView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchInputView.getSearchTextView().setCursorVisible(true);
+            }
+        });
+
         mainList.setAdapter(adapter);
         mainList.setLayoutManager(layoutManager);
         mainList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -447,6 +460,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void dropKeyboard() {
+        searchInputView.getSearchTextView().setCursorVisible(false);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
@@ -486,7 +500,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void finishLoading() {
         refreshHandler.finishRefresh();
         progressDialog.dismiss();
-//        adapter.removeLoading();
+        adapter.removeLoading();
         searchLoading.setVisibility(View.GONE);
     }
 
@@ -518,7 +532,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             }
         }
 
-        presenter.recreateWebSocket();
+        presenter.createWebSocket();
     }
 
 
@@ -630,5 +644,10 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.closeWebsocket();
+    }
+
+    @Override
+    public void saveResult() {
+        presenter.setCache(getAdapter().getList());
     }
 }

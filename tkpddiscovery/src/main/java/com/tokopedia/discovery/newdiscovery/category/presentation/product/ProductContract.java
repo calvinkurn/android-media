@@ -48,6 +48,8 @@ public class ProductContract {
 
         void unSetTopAdsEndlessListener();
 
+        void backToTop();
+
     }
 
     public interface Presenter extends SearchSectionFragmentPresenter<View> {

@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol;
 
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -53,7 +54,8 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProfile(element.getUrl());
+                if (!TextUtils.isEmpty(element.getUrl()))
+                    viewListener.onGoToProfile(element.getUrl());
             }
         });
 
@@ -65,7 +67,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
         else
             loadMore.setVisibility(View.GONE);
 
-        if(element.isLoading())
+        if (element.isLoading())
             progressBar.setVisibility(View.VISIBLE);
         else
             progressBar.setVisibility(View.GONE);
