@@ -449,7 +449,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         } else {
             // we retrieve from cache, because there is possibility the filter/sort will be different
             reloadDataFromCache();
-            if (getAdapter().getDataSize() > 0 && filterAndSortBottomAction.getVisibility() == View.GONE) {
+            if (filterAndSortBottomAction.getVisibility() == View.GONE) {
                 filterAndSortBottomAction.setVisibility(View.VISIBLE);
             }
         }

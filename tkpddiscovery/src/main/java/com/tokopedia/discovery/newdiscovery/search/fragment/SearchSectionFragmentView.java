@@ -29,4 +29,6 @@ public interface SearchSectionFragmentView extends CustomerView {
     void showRefreshLayout();
 
     void hideRefreshLayout();
+
+    String getScreenName();
 }

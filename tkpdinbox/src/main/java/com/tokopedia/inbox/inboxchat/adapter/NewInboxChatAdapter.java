@@ -75,18 +75,21 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     private void showTitle(Context context, int position) {
-        ChatListViewModel now = (ChatListViewModel) list.get(position);
-        if (position > 0) {
+        if(list.get(position) instanceof ChatListViewModel){
+            ChatListViewModel now = (ChatListViewModel) list.get(position);
+            if (position > 0) {
+                if(list.get(position-1) instanceof ChatListViewModel) {
+                    ChatListViewModel prev = (ChatListViewModel) list.get(position - 1);
 
-            ChatListViewModel prev = (ChatListViewModel) list.get(position - 1);
+                    if (now.getSectionSize() > 0 && !compareType(now.getSpanMode(), prev.getSpanMode())) {
+                        now.setHaveTitle(true);
+                    }
+                }
 
-            if (now.getSectionSize() > 0 && !compareType(now.getSpanMode(), prev.getSpanMode())) {
-                now.setHaveTitle(true);
-            }
-
-        } else {
-            if (now.getSectionSize() > 0) {
-                now.setHaveTitle(true);
+            } else {
+                if (now.getSectionSize() > 0) {
+                    now.setHaveTitle(true);
+                }
             }
         }
     }
@@ -178,7 +181,12 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void removeLoading() {
         this.list.remove(loadingModel);
-        notifyItemRemoved(list.size());
+        notifyItemRemoved(list.size()-1);
+    }
+
+
+    public boolean containLoading() {
+        return this.list.contains(loadingModel);
     }
 
     public void showEmptyFull(boolean b) {
@@ -262,6 +270,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
             temp.setReadStatus(STATE_CHAT_UNREAD);
             temp.setTime(response.getData().getMessage().getTimeStampUnix());
             temp.setName(response.getData().getFrom());
+            temp.setRole(response.getData().getFromRole());
+            temp.setImage(response.getData().getImageUri());
             if (this.list.size() == 1 && list.get(0) instanceof EmptyChatModel) {
                 this.list.clear();
                 this.list.add(0, temp);
@@ -349,4 +359,5 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
             }
         }
     }
+
 }

@@ -24,7 +24,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
         getProductUseCase.execute(
                 GetProductUseCase.createInitializeSearchParam(searchParameter, forceSearch, requestOfficialStore),
-                new DefaultSearchSubscriber(searchParameter, getBaseDiscoveryView())
+                new DefaultSearchSubscriber(searchParameter, forceSearch, getBaseDiscoveryView())
         );
     }
 

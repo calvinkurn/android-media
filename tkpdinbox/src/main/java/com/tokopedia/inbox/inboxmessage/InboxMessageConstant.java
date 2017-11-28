@@ -23,7 +23,7 @@ public interface InboxMessageConstant {
     String PARAM_MESSAGE_ID = "message_id";
     String PARAM_POSITION = "position";
     String PARAM_SENT_MESSAGE = "sent_message";
-    String PARAM_SENDER_NAME = "name";
+    String PARAM_SENDER_NAME = "fullname";
     String PARAM_SENDER_TAG = "tag";
     String PARAM_SENDER_ID = "sender_id";
     String PARAM_SENDER_IMAGE = "image";

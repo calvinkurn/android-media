@@ -15,6 +15,9 @@ public class WebSocketResponseData {
     @SerializedName("from")
     @Expose
     private String from;
+    @SerializedName("from_role")
+    @Expose
+    private String fromRole;
     @SerializedName("to_uid")
     @Expose
     private int toUid;
@@ -24,6 +27,9 @@ public class WebSocketResponseData {
     @SerializedName("start_time")
     @Expose
     private String startTime;
+    @SerializedName("thumbnail")
+    @Expose
+    private String imageUri;
 
     public int getMsgId() {
         return msgId;
@@ -73,4 +79,19 @@ public class WebSocketResponseData {
         this.startTime = startTime;
     }
 
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
+    }
+
+    public String getFromRole() {
+        return fromRole;
+    }
+
+    public void setFromRole(String fromRole) {
+        this.fromRole = fromRole;
+    }
 }

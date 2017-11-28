@@ -30,6 +30,12 @@
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
+            android:name=".newdynamicfilter.DynamicFilterLocationActivity"
+            android:label="Lokasi"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity
             android:name=".newdynamicfilter.DynamicFilterRatingActivity"
             android:label="Rating"
             android:screenOrientation="portrait"

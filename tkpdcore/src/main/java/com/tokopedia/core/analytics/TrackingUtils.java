@@ -71,7 +71,7 @@ public class TrackingUtils extends TrackingConfig {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
                     .setFullName(profileData.getUserInfo().getUserName())
                     .setEmailAddress(profileData.getUserInfo().getUserEmail())
-                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()))
+                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()!= null ? profileData.getUserInfo().getUserPhone() : ""))
                     .setCustomerId(profileData.getUserInfo().getUserId())
                     .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
                     .setSeller(profileData.getShopInfo() != null)
@@ -177,7 +177,10 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     private static String normalizePhoneNumber(String phoneNum) {
-        return phoneNum.replaceFirst("^0(?!$)", "62");
+        if(!TextUtils.isEmpty(phoneNum))
+            return phoneNum.replaceFirst("^0(?!$)", "62");
+        else
+            return "";
     }
 
     public static void sendMoEngageLoginEvent(CustomerWrapper customerWrapper) {
