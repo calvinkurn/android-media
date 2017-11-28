@@ -354,6 +354,11 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
+    public static void sendMoEngageClickedNewOrder(){
+        PayloadBuilder builder = new PayloadBuilder();
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICKED_NEW_ORDER);
+    }
+
     public static void sendMoEngageClickDiskusi(@NonNull ProductDetailData data) {
         PayloadBuilder builder = new PayloadBuilder();
         if (data.getBreadcrumb().size() > 1) {

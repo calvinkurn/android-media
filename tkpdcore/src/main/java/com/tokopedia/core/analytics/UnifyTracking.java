@@ -218,6 +218,8 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.ORDER_DETAIL
         ).getEvent());
+
+        sendMoEngageClickedNewOrder();
     }
 
     public static void eventTrackOrder() {
