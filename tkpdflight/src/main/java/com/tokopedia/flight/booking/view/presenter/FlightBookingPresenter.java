@@ -21,6 +21,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
@@ -350,7 +351,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                         e.printStackTrace();
                         if (isViewAttached()) {
                             getView().hideFullPageLoading();
-                            getView().showGetCartDataErrorStateLayout();
+                            getView().showGetCartDataErrorStateLayout(FlightErrorUtil.getMessageFromException(e));
                         }
                     }
 

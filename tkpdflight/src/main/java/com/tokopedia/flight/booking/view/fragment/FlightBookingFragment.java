@@ -415,9 +415,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showGetCartDataErrorStateLayout() {
+    public void showGetCartDataErrorStateLayout(String errorMessage) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(),
+                getActivity(), getView(), errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {

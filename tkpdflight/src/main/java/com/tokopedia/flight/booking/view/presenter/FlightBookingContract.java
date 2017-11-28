@@ -72,7 +72,7 @@ public interface FlightBookingContract {
 
         void renderTotalPrices(String totalPrice);
 
-        void showGetCartDataErrorStateLayout();
+        void showGetCartDataErrorStateLayout(String errorMessage);
 
         void renderFinishTimeCountDown(Date date);
 
