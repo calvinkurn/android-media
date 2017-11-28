@@ -154,7 +154,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 if (MainApplication.getInstance() instanceof RemoteConfigRouter
                         && !((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
                         (TkpdInboxRouter.ENABLE_TOPCHAT)) {
-git
+
                     customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
                     if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                         serverId = Uri.parse(applinks).getLastPathSegment();
