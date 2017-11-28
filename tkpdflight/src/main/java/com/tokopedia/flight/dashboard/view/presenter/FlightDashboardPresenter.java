@@ -336,6 +336,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else if (!validator.validateDepartureDateAtLeastToday(currentDashboardViewModel)) {
             isValid = false;
             getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+        } else if (!validator.validateAirportsShouldDifferentCity(currentDashboardViewModel)) {
+            isValid = false;
+            getView()
+                    .showAirportShouldDifferentCity(R.string.flight_dashboard_departure_should_different_city_error);
         } else if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(currentDashboardViewModel)) {
             isValid = false;
             getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);

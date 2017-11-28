@@ -359,6 +359,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void showAirportShouldDifferentCity(@StringRes int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
         FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
