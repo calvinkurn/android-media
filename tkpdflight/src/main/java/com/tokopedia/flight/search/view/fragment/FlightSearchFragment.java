@@ -26,6 +26,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
@@ -514,14 +515,25 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onChangeDateClicked() {
+//        String dateInput = flightSearchPassDataViewModel.getDate(isReturning());
+//        Date date = FlightDateUtil.stringToDate(dateInput);
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(date);
 //        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
 //            @Override
 //            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//                // TODO on date set
+//                //presenter.onReturnDateChange(year, month, dayOfMonth);
 //            }
-//        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+//        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
 //        DatePicker datePicker1 = datePicker.getDatePicker();
-//        datePicker1.setMinDate(minDate.getTime());
+//        if (isReturning()) {
+//            String dateDepStr = flightSearchPassDataViewModel.getDate(false);
+//            Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
+//            datePicker1.setMinDate(dateDep.getTime());
+//        } else {
+//
+//        }
+//
 //        datePicker.show();
     }
 
