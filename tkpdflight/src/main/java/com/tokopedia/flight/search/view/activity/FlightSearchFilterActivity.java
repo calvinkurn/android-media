@@ -56,9 +56,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     private String currentTag;
     private int count;
-//    private View vReset;
-//
-//    private TextView tvToolbarTitle;
 
     public static Intent createInstance(Context context,
                                         boolean isReturning,
@@ -185,11 +182,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
         setUpTitleByTag(tag);
-        if (fragment instanceof OnFlightBaseFilterListener) {
-            //vReset.setVisibility(View.VISIBLE);
-        } else {
-            //vReset.setVisibility(View.GONE);
-        }
     }
 
     public void setUpTitleByTag(String tag) {
