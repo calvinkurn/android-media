@@ -117,6 +117,5 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.slidinguppanel
     compile rootProject.ext.playServicesDependencies.mapsUtils
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }
