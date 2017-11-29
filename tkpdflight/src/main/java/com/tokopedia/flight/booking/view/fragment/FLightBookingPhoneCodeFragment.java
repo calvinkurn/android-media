@@ -63,4 +63,15 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
         flightBookingPhoneCodePresenter.attachView(this);
     }
 
+    @Override
+    public void onSearchTextChanged(String text) {
+        super.onSearchTextChanged(text);
+        flightBookingPhoneCodePresenter.getPhoneCodeList(text);
+    }
+
+    @Override
+    public void onDestroyView() {
+        flightBookingPhoneCodePresenter.onDestroyView();
+        super.onDestroyView();
+    }
 }
