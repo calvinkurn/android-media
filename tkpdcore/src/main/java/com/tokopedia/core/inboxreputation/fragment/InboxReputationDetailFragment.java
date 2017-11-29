@@ -18,6 +18,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.apprating.AppRatingDialog;
 import com.tokopedia.core.inboxreputation.InboxReputationConstant;
 import com.tokopedia.core.inboxreputation.adapter.InboxReputationDetailAdapter;
 import com.tokopedia.core.inboxreputation.adapter.viewbinder.HeaderReputationDataBinder;
@@ -425,4 +426,8 @@ public class
         setActivityResult();
     }
 
+    @Override
+    public void showRatingDialog() {
+        AppRatingDialog.show(getActivity());
+    }
 }

@@ -33,6 +33,8 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.Map;
 
+import retrofit2.http.POST;
+
 /**
  * Created by Nisie on 1/26/16.
  */
@@ -367,6 +369,15 @@ public class InboxReputationDetailFragmentPresenterImpl implements
                     break;
                 default:
                     break;
+            }
+
+            try {
+                float qualityRating = Float.parseFloat(bundle.getString("quality_rating"));
+                if(qualityRating >= 3) {
+                    viewListener.showRatingDialog();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

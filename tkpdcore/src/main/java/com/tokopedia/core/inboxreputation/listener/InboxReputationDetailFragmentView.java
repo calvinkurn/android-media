@@ -81,4 +81,6 @@ public interface InboxReputationDetailFragmentView {
     void showShareProvider(InboxReputationDetailItem inboxReputationDetailItem);
 
     void onSuccessGetDetail(InboxReputationDetail response);
+
+    void showRatingDialog();
 }

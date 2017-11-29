@@ -355,6 +355,12 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         bundle.putInt("is_success", 1);
         bundle.putString("action",
                 InboxReputationDetailFragmentPresenterImpl.ACTION_UPDATE_PRODUCT);
+
+        ActReviewPass param = resultData.getParcelable(PARAM_POST_REVIEW);
+        if(param != null && param.getQualityRate() != null) {
+            bundle.putString("quality_rating", param.getQualityRate());
+        }
+
         intent.putExtras(bundle);
         if(checkBox.isChecked()){
             showDialogShareFb(intent);
