@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Scope;
 
 /**
- * @author anggaprasetiyo on 24/11/17.
+ * @author anggaprasetiyo on 27/11/17.
  */
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface HachikoModuleScope {
+public @interface LoyaltyScope {
 }

@@ -1,2 +1,20 @@
-<manifest
-    package="com.tokopedia.loyalty"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.tokopedia.loyalty">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <activity
+            android:name=".view.activity.LoyaltyActivity"
+            android:label="LOYALTY"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
