@@ -20,6 +20,7 @@ import java.util.List;
 public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder> {
     private List<SimpleViewModel> viewModels;
     private boolean isArrowVisible;
+    private boolean isClickable;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -32,6 +33,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     public FlightSimpleAdapter() {
         viewModels = new ArrayList<>();
         isArrowVisible = false;
+        isClickable = false;
     }
 
     @Override
@@ -62,6 +64,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         this.isArrowVisible = isArrowVisible;
     }
 
+    public void setClickable(boolean isClickable) {
+        this.isClickable = isClickable;
+    }
+
     public void setInteractionListener(OnAdapterInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
@@ -89,6 +95,11 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
                     }
                 }
             });
+            if (isClickable) {
+                labelTextView.setBackground(itemView.getContext().getResources().getDrawable(R.drawable.selectable_background_tokopedia));
+            } else {
+                labelTextView.setBackground(null);
+            }
         }
     }
 }

@@ -235,7 +235,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                     totalPrice += flightBookingLuggageViewModel.getPriceNumeric();
                     simpleViewModels.add(new SimpleViewModel(
                             getView().getString(R.string.flight_price_detail_prefix_luggage_label) + flightBookingLuggageMetaViewModel.getDescription(),
-                            flightBookingLuggageViewModel.getPriceFmt())
+                            flightBookingLuggageViewModel.getPrice())
                     );
                 }
             }

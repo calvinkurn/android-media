@@ -276,7 +276,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
                         ArrayList<String> selectedLuggages = new ArrayList<>();
                         for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : selected.getLuggages()) {
-                            selectedLuggages.add(flightBookingLuggageViewModel.getWeightFmt() + " - " + flightBookingLuggageViewModel.getPriceFmt());
+                            selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
                         }
                         viewModel.setDescription(TextUtils.join(",", selectedLuggages));
                         break;

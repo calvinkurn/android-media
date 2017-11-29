@@ -39,8 +39,8 @@ public class FlightBookingLuggageViewHolder extends BaseViewHolder<FlightBooking
             isItemChecked = listenerCheckedLuggage.isItemChecked(flightBookingLuggageViewModel);
         }
 
-        weight.setText(flightBookingLuggageViewModel.getWeightFmt());
-        price.setText(flightBookingLuggageViewModel.getPriceFmt());
+        weight.setText(flightBookingLuggageViewModel.getTitle());
+        price.setText(flightBookingLuggageViewModel.getPrice());
         if (isItemChecked) {
             imageChecked.setVisibility(View.VISIBLE);
             weight.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));

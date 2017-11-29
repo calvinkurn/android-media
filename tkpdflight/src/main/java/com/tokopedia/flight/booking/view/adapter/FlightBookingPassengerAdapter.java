@@ -115,7 +115,7 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                     for (FlightBookingLuggageMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
                         ArrayList<String> selectedLuggages = new ArrayList<>();
                         for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getLuggages()) {
-                            selectedLuggages.add(flightBookingLuggageViewModel.getWeightFmt() + " - " + flightBookingLuggageViewModel.getPriceFmt());
+                            selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
                         }
                         simpleViewModels.add(new SimpleViewModel(
                                 itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getDescription(), TextUtils.join(" + ", selectedLuggages)
