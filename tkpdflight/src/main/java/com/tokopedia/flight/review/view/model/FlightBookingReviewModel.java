@@ -13,7 +13,6 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -146,7 +145,7 @@ public class FlightBookingReviewModel implements Parcelable {
 
     private String generateLabelMeal(List<FlightBookingAmenityViewModel> mealViewModels) {
         String labelMeal = "";
-        for(FlightBookingMealViewModel flightBookingMealViewModel : mealViewModels){
+        for (FlightBookingAmenityViewModel flightBookingMealViewModel : mealViewModels) {
             labelMeal = labelMeal + flightBookingMealViewModel.getTitle() + "\n";
         }
         return labelMeal;
@@ -154,8 +153,8 @@ public class FlightBookingReviewModel implements Parcelable {
 
     private String generateLabelLuggage(List<FlightBookingAmenityViewModel> luggages) {
         String labelLuggage = "";
-        for(FlightBookingLuggageViewModel flightBookingLuggageViewModel : luggages){
-            labelLuggage = labelLuggage + flightBookingLuggageViewModel.getWeightFmt() + "\n";
+        for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : luggages) {
+            labelLuggage = labelLuggage + flightBookingLuggageViewModel.getTitle() + "\n";
         }
         return labelLuggage;
     }
