@@ -397,7 +397,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         this,
                         accountsService,
                         new GetUserInfoMapper(),
-                        null
+                        null,
+                        sessionHandler
                 );
 
         GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(

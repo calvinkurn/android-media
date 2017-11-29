@@ -135,6 +135,8 @@ public class SessionHandler {
         editor.putString(USER_DATA, null);
         editor.putString(REFRESH_TOKEN, null);
         editor.putString(ACCESS_TOKEN_TOKOCASH, null);
+        editor.putString(TOKEN_TYPE, null);
+        editor.putString(ACCESS_TOKEN, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -658,6 +660,20 @@ public class SessionHandler {
     public static String getAccessTokenTokoCash() {
         SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(TOKOCASH_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN_TOKOCASH, "");
+    }
+
+    public void setUUID(String uuid) {
+        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(),
+                LOGIN_UUID_KEY);
+        String prevUUID = cache.getString(UUID_KEY, "");
+        String currUUID;
+        if (prevUUID.equals("")) {
+            currUUID = uuid;
+        } else {
+            currUUID = prevUUID + "*~*" + uuid;
+        }
+        cache.putString(UUID_KEY, currUUID);
+        cache.applyEditor();
     }
 
     public interface onLogoutListener {

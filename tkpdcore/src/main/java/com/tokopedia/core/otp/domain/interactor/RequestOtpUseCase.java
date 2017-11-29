@@ -11,8 +11,9 @@ import rx.Observable;
 
 /**
  * Created by nisie on 3/7/17.
+ * Don't use this, ever.
  */
-
+@Deprecated
 public class RequestOtpUseCase extends UseCase<RequestOtpModel> {
 
     public static final String PARAM_MODE = "mode";

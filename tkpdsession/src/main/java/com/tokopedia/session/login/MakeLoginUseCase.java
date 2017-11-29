@@ -11,8 +11,10 @@ import rx.Observable;
 
 /**
  * @author by nisie on 5/26/17.
+ * @deprecated
  */
 
+@Deprecated
 public class MakeLoginUseCase extends UseCase<MakeLoginDomainModel> {
 
     private final LoginRepository loginRepository;

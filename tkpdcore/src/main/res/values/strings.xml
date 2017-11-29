@@ -2110,5 +2110,6 @@ di Tokopedia Sekarang!</string>
     <string name="product_share_app_subtitle">Pilih cara berbagimu</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="bri_transfer_info">*) Penarikan dana ke rekening BRI akan dikenakan biaya transfer Rp 1,500.- oleh bank BRI</string>
+    <string name="code_error">Kode error :</string>
 
 </resources>
