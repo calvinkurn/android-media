@@ -1,10 +1,12 @@
 package com.tokopedia.tkpd;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.multidex.MultiDex;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
@@ -38,6 +40,13 @@ import java.util.List;
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
+
+    @Override
+    protected void attachBaseContext(Context base)
+    {
+        super.attachBaseContext(base);
+        MultiDex.install(ConsumerMainApplication.this);
+    }
 
     @Override
     public void onCreate() {
