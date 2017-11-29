@@ -16,13 +16,11 @@ public class ChatAwbLeftViewModel implements Visitable<DetailChatTypeFactory> {
     private ShopDomain shop;
     private CustomerDomain customer;
     private ConversationDomain conversation;
-    private boolean isShowTitle;
 
-    public ChatAwbLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, boolean isShowTitle) {
+    public ChatAwbLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation) {
         this.shop = shop;
         this.customer = customer;
         this.conversation = conversation;
-        this.isShowTitle = isShowTitle;
     }
 
     public ShopDomain getShop() {
@@ -47,14 +45,6 @@ public class ChatAwbLeftViewModel implements Visitable<DetailChatTypeFactory> {
 
     public void setConversation(ConversationDomain conversation) {
         this.conversation = conversation;
-    }
-
-    public boolean isShowTitle() {
-        return isShowTitle;
-    }
-
-    public void setShowTitle(boolean showTitle) {
-        isShowTitle = showTitle;
     }
 
     @Override

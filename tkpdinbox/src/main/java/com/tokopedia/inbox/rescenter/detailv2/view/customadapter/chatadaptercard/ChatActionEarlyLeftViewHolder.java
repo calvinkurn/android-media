@@ -9,6 +9,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatActionEarlyLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCommonLeftViewModel;
 import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
 
@@ -16,7 +17,7 @@ import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
  * Created by yoasfs on 23/10/17.
  */
 
-public class ChatActionEarlyLeftViewHolder extends AbstractViewHolder<ChatCommonLeftViewModel> {
+public class ChatActionEarlyLeftViewHolder extends AbstractViewHolder<ChatActionEarlyLeftViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_detail_action_early_left;
@@ -41,7 +42,7 @@ public class ChatActionEarlyLeftViewHolder extends AbstractViewHolder<ChatCommon
     }
 
     @Override
-    public void bind(ChatCommonLeftViewModel element) {
+    public void bind(ChatActionEarlyLeftViewModel element) {
         final Context context = itemView.getContext();
         String date = DateFormatUtils.formatDateForResoChatV2(
                 element.getConversation().getCreateTime().getTimestamp());

@@ -68,23 +68,17 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                                                CustomerDomain customerDomain,
                                                LastDomain lastDomain,
                                                int actionBy) {
-        int lastAction = 0;
+        int lastAction = 0; //only used for reply conversation, so need to be reset when hit another type
         List<Visitable> items = new ArrayList<>();
         for (ConversationDomain conversationDomain : conversationListDomain.getConversationDomains()) {
             String actionType = conversationDomain.getAction().getType();
             if (actionType.equals(CREATE)) {
+                lastAction = 0;
                 items.add(new ChatCreateLeftViewModel(
                         shopDomain,
                         lastDomain,
                         conversationDomain));
             } else if (actionType.equals(REPLY_CONVERSATION)) {
-                boolean isShowTitle;
-                if (lastAction == conversationDomain.getAction().getBy()) {
-                    isShowTitle = false;
-                } else {
-                    lastAction = conversationDomain.getAction().getBy();
-                    isShowTitle = true;
-                }
                 if (actionBy == conversationDomain.getAction().getBy()) {
                     items.add(new ChatRightViewModel(
                             shopDomain,
@@ -95,16 +89,11 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             shopDomain,
                             customerDomain,
                             conversationDomain,
-                            isShowTitle));
+                            lastAction != conversationDomain.getAction().getBy()));
                 }
+                lastAction = conversationDomain.getAction().getBy();
             } else if (actionType.equals(EDIT_SOLUTION) || actionType.equals(APPEAL_RESOLUTION)) {
-                boolean isShowTitle;
-                if (lastAction == conversationDomain.getAction().getBy()) {
-                    isShowTitle = false;
-                } else {
-                    lastAction = conversationDomain.getAction().getBy();
-                    isShowTitle = true;
-                }
+                lastAction = 0;
                 if (actionBy == conversationDomain.getAction().getBy()) {
                     items.add(new ChatSystemRightViewModel(
                             shopDomain,
@@ -116,8 +105,7 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             shopDomain,
                             customerDomain,
                             conversationDomain,
-                            actionType,
-                            isShowTitle));
+                            actionType));
                 }
             } else if (actionType.equals(ACTION_RESET)) {
                 items.add(new ChatActionResetLeftViewModel(
@@ -125,13 +113,7 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                         customerDomain,
                         conversationDomain));
             } else if (actionType.equals(INPUT_ADDRESS) || actionType.equals(EDIT_ADDRESS)) {
-                boolean isShowTitle;
-                if (lastAction == conversationDomain.getAction().getBy()) {
-                    isShowTitle = false;
-                } else {
-                    lastAction = conversationDomain.getAction().getBy();
-                    isShowTitle = true;
-                }
+                lastAction = 0;
                 if (actionBy == conversationDomain.getAction().getBy()) {
                     items.add(new ChatInputAddressRightViewModel(
                             shopDomain,
@@ -143,17 +125,10 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             shopDomain,
                             customerDomain,
                             conversationDomain,
-                            isShowTitle,
                             MainApplication.getAppContext().getResources().getString(R.string.string_address_format)));
                 }
             } else if (actionType.equals(INPUT_RESI) || actionType.equals(EDIT_RESI)) {
-                boolean isShowTitle;
-                if (lastAction == conversationDomain.getAction().getBy()) {
-                    isShowTitle = false;
-                } else {
-                    lastAction = conversationDomain.getAction().getBy();
-                    isShowTitle = true;
-                }
+                lastAction = 0;
                 if (actionBy == conversationDomain.getAction().getBy()) {
                     items.add(new ChatAwbRightViewModel(
                             shopDomain,
@@ -163,12 +138,13 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                     items.add(new ChatAwbLeftViewModel(
                             shopDomain,
                             customerDomain,
-                            conversationDomain,
-                            isShowTitle));
+                            conversationDomain));
                 }
             } else if (actionType.equals(ACTION_FINAL)) {
+                lastAction = 0;
                 items.add(new ChatActionFinalLeftViewModel(conversationDomain, actionType));
             } else if (actionType.equals(ACTION_EARLY)) {
+                lastAction = 0;
                 items.add(new ChatActionEarlyLeftViewModel(conversationDomain, actionType));
             } else if (actionType.equals(REPORT_RESOLUTION)
                     || actionType.equals(ENTER_RETUR_SESSION_RESOLUTION)
@@ -176,9 +152,11 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                     || actionType.equals(REJECT_ADMIN_RESOLUTION)
                     || actionType.equals(CANCEL)
                     || actionType.equals(ACCEPT_ADMIN_SOLUTION)) {
+                lastAction = 0;
                 items.add(new ChatCommonLeftViewModel(conversationDomain, actionType));
             } else {
                 if (actionBy == conversationDomain.getAction().getBy()) {
+                    lastAction = 0;
                     items.add(new ChatNotSupportedRightViewModel(
                             conversationDomain));
                 } else {

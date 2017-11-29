@@ -63,7 +63,7 @@ public class ChatInputAddressLeftViewHolder extends AbstractViewHolder<ChatInput
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
 
-        layoutTitle.setVisibility(element.isShowTitle() ? View.VISIBLE : View.GONE);
+        layoutTitle.setVisibility(View.VISIBLE);
 
         if (element.getConversation().getAction().getBy() == ACTION_BY_SELLER) {
             tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_seller_title));

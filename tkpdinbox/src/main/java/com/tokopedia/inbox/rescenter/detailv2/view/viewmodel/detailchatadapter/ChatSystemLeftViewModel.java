@@ -16,17 +16,15 @@ public class ChatSystemLeftViewModel implements Visitable<DetailChatTypeFactory>
     private ShopDomain shop;
     private CustomerDomain customer;
     private ConversationDomain conversation;
-    private boolean isShowTitle;
     private String actionType;
 
     public ChatSystemLeftViewModel() {
     }
 
-    public ChatSystemLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, String actionType, boolean isShowTitle) {
+    public ChatSystemLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, String actionType) {
         this.shop = shop;
         this.customer = customer;
         this.conversation = conversation;
-        this.isShowTitle = isShowTitle;
         this.actionType = actionType;
     }
 
@@ -52,14 +50,6 @@ public class ChatSystemLeftViewModel implements Visitable<DetailChatTypeFactory>
 
     public void setConversation(ConversationDomain conversation) {
         this.conversation = conversation;
-    }
-
-    public boolean isShowTitle() {
-        return isShowTitle;
-    }
-
-    public void setShowTitle(boolean showTitle) {
-        isShowTitle = showTitle;
     }
 
     public String getActionType() {

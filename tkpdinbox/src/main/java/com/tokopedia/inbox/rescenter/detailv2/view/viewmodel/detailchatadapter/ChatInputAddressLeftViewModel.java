@@ -16,14 +16,12 @@ public class ChatInputAddressLeftViewModel implements Visitable<DetailChatTypeFa
     private ShopDomain shop;
     private CustomerDomain customer;
     private ConversationDomain conversation;
-    private boolean isShowTitle;
     private String addressFormat;
 
-    public ChatInputAddressLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, boolean isShowTitle, String addressFormat) {
+    public ChatInputAddressLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, String addressFormat) {
         this.shop = shop;
         this.customer = customer;
         this.conversation = conversation;
-        this.isShowTitle = isShowTitle;
         this.addressFormat = addressFormat;
     }
 
@@ -57,14 +55,6 @@ public class ChatInputAddressLeftViewModel implements Visitable<DetailChatTypeFa
 
     public void setConversation(ConversationDomain conversation) {
         this.conversation = conversation;
-    }
-
-    public boolean isShowTitle() {
-        return isShowTitle;
-    }
-
-    public void setShowTitle(boolean showTitle) {
-        isShowTitle = showTitle;
     }
 
     @Override

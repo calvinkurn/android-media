@@ -76,7 +76,7 @@ public class ChatAwbLeftViewHolder extends AbstractViewHolder<ChatAwbLeftViewMod
                     element.getConversation().getShippingDetail().getAwbNumber(),
                     element.getConversation().getShippingDetail().getName()));
         }
-        layoutTitle.setVisibility(element.isShowTitle() ? View.VISIBLE : View.GONE);
+        layoutTitle.setVisibility(View.VISIBLE);
         btnTrack.setVisibility(element.getConversation().getButton().getTrackAwb() == 1 ? View.VISIBLE : View.GONE);
 
         if (element.getConversation().getAction().getBy() == ACTION_BY_SELLER) {
