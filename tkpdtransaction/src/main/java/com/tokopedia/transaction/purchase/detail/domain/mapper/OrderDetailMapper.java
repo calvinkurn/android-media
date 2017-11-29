@@ -21,10 +21,8 @@ import java.util.List;
 
 public class OrderDetailMapper {
 
-    public OrderDetailData generateOrderDetailModel(OrderDetailResponse response) {
-        validateData(response);
+    public OrderDetailData generateOrderDetailModel(OrderDetailResponse responseData) {
         OrderDetailData viewData = new OrderDetailData();
-        Data responseData = response.getData();
         viewData.setOrderId(String.valueOf(responseData.getOrderId()));
         viewData.setOrderStatus(responseData.getStatus().getDetail());
         viewData.setResoId(String.valueOf(responseData.getResoId()));
@@ -38,7 +36,7 @@ public class OrderDetailMapper {
         if(responseData.getDetail().getShop() !=null) {
             viewData.setShopId(String.valueOf(responseData.getDetail().getShop().getId()));
             viewData.setShopName(responseData.getDetail().getShop().getName());
-
+            viewData.setShopLogo(responseData.getDetail().getShop().getLogo());
         }
         viewData.setPartialOrderStatus(
                 getPartialOrderStatus(responseData.getDetail().getPartialOrder())
@@ -140,14 +138,6 @@ public class OrderDetailMapper {
         }
         viewData.setOrderListData(historyListData);
         return viewData;
-    }
-
-    private void validateData(OrderDetailResponse response) {
-        if(response.getData() == null) {
-            if(response.getErrorList() != null && response.getErrorList().size() > 1) {
-                throw new ResponseRuntimeException(response.getErrorList().get(0).getDetail());
-            } else throw new ResponseRuntimeException("Terjadi Kesalahan");
-        }
     }
 
     private void validateHistoryData(OrderHistoryResponse response) {

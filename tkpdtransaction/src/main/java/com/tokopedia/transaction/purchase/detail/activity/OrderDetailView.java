@@ -27,6 +27,8 @@ public interface OrderDetailView {
 
     void onOrderFinished(String message);
 
+    void onOrderCancelled(String message);
+
     void onRequestCancelOrder(OrderDetailData data);
 
     void onSellerConfirmShipping(OrderDetailData data);
@@ -48,5 +50,7 @@ public interface OrderDetailView {
     void hideMainViewLoadingPage();
 
     void onViewComplaint(String resoId);
+
+    void showErrorSnackbar(String errorMessage);
 
 }

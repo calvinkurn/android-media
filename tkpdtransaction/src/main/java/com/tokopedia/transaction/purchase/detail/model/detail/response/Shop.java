@@ -12,6 +12,9 @@ public class Shop {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("logo")
+    @Expose
+    private String logo;
 
     public Integer getId() {
         return id;
@@ -29,4 +32,11 @@ public class Shop {
         this.name = name;
     }
 
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 }

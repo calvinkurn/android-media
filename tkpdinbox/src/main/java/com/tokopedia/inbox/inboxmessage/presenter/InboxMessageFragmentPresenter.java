@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxmessage.presenter;
 
 import android.content.Intent;
 
+import com.tokopedia.inbox.inboxchat.domain.model.message.ListMessage;
 import com.tokopedia.inbox.inboxmessage.model.ActInboxMessagePass;
 import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;
@@ -40,7 +41,7 @@ public interface InboxMessageFragmentPresenter {
 
     void setUserVisibleHint(boolean isVisibleToUser, boolean isMustRefresh);
 
-    void goToDetailMessage(int position, InboxMessageItem messageId);
+    void goToDetailMessage(int position, ListMessage messageId);
 
     void goToProfile(int userId);
 

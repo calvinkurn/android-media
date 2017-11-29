@@ -11,9 +11,9 @@ import com.tokopedia.core.analytics.data.UserAttributesRepositoryImpl;
 import com.tokopedia.core.analytics.data.factory.UserAttributesFactory;
 import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.DepositSourceFactory;
@@ -25,12 +25,14 @@ import com.tokopedia.core.drawer2.data.mapper.DepositMapper;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.mapper.TokoCashMapper;
+import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.mapper.TopPointsMapper;
 import com.tokopedia.core.drawer2.data.repository.DepositRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.TokoCashRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.TopPointsRepositoryImpl;
+import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.DepositRepository;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.drawer2.domain.ProfileRepository;
@@ -39,13 +41,16 @@ import com.tokopedia.core.drawer2.domain.TopPointsRepository;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
 import com.tokopedia.core.drawer2.domain.interactor.DepositUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.TopChatNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
@@ -75,6 +80,8 @@ public class DrawerInjector {
                                                          LocalCacheHandler drawerCache) {
 
         GlobalCacheManager profileCache = new GlobalCacheManager();
+        JobExecutor jobExecutor = new JobExecutor();
+        PostExecutionThread uiThread = new UIThread();
 
         ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
                 context,
@@ -93,14 +100,14 @@ public class DrawerInjector {
                                 .build())
         );
 
-        GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(new JobExecutor(),
+        GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,
                 new UIThread(), userAttributesRepository);
 
         ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
 
         ProfileUseCase profileUseCase = new ProfileUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 profileRepository
         );
 
@@ -115,8 +122,8 @@ public class DrawerInjector {
         TopPointsRepository topPointsRepository = new TopPointsRepositoryImpl(topPointsSourceFactory);
 
         TopPointsUseCase topPointsUseCase = new TopPointsUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 topPointsRepository
         );
 
@@ -136,9 +143,16 @@ public class DrawerInjector {
 
         TokoCashRepository tokoCashRepository = new TokoCashRepositoryImpl(tokoCashSourceFactory);
         TokoCashUseCase tokoCashUseCase = new TokoCashUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 tokoCashRepository
+        );
+
+        ChatService chatService = new ChatService();
+        TopChatNotificationMapper topChatNotificationMapper = new TopChatNotificationMapper();
+
+        TopChatNotificationSource topChatNotificationSource = new TopChatNotificationSource(
+                chatService, topChatNotificationMapper, drawerCache
         );
 
         NotificationSourceFactory notificationSourceFactory = new NotificationSourceFactory(
@@ -147,10 +161,12 @@ public class DrawerInjector {
                 new NotificationMapper(),
                 drawerCache
         );
-        NotificationRepository notificationRepository = new NotificationRepositoryImpl(notificationSourceFactory);
+        NotificationRepository notificationRepository = new NotificationRepositoryImpl
+                (notificationSourceFactory, topChatNotificationSource);
+
         NotificationUseCase notificationUseCase = new NotificationUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 notificationRepository
         );
 
@@ -162,15 +178,28 @@ public class DrawerInjector {
 
         DepositRepository depositRepository = new DepositRepositoryImpl(depositSourceFactory);
         DepositUseCase depositUseCase = new DepositUseCase(
-                new JobExecutor(),
-                new UIThread(),
+                jobExecutor,
+                uiThread,
                 depositRepository);
+
+        TopChatNotificationUseCase topChatNotificationUseCase = new TopChatNotificationUseCase(
+                jobExecutor,
+                uiThread,
+                notificationRepository
+        );
+
+        NewNotificationUseCase newNotificationUseCase = new NewNotificationUseCase(
+                jobExecutor,
+                uiThread,
+                notificationUseCase,
+                topChatNotificationUseCase
+        );
 
         return new DrawerDataManagerImpl(
                 drawerDataListener,
                 profileUseCase,
                 depositUseCase,
-                notificationUseCase,
+                newNotificationUseCase,
                 tokoCashUseCase,
                 topPointsUseCase,
                 getUserAttributesUseCase);

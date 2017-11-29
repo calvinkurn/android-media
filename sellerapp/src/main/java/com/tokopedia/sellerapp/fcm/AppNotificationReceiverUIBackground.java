@@ -2,17 +2,22 @@ package com.tokopedia.sellerapp.fcm;
 
 import android.app.Application;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.applink.ApplinkPushNotificationBuildAndShow;
 import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsBelow20kNotification;
@@ -112,9 +117,43 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
-        ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
-        Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
-        buildAndShow.process(mContext, intent);
+        String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+        String category = Uri.parse(applinks).getHost();
+        if (category != null && category.equals(Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT)) {
+            if (MainApplication.getInstance() instanceof RemoteConfigRouter
+                    && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
+                    (TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                    NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                    listener.onGetNotif(data);
+                } else {
+                    String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                    String fullname = data
+                            .getString("full_name");
+                    applink += "?" + "fullname=" + fullname;
+                    data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                    ApplinkPushNotificationBuildAndShow applinkBuildAndShowNotification = new
+                            ApplinkPushNotificationBuildAndShow(data);
+                    Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
+                    applinkBuildAndShowNotification.process(mContext, intent);
+                }
+            }
+        } else if (category != null && category.equals(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE)) {
+            if (MainApplication.getInstance() instanceof RemoteConfigRouter
+                    && !((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
+                    (TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
+                Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
+                buildAndShow.process(mContext, intent);
+            }
+        } else {
+            ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
+            Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
+            buildAndShow.process(mContext, intent);
+        }
+
+
     }
 
     public void handleDedicatedNotification(Bundle data) {

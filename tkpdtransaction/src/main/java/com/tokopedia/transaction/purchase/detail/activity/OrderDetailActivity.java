@@ -31,6 +31,7 @@ import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
 import com.tokopedia.transaction.purchase.detail.di.OrderDetailComponent;
 import com.tokopedia.transaction.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.FinishOrderDialog;
+import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 
@@ -42,7 +43,10 @@ import javax.inject.Inject;
 
 public class OrderDetailActivity extends TActivity
         implements OrderDetailView,
-        FinishOrderDialog.FinishOrderDialogListener, ComplaintDialog.ComplaintDialogListener{
+        FinishOrderDialog.FinishOrderDialogListener,
+        ComplaintDialog.ComplaintDialogListener, CancelOrderFragment.CancelOrderListener {
+
+    private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
     private static final int BUYER_MODE = 1;
@@ -55,15 +59,19 @@ public class OrderDetailActivity extends TActivity
 
     public static Intent createInstance(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
-        intent.putExtra(EXTRA_ORDER_ID, orderId);
-        intent.putExtra(EXTRA_USER_MODE, BUYER_MODE);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_ORDER_ID, orderId);
+        bundle.putInt(EXTRA_USER_MODE, BUYER_MODE);
+        intent.putExtras(bundle);
         return intent;
     }
 
     public static Intent createSellerInstance(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
-        intent.putExtra(EXTRA_ORDER_ID, orderId);
-        intent.putExtra(EXTRA_USER_MODE, SELLER_MODE);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_ORDER_ID, orderId);
+        bundle.putInt(EXTRA_USER_MODE, SELLER_MODE);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -164,7 +172,7 @@ public class OrderDetailActivity extends TActivity
         TextView dropshipperName = findViewById(R.id.dropshipper_name);
         LinearLayout dropshipperPhoneLayout = findViewById(R.id.dropshipper_phone_layout);
         TextView dropshipperPhone = findViewById(R.id.dropshipper_phone);
-        if(data.getDropshipperName() == null || data.getDropshipperName().isEmpty()) {
+        if (data.getDropshipperName() == null || data.getDropshipperName().isEmpty()) {
             dropshipperMode.setText(getString(R.string.label_title_button_no));
             dropshipperNameLayout.setVisibility(View.GONE);
             dropshipperPhoneLayout.setVisibility(View.GONE);
@@ -178,14 +186,14 @@ public class OrderDetailActivity extends TActivity
     private void setPreorderView(OrderDetailData data) {
         LinearLayout preorderLayout = findViewById(R.id.preorder_layout);
         TextView preorderTime = findViewById(R.id.preorder_time);
-        if(data.isPreorder()) preorderTime.setText(data.getPreorderPeriod());
+        if (data.isPreorder()) preorderTime.setText(data.getPreorderPeriod());
         else preorderLayout.setVisibility(View.GONE);
     }
 
     private void setResponseTimeView(OrderDetailData data) {
         LinearLayout timeLimitLayout = findViewById(R.id.time_limit_layout);
         TextView responseTime = findViewById(R.id.description_response_time);
-        if(data.getResponseTimeLimit() == null || data.getResponseTimeLimit().isEmpty()) {
+        if (data.getResponseTimeLimit() == null || data.getResponseTimeLimit().isEmpty()) {
             timeLimitLayout.setVisibility(View.GONE);
         } else responseTime.setText(data.getResponseTimeLimit());
     }
@@ -209,15 +217,15 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onError(String errorMessage) {
         NetworkErrorHelper.showEmptyState(this,
-                getMainScrollView(),
+                getMainView(),
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.fetchData(OrderDetailActivity.this,
-                        getExtraOrderId(),
-                        getExtraUserMode());
-            }
-        });
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.fetchData(OrderDetailActivity.this,
+                                getExtraOrderId(),
+                                getExtraUserMode());
+                    }
+                });
         NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
@@ -243,7 +251,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void showComplaintDialog(String shopName, String orderId) {
-        ComplaintDialog dialog = ComplaintDialog.createDialog(orderId,shopName);
+        ComplaintDialog dialog = ComplaintDialog.createDialog(orderId, shopName);
         dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
     }
 
@@ -259,12 +267,13 @@ public class OrderDetailActivity extends TActivity
                                         .replace("XXX",
                                                 orderData.getInvoiceUrl())
                         ).toString(),
-                        TkpdInboxRouter.TX_ASK_SELLER);
+                        TkpdInboxRouter.TX_ASK_SELLER, orderData.getShopLogo());
         startActivity(intent);
     }
 
     @Override
     public void onAskBuyer(OrderDetailData orderData) {
+        //TODO later change get Shop Logo with get buyer logo once available
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                 .getAskBuyerIntent(this,
                         orderData.getShopId(),
@@ -275,7 +284,7 @@ public class OrderDetailActivity extends TActivity
                                         .replace("XXX",
                                                 orderData.getInvoiceUrl())
                         ).toString(),
-                        TkpdInboxRouter.TX_ASK_BUYER);
+                        TkpdInboxRouter.TX_ASK_BUYER, orderData.getShopLogo());
         startActivity(intent);
     }
 
@@ -286,9 +295,20 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onRequestCancelOrder(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+    public void onOrderCancelled(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        finish();
+    }
 
+    @Override
+    public void onRequestCancelOrder(OrderDetailData data) {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            CancelOrderFragment cancelOrderFragment = CancelOrderFragment
+                    .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .add(R.id.main_view, cancelOrderFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
@@ -329,24 +349,34 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void showMainViewLoadingPage() {
         progressDialog.showDialog();
-        getMainScrollView().setVisibility(View.GONE);
+        getMainView().setVisibility(View.GONE);
     }
 
     @Override
     public void hideMainViewLoadingPage() {
         progressDialog.dismiss();
-        getMainScrollView().setVisibility(View.VISIBLE);
+        getMainView().setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onViewComplaint(String resoId) {
-        Intent intent =  InboxRouter.getDetailResCenterActivityIntent(this, resoId);
+        Intent intent = InboxRouter.getDetailResCenterActivityIntent(this, resoId);
         startActivity(intent);
+    }
+
+    @Override
+    public void showErrorSnackbar(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 
     @Override
@@ -365,11 +395,11 @@ public class OrderDetailActivity extends TActivity
     }
 
     private String getExtraOrderId() {
-        return getIntent().getStringExtra(EXTRA_ORDER_ID);
+        return getIntent().getExtras().getString(EXTRA_ORDER_ID);
     }
 
     private int getExtraUserMode() {
-        return getIntent().getIntExtra(EXTRA_ORDER_ID, 0);
+        return getIntent().getExtras().getInt(EXTRA_USER_MODE, 0);
     }
 
     @Override
@@ -384,7 +414,20 @@ public class OrderDetailActivity extends TActivity
         startActivityForResult(intent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
     }
 
-    private View getMainScrollView() {
-        return findViewById(R.id.main_scroll_view);
+    private View getMainView() {
+        return findViewById(R.id.main_view);
+    }
+
+    @Override
+    public void cancelOrder(String orderId, String notes) {
+        presenter.cancelOrder(this, orderId, notes);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
+            getFragmentManager().beginTransaction().remove(getFragmentManager()
+                    .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+        } else super.onBackPressed();
     }
 }

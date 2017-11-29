@@ -27,6 +27,8 @@ public interface OrderDetailPresenter {
 
     void processTrackOrder(Context context, OrderDetailData data);
 
+    void processRequestCancelOrder(Context context, OrderDetailData data);
+
     void processSeeAllHistories(Context context, OrderDetailData data);
 
     void processAskSeller(Context context, OrderDetailData data);
@@ -36,8 +38,6 @@ public interface OrderDetailPresenter {
     void processSellerConfirmShipping(Context context, OrderDetailData data);
 
     void processAskBuyer(Context context, OrderDetailData data);
-
-    void processRequestCancelOrder(Context context, OrderDetailData data);
 
     void processAcceptOrder(Context context, OrderDetailData data);
 
@@ -50,6 +50,8 @@ public interface OrderDetailPresenter {
     void onCancelSearch(Context context, OrderDetailData data);
 
     void processFinish(Context context, String orderId);
+
+    void cancelOrder(Context context, String orderId, String notes);
 
     void onDestroyed();
 

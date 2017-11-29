@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.apiservices.transaction.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import rx.Observable;
 public interface OrderDetailApi {
 
     @GET(TkpdBaseURL.Purchase.PATH_ORDER_DETAIL)
-    Observable<Response<String>> getOrderDetail(@QueryMap Map<String, Object> requestOrderDetailParams);
+    Observable<Response<TkpdResponse>> getOrderDetail(@QueryMap Map<String, Object> requestOrderDetailParams);
 
     @GET(TkpdBaseURL.Purchase.PATH_ORDER_HISTORY)
     Observable<Response<String>> getOrderHistory(@QueryMap Map<String, Object> requestOrderHistoryParams);

@@ -45,6 +45,15 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor{
                 .subscribe(subscriber));
     }
 
+    @Override
+    public void cancelOrder(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
+        compositeSubscription.add(orderDetailRepository.requestCancelOrder(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
 
     @Override
     public void onActivityClosed() {

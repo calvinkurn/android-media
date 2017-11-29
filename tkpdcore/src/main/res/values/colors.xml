@@ -105,4 +105,6 @@
     <color name="hint_search_view">#4D727272</color>
     <color name="devider">#c7c7c7</color>
     <color name="light_green">#f3fef3</color>
+
+    <color name="black_tooltip">#96000000</color>
 </resources>

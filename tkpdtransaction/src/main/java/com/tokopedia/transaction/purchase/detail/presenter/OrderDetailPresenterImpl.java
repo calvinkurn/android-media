@@ -80,6 +80,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void processRequestCancelOrder(Context context, OrderDetailData data) {
+        mainView.onRequestCancelOrder(data);
+    }
+
+    @Override
     public void processSeeAllHistories(Context context, OrderDetailData data) {
 
     }
@@ -105,11 +110,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void processRequestCancelOrder(Context context, OrderDetailData data) {
-        mainView.onRequestCancelOrder(data);
-    }
-
-    @Override
     public void processAcceptOrder(Context context, OrderDetailData data) {
         mainView.onAcceptOrder(data);
     }
@@ -132,6 +132,14 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     @Override
     public void onCancelSearch(Context context, OrderDetailData data) {
         mainView.onCancelSearchPeluang(data);
+    }
+
+    @Override
+    public void cancelOrder(Context context, String orderId, String notes) {
+        TKPDMapParam<String, String> cancelOrderParam = new TKPDMapParam<>();
+        cancelOrderParam.put("order_id", orderId);
+        cancelOrderParam.put("reason_cancel", notes);
+        orderDetailInteractor.cancelOrder(cancelOrderSubscriber(), cancelOrderParam);
     }
 
     @Override
@@ -177,7 +185,26 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
             @Override
             public void onError(Throwable e) {
+                mainView.showErrorSnackbar(e.getMessage());
+            }
 
+            @Override
+            public void onNext(String s) {
+                mainView.onOrderFinished(s);
+            }
+        };
+    }
+
+    private Subscriber<String> cancelOrderSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.showErrorSnackbar(e.getMessage());
             }
 
             @Override

@@ -2,22 +2,32 @@ package com.tokopedia.digital.tokocash.entity;
 
 import android.os.Parcel;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by nabillasabbaha on 8/23/17.
  */
 
 public class ActionHistoryEntity {
 
+    @SerializedName("title")
+    @Expose
     private String title;
-
+    @SerializedName("method")
+    @Expose
     private String method;
-
+    @SerializedName("url")
+    @Expose
     private String url;
-
+    @SerializedName("params")
+    @Expose
     private ParamsActionHistoryEntity params;
-
+    @SerializedName("name")
+    @Expose
     private String name;
-
+    @SerializedName("type")
+    @Expose
     private String type;
 
     public String getTitle() {

@@ -58,20 +58,20 @@ public class OrderDetailButtonLayout extends LinearLayout{
                                            OrderDetailData data) {
         ButtonData buttonData = data.getButtonData();
 
-        Button finishOrder = (Button)mainView.findViewById(R.id.finish_button);
+        Button finishOrder = mainView.findViewById(R.id.finish_button);
         finishOrder.setOnClickListener(onFinishButtonClicked(context, presenter, data));
         switchVisibilty(finishOrder, buttonData.getFinishOrderVisibility());
 
-        Button track = (Button)mainView.findViewById(R.id.track_button);
+        Button track = mainView.findViewById(R.id.track_button);
         track.setOnClickListener(onTrackButtonClicked(context, presenter, data));
         switchVisibilty(track, buttonData.getTrackVisibility());
 
-        Button askSellerButton = (Button)mainView.findViewById(R.id.ask_seller_button);
+        Button askSellerButton = mainView.findViewById(R.id.ask_seller_button);
         askSellerButton.setOnClickListener(onAskSeller(context, presenter, data));
         switchVisibilty(askSellerButton, buttonData.getAskSellerVisibility());
 
         Button complaint;
-        complaint = (Button) mainView.findViewById(R.id.complaint);
+        complaint = mainView.findViewById(R.id.complaint);
         complaint.setOnClickListener(onComplaint(context, presenter, data));
         switchVisibilty(complaint, buttonData.getComplaintVisibility());
 
@@ -80,18 +80,18 @@ public class OrderDetailButtonLayout extends LinearLayout{
     private void setSellerOrderDetailOption(Context context, OrderDetailPresenter presenter, OrderDetailData data) {
         ButtonData buttonData = data.getButtonData();
         Button acceptOrder;
-        acceptOrder = (Button) mainView.findViewById(R.id.accept_order);
+        acceptOrder = mainView.findViewById(R.id.accept_order);
         acceptOrder.setOnClickListener(onAcceptOrder(context, presenter, data));
         switchVisibilty(acceptOrder, buttonData.getAcceptOrderVisibility());
 
         Button confirmShipping;
-        confirmShipping = (Button) mainView.findViewById(R.id.confirm_shipping);
+        confirmShipping = mainView.findViewById(R.id.confirm_shipping);
         confirmShipping.setOnClickListener(onConfirmShipping(context, presenter, data));
         switchConfirmButtonMode(confirmShipping, buttonData.getConfirmShippingVisibility(),
                 buttonData.getChangeCourier());
 
         Button changeCourier;
-        changeCourier = (Button) mainView.findViewById(R.id.change_courier);
+        changeCourier = mainView.findViewById(R.id.change_courier);
         changeCourier.setOnClickListener(onChangeCourier(context, presenter, data));
         switchChangeCourierButtonColor(changeCourier,
                 buttonData.getAcceptOrderVisibility(),
@@ -99,36 +99,38 @@ public class OrderDetailButtonLayout extends LinearLayout{
         switchVisibilty(changeCourier, buttonData.getChangeCourier());
 
         Button requestPickup;
-        requestPickup = (Button) mainView.findViewById(R.id.request_pickup);
+        requestPickup = mainView.findViewById(R.id.request_pickup);
         requestPickup.setOnClickListener(onRequestPickup(context, presenter, data));
         switchVisibilty(requestPickup, buttonData.getRequestPickupVisibility());
 
         Button changeAwb;
-        changeAwb = (Button) mainView.findViewById(R.id.change_awb) ;
+        changeAwb = mainView.findViewById(R.id.change_awb);
         changeAwb.setOnClickListener(onChangeAwbClickedListener(context, presenter, data));
         switchVisibilty(changeAwb, buttonData.getChangeAwbVisibility());
 
         Button askBuyerButton;
-        askBuyerButton = (Button) mainView.findViewById(R.id.ask_buyer_button);
+        askBuyerButton = mainView.findViewById(R.id.ask_buyer_button);
         askBuyerButton.setOnClickListener(onAskBuyer(context, presenter, data));
         switchVisibilty(askBuyerButton, buttonData.getAskBuyerVisibility());
 
         Button rejectOrder;
-        rejectOrder = (Button) mainView.findViewById(R.id.reject_order_button);
+        rejectOrder = mainView.findViewById(R.id.reject_order_button);
         rejectOrder.setOnClickListener(onRejectOrder(context, presenter, data));
         switchVisibilty(rejectOrder, buttonData.getRejectOrderVisibility());
 
         Button requestCancel;
-        requestCancel = (Button) mainView.findViewById(R.id.request_cancel_button);
+        requestCancel = mainView.findViewById(R.id.request_cancel_button);
         requestCancel.setOnClickListener(onRequestCancellation(context, presenter, data));
-        switchVisibilty(requestCancel, buttonData.getRequestCancelVisibility());
+        switchVisibilty(requestCancel, 1);
+        //TODO release later
+        //switchVisibilty(requestCancel, buttonData.getRequestCancelVisibility());
 
         Button cancelChance;
-        cancelChance = (Button) mainView.findViewById(R.id.cancel_chance);
+        cancelChance = mainView.findViewById(R.id.cancel_chance);
         cancelChance.setOnClickListener(onCancelSearch(context, presenter, data));
         switchVisibilty(cancelChance, buttonData.getCancelPeluangVisibility());
 
-        Button viewComplaint = (Button)mainView.findViewById(R.id.view_complaint_button);
+        Button viewComplaint = mainView.findViewById(R.id.view_complaint_button);
         viewComplaint.setOnClickListener(onViewComplaintClicked(context, presenter, data));
         switchVisibilty(viewComplaint, buttonData.getViewComplaint());
     }

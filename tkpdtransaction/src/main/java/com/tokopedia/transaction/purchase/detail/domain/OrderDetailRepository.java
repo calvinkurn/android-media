@@ -5,6 +5,7 @@ import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
@@ -37,22 +38,24 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
     @Override
     public Observable<OrderDetailData> requestOrderDetailData(TKPDMapParam<String, Object> params) {
-        return service.getApi().getOrderDetail(params).map(new Func1<Response<String>, OrderDetailData>() {
-            @Override
-            public OrderDetailData call(Response<String> stringResponse) {
-                return mapper.generateOrderDetailModel(
-                        new Gson().fromJson(stringResponse.body(), OrderDetailResponse.class));
-            }
-        });
+        return service.getApi().getOrderDetail(params)
+                .map(new Func1<Response<TkpdResponse>, OrderDetailData>() {
+                    @Override
+                    public OrderDetailData call(Response<TkpdResponse> stringResponse) {
+                        validateData(stringResponse.body());
+                        OrderDetailResponse response = new Gson().fromJson(stringResponse.body().getStringData(),
+                                OrderDetailResponse.class);
+                        return mapper.generateOrderDetailModel(response);
+                    }
+                });
     }
 
     @Override
-    public Observable<OrderHistoryData> requestOrderHistoryData(TKPDMapParam<String, Object> params) {
-        return service.getApi().getOrderHistory(params).map(new Func1<Response<String>, OrderHistoryData>() {
+    public Observable<String> requestCancelOrder(TKPDMapParam<String, String> params) {
+        return orderActService.getApi().requestCancelOrder(params).map(new Func1<Response<TkpdResponse>, String>() {
             @Override
-            public OrderHistoryData call(Response<String> stringResponse) {
-                return mapper.getOrderHistoryData(
-                        new Gson().fromJson(stringResponse.body(),OrderHistoryResponse.class));
+            public String call(Response<TkpdResponse> tkpdResponseResponse) {
+                return getSuccessCancelOrder(tkpdResponseResponse);
             }
         });
     }
@@ -69,6 +72,18 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
     private String getConfirmDeliverMessage(Response<TkpdResponse> response) {
         return response.body().getStatusMessageJoined();
+    }
+
+    private String getSuccessCancelOrder(Response<TkpdResponse> response) {
+        return response.body().getStatusMessageJoined();
+    }
+
+    private void validateData(TkpdResponse response) {
+        if (response == null)
+            throw new ResponseRuntimeException("Terjadi Kesalahan");
+        else if(response.isError()) {
+            throw new ResponseRuntimeException(response.getErrorMessageJoined());
+        }
     }
 
 }

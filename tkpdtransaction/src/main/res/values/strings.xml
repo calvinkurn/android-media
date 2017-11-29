@@ -147,4 +147,6 @@
     <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
     <string name="button_order_detail_complaint">Komplain</string>
     <string name="button_order_detail_cancel_chance">Batalkan Peluang</string>
+    <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
+    <string name="label_explanation">Keterangan</string>
 </resources>

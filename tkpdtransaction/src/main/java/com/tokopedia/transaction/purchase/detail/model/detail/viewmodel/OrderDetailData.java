@@ -24,6 +24,8 @@ public class OrderDetailData {
 
     private String shopName;
 
+    private String shopLogo;
+
     private String buyerName;
 
     private String courierName;
@@ -122,6 +124,14 @@ public class OrderDetailData {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    public String getShopLogo() {
+        return shopLogo;
+    }
+
+    public void setShopLogo(String shopLogo) {
+        this.shopLogo = shopLogo;
     }
 
     public String getBuyerName() {
