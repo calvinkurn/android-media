@@ -13,11 +13,15 @@ import java.util.List;
 
 public class CartCourierPrices {
 
-    private static final int USE_INSURANCE = 1;
+    public static final int USE_INSURANCE = 1;
 
-    private static final int NO_INSURANCE = 2;
+    public static final int NO_INSURANCE = 2;
 
-    private static final int MUST_INSURANCE = 3;
+    public static final int MUST_INSURANCE = 3;
+
+    public static final int LOGISTIC_INSURANCE = 1;
+
+    public static final int TOKOPEDIA_INSURANCE = 2;
 
     private int cartIndex;
 
@@ -26,6 +30,10 @@ public class CartCourierPrices {
     private int insurancePrice = 0;
 
     private int insuranceMode = 0;
+
+    private int insuranceUsedType;
+
+    private String insuranceUsedInfo;
 
     private int additionFee = 0;
 
@@ -207,4 +215,21 @@ public class CartCourierPrices {
     public void setCartProductInsurances(List<Integer> cartProductInsurances) {
         this.cartProductInsurances = cartProductInsurances;
     }
+
+    public int getInsuranceUsedType() {
+        return insuranceUsedType;
+    }
+
+    public void setInsuranceUsedType(int insuranceUsedType) {
+        this.insuranceUsedType = insuranceUsedType;
+    }
+
+    public String getInsuranceUsedInfo() {
+        return insuranceUsedInfo;
+    }
+
+    public void setInsuranceUsedInfo(String insuranceUsedInfo) {
+        this.insuranceUsedInfo = insuranceUsedInfo;
+    }
+
 }

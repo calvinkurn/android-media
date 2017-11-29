@@ -106,6 +106,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private List<Attribute> mShipmentRateAttrs;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
     private SnackbarRetry snackbarRetry;
+    private String insuranceInfo;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -612,6 +613,17 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
+                if (product.getShipperProductName().equals(getString(R.string.atc_selection_shipment_package_info))) {
+                    imgInsuranceInfo.setVisibility(View.GONE);
+                } else {
+                    if (true) {
+//                    if (product.getInsuranceUsedInfo() != null && product.getInsuranceUsedInfo().length() > 0) {
+                        insuranceInfo = product.getInsuranceUsedInfo();
+                        imgInsuranceInfo.setVisibility(View.VISIBLE);
+                    } else {
+                        imgInsuranceInfo.setVisibility(View.GONE);
+                    }
+                }
             }
             if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
                 arrowMaxHour.setText(product.getMaxHoursId());
@@ -766,8 +778,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         BottomSheetView bottomSheetView = new BottomSheetView(this);
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
-                .setTitle("Asuransi Pengiriman")
-                .setBody("Ini adalah bottom sheet asuransi pengiriman")
+                .setTitle(getString(R.string.title_bottomsheet_insurance))
+                .setBody(insuranceInfo)
                 .setImg(R.drawable.ic_insurance_bottomsheet)
                 .build());
 

@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.google.gson.Gson;
@@ -792,6 +793,7 @@ public class CartPresenter implements ICartPresenter {
                 if (cartRatesData.getRatesResponse() == null) {
                     view.setCartError(cartRatesData.getRatesIndex());
                 } else {
+                    Log.e("CART_PRESENTER", cartRatesData.getRatesResponse());
                     Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
                             Rates.class);
                     CartCourierPrices cartCourierPrices = new CartCourierPrices();
@@ -856,6 +858,8 @@ public class CartPresenter implements ICartPresenter {
                     courierPrices.setCartSubtotal(false);
                 }
                 courierPrices.setKeroValue(keroShipmentServices.get(i));
+                courierPrices.setInsuranceUsedInfo(keroShipmentServices.get(i).getInsuranceUsedInfo());
+                courierPrices.setInsuranceUsedType(keroShipmentServices.get(i).getInsuranceUsedType());
             }
         }
 

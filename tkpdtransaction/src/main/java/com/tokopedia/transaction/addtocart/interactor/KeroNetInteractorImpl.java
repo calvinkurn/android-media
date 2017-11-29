@@ -2,6 +2,7 @@ package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
@@ -51,6 +52,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @Override
             public void onNext(Response<String> stringResponse) {
                 if(stringResponse.body() != null) {
+                    Log.e("RES_KNI_A", stringResponse.body());
                     Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
                     listener.onSuccess(rates.getData());
                 } else {
@@ -85,6 +87,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @Override
             public void onNext(Response<String> response) {
                 if (response.isSuccessful()) {
+                    Log.e("RES_KNI_B", response.body());
                     Rates rates = new Gson().fromJson(response.body(), Rates.class);
                     listener.onSuccess(rates.getData().getAttributes());
                 } else {

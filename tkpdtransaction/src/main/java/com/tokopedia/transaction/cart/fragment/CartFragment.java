@@ -201,6 +201,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private String totalLoyaltyPoint;
     private String donationValue;
 
+    private boolean hasLogisticInsurance;
     private boolean hasPromotion;
     private final String TOPADS_CART_SRC = "empty_cart";
 
@@ -708,6 +709,24 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void setCartSubTotal(CartCourierPrices cartCourierPrices) {
         cartItemAdapter.setRates(cartCourierPrices);
+        setInsuranceTacVisibility(cartCourierPrices);
+    }
+
+    private void setInsuranceTacVisibility(CartCourierPrices cartCourierPrices) {
+        if (!hasLogisticInsurance &&
+                (cartCourierPrices.getInsuranceMode() == CartCourierPrices.MUST_INSURANCE ||
+                        cartCourierPrices.getInsuranceMode() == CartCourierPrices.USE_INSURANCE)) {
+            if (cartCourierPrices.getInsuranceUsedType() == CartCourierPrices.TOKOPEDIA_INSURANCE) {
+                tvInsuranceTos.setVisibility(View.VISIBLE);
+            } else if (cartCourierPrices.getInsuranceUsedType() == CartCourierPrices.LOGISTIC_INSURANCE) {
+                tvInsuranceTos.setVisibility(View.GONE);
+                hasLogisticInsurance = true;
+            } else {
+                tvInsuranceTos.setVisibility(View.GONE);
+            }
+        } else {
+            tvInsuranceTos.setVisibility(View.GONE);
+        }
     }
 
     @Override
