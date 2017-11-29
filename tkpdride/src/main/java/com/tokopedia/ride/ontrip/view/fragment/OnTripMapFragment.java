@@ -986,6 +986,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideCancelPanel() {
+        isBackButtonHandleByFragment = false;
+
         //do not hide, layout is already hidden
         if (cancelPanelLayout.getVisibility() == View.GONE) {
             return;
