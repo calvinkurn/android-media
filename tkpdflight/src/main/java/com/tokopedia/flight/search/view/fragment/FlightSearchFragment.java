@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.DatePicker;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -87,6 +89,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
     private AirportCombineModelList airportCombineModelList;
     private FlightSearchAdapter flightSearchAdapter;
+    private SwipeToRefresh swipeToRefresh;
 
     public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);
@@ -189,7 +192,20 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         progressBar = (HorizontalProgressBar) view.findViewById(R.id.horizontal_progress_bar);
         setUpProgress();
         setUpBottomAction(view);
+        setUpSwipeRefresh(view);
         return view;
+    }
+
+    private void setUpSwipeRefresh(View view) {
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                hideLoading();
+                swipeToRefresh.setEnabled(false);
+                resetDateAndReload();
+            }
+        });
     }
 
     protected int getLayout() {
@@ -400,6 +416,17 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    protected void hideLoading() {
+        super.hideLoading();
+        hideSwipeRefreshLoad();
+    }
+
+    private void hideSwipeRefreshLoad(){
+        swipeToRefresh.setEnabled(true);
+        swipeToRefresh.setRefreshing(false);
+    }
+
+    @Override
     public void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB) {
         String depAirport = flightMetaDataDB.getDepartureAirport();
         String arrivalAirport = flightMetaDataDB.getArrivalAirport();
@@ -474,12 +501,22 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     private void resetDateAndReload(){
         // preserve the filter and sort option
-        // resetup the combination airport
+
+        // cancel all cloud progress, setupCombination airport, reset progress, hide filter, clear current data
+        flightSearchPresenter.detachView();
+
         onFlightSearchFragmentListener.changeDate(flightSearchPassDataViewModel);
         flightSearchStatisticModel = null;
+
         setUpCombinationAirport();
         progressBar.setVisibility(View.VISIBLE);
         progress = 0;
+        filterAndSortBottomAction.setVisibility(View.GONE);
+
+        flightSearchAdapter.clearData();
+        flightSearchAdapter.notifyDataSetChanged();
+
+        flightSearchPresenter.attachView(this);
         loadInitialData();
     }
 
@@ -491,7 +528,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     private int divideTo(int number, int pieces) {
-        return (int) ((number / pieces) + 0.5);
+        return (int) Math.ceil(((double) number / pieces));
     }
 
     @Override
