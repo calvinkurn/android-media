@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.presenter;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -70,6 +71,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     final static String USER = "Pengguna";
     final static String ADMIN = "Administrator";
     final static String SELLER = "shop";
+    private CountDownTimer countDownTimer;
 
     @Inject
     ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
@@ -94,35 +96,46 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
         listener = new ChatWebSocketListenerImpl(getView().getInterface());
         isFirstTime = true;
+
+        countDownTimer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                createWebSocket();
+            }
+        };
+
         createWebSocket();
     }
 
     @Override
     public void detachView() {
         super.detachView();
+        countDownTimer.cancel();
         getReplyListUseCase.unsubscribe();
         replyMessageUseCase.unsubscribe();
     }
 
     public void createWebSocket() {
-//        if(attempt > 5) {
-//        getView().notifyConnectionWebSocket();
-//        }else {
-        try {
-            Request request = new Request.Builder().url(magicString)
-                    .header("Origin", TkpdBaseURL.WEB_DOMAIN)
-                    .build();
-            ws = client.newWebSocket(request, listener);
-            attempt++;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Request request = new Request.Builder().url(magicString)
+                .header("Origin", TkpdBaseURL.WEB_DOMAIN)
+                .build();
+        ws = client.newWebSocket(request, listener);
+        attempt++;
+    }
+
+    public void recreateWebSocket() {
+        countDownTimer.start();
     }
 
 
     @Override
     public void onGoToDetail(String id, String role) {
-        if (!role.equals(ADMIN.toLowerCase())) {
+        if (role!=null && id!=null &&!role.equals(ADMIN.toLowerCase())) {
             if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(id), "");

@@ -1,15 +1,11 @@
 package com.tokopedia.core.drawer2.view.subscriber;
 
-import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-
-import java.net.UnknownHostException;
 
 import rx.Subscriber;
 

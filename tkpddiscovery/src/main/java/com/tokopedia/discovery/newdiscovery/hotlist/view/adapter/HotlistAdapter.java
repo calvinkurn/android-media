@@ -135,7 +135,7 @@ public class HotlistAdapter extends SearchSectionGeneralAdapter {
     }
 
     public boolean hasNextPage() {
-        return getStartFrom() < getTotalData();
+        return getStartFrom() <= getTotalData();
     }
 
     public void incrementStart() {

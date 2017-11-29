@@ -49,4 +49,6 @@ public interface ImageGalleryView extends MultiSelectInterface {
     void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList);
 
     void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList);
+
+    boolean isNeedPermission();
 }

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -48,6 +49,7 @@ import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.onboarding.OnboardingActivity;
@@ -177,6 +179,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
+        checkIsHaveApplinkComeFromDeeplink(getIntent());
     }
 
     @Override
@@ -260,6 +263,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         t.start();
 
         checkAppUpdate();
+        checkIsHaveApplinkComeFromDeeplink(getIntent());
     }
 
     @Override
@@ -317,7 +321,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             @Override
             public void onSuccessGetUserAttr(UserAttribute.Data data) {
-                if(data!=null)
+                if (data != null)
                     TrackingUtils.setMoEUserAttributes(data);
             }
         };
@@ -541,6 +545,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onResume() {
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
+        FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
             content.clear();
@@ -736,9 +741,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
-                new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
-                        .getAlertDialog().show();
-                UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
+                if (!isPausing()){
+                    new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
+                            .getAlertDialog().show();
+                    UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
+                }
             }
 
             @Override
@@ -755,9 +762,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
         if (intent.getBooleanExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
-            if (getApplication() instanceof TkpdCoreRouter) {
+            if (getApplication() instanceof TkpdCoreRouter && !isPausing()) {
                 ((TkpdCoreRouter) getApplication()).getApplinkUnsupported(ParentIndexHome.this).showAndCheckApplinkUnsupported();
             }
+        }
+    }
+
+    private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
+        if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
+            String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
+            if (!isPausing())
+            ((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
         }
     }
 

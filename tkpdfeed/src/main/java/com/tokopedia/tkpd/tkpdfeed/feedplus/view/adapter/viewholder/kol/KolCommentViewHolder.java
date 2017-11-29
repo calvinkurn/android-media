@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -54,7 +55,9 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProfile(element.getUrl());
+                if (!TextUtils.isEmpty(element.getUrl())) {
+                    viewListener.onGoToProfile(element.getUrl());
+                }
             }
         });
 
