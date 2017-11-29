@@ -111,5 +111,6 @@ public interface FlightBookingContract {
 
         void onFinishTransactionTimeReached();
 
+        void onPause();
     }
 }

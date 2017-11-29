@@ -8,4 +8,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
 public interface FlightBookingPhoneCodePresenter extends CustomerPresenter<FlightBookingPhoneCodeView> {
     void getPhoneCodeList();
+
+    void getPhoneCodeList(String text);
+
+    void onDestroyView();
 }
