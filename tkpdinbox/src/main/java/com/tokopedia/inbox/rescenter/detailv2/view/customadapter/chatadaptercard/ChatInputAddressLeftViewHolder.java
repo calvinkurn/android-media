@@ -47,7 +47,10 @@ public class ChatInputAddressLeftViewHolder extends AbstractViewHolder<ChatInput
 
     @Override
     public void bind(ChatInputAddressLeftViewModel element) {
-        tvTitle.setText(element.getConversation().getMessage());
+        tvTitle.setText(
+                String.format(
+                        MainApplication.getAppContext().getResources().getString(R.string.string_common_chat_title),
+                        element.getConversation().getAction().getTitle()));
         ConversationAddressDomain addressDomain = element.getConversation().getAddress();
         tvMessage.setText(String.format(element.getAddressFormat(),
                 addressDomain.getReceiver(),
@@ -56,7 +59,7 @@ public class ChatInputAddressLeftViewHolder extends AbstractViewHolder<ChatInput
                 addressDomain.getCity(),
                 addressDomain.getPostalCode(),
                 addressDomain.getProvince(),
-                addressDomain.getPostalCode()));
+                addressDomain.getPhone()));
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
 

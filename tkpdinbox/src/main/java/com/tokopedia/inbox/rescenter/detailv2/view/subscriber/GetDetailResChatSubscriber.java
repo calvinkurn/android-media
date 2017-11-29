@@ -109,12 +109,14 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                     items.add(new ChatSystemRightViewModel(
                             shopDomain,
                             customerDomain,
-                            conversationDomain));
+                            conversationDomain,
+                            actionType));
                 } else {
                     items.add(new ChatSystemLeftViewModel(
                             shopDomain,
                             customerDomain,
                             conversationDomain,
+                            actionType,
                             isShowTitle));
                 }
             } else if (actionType.equals(ACTION_RESET)) {

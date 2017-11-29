@@ -8,19 +8,9 @@ import android.os.Parcelable;
  */
 
 public class DetailData implements Parcelable {
-    public static final Creator<DetailData> CREATOR = new Creator<DetailData>() {
-        @Override
-        public DetailData createFromParcel(Parcel source) {
-            return new DetailData(source);
-        }
-
-        @Override
-        public DetailData[] newArray(int size) {
-            return new DetailData[size];
-        }
-    };
     private String awbNumber;
     private String complaintDate;
+    private String complaintDateTimestamp;
     private String invoice;
     private String shopID;
     private String shopName;
@@ -36,24 +26,6 @@ public class DetailData implements Parcelable {
     private boolean canAskHelp;
 
     public DetailData() {
-    }
-
-    protected DetailData(Parcel in) {
-        this.awbNumber = in.readString();
-        this.complaintDate = in.readString();
-        this.invoice = in.readString();
-        this.shopID = in.readString();
-        this.shopName = in.readString();
-        this.responseDeadline = in.readString();
-        this.deadlineVisibility = in.readByte() != 0;
-        this.buyerID = in.readString();
-        this.buyerName = in.readString();
-        this.invoiceUrl = in.readString();
-        this.orderID = in.readString();
-        this.received = in.readByte() != 0;
-        this.cancel = in.readByte() != 0;
-        this.finish = in.readByte() != 0;
-        this.canAskHelp = in.readByte() != 0;
     }
 
     public boolean isCanAskHelp() {
@@ -102,6 +74,14 @@ public class DetailData implements Parcelable {
 
     public void setResponseDeadline(String responseDeadline) {
         this.responseDeadline = responseDeadline;
+    }
+
+    public String getComplaintDateTimestamp() {
+        return complaintDateTimestamp;
+    }
+
+    public void setComplaintDateTimestamp(String complaintDateTimestamp) {
+        this.complaintDateTimestamp = complaintDateTimestamp;
     }
 
     public boolean isDeadlineVisibility() {
@@ -185,6 +165,7 @@ public class DetailData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.awbNumber);
         dest.writeString(this.complaintDate);
+        dest.writeString(this.complaintDateTimestamp);
         dest.writeString(this.invoice);
         dest.writeString(this.shopID);
         dest.writeString(this.shopName);
@@ -199,4 +180,35 @@ public class DetailData implements Parcelable {
         dest.writeByte(this.finish ? (byte) 1 : (byte) 0);
         dest.writeByte(this.canAskHelp ? (byte) 1 : (byte) 0);
     }
+
+    protected DetailData(Parcel in) {
+        this.awbNumber = in.readString();
+        this.complaintDate = in.readString();
+        this.complaintDateTimestamp = in.readString();
+        this.invoice = in.readString();
+        this.shopID = in.readString();
+        this.shopName = in.readString();
+        this.responseDeadline = in.readString();
+        this.deadlineVisibility = in.readByte() != 0;
+        this.buyerID = in.readString();
+        this.buyerName = in.readString();
+        this.invoiceUrl = in.readString();
+        this.orderID = in.readString();
+        this.received = in.readByte() != 0;
+        this.cancel = in.readByte() != 0;
+        this.finish = in.readByte() != 0;
+        this.canAskHelp = in.readByte() != 0;
+    }
+
+    public static final Creator<DetailData> CREATOR = new Creator<DetailData>() {
+        @Override
+        public DetailData createFromParcel(Parcel source) {
+            return new DetailData(source);
+        }
+
+        @Override
+        public DetailData[] newArray(int size) {
+            return new DetailData[size];
+        }
+    };
 }

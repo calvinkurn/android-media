@@ -48,7 +48,7 @@ public class ChatRightViewHolder extends AbstractViewHolder<ChatRightViewModel> 
         } else {
             rvAttachment.setVisibility(View.VISIBLE);
             adapter = new ChatProveAdapter(itemView.getContext(), element.getConversation().getAttachment());
-            rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+            rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvAttachment.setAdapter(adapter);
         }
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());

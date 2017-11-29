@@ -15,11 +15,13 @@ public class ChatSystemRightViewModel implements Visitable<DetailChatTypeFactory
     private ShopDomain shop;
     private CustomerDomain customer;
     private ConversationDomain conversation;
+    private String actionType;
 
-    public ChatSystemRightViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation) {
+    public ChatSystemRightViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, String actionType) {
         this.shop = shop;
         this.customer = customer;
         this.conversation = conversation;
+        this.actionType = actionType;
     }
 
     public ShopDomain getShop() {
@@ -44,6 +46,14 @@ public class ChatSystemRightViewModel implements Visitable<DetailChatTypeFactory
 
     public void setConversation(ConversationDomain conversation) {
         this.conversation = conversation;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
     }
 
     @Override

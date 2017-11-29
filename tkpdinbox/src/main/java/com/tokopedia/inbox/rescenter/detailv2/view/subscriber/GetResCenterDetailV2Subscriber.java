@@ -264,6 +264,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setBuyerID(String.valueOf(customerData.getId()));
         data.setBuyerName(customerData.getName());
         data.setComplaintDate(resolutionData.getCreateTimeStr());
+        data.setComplaintDateTimestamp(resolutionData.getCreateTime());
         data.setInvoice(orderData.getInvoice().getRefNum());
         data.setInvoiceUrl(orderData.getInvoice().getUrl());
         data.setResponseDeadline(resolutionData.getExpireTimeStr());
@@ -281,6 +282,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         AwbData awbData = new AwbData();
         awbData.setShipmentID(String.valueOf(userAwbData.getShipping().getId()));
         awbData.setShipmentRef(userAwbData.getAwb());
+        awbData.setAwbDateTimestamp(userAwbData.getCreateTime());
         awbData.setAwbDate(userAwbData.getCreateTimeStr());
         awbData.setAttachments(mappingAwbAttachments(userAwbData.getAttachments()));
         return awbData;
@@ -303,6 +305,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         AddressData addressData = sellerAddressData.getAddress();
         addressReturData.setAddressID(String.valueOf(addressData.getAddressId()));
         addressReturData.setAddressReturDate(sellerAddressData.getCreateTimeStr());
+        addressReturData.setAddressReturDateTimestamp(sellerAddressData.getCreateTime());
         String addressTextBuilder = "<b>" + addressData.getReceiver() + "</b>" + "<br>" +
                 addressData.getAddress() + "<br>" +
                 addressData.getDistrict() + ", " + addressData.getCity() + "<br>" +

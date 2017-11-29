@@ -50,7 +50,10 @@ public class ChatActionResetLeftViewHolder extends AbstractViewHolder<ChatAction
     @Override
     public void bind(ChatActionResetLeftViewModel element) {
         if (element.getConversation().getAction().getTitle() != null)
-            tvTitle.setText(MethodChecker.fromHtml(element.getConversation().getAction().getTitle()));
+            tvTitle.setText(
+                    String.format(
+                            MainApplication.getAppContext().getResources().getString(R.string.string_common_chat_title),
+                            element.getConversation().getAction().getTitle()));
         if (element.getConversation().getSolution().getName() != null)
             tvSolution.setText(MethodChecker.fromHtml(element.getConversation().getSolution().getName()));
         tvReason.setText(MethodChecker.fromHtml(element.getConversation().getMessage()));

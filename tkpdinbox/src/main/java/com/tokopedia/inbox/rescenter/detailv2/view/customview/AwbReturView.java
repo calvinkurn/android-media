@@ -78,8 +78,8 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     }
 
     private String generateInformationText(AwbData data) {
-        return getContext().getString(R.string.template_awb_additional_text, formatDate(data
-                .getAwbDate()));
+        return getContext().getString(R.string.template_awb_additional_text,
+                formatDate(data.getAwbDateTimestamp()));
     }
 
     private String formatDate(String awbDate) {

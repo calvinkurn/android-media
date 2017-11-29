@@ -55,7 +55,9 @@ public class ChatAwbLeftViewHolder extends AbstractViewHolder<ChatAwbLeftViewMod
 
     @Override
     public void bind(ChatAwbLeftViewModel element) {
-        tvTitle.setText(MethodChecker.fromHtml(element.getConversation().getMessage()));
+        tvTitle.setText(String.format(
+                        MainApplication.getAppContext().getResources().getString(R.string.string_common_chat_title),
+                        element.getConversation().getAction().getTitle()));
         if (element.getConversation().getAttachment() == null || element.getConversation().getAttachment().size() == 0) {
             rvAttachment.setVisibility(View.GONE);
             tvTitleAttachment.setVisibility(View.GONE);

@@ -185,16 +185,19 @@ yang ditemukan</string>
     <string name="string_get_help">Minta Bantuan</string>
 
     <!--chat bubble-->
+    <string name="string_buyer_problem2">Kendala:</string>
     <string name="string_buyer_solution2">Solusi dari Pembeli:</string>
     <string name="string_buyer_prove">Bukti:</string>
     <string name="string_buyer_text">Keterangan:</string>
-    <string name="string_complaint_product">Produk yang Dikomplain:</string>
+    <string name="string_complaint_product">Produk yang dikomplain:</string>
     <string name="string_see_all_product">Lihat Semua Produk</string>
     <string name="string_chat_track_awb">Lacak Paket</string>
     <string name="string_chat_edit_awb">Ubah Resi</string>
     <string name="string_chat_edit_address">Ubah Alamat</string>
     <string name="string_seller_choice">Penjual dapat memilih untuk:</string>
-    <string name="string_complaint_title">Komplain untuk <b>$store_name</b> telah dibuat.</string>
+    <string name="string_complaint_title">Komplain untuk $store_name telah dibuat.</string>
+    <string name="string_complaint_title1">Komplain untuk</string>
+    <string name="string_complaint_title2">telah dibuat.</string>
     <string name="string_complaint_title_identifier">$store_name</string>
     <string name="string_tokopedia_system">Sistem Tokopedia</string>
     <string name="string_tokopedia">Toped</string>
@@ -216,6 +219,7 @@ yang ditemukan</string>
     <string name="string_awb_attachment">Lampiran:</string>
     <string name="string_reason">Alasan:</string>
     <string name="string_awb_format">Nomor Resi: %1$s (%2$s)</string>
+    <string name="string_common_chat_title">%1$s:</string>
 
     <!--Track Shipping-->
     <string name="title_track_shipping">Lacak</string>

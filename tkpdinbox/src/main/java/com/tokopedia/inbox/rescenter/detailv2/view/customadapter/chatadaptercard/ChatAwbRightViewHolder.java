@@ -47,8 +47,11 @@ public class ChatAwbRightViewHolder extends AbstractViewHolder<ChatAwbRightViewM
 
     @Override
     public void bind(ChatAwbRightViewModel element) {
-        if (element.getConversation().getMessage() != null) {
-            tvTitle.setText(MethodChecker.fromHtml(element.getConversation().getMessage()));
+        if (element.getConversation().getAction().getTitle() != null) {
+            tvTitle.setText(
+                String.format(
+                        MainApplication.getAppContext().getResources().getString(R.string.string_common_chat_title),
+                        element.getConversation().getAction().getTitle()));
         }
         if (element.getConversation().getShippingDetail() != null) {
             tvMessage.setText(String.format(

@@ -97,6 +97,9 @@ public class DetailResChatFragment
     private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 890;
     private static final int REQUEST_EDIT_ADDRESS = 901;
 
+    public static final int STATUS_FINISHED = 500;
+    public static final int STATUS_CANCEL = 0;
+
     public static final int ACTION_BY_USER = 1;
     public static final int ACTION_BY_SELLER = 2;
     public static final int ACTION_BY_ADMIN = 3;
@@ -466,11 +469,7 @@ public class DetailResChatFragment
     }
 
     private void scrollChatToBottom(boolean isInitChat) {
-        if (isInitChat) {
-            rvChat.scrollToPosition(chatAdapter.getItemCount() - 1);
-        } else {
-            rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-        }
+        rvChat.scrollToPosition(chatAdapter.getItemCount() - 1);
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
@@ -559,6 +558,10 @@ public class DetailResChatFragment
     public void successGetConversation(DetailResChatDomain detailResChatDomain) {
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
+        etChat.setEnabled(!(detailResChatDomain.getResolution().getStatus() == STATUS_CANCEL
+                || detailResChatDomain.getResolution().getStatus() == STATUS_FINISHED));
+        ivSend.setEnabled(!(detailResChatDomain.getResolution().getStatus() == STATUS_CANCEL
+                || detailResChatDomain.getResolution().getStatus() == STATUS_FINISHED));
     }
 
     @Override

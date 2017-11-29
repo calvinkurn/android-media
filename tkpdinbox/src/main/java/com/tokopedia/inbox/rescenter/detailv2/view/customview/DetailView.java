@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -79,7 +80,7 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         boolean isSeller = SessionHandler.getLoginID(getContext())
                 .equals(data.getBuyerID());
         textAwbNumber.setText(data.getAwbNumber());
-        textComplaintDate.setText(data.getComplaintDate());
+        textComplaintDate.setText(DateFormatUtils.formatDateForResoChatV2(data.getComplaintDateTimestamp()));
         textCustomerName.setText(data.getBuyerName());
         textInvoice.setText(data.getInvoice());
         textShopName.setText(data.getShopName());

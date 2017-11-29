@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
@@ -43,7 +44,10 @@ public class ChatInputAddressRightViewHolder extends AbstractViewHolder<ChatInpu
 
     @Override
     public void bind(final ChatInputAddressRightViewModel element) {
-        tvTitle.setText(element.getConversation().getMessage());
+        tvTitle.setText(
+                String.format(
+                        MainApplication.getAppContext().getResources().getString(R.string.string_common_chat_title),
+                        element.getConversation().getAction().getTitle()));
         final ConversationAddressDomain addressDomain = element.getConversation().getAddress();
         tvMessage.setText(String.format(element.getAddressFormat(),
                 addressDomain.getReceiver(),
@@ -52,7 +56,7 @@ public class ChatInputAddressRightViewHolder extends AbstractViewHolder<ChatInpu
                 addressDomain.getCity(),
                 addressDomain.getPostalCode(),
                 addressDomain.getProvince(),
-                addressDomain.getPostalCode()));
+                addressDomain.getPhone()));
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
         ffChangeAddress.setVisibility(element.getConversation().getButton().getEditAddress() == 1 ?

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -32,24 +33,28 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
 
     DetailResChatFragmentListener.View mainView;
     View layoutTitle, layoutDate1, layoutDate2, layoutDate3;
-    TextView tvTitle, tvBuyerSolution, tvBuyerText, tvSellerChoice, tvUserTitle, tvUsername, tvDate1, tvDate2, tvDate3;
+    TextView tvTitle, tvBuyerProblem, tvBuyerSolution, tvBuyerText, tvProve, tvSellerChoice, tvUserTitle, tvUsername, tvDate1, tvDate2, tvDate3;
     RecyclerView rvProve, rvProduct;
     Button btnSeeAllProduct;
     ChatProveAdapter proveAdapter;
     ChatProductAdapter productAdapter;
     FrameLayout flSeeAllProducts;
+    LinearLayout ffBubble2;
 
     public ChatCreateLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
         this.mainView = mainView;
         tvTitle = itemView.findViewById(R.id.tv_create_title);
+        tvBuyerProblem = itemView.findViewById(R.id.tv_buyer_problem);
         tvBuyerSolution = itemView.findViewById(R.id.tv_buyer_solution);
         tvBuyerText = itemView.findViewById(R.id.tv_buyer_text);
         tvSellerChoice = itemView.findViewById(R.id.tv_seller_choice);
+        tvProve = itemView.findViewById(R.id.tv_prove);
         rvProve = itemView.findViewById(R.id.rv_prove);
         rvProduct = itemView.findViewById(R.id.rv_complained_product);
         btnSeeAllProduct = itemView.findViewById(R.id.btn_see_all_product);
         flSeeAllProducts = itemView.findViewById(R.id.fl_see_all_product);
+        ffBubble2 = itemView.findViewById(R.id.ff_bubble_left_2);
 
         layoutTitle = itemView.findViewById(R.id.layout_title);
         layoutDate1 = itemView.findViewById(R.id.layout_date_1);
@@ -66,10 +71,11 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
     @Override
     public void bind(final ChatCreateLeftViewModel element) {
         final Context context = itemView.getContext();
-        tvTitle.setText(context.getResources().getString(R.string.string_complaint_title)
-                .replace(
-                        context.getResources().getString(R.string.string_complaint_title_identifier),
-                        element.getShopDomain().getName()));
+        tvTitle.setText(MethodChecker.fromHtml(
+                context.getResources().getString(R.string.string_complaint_title)
+                        .replace(context.getResources().getString(R.string.string_complaint_title_identifier),
+                                buildComplaintStoreName(element.getShopDomain().getName()))));
+        tvBuyerProblem.setText(element.getConversationDomain().getTrouble().getString());
         tvBuyerSolution.setText(element.getConversationDomain().getSolution().getName());
         tvBuyerText.setText(MethodChecker.fromHtml(element.getConversationDomain().getMessage()));
 
@@ -92,15 +98,29 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
                 mainView.intentToSeeAllProducts();
             }
         });
+        if (element.getConversationDomain().getAttachment() != null && element.getConversationDomain().getAttachment().size() != 0) {
+            rvProve.setVisibility(View.VISIBLE);
+            tvProve.setVisibility(View.VISIBLE);
+            rvProve.setLayoutManager(new LinearLayoutManager(context));
+            proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
+            rvProve.setAdapter(proveAdapter);
+        } else {
+            rvProve.setVisibility(View.GONE);
+            tvProve.setVisibility(View.GONE);
+        }
+        if (element.getConversationDomain().getProduct() != null && element.getConversationDomain().getProduct().size() != 0) {
+            ffBubble2.setVisibility(View.VISIBLE);
+            rvProduct.setLayoutManager(new GridLayoutManager(context, COUNT_MAX_PRODUCT));
+            productAdapter = new ChatProductAdapter(context,
+                    element.getConversationDomain().getProduct(),
+                    COUNT_MAX_PRODUCT);
+            rvProduct.setAdapter(productAdapter);
+        } else {
+            ffBubble2.setVisibility(View.GONE);
+        }
+    }
 
-        rvProve.setLayoutManager(new LinearLayoutManager(context));
-        proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
-        rvProve.setAdapter(proveAdapter);
-
-        rvProduct.setLayoutManager(new GridLayoutManager(context, COUNT_MAX_PRODUCT));
-        productAdapter = new ChatProductAdapter(context,
-                element.getConversationDomain().getProduct(),
-                COUNT_MAX_PRODUCT);
-        rvProduct.setAdapter(productAdapter);
+    private String buildComplaintStoreName(String shopName) {
+        return "<b>" + shopName + "</b>";
     }
 }

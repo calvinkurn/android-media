@@ -8,30 +8,13 @@ import android.os.Parcelable;
  */
 
 public class AddressReturData implements Parcelable {
-    public static final Creator<AddressReturData> CREATOR = new Creator<AddressReturData>() {
-        @Override
-        public AddressReturData createFromParcel(Parcel source) {
-            return new AddressReturData(source);
-        }
-
-        @Override
-        public AddressReturData[] newArray(int size) {
-            return new AddressReturData[size];
-        }
-    };
     private String addressReturDate;
+    private String addressReturDateTimestamp;
     private String addressText;
     private String addressID;
     private String conversationID;
 
     public AddressReturData() {
-    }
-
-    protected AddressReturData(Parcel in) {
-        this.addressReturDate = in.readString();
-        this.addressText = in.readString();
-        this.addressID = in.readString();
-        this.conversationID = in.readString();
     }
 
     public String getAddressReturDate() {
@@ -40,6 +23,14 @@ public class AddressReturData implements Parcelable {
 
     public void setAddressReturDate(String addressReturDate) {
         this.addressReturDate = addressReturDate;
+    }
+
+    public String getAddressReturDateTimestamp() {
+        return addressReturDateTimestamp;
+    }
+
+    public void setAddressReturDateTimestamp(String addressReturDateTimestamp) {
+        this.addressReturDateTimestamp = addressReturDateTimestamp;
     }
 
     public String getAddressText() {
@@ -74,8 +65,29 @@ public class AddressReturData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.addressReturDate);
+        dest.writeString(this.addressReturDateTimestamp);
         dest.writeString(this.addressText);
         dest.writeString(this.addressID);
         dest.writeString(this.conversationID);
     }
+
+    protected AddressReturData(Parcel in) {
+        this.addressReturDate = in.readString();
+        this.addressReturDateTimestamp = in.readString();
+        this.addressText = in.readString();
+        this.addressID = in.readString();
+        this.conversationID = in.readString();
+    }
+
+    public static final Creator<AddressReturData> CREATOR = new Creator<AddressReturData>() {
+        @Override
+        public AddressReturData createFromParcel(Parcel source) {
+            return new AddressReturData(source);
+        }
+
+        @Override
+        public AddressReturData[] newArray(int size) {
+            return new AddressReturData[size];
+        }
+    };
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -30,7 +32,8 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
 
     DetailResChatFragmentListener.View mainView;
     View layoutDate, layoutTitle;
-    TextView tvMessage, tvDate, tvUserTitle, tvUsername, tvTitle;
+    TextView tvMessage, tvDate, tvTitle, tvReasonTitle, tvReason, tvAttachment, tvUserTitle, tvUsername;
+    RecyclerView rvAttachment;
     ChatProveAdapter adapter;
 
     public ChatSystemLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
@@ -43,12 +46,19 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
         tvUsername = (TextView) layoutTitle.findViewById(R.id.tv_username);
         layoutDate = itemView.findViewById(R.id.layout_date);
         tvDate = (TextView) layoutDate.findViewById(R.id.tv_date);
+        tvReasonTitle = itemView.findViewById(R.id.tv_reason_title);
+        tvReason = itemView.findViewById(R.id.tv_reason);
+        tvAttachment = itemView.findViewById(R.id.tv_attachment);
+        rvAttachment = itemView.findViewById(R.id.rv_attachment);
     }
 
     @Override
     public void bind(ChatSystemLeftViewModel element) {
         if (element.getConversation().getAction().getTitle() != null)
-            tvTitle.setText(MethodChecker.fromHtml(element.getConversation().getAction().getTitle()));
+            tvTitle.setText(
+                    String.format(
+                            MainApplication.getAppContext().getResources().getString(R.string.string_common_chat_title),
+                            element.getConversation().getAction().getTitle()));
         if (element.getConversation().getSolution().getName() != null)
             tvMessage.setText(MethodChecker.fromHtml(element.getConversation().getSolution().getName()));
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
@@ -68,6 +78,28 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
             tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_buyer_title));
             tvUsername.setText(element.getCustomer().getName());
             ChatTitleColorUtil.buyerColorTitle(tvUserTitle, tvUsername);
+        }
+        if (element.getConversation().getAttachment() == null || element.getConversation().getAttachment().size() == 0) {
+            rvAttachment.setVisibility(View.GONE);
+            tvAttachment.setVisibility(View.GONE);
+        } else {
+            rvAttachment.setVisibility(View.VISIBLE);
+            tvAttachment.setVisibility(View.VISIBLE);
+            rvAttachment.setLayoutManager(new LinearLayoutManager(
+                    itemView.getContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false));
+            adapter = new ChatProveAdapter(MainApplication.getAppContext(), element.getConversation().getAttachment());
+            rvAttachment.setAdapter(adapter);
+        }
+
+        if (!element.getConversation().getMessage().isEmpty()) {
+            tvReason.setVisibility(View.VISIBLE);
+            tvReasonTitle.setVisibility(View.VISIBLE);
+            tvReason.setText(element.getConversation().getMessage());
+        } else {
+            tvReason.setVisibility(View.GONE);
+            tvReasonTitle.setVisibility(View.GONE);
         }
     }
 

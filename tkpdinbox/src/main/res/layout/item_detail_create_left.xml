@@ -29,7 +29,6 @@
             android:padding="@dimen/padding_small">
 
             <LinearLayout
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -39,8 +38,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs"
                     context:text="title"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@string/string_buyer_problem2"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_buyer_problem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:textColor="@color/black_54"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -62,22 +76,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:text="@string/string_buyer_prove"
-                    android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs"
-                    android:textStyle="bold"/>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_prove"
-                    android:layout_width="wrap_content"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:visibility="visible"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
                     android:text="@string/string_buyer_text"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/fontvs"
@@ -89,6 +87,23 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:textColor="@color/black_54"/>
+
+                <TextView
+                    android:id="@+id/tv_prove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@string/string_buyer_prove"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
+                    android:textStyle="bold"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_prove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:visibility="visible"/>
             </LinearLayout>
 
         </FrameLayout>
@@ -155,6 +170,7 @@
             layout="@layout/item_detail_chat_date"/>
 
         <FrameLayout
+            android:visibility="gone"
             android:id="@+id/ff_bubble_left_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -188,6 +204,7 @@
         </FrameLayout>
 
         <include
+            android:visibility="gone"
             android:id="@+id/layout_date_3"
             layout="@layout/item_detail_chat_date"/>
     </LinearLayout>

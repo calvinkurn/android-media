@@ -11,30 +11,13 @@ import java.util.List;
 
 public class AwbData implements Parcelable {
 
-    public static final Creator<AwbData> CREATOR = new Creator<AwbData>() {
-        @Override
-        public AwbData createFromParcel(Parcel source) {
-            return new AwbData(source);
-        }
-
-        @Override
-        public AwbData[] newArray(int size) {
-            return new AwbData[size];
-        }
-    };
     private String shipmentRef;
     private String awbDate;
+    private String awbDateTimestamp;
     private String shipmentID;
     private List<AwbAttachmentViewModel> attachments;
 
     public AwbData() {
-    }
-
-    protected AwbData(Parcel in) {
-        this.shipmentRef = in.readString();
-        this.awbDate = in.readString();
-        this.shipmentID = in.readString();
-        this.attachments = in.createTypedArrayList(AwbAttachmentViewModel.CREATOR);
     }
 
     public String getShipmentRef() {
@@ -69,6 +52,14 @@ public class AwbData implements Parcelable {
         this.attachments = attachment;
     }
 
+    public String getAwbDateTimestamp() {
+        return awbDateTimestamp;
+    }
+
+    public void setAwbDateTimestamp(String awbDateTimestamp) {
+        this.awbDateTimestamp = awbDateTimestamp;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -78,7 +69,28 @@ public class AwbData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.shipmentRef);
         dest.writeString(this.awbDate);
+        dest.writeString(this.awbDateTimestamp);
         dest.writeString(this.shipmentID);
         dest.writeTypedList(this.attachments);
     }
+
+    protected AwbData(Parcel in) {
+        this.shipmentRef = in.readString();
+        this.awbDate = in.readString();
+        this.awbDateTimestamp = in.readString();
+        this.shipmentID = in.readString();
+        this.attachments = in.createTypedArrayList(AwbAttachmentViewModel.CREATOR);
+    }
+
+    public static final Creator<AwbData> CREATOR = new Creator<AwbData>() {
+        @Override
+        public AwbData createFromParcel(Parcel source) {
+            return new AwbData(source);
+        }
+
+        @Override
+        public AwbData[] newArray(int size) {
+            return new AwbData[size];
+        }
+    };
 }
