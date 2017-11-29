@@ -384,8 +384,13 @@ public class HotlistFragment extends SearchSectionFragment
 
     @Override
     protected void reloadData() {
-        HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
-        presenter.refreshSort(headerViewModel);
+        if (!hotlistAdapter.getItemList().isEmpty()) {
+            HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
+            presenter.refreshSort(headerViewModel);
+        } else {
+            showBottomBarNavigation(false);
+            presenter.requestDataForTheFirstTime(getHotlistInitParam());
+        }
     }
 
     @SuppressWarnings("UnusedParameters")
