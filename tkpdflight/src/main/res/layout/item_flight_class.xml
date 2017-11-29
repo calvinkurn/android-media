@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal">
 
@@ -10,14 +11,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/padding_med"
+        android:layout_marginStart="@dimen/padding_med">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_med"
-            tools:text="hehehehe" />
+            tools:text="hehehehe"
+            style="@style/TextView.Subheading"/>
 
     </LinearLayout>
 
