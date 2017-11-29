@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksModel;
+import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFactory;
+
+import java.util.List;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -11,7 +13,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFact
 public class TopPicksViewModel implements Visitable<HomeTypeFactory> {
 
     private String title;
-    private TopPicksModel topPicksModel;
+    private List<TopPicksItemModel> topPicksItems;
 
     public String getTitle() {
         return title;
@@ -21,12 +23,12 @@ public class TopPicksViewModel implements Visitable<HomeTypeFactory> {
         this.title = title;
     }
 
-    public TopPicksModel getTopPicksModel() {
-        return topPicksModel;
+    public List<TopPicksItemModel> getTopPicksItems() {
+        return topPicksItems;
     }
 
-    public void setTopPicksModel(TopPicksModel topPicksModel) {
-        this.topPicksModel = topPicksModel;
+    public void setTopPicksItems(List<TopPicksItemModel> topPicksItems) {
+        this.topPicksItems = topPicksItems;
     }
 
     @Override

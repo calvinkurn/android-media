@@ -1,12 +1,25 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.network.entity.hotlist.List;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.GridSpacingItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -15,14 +28,68 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerView
 public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectionViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ticker;
+    public static final int LAYOUT = R.layout.layout_category_section;
+    @BindView(R.id.list)
+    RecyclerView recyclerView;
+    private SectionItemAdapter adapter;
+    private Context context;
+    private static final int spanCount = 4;
 
     public CategorySectionViewHolder(View itemView) {
         super(itemView);
+        ButterKnife.bind(this, itemView);
+        this.context = itemView.getContext();
+        adapter = new SectionItemAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
+                GridLayoutManager.VERTICAL, false));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
+                context.getResources().getDimensionPixelSize(R.dimen.home_card_category_item_margin), true));
     }
 
     @Override
     public void bind(CategorySectionViewModel element) {
+        adapter.setSectionViewModel(element);
+    }
 
+    public class SectionItemAdapter extends RecyclerView.Adapter<SectionItemViewHolder> {
+
+        private CategorySectionViewModel sectionViewModel;
+
+        public SectionItemAdapter() {
+        }
+
+        public void setSectionViewModel(CategorySectionViewModel sectionViewModel) {
+            this.sectionViewModel = sectionViewModel;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public SectionItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new SectionItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_section_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(SectionItemViewHolder holder, int position) {
+            holder.title.setText(sectionViewModel.getSectionList().get(position).getTitle());
+        }
+
+        @Override
+        public int getItemCount() {
+            return sectionViewModel.getSectionList().size();
+        }
+    }
+
+    public class SectionItemViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.icon)
+        ImageView icon;
+        @BindView(R.id.title)
+        TextView title;
+
+        public SectionItemViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

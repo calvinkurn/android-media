@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.beranda.presentation.view;
 
+import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -26,6 +27,8 @@ public interface HomeContract {
         void removeNetworkError();
 
         String getString(@StringRes int res);
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {

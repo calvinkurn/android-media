@@ -18,7 +18,9 @@ import com.tokopedia.tkpd.beranda.di.HomeComponent;
 import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.HomeRecycleAdapter;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -97,7 +99,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void initAdapter() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        adapter = new HomeRecycleAdapter();
+        adapter = new HomeRecycleAdapter(new HomeAdapterFactory(), new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
 

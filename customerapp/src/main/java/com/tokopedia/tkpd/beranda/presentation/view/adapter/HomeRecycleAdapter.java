@@ -1,52 +1,50 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
-
+import com.tokopedia.core.base.adapter.BaseAdapter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFactory;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author by errysuprayogi on 11/27/17.
  */
 
-public class HomeRecycleAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class HomeRecycleAdapter extends BaseAdapter {
 
-    protected List<Visitable> items;
-    protected final HomeTypeFactory typeFactory;
+    protected HomeAdapterFactory typeFactory;
 
-    public HomeRecycleAdapter() {
-        this.typeFactory = new HomeAdapterFactory();
-        items = new ArrayList<>();
+    public HomeRecycleAdapter(HomeAdapterFactory adapterTypeFactory, List<Visitable> visitables) {
+        super(adapterTypeFactory, visitables);
+        this.typeFactory = adapterTypeFactory;
     }
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        return typeFactory.createViewHolder(view, viewType);
     }
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(items.get(position));
+        holder.bind(visitables.get(position));
     }
 
     @Override
     public int getItemViewType(int position) {
-        return items.get(position).type(typeFactory);
+        return visitables.get(position).type(typeFactory);
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return visitables.size();
     }
 
     public void setItems(List<Visitable> items) {
-        this.items = items;
+        this.visitables = items;
         notifyDataSetChanged();
     }
 }

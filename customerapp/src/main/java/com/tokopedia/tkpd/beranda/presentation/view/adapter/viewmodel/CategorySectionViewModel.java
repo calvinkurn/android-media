@@ -3,33 +3,36 @@ package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
 public class CategorySectionViewModel implements Visitable<HomeTypeFactory> {
 
-    private String title;
-    private int iconRes;
+    private List<LayoutSections> sectionList;
 
-    public String getTitle() {
-        return title;
+    public CategorySectionViewModel() {
+        sectionList = new ArrayList<>();
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public List<LayoutSections> getSectionList() {
+        return sectionList;
     }
 
-    public int getIconRes() {
-        return iconRes;
+    public void setSectionList(List<LayoutSections> sectionList) {
+        this.sectionList = sectionList;
     }
 
-    public void setIconRes(int iconRes) {
-        this.iconRes = iconRes;
+    public void addSection(LayoutSections section){
+        this.sectionList.add(section);
     }
 
     @Override
     public int type(HomeTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
+
 }

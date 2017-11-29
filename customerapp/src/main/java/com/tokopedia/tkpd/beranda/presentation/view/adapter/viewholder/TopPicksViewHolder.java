@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
-import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
+import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.GridSpacingItemDecoration;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,31 +28,33 @@ import butterknife.OnClick;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewModel> {
+public class TopPicksViewHolder extends AbstractViewHolder<TopPicksViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_category;
+    public static final int LAYOUT = R.layout.layout_toppicks;
     @BindView(R.id.title)
     TextView titleTxt;
     @BindView(R.id.list)
     RecyclerView recyclerView;
 
     private ItemAdapter adapter;
-    private int spanCount = 2;
+    private int spanCount = 3;
 
-    public CategoryItemViewHolder(View itemView) {
+    public TopPicksViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
+        ButterKnife.bind(itemView);
         adapter = new ItemAdapter(itemView.getContext());
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
+                itemView.getResources().getDimensionPixelSize(R.dimen.home_card_page_margin), true));
     }
 
     @Override
-    public void bind(CategoryItemViewModel element) {
+    public void bind(TopPicksViewModel element) {
         titleTxt.setText(element.getTitle());
-        adapter.setData(element.getItemList());
+        adapter.setData(element.getTopPicksItems());
     }
 
     @OnClick(R.id.see_more)
@@ -63,26 +65,26 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
     public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
         private final Context context;
-        private List<CategoryLayoutRowModel> data;
+        private List<TopPicksItemModel> data;
 
         public ItemAdapter(Context context) {
             this.context = context;
             this.data = new ArrayList<>();
         }
 
-        public void setData(List<CategoryLayoutRowModel> data) {
+        public void setData(List<TopPicksItemModel> data) {
             this.data = data;
+            notifyDataSetChanged();
         }
 
         @Override
         public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_category_item, parent, false));
+            return new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_toppicks_item, parent, false));
         }
 
         @Override
         public void onBindViewHolder(ItemViewHolder holder, int position) {
-            holder.title.setText(data.get(position).getName());
-            Glide.with(context).load(data.get(position).getImageUrl()).into(holder.icon);
+            Glide.with(context).load(data.get(position).getImageUrl()).into(holder.image);
         }
 
         @Override
@@ -92,10 +94,8 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            @BindView(R.id.icon)
-            ImageView icon;
-            @BindView(R.id.title)
-            TextView title;
+            @BindView(R.id.image)
+            ImageView image;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);
@@ -103,4 +103,6 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
             }
         }
     }
+
+
 }

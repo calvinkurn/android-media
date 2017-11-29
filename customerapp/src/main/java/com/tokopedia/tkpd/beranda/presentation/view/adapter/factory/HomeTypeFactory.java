@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter.factory;
 
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -31,5 +32,6 @@ public interface HomeTypeFactory {
 
     int type(CategoryItemViewModel categoryItemViewModel);
 
-    AbstractViewHolder createViewHolder(ViewGroup view, int viewType);
+    AbstractViewHolder createViewHolder(View view, int viewType);
+
 }
