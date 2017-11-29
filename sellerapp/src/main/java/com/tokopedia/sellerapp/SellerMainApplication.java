@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.multidex.MultiDex;
 
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -37,13 +36,6 @@ import java.util.List;
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction, InAppManager.InAppMessageListener {
 
     public static final int SELLER_APPLICATION = 2;
-
-    @Override
-    protected void attachBaseContext(Context base)
-    {
-        super.attachBaseContext(base);
-        MultiDex.install(SellerMainApplication.this);
-    }
 
     public static SellerMainApplication get(Context context) {
         return (SellerMainApplication) context.getApplicationContext();
