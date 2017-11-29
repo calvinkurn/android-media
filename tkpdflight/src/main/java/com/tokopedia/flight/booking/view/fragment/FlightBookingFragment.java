@@ -32,7 +32,6 @@ import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
@@ -54,7 +53,6 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -299,50 +297,50 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip) {
+    public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         returnInfoView.setVisibility(View.VISIBLE);
-        returnInfoView.setContent(returnTrip.getDepartureAirportName() + "-" + returnTrip.getArrivalAirportName());
+        returnInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
         returnInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;
-        if (returnTrip.getAirlineList().size() > 1) {
+        if (returnTrip.getRouteList().size() > 1) {
             isTransit = true;
             airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
         } else {
-            airLineSection = returnTrip.getAirlineList().get(0).getName();
+            airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         returnInfoView.setSubContent(airLineSection);
 
         String tripInfo = "";
         if (isTransit) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_directly_trip_card));
         }
         tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         returnInfoView.setSubContentInfo(tripInfo);
     }
 
     @Override
-    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip) {
+    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirportName() + "-" + returnTrip.getArrivalAirportName());
+        departureInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
         departureInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;
-        if (returnTrip.getAirlineList().size() > 1) {
+        if (returnTrip.getRouteList().size() > 1) {
             isTransit = true;
             airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
         } else {
-            airLineSection = returnTrip.getAirlineList().get(0).getName();
+            airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         departureInfoView.setSubContent(airLineSection);
 
         String tripInfo = "";
         if (isTransit) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_directly_trip_card));
         }
         tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         departureInfoView.setSubContentInfo(tripInfo);
@@ -369,21 +367,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void navigateToDetailTrip(FlightSearchViewModel departureTrip) {
-        FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
-        flightDetailViewModel.build(departureTrip);
-        flightDetailViewModel.build(paramViewModel.getSearchParam());
-        startActivity(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel));
+    public void navigateToDetailTrip(FlightDetailViewModel departureTrip) {
+        startActivity(FlightDetailActivity.createIntent(getActivity(), departureTrip));
     }
 
     @Override
     public String getIdEmpotencyKey(String tokenId) {
         return generateIdEmpotency(tokenId);
-    }
-
-    @Override
-    public void renderLuggageList(List<Amenity> amenities) {
-
     }
 
     @Override

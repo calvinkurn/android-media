@@ -10,13 +10,12 @@
     android:padding="@dimen/padding_small">
 
     <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.Title.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginTop="@dimen/margin_sm"
-        android:text="@string/flight_booking_contact_information"
-        android:textSize="@dimen/font_headline"
-        android:textStyle="bold" />
+        android:text="@string/flight_booking_contact_information" />
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/til_contact_name"

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.booking.view.viewmodel;
 
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ public class FlightBookingCartData {
     private String id;
     private int refreshTime;
     private FlightBookingPhoneCodeViewModel defaultPhoneCode;
-    private FlightSearchViewModel departureTrip;
-    private FlightSearchViewModel returnTrip;
+    private FlightDetailViewModel departureTrip;
+    private FlightDetailViewModel returnTrip;
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
@@ -62,19 +62,19 @@ public class FlightBookingCartData {
         this.id = id;
     }
 
-    public FlightSearchViewModel getDepartureTrip() {
+    public FlightDetailViewModel getDepartureTrip() {
         return departureTrip;
     }
 
-    public void setDepartureTrip(FlightSearchViewModel departureTrip) {
+    public void setDepartureTrip(FlightDetailViewModel departureTrip) {
         this.departureTrip = departureTrip;
     }
 
-    public FlightSearchViewModel getReturnTrip() {
+    public FlightDetailViewModel getReturnTrip() {
         return returnTrip;
     }
 
-    public void setReturnTrip(FlightSearchViewModel returnTrip) {
+    public void setReturnTrip(FlightDetailViewModel returnTrip) {
         this.returnTrip = returnTrip;
     }
 
