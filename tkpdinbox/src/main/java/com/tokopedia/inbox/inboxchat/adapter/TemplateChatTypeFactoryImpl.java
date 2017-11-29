@@ -24,58 +24,30 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
  * Created by stevenfredian on 9/27/17.
  */
 
-public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements ChatRoomTypeFactory{
+public class TemplateChatTypeFactoryImpl extends BaseAdapterTypeFactory implements TemplateChatTypeFactory{
 
     ChatRoomContract.View viewListener;
 
-    public ChatRoomTypeFactoryImpl(ChatRoomFragment context) {
+    public TemplateChatTypeFactoryImpl(ChatRoomFragment context) {
         this.viewListener = context;
     }
-
-    @Override
-    public int type(OppositeChatViewModel oppositeChatViewModel) {
-        return OppositeChatViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(MyChatViewModel myChatViewModel) {
-        return MyChatViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(TimeMachineChatModel timeMachineChatModel) {
-        return TimeMachineChatViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(TypingChatModel typingChatModel) {
-        return TypingChatViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(AttachImageModel attachImageModel) {
-        return AttachImageViewHolder.LAYOUT;
-    }
-
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
 
-        if (type == OppositeChatViewHolder.LAYOUT)
-            viewHolder = new OppositeChatViewHolder(view, viewListener);
-        else if (type == MyChatViewHolder.LAYOUT)
-            viewHolder = new MyChatViewHolder(view, viewListener);
-        else if (type == TimeMachineChatViewHolder.LAYOUT)
-            viewHolder = new TimeMachineChatViewHolder(view, viewListener);
-        else if (type == TypingChatViewHolder.LAYOUT)
-            viewHolder = new TypingChatViewHolder(view);
-        else if (type == AttachImageViewHolder.LAYOUT)
-            viewHolder = new AttachImageViewHolder(view);
+        if (type == TemplateChatViewHolder.LAYOUT)
+            viewHolder = new TemplateChatViewHolder(view, viewListener);
         else
             return super.createViewHolder(view, type);
 
         return viewHolder;
     }
+
+    @Override
+    public int type(TemplateChatModel templateChatModel) {
+        return TemplateChatViewHolder.LAYOUT;
+    }
+
 }

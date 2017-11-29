@@ -794,11 +794,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return InboxChatActivity.getCallingIntent(context);
-        else
-            return InboxMessageActivity.getCallingIntent(context);
+//        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+//                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
+//            return InboxChatActivity.getCallingIntent(context);
+//        else
+//            return InboxMessageActivity.getCallingIntent(context);
+        return InboxChatActivity.getCallingIntent(context);
 
     }
 

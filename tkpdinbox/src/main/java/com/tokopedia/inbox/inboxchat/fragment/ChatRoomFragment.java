@@ -24,12 +24,12 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
@@ -39,7 +39,11 @@ import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
+import com.tokopedia.inbox.inboxchat.adapter.TemplateChatAdapter;
+import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
+import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
+import com.tokopedia.inbox.inboxchat.data.factory.TemplateChatFactory;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
@@ -50,11 +54,11 @@ import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import org.json.JSONException;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -80,6 +84,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     SessionHandler sessionHandler;
 
     private RecyclerView recyclerView;
+    private RecyclerView templateRecyclerView;
     private ProgressBar progressBar;
     private View replyView;
 
@@ -89,7 +94,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private TextView label;
 
     ChatRoomAdapter adapter;
+    TemplateChatAdapter templateAdapter;
+
     private ChatRoomTypeFactory typeFactory;
+    private TemplateChatTypeFactory templateChatFactory;
     private LinearLayoutManager layoutManager;
     private ImageView sendButton;
     private EditText replyColumn;
@@ -100,6 +108,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private Observable<Boolean> replyIsTyping;
     private int mode;
     private View notifier;
+    private LinearLayoutManager templateLayoutManager;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -118,6 +127,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         mainHeader.setVisibility(View.INVISIBLE);
         progressBar = rootView.findViewById(R.id.progress);
         recyclerView = rootView.findViewById(R.id.reply_list);
+        templateRecyclerView = rootView.findViewById(R.id.list_template);
         replyView = rootView.findViewById(R.id.add_comment_area);
         sendButton = rootView.findViewById(R.id.send_but);
         replyColumn = rootView.findViewById(R.id.new_comment);
@@ -126,6 +136,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         notifier = rootView.findViewById(R.id.notifier);
         replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
+        templateRecyclerView.setHasFixedSize(true);
         presenter.attachView(this);
         initListener();
         return rootView;
@@ -190,27 +201,48 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
                 TopChatTrackingEventLabel.Name.CHAT_DETAIL);
         int temp = replyColumn.getSelectionEnd();
-        replyColumn.setText(replyColumn.getText() + "\n" + url);
+        replyColumn.setText(String.format("%s\n%s", replyColumn.getText(), url));
         replyColumn.setSelection(temp);
     }
 
+    @Override
+    public void addTemplateString(String message) {
+        replyColumn.setText(String.format("%s %s", replyColumn.getText(), message));
+        replyColumn.setSelection(replyColumn.getSelectionEnd());
+    }
+
+
     private void initVar() {
         typeFactory = new ChatRoomTypeFactoryImpl(this);
+        templateChatFactory = new TemplateChatTypeFactoryImpl(this);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         progressBar.setVisibility(View.VISIBLE);
+
         adapter = new ChatRoomAdapter(typeFactory);
         adapter.setNav(getArguments().getString(PARAM_NAV, ""));
         mode = getArguments().getInt(PARAM_MODE, InboxChatViewModel.GET_CHAT_MODE);
 
+        templateAdapter = new TemplateChatAdapter(templateChatFactory);
+
         presenter.getReply(mode);
+
         adapter.notifyDataSetChanged();
+        templateAdapter.notifyDataSetChanged();
+
         recyclerView.setAdapter(adapter);
+        templateRecyclerView.setAdapter(templateAdapter);
+
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
         recyclerView.setLayoutManager(layoutManager);
+        templateRecyclerView.setLayoutManager(templateLayoutManager);
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -247,7 +279,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
-
         DaggerInboxChatComponent daggerInboxChatComponent =
                 (DaggerInboxChatComponent) DaggerInboxChatComponent.builder()
                         .appComponent(appComponent).build();
@@ -260,7 +291,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoading() {
-//        refreshHandler.finishRefresh();
     }
 
     @Override
@@ -451,6 +481,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void setTemplate(List<Visitable> listTemplate) {
+        if(listTemplate == null){
+            templateRecyclerView.setVisibility(View.GONE);
+        }else {
+            templateRecyclerView.setVisibility(View.VISIBLE);
+            templateAdapter.setList(listTemplate);
+        }
+    }
+
+
+    @Override
     public boolean isCurrentThread(int msgId) {
         return getArguments().getString(PARAM_MESSAGE_ID).equals(String.valueOf(msgId));
     }
@@ -461,7 +502,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 //        attachButton.setEnabled(isEnabled);
 //        sendButton.setEnabled(isEnabled);
 //        recyclerView.setEnabled(isEnabled);
-//        if (isEnabled) {
+//        if (isEnabled) {a
 ////            header.setVisibility(View.VISIBLE);
 //            replyView.setVisibility(View.VISIBLE);
 //        }
