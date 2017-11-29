@@ -38,7 +38,7 @@ public class ChatActionEarlyLeftViewHolder extends AbstractViewHolder<ChatAction
         tvUserName1 = (TextView) layoutTitle1.findViewById(R.id.tv_username);
 
         layoutDate1 = itemView.findViewById(R.id.layout_date_1);
-        tvUserName1 = (TextView) layoutDate1.findViewById(R.id.tv_username);
+        tvDate1 = (TextView) layoutDate1.findViewById(R.id.tv_username);
     }
 
     @Override
