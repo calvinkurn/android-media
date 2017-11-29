@@ -3,10 +3,8 @@ package com.tokopedia.flight.booking.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 
 import java.util.ArrayList;
@@ -51,7 +49,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             if (getView().getLuggageViewModels().size() > 0)
                 getView().renderPassengerLuggages(getView().getLuggageViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
             if (getView().getMealViewModels().size() > 0)
-                getView().renderPassengerMeals(getView().getMealViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
+                getView().renderPassengerMeals(getView().getMealViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingAmenityMetaViewModels());
         }
 
         if (getView().getCurrentPassengerViewModel().getPassengerName() != null) {
@@ -112,25 +110,25 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onPassengerLuggageClick(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel) {
-        FlightBookingLuggageMetaViewModel existingSelected = null;
-        for (FlightBookingLuggageMetaViewModel selected : getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels()) {
+    public void onPassengerLuggageClick(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel) {
+        FlightBookingAmenityMetaViewModel existingSelected = null;
+        for (FlightBookingAmenityMetaViewModel selected : getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels()) {
             if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
                 existingSelected = selected;
             }
         }
         if (existingSelected == null) {
-            existingSelected = new FlightBookingLuggageMetaViewModel();
+            existingSelected = new FlightBookingAmenityMetaViewModel();
             existingSelected.setKey(flightBookingLuggageMetaViewModel.getKey());
             existingSelected.setDescription(flightBookingLuggageMetaViewModel.getDescription());
-            existingSelected.setLuggages(new ArrayList<FlightBookingLuggageViewModel>());
+            existingSelected.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
         }
-        getView().navigateToLuggagePicker(flightBookingLuggageMetaViewModel.getLuggages(), existingSelected);
+        getView().navigateToLuggagePicker(flightBookingLuggageMetaViewModel.getAmenities(), existingSelected);
     }
 
     @Override
-    public void onLuggageDataChange(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel) {
-        List<FlightBookingLuggageMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels();
+    public void onLuggageDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel) {
+        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels();
         int index = viewModels.indexOf(flightBookingLuggageMetaViewModel);
         if (index != -1) {
             viewModels.set(index, flightBookingLuggageMetaViewModel);
@@ -142,21 +140,21 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onMealDataChange(FlightBookingMealMetaViewModel flightBookingMealMetaViewModel) {
-        List<FlightBookingMealMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
-        int index = viewModels.indexOf(flightBookingMealMetaViewModel);
+    public void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel) {
+        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingAmenityMetaViewModels();
+        int index = viewModels.indexOf(flightBookingAmenityMetaViewModel);
         if (index != -1) {
-            viewModels.set(index, flightBookingMealMetaViewModel);
+            viewModels.set(index, flightBookingAmenityMetaViewModel);
         } else {
-            viewModels.add(flightBookingMealMetaViewModel);
+            viewModels.add(flightBookingAmenityMetaViewModel);
         }
 
         getView().renderPassengerMeals(getView().getMealViewModels(), viewModels);
     }
 
     @Override
-    public void onDeleteMeal(FlightBookingMealMetaViewModel viewModel) {
-        List<FlightBookingMealMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
+    public void onDeleteMeal(FlightBookingAmenityMetaViewModel viewModel) {
+        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingAmenityMetaViewModels();
         int index = viewModels.indexOf(viewModel);
         if (index != -1) {
             viewModels.set(index, viewModel);
@@ -168,9 +166,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onOptionMeal(FlightBookingMealMetaViewModel viewModel) {
-        FlightBookingMealMetaViewModel existingSelected = null;
-        for (FlightBookingMealMetaViewModel viewModel1 : getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels()) {
+    public void onOptionMeal(FlightBookingAmenityMetaViewModel viewModel) {
+        FlightBookingAmenityMetaViewModel existingSelected = null;
+        for (FlightBookingAmenityMetaViewModel viewModel1 : getView().getCurrentPassengerViewModel().getFlightBookingAmenityMetaViewModels()) {
             if (viewModel1.getKey().equalsIgnoreCase(viewModel.getKey())) {
                 existingSelected = viewModel1;
                 break;
@@ -178,12 +176,12 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         }
 
         if (existingSelected == null) {
-            existingSelected = new FlightBookingMealMetaViewModel();
+            existingSelected = new FlightBookingAmenityMetaViewModel();
             existingSelected.setKey(viewModel.getKey());
-            existingSelected.setMealViewModels(new ArrayList<FlightBookingMealViewModel>());
+            existingSelected.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
             existingSelected.setDescription(viewModel.getDescription());
         }
-        getView().navigateToMealPicker(viewModel.getMealViewModels(), existingSelected);
+        getView().navigateToMealPicker(viewModel.getAmenities(), existingSelected);
     }
 
     private boolean validateFields() {

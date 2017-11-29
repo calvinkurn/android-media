@@ -9,7 +9,6 @@
         android:id="@+id/header_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/selectable_background_tokopedia"
-        android:paddingBottom="@dimen/padding_med"
-        android:paddingTop="@dimen/padding_med" />
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingTop="@dimen/padding_small" />
 </LinearLayout>

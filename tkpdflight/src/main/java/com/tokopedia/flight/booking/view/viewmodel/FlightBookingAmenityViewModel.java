@@ -10,32 +10,32 @@ import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdType {
+public class FlightBookingAmenityViewModel implements Parcelable, ItemType, ItemIdType {
     public static final int TYPE = 532;
     private String id;
     private String title;
     private String price;
     private int priceNumeric;
 
-    public FlightBookingMealViewModel() {
+    public FlightBookingAmenityViewModel() {
     }
 
-    protected FlightBookingMealViewModel(Parcel in) {
+    protected FlightBookingAmenityViewModel(Parcel in) {
         id = in.readString();
         title = in.readString();
         price = in.readString();
         priceNumeric = in.readInt();
     }
 
-    public static final Creator<FlightBookingMealViewModel> CREATOR = new Creator<FlightBookingMealViewModel>() {
+    public static final Creator<FlightBookingAmenityViewModel> CREATOR = new Creator<FlightBookingAmenityViewModel>() {
         @Override
-        public FlightBookingMealViewModel createFromParcel(Parcel in) {
-            return new FlightBookingMealViewModel(in);
+        public FlightBookingAmenityViewModel createFromParcel(Parcel in) {
+            return new FlightBookingAmenityViewModel(in);
         }
 
         @Override
-        public FlightBookingMealViewModel[] newArray(int size) {
-            return new FlightBookingMealViewModel[size];
+        public FlightBookingAmenityViewModel[] newArray(int size) {
+            return new FlightBookingAmenityViewModel[size];
         }
     };
 
@@ -76,7 +76,7 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof FlightBookingMealViewModel && ((FlightBookingMealViewModel) obj).getId().equalsIgnoreCase(id);
+        return obj instanceof FlightBookingAmenityViewModel && ((FlightBookingAmenityViewModel) obj).getId().equalsIgnoreCase(id);
     }
 
     @Override

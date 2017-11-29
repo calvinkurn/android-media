@@ -11,9 +11,8 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -112,10 +111,10 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                 }
 
                 if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
-                    for (FlightBookingLuggageMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
+                    for (FlightBookingAmenityMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
                         ArrayList<String> selectedLuggages = new ArrayList<>();
-                        for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getLuggages()) {
-                            selectedLuggages.add(flightBookingLuggageViewModel.getWeightFmt() + " - " + flightBookingLuggageViewModel.getPriceFmt());
+                        for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getAmenities()) {
+                            selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
                         }
                         simpleViewModels.add(new SimpleViewModel(
                                 itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getDescription(), TextUtils.join(" + ", selectedLuggages)
@@ -123,10 +122,10 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                     }
                 }
 
-                if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
-                    for (FlightBookingMealMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
+                if (viewModel.getFlightBookingAmenityMetaViewModels() != null && viewModel.getFlightBookingAmenityMetaViewModels().size() > 0) {
+                    for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingAmenityMetaViewModels()) {
                         simpleViewModels.add(new SimpleViewModel(
-                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label), TextUtils.join(" + ", flightBookingMealRouteViewModel.getMealViewModels())
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label), TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
                         ));
                     }
                 }

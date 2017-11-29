@@ -11,11 +11,9 @@ import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
@@ -220,22 +218,22 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
             }
         }
         for (FlightBookingPassengerViewModel flightPassengerViewModel : getView().getCurrentBookingParamViewModel().getPassengerViewModels()) {
-            for (FlightBookingMealMetaViewModel flightBookingMealMetaViewModel : flightPassengerViewModel.getFlightBookingMealMetaViewModels()) {
-                for (FlightBookingMealViewModel flightBookingMealViewModel : flightBookingMealMetaViewModel.getMealViewModels()) {
-                    totalPrice += flightBookingMealViewModel.getPriceNumeric();
+            for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightPassengerViewModel.getFlightBookingAmenityMetaViewModels()) {
+                for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : flightBookingAmenityMetaViewModel.getAmenities()) {
+                    totalPrice += flightBookingAmenityViewModel.getPriceNumeric();
                     simpleViewModels.add(
                             new SimpleViewModel(
-                                    getView().getString(R.string.flight_price_detail_prefixl_meal_label) + flightBookingMealMetaViewModel.getDescription(),
-                                    flightBookingMealViewModel.getPrice())
+                                    getView().getString(R.string.flight_price_detail_prefixl_meal_label) + flightBookingAmenityMetaViewModel.getDescription(),
+                                    flightBookingAmenityViewModel.getPrice())
                     );
                 }
             }
-            for (FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel : flightPassengerViewModel.getFlightBookingLuggageMetaViewModels()) {
-                for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : flightBookingLuggageMetaViewModel.getLuggages()) {
+            for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightPassengerViewModel.getFlightBookingLuggageMetaViewModels()) {
+                for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageMetaViewModel.getAmenities()) {
                     totalPrice += flightBookingLuggageViewModel.getPriceNumeric();
                     simpleViewModels.add(new SimpleViewModel(
                             getView().getString(R.string.flight_price_detail_prefix_luggage_label) + flightBookingLuggageMetaViewModel.getDescription(),
-                            flightBookingLuggageViewModel.getPriceFmt())
+                            flightBookingLuggageViewModel.getPrice())
                     );
                 }
             }
@@ -521,8 +519,8 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                             getView().getString(R.string.flight_booking_postfix_adult_passenger)
                     )
             );
-            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingLuggageMetaViewModel>());
-            viewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingMealMetaViewModel>());
+            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+            viewModel.setFlightBookingAmenityMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
             viewModels.add(viewModel);
             passengerNumber++;
         }
@@ -537,8 +535,8 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                             passengerNumber,
                             getView().getString(R.string.flight_booking_postfix_children_passenger))
             );
-            viewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingMealMetaViewModel>());
-            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingLuggageMetaViewModel>());
+            viewModel.setFlightBookingAmenityMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
             viewModels.add(viewModel);
             passengerNumber++;
 
@@ -555,8 +553,8 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                             getView().getString(R.string.flight_booking_postfix_infant_passenger))
             );
 
-            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingLuggageMetaViewModel>());
-            viewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingMealMetaViewModel>());
+            viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+            viewModel.setFlightBookingAmenityMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
             viewModels.add(viewModel);
             passengerNumber++;
         }
