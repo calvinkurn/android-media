@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
+import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
 import com.tokopedia.events.view.contractor.EventsContract;
@@ -22,15 +23,17 @@ import rx.Subscriber;
  * Created by ashwanityagi on 06/11/17.
  */
 
-public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View> implements EventsContract.Presenter  {
+public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View> implements EventsContract.Presenter {
 
     public GetEventsListRequestUseCase getEventsListRequestUsecase;
     public GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase;
+    public GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase;
 
     @Inject
-    public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase) {
+    public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase, GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase, GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
         this.getEventsListByLocationRequestUseCase = getEventsListByLocationRequestUseCase;
+        this.getSearchEventsListRequestUseCase = getSearchEventsListRequestUseCase;
 
     }
 
@@ -44,7 +47,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     }
 
-    public void getEventsList(){
+    public void getEventsList() {
 
         getEventsListRequestUsecase.execute(getView().getParams(), new Subscriber<List<EventsCategoryDomain>>() {
             @Override
@@ -66,9 +69,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         });
     }
 
-    public void getEventsListByLocation(String location){
-        RequestParams requestParams=RequestParams.create();
-        requestParams.putString(getEventsListByLocationRequestUseCase.LOCATION,location);
+    public void getEventsListByLocation(String location) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(getEventsListByLocationRequestUseCase.LOCATION, location);
         getEventsListByLocationRequestUseCase.execute(requestParams, new Subscriber<List<EventsCategoryDomain>>() {
             @Override
             public void onCompleted() {
@@ -88,17 +91,41 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         });
     }
 
+    public void getEventsListBySearch(String searchText) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(getSearchEventsListRequestUseCase.TAG, searchText);
 
-    private List<CategoryViewModel> convertIntoCategoryListVeiwModel(List<EventsCategoryDomain> categoryList){
-        List<CategoryViewModel> categoryViewModels=new ArrayList<>();
-        if(categoryList!=null){
-            for (EventsCategoryDomain eventsCategoryDomain :categoryList
-                 ) {
-                if("top".equalsIgnoreCase(eventsCategoryDomain.getName())){
-                    categoryViewModels.add(0,new CategoryViewModel(eventsCategoryDomain.getTitle(), eventsCategoryDomain.getName(),convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
+        getSearchEventsListRequestUseCase.execute(requestParams, new Subscriber<List<EventsCategoryDomain>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
 
-                }else{
-                    categoryViewModels.add(new CategoryViewModel(eventsCategoryDomain.getTitle(), eventsCategoryDomain.getName(),convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("enter error");
+            }
+
+            @Override
+            public void onNext(List<EventsCategoryDomain> categoryEntities) {
+
+                getView().renderCategoryList(convertIntoCategoryListVeiwModel(categoryEntities));
+                CommonUtils.dumper("enter onNext");
+            }
+        });
+    }
+
+
+    private List<CategoryViewModel> convertIntoCategoryListVeiwModel(List<EventsCategoryDomain> categoryList) {
+        List<CategoryViewModel> categoryViewModels = new ArrayList<>();
+        if (categoryList != null) {
+            for (EventsCategoryDomain eventsCategoryDomain : categoryList
+                    ) {
+                if ("top".equalsIgnoreCase(eventsCategoryDomain.getName())) {
+                    categoryViewModels.add(0, new CategoryViewModel(eventsCategoryDomain.getTitle(), eventsCategoryDomain.getName(), convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
+
+                } else {
+                    categoryViewModels.add(new CategoryViewModel(eventsCategoryDomain.getTitle(), eventsCategoryDomain.getName(), convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
 
                 }
 
@@ -107,13 +134,13 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         return categoryViewModels;
     }
 
-    public  List<CategoryItemsViewModel> convertIntoCategoryListItemsVeiwModel(List<EventsItemDomain> categoryResponseItemsList){
-        List<CategoryItemsViewModel> categoryItemsViewModelList=new ArrayList<>();
-        if(categoryResponseItemsList!=null){
+    public List<CategoryItemsViewModel> convertIntoCategoryListItemsVeiwModel(List<EventsItemDomain> categoryResponseItemsList) {
+        List<CategoryItemsViewModel> categoryItemsViewModelList = new ArrayList<>();
+        if (categoryResponseItemsList != null) {
             CategoryItemsViewModel CategoryItemsViewModel;
-            for (EventsItemDomain categoryEntity:categoryResponseItemsList
+            for (EventsItemDomain categoryEntity : categoryResponseItemsList
                     ) {
-               CategoryItemsViewModel =new CategoryItemsViewModel();
+                CategoryItemsViewModel = new CategoryItemsViewModel();
                 CategoryItemsViewModel.setId(categoryEntity.getId());
                 CategoryItemsViewModel.setCategoryId(categoryEntity.getCategoryId());
                 CategoryItemsViewModel.setDisplayName(categoryEntity.getDisplayName());
@@ -128,10 +155,10 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         return categoryItemsViewModelList;
     }
 
-    public ArrayList<String> getCarouselImages(List<CategoryItemsViewModel> categoryItemsViewModels){
-        ArrayList<String> imagesList=new ArrayList<>();
-        if(categoryItemsViewModels!=null){
-            for (CategoryItemsViewModel categoryItemsViewModel: categoryItemsViewModels
+    public ArrayList<String> getCarouselImages(List<CategoryItemsViewModel> categoryItemsViewModels) {
+        ArrayList<String> imagesList = new ArrayList<>();
+        if (categoryItemsViewModels != null) {
+            for (CategoryItemsViewModel categoryItemsViewModel : categoryItemsViewModels
                     ) {
                 imagesList.add(categoryItemsViewModel.getImageApp());
             }

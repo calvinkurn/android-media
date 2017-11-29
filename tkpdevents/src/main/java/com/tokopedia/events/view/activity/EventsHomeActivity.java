@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.core.app.TActivity;
@@ -20,6 +23,7 @@ import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;
+import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
@@ -34,10 +38,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.tokopedia.events.view.activity.EventLocationActivity.DEFAULT_DELAY_TEXT_CHANGED;
+
 /**
  * Created by ashwanityagi on 02/11/17.
  */
-public class EventsHomeActivity extends TActivity implements HasComponent<EventComponent>, EventsContract.View {
+public class EventsHomeActivity extends TActivity implements HasComponent<EventComponent>, EventsContract.View, SearchInputView.Listener {
 
     private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
@@ -136,21 +142,21 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
 //
 //    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_event_home, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_menu_location) {
-            navigateToActivityRequest(EventLocationActivity.getCallingIntent(EventsHomeActivity.this), REQUEST_CODE_EVENTLOCATIONACTIVITY);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_event_home, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.action_menu_location) {
+//            navigateToActivityRequest(EventLocationActivity.getCallingIntent(EventsHomeActivity.this), REQUEST_CODE_EVENTLOCATIONACTIVITY);
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 //
 //    @Override
 //    protected void initVar() {
@@ -225,15 +231,15 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
             if (categoryViewModel.getItems() == null || categoryViewModel.getItems().size() == 0) {
                 continue;
             }
-            EventCategoryView eventCategoryView = new EventCategoryView(this);
-            eventCategoryView.renderData(categoryViewModel.getItems(), categoryViewModel.getTitle());
+           // EventCategoryView eventCategoryView = new EventCategoryView(this);
+            //eventCategoryView.renderData(categoryViewModel.getItems(), categoryViewModel.getTitle());
             if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
                 adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()));
                 setViewPagerListener();
                 tabLayout.setViewPager(viewPager);
             } else {
 
-                eventCategoryViews.add(eventCategoryView);
+               // eventCategoryViews.add(eventCategoryView);
                 // holderCategoryListLayout.addView(eventCategoryView);
             }
         }
@@ -286,4 +292,42 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    protected void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar.removeAllViews();
+        View view = getLayoutInflater().inflate(R.layout.custom_actionbar_search_view, null);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        view.setLayoutParams(params);
+        TextView tvCari = (TextView) view.findViewById(R.id.tv_cari);
+        final SearchInputView searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
+        searchInputView.setPadding(0,0,0,0);
+        searchInputView.setListener(this);
+        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+        tvCari.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String searchText = searchInputView.getSearchText();
+                mPresenter.getEventsListBySearch(searchText);
+            }
+        });
+        toolbar.addView(view);
+        if (isLightToolbarThemes()) {
+            setLightToolbarStyle();
+        }
+        setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+
+    }
+
 }

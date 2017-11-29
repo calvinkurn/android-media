@@ -51,7 +51,7 @@ public class EventRepositoryData implements EventRepository {
     public Observable<List<EventsCategoryDomain>> getSearchEvents(TKPDMapParam<String, Object> params) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .getEvents(params).map(new Func1<EventResponseEntity, List<EventsCategoryDomain>>() {
+                .getSearchEvents(params).map(new Func1<EventResponseEntity, List<EventsCategoryDomain>>() {
                     @Override
                     public List<EventsCategoryDomain> call(EventResponseEntity eventResponseEntity) {
                         CommonUtils.dumper("inside EventResponseEntity = " + eventResponseEntity);

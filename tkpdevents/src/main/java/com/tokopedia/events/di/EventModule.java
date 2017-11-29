@@ -17,6 +17,7 @@ import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
+import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -119,5 +120,13 @@ public class EventModule {
                                                                              PostExecutionThread postExecutionThread,
                                                                              EventRepository eventRepository) {
         return new GetEventsListByLocationRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+    }
+
+    @Provides
+    @EventScope
+    GetSearchEventsListRequestUseCase provideGetSearchEventsListRequestUseCase(ThreadExecutor threadExecutor,
+                                                                                   PostExecutionThread postExecutionThread,
+                                                                                   EventRepository eventRepository) {
+        return new GetSearchEventsListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 }
