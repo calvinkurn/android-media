@@ -36,6 +36,7 @@ public class CountdownTimeView extends BaseCustomView {
     private String hoursLabel;
     private String minutesLabel;
     private String secondsLabel;
+    private CountDownTimer countDownTimer;
 
     public interface OnActionListener {
         void onFinished();
@@ -106,7 +107,7 @@ public class CountdownTimeView extends BaseCustomView {
                 timeTextView.setText(getCountdownText(delta));
                 containerLayout.setVisibility(VISIBLE);
 
-                new CountDownTimer(delta, 1000) {
+                countDownTimer = new CountDownTimer(delta, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         timeTextView.setText(getCountdownText(millisUntilFinished));
@@ -119,8 +120,15 @@ public class CountdownTimeView extends BaseCustomView {
                         }
                         containerLayout.setVisibility(GONE);
                     }
-                }.start();
+                };
+                countDownTimer.start();
             }
+        }
+    }
+
+    public void stop() {
+        if(countDownTimer != null){
+            countDownTimer.cancel();
         }
     }
 

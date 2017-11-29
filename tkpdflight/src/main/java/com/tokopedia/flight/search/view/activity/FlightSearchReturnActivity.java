@@ -38,13 +38,7 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void initializeDataFromIntent() {
-        passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+    protected void initializeToolbarData() {
         selectedDepartureID = getIntent().getStringExtra(EXTRA_SEL_DEPARTURE_ID);
 
         dateString = FlightDateUtil.formatDate(

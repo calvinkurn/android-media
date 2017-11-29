@@ -26,6 +26,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
@@ -48,6 +49,8 @@ import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStati
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -87,6 +90,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);
+        void changeDate (FlightSearchPassDataViewModel flightSearchPassDataViewModel);
     }
 
     @Inject
@@ -459,6 +463,27 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    public void onSuccessDeleteFlightCache() {
+        resetDateAndReload();
+    }
+
+    @Override
+    public void onErrorDeleteFlightCache(Throwable throwable) {
+        resetDateAndReload();
+    }
+
+    private void resetDateAndReload(){
+        // preserve the filter and sort option
+        // resetup the combination airport
+        onFlightSearchFragmentListener.changeDate(flightSearchPassDataViewModel);
+        flightSearchStatisticModel = null;
+        setUpCombinationAirport();
+        progressBar.setVisibility(View.VISIBLE);
+        progress = 0;
+        loadInitialData();
+    }
+
+    @Override
     public void onLoadSearchError(Throwable t) {
         super.onLoadSearchError(t);
         String message = FlightErrorUtil.getMessageFromException(t);
@@ -514,15 +539,56 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onChangeDateClicked() {
-//        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-//            @Override
-//            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-//                // TODO on date set
-//            }
-//        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
-//        DatePicker datePicker1 = datePicker.getDatePicker();
-//        datePicker1.setMinDate(minDate.getTime());
-//        datePicker.show();
+        final String dateInput = flightSearchPassDataViewModel.getDate(isReturning());
+        Date date = FlightDateUtil.stringToDate(dateInput);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                onSuccessDateChanged(year, month, dayOfMonth);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker = datePickerDialog.getDatePicker();
+        setMinMaxDatePicker(datePicker);
+
+        datePickerDialog.show();
+    }
+
+    private void setMinMaxDatePicker(DatePicker datePicker){
+        if (isReturning()) {
+            String dateDepStr = flightSearchPassDataViewModel.getDate(false);
+            Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
+            datePicker.setMinDate(dateDep.getTime());
+        } else {
+            Date dateNow = FlightDateUtil.getCurrentDate();
+            datePicker.setMinDate(dateNow.getTime());
+
+            boolean isOneWay = flightSearchPassDataViewModel.isOneWay();
+            if (!isOneWay) {
+                String dateArrStr = flightSearchPassDataViewModel.getDate(true);
+                Date dateArr = FlightDateUtil.stringToDate(dateArrStr);
+                datePicker.setMaxDate(dateArr.getTime());
+            }
+        }
+    }
+
+    private void onSuccessDateChanged(int year, int month, int dayOfMonth){
+        Calendar calendar = FlightDateUtil.getCurrentCalendar();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DATE, dayOfMonth);
+        Date dateToSet = calendar.getTime();
+
+        String dateString = FlightDateUtil.dateToString(dateToSet, FlightDateUtil.DEFAULT_FORMAT);
+
+        if (isReturning()) {
+            flightSearchPassDataViewModel.setReturnDate(dateString);
+        } else {
+            flightSearchPassDataViewModel.setDepartureDate(dateString);
+        }
+        //TODO check if the argument already been chagned
+        flightSearchPresenter.deleteFlightCache(isReturning());
     }
 
     @Override

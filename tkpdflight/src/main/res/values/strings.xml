@@ -195,6 +195,7 @@
     <string name="flight_label_hours">Jam</string>
     <string name="flight_label_minute">Menit</string>
     <string name="flight_label_second">Detik</string>
+    <string name="activity_label_flight_order_list">Order List</string>
     <string name="flight_price_detail_prefixl_meal_label">Makanan </string>
     <string name="flight_price_detail_prefix_luggage_label">Bagasi</string>
     <string name="flight_booking_close_label">Tutup</string>
@@ -206,4 +207,7 @@
     <string name="flight_dashboard_error_close_label">Tutup</string>
     <string name="flight_dashboard_departure_should_different_city_error">Kota tujuan dan asal tidak boleh sama</string>
     <string name="flight_booking_loading_title">Memperbarui Data</string>
+    <string name="flight_label_adult_review">(Dewasa)</string>
+    <string name="flight_label_child_review">(Anak)</string>
+    <string name="flight_label_infant_review">(Bayi)</string>
 </resources>

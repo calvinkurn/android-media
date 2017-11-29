@@ -18,8 +18,8 @@ public class FlightBookingreviewPriceViewHolder extends BaseViewHolder<SimpleVie
 
     @Override
     public void bindObject(SimpleViewModel simpleViewModel) {
-        priceAmount.setText(simpleViewModel.getLabel());
-        priceLabel.setText(simpleViewModel.getDescription());
+        priceAmount.setText(simpleViewModel.getDescription());
+        priceLabel.setText(simpleViewModel.getLabel());
     }
 
     public FlightBookingreviewPriceViewHolder(View layoutView) {

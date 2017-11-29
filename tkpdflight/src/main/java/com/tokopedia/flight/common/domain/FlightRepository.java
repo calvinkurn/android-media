@@ -31,6 +31,7 @@ public interface FlightRepository {
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);
 
     Observable<Boolean> deleteFlightCacheSearch();
+    Observable<Boolean> deleteFlightCacheSearch(boolean isReturning);
 
     Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams);
 

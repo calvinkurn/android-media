@@ -83,5 +83,10 @@
             android:label="@string/activity_label_flight_issuing_country"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".orderlist.FlightOrderListActivity"
+            android:label="@string/activity_label_flight_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

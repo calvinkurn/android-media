@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
  * @author by alvarisi on 11/21/17.
  */
 
-public class SimpleViewModel implements Parcelable, ItemType {
+public class SimpleViewModel implements ItemType, Parcelable {
 
 
     public static final int TYPE = 983;
@@ -23,23 +23,6 @@ public class SimpleViewModel implements Parcelable, ItemType {
         this.label = label;
         this.description = description;
     }
-
-    protected SimpleViewModel(Parcel in) {
-        label = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<SimpleViewModel> CREATOR = new Creator<SimpleViewModel>() {
-        @Override
-        public SimpleViewModel createFromParcel(Parcel in) {
-            return new SimpleViewModel(in);
-        }
-
-        @Override
-        public SimpleViewModel[] newArray(int size) {
-            return new SimpleViewModel[size];
-        }
-    };
 
     public String getLabel() {
         return label;
@@ -68,8 +51,25 @@ public class SimpleViewModel implements Parcelable, ItemType {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(label);
-        parcel.writeString(description);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.label);
+        dest.writeString(this.description);
     }
+
+    protected SimpleViewModel(Parcel in) {
+        this.label = in.readString();
+        this.description = in.readString();
+    }
+
+    public static final Parcelable.Creator<SimpleViewModel> CREATOR = new Parcelable.Creator<SimpleViewModel>() {
+        @Override
+        public SimpleViewModel createFromParcel(Parcel source) {
+            return new SimpleViewModel(source);
+        }
+
+        @Override
+        public SimpleViewModel[] newArray(int size) {
+            return new SimpleViewModel[size];
+        }
+    };
 }

@@ -83,7 +83,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_review, container, false);
-        reviewTime = view.findViewById(R.id.countdown_finish_transaction);
+        reviewTime = (CountdownTimeView) view.findViewById(R.id.countdown_finish_transaction);
         reviewDetailDepartureFlight = (TextView) view.findViewById(R.id.review_detail_departure_flight);
         recyclerViewDepartureFlight = (RecyclerView) view.findViewById(R.id.recycler_view_departure_flight);
         reviewDetailReturnFlight = (TextView) view.findViewById(R.id.review_detail_return_flight);
@@ -95,7 +95,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         voucherCartView = view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
 
-        initView();
+        reviewTime.setListener(new CountdownTimeView.OnActionListener() {
+            @Override
+            public void onFinished() {
+                showDialogExpired();
+            }
+        });
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,29 +119,25 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 startActivity(FlightDetailActivity.createIntent(getActivity(), flightBookingReviewModel.getDetailViewModelListDeparture()));
             }
         });
-        reviewTime.setListener(new CountdownTimeView.OnActionListener() {
-            @Override
-            public void onFinished() {
-                showDialogExpired();
-            }
-        });
         voucherCartView.setActionListener(this);
         return view;
     }
 
     void showDialogExpired() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(R.string.flight_booking_expired_booking_label);
-        dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getActivity().setResult(Activity.RESULT_CANCELED);
-                        getActivity().finish();
-                    }
-                });
-        dialog.setCancelable(false);
-        dialog.create().show();
+        if(isAdded()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage(R.string.flight_booking_expired_booking_label);
+            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            getActivity().finish();
+                        }
+                    });
+            dialog.setCancelable(false);
+            dialog.create().show();
+        }
     }
 
     void initView() {
@@ -164,11 +165,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
 
         reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
-        reviewTime.setExpiredDate(flightBookingReviewModel.getDateFinishTime());
     }
 
-    private void checkVoucherCode(String voucherCode) {
-        flightBookingReviewPresenter.checkVoucherCode("", voucherCode);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initView();
+        reviewTime.setExpiredDate(flightBookingReviewModel.getDateFinishTime());
+        reviewTime.start();
     }
 
     @Override
@@ -224,5 +229,11 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void trackingCancelledVoucher() {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        flightBookingReviewPresenter.detachView();
     }
 }
