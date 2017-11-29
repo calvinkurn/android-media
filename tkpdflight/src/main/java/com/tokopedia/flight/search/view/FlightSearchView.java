@@ -25,6 +25,9 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList);
     void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB);
 
+    void onErrorDeleteFlightCache(Throwable throwable);
+    void onSuccessDeleteFlightCache();
+
     void onErrorGetFlightStatistic(Throwable throwable);
 
     void onErrorGetDetailFlightDeparture(Throwable e);

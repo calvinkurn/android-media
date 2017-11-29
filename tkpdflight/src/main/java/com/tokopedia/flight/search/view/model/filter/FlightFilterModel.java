@@ -118,38 +118,51 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         flightFilterModel.setPriceMax(getPriceMax());
         flightFilterModel.setDurationMin(getDurationMin());
         flightFilterModel.setDurationMax(getDurationMax());
+        flightFilterModel.setTransitTypeList(getCopyOfTransitList());
+        flightFilterModel.setAirlineList(getCopyOfAirlineList());
+        flightFilterModel.setDepartureTimeList(getCopyOfDepartureList());
+        flightFilterModel.setRefundableTypeList(getCopyOfRefundableList());
+        return flightFilterModel;
+    }
+
+    private List<TransitEnum> getCopyOfTransitList(){
         List<TransitEnum> transitEnumList = new ArrayList<>();
         if (getTransitTypeList()!=null) {
             for (int i = 0, sizei = getTransitTypeList().size(); i < sizei; i++) {
                 transitEnumList.add(getTransitTypeList().get(i));
             }
         }
-        flightFilterModel.setTransitTypeList(transitEnumList);
+        return transitEnumList;
+    }
 
-        List<String> airlineList = new ArrayList<>();
-        if (getAirlineList()!= null) {
-            for (int i = 0, sizei = getAirlineList().size(); i < sizei; i++) {
-                airlineList.add(getAirlineList().get(i));
-            }
-        }
-        flightFilterModel.setAirlineList(airlineList);
-
+    private List<DepartureTimeEnum> getCopyOfDepartureList(){
         List<DepartureTimeEnum> departureTimeEnumList = new ArrayList<>();
         if (getDepartureTimeList()!= null) {
             for (int i = 0, sizei = getDepartureTimeList().size(); i < sizei; i++) {
                 departureTimeEnumList.add(getDepartureTimeList().get(i));
             }
         }
-        flightFilterModel.setDepartureTimeList(departureTimeEnumList);
+        return departureTimeEnumList;
+    }
 
+    private List<String> getCopyOfAirlineList(){
+        List<String> airlineList = new ArrayList<>();
+        if (getAirlineList()!= null) {
+            for (int i = 0, sizei = getAirlineList().size(); i < sizei; i++) {
+                airlineList.add(getAirlineList().get(i));
+            }
+        }
+        return airlineList;
+    }
+
+    private List<RefundableEnum> getCopyOfRefundableList(){
         List<RefundableEnum> refundableEnumList = new ArrayList<>();
         if (getRefundableTypeList()!=null) {
             for (int i = 0, sizei = getRefundableTypeList().size(); i < sizei; i++) {
                 refundableEnumList.add(getRefundableTypeList().get(i));
             }
         }
-        flightFilterModel.setRefundableTypeList(refundableEnumList);
-        return flightFilterModel;
+        return refundableEnumList;
     }
 
     @Override
