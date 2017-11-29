@@ -133,7 +133,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:orientation="vertical"
-        android:divider="@drawable/bg_line_separator"
+        android:divider="@drawable/bg_line_separator_with_padding"
         android:showDividers="middle|end">
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
