@@ -17,19 +17,24 @@ import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
+import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
+import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageDetailActivity;
 
 /**
  * Created by Nisie on 5/19/16.
@@ -86,7 +91,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         }
     }
 
-    @DeepLink({Constants.Applinks.MESSAGE_DETAIL, Constants.Applinks.TOPCHAT})
+    @DeepLink(Constants.Applinks.TOPCHAT)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         Intent homeIntent = null;
         if (GlobalConfig.isSellerApp()) {
@@ -94,8 +99,19 @@ public class ChatRoomActivity extends BasePresenterActivity
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
-        Intent detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
-        Intent parentIntent = new Intent(context, InboxChatActivity.class);
+        Intent detailsIntent;
+        Intent parentIntent;
+
+        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+                && ((RemoteConfigRouter) MainApplication.getInstance() ).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+            detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
+            parentIntent = new Intent(context, InboxChatActivity.class);
+        } else {
+            detailsIntent = new Intent(context, InboxMessageDetailActivity.class).putExtras
+                    (extras);
+            parentIntent = new Intent(context, InboxMessageActivity.class);
+        }
+
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(parentIntent);

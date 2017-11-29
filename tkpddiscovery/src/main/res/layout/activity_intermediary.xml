@@ -20,7 +20,14 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextColor="@color/black_70"
             />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/top_bar_shadow" />
     </android.support.design.widget.AppBarLayout>
+
+
 
     <FrameLayout
         android:id="@+id/container"
@@ -35,7 +42,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="false" />
-
 
     </FrameLayout>
 

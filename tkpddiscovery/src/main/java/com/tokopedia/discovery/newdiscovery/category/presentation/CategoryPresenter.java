@@ -154,5 +154,12 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
         }
 
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getCategoryHeaderUseCase.unsubscribe();
+        getProductUseCase.unsubscribe();
+    }
 }
 

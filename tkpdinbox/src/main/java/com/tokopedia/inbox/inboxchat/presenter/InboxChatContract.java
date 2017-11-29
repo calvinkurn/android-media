@@ -92,6 +92,8 @@ public class InboxChatContract {
         void onErrorDeleteMessage(String errorMessage);
 
         void setMenuEnabled(boolean b);
+
+        void saveResult();
     }
 
     interface Presenter extends CustomerPresenter<View>{

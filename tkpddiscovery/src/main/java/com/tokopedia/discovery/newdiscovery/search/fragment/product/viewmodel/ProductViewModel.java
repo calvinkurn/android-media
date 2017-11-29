@@ -23,7 +23,7 @@ public class ProductViewModel implements Parcelable {
     private SuggestionModel suggestionModel;
     private int totalData;
     private SearchParameter searchParameter;
-
+    private boolean forceSearch;
 
     public ProductViewModel() {
     }
@@ -101,6 +101,14 @@ public class ProductViewModel implements Parcelable {
         return searchParameter;
     }
 
+    public boolean isForceSearch() {
+        return forceSearch;
+    }
+
+    public void setForceSearch(boolean forceSearch) {
+        this.forceSearch = forceSearch;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -117,6 +125,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeParcelable(this.searchParameter, flags);
+        dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -129,6 +138,7 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = in.readParcelable(SuggestionModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
+        this.forceSearch = in.readByte() != 0;
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
