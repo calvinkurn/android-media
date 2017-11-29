@@ -16,13 +16,10 @@ import javax.inject.Inject;
 
 public class FlightBookingCartDataMapper {
     private FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper;
-    private FlightBookingLuggageViewModelMapper flightBookingLuggageViewModelMapper;
 
     @Inject
-    public FlightBookingCartDataMapper(FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper,
-                                       FlightBookingLuggageViewModelMapper flightBookingLuggageViewModelMapper) {
+    public FlightBookingCartDataMapper(FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper) {
         this.flightBookingAmenityViewModelMapper = flightBookingAmenityViewModelMapper;
-        this.flightBookingLuggageViewModelMapper = flightBookingLuggageViewModelMapper;
     }
 
     public FlightBookingCartData transform(CartEntity entity) {

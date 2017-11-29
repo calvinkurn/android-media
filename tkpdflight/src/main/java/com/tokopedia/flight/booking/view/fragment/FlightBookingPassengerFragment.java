@@ -36,7 +36,6 @@ import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContrac
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 
@@ -87,7 +86,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static FlightBookingPassengerFragment newInstance(String departureId,
                                                              String returnId,
                                                              FlightBookingPassengerViewModel viewModel,
-                                                             List<FlightBookingLuggageMetaViewModel> luggageViewModels,
+                                                             List<FlightBookingAmenityMetaViewModel> luggageViewModels,
                                                              List<FlightBookingAmenityMetaViewModel> mealViewModels) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
@@ -103,7 +102,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     public static Fragment newInstance(String departureId,
                                        FlightBookingPassengerViewModel viewModel,
-                                       List<FlightBookingLuggageMetaViewModel> luggageViewModels,
+                                       List<FlightBookingAmenityMetaViewModel> luggageViewModels,
                                        List<FlightBookingAmenityMetaViewModel> mealViewModels) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();

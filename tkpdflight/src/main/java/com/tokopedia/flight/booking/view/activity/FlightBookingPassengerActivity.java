@@ -13,7 +13,6 @@ import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
     protected Fragment getNewFragment() {
         viewModel = getIntent().getParcelableExtra(EXTRA_PASSENGER);
 
-        List<FlightBookingLuggageMetaViewModel> luggageViewModels = getIntent().getParcelableArrayListExtra(EXTRA_LUGGAGES);
+        List<FlightBookingAmenityMetaViewModel> luggageViewModels = getIntent().getParcelableArrayListExtra(EXTRA_LUGGAGES);
         List<FlightBookingAmenityMetaViewModel> mealViewModels = getIntent().getParcelableArrayListExtra(EXTRA_MEALS);
         if (getIntent().getStringExtra(EXTRA_RETURN) != null) {
             return FlightBookingPassengerFragment.newInstance(
