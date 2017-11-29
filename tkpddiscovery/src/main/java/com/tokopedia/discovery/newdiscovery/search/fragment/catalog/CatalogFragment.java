@@ -551,7 +551,9 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void backToTop() {
-        recyclerView.smoothScrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.smoothScrollToPosition(0);
+        }
     }
 
     @Override
