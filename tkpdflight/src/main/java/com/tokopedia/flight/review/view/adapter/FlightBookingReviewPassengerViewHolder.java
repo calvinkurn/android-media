@@ -39,11 +39,11 @@ public class FlightBookingReviewPassengerViewHolder extends BaseViewHolder<Fligh
     String getPassengerType(int flightDetailPassenger) {
         switch (flightDetailPassenger){
             case FlightBookingPassenger.ADULT:
-                return getString(R.string.flight_label_adult);
+                return getString(R.string.flight_label_adult_review);
             case FlightBookingPassenger.CHILDREN:
-                return getString(R.string.flight_label_child);
+                return getString(R.string.flight_label_child_review);
             case FlightBookingPassenger.INFANT:
-                return getString(R.string.flight_label_infant);
+                return getString(R.string.flight_label_infant_review);
             default:
                 return "";
         }

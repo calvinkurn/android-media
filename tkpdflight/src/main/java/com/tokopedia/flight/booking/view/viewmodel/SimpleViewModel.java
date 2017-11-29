@@ -1,12 +1,15 @@
 package com.tokopedia.flight.booking.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
 /**
  * @author by alvarisi on 11/21/17.
  */
 
-public class SimpleViewModel implements ItemType {
+public class SimpleViewModel implements ItemType, Parcelable {
 
 
     public static final int TYPE = 983;
@@ -41,4 +44,32 @@ public class SimpleViewModel implements ItemType {
     public int getType() {
         return TYPE;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.label);
+        dest.writeString(this.description);
+    }
+
+    protected SimpleViewModel(Parcel in) {
+        this.label = in.readString();
+        this.description = in.readString();
+    }
+
+    public static final Parcelable.Creator<SimpleViewModel> CREATOR = new Parcelable.Creator<SimpleViewModel>() {
+        @Override
+        public SimpleViewModel createFromParcel(Parcel source) {
+            return new SimpleViewModel(source);
+        }
+
+        @Override
+        public SimpleViewModel[] newArray(int size) {
+            return new SimpleViewModel[size];
+        }
+    };
 }
