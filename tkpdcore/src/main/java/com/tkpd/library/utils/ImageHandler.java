@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
+import com.tokopedia.core.R;
 
 import java.io.File;
 

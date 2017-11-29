@@ -64,7 +64,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         LocalCacheHandler.clearCache(context, TkpdCache.CACHE_PROMO);
     }
 
-    public class Key {
+    public class Key extends com.tokopedia.abstraction.constant.TkpdCache.Key {
 
         public static final String UNIVERSEARCH = "universearch";
         public static final String DISTRICT_ID = "district_id";
