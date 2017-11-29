@@ -61,18 +61,10 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         ButtonViewItem buttonViewItem = buttonViewItemList.get(position);
-        if (buttonViewItemList.size() != 2) {
-            if (position == 0) {
-                setGreenButton(holder.btnAction, buttonViewItem.getLabel());
-            } else {
-                setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
-            }
+        if (position == buttonViewItemList.size() - 1) {
+            setGreenButton(holder.btnAction, buttonViewItem.getLabel());
         } else {
-            if (position == 1) {
-                setGreenButton(holder.btnAction, buttonViewItem.getLabel());
-            } else {
-                setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
-            }
+            setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
         }
         holder.btnAction.setOnClickListener(onActionButtonListener(buttonViewItem.getType()));
     }
@@ -117,7 +109,7 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
         if (buttonViewItemList.size() == 1) return 2;
         else if (buttonViewItemList.size() == 2) return 1;
         else if (buttonViewItemList.size() == 3) {
-            if (position == 0) return 2;
+            if (position == 2) return 2;
             else return 1;
         } else if (buttonViewItemList.size() == 4) {
             if (position == 0 || position == 3) return 2;

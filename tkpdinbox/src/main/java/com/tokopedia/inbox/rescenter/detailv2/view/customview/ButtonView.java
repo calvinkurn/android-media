@@ -75,7 +75,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                 context,
                 adapter.getAdapterSpanCount(),
                 LinearLayoutManager.VERTICAL,
-                true);
+                false);
         mLayoutManager.setSpanSizeLookup(adapter.getSpanItem());
         rvButton.setLayoutManager(mLayoutManager);
         adapter.setButtonViewItemList(data.getButtonViewItemList());

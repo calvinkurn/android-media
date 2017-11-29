@@ -382,7 +382,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
                     domainModel.getCancelOrder());
             itemList.add(data);
         }
-//        Collections.sort(itemList, new ButtonOrderComparator());
+        Collections.sort(itemList, new ButtonOrderComparator());
         return itemList;
     }
 
@@ -390,7 +390,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
     private class ButtonOrderComparator implements Comparator<ButtonViewItem> {
         @Override
         public int compare(ButtonViewItem button1, ButtonViewItem button2) {
-            return button1.getOrder() - button2.getOrder();
+            return button2.getOrder() - button1.getOrder();
         }
     }
 }
