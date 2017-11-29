@@ -1,6 +1,5 @@
 package com.tokopedia.core.remoteconfig;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,12 +12,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by okasurya on 9/11/17.
@@ -56,7 +50,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public boolean getBoolean(String key, Boolean defaultValue) {
-        if(firebaseRemoteConfig != null) {
+        if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getBoolean(key);
         }
         return defaultValue;

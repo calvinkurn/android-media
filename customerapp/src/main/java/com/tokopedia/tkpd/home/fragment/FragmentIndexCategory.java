@@ -145,8 +145,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
-    private static final String KEY_TOKO_CASH_TOP_UP = "toko_cash_top_up";
-    private static final String KEY_TOKO_CASH_LABEL = "toko_cash_label";
 
     private ViewHolder holder;
 
@@ -1023,8 +1021,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
         holder.tokoCashHeaderView.renderData(
                 tokoCashData,
-                remoteConfig.getBoolean(KEY_TOKO_CASH_TOP_UP, false),
-                remoteConfig.getString(KEY_TOKO_CASH_LABEL, getActivity().getString(R.string.tokocash))
+                remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.TOKO_CASH_TOP_UP, false),
+                remoteConfig.getString(TkpdCache.RemoteConfigKey.TOKO_CASH_LABEL, getActivity().getString(R.string.tokocash))
         );
         this.tokoCashData = tokoCashData;
     }

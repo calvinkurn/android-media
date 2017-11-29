@@ -1,7 +1,5 @@
 package com.tokopedia.core.remoteconfig;
 
-import android.app.Activity;
-
 /**
  * Created by okasurya on 11/6/17.
  */

@@ -2,7 +2,6 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -108,7 +107,7 @@ public class BranchSdkUtils {
             return true;
         } else {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
-            return remoteConfig.getBoolean(TkpdCache.Key.CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS, true);
+            return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
         }
     }
 
@@ -127,7 +126,7 @@ public class BranchSdkUtils {
     private static String getAppShareDescription(Activity activity, String type) {
         if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
-            return remoteConfig.getString(TkpdCache.Key.CONFIG_APP_SHARE_DESCRIPTION) + " \n";
+            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DESCRIPTION) + " \n";
         }
         return "";
 
