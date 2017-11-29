@@ -356,8 +356,8 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
                     getView().getCurrentBookingParamViewModel().getSearchParam().getFlightPassengerViewModel().getInfant(),
                     getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass().getId(),
                     getView().getDepartureTripId(),
-                    getView().getCurrentBookingParamViewModel().getSearchParam().getDepartureDate(),
                     getView().getReturnTripId(),
+                    getView().getCurrentBookingParamViewModel().getSearchParam().getDepartureDate(),
                     getView().getCurrentBookingParamViewModel().getSearchParam().getReturnDate(),
                     getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId())
             );
@@ -421,6 +421,13 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
 
     @Override
     public void onResume() {
+
+    }
+
+
+    @Override
+    public void onPause() {
+
     }
 
     @Override

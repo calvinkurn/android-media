@@ -117,6 +117,15 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<Boolean> deleteFlightCacheSearch(boolean isReturning) {
+        if (isReturning) {
+            return flightSearchReturnDataListSource.deleteCache();
+        } else {
+            return flightSearchSingleDataListSource.deleteCache();
+        }
+    }
+
+    @Override
     public Observable<List<FlightAirlineDB>> getAirlineList(String airlineId) {
         return flightAirlineDataListSource.getAirlineList(airlineId);
     }

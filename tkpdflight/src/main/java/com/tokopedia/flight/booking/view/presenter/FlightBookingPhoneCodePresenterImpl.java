@@ -30,6 +30,16 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
         flightBookingGetPhoneCodeUseCase.execute(RequestParams.create(), getSubscriberPhoneCode());
     }
 
+    @Override
+    public void getPhoneCodeList(String text) {
+        flightBookingGetPhoneCodeUseCase.execute(flightBookingGetPhoneCodeUseCase.createRequest(text), getSubscriberPhoneCode());
+    }
+
+    @Override
+    public void onDestroyView() {
+        detachView();
+    }
+
     public Subscriber<List<FlightBookingPhoneCodeViewModel>> getSubscriberPhoneCode() {
         return new Subscriber<List<FlightBookingPhoneCodeViewModel>>() {
             @Override
@@ -39,14 +49,16 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().onLoadSearchError(e);
                 }
             }
 
             @Override
             public void onNext(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
-                getView().onSearchLoaded(flightBookingPhoneCodeViewModels, flightBookingPhoneCodeViewModels.size());
+                if (isViewAttached()) {
+                    getView().onSearchLoaded(flightBookingPhoneCodeViewModels, flightBookingPhoneCodeViewModels.size());
+                }
             }
         };
     }

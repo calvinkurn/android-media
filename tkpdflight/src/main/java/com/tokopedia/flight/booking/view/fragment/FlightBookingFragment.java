@@ -501,6 +501,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        presenter.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.onDestroyView();
         super.onDestroyView();

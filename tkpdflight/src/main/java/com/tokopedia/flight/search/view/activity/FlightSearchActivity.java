@@ -45,8 +45,12 @@ public class FlightSearchActivity extends BaseSimpleActivity
         setupFlightToolbar();
     }
 
-    protected void initializeDataFromIntent(){
+    private void initializeDataFromIntent(){
         passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+        initializeToolbarData();
+    }
+
+    protected void initializeToolbarData(){
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
@@ -98,6 +102,13 @@ public class FlightSearchActivity extends BaseSimpleActivity
         } else {
             FlightSearchReturnActivity.start(this, passDataViewModel, selectedFlightID);
         }
+    }
+
+    @Override
+    public void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel) {
+        this.passDataViewModel = flightSearchPassDataViewModel;
+        initializeToolbarData();
+        setupFlightToolbar();
     }
 
 }

@@ -19,6 +19,9 @@ import rx.functions.Func1;
  */
 
 public class FlightBookingGetPhoneCodeUseCase extends UseCase<List<FlightBookingPhoneCodeViewModel>> {
+    private static final String PARAM_QUERY = "query";
+    private static final String DEFAULT_PARAM = "";
+
 
     private final FlightRepository flightRepository;
 
@@ -29,7 +32,7 @@ public class FlightBookingGetPhoneCodeUseCase extends UseCase<List<FlightBooking
 
     @Override
     public Observable<List<FlightBookingPhoneCodeViewModel>> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirportList("")
+        return flightRepository.getAirportList(requestParams.getString(PARAM_QUERY, DEFAULT_PARAM))
                 .flatMap(new Func1<List<FlightAirportDB>, Observable<List<FlightBookingPhoneCodeViewModel>>>() {
                     @Override
                     public Observable<List<FlightBookingPhoneCodeViewModel>> call(List<FlightAirportDB> flightAirportDBs) {
@@ -53,5 +56,11 @@ public class FlightBookingGetPhoneCodeUseCase extends UseCase<List<FlightBooking
                         return Observable.just(flightBookingPhoneCodeViewModels);
                     }
                 });
+    }
+
+    public RequestParams createRequest(String query) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_QUERY, query);
+        return requestParams;
     }
 }
