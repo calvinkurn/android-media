@@ -192,10 +192,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
                     }
                 });
-
-                RotateAnimation rotate = new RotateAnimation(180, 360, Animation.RELATIVE_TO_SELF,
-                        0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                rotate.setDuration(300);
                 reverseAirportImageView.startAnimation(shake);
             }
         });
@@ -265,13 +261,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         returnDateTextInputView.setText(viewModel.getReturnDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
         if (viewModel.getDepartureAirport() != null) {
-            airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
+            airportDepartureTextInputView.setText(viewModel.getAirportTextForView(getContext(), true));
         } else {
             airportDepartureTextInputView.setText(null);
             airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
         }
         if (viewModel.getArrivalAirport() != null) {
-            airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
+            airportArrivalTextInputView.setText(viewModel.getAirportTextForView(getContext(), false));
         } else {
             airportArrivalTextInputView.setText(null);
             airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));
