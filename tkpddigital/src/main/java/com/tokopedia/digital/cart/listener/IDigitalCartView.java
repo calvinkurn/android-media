@@ -83,9 +83,9 @@ public interface IDigitalCartView extends IBaseView {
 
     String getWalletRefreshToken();
 
-    String getDigitalCategoryId();
+//    String getDigitalCategoryId();
 
-    String getVoucherCode();
+//    String getVoucherCode();
 
     CheckoutDataParameter getCheckoutData();
 
