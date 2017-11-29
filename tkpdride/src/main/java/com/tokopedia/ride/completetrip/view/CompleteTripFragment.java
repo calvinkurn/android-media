@@ -143,10 +143,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     LinearLayout topupPendingFareLayout;
     @BindView(R2.id.tv_total_pending)
     TextView totalPendingTextView;
-    @BindView(R2.id.layout_tokocash_option)
-    RelativeLayout tokocashOptionRelativeLayout;
-    @BindView(R2.id.tv_tokocash_selected_product)
-    TextView tokocashSelectedProductTextView;
     @BindView(R2.id.label_total_charged)
     TextView labelAmountChargedTextView;
 
@@ -355,33 +351,9 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         }
 
         if (isPendingPaymentExists) {
-            passData = new DigitalCheckoutPassData();
-            passData.setCategoryId(receipt.getPendingPayment().getCategoryId());
-            passData.setOperatorId(receipt.getPendingPayment().getOperatorId());
-            Map<String, String> maps = splitQuery(Uri.parse(receipt.getPendingPayment().getTopupUrl()));
-            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN) != null)
-                passData.setUtmCampaign(maps.get(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN));
-            if (maps.get(DigitalCheckoutPassData.PARAM_CLIENT_NUMBER) != null)
-                passData.setClientNumber(maps.get(DigitalCheckoutPassData.PARAM_CLIENT_NUMBER));
-            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_SOURCE) != null)
-                passData.setUtmSource(maps.get(DigitalCheckoutPassData.PARAM_UTM_SOURCE));
-            if (maps.get(DigitalCheckoutPassData.PARAM_UTM_CONTENT) != null)
-                passData.setUtmContent(maps.get(DigitalCheckoutPassData.PARAM_UTM_CONTENT));
-            if (maps.get(DigitalCheckoutPassData.PARAM_IS_PROMO) != null)
-                passData.setIsPromo(maps.get(DigitalCheckoutPassData.PARAM_IS_PROMO));
-            if (maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT) != null)
-                passData.setInstantCheckout(maps.get(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
-
-
-            if (receipt.getPendingPayment().getTopUpOptions() != null && receipt.getPendingPayment().getTopUpOptions().size() > 0) {
-                TokoCashProduct product = receipt.getPendingPayment().getTopUpOptions().get(0);
-                tokocashSelectedProductTextView.setText(product.getTitle());
-                passData.setProductId(product.getId());
-            }
-
             totalPendingTextView.setText(receipt.getPendingPayment().getPendingAmount());
             pendingFareLayout.setVisibility(View.VISIBLE);
-            topupPendingFareLayout.setVisibility(receipt.getPendingPayment().isShowTopupOptions() ? View.VISIBLE : View.GONE);
+            topupPendingFareLayout.setVisibility(View.VISIBLE);
         } else {
             ratingLayout.setVisibility(View.VISIBLE);
 
@@ -628,13 +600,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                     NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.complete_trip_payment_failed));
                 }
 
-                break;
-            case TOKOCASH_PRODUCT_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    TokoCashProduct product = data.getParcelableExtra(PendingFareChooserActivity.EXTRA_PRODUCT);
-                    tokocashSelectedProductTextView.setText(product.getTitle());
-                    passData.setProductId(product.getId());
-                }
                 break;
 
             case REQUEST_CODE_OPEN_SCROOGE_PAGE:
