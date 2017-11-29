@@ -48,4 +48,7 @@
     <string name="lihat_semua">Lihat Semua</string>
     <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
 
+    <!--home-->
+    <string name="format_btn_category_more">+%d Kategori Lainnya</string>
+
 </resources>

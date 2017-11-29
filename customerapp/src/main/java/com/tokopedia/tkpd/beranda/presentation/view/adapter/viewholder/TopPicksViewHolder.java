@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
+import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.GridSpacingItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 
@@ -36,13 +37,17 @@ public class TopPicksViewHolder extends AbstractViewHolder<TopPicksViewModel> {
     TextView titleTxt;
     @BindView(R.id.list)
     RecyclerView recyclerView;
+    @BindView(R.id.see_more)
+    TextView seeMoreTxt;
 
     private ItemAdapter adapter;
     private int spanCount = 3;
+    private HomeCategoryListener listener;
 
-    public TopPicksViewHolder(View itemView) {
+    public TopPicksViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         ButterKnife.bind(itemView);
+        this.listener = listener;
         adapter = new ItemAdapter(itemView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
@@ -52,14 +57,15 @@ public class TopPicksViewHolder extends AbstractViewHolder<TopPicksViewModel> {
     }
 
     @Override
-    public void bind(TopPicksViewModel element) {
+    public void bind(final TopPicksViewModel element) {
         titleTxt.setText(element.getTitle());
         adapter.setData(element.getTopPicksItems());
-    }
-
-    @OnClick(R.id.see_more)
-    void onSeeMore(){
-
+        seeMoreTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onTopPicksMoreClicked(element.getTopPickUrl(), getAdapterPosition());
+            }
+        });
     }
 
     public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
@@ -83,8 +89,14 @@ public class TopPicksViewHolder extends AbstractViewHolder<TopPicksViewModel> {
         }
 
         @Override
-        public void onBindViewHolder(ItemViewHolder holder, int position) {
+        public void onBindViewHolder(ItemViewHolder holder, final int position) {
             Glide.with(context).load(data.get(position).getImageUrl()).into(holder.image);
+            holder.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onTopPicksItemClicked(data.get(position), getAdapterPosition(), position);
+                }
+            });
         }
 
         @Override

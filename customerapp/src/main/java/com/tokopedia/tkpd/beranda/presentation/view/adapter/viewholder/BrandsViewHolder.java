@@ -15,6 +15,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
+import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.GridSpacingItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
@@ -41,10 +42,12 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
 
     private ItemAdapter adapter;
     private int spanCount = 3;
+    private HomeCategoryListener listener;
 
-    public BrandsViewHolder(View itemView) {
+    public BrandsViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        this.listener = listener;
         adapter = new ItemAdapter(itemView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
@@ -61,7 +64,7 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
 
     @OnClick(R.id.see_more)
     void onSeeMore(){
-
+        listener.onBrandsMoreClicked(getAdapterPosition());
     }
 
     public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
@@ -85,8 +88,14 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
         }
 
         @Override
-        public void onBindViewHolder(ItemViewHolder holder, int position) {
+        public void onBindViewHolder(ItemViewHolder holder, final int position) {
             Glide.with(context).load(data.get(position).getLogoUrl()).into(holder.image);
+            holder.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onBrandsItemClicked(data.get(position), getAdapterPosition(), position);
+                }
+            });
         }
 
         @Override

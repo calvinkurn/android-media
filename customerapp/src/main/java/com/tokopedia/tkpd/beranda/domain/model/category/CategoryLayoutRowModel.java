@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
  * @author by errysuprayogi on 11/27/17.
  */
 public class CategoryLayoutRowModel {
+    private static final String MARKETPLACE = "Marketplace";
+    private static final String DIGITAL = "Digital";
 
     @SerializedName("id")
     private int id;
@@ -22,9 +24,10 @@ public class CategoryLayoutRowModel {
     @SerializedName("additional_info")
     private String additionalInfo;
     @SerializedName("category_id")
-    private int categoryId;
+    private String categoryId;
     @SerializedName("applinks")
     private String applinks;
+    private String redirectValue; // DepId or redirect url if category type is Digital
 
     public int getId() {
         return id;
@@ -66,14 +69,6 @@ public class CategoryLayoutRowModel {
         this.Weight = Weight;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getAdditionalInfo() {
         return additionalInfo;
     }
@@ -82,11 +77,11 @@ public class CategoryLayoutRowModel {
         this.additionalInfo = additionalInfo;
     }
 
-    public int getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -96,5 +91,36 @@ public class CategoryLayoutRowModel {
 
     public void setApplinks(String applinks) {
         this.applinks = applinks;
+    }
+
+    public String getRedirectValue() {
+        return redirectValue;
+    }
+
+    public void setRedirectValue(String redirectValue) {
+        this.redirectValue = redirectValue;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+        if(isCategoryItemMarketPlace()){
+            setRedirectValue(getCategoryId());
+        } else if(isCategoryItemDigital()){
+            setRedirectValue(getUrl());
+        } else {
+            setRedirectValue(getUrl());
+        }
+    }
+
+    private boolean isCategoryItemMarketPlace() {
+        return MARKETPLACE.equalsIgnoreCase(type);
+    }
+
+    private boolean isCategoryItemDigital() {
+        return DIGITAL.equalsIgnoreCase(type);
     }
 }

@@ -74,6 +74,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
     private Visitable mappingTopPicks(TopPicksModel topPicks) {
         TopPicksViewModel viewModel = new TopPicksViewModel();
         viewModel.setTitle(topPicks.getName());
+        viewModel.setTopPickUrl(topPicks.getUrl());
         viewModel.setTopPicksItems(topPicks.getItem());
         return viewModel;
     }

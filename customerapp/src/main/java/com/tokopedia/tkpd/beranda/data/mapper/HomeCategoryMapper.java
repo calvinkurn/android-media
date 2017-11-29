@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.beranda.data.mapper;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.network.entity.homeMenu.LayoutRow;
 import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseModel;
 
 import retrofit2.Response;
@@ -30,4 +31,5 @@ public class HomeCategoryMapper implements Func1<Response<String>, HomeCategoryR
         }
         return responseModel;
     }
+
 }

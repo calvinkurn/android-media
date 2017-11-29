@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.entity.hotlist.List;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.GridSpacingItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
@@ -34,11 +36,13 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
     private SectionItemAdapter adapter;
     private Context context;
     private static final int spanCount = 4;
+    private HomeCategoryListener listener;
 
-    public CategorySectionViewHolder(View itemView) {
+    public CategorySectionViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.context = itemView.getContext();
+        this.listener = listener;
         adapter = new SectionItemAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
@@ -70,8 +74,15 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         }
 
         @Override
-        public void onBindViewHolder(SectionItemViewHolder holder, int position) {
+        public void onBindViewHolder(SectionItemViewHolder holder, final int position) {
             holder.title.setText(sectionViewModel.getSectionList().get(position).getTitle());
+            holder.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onSectionItemClicked(sectionViewModel.getSectionList().get(position),
+                            getAdapterPosition(), position);
+                }
+            });
         }
 
         @Override
@@ -86,6 +97,8 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         ImageView icon;
         @BindView(R.id.title)
         TextView title;
+        @BindView(R.id.container)
+        LinearLayout container;
 
         public SectionItemViewHolder(View itemView) {
             super(itemView);

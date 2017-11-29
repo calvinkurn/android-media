@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 
@@ -23,9 +24,11 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
     public static final int LAYOUT = R.layout.layout_digitals;
     @BindView(R.id.title)
     TextView titleTxt;
+    private HomeCategoryListener listener;
 
-    public DigitalsViewHolder(View itemView) {
+    public DigitalsViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
+        this.listener = listener;
         ButterKnife.bind(this, itemView);
     }
 
@@ -36,6 +39,6 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
 
     @OnClick(R.id.see_more)
     void onSeeMore(){
-
+        listener.onDigitalMoreClicked(getAdapterPosition());
     }
 }

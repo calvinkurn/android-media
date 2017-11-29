@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
+import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
 import java.util.List;
@@ -14,6 +15,15 @@ public class TopPicksViewModel implements Visitable<HomeTypeFactory> {
 
     private String title;
     private List<TopPicksItemModel> topPicksItems;
+    private String topPickUrl;
+
+    public String getTopPickUrl() {
+        return topPickUrl;
+    }
+
+    public void setTopPickUrl(String topPickUrl) {
+        this.topPickUrl = topPickUrl;
+    }
 
     public String getTitle() {
         return title;

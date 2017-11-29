@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.BrandsViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.CategoryItemViewHolder;
@@ -27,6 +28,12 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolComme
  */
 
 public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTypeFactory {
+
+    private final HomeCategoryListener listener;
+
+    public HomeAdapterFactory(HomeCategoryListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public int type(BannerViewModel bannerViewModel) {
@@ -69,17 +76,17 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         if (type == BannerViewHolder.LAYOUT)
             viewHolder = new BannerViewHolder(view);
         else if (type == TickerViewHolder.LAYOUT)
-            viewHolder = new TickerViewHolder(view);
+            viewHolder = new TickerViewHolder(view, listener);
         else if (type == TopPicksViewHolder.LAYOUT)
-            viewHolder = new TopPicksViewHolder(view);
+            viewHolder = new TopPicksViewHolder(view, listener);
         else if (type == BrandsViewHolder.LAYOUT)
-            viewHolder = new BrandsViewHolder(view);
+            viewHolder = new BrandsViewHolder(view, listener);
         else if (type == DigitalsViewHolder.LAYOUT)
-            viewHolder = new DigitalsViewHolder(view);
+            viewHolder = new DigitalsViewHolder(view, listener);
         else if (type == CategorySectionViewHolder.LAYOUT)
-            viewHolder = new CategorySectionViewHolder(view);
+            viewHolder = new CategorySectionViewHolder(view, listener);
         else if (type == CategoryItemViewHolder.LAYOUT)
-            viewHolder = new CategoryItemViewHolder(view);
+            viewHolder = new CategoryItemViewHolder(view, listener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

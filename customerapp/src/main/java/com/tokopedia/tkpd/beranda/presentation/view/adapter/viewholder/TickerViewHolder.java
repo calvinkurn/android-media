@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 
@@ -29,10 +30,12 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     TextView textMessage;
     @BindView(R.id.btn_close)
     ImageView btnClose;
+    private HomeCategoryListener listener;
 
-    public TickerViewHolder(View itemView) {
+    public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        this.listener = listener;
     }
 
     @Override
@@ -43,6 +46,6 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
 
     @OnClick(R.id.btn_close)
     void closeTicker(){
-        Log.d(TAG, "Close ticker");
+        listener.onCloseTicker(getAdapterPosition());
     }
 }
