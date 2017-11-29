@@ -50,7 +50,7 @@ public class TkpdBaseURL {
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
-    public static String RIDE_DOMAIN = "https://ride-beta.tokopedia.com/";
+    public static String RIDE_DOMAIN = "https://ride.tokopedia.com/";
     public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
     public static String TOKO_CASH_DOMAIN = "https://www.tokocash.com";
     public static String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
@@ -60,7 +60,6 @@ public class TkpdBaseURL {
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
-
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -121,7 +120,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
 
-        public static final String MOST_HELPFUL_REVIEW = "reputationapp/review/api/v1/mosthelpful";
+        public static final String MOST_HELPFUL_REVIEW =
+                "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {
@@ -768,7 +768,7 @@ public class TkpdBaseURL {
     public static class Wallet {
         public static final String GET_HISTORY = "api/v1/me/history";
         public static final String POST_COMPLAINT = "api/v1/cs/complaint";
-        public static final String GET_OAUTH_INFO_ACCOUNT = "api/v1/me/profile";
+        public static final String GET_OAUTH_INFO_ACCOUNT= "api/v1/me/profile";
         public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
     }
 
@@ -849,6 +849,8 @@ public class TkpdBaseURL {
         public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
         public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
         public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
+
+
 
 
     }
