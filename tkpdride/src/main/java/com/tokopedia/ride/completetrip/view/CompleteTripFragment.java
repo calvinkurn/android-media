@@ -53,7 +53,6 @@ import com.tokopedia.ride.completetrip.di.DaggerCompleteTripComponent;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
 import com.tokopedia.ride.completetrip.domain.SendTipUseCase;
-import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
@@ -63,7 +62,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -354,7 +352,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             totalPendingTextView.setText(receipt.getPendingPayment().getPendingAmount());
             pendingFareLayout.setVisibility(View.VISIBLE);
             topupPendingFareLayout.setVisibility(View.VISIBLE);
-        } else {
             ratingLayout.setVisibility(View.VISIBLE);
 
             //create tip buttons
@@ -615,26 +612,9 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         }
     }
 
-    @OnClick(R2.id.layout_tokocash_option)
-    public void actionFareLayout() {
-        List<TokoCashProduct> products = receipt.getPendingPayment().getTopUpOptions();
-        startActivityForResult(PendingFareChooserActivity.getCallingIntent(getActivity(), products), TOKOCASH_PRODUCT_REQUEST_CODE);
-    }
-
     @OnClick(R2.id.btn_pay_pending_fare)
     public void actionPayPendingFare() {
         presenter.payPendingFare();
-
-        /*
-        if (passData == null) return;
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            passData.setIdemPotencyKey(generateIdEmpotency(receipt.getRequestId()));
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
-            startActivityForResult(
-                    digitalModuleRouter.instanceIntentCartDigitalProduct(passData),
-                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-            );
-        }*/
     }
 
 

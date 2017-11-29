@@ -147,10 +147,12 @@ public class ReceiptEntityMapper {
     }
 
     private String transformPaymentMethod(String paymentMethod) {
-        if (paymentMethod != null && paymentMethod.equalsIgnoreCase("wallet")) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase("cc")) {
+            return "Credit Card";
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase("wallet")) {
             return "TokoCash";
         }
 
-        return "Credit Card";
+        return "Amount";
     }
 }
