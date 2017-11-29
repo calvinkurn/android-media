@@ -2,9 +2,8 @@ package com.tokopedia.flight.booking.view.viewmodel.mapper;
 
 import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +15,13 @@ import javax.inject.Inject;
  */
 
 public class FlightBookingCartDataMapper {
-    private FlightBookingMealViewModelMapper flightBookingMealViewModelMapper;
+    private FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper;
     private FlightBookingLuggageViewModelMapper flightBookingLuggageViewModelMapper;
 
     @Inject
-    public FlightBookingCartDataMapper(FlightBookingMealViewModelMapper flightBookingMealViewModelMapper,
+    public FlightBookingCartDataMapper(FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper,
                                        FlightBookingLuggageViewModelMapper flightBookingLuggageViewModelMapper) {
-        this.flightBookingMealViewModelMapper = flightBookingMealViewModelMapper;
+        this.flightBookingAmenityViewModelMapper = flightBookingAmenityViewModelMapper;
         this.flightBookingLuggageViewModelMapper = flightBookingLuggageViewModelMapper;
     }
 
@@ -33,22 +32,22 @@ public class FlightBookingCartDataMapper {
             data.setId(entity.getId());
             data.setRefreshTime(entity.getAttribute().getFlightAttribute().getRefreshTime());
             if (entity.getAttribute().getFlightAttribute().getAmenities() != null) {
-                List<FlightBookingLuggageMetaViewModel> luggageMetaViewModels = new ArrayList<>();
-                List<FlightBookingMealMetaViewModel> mealMetaViewModels = new ArrayList<>();
+                List<FlightBookingAmenityMetaViewModel> luggageMetaViewModels = new ArrayList<>();
+                List<FlightBookingAmenityMetaViewModel> mealMetaViewModels = new ArrayList<>();
                 for (Amenity amenity : entity.getAttribute().getFlightAttribute().getAmenities()) {
                     switch (amenity.getType()) {
                         case Amenity.MEAL:
-                            FlightBookingMealMetaViewModel mealMetaViewModel = new FlightBookingMealMetaViewModel();
+                            FlightBookingAmenityMetaViewModel mealMetaViewModel = new FlightBookingAmenityMetaViewModel();
                             mealMetaViewModel.setKey(amenity.getKey());
                             mealMetaViewModel.setDescription(amenity.getDescription());
-                            mealMetaViewModel.setMealViewModels(flightBookingMealViewModelMapper.transform(amenity));
+                            mealMetaViewModel.setAmenities(flightBookingAmenityViewModelMapper.transform(amenity));
                             mealMetaViewModels.add(mealMetaViewModel);
                             break;
                         case Amenity.LUGGAGE:
-                            FlightBookingLuggageMetaViewModel luggageMetaViewModel = new FlightBookingLuggageMetaViewModel();
+                            FlightBookingAmenityMetaViewModel luggageMetaViewModel = new FlightBookingAmenityMetaViewModel();
                             luggageMetaViewModel.setKey(amenity.getKey());
                             luggageMetaViewModel.setDescription(amenity.getDescription());
-                            luggageMetaViewModel.setLuggages(flightBookingLuggageViewModelMapper.transform(amenity));
+                            luggageMetaViewModel.setAmenities(flightBookingAmenityViewModelMapper.transform(amenity));
                             luggageMetaViewModels.add(luggageMetaViewModel);
                             break;
                     }
@@ -56,8 +55,8 @@ public class FlightBookingCartDataMapper {
                 data.setLuggageViewModels(luggageMetaViewModels);
                 data.setMealViewModels(mealMetaViewModels);
             } else {
-                data.setLuggageViewModels(new ArrayList<FlightBookingLuggageMetaViewModel>());
-                data.setMealViewModels(new ArrayList<FlightBookingMealMetaViewModel>());
+                data.setLuggageViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+                data.setMealViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
             }
             data.setNewFarePrices(entity.getAttribute().getFlightAttribute().getNewPrices());
         }

@@ -3,12 +3,9 @@ package com.tokopedia.flight.review.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
@@ -51,36 +48,36 @@ public class FlightBookingReviewModel implements Parcelable {
             flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerName());
             flightDetailPassenger.setPassengerType(flightBookingPassengerViewModel.getType());
             flightDetailPassenger.setInfoPassengerList(generateDetailViewModelPassenger(flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
-                    flightBookingPassengerViewModel.getFlightBookingMealMetaViewModels()));
+                    flightBookingPassengerViewModel.getFlightBookingAmenityMetaViewModels()));
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;
     }
 
-    private List<SimpleViewModel> generateDetailViewModelPassenger(List<FlightBookingLuggageMetaViewModel> flightBookingLuggageMetaViewModels,
-                                                                   List<FlightBookingMealMetaViewModel> flightBookingMealMetaViewModels) {
+    private List<SimpleViewModel> generateDetailViewModelPassenger(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
+                                                                   List<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
-        for(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels){
+        for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
             simpleViewModel.setDescription(flightBookingLuggageMetaViewModel.getDescription());
-            simpleViewModel.setLabel(generateLabelLuggage(flightBookingLuggageMetaViewModel.getLuggages()));
+            simpleViewModel.setLabel(generateLabelLuggage(flightBookingLuggageMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }
 
-        for(FlightBookingMealMetaViewModel flightBookingMealMetaViewModel : flightBookingMealMetaViewModels){
+        for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingAmenityMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(flightBookingMealMetaViewModel.getDescription());
-            simpleViewModel.setLabel(generateLabelMeal(flightBookingMealMetaViewModel.getMealViewModels()));
+            simpleViewModel.setDescription(flightBookingAmenityMetaViewModel.getDescription());
+            simpleViewModel.setLabel(generateLabelMeal(flightBookingAmenityMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }
         return simpleViewModels;
     }
 
-    private String generateLabelMeal(List<FlightBookingMealViewModel> mealViewModels) {
+    private String generateLabelMeal(List<FlightBookingAmenityViewModel> mealViewModels) {
         return null;
     }
 
-    private String generateLabelLuggage(List<FlightBookingLuggageViewModel> luggages) {
+    private String generateLabelLuggage(List<FlightBookingAmenityViewModel> luggages) {
         return null;
     }
 

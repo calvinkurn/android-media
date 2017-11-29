@@ -15,8 +15,8 @@ public class FlightBookingCartData {
     private FlightBookingPhoneCodeViewModel defaultPhoneCode;
     private FlightSearchViewModel departureTrip;
     private FlightSearchViewModel returnTrip;
-    private List<FlightBookingLuggageMetaViewModel> luggageViewModels;
-    private List<FlightBookingMealMetaViewModel> mealViewModels;
+    private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
+    private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
 
     public FlightBookingCartData() {
@@ -30,19 +30,19 @@ public class FlightBookingCartData {
         this.refreshTime = refreshTime;
     }
 
-    public List<FlightBookingLuggageMetaViewModel> getLuggageViewModels() {
+    public List<FlightBookingAmenityMetaViewModel> getLuggageViewModels() {
         return luggageViewModels;
     }
 
-    public void setLuggageViewModels(List<FlightBookingLuggageMetaViewModel> luggageViewModels) {
+    public void setLuggageViewModels(List<FlightBookingAmenityMetaViewModel> luggageViewModels) {
         this.luggageViewModels = luggageViewModels;
     }
 
-    public List<FlightBookingMealMetaViewModel> getMealViewModels() {
+    public List<FlightBookingAmenityMetaViewModel> getMealViewModels() {
         return mealViewModels;
     }
 
-    public void setMealViewModels(List<FlightBookingMealMetaViewModel> mealViewModels) {
+    public void setMealViewModels(List<FlightBookingAmenityMetaViewModel> mealViewModels) {
         this.mealViewModels = mealViewModels;
     }
 

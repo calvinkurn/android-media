@@ -2,7 +2,7 @@ package com.tokopedia.flight.booking.view.viewmodel.mapper;
 
 import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
 import com.tokopedia.flight.booking.data.cloud.entity.AmenityItem;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +13,14 @@ import javax.inject.Inject;
  * @author by alvarisi on 11/15/17.
  */
 
-public class FlightBookingMealViewModelMapper {
+public class FlightBookingAmenityViewModelMapper {
     @Inject
-    public FlightBookingMealViewModelMapper() {
+    public FlightBookingAmenityViewModelMapper() {
     }
 
-    public List<FlightBookingMealViewModel> transform(Amenity entity) {
-        List<FlightBookingMealViewModel> viewModels = new ArrayList<>();
-        FlightBookingMealViewModel data = null;
+    public List<FlightBookingAmenityViewModel> transform(Amenity entity) {
+        List<FlightBookingAmenityViewModel> viewModels = new ArrayList<>();
+        FlightBookingAmenityViewModel data = null;
         if (entity != null) {
             for (AmenityItem item : entity.getItems()) {
                 data = transform(item);
@@ -32,10 +32,10 @@ public class FlightBookingMealViewModelMapper {
         return viewModels;
     }
 
-    private FlightBookingMealViewModel transform(AmenityItem item) {
-        FlightBookingMealViewModel viewModel = null;
+    private FlightBookingAmenityViewModel transform(AmenityItem item) {
+        FlightBookingAmenityViewModel viewModel = null;
         if (item != null) {
-            viewModel = new FlightBookingMealViewModel();
+            viewModel = new FlightBookingAmenityViewModel();
             viewModel.setId(item.getId());
             viewModel.setPrice(item.getPrice());
             viewModel.setPriceNumeric(item.getPriceNumeric());

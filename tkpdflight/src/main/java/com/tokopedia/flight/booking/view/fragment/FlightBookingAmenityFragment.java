@@ -12,9 +12,9 @@ import android.widget.Button;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingLuggageAdapter;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingAmenityAdapter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +23,21 @@ import java.util.List;
  * Created by zulfikarrahman on 11/7/17.
  */
 
-public class FlightBookingLuggageFragment extends BaseListFragment<FlightBookingLuggageViewModel> implements BaseListAdapter.OnBaseListV2AdapterListener<FlightBookingLuggageViewModel> {
+public class FlightBookingAmenityFragment extends BaseListFragment<FlightBookingAmenityViewModel> implements BaseListAdapter.OnBaseListV2AdapterListener<FlightBookingAmenityViewModel> {
 
     public static final String EXTRA_SELECTED_LUGGAGE = "EXTRA_SELECTED_LUGGAGE";
     public static final String EXTRA_LIST_LUGGAGE = "EXTRA_LIST_LUGGAGE";
-    private ArrayList<FlightBookingLuggageViewModel> flightBookingLuggageViewHolders;
-    private FlightBookingLuggageMetaViewModel selectedLuggage;
+    private ArrayList<FlightBookingAmenityViewModel> flightBookingLuggageViewHolders;
+    private FlightBookingAmenityMetaViewModel selectedLuggage;
 
-    public static FlightBookingLuggageFragment createInstance(ArrayList<FlightBookingLuggageViewModel> flightBookingLuggageViewModels,
-                                                              FlightBookingLuggageMetaViewModel selectedLuggage) {
-        FlightBookingLuggageFragment flightBookingLuggageFragment = new FlightBookingLuggageFragment();
+    public static FlightBookingAmenityFragment createInstance(ArrayList<FlightBookingAmenityMetaViewModel> flightBookingLuggageViewModels,
+                                                              FlightBookingAmenityMetaViewModel selectedLuggage) {
+        FlightBookingAmenityFragment flightBookingAmenityFragment = new FlightBookingAmenityFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(EXTRA_LIST_LUGGAGE, flightBookingLuggageViewModels);
         bundle.putParcelable(EXTRA_SELECTED_LUGGAGE, selectedLuggage);
-        flightBookingLuggageFragment.setArguments(bundle);
-        return flightBookingLuggageFragment;
+        flightBookingAmenityFragment.setArguments(bundle);
+        return flightBookingAmenityFragment;
     }
 
     @Override
@@ -58,10 +58,10 @@ public class FlightBookingLuggageFragment extends BaseListFragment<FlightBooking
     }
 
     @Override
-    protected BaseListAdapter<FlightBookingLuggageViewModel> getNewAdapter() {
-        FlightBookingLuggageAdapter flightBookingLuggageAdapter = new FlightBookingLuggageAdapter(getActivity(), this);
-        flightBookingLuggageAdapter.setSelectedLuggage(selectedLuggage.getLuggages());
-        return flightBookingLuggageAdapter;
+    protected BaseListAdapter<FlightBookingAmenityViewModel> getNewAdapter() {
+        FlightBookingAmenityAdapter flightBookingAmenityAdapter = new FlightBookingAmenityAdapter(getActivity(), this);
+        flightBookingAmenityAdapter.setSelectedLuggage(selectedLuggage.getAmenities());
+        return flightBookingAmenityAdapter;
     }
 
     @Override
@@ -70,11 +70,11 @@ public class FlightBookingLuggageFragment extends BaseListFragment<FlightBooking
     }
 
     @Override
-    public void onItemClicked(FlightBookingLuggageViewModel flightBookingLuggageViewModel) {
-        List<FlightBookingLuggageViewModel> viewModels = new ArrayList<>();
+    public void onItemClicked(FlightBookingAmenityViewModel flightBookingLuggageViewModel) {
+        List<FlightBookingAmenityViewModel> viewModels = new ArrayList<>();
         viewModels.add(flightBookingLuggageViewModel);
-        selectedLuggage.setLuggages(viewModels);
-        ((FlightBookingLuggageAdapter) getAdapter()).setSelectedLuggage(selectedLuggage.getLuggages());
+        selectedLuggage.setAmenities(viewModels);
+        ((FlightBookingAmenityAdapter) getAdapter()).setSelectedLuggage(selectedLuggage.getAmenities());
         getAdapter().notifyDataSetChanged();
     }
 

@@ -13,14 +13,14 @@ import java.util.List;
 
 public class FlightBookingMealRouteViewModel implements Parcelable {
     private Route route;
-    private List<FlightBookingMealViewModel> mealViewModels;
+    private List<FlightBookingAmenityViewModel> mealViewModels;
 
     public FlightBookingMealRouteViewModel() {
     }
 
     protected FlightBookingMealRouteViewModel(Parcel in) {
         route = in.readParcelable(Route.class.getClassLoader());
-        mealViewModels = in.createTypedArrayList(FlightBookingMealViewModel.CREATOR);
+        mealViewModels = in.createTypedArrayList(FlightBookingAmenityViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingMealRouteViewModel> CREATOR = new Creator<FlightBookingMealRouteViewModel>() {
@@ -43,11 +43,11 @@ public class FlightBookingMealRouteViewModel implements Parcelable {
         this.route = route;
     }
 
-    public List<FlightBookingMealViewModel> getMealViewModels() {
+    public List<FlightBookingAmenityViewModel> getMealViewModels() {
         return mealViewModels;
     }
 
-    public void setMealViewModels(List<FlightBookingMealViewModel> mealViewModels) {
+    public void setMealViewModels(List<FlightBookingAmenityViewModel> mealViewModels) {
         this.mealViewModels = mealViewModels;
     }
 

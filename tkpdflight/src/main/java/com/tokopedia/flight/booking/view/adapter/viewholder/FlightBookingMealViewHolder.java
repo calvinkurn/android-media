@@ -7,48 +7,43 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
 /**
  * Created by alvarisi on 11/27/17.
  */
 
-public class FlightBookingMealViewHolder extends BaseViewHolder<FlightBookingMealViewModel> {
+public class FlightBookingMealViewHolder extends BaseViewHolder<FlightBookingAmenityViewModel> {
 
     public interface ListenerCheckedLuggage {
-        boolean isItemChecked(FlightBookingMealViewModel selectedItem);
+        boolean isItemChecked(FlightBookingAmenityViewModel selectedItem);
     }
 
     private ListenerCheckedLuggage listenerCheckedLuggage;
 
-    private TextView weight;
-    private TextView price;
+    private TextView title;
     private ImageView imageChecked;
 
     public FlightBookingMealViewHolder(View itemView) {
         super(itemView);
-        weight = (TextView) itemView.findViewById(R.id.weight);
-        price = (TextView) itemView.findViewById(R.id.price);
+        title = (TextView) itemView.findViewById(R.id.tv_title);
         imageChecked = (ImageView) itemView.findViewById(R.id.image_checked);
     }
 
     @Override
-    public void bindObject(FlightBookingMealViewModel flightBookingLuggageViewModel) {
+    public void bindObject(FlightBookingAmenityViewModel flightBookingLuggageViewModel) {
         boolean isItemChecked = false;
         if (listenerCheckedLuggage != null) {
             isItemChecked = listenerCheckedLuggage.isItemChecked(flightBookingLuggageViewModel);
         }
 
-        weight.setText(flightBookingLuggageViewModel.getPrice());
-        price.setText(flightBookingLuggageViewModel.getTitle());
+        title.setText(flightBookingLuggageViewModel.getTitle());
         if (isItemChecked) {
             imageChecked.setVisibility(View.VISIBLE);
-            weight.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
-            price.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
+            title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
         } else {
             imageChecked.setVisibility(View.INVISIBLE);
-            weight.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black_seventy_percent_));
-            price.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black_seventy_percent_));
+            title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black_seventy_percent_));
         }
     }
 

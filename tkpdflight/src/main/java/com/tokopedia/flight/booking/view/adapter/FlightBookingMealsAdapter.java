@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingMealViewHolder;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +16,11 @@ import java.util.List;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingMealsAdapter extends BaseListAdapter<FlightBookingMealViewModel> implements FlightBookingMealViewHolder.ListenerCheckedLuggage {
+public class FlightBookingMealsAdapter extends BaseListAdapter<FlightBookingAmenityViewModel> implements FlightBookingMealViewHolder.ListenerCheckedLuggage {
 
-    private List<FlightBookingMealViewModel> selectedFlightBookingViewModels;
+    private List<FlightBookingAmenityViewModel> selectedFlightBookingViewModels;
 
-    public FlightBookingMealsAdapter(Context context, OnBaseListV2AdapterListener<FlightBookingMealViewModel> onBaseListV2AdapterListener) {
+    public FlightBookingMealsAdapter(Context context, OnBaseListV2AdapterListener<FlightBookingAmenityViewModel> onBaseListV2AdapterListener) {
         super(context, onBaseListV2AdapterListener);
         selectedFlightBookingViewModels = new ArrayList<>();
     }
@@ -28,17 +28,17 @@ public class FlightBookingMealsAdapter extends BaseListAdapter<FlightBookingMeal
     @Override
     public BaseViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
         FlightBookingMealViewHolder flightBookingLuggageViewHolder = new FlightBookingMealViewHolder(
-                getLayoutView(parent, R.layout.item_flight_booking_luggage));
+                getLayoutView(parent, R.layout.item_flight_booking_amenity));
         flightBookingLuggageViewHolder.setListenerCheckedLuggage(this);
         return flightBookingLuggageViewHolder;
     }
 
     @Override
-    public boolean isItemChecked(FlightBookingMealViewModel selectedItem) {
+    public boolean isItemChecked(FlightBookingAmenityViewModel selectedItem) {
         return selectedFlightBookingViewModels.contains(selectedItem);
     }
 
-    public void setSelectedViewModels(List<FlightBookingMealViewModel> selectedFlightBookingViewModels) {
+    public void setSelectedViewModels(List<FlightBookingAmenityViewModel> selectedFlightBookingViewModels) {
         this.selectedFlightBookingViewModels = selectedFlightBookingViewModels;
     }
 }

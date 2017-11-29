@@ -9,8 +9,8 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingMealsFragment;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,29 +21,29 @@ import java.util.List;
 
 public class FlightBookingMealsActivity extends BaseSimpleActivity {
 
-    private FlightBookingMealMetaViewModel flightBookingMealMetaViewModel;
+    private FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel;
 
-    public static Intent createIntent(Context context, List<FlightBookingMealViewModel> flightBookingMealViewModels,
-                                      FlightBookingMealMetaViewModel selectedMeals) {
+    public static Intent createIntent(Context context, List<FlightBookingAmenityViewModel> flightBookingAmenityViewModels,
+                                      FlightBookingAmenityMetaViewModel selectedMeals) {
         Intent intent = new Intent(context, FlightBookingMealsActivity.class);
-        intent.putParcelableArrayListExtra(FlightBookingMealsFragment.EXTRA_LIST_MEALS, (ArrayList<? extends Parcelable>) flightBookingMealViewModels);
+        intent.putParcelableArrayListExtra(FlightBookingMealsFragment.EXTRA_LIST_MEALS, (ArrayList<? extends Parcelable>) flightBookingAmenityViewModels);
         intent.putExtra(FlightBookingMealsFragment.EXTRA_SELECTED_MEALS, selectedMeals);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        flightBookingMealMetaViewModel = getIntent().getParcelableExtra(FlightBookingMealsFragment.EXTRA_SELECTED_MEALS);
+        flightBookingAmenityMetaViewModel = getIntent().getParcelableExtra(FlightBookingMealsFragment.EXTRA_SELECTED_MEALS);
         return FlightBookingMealsFragment
                 .createInstance(
-                        getIntent().<FlightBookingMealViewModel>getParcelableArrayListExtra(FlightBookingMealsFragment.EXTRA_LIST_MEALS),
-                        flightBookingMealMetaViewModel
+                        getIntent().<FlightBookingAmenityViewModel>getParcelableArrayListExtra(FlightBookingMealsFragment.EXTRA_LIST_MEALS),
+                        flightBookingAmenityMetaViewModel
                 );
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle(String.format("%s %s", getString(R.string.flight_booking_meal_toolbar_title), flightBookingMealMetaViewModel.getDescription()));
+        updateTitle(String.format("%s %s", getString(R.string.flight_booking_meal_toolbar_title), flightBookingAmenityMetaViewModel.getDescription()));
     }
 }

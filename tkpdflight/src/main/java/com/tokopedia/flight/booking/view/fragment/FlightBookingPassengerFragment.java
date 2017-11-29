@@ -30,15 +30,13 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
-import com.tokopedia.flight.booking.view.activity.FlightBookingLuggageActivity;
-import com.tokopedia.flight.booking.view.activity.FlightBookingMealsActivity;
+import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 
@@ -78,8 +76,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private AppCompatButton buttonSubmit;
     private FlightBookingPassengerViewModel viewModel;
-    private List<FlightBookingLuggageMetaViewModel> luggageViewModels;
-    private List<FlightBookingMealMetaViewModel> mealViewModels;
+    private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
+    private List<FlightBookingAmenityMetaViewModel> mealViewModels;
 
     private OnFragmentInteractionListener interactionListener;
 
@@ -90,7 +88,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                                                              String returnId,
                                                              FlightBookingPassengerViewModel viewModel,
                                                              List<FlightBookingLuggageMetaViewModel> luggageViewModels,
-                                                             List<FlightBookingMealMetaViewModel> mealViewModels) {
+                                                             List<FlightBookingAmenityMetaViewModel> mealViewModels) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -106,7 +104,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static Fragment newInstance(String departureId,
                                        FlightBookingPassengerViewModel viewModel,
                                        List<FlightBookingLuggageMetaViewModel> luggageViewModels,
-                                       List<FlightBookingMealMetaViewModel> mealViewModels) {
+                                       List<FlightBookingAmenityMetaViewModel> mealViewModels) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
@@ -208,32 +206,32 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public List<FlightBookingLuggageMetaViewModel> getLuggageViewModels() {
+    public List<FlightBookingAmenityMetaViewModel> getLuggageViewModels() {
         return luggageViewModels;
     }
 
     @Override
-    public List<FlightBookingMealMetaViewModel> getMealViewModels() {
+    public List<FlightBookingAmenityMetaViewModel> getMealViewModels() {
         return mealViewModels;
     }
 
     @Override
-    public void renderPassengerMeals(final List<FlightBookingMealMetaViewModel> flightBookingMealRouteViewModels,
-                                     List<FlightBookingMealMetaViewModel> selecteds) {
+    public void renderPassengerMeals(final List<FlightBookingAmenityMetaViewModel> flightBookingMealRouteViewModels,
+                                     List<FlightBookingAmenityMetaViewModel> selecteds) {
         mealsContainer.setVisibility(View.VISIBLE);
 
         List<SimpleViewModel> viewModels = new ArrayList<>();
         if (flightBookingMealRouteViewModels != null)
-            for (FlightBookingMealMetaViewModel flightBookingLuggageRouteViewModel : flightBookingMealRouteViewModels) {
+            for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingMealRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
-                        flightBookingLuggageRouteViewModel.getDescription(),
+                        flightBookingAmenityMetaViewModel.getDescription(),
                         "Pilih"
                 );
-                for (FlightBookingMealMetaViewModel selected : selecteds) {
-                    if (selected.getKey().equalsIgnoreCase(flightBookingLuggageRouteViewModel.getKey())) {
+                for (FlightBookingAmenityMetaViewModel selected : selecteds) {
+                    if (selected.getKey().equalsIgnoreCase(flightBookingAmenityMetaViewModel.getKey())) {
                         ArrayList<String> selectedMeals = new ArrayList<>();
-                        for (FlightBookingMealViewModel flightBookingMealViewModel : selected.getMealViewModels()) {
-                            selectedMeals.add(flightBookingMealViewModel.getTitle());
+                        for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : selected.getAmenities()) {
+                            selectedMeals.add(flightBookingAmenityViewModel.getTitle());
                         }
                         viewModel.setDescription(TextUtils.join(",", selectedMeals));
                         break;
@@ -261,21 +259,21 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void renderPassengerLuggages(final List<FlightBookingLuggageMetaViewModel> flightBookingLuggageRouteViewModels,
-                                        List<FlightBookingLuggageMetaViewModel> selecteds) {
+    public void renderPassengerLuggages(final List<FlightBookingAmenityMetaViewModel> flightBookingLuggageRouteViewModels,
+                                        List<FlightBookingAmenityMetaViewModel> selecteds) {
         luggageContainer.setVisibility(View.VISIBLE);
 
         List<SimpleViewModel> viewModels = new ArrayList<>();
         if (flightBookingLuggageRouteViewModels != null)
-            for (FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageRouteViewModels) {
+            for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingLuggageMetaViewModel.getDescription(),
                         "Pilih"
                 );
-                for (FlightBookingLuggageMetaViewModel selected : selecteds) {
+                for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
                         ArrayList<String> selectedLuggages = new ArrayList<>();
-                        for (FlightBookingLuggageViewModel flightBookingLuggageViewModel : selected.getLuggages()) {
+                        for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : selected.getAmenities()) {
                             selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
                         }
                         viewModel.setDescription(TextUtils.join(",", selectedLuggages));
@@ -426,14 +424,16 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void navigateToLuggagePicker(List<FlightBookingLuggageViewModel> luggages, FlightBookingLuggageMetaViewModel selected) {
-        Intent intent = FlightBookingLuggageActivity.createIntent(getActivity(), luggages, selected);
+    public void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected) {
+        String title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.getDescription());
+        Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, luggages, selected);
         startActivityForResult(intent, REQUEST_CODE_PICK_LUGGAGE);
     }
 
     @Override
-    public void navigateToMealPicker(List<FlightBookingMealViewModel> viewModel, FlightBookingMealMetaViewModel selected) {
-        Intent intent = FlightBookingMealsActivity.createIntent(getActivity(), viewModel, selected);
+    public void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected) {
+        String title = String.format("%s %s", getString(R.string.flight_booking_meal_toolbar_title), selected.getDescription());
+        Intent intent = FlightBookingAmenityActivity.createIntent(getActivity(), title, viewModel, selected);
         startActivityForResult(intent, REQUEST_CODE_PICK_MEAL);
     }
 
@@ -444,13 +444,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             switch (requestCode) {
                 case REQUEST_CODE_PICK_LUGGAGE:
                     if (data != null) {
-                        FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingLuggageFragment.EXTRA_SELECTED_LUGGAGE);
+                        FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_LUGGAGE);
                         presenter.onLuggageDataChange(flightBookingLuggageMetaViewModel);
                     }
                     break;
                 case REQUEST_CODE_PICK_MEAL:
                     if (data != null) {
-                        FlightBookingMealMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingMealsFragment.EXTRA_SELECTED_MEALS);
+                        FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_LUGGAGE);
                         presenter.onMealDataChange(flightBookingLuggageMetaViewModel);
                     }
                     break;

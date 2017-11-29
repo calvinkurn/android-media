@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingMealsAdapter;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,19 +23,19 @@ import java.util.List;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingMealsFragment extends BaseListFragment<FlightBookingMealViewModel> implements BaseListAdapter.OnBaseListV2AdapterListener<FlightBookingMealViewModel> {
+public class FlightBookingMealsFragment extends BaseListFragment<FlightBookingAmenityViewModel> implements BaseListAdapter.OnBaseListV2AdapterListener<FlightBookingAmenityViewModel> {
 
     public static final String EXTRA_SELECTED_MEALS = "EXTRA_SELECTED_MEALS";
     public static final String EXTRA_LIST_MEALS = "EXTRA_LIST_MEALS";
 
-    private List<FlightBookingMealViewModel> flightBookingMealViewModels;
-    private FlightBookingMealMetaViewModel selectedMeals;
+    private List<FlightBookingAmenityViewModel> flightBookingAmenityViewModels;
+    private FlightBookingAmenityMetaViewModel selectedMeals;
 
-    public static FlightBookingMealsFragment createInstance(ArrayList<FlightBookingMealViewModel> flightBookingMealViewModels,
-                                                            FlightBookingMealMetaViewModel selectedMeals) {
+    public static FlightBookingMealsFragment createInstance(ArrayList<FlightBookingAmenityViewModel> flightBookingAmenityViewModels,
+                                                            FlightBookingAmenityMetaViewModel selectedMeals) {
         FlightBookingMealsFragment flightBookingMealsFragment = new FlightBookingMealsFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(EXTRA_LIST_MEALS, flightBookingMealViewModels);
+        bundle.putParcelableArrayList(EXTRA_LIST_MEALS, flightBookingAmenityViewModels);
         bundle.putParcelable(EXTRA_SELECTED_MEALS, selectedMeals);
         flightBookingMealsFragment.setArguments(bundle);
         return flightBookingMealsFragment;
@@ -43,7 +43,7 @@ public class FlightBookingMealsFragment extends BaseListFragment<FlightBookingMe
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        flightBookingMealViewModels = getArguments().getParcelableArrayList(EXTRA_LIST_MEALS);
+        flightBookingAmenityViewModels = getArguments().getParcelableArrayList(EXTRA_LIST_MEALS);
         selectedMeals = getArguments().getParcelable(EXTRA_SELECTED_MEALS);
         super.onCreate(savedInstanceState);
     }
@@ -80,24 +80,24 @@ public class FlightBookingMealsFragment extends BaseListFragment<FlightBookingMe
     }
 
     @Override
-    protected BaseListAdapter<FlightBookingMealViewModel> getNewAdapter() {
+    protected BaseListAdapter<FlightBookingAmenityViewModel> getNewAdapter() {
         FlightBookingMealsAdapter flightBookingMealsAdapter = new FlightBookingMealsAdapter(getActivity(), this);
-        flightBookingMealsAdapter.setSelectedViewModels(selectedMeals.getMealViewModels());
+        flightBookingMealsAdapter.setSelectedViewModels(selectedMeals.getAmenities());
         return flightBookingMealsAdapter;
     }
 
     @Override
-    public void onItemClicked(FlightBookingMealViewModel flightBookingMealViewModel) {
-        List<FlightBookingMealViewModel> viewModels = new ArrayList<>();
-        viewModels.add(flightBookingMealViewModel);
-        selectedMeals.setMealViewModels(viewModels);
-        ((FlightBookingMealsAdapter) getAdapter()).setSelectedViewModels(selectedMeals.getMealViewModels());
+    public void onItemClicked(FlightBookingAmenityViewModel flightBookingAmenityViewModel) {
+        List<FlightBookingAmenityViewModel> viewModels = new ArrayList<>();
+        viewModels.add(flightBookingAmenityViewModel);
+        selectedMeals.setAmenities(viewModels);
+        ((FlightBookingMealsAdapter) getAdapter()).setSelectedViewModels(selectedMeals.getAmenities());
         getAdapter().notifyDataSetChanged();
     }
 
     @Override
     public void loadData(int page, int currentDataSize, int rowPerPage) {
-        onSearchLoaded(flightBookingMealViewModels, flightBookingMealViewModels.size());
+        onSearchLoaded(flightBookingAmenityViewModels, flightBookingAmenityViewModels.size());
     }
 
 }
