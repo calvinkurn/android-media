@@ -421,6 +421,13 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
 
     @Override
     public void onResume() {
+
+    }
+
+
+    @Override
+    public void onPause() {
+
     }
 
     @Override
