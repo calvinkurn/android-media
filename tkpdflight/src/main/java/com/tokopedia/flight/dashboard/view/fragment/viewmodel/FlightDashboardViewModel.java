@@ -1,5 +1,14 @@
 package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
 /**
@@ -127,6 +136,58 @@ public class FlightDashboardViewModel implements Cloneable {
 
     public String getDepartureAirportFmt() {
         return departureAirportFmt;
+    }
+
+    public CharSequence getAirportTextForView(Context context, boolean isDeparture){
+        FlightAirportDB flightAirportDB = isDeparture? departureAirport: arrivalAirport;
+
+        SpannableStringBuilder text = new SpannableStringBuilder();
+        String depAirportID = flightAirportDB.getAirportId();
+        if (TextUtils.isEmpty(depAirportID)) {
+            // id is more than one
+            String cityCode = flightAirportDB.getCityCode();
+            if (TextUtils.isEmpty(cityCode)) {
+                text.append(flightAirportDB.getCityName());
+                return makeBold(context, text);
+            } else {
+                text.append(cityCode);
+            }
+        } else {
+            text.append(depAirportID);
+        }
+        makeBold(context, text);
+        String cityName = flightAirportDB.getCityName();
+        if (!TextUtils.isEmpty(cityName)) {
+            SpannableStringBuilder cityNameText = new SpannableStringBuilder(cityName);
+            makeSmall(cityNameText);
+            text.append("\n");
+            text.append(cityNameText);
+        }
+        return text;
+    }
+
+    private SpannableStringBuilder makeBold(Context context, SpannableStringBuilder text) {
+        if (TextUtils.isEmpty(text)){
+            return text;
+        }
+        text.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        text.setSpan(new RelativeSizeSpan(1.25f),
+                0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        text.setSpan(
+                new ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)),
+                0, text.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return text;
+    }
+
+    private SpannableStringBuilder makeSmall(SpannableStringBuilder text) {
+        if (TextUtils.isEmpty(text)){
+            return text;
+        }
+        text.setSpan(new RelativeSizeSpan(0.75f),
+                0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return text;
     }
 
     public void setDepartureAirportFmt(String departureAirportFmt) {

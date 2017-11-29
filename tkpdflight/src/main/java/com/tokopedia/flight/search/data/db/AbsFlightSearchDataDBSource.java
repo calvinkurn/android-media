@@ -87,7 +87,6 @@ public abstract class AbsFlightSearchDataDBSource
 
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> getData(HashMap<String, Object> params) {
-        //TODO get the meta from db
         final FlightFilterModel flightFilterModel = FlightSearchParamUtil.getFilterModel(params);
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightSearchSingleRouteDB>>() {
             @Override
@@ -122,7 +121,7 @@ public abstract class AbsFlightSearchDataDBSource
 
     private ConditionGroup getSQLCondition(FlightFilterModel flightFilterModel) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(getTotalNumericColumn().between(flightFilterModel.getPriceMin()).and(flightFilterModel.getPriceMax()))
+                .and(getAdultNumericColumn().between(flightFilterModel.getPriceMin()).and(flightFilterModel.getPriceMax()))
                 .and(getDurationColumn().between(flightFilterModel.getDurationMin()).and(flightFilterModel.getDurationMax()));
         List<TransitEnum> transitEnumList = flightFilterModel.getTransitTypeList();
         ConditionGroup transitConditionFroup = getTransitCondition(transitEnumList);
@@ -235,8 +234,8 @@ public abstract class AbsFlightSearchDataDBSource
         return airlineConditionGroup;
     }
 
-    private IntProperty getTotalNumericColumn() {
-        return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.TOTAL_NUMERIC);
+    private IntProperty getAdultNumericColumn() {
+        return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.ADULT_NUMERIC);
     }
 
     private IntProperty getDurationColumn() {
