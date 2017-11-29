@@ -17,6 +17,7 @@ import rx.Observable;
 
 public class DeleteFlightCacheUseCase extends UseCase<Boolean> {
     private FlightRepository flightRepository;
+    public static final String PARAM_RETURNING = "returning";
 
     @Inject
     public DeleteFlightCacheUseCase(FlightRepository flightRepository) {
@@ -25,10 +26,21 @@ public class DeleteFlightCacheUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return flightRepository.deleteFlightCacheSearch();
+        if (requestParams == null || requestParams.getParameters().size() == 0) {
+            return flightRepository.deleteFlightCacheSearch();
+        } else {
+            boolean isReturning = requestParams.getBoolean(PARAM_RETURNING, false);
+            return flightRepository.deleteFlightCacheSearch(isReturning);
+        }
     }
 
     public static RequestParams createRequestParam() {
         return RequestParams.EMPTY;
+    }
+
+    public static RequestParams createRequestParam(boolean isReturning) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putBoolean(PARAM_RETURNING, isReturning);
+        return requestParams;
     }
 }
