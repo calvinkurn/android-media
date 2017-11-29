@@ -102,8 +102,8 @@ public class FlightBookingReviewModel implements Parcelable {
 
     public FlightBookingReviewModel(FlightBookingParamViewModel flightBookingParamViewModel, FlightBookingCartData flightBookingCartData) {
         setId(flightBookingParamViewModel.getId());
-        setDetailViewModelListDeparture(new FlightDetailViewModel().build(flightBookingCartData.getDepartureTrip()));
-        setDetailViewModelListReturn(new FlightDetailViewModel().build(flightBookingCartData.getReturnTrip()));
+        setDetailViewModelListDeparture(flightBookingCartData.getDepartureTrip());
+        setDetailViewModelListReturn(flightBookingCartData.getReturnTrip());
         setDetailPassengers(generateFlightDetailPassenger(flightBookingParamViewModel.getPassengerViewModels()));
         setFlightReviewFares(flightBookingParamViewModel.getPriceListDetails());
         setTotalPrice(flightBookingParamViewModel.getTotalPriceFmt());
