@@ -1,7 +1,10 @@
 package com.tokopedia.session.login.loginphonenumber;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.analytics.AppScreen;
@@ -56,5 +59,9 @@ public class LoginPhoneNumberActivity extends TActivity implements HasComponent 
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, LoginPhoneNumberActivity.class);
     }
 }

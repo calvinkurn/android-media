@@ -244,10 +244,4 @@ public class SessionModule {
                 threadExecutor, postExecutionThread, otpSource, sessionHandler);
     }
 
-    @SessionScope
-    @Provides
-    ChangePhoneNumberMapper provideChangePhoneNumberMapper() {
-        return new ChangePhoneNumberMapper();
-    }
-
 }

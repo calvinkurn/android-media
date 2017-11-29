@@ -83,4 +83,7 @@
     <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
+    <string name="login_with_phone_number_tokocash">Masuk dengan\nNomor Ponsel TokoCash</string>
+    <string name="phone_number">Nomor Ponsel</string>
+    <string name="we_will_send_verification_code">Kami akan mengirimkan sms kode verifikasi</string>
 </resources>
