@@ -13,7 +13,13 @@ public interface HomeCategoryListener {
 
     void onSectionItemClicked(LayoutSections sections, int parentPosition, int childPosition);
 
-    void onCategoryItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+    void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+
+    void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+
+    void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+
+    void onApplinkClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
 
     void onTopPicksItemClicked(TopPicksItemModel data, int parentPosition, int childPosition);
 

@@ -1,28 +1,49 @@
 package com.tokopedia.tkpd.beranda.presentation.view.fragment;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.di.DaggerHomeComponent;
@@ -36,8 +57,9 @@ import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
-import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
@@ -53,7 +75,7 @@ import javax.inject.Inject;
  */
 
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
-        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener {
+        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, TokoCashUpdateListener {
 
     @Inject
     HomePresenter presenter;
@@ -63,6 +85,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
     private FirebaseRemoteConfig firebaseRemoteConfig;
+    private DrawerTokoCash tokoCashData;
+    private Trace trace;
+    private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
+    private IntentFilter intentFilerTokoCash;
 
     public static HomeFragment newInstance() {
 
@@ -71,6 +97,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        trace = TrackingUtils.startTrace("beranda_trace");
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -113,6 +145,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
+        if (trace != null)
+            trace.stop();
     }
 
     @Override
@@ -121,6 +155,24 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initAdapter();
         initRefreshLayout();
         fetchRemoteConfig();
+        initTokoCashReceiver();
+    }
+
+    private void initTokoCashReceiver() {
+        tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
+        intentFilerTokoCash = new IntentFilter(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(tokoCashBroadcastReceiver, intentFilerTokoCash);
+    }
+
+    @Override
+    public void onPause() {
+        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
+        super.onPause();
     }
 
     @Override
@@ -151,9 +203,65 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onCategoryItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+    public void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
         TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
-        openActivity(data.getRedirectValue(), data.getName());
+        openActivity(String.valueOf(data.getCategoryId()), data.getName());
+    }
+
+    @Override
+    public void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+        UnifyTracking.eventClickCategoriesIcon(data.getName());
+
+        if (String.valueOf(data.getCategoryId()).equalsIgnoreCase("103") && tokoCashData != null
+                && tokoCashData.getDrawerWalletAction().getTypeAction()
+                != DrawerWalletAction.TYPE_ACTION_BALANCE) {
+            WalletRouterUtil.navigateWallet(
+                    getActivity().getApplication(),
+                    this,
+                    IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                    tokoCashData.getDrawerWalletAction().getAppLinkActionButton(),
+                    tokoCashData.getDrawerWalletAction().getRedirectUrlActionButton(),
+                    new Bundle()
+            );
+        } else {
+            if (getActivity() != null && ((TkpdCoreRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(data.getApplinks())) {
+                DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                        .appLinks(data.getApplinks())
+                        .categoryId(String.valueOf(data.getCategoryId()))
+                        .categoryName(data.getName())
+                        .url(data.getUrl())
+                        .build();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                Intent intent = new Intent(getActivity(), DeeplinkHandlerActivity.class);
+                intent.putExtras(bundle);
+                intent.setData(Uri.parse(data.getApplinks()));
+                startActivity(intent);
+            } else {
+                onGimickItemClicked(data, parentPosition, childPosition);
+            }
+        }
+
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
+    }
+
+    @Override
+    public void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+        String redirectUrl = data.getUrl();
+        if (redirectUrl != null && redirectUrl.length() > 0) {
+            String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
+                    Uri.encode(redirectUrl), MainApplication.getAppContext());
+            openWebViewGimicURL(resultGenerateUrl, data.getUrl(), data.getName());
+        }
+    }
+
+    @Override
+    public void onApplinkClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(data.getApplinks()));
+        DeepLinkDelegate delegate = DeeplinkHandlerActivity.getDelegateInstance();
+        delegate.dispatchFrom(getActivity(), intent);
     }
 
     @Override
@@ -212,11 +320,61 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onDigitalMoreClicked(int pos) {
-
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter =
+                    (IDigitalModuleRouter) getActivity().getApplication();
+            startActivityForResult(
+                    digitalModuleRouter.instanceIntentDigitalCategoryList(),
+                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
+            );
+        }
     }
 
     @Override
     public void onCloseTicker(int pos) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL:
+                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                    if (!TextUtils.isEmpty(message)) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), message);
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onReceivedTokoCashData(final DrawerTokoCash data) {
+//        holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
+        final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(getActivity());
+        if(config != null) {
+            config.setDefaults(R.xml.remote_config_default);
+            config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        config.activateFetched();
+//                        holder.tokoCashHeaderView.renderData(data, config
+//                                .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
+                        tokoCashData = data;
+                    }
+                }
+            });
+        }
+//        holder.tokoCashHeaderView.renderData(data, false, getActivity()
+//                .getString(R.string.tokocash));
+        tokoCashData = data;
+    }
+
+    @Override
+    public void onTokoCashDataError(String errorMessage) {
 
     }
 
@@ -271,6 +429,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void openWebViewTopPicksURL(String url) {
         if (!url.isEmpty()) {
             startActivity(TopPicksWebView.newInstance(getActivity(), url));
+        }
+    }
+
+    private void openWebViewGimicURL(String url, String label, String title) {
+        if (!url.equals("")) {
+            Intent intent = new Intent(getActivity(), BannerWebView.class);
+            intent.putExtra("url", url);
+            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+            startActivity(intent);
+            UnifyTracking.eventHomeGimmick(label);
         }
     }
 }

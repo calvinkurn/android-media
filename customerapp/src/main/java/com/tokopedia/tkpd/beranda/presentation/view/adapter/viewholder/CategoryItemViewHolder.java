@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,24 +14,28 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
 public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewModel> {
+
+    private static final String MARKETPLACE = "Marketplace";
+    private static final String DIGITAL = "Digital";
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category;
@@ -109,12 +114,22 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
 
         @Override
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
-            holder.title.setText(data.get(position).getName());
-            Glide.with(context).load(data.get(position).getImageUrl()).into(holder.icon);
+            final CategoryLayoutRowModel rowModel = data.get(position);
+            holder.title.setText(rowModel.getName());
+            Glide.with(context).load(rowModel.getImageUrl()).into(holder.icon);
             holder.conteiner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onCategoryItemClicked(data.get(position), getAdapterPosition(), position);
+                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+                    if (rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
+                        listener.onMarketPlaceItemClicked(rowModel, getAdapterPosition(), position);
+                    } else if (rowModel.getType().equalsIgnoreCase(DIGITAL)) {
+                        listener.onDigitalItemClicked(rowModel, getAdapterPosition(), position);
+                    } else if (!TextUtils.isEmpty(rowModel.getApplinks()) && deepLinkDelegate.supportsUri(rowModel.getApplinks())) {
+                        listener.onApplinkClicked(rowModel, getAdapterPosition(), position);
+                    } else {
+                        listener.onGimickItemClicked(rowModel, getAdapterPosition(), position);
+                    }
                 }
             });
         }

@@ -32,7 +32,6 @@ import java.util.List;
  * Created by hangnadi on 10/3/17.
  */
 
-@SuppressWarnings({"FieldCanBeLocal", "unused", "SimplifiableIfStatement"})
 public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
         DiscoverySearchView.OnQueryTextListener,
