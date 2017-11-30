@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 
+import com.nytimes.android.external.cache.Stopwatch;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
 import com.tokopedia.core.newgallery.constant.Constants;
@@ -171,10 +173,16 @@ public class ImageGalleryImpl implements ImageGallery {
     }
 
     private class GetItemAlbum extends AsyncTask<Void, Void, String> {
+        long startTime, endTime; //declare this globally
+        Stopwatch stopwatch;
+
         private GetItemAlbum() {
         }
 
         protected String doInBackground(Void... params) {
+            stopwatch = Stopwatch.createStarted();
+            startTime = System.currentTimeMillis();
+
             String[] projection = new String[]{MediaStore.Images.Media._ID,
                     MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                     MediaStore.Images.Media.DATE_TAKEN,
@@ -205,6 +213,11 @@ public class ImageGalleryImpl implements ImageGallery {
         }
 
         protected void onPostExecute(String result) {
+            endTime= System.currentTimeMillis();
+            CommonUtils.dumper("GetItemAlbum -> "+ (endTime-startTime)+" ms"); //Milli Secs
+            CommonUtils.dumper("GetItemAlbum -> "+ ((endTime-startTime)/1000)+" s"); //Secs
+            CommonUtils.dumper("GetItemAlbum using StopWatch -> "+ stopwatch.stop());
+
             if (imageGalleryView != null) {
                 imageGalleryView.retrieveData(dataAlbum, pathList);
             }

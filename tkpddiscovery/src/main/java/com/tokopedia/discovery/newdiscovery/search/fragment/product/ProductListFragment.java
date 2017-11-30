@@ -667,7 +667,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void backToTop() {
-        recyclerView.smoothScrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.smoothScrollToPosition(0);
+        }
     }
 
     @Override

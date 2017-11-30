@@ -11,6 +11,7 @@ import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
+import com.tokopedia.core.network.di.qualifier.SellerInfoQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
@@ -55,6 +56,14 @@ public class NetModule {
     public Retrofit provideWsV4RetrofitWithErrorHandler(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder){
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+    }
+
+    @SellerInfoQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideSellerInfoRetrofitWithErrorHandler(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
+                                                        Retrofit.Builder retrofitBuilder){
+        return retrofitBuilder.baseUrl(TkpdBaseURL.MAPS_DOMAIN).client(okHttpClient).build();
     }
 
     @AceQualifier
