@@ -76,12 +76,13 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             getView().getCurrentBookingParamViewModel().setContactPhone(getView().getContactPhoneNumber());
             FlightBookingReviewModel flightBookingReviewModel =
                     new FlightBookingReviewModel(getView().getCurrentBookingParamViewModel(),
-                            getView().getCurrentCartPassData());
+                            getView().getCurrentCartPassData(), getView().getDepartureTripId(), getView().getReturnTripId());
             getView().navigateToReview(flightBookingReviewModel);
         }
     }
 
     private void renderUi(FlightBookingCartData flightBookingCartData) {
+        getView().getCurrentBookingParamViewModel().setId(flightBookingCartData.getId());
         getView().setCartData(flightBookingCartData);
         getView().showAndRenderDepartureTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(),
                 flightBookingCartData.getDepartureTrip());
@@ -479,12 +480,12 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
-    RequestParams getRequestParam() {
+    protected RequestParams getRequestParam() {
         return getRequestParams();
     }
 
     @Override
-    BaseCartData getCurrentCartData() {
+    protected BaseCartData getCurrentCartData() {
         BaseCartData baseCartData = new BaseCartData();
         baseCartData.setNewFarePrices(getView().getCurrentCartPassData().getNewFarePrices());
         List<FlightBookingAmenityViewModel> amenityViewModels = new ArrayList<>();
@@ -505,7 +506,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
-    void updateTotalPrice(int totalPrice) {
+    protected void updateTotalPrice(int totalPrice) {
         getView().getCurrentBookingParamViewModel().setTotalPriceNumeric(totalPrice);
         getView().getCurrentBookingParamViewModel().setTotalPriceFmt(convertPriceValueToIdrFormat(totalPrice));
         getView().renderTotalPrices(convertPriceValueToIdrFormat(totalPrice));

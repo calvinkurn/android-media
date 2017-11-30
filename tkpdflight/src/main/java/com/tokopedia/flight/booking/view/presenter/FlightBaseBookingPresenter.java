@@ -14,7 +14,11 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
+import com.tokopedia.flight.common.constant.FlightErrorConstant;
+import com.tokopedia.flight.common.data.model.FlightError;
+import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.usecase.RequestParams;
@@ -39,7 +43,7 @@ import rx.schedulers.Schedulers;
 
 public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingContact.View> extends BaseDaggerPresenter<T>
         implements FlightBaseBookingContact.Presenter<T> {
-    private FlightAddToCartUseCase addToCartUseCase;
+    protected FlightAddToCartUseCase addToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
 
     public FlightBaseBookingPresenter(FlightAddToCartUseCase addToCartUseCase, FlightBookingCartDataMapper flightBookingCartDataMapper) {
@@ -47,9 +51,13 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
     }
 
-    abstract RequestParams getRequestParam();
+    protected abstract RequestParams getRequestParam();
 
-    abstract BaseCartData getCurrentCartData();
+    protected abstract BaseCartData getCurrentCartData();
+
+    protected abstract void updateTotalPrice(int totalPrice);
+
+    protected abstract void onCountDownTimestimeChanged(String timestamp);
 
     @Override
     public void onUpdateCart() {
@@ -102,6 +110,10 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         e.printStackTrace();
                         if (isViewAttached()) {
                             getView().hideUpdatePriceLoading();
+                            getView().showUpdateDataErrorStateLayout(FlightErrorUtil.getMessageFromException(e));
+                            if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))){
+                                getView().showExpireTransactionDialog();
+                            }
                         }
                     }
 
@@ -129,8 +141,6 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 });
     }
 
-    protected abstract void onCountDownTimestimeChanged(String timestamp);
-
     protected int calculateTotalFareAndAmenities(List<Fare> newFares, int adult, int child, int infant, List<FlightBookingAmenityViewModel> amenities) {
         int newTotalPrice = 0;
         for (Fare newFare : newFares) {
@@ -144,8 +154,6 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         }
         return newTotalPrice;
     }
-
-    abstract void updateTotalPrice(int totalPrice);
 
     @Nullable
     private BaseCartData cloneViewModel(BaseCartData currentDashboardViewModel) {

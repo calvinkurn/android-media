@@ -32,6 +32,10 @@ public interface FlightBaseBookingContact {
         void renderPriceListDetails(List<SimpleViewModel> simpleViewModels);
 
         void renderFinishTimeCountDown(Date date);
+
+        void showUpdateDataErrorStateLayout(String messageFromException);
+
+        void showExpireTransactionDialog();
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T> {

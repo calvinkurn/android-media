@@ -105,8 +105,8 @@ public class FlightDetailViewHolder extends BaseViewHolder<Route> {
     }
 
     //set visible transit info if flight have transit and position holder is on first index
-    public void bindTransitInfo(boolean isTransit){
-        if(isTransit && getAdapterPosition() == 0){
+    public void bindTransitInfo(int sizeInfo){
+        if(sizeInfo > 0 && getAdapterPosition() < sizeInfo - 1){
             transitInfo.setVisibility(View.VISIBLE);
         }else{
             transitInfo.setVisibility(View.GONE);

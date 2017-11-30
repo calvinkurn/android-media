@@ -402,6 +402,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderPriceListDetails(List<SimpleViewModel> prices) {
+        paramViewModel.setPriceListDetails(prices);
         priceListAdapter.setViewModels(prices);
         priceListAdapter.notifyDataSetChanged();
     }
