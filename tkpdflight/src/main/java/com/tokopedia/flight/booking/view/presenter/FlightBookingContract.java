@@ -82,6 +82,8 @@ public interface FlightBookingContract {
         void hideUpdatePriceLoading();
 
         void showUpdateDataErrorStateLayout(String errorMessage);
+
+        void showPassengerInfoNotFullfilled(@StringRes int resId);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {

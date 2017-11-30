@@ -456,8 +456,22 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         } else if (getView().getContactPhoneNumber().length() == 0) {
             isValid = false;
             getView().showContactPhoneNumberEmptyError(R.string.flight_booking_contact_phone_empty_error);
+        } else if (!isAllPassengerFilled(getView().getCurrentBookingParamViewModel().getPassengerViewModels())) {
+            isValid = false;
+            getView().showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error);
         }
         return isValid;
+    }
+
+    private boolean isAllPassengerFilled(List<FlightBookingPassengerViewModel> passengerViewModels) {
+        boolean isvalid = true;
+        for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : passengerViewModels) {
+            if (flightBookingPassengerViewModel.getPassengerName() != null) {
+                isvalid = false;
+                break;
+            }
+        }
+        return isvalid;
     }
 
     private boolean isValidEmail(String contactEmail) {
