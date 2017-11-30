@@ -14,6 +14,6 @@
         android:layout_height="0dp"
         android:layout_weight="0.5"
         android:gravity="right"
-        android:textStyle="bold"
+        style="@style/TextView.Body1.Bold"
         tools:text="2 Menit 60 Detik" />
 </LinearLayout>

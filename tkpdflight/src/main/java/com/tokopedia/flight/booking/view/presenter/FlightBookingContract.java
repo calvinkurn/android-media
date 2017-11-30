@@ -2,17 +2,14 @@ package com.tokopedia.flight.booking.view.presenter;
 
 import android.support.annotation.StringRes;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -22,7 +19,7 @@ import java.util.List;
  */
 
 public interface FlightBookingContract {
-    interface View extends CustomerView {
+    interface View extends FlightBaseBookingContact.View {
 
         String getContactName();
 
@@ -40,9 +37,9 @@ public interface FlightBookingContract {
 
         FlightBookingParamViewModel getCurrentBookingParamViewModel();
 
-        void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip);
+        void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip);
 
-        void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel departureTrip);
+        void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel departureTrip);
 
         String getString(@StringRes int resId);
 
@@ -54,11 +51,9 @@ public interface FlightBookingContract {
 
         String getReturnTripId();
 
-        void navigateToDetailTrip(FlightSearchViewModel departureTrip);
+        void navigateToDetailTrip(FlightDetailViewModel departureTrip);
 
         String getIdEmpotencyKey(String departureTripId);
-
-        void renderLuggageList(List<Amenity> amenities);
 
         void showFullPageLoading();
 
@@ -68,7 +63,7 @@ public interface FlightBookingContract {
 
         FlightBookingCartData getCurrentCartPassData();
 
-        void getRenderPriceDetails(List<SimpleViewModel> prices);
+        void renderPriceListDetails(List<SimpleViewModel> prices);
 
         void renderTotalPrices(String totalPrice);
 
@@ -78,18 +73,18 @@ public interface FlightBookingContract {
 
         void showExpireTransactionDialog();
 
-        void showPriceDialogChanges(String newTotalPrice, String oldTotalPrice);
+        void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice);
 
         void navigateToReview(FlightBookingReviewModel flightBookingReviewModel);
 
-        void showUpdateDataLoading();
+        void showUpdatePriceLoading();
 
-        void hideUpdateDataLoading();
+        void hideUpdatePriceLoading();
 
         void showUpdateDataErrorStateLayout(String errorMessage);
     }
 
-    interface Presenter extends CustomerPresenter<View> {
+    interface Presenter extends FlightBaseBookingContact.Presenter<View> {
 
         void onButtonSubmitClicked();
 

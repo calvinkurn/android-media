@@ -85,10 +85,12 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         }.getType();
         this.routeList = gson.fromJson(routesJsonString, flightRoutesType);
 
-        String fareString = flightSearchSingleRouteDB.getFare();
-        Type fareType = new TypeToken<Fare>() {
-        }.getType();
-        this.fare = gson.fromJson(fareString, fareType);
+        this.fare = new Fare(flightSearchSingleRouteDB.getAdult(),
+                flightSearchSingleRouteDB.getChild(),
+                flightSearchSingleRouteDB.getInfant(),
+                flightSearchSingleRouteDB.getAdultNumeric(),
+                flightSearchSingleRouteDB.getChildNumeric(),
+                flightSearchSingleRouteDB.getInfantNumeric());
     }
 
     public void mergeWithAirportAndAirlines(HashMap<String, FlightAirlineDB> dbAirlineMaps,

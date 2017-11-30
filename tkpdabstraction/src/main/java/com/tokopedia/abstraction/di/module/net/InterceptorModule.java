@@ -54,7 +54,7 @@ public class InterceptorModule {
     @Provides
     String provideFreshToken(@ApplicationContext Context context){
         if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context).getFreshToken();
+            return ((AbstractionRouter)context).getSession().getFreshToken();
         }else{
             return "";
         }

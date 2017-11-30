@@ -203,7 +203,7 @@
     <string name="flight_booking_trip_info_airport_format" formatted="false">| %s %s - %s %s</string>
     <string name="flight_booking_id_empotency_format" formatted="false">%s_%s</string>
     <string name="flight_booking_header_passenger_format" formatted="false">%s %d (%s)</string>
-    <string name="flight_booking_passenger_price_format" formatted="false">%s - %s  1x %s</string>
+    <string name="flight_booking_passenger_price_format" formatted="false">%s - %s  %d %s</string>
     <string name="flight_dashboard_error_close_label">Tutup</string>
     <string name="flight_dashboard_departure_should_different_city_error">Kota tujuan dan asal tidak boleh sama</string>
     <string name="flight_booking_loading_title">Memperbarui Data</string>

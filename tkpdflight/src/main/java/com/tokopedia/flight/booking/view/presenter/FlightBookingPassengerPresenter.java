@@ -49,7 +49,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             if (getView().getLuggageViewModels().size() > 0)
                 getView().renderPassengerLuggages(getView().getLuggageViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels());
             if (getView().getMealViewModels().size() > 0)
-                getView().renderPassengerMeals(getView().getMealViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingAmenityMetaViewModels());
+                getView().renderPassengerMeals(getView().getMealViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
         }
 
         if (getView().getCurrentPassengerViewModel().getPassengerName() != null) {
@@ -141,7 +141,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel) {
-        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingAmenityMetaViewModels();
+        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
         int index = viewModels.indexOf(flightBookingAmenityMetaViewModel);
         if (index != -1) {
             viewModels.set(index, flightBookingAmenityMetaViewModel);
@@ -154,7 +154,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void onDeleteMeal(FlightBookingAmenityMetaViewModel viewModel) {
-        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingAmenityMetaViewModels();
+        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
         int index = viewModels.indexOf(viewModel);
         if (index != -1) {
             viewModels.set(index, viewModel);
@@ -168,7 +168,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     @Override
     public void onOptionMeal(FlightBookingAmenityMetaViewModel viewModel) {
         FlightBookingAmenityMetaViewModel existingSelected = null;
-        for (FlightBookingAmenityMetaViewModel viewModel1 : getView().getCurrentPassengerViewModel().getFlightBookingAmenityMetaViewModels()) {
+        for (FlightBookingAmenityMetaViewModel viewModel1 : getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels()) {
             if (viewModel1.getKey().equalsIgnoreCase(viewModel.getKey())) {
                 existingSelected = viewModel1;
                 break;

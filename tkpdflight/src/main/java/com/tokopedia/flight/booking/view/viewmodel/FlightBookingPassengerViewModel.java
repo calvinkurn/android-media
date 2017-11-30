@@ -18,7 +18,7 @@ public class FlightBookingPassengerViewModel implements Parcelable {
     private String passengerName;
     private String passengerBirthdate;
     private List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels;
-    private List<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels;
+    private List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels;
 
     public FlightBookingPassengerViewModel() {
     }
@@ -32,7 +32,7 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         passengerName = in.readString();
         passengerBirthdate = in.readString();
         flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
-        flightBookingAmenityMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
+        flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
@@ -87,12 +87,12 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.singleRoute = singleRoute;
     }
 
-    public List<FlightBookingAmenityMetaViewModel> getFlightBookingAmenityMetaViewModels() {
-        return flightBookingAmenityMetaViewModels;
+    public List<FlightBookingAmenityMetaViewModel> getFlightBookingMealMetaViewModels() {
+        return flightBookingMealMetaViewModels;
     }
 
-    public void setFlightBookingAmenityMetaViewModels(List<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels) {
-        this.flightBookingAmenityMetaViewModels = flightBookingAmenityMetaViewModels;
+    public void setFlightBookingMealMetaViewModels(List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels) {
+        this.flightBookingMealMetaViewModels = flightBookingMealMetaViewModels;
     }
 
     @Override
@@ -147,6 +147,6 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         dest.writeString(passengerName);
         dest.writeString(passengerBirthdate);
         dest.writeTypedList(flightBookingLuggageMetaViewModels);
-        dest.writeTypedList(flightBookingAmenityMetaViewModels);
+        dest.writeTypedList(flightBookingMealMetaViewModels);
     }
 }

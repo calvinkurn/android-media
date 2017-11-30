@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdFlightGeneratedDatabaseHolder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.utils.GlobalConfig;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.common.di.component.DaggerFlightComponent;
@@ -109,14 +110,24 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
         return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
     }
 
-
     @Override
     public String getAuthKey() {
         return AuthUtil.KEY.KEY_WSV4;
     }
 
     @Override
-    public String getFreshToken() {
-        return SessionHandler.getAccessToken();
+    public UserSession getSession() {
+        UserSession userSession = new UserSession() {
+            @Override
+            public String getAccessToken() {
+                return SessionHandler.getAccessToken();
+            }
+
+            @Override
+            public String getFreshToken() {
+                return SessionHandler.getAccessToken();
+            }
+        };
+        return userSession;
     }
 }

@@ -43,6 +43,7 @@
                     android:paddingTop="@dimen/padding_med">
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Caption"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -91,13 +92,12 @@
                     android:padding="@dimen/padding_small">
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Title.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_sm"
                         android:layout_marginTop="@dimen/margin_sm"
-                        android:text="@string/flight_booking_passenger_data_label"
-                        android:textSize="@dimen/font_headline"
-                        android:textStyle="bold" />
+                        android:text="@string/flight_booking_passenger_data_label" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_passengers"
@@ -114,13 +114,12 @@
                     android:padding="@dimen/padding_small">
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Title.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_sm"
                         android:layout_marginTop="@dimen/margin_sm"
-                        android:text="@string/flight_booking_price_detail"
-                        android:textSize="@dimen/font_headline"
-                        android:textStyle="bold" />
+                        android:text="@string/flight_booking_price_detail" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_price_lists"
@@ -141,11 +140,11 @@
                         android:orientation="horizontal">
 
                         <android.support.v7.widget.AppCompatTextView
+                            style="@style/TextView.Title.Bold"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/flight_booking_total_price_label"
-                            android:textSize="@dimen/font_title" />
+                            android:text="@string/flight_booking_total_price_label" />
 
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_total_price"

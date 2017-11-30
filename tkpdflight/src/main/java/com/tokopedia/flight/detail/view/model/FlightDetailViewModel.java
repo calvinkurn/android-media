@@ -22,8 +22,10 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
     private String id;
     private String departureAirport;
     private String departureAirportCity; // merge result
+    private String departureTime;
     private String arrivalAirport;
     private String arrivalAirportCity; // merge result
+    private String arrivalTime; // merge result
     private int totalTransit;
 
     private String total; // 693000
@@ -41,13 +43,46 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
 
     private List<Route> routeList;
 
+    protected FlightDetailViewModel(Parcel in) {
+        id = in.readString();
+        departureAirport = in.readString();
+        departureAirportCity = in.readString();
+        departureTime = in.readString();
+        arrivalAirport = in.readString();
+        arrivalAirportCity = in.readString();
+        arrivalTime = in.readString();
+        totalTransit = in.readInt();
+        total = in.readString();
+        totalNumeric = in.readInt();
+        beforeTotal = in.readString();
+        adultNumericPrice = in.readInt();
+        childNumericPrice = in.readInt();
+        infantNumericPrice = in.readInt();
+        countAdult = in.readInt();
+        countChild = in.readInt();
+        countInfant = in.readInt();
+        routeList = in.createTypedArrayList(Route.CREATOR);
+    }
+
+    public static final Creator<FlightDetailViewModel> CREATOR = new Creator<FlightDetailViewModel>() {
+        @Override
+        public FlightDetailViewModel createFromParcel(Parcel in) {
+            return new FlightDetailViewModel(in);
+        }
+
+        @Override
+        public FlightDetailViewModel[] newArray(int size) {
+            return new FlightDetailViewModel[size];
+        }
+    };
+
     @Override
     public int getType() {
         return TYPE;
     }
 
-    public FlightDetailViewModel build(FlightSearchViewModel flightSearchViewModel){
-        if(flightSearchViewModel != null) {
+    public FlightDetailViewModel build(FlightSearchViewModel flightSearchViewModel) {
+        if (flightSearchViewModel != null) {
             setId(flightSearchViewModel.getId());
             setDepartureAirport(flightSearchViewModel.getDepartureAirport());
             setDepartureAirportCity(flightSearchViewModel.getDepartureAirportCity());
@@ -62,13 +97,15 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
             setChildNumericPrice(flightSearchViewModel.getFare().getChildNumeric());
             setInfantNumericPrice(flightSearchViewModel.getFare().getInfantNumeric());
             setRouteList(flightSearchViewModel.getRouteList());
+            setDepartureTime(flightSearchViewModel.getDepartureTime());
+            setArrivalTime(flightSearchViewModel.getArrivalTime());
             return this;
-        }else{
+        } else {
             return null;
         }
     }
 
-    public FlightDetailViewModel build(FlightSearchPassDataViewModel flightSearchPassDataViewModel){
+    public FlightDetailViewModel build(FlightSearchPassDataViewModel flightSearchPassDataViewModel) {
         setCountAdult(flightSearchPassDataViewModel.getFlightPassengerViewModel().getAdult());
         setCountChild(flightSearchPassDataViewModel.getFlightPassengerViewModel().getChildren());
         setCountInfant(flightSearchPassDataViewModel.getFlightPassengerViewModel().getInfant());
@@ -211,65 +248,49 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
         this.routeList = routeList;
     }
 
+    public FlightDetailViewModel() {
+    }
+
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.departureAirport);
-        dest.writeString(this.departureAirportCity);
-        dest.writeString(this.arrivalAirport);
-        dest.writeString(this.arrivalAirportCity);
-        dest.writeInt(this.totalTransit);
-        dest.writeString(this.total);
-        dest.writeInt(this.totalNumeric);
-        dest.writeString(this.beforeTotal);
-        dest.writeInt(this.isRefundable == null ? -1 : this.isRefundable.ordinal());
-        dest.writeInt(this.adultNumericPrice);
-        dest.writeInt(this.childNumericPrice);
-        dest.writeInt(this.infantNumericPrice);
-        dest.writeInt(this.countAdult);
-        dest.writeInt(this.countChild);
-        dest.writeInt(this.countInfant);
-        dest.writeTypedList(this.routeList);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(departureAirport);
+        parcel.writeString(departureAirportCity);
+        parcel.writeString(departureTime);
+        parcel.writeString(arrivalAirport);
+        parcel.writeString(arrivalAirportCity);
+        parcel.writeString(arrivalTime);
+        parcel.writeInt(totalTransit);
+        parcel.writeString(total);
+        parcel.writeInt(totalNumeric);
+        parcel.writeString(beforeTotal);
+        parcel.writeInt(adultNumericPrice);
+        parcel.writeInt(childNumericPrice);
+        parcel.writeInt(infantNumericPrice);
+        parcel.writeInt(countAdult);
+        parcel.writeInt(countChild);
+        parcel.writeInt(countInfant);
+        parcel.writeTypedList(routeList);
     }
-
-    public FlightDetailViewModel() {
-    }
-
-    protected FlightDetailViewModel(Parcel in) {
-        this.id = in.readString();
-        this.departureAirport = in.readString();
-        this.departureAirportCity = in.readString();
-        this.arrivalAirport = in.readString();
-        this.arrivalAirportCity = in.readString();
-        this.totalTransit = in.readInt();
-        this.total = in.readString();
-        this.totalNumeric = in.readInt();
-        this.beforeTotal = in.readString();
-        int tmpIsRefundable = in.readInt();
-        this.isRefundable = tmpIsRefundable == -1 ? null : RefundableEnum.values()[tmpIsRefundable];
-        this.adultNumericPrice = in.readInt();
-        this.childNumericPrice = in.readInt();
-        this.infantNumericPrice = in.readInt();
-        this.countAdult = in.readInt();
-        this.countChild = in.readInt();
-        this.countInfant = in.readInt();
-        this.routeList = in.createTypedArrayList(Route.CREATOR);
-    }
-
-    public static final Parcelable.Creator<FlightDetailViewModel> CREATOR = new Parcelable.Creator<FlightDetailViewModel>() {
-        @Override
-        public FlightDetailViewModel createFromParcel(Parcel source) {
-            return new FlightDetailViewModel(source);
-        }
-
-        @Override
-        public FlightDetailViewModel[] newArray(int size) {
-            return new FlightDetailViewModel[size];
-        }
-    };
 }

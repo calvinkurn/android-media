@@ -68,6 +68,11 @@
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
+    <style name="TextView.Subheading.BlackPrimary.Bold">
+        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="TextView.Subheading.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>

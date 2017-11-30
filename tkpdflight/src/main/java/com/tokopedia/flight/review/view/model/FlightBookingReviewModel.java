@@ -102,8 +102,8 @@ public class FlightBookingReviewModel implements Parcelable {
 
     public FlightBookingReviewModel(FlightBookingParamViewModel flightBookingParamViewModel, FlightBookingCartData flightBookingCartData) {
         setId(flightBookingParamViewModel.getId());
-        setDetailViewModelListDeparture(new FlightDetailViewModel().build(flightBookingCartData.getDepartureTrip()));
-        setDetailViewModelListReturn(new FlightDetailViewModel().build(flightBookingCartData.getReturnTrip()));
+        setDetailViewModelListDeparture(flightBookingCartData.getDepartureTrip());
+        setDetailViewModelListReturn(flightBookingCartData.getReturnTrip());
         setDetailPassengers(generateFlightDetailPassenger(flightBookingParamViewModel.getPassengerViewModels()));
         setFlightReviewFares(flightBookingParamViewModel.getPriceListDetails());
         setTotalPrice(flightBookingParamViewModel.getTotalPriceFmt());
@@ -117,18 +117,27 @@ public class FlightBookingReviewModel implements Parcelable {
             FlightDetailPassenger flightDetailPassenger = new FlightDetailPassenger();
             flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerName());
             flightDetailPassenger.setPassengerType(flightBookingPassengerViewModel.getType());
-            flightDetailPassenger.setInfoPassengerList(generateDetailViewModelPassenger(flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels()));
+            flightDetailPassenger.setInfoPassengerList(generateDetailViewModelPassenger(flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
+                    flightBookingPassengerViewModel.getFlightBookingMealMetaViewModels()));
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;
     }
 
-    private List<SimpleViewModel> generateDetailViewModelPassenger(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels) {
+    private List<SimpleViewModel> generateDetailViewModelPassenger(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
+                                                                   List<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
         for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
             simpleViewModel.setDescription(flightBookingLuggageMetaViewModel.getDescription());
             simpleViewModel.setLabel(generateLabelLuggage(flightBookingLuggageMetaViewModel.getAmenities()));
+            simpleViewModels.add(simpleViewModel);
+        }
+
+        for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingAmenityMetaViewModels) {
+            SimpleViewModel simpleViewModel = new SimpleViewModel();
+            simpleViewModel.setDescription(flightBookingAmenityMetaViewModel.getDescription());
+            simpleViewModel.setLabel(generateLabelMeal(flightBookingAmenityMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }
         return simpleViewModels;
