@@ -138,4 +138,13 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
         void onSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage);
         void onFailed();
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getShopUseCase.unsubscribe();
+        getDynamicFilterUseCase.unsubscribe();
+        toggleFavoriteActionUseCase.unsubscribe();
+    }
+
 }

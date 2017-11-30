@@ -500,7 +500,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void finishLoading() {
         refreshHandler.finishRefresh();
         progressDialog.dismiss();
-//        adapter.removeLoading();
+        adapter.removeLoading();
         searchLoading.setVisibility(View.GONE);
     }
 
@@ -644,5 +644,10 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.closeWebsocket();
+    }
+
+    @Override
+    public void saveResult() {
+        presenter.setCache(getAdapter().getList());
     }
 }

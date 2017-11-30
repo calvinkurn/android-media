@@ -154,8 +154,8 @@ public class HotlistFragment extends SearchSectionFragment
 
 
     @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_BROWSE_HOT_LIST;
+    public String getScreenNameId() {
+        return AppScreen.SCREEN_BROWSE_HOT;
     }
 
     @Override
@@ -382,8 +382,13 @@ public class HotlistFragment extends SearchSectionFragment
 
     @Override
     protected void reloadData() {
-        HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
-        presenter.refreshSort(headerViewModel);
+        if (!hotlistAdapter.getItemList().isEmpty()) {
+            HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
+            presenter.refreshSort(headerViewModel);
+        } else {
+            showBottomBarNavigation(false);
+            presenter.requestDataForTheFirstTime(getHotlistInitParam());
+        }
     }
 
     private void onHandlingDataFromPDP(int requestCode, int resultCode, Intent data) {
@@ -433,8 +438,10 @@ public class HotlistFragment extends SearchSectionFragment
     protected TopAdsParams getTopAdsParam() {
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_HOTLIST);
-        params.getParam().put(TopAdsParams.KEY_HOTLIST_ID, getQueryModel().getHotlistID());
-        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getQueryModel().getCategoryID());
+        params.getParam().put(TopAdsParams.KEY_HOTLIST_ID,
+                getQueryModel() != null ? getQueryModel().getHotlistID() : "");
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,
+                getQueryModel() != null ? getQueryModel().getCategoryID() : "");
         enrichWithFilterAndSortParams(params);
         return params;
     }
@@ -695,7 +702,7 @@ public class HotlistFragment extends SearchSectionFragment
         if (element.isFeatured()) {
             Hotlist hotlist = new Hotlist();
             hotlist.setHotlistAlias(getHotlistAlias());
-            hotlist.setScreenName(getScreenName());
+            hotlist.setScreenName(getScreenNameId());
             hotlist.setPosition(adapterPosition);
 
             List<Hotlist.Product> list = new ArrayList<>();
@@ -724,7 +731,7 @@ public class HotlistFragment extends SearchSectionFragment
         if (!extractList.isEmpty()) {
             Hotlist hotlist = new Hotlist();
             hotlist.setHotlistAlias(getHotlistAlias());
-            hotlist.setScreenName(getScreenName());
+            hotlist.setScreenName(getScreenNameId());
 
             List<Hotlist.Product> list = new ArrayList<>();
             for (HotlistProductViewModel model : extractList) {
@@ -741,4 +748,8 @@ public class HotlistFragment extends SearchSectionFragment
 
     }
 
+    @Override
+    protected String getScreenName() {
+        return getScreenNameId();
+    }
 }

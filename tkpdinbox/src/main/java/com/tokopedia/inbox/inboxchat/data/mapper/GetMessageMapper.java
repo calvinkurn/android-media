@@ -57,6 +57,7 @@ public class GetMessageMapper implements Func1<Response<TkpdResponse>, InboxChat
     private InboxChatViewModel convertToDomain(MessageData data) {
         InboxChatViewModel inboxChatViewModel = new InboxChatViewModel();
         inboxChatViewModel.setMode(InboxChatViewModel.GET_CHAT_MODE);
+        inboxChatViewModel.setHasNext(data.isHasNext());
 
         ArrayList<Visitable> list = new ArrayList<>();
         for (ListMessage item : data.getList()) {

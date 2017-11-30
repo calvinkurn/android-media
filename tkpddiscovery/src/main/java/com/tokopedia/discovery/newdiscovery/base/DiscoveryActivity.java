@@ -248,6 +248,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         );
         parameter.setDepartmentId(categoryID);
         onSearchingStart(keyword);
+        setForceSearch(false);
         getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
     }
 

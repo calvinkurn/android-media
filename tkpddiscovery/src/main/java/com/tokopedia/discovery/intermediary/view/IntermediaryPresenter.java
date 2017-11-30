@@ -92,21 +92,22 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         public void onNext(IntermediaryCategoryDomainModel domainModel) {
             if (isViewAttached()) {
                 getView().renderTopAds();
-                getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
                 getView().renderCuratedProducts(domainModel.getCuratedSectionModelList());
                 if (domainModel.getHotListModelList().size() > 0) {
                     getView().renderHotList(domainModel.getHotListModelList());
                 }
-                getView().renderHeader(domainModel.getHeaderModel());
+
                 getView().updateDepartementId(domainModel.getDepartementId());
-                if (domainModel.getBannerModelList().size() > 0) {
-                    getView().renderBanner(domainModel.getBannerModelList());
-                }
                 if (domainModel.getVideoModel() != null && domainModel.getVideoModel().getVideoUrl() != null) {
                     getView().renderVideo(domainModel.getVideoModel());
                 }
                 if (domainModel.getBrandModelList() != null && domainModel.getBrandModelList().size() > 0) {
                     getView().renderBrands(domainModel.getBrandModelList());
+                }
+                getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
+                getView().renderHeader(domainModel.getHeaderModel());
+                if (domainModel.getBannerModelList().size() > 0) {
+                    getView().renderBanner(domainModel.getBannerModelList());
                 }
                 getView().backToTop();
             }
