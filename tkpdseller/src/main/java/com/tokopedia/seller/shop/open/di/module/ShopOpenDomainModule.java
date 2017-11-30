@@ -3,6 +3,7 @@ package com.tokopedia.seller.shop.open.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepositoryImpl;
 import com.tokopedia.seller.shop.open.data.source.ShopOpenDataSource;
@@ -17,14 +18,13 @@ import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
-/**
- * Created by sebastianuskh on 3/20/17.
- */
 @ShopOpenDomainScope
 @Module
 public class ShopOpenDomainModule {
 
+    @ShopOpenDomainScope
     @Provides
     ShopOpenDomainPresenter providePresenter(CheckDomainNameUseCase checkDomainNameUseCase,
                                              CheckShopNameUseCase checkShopNameUseCase) {
@@ -33,21 +33,15 @@ public class ShopOpenDomainModule {
         };
     }
 
-    // Provide CheckDomainNameUseCase
-    // Provide CheckShopNameUseCase
-
+    @ShopOpenDomainScope
     @Provides
     public ShopOpenRepository provideShopOpenRepository(ShopOpenDataSource shopOpenDataSource) {
         return new ShopOpenRepositoryImpl(shopOpenDataSource);
     }
 
+    @ShopOpenDomainScope
     @Provides
-    public TomeService provideTomeService(@ApplicationContext Context context) {
-        return new TomeService(SessionHandler.getAccessToken(context));
-    }
-
-    @Provides
-    public TomeApi provideTomeApi(TomeService tomeService) {
-        return tomeService.getApi();
+    public TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
+        return retrofit.create(TomeApi.class);
     }
 }

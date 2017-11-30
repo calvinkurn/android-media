@@ -60,7 +60,8 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
                 .shopOpenDomainModule(new ShopOpenDomainModule())
                 .shopComponent(getComponent(ShopComponent.class))
                 .build();
-        presenter = component.getPresenter();
+        component.inject(this);
+
         presenter.attachView(this);
     }
 
@@ -68,10 +69,10 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_open_domain, container, false);
-        TextView textHello = (TextView) view.findViewById(R.id.text_hello);
+        TextView textHello = view.findViewById(R.id.text_hello);
         buttonSubmit = view.findViewById(R.id.button_submit);
-        textInputShopName = (TkpdTextInputLayout) view.findViewById(R.id.text_input_shop_name);
-        textInputDomainName = (TkpdTextInputLayout) view.findViewById(R.id.text_input_domain_name);
+        textInputShopName = view.findViewById(R.id.text_input_shop_name);
+        textInputDomainName = view.findViewById(R.id.text_input_domain_name);
         editTextInputShopName = textInputShopName.getEditText();
         editTextInputDomainName = (PrefixEditText) textInputDomainName.getEditText();
 

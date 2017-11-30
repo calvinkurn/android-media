@@ -26,7 +26,7 @@ public interface TomeApi {
     Observable<Response<ResponseCheckDomain>> getDomainCheck(
             @Query(ShopOpenNetworkConstant.PARAM_SHOP_DOMAIN) String domainName);
 
-    @GET(ShopOpenNetworkConstant.PATH_SHOP_CHECK)
+    @GET(ShopOpenNetworkConstant.PATH_DOMAIN_CHECK)
     Observable<Response<ResponseCheckShop>> getShopCheck(
             @Query(ShopOpenNetworkConstant.PARAM_SHOP_NAME) String shopName);
 
