@@ -106,7 +106,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         if (baseCartData.getTotal() != getCurrentCartData().getTotal()) {
                             getView().showPriceChangesDialog(convertPriceValueToIdrFormat(baseCartData.getTotal()),
                                     convertPriceValueToIdrFormat(getCurrentCartData().getTotal()));
-                            updateTotalPrice(baseCartData.getTotal(), convertPriceValueToIdrFormat(baseCartData.getTotal()));
+                            updateTotalPrice(baseCartData.getTotal());
                             actionCalculatePriceAndRender(
                                     baseCartData.getNewFarePrices(),
                                     getView().getDepartureFlightDetailViewModel(),
@@ -135,7 +135,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         return newTotalPrice;
     }
 
-    abstract void updateTotalPrice(int totalPrice, String totalPriceFmt);
+    abstract void updateTotalPrice(int totalPrice);
 
     @Nullable
     private BaseCartData cloneViewModel(BaseCartData currentDashboardViewModel) {
@@ -278,16 +278,16 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         getView().renderPriceListDetails(simpleViewModels);
     }
 
-    protected SimpleViewModel formatPassengerFarePriceDetail(String departureAirport,
-                                                             String arrivalAirport,
-                                                             String label,
-                                                             int count,
-                                                             int price) {
+    private SimpleViewModel formatPassengerFarePriceDetail(String departureAirport,
+                                                           String arrivalAirport,
+                                                           String label,
+                                                           int passengerCount,
+                                                           int price) {
         return new SimpleViewModel(
                 String.format(getView().getString(R.string.flight_booking_passenger_price_format),
                         departureAirport,
                         arrivalAirport,
-                        count,
+                        passengerCount,
                         label),
                 convertPriceValueToIdrFormat(price));
     }
