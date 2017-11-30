@@ -197,7 +197,7 @@
     <string name="flight_label_second">Detik</string>
     <string name="activity_label_flight_order_list">Order List</string>
     <string name="flight_price_detail_prefixl_meal_label">Makanan </string>
-    <string name="flight_price_detail_prefix_luggage_label">Bagasi</string>
+    <string name="flight_price_detail_prefix_luggage_label">Bagasi </string>
     <string name="flight_booking_close_label">Tutup</string>
     <string name="flight_booking_trip_info_format" formatted="false">| %d %s</string>
     <string name="flight_booking_trip_info_airport_format" formatted="false">| %s %s - %s %s</string>

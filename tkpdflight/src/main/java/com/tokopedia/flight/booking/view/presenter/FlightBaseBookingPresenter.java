@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 
 import rx.Subscriber;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -58,14 +57,6 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         return flightBookingCartDataMapper.transform(entity);
                     }
                 })
-                .doOnNext(new Action1<FlightBookingCartData>() {
-                    @Override
-                    public void call(FlightBookingCartData flightBookingCartData) {
-                        Date expiredDate = FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, flightBookingCartData.getRefreshTime());
-                        getView().renderFinishTimeCountDown(expiredDate);
-                        onCountDownTimestimeChanged(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
-                    }
-                })
                 .map(new Func1<FlightBookingCartData, BaseCartData>() {
                     @Override
                     public BaseCartData call(FlightBookingCartData flightBookingCartData) {
@@ -81,6 +72,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                                 baseCartData.getInfant(),
                                 baseCartData.getAmenities()
                         );
+                        baseCartData.setRefreshTime(flightBookingCartData.getRefreshTime());
                         baseCartData.setNewFarePrices(flightBookingCartData.getNewFarePrices());
                         baseCartData.setTotal(newTotalPrice);
                         return baseCartData;
@@ -103,6 +95,11 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     @Override
                     public void onNext(BaseCartData baseCartData) {
                         getView().hideUpdatePriceLoading();
+
+                        Date expiredDate = FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, baseCartData.getRefreshTime());
+                        getView().renderFinishTimeCountDown(expiredDate);
+                        onCountDownTimestimeChanged(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
+
                         if (baseCartData.getTotal() != getCurrentCartData().getTotal()) {
                             getView().showPriceChangesDialog(convertPriceValueToIdrFormat(baseCartData.getTotal()),
                                     convertPriceValueToIdrFormat(getCurrentCartData().getTotal()));
@@ -212,7 +209,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                             departureDetailViewModel.getDepartureAirport(),
                             departureDetailViewModel.getArrivalAirport(),
                             getView().getString(R.string.flightbooking_price_infant_label),
-                            departureDetailViewModel.getCountChild(),
+                            departureDetailViewModel.getCountInfant(),
                             departureDetailViewModel.getInfantNumericPrice() * departureDetailViewModel.getCountInfant()
                     )
             );
@@ -260,7 +257,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : flightBookingAmenityMetaViewModel.getAmenities()) {
                     simpleViewModels.add(
                             new SimpleViewModel(
-                                    getView().getString(R.string.flight_price_detail_prefixl_meal_label) + flightBookingAmenityMetaViewModel.getDescription(),
+                                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label), flightBookingAmenityMetaViewModel.getDescription()),
                                     flightBookingAmenityViewModel.getPrice())
                     );
                 }
@@ -268,7 +265,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
             for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightPassengerViewModel.getFlightBookingLuggageMetaViewModels()) {
                 for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageMetaViewModel.getAmenities()) {
                     simpleViewModels.add(new SimpleViewModel(
-                            getView().getString(R.string.flight_price_detail_prefix_luggage_label) + flightBookingLuggageMetaViewModel.getDescription(),
+                            String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label), flightBookingLuggageMetaViewModel.getDescription()),
                             flightBookingLuggageViewModel.getPrice())
                     );
                 }
