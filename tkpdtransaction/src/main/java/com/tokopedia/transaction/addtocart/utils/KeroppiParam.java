@@ -48,6 +48,9 @@ public class KeroppiParam {
         params.put(FROM, FROM_CLIENT);
         params.put(TOKEN, shop.getToken());
         params.put(UT, shop.getUt() + "");
+        params.put(PRODUCT_INSURANCE, productDetail.getProductMustInsurance() == 1 ? "1" : "0");
+        params.put(INSURANCE, "1");
+        params.put(ORDER_VALUE, "0");
 
         return params;
     }

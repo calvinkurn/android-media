@@ -613,17 +613,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
-                if (product.getShipperProductName().equals(getString(R.string.atc_selection_shipment_package_info))) {
-                    imgInsuranceInfo.setVisibility(View.GONE);
-                } else {
-                    if (true) {
-//                    if (product.getInsuranceUsedInfo() != null && product.getInsuranceUsedInfo().length() > 0) {
-                        insuranceInfo = product.getInsuranceUsedInfo();
-                        imgInsuranceInfo.setVisibility(View.VISIBLE);
-                    } else {
-                        imgInsuranceInfo.setVisibility(View.GONE);
-                    }
-                }
+                setInsuranceInfoButtonVisibility(product);
             }
             if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
                 arrowMaxHour.setText(product.getMaxHoursId());
@@ -635,6 +625,19 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
             orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
                     ? Insurance.INSURANCE : Insurance.NOT_INSURANCE);
+        }
+    }
+
+    private void setInsuranceInfoButtonVisibility(Product product) {
+        if (product.getShipperProductName().equals(getString(R.string.atc_selection_shipment_package_info))) {
+            imgInsuranceInfo.setVisibility(View.GONE);
+        } else {
+            if (product.getInsuranceUsedInfo() != null && product.getInsuranceUsedInfo().length() > 0) {
+                insuranceInfo = product.getInsuranceUsedInfo();
+                imgInsuranceInfo.setVisibility(View.VISIBLE);
+            } else {
+                imgInsuranceInfo.setVisibility(View.GONE);
+            }
         }
     }
 
