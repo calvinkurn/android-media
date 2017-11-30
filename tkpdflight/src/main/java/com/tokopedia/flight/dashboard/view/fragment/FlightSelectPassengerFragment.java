@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,12 +164,15 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
     public void showAdultShouldAtleastOneErrorMessage(@StringRes int resId) {
         Snackbar snackBar = SnackbarManager.make(getActivity(),
                 getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
+                .setAction(R.string.flight_dashboard_error_close_label, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                     }
                 });
+        Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
+        snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
         snackBar.show();
     }
 
