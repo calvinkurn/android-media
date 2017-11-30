@@ -35,13 +35,13 @@ import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
-import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
+import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.view.model.AirportCombineModelList;
 import com.tokopedia.flight.search.view.model.FlightAirportCombineModel;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
@@ -97,7 +97,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);
-        void changeDate (FlightSearchPassDataViewModel flightSearchPassDataViewModel);
+
+        void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel);
     }
 
     @Inject
@@ -200,7 +201,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         return view;
     }
 
-    private void setUpSwipeRefresh(View view) {
+    protected void setUpSwipeRefresh(View view) {
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -425,7 +426,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         hideSwipeRefreshLoad();
     }
 
-    private void hideSwipeRefreshLoad(){
+    private void hideSwipeRefreshLoad() {
         swipeToRefresh.setEnabled(true);
         swipeToRefresh.setRefreshing(false);
     }
@@ -462,7 +463,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                             flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
                             date, adult, child, infant, classID);
-                    Log.i(TAG, flightAirportCombineModel.getDepAirport() + " to "+
+                    Log.i(TAG, flightAirportCombineModel.getDepAirport() + " to " +
                             flightAirportCombineModel.getArrAirport() + "; No Retry: " + noRetry);
                     flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel, isReturning(), flightMetaDataDB.getRefreshTime());
                 }
@@ -471,7 +472,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 flightAirportCombineModel.setNeedRefresh(false);
                 progress += (flightMetaDataDB.getMaxRetry() - flightAirportCombineModel.getNoOfRetry()) *
                         divideTo(halfProgressAmount, flightMetaDataDB.getMaxRetry());
-                Log.i(TAG, flightAirportCombineModel.getDepAirport() + " to "+
+                Log.i(TAG, flightAirportCombineModel.getDepAirport() + " to " +
                         flightAirportCombineModel.getArrAirport() + " DONE");
             }
         }
@@ -506,7 +507,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         resetDateAndReload();
     }
 
-    private void resetDateAndReload(){
+    private void resetDateAndReload() {
         // preserve the filter and sort option
 
         // cancel all cloud progress, setupCombination airport, reset progress, hide filter, clear current data
@@ -600,7 +601,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         datePickerDialog.show();
     }
 
-    private void setMinMaxDatePicker(DatePicker datePicker){
+    private void setMinMaxDatePicker(DatePicker datePicker) {
         if (isReturning()) {
             String dateDepStr = flightSearchPassDataViewModel.getDate(false);
             Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
@@ -618,7 +619,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    private void onSuccessDateChanged(int year, int month, int dayOfMonth){
+    private void onSuccessDateChanged(int year, int month, int dayOfMonth) {
         Calendar calendar = FlightDateUtil.getCurrentCalendar();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);

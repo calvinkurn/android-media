@@ -65,27 +65,30 @@
 
     </LinearLayout>
 
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/swipe_refresh_layout">
-        <android.support.design.widget.CoordinatorLayout
+        android:background="@color/background_apps">
+
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background_apps">
+            android:layout_height="match_parent">
 
             <com.tokopedia.flight.search.view.adapter.FlightSearchRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clipToPadding="false"
                 android:fitsSystemWindows="true"
                 android:paddingBottom="@dimen/margin_small"
-                android:clipToPadding="false"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-            <include layout="@layout/include_filter_bottom_action_view" />
+        <include layout="@layout/include_filter_bottom_action_view" />
 
-        </android.support.design.widget.CoordinatorLayout>
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+    </android.support.design.widget.CoordinatorLayout>
+
 
 </LinearLayout>
