@@ -106,6 +106,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
         sellerInfoModel.setContent(list.getContent());
         sellerInfoModel.setCreateTimeUnix(list.getCreateTimeUnix());
         sellerInfoModel.setTitle(list.getTitle());
+        sellerInfoModel.setInfoThumbnailUrl(list.getInfoThumbnailUrl());
         return sellerInfoModel;
     }
 
