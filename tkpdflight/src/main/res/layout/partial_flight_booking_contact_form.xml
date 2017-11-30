@@ -101,6 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_sm"
                 android:layout_marginStart="@dimen/margin_sm"
+                android:backgroundTint="@color/widget_card_with_action_separator"
                 android:hint="@string/flight_booking_contact_telp_hint"
                 android:imeActionLabel="@string/label_done"
                 android:inputType="phone"

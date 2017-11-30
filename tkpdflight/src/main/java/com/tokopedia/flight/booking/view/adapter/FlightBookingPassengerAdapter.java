@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
+import android.app.Activity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,12 +28,14 @@ import java.util.List;
 public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBookingPassengerAdapter.ViewHolder> {
     private List<FlightBookingPassengerViewModel> viewModels;
     private OnClickListener listener;
+    private Activity activity;
 
     public interface OnClickListener {
         void onChangePassengerData(FlightBookingPassengerViewModel viewModel);
     }
 
-    public FlightBookingPassengerAdapter() {
+    public FlightBookingPassengerAdapter(Activity activity) {
+        this.activity = activity;
         viewModels = new ArrayList<>();
     }
 
@@ -131,6 +134,8 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                 }
 
                 FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+                adapter.setTitleBold(true);
+                adapter.setDescriptionTextColor(activity.getResources().getColor(R.color.font_black_secondary_54));
                 LinearLayoutManager layoutManager
                         = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
                 rvPassengerDetail.setLayoutManager(layoutManager);
