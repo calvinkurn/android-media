@@ -17,7 +17,7 @@ public class SellerInfoModule {
 
     @SellerInfoScope
     @Provides
-    SellerInfoApi provideSellerInfoApi(@SellerInfoQualifier Retrofit retrofit){
+    public SellerInfoApi provideSellerInfoApi(@SellerInfoQualifier Retrofit retrofit){
         return retrofit.create(SellerInfoApi.class);
     }
 }
