@@ -17,6 +17,8 @@ import com.tokopedia.usecase.UseCase;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -43,6 +45,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
     private FlightRepository flightRepository;
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
 
+    @Inject
     public FlightAddToCartUseCase(FlightRepository flightRepository,
                                   FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase) {
         this.flightRepository = flightRepository;

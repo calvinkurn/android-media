@@ -12,7 +12,6 @@
         android:layout_above="@+id/button_submit"
         android:layout_alignParentTop="true">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -87,6 +86,8 @@
                     android:id="@+id/recycler_view_departure_flight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
                     android:nestedScrollingEnabled="false" />
             </LinearLayout>
 
@@ -119,6 +120,8 @@
                 </RelativeLayout>
 
                 <android.support.v7.widget.RecyclerView
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
                     android:id="@+id/recycler_view_return_flight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -138,6 +141,8 @@
                     android:text="@string/flight_label_passenger_data" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingLeft="@dimen/padding_small"
                     android:id="@+id/recycler_view_data_passenger"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -165,6 +170,8 @@
                     android:text="@string/flight_label_detail_price" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
                     android:id="@+id/recycler_view_detail_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

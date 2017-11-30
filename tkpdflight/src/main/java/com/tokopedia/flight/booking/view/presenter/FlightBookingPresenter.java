@@ -87,6 +87,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     }
 
     private void renderUi(FlightBookingCartData flightBookingCartData) {
+        getView().getCurrentBookingParamViewModel().setId(flightBookingCartData.getId());
         getView().setCartData(flightBookingCartData);
         if (flightBookingCartData.getNewFarePrices() != null && flightBookingCartData.getNewFarePrices().size() > 0) {
             int totalPrice = 0, oldTotalPrice = 0;

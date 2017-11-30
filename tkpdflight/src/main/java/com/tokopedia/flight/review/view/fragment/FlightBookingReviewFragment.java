@@ -2,6 +2,7 @@ package com.tokopedia.flight.review.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,8 +16,10 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.KeyboardHandler;
+import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.voucher.VoucherCartView;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
@@ -49,6 +52,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private Button buttonSubmit;
     private VoucherCartView voucherCartView;
     private View containerFlightReturn;
+    private ProgressDialog progressDialog;
 
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
@@ -71,6 +75,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     protected void initInjector() {
         getComponent(FlightBookingComponent.class)
                 .inject(this);
+        flightBookingReviewPresenter.attachView(this);
     }
 
     @Override
@@ -94,11 +99,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
         voucherCartView = view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
+        progressDialog.setCancelable(false);
 
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
             @Override
             public void onFinished() {
-                showDialogExpired();
+                progressDialog.show();
+                flightBookingReviewPresenter.processGetCartData();
             }
         });
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
@@ -121,23 +130,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         });
         voucherCartView.setActionListener(this);
         return view;
-    }
-
-    void showDialogExpired() {
-        if(isAdded()) {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage(R.string.flight_booking_expired_booking_label);
-            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            getActivity().setResult(Activity.RESULT_CANCELED);
-                            getActivity().finish();
-                        }
-                    });
-            dialog.setCancelable(false);
-            dialog.create().show();
-        }
     }
 
     void initView() {
@@ -165,20 +157,19 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
 
         reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        initView();
         reviewTime.setExpiredDate(flightBookingReviewModel.getDateFinishTime());
         reviewTime.start();
     }
 
     @Override
-    public void onErrorCheckVoucherCode(Throwable e) {
-        voucherCartView.setErrorVoucher(e.getMessage());
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView();
+    }
+
+    @Override
+    public void onErrorCheckVoucherCode(String e) {
+        voucherCartView.setErrorVoucher(e);
     }
 
     @Override
@@ -228,6 +219,53 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void trackingCancelledVoucher() {
+
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void showUpdateDataErrorStateLayout(String messageFromException) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(), messageFromException,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        progressDialog.show();
+                        flightBookingReviewPresenter.getSubscriberGetCartData();
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void showExpireTransactionDialog() {
+        if(isAdded()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage(R.string.flight_booking_expired_booking_label);
+            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            getActivity().finish();
+                        }
+                    });
+            dialog.setCancelable(false);
+            dialog.create().show();
+        }
+    }
+
+    @Override
+    public void onGetCartData(CartEntity cartEntity) {
 
     }
 
