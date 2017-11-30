@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.List;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author by alvarisi on 11/29/17.
@@ -78,6 +80,10 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         return baseCartData;
                     }
                 })
+                .onBackpressureDrop()
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<BaseCartData>() {
                     @Override
                     public void onCompleted() {

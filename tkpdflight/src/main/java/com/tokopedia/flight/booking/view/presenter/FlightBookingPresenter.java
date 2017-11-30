@@ -466,7 +466,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private boolean isAllPassengerFilled(List<FlightBookingPassengerViewModel> passengerViewModels) {
         boolean isvalid = true;
         for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : passengerViewModels) {
-            if (flightBookingPassengerViewModel.getPassengerName() != null) {
+            if (flightBookingPassengerViewModel.getPassengerName() == null) {
                 isvalid = false;
                 break;
             }
