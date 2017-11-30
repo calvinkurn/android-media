@@ -2,6 +2,8 @@ package com.tokopedia.abstraction;
 
 import android.app.Activity;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+
 import java.util.Map;
 
 /**
@@ -34,5 +36,5 @@ public interface AbstractionRouter {
 
     String getAuthKey();
 
-    String getFreshToken();
+    UserSession getSession();
 }

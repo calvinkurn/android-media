@@ -25,6 +25,7 @@ import java.util.List;
 public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     public static final String ID = "id";
     public static final String TOTAL_NUMERIC = "total_numeric";
+    public static final String ADULT_NUMERIC = "adult_numeric";
     public static final String AIRLINE = "airline";
     public static final String IS_REFUNDABLE = "is_refundable";
     public static final String DEPARTURE_TIME = "departure_time";
@@ -83,8 +84,23 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "routes")
     String routes;
 
-    @Column(name = "fare")
-    String fare;
+    @Column(name = "adult")
+    String adult;
+
+    @Column(name = ADULT_NUMERIC)
+    int adultNumeric;
+
+    @Column(name = "child")
+    String child;
+
+    @Column(name = "child_numeric")
+    int childNumeric;
+
+    @Column(name = "infant")
+    String infant;
+
+    @Column(name = "infant_numeric")
+    int infantNumeric;
 
     @Column(name = AIRLINE)
     String airline;
@@ -128,7 +144,12 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         this.routes = gson.toJson(routeList);
 
         Fare fare = attributes.getFare();
-        this.fare = gson.toJson(fare);
+        this.adult = fare.getAdult();
+        this.adultNumeric = fare.getAdultNumeric();
+        this.child = fare.getChild();
+        this.childNumeric = fare.getChildNumeric();
+        this.infant = fare.getInfant();
+        this.infantNumeric = fare.getInfantNumeric();
 
         this.airline = "";
         int refundableCount = 0;
@@ -221,12 +242,32 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         return routes;
     }
 
-    public String getFare() {
-        return fare;
-    }
-
     public String getAirline() {
         return airline;
+    }
+
+    public String getAdult() {
+        return adult;
+    }
+
+    public int getAdultNumeric() {
+        return adultNumeric;
+    }
+
+    public String getChild() {
+        return child;
+    }
+
+    public int getChildNumeric() {
+        return childNumeric;
+    }
+
+    public String getInfant() {
+        return infant;
+    }
+
+    public int getInfantNumeric() {
+        return infantNumeric;
     }
 
     public RefundableEnum getIsRefundable(){

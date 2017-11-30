@@ -15,14 +15,14 @@ public abstract class TkpdBaseV4Fragment extends Fragment {
 
     @TargetApi(23)
     @Override
-    public final void onAttach(Context context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
         onAttachActivity(context);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public final void onAttach(Activity activity) {
+    public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             onAttachActivity(activity);

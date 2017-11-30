@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
@@ -109,7 +108,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
-        returnDateSeparatorView = (View) view.findViewById(R.id.view_return_date_separator);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +175,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             @Override
             public void onClick(View v) {
                 presenter.onReverseAirportButtonClicked();
-                AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
                 Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
                 shake.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -195,10 +192,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
                     }
                 });
-
-                RotateAnimation rotate = new RotateAnimation(180, 360, Animation.RELATIVE_TO_SELF,
-                        0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                rotate.setDuration(500);
                 reverseAirportImageView.startAnimation(shake);
             }
         });
@@ -234,18 +227,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(true);
         roundTripAppCompatButton.setSelected(false);
         returnDateTextInputView.setVisibility(View.GONE);
-        returnDateSeparatorView.setVisibility(View.GONE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
         if (viewModel.getDepartureAirport() != null) {
-            airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
+            airportDepartureTextInputView.setText(viewModel.getAirportTextForView(getContext(), true));
         } else {
             airportDepartureTextInputView.setText(null);
             airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
         }
         if (viewModel.getArrivalAirport() != null) {
-            airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
+            airportArrivalTextInputView.setText(viewModel.getAirportTextForView(getContext(), false));
         } else {
             airportArrivalTextInputView.setText(null);
             airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));
@@ -264,19 +256,18 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(false);
         roundTripAppCompatButton.setSelected(true);
         returnDateTextInputView.setVisibility(View.VISIBLE);
-        returnDateSeparatorView.setVisibility(View.VISIBLE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         returnDateTextInputView.setText(viewModel.getReturnDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
         if (viewModel.getDepartureAirport() != null) {
-            airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
+            airportDepartureTextInputView.setText(viewModel.getAirportTextForView(getContext(), true));
         } else {
             airportDepartureTextInputView.setText(null);
             airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
         }
         if (viewModel.getArrivalAirport() != null) {
-            airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
+            airportArrivalTextInputView.setText(viewModel.getAirportTextForView(getContext(), false));
         } else {
             airportArrivalTextInputView.setText(null);
             airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));

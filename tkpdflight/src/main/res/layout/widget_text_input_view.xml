@@ -10,7 +10,6 @@
         android:id="@+id/image_view"
         android:layout_width="@dimen/image_width_s"
         android:layout_height="@dimen/image_width_s"
-        android:layout_marginTop="@dimen/margin_vs"
         android:scaleType="fitCenter"
         tools:src="@drawable/ic_smiley_positive" />
 
