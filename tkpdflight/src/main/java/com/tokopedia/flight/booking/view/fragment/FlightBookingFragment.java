@@ -480,13 +480,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     private void showMessageErrorInSnackBar(int resId) {
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction(R.string.flight_booking_close_label, null);
-        Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
-        snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
-        snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override

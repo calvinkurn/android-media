@@ -114,6 +114,10 @@ public abstract class DataSource<T, U> {
         return dataCacheManager.setExpired();
     }
 
+    public Observable<Boolean> isCacheExpired() {
+        return dataCacheManager.isExpired();
+    }
+
     public Observable<Boolean> deleteCache() {
         return dataDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override

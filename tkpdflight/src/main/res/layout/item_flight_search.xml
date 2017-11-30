@@ -25,14 +25,14 @@
             android:layout_marginRight="@dimen/margin_small"
             tools:text="Garuda" />
 
-        <ImageView
-            android:id="@+id/image_airline"
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
-            android:layout_centerVertical="true"
+        <com.tokopedia.flight.common.view.FlightMultiAirlineView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_toEndOf="@id/tv_airline"
             android:layout_toRightOf="@id/tv_airline"
-            tools:src="@drawable/ic_garuda" />
+            android:layout_centerVertical="true"
+            android:id="@+id/view_multi_airline" />
 
         <TextView
             android:id="@+id/airline_refundable_info"

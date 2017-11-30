@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
@@ -126,7 +127,6 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
         }
     }
 
-
     @Override
     public FlightPassengerViewModel getCurrentPassengerViewModel() {
         return passData;
@@ -134,42 +134,17 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void showTotalPassengerErrorMessage(@StringRes int resId) {
-
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override
     public void showInfantGreaterThanAdultErrorMessage(@StringRes int resId) {
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override
     public void showAdultShouldAtleastOneErrorMessage(@StringRes int resId) {
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override
