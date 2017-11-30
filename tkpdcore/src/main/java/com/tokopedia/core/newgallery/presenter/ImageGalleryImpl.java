@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
@@ -190,6 +191,9 @@ public class ImageGalleryImpl implements ImageGallery {
                 while (cursor.moveToNext()) {
                     String pathFile = cursor.getString(column_index_data);
                     String bucketName = cursor.getString(bucketColumn);
+                    if (TextUtils.isEmpty(pathFile) || TextUtils.isEmpty(bucketName)) {
+                        continue;
+                    }
                     File file = new File(pathFile);
                     if (file.exists()) {
                         boolean check = ImageGalleryImpl.this.checkFile(file);
