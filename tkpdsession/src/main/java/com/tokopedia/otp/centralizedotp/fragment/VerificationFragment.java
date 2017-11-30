@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -30,6 +31,7 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.centralizedotp.VerificationActivity;
 import com.tokopedia.otp.centralizedotp.presenter.VerificationPresenter;
 import com.tokopedia.otp.centralizedotp.viewlistener.Verification;
+import com.tokopedia.otp.centralizedotp.viewmodel.VerificationViewModel;
 import com.tokopedia.session.R;
 
 import java.util.concurrent.TimeUnit;
@@ -42,9 +44,16 @@ import javax.inject.Inject;
 
 public class VerificationFragment extends BaseDaggerFragment implements Verification.View {
 
-    private static final long COUNTDOWN_LENGTH = 10000;
+    private static final String ARGS_DATA = "ARGS_DATA";
+
+    private static final int COUNTDOWN_LENGTH = 90;
+    private static final int INTERVAL = 1000;
     private static final String RESEND = "Kirim ulang";
     private static final String USE_OTHER_METHOD = "gunakan metode verifikasi lain";
+
+    private static final String CACHE_OTP = "CACHE_OTP";
+    private static final String HAS_TIMER = "has_timer";
+
     ImageView icon;
     TextView message;
     EditText inputOtp;
@@ -53,7 +62,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     CountDownTimer countDownTimer;
     private boolean isRunningTimer = false;
-
+    protected LocalCacheHandler cacheHandler;
+    private VerificationViewModel viewModel;
     @Inject
     VerificationPresenter presenter;
 
@@ -61,22 +71,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         Fragment fragment = new VerificationFragment();
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        ScreenTracking.screen(getScreenName());
-    }
-
-    @Override
-    protected String getScreenName() {
-        if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString
-                (VerificationActivity
-                        .PARAM_APP_SCREEN, ""))) {
-            return getArguments().getString(VerificationActivity.PARAM_APP_SCREEN);
-        } else
-            return AppScreen.SCREEN_COTP_DEFAULT;
     }
 
     @Override
@@ -89,6 +83,50 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                         .build();
 
         daggerSessionComponent.inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            viewModel = savedInstanceState.getParcelable(ARGS_DATA);
+        } else if (getArguments() != null) {
+            viewModel = createViewModel(getArguments());
+        } else {
+            getActivity().finish();
+        }
+
+        cacheHandler = new LocalCacheHandler(getActivity(), CACHE_OTP);
+    }
+
+    private VerificationViewModel createViewModel(Bundle bundle) {
+        return new VerificationViewModel(
+                bundle.getInt(VerificationActivity.PARAM_FRAGMENT_TYPE, -1),
+                bundle.getInt(VerificationActivity.PARAM_IMAGE, -1),
+                bundle.getString(VerificationActivity.PARAM_MESSAGE, ""),
+                bundle.getString(VerificationActivity.PARAM_PHONE_NUMBER, ""),
+                bundle.getString(VerificationActivity.PARAM_APP_SCREEN, "")
+        );
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ARGS_DATA, viewModel);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
+    @Override
+    protected String getScreenName() {
+        if (viewModel != null && !TextUtils.isEmpty(viewModel.getAppScreen())) {
+            return viewModel.getAppScreen();
+        } else
+            return AppScreen.SCREEN_COTP_DEFAULT;
     }
 
     @Nullable
@@ -146,15 +184,17 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int imageId = getArguments().getInt(VerificationActivity.PARAM_IMAGE, -1);
-        if (imageId != -1)
-            ImageHandler.loadImageWithId(icon, imageId);
+        initData();
+    }
 
-        message.setText(MethodChecker.fromHtml(getArguments().getString(VerificationActivity
-                .PARAM_MESSAGE, "")));
+    private void initData() {
+        int imageId = viewModel.getIconResId();
+        ImageHandler.loadImageWithId(icon, imageId);
+
+        message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
 
         verifyButton.setEnabled(false);
-        presenter.requestOTP(getArguments().getString(VerificationActivity.PARAM_PHONE_NUMBER));
+        presenter.requestOTP(viewModel);
     }
 
     @Override
@@ -164,8 +204,14 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void startTimer() {
+        if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false)) {
+            cacheHandler.putBoolean(HAS_TIMER, true);
+            cacheHandler.setExpire(COUNTDOWN_LENGTH);
+            cacheHandler.applyEditor();
+        }
+
         if (!isRunningTimer) {
-            countDownTimer = new CountDownTimer(COUNTDOWN_LENGTH, 1000) {
+            countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * INTERVAL, INTERVAL) {
                 public void onTick(long millisUntilFinished) {
                     isRunningTimer = true;
                     setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
@@ -190,8 +236,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         spannable.setSpan(new ClickableSpan() {
                               @Override
                               public void onClick(View view) {
-                                  presenter.requestOTP(getArguments().getString
-                                          (VerificationActivity.PARAM_PHONE_NUMBER));
+                                  presenter.requestOTP(viewModel);
                               }
 
                               @Override
@@ -261,5 +306,10 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             countDownTimer.cancel();
             countDownTimer = null;
         }
+    }
+
+    public void setData(Bundle bundle) {
+        viewModel = createViewModel(bundle);
+        initData();
     }
 }

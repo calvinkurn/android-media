@@ -17,9 +17,12 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.centralizedotp.VerificationActivity;
+import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.viewlistener.LoginPhoneNumber;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -131,9 +134,26 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(VerificationActivity.getSmsVerificationIntent(getActivity(),
-                phoneNumber),
+        startActivityForResult(VerificationActivity.getSmsVerificationIntent(
+                getActivity(),
+                phoneNumber,
+                getListAvailableMethod()),
                 REQUEST_VERIFY_PHONE);
+    }
+
+    private ArrayList<MethodItem> getListAvailableMethod() {
+        ArrayList<MethodItem> list = new ArrayList<>();
+        list.add(new MethodItem(
+                VerificationActivity.TYPE_SMS,
+                R.drawable.ic_verification_sms,
+                MethodItem.getSmsMethodText(phoneNumber.getText().toString())
+        ));
+        list.add(new MethodItem(
+                VerificationActivity.TYPE_PHONE_CALL,
+                R.drawable.ic_verification_call,
+                MethodItem.getCallMethodText(phoneNumber.getText().toString())
+        ));
+        return list;
     }
 
     private void showErrorPhoneNumber(String errorMessage) {

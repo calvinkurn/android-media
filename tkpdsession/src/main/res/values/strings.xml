@@ -87,11 +87,19 @@
     <string name="phone_number">Nomor Ponsel</string>
     <string name="we_will_send_verification_code">Kami akan mengirimkan sms kode verifikasi</string>
     <string name="title_verify">Verifikasi</string>
-    <string name="verification_code_sent_to">Kode verifikasi telah dikirimkan ke</string>
+    <string name="verification_code_sent_to_sms">Kode verifikasi telah dikirimkan ke</string>
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
     <string name="to_resend_or_use_other_verif_method">untuk kirim ulang\natau gunakan metode verifikasi lain</string>
     <string name="please_wait_in">Mohon tunggu dalam</string>
     <string name="countdown_finish_otp">Tidak menerima kode?\n Kirim ulang atau gunakan
         metode verifikasi lain</string>
     <string name="resend">Kirim ulang</string>
+    <string name="choose_verification_method">Pilih Metode Verifikasi</string>
+    <string name="pick_one_of_these_method_to_get_verification_code">Pilih salah satu metode
+        dibawah ini untuk\nmendapatkan kode verifikasi.</string>
+    <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor<br/>]]></string>
+    <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b><br/> ke
+    nomor]]></string>
+    <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan
+        lewat<br>panggilan telepon ke]]></string>
 </resources>
