@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.DateFormatUtils;
+import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 
 /**
@@ -73,7 +73,7 @@ public class FlightDetailViewHolder extends BaseViewHolder<Route> {
         arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirport()));
         arrivalAirportDesc.setText(route.getArrivalAirportName());
         transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(),route.getLayover()));
-        imageAirline.setImageResource(FlightAirlineIconUtil.getImageResource(route.getAirline()));
+        ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),R.drawable.ic_airline_default);
     }
 
     private void setRefundableInfo(Route route) {

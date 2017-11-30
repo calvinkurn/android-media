@@ -26,11 +26,6 @@ public class FlightAirportPickerActivity extends BaseSimpleActivity implements H
     }
 
     @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_airport_picker;
-    }
-
-    @Override
     protected Fragment getNewFragment() {
         return FlightAirportPickerFragment.getInstance();
     }
@@ -52,6 +47,5 @@ public class FlightAirportPickerActivity extends BaseSimpleActivity implements H
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getIntent().getStringExtra(EXTRA_TOOLBAR_TITLE));
-        toolbar.setContentInsetStartWithNavigation(0);
     }
 }

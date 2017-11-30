@@ -15,6 +15,7 @@ public class BaseCartData implements Cloneable {
     private int total;
     private List<FlightBookingAmenityViewModel> amenities;
     private List<NewFarePrice> newFarePrices;
+    private int refreshTime;
 
     public int getTotal() {
         return total;
@@ -67,5 +68,13 @@ public class BaseCartData implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public int getRefreshTime() {
+        return refreshTime;
+    }
+
+    public void setRefreshTime(int refreshTime) {
+        this.refreshTime = refreshTime;
     }
 }

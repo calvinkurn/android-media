@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
+import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
 
 /**
@@ -50,7 +50,7 @@ public class FlightFilterAirlineAdapter extends BaseListCheckableAdapter<Airline
         @Override
         public void bindObject(AirlineStat airlineStat, boolean isChecked) {
             super.bindObject(airlineStat, isChecked);
-            ivLogo.setImageResource(FlightAirlineIconUtil.getImageResource(airlineStat.getAirlineDB().getId()));
+            ImageHandler.loadImageWithoutPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(),R.drawable.ic_airline_default);
             tvTitle.setText(airlineStat.getAirlineDB().getName());
             tvDesc.setText(getString(R.string.start_from_x, airlineStat.getMinPriceString()));
             itemView.setOnClickListener(this);

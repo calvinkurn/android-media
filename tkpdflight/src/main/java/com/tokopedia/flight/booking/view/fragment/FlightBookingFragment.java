@@ -9,11 +9,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -23,13 +21,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -292,6 +288,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void showPassengerInfoNotFullfilled(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public FlightBookingParamViewModel getCurrentBookingParamViewModel() {
         return paramViewModel;
     }
@@ -299,7 +300,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         returnInfoView.setVisibility(View.VISIBLE);
-        returnInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
+        returnInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
         returnInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;
@@ -324,7 +325,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
+        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + "-" + returnTrip.getArrivalAirportCity());
         departureInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;
@@ -486,13 +487,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     private void showMessageErrorInSnackBar(int resId) {
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction(R.string.flight_booking_close_label, null);
-        Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
-        snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
-        snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override

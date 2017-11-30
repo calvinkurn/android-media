@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView android:id="@+id/iv_airline_logo"
+    android:layout_width="@dimen/image_width_xs"
+    android:layout_height="@dimen/image_width_xs"
+    android:layout_marginRight="@dimen/padding_vvs"
+    android:layout_marginLeft="@dimen/padding_vvs"
+    tools:src="@drawable/ic_airline_default"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />

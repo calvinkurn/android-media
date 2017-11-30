@@ -23,20 +23,19 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_header"
+                style="@style/TextView.Title.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vvs"
                 android:layout_marginTop="@dimen/margin_sm"
-                android:textSize="@dimen/font_headline"
-                android:textStyle="bold"
                 tools:text="Penumpang 1 (Dewasa)" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_subheader"
+                style="@style/TextView.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
-                android:textSize="@dimen/font_subheading"
                 tools:text="Usia diatas 12 tahun" />
 
             <com.tokopedia.design.text.SpinnerTextView
@@ -98,13 +97,12 @@
             tools:visibility="visible">
 
             <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Title.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:layout_marginTop="@dimen/margin_sm"
-                android:text="@string/flight_booking_passenger_luggage_label"
-                android:textSize="@dimen/font_headline"
-                android:textStyle="bold" />
+                android:text="@string/flight_booking_passenger_luggage_label" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_luggages"
@@ -125,13 +123,12 @@
             tools:visibility="visible">
 
             <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Title.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:layout_marginTop="@dimen/margin_sm"
-                android:text="@string/flight_booking_passenger_meal_label"
-                android:textSize="@dimen/font_headline"
-                android:textStyle="bold" />
+                android:text="@string/flight_booking_passenger_meal_label" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_meals"

@@ -37,7 +37,7 @@ public class FlightBookingAmenityViewHolder extends BaseViewHolder<FlightBooking
             isItemChecked = listenerCheckedLuggage.isItemChecked(flightBookingLuggageViewModel);
         }
 
-        title.setText(flightBookingLuggageViewModel.getTitle() + "-" + flightBookingLuggageViewModel.getPrice());
+        title.setText(String.format("%s - %s", flightBookingLuggageViewModel.getTitle(), flightBookingLuggageViewModel.getPrice()));
         if (isItemChecked) {
             imageChecked.setVisibility(View.VISIBLE);
             title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));

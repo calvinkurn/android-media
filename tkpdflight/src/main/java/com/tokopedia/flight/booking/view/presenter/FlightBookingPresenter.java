@@ -100,27 +100,52 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         Date expiredDate = FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, flightBookingCartData.getRefreshTime());
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
         getView().renderFinishTimeCountDown(expiredDate);
+        int oldTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
+        int resultTotalPrice = 0;
+        resultTotalPrice = oldTotalPrice;
+
+        if (flightBookingCartData.getNewFarePrices() != null && flightBookingCartData.getNewFarePrices().size() > 0) {
+            for (NewFarePrice newFarePrice : flightBookingCartData.getNewFarePrices()) {
+                if (newFarePrice.getId().equalsIgnoreCase(flightBookingCartData.getDepartureTrip().getId())) {
+                    flightBookingCartData.getDepartureTrip().setAdultNumericPrice(newFarePrice.getFare().getAdultNumeric());
+                    flightBookingCartData.getDepartureTrip().setChildNumericPrice(newFarePrice.getFare().getChildNumeric());
+                    flightBookingCartData.getDepartureTrip().setInfantNumericPrice(newFarePrice.getFare().getInfantNumeric());
+                } else if (isRoundTrip() && newFarePrice.getId().equalsIgnoreCase(flightBookingCartData.getReturnTrip().getId())) {
+                    flightBookingCartData.getReturnTrip().setAdultNumericPrice(newFarePrice.getFare().getAdultNumeric());
+                    flightBookingCartData.getReturnTrip().setChildNumericPrice(newFarePrice.getFare().getChildNumeric());
+                    flightBookingCartData.getReturnTrip().setInfantNumericPrice(newFarePrice.getFare().getInfantNumeric());
+                }
+            }
+            int newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
+            if (newTotalPrice != oldTotalPrice) {
+                resultTotalPrice = newTotalPrice;
+                getView().showPriceChangesDialog(convertPriceValueToIdrFormat(resultTotalPrice), convertPriceValueToIdrFormat(oldTotalPrice));
+            }
+        }
+        updateTotalPrice(resultTotalPrice);
+
         actionCalculatePriceAndRender(flightBookingCartData.getNewFarePrices(),
                 flightBookingCartData.getDepartureTrip(),
                 flightBookingCartData.getReturnTrip(),
                 getView().getCurrentBookingParamViewModel().getPassengerViewModels()
         );
 
+    }
+
+    private int actionCalculateCurrentTotalPrice(FlightDetailViewModel departureFlightDetailViewModel, FlightDetailViewModel returnFlightDetailViewModel) {
         BaseCartData baseCartData = getCurrentCartData();
         List<Fare> fares = new ArrayList<>();
-        FlightDetailViewModel flightDetailViewModel = flightBookingCartData.getDepartureTrip();
         fares.add(
                 new Fare(
-                        convertPriceValueToIdrFormat(flightDetailViewModel.getAdultNumericPrice()),
-                        convertPriceValueToIdrFormat(flightDetailViewModel.getChildNumericPrice()),
-                        convertPriceValueToIdrFormat(flightDetailViewModel.getInfantNumericPrice()),
-                        flightDetailViewModel.getAdultNumericPrice(),
-                        flightDetailViewModel.getChildNumericPrice(),
-                        flightDetailViewModel.getInfantNumericPrice()
+                        convertPriceValueToIdrFormat(departureFlightDetailViewModel.getAdultNumericPrice()),
+                        convertPriceValueToIdrFormat(departureFlightDetailViewModel.getChildNumericPrice()),
+                        convertPriceValueToIdrFormat(departureFlightDetailViewModel.getInfantNumericPrice()),
+                        departureFlightDetailViewModel.getAdultNumericPrice(),
+                        departureFlightDetailViewModel.getChildNumericPrice(),
+                        departureFlightDetailViewModel.getInfantNumericPrice()
                 )
         );
-        if (flightBookingCartData.getReturnTrip() != null) {
-            FlightDetailViewModel returnFlightDetailViewModel = flightBookingCartData.getDepartureTrip();
+        if (returnFlightDetailViewModel != null) {
             fares.add(
                     new Fare(
                             convertPriceValueToIdrFormat(returnFlightDetailViewModel.getAdultNumericPrice()),
@@ -133,42 +158,14 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             );
         }
 
-        int resultTotalPrice = 0;
 
-        int oldTotalPrice = calculateTotalFareAndAmenities(
+        return calculateTotalFareAndAmenities(
                 fares,
                 baseCartData.getAdult(),
                 baseCartData.getChild(),
                 baseCartData.getInfant(),
                 baseCartData.getAmenities()
         );
-        resultTotalPrice = oldTotalPrice;
-        int newTotalPrice = 0;
-
-        if (flightBookingCartData.getNewFarePrices() != null && flightBookingCartData.getNewFarePrices().size() > 0) {
-            for (NewFarePrice newFarePrice : flightBookingCartData.getNewFarePrices()) {
-                newTotalPrice += newFarePrice.getFare().getAdultNumeric() +
-                        newFarePrice.getFare().getChildNumeric() +
-                        newFarePrice.getFare().getInfantNumeric();
-
-                if (newFarePrice.getId().equalsIgnoreCase(flightBookingCartData.getDepartureTrip().getId())) {
-                    oldTotalPrice += flightBookingCartData.getDepartureTrip().getTotalNumeric();
-                    flightBookingCartData.getDepartureTrip().setAdultNumericPrice(newFarePrice.getFare().getAdultNumeric());
-                    flightBookingCartData.getDepartureTrip().setChildNumericPrice(newFarePrice.getFare().getChildNumeric());
-                    flightBookingCartData.getDepartureTrip().setInfantNumericPrice(newFarePrice.getFare().getInfantNumeric());
-                } else if (isRoundTrip() && newFarePrice.getId().equalsIgnoreCase(flightBookingCartData.getReturnTrip().getId())) {
-                    oldTotalPrice += flightBookingCartData.getReturnTrip().getTotalNumeric();
-                    flightBookingCartData.getReturnTrip().setAdultNumericPrice(newFarePrice.getFare().getAdultNumeric());
-                    flightBookingCartData.getReturnTrip().setChildNumericPrice(newFarePrice.getFare().getChildNumeric());
-                    flightBookingCartData.getReturnTrip().setInfantNumericPrice(newFarePrice.getFare().getInfantNumeric());
-                }
-            }
-            if (newTotalPrice != oldTotalPrice) {
-                resultTotalPrice = newTotalPrice;
-                getView().showPriceChangesDialog(convertPriceValueToIdrFormat(resultTotalPrice), convertPriceValueToIdrFormat(oldTotalPrice));
-            }
-        }
-        updateTotalPrice(resultTotalPrice);
     }
 
     @Override
@@ -192,6 +189,12 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                 getView().getCurrentCartPassData().getReturnTrip(),
                 getView().getCurrentBookingParamViewModel().getPassengerViewModels()
         );
+
+        int newTotalPrice = actionCalculateCurrentTotalPrice(
+                getView().getDepartureFlightDetailViewModel(),
+                getView().getReturnFlightDetailViewModel()
+        );
+        updateTotalPrice(newTotalPrice);
     }
 
     @Override
@@ -454,8 +457,22 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         } else if (getView().getContactPhoneNumber().length() == 0) {
             isValid = false;
             getView().showContactPhoneNumberEmptyError(R.string.flight_booking_contact_phone_empty_error);
+        } else if (!isAllPassengerFilled(getView().getCurrentBookingParamViewModel().getPassengerViewModels())) {
+            isValid = false;
+            getView().showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error);
         }
         return isValid;
+    }
+
+    private boolean isAllPassengerFilled(List<FlightBookingPassengerViewModel> passengerViewModels) {
+        boolean isvalid = true;
+        for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : passengerViewModels) {
+            if (flightBookingPassengerViewModel.getPassengerName() != null) {
+                isvalid = false;
+                break;
+            }
+        }
+        return isvalid;
     }
 
     private boolean isValidEmail(String contactEmail) {

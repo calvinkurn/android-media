@@ -11,6 +11,6 @@ import java.util.Comparator;
 public class FlightCheapestComparator implements Comparator<FlightSearchViewModel> {
     @Override
     public int compare(FlightSearchViewModel o1, FlightSearchViewModel o2) {
-        return o1.getTotalNumeric() - o2.getTotalNumeric();
+        return o1.getFare().getAdultNumeric() - o2.getFare().getAdultNumeric();
     }
 }
