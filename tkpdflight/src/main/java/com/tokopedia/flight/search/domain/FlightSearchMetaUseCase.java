@@ -43,7 +43,6 @@ public class FlightSearchMetaUseCase extends UseCase<FlightSearchWithMetaViewMod
                 String date = flightSearchApiRequestModel.getDate();
                 Observable<FlightMetaDataDB> observableFlightMeta = flightSearchGetMetaUseCase.createObservable(FlightSearchGetMetaUseCase.generateRequestParams(depAirport, arrAirport, date));
 
-
                 return Observable.zip(Observable.just(flightSearchViewModelList),
                         observableFlightMeta, new Func2<List<FlightSearchViewModel>, FlightMetaDataDB, FlightSearchWithMetaViewModel>() {
                             @Override

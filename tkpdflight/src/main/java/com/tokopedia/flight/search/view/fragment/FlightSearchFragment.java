@@ -11,6 +11,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,6 +65,9 @@ import javax.inject.Inject;
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel> implements FlightSearchView,
         BaseListAdapter.OnBaseListV2AdapterListener<FlightSearchViewModel>,
         FlightSearchAdapter.OnBaseFlightSearchAdapterListener {
+
+    public static final String TAG = FlightSearchFragment.class.getSimpleName();
+
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
@@ -458,6 +462,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                             flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
                             date, adult, child, infant, classID);
+                    Log.i(TAG, flightAirportCombineModel.getDepAirport() + " to "+
+                            flightAirportCombineModel.getArrAirport() + "; No Retry: " + noRetry);
                     flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel, isReturning(), flightMetaDataDB.getRefreshTime());
                 }
 
@@ -465,6 +471,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 flightAirportCombineModel.setNeedRefresh(false);
                 progress += (flightMetaDataDB.getMaxRetry() - flightAirportCombineModel.getNoOfRetry()) *
                         divideTo(halfProgressAmount, flightMetaDataDB.getMaxRetry());
+                Log.i(TAG, flightAirportCombineModel.getDepAirport() + " to "+
+                        flightAirportCombineModel.getArrAirport() + " DONE");
             }
         }
         setUpProgress();
@@ -475,17 +483,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             return;
         }
 
+        Log.i(TAG, "DONE Hide Loading");
+
         // will update the data
         // if there is already data loaded, reload the data from cache
         // because the data might have filter/sort in it, so cannot be added directly
-        if (isDataEmpty) {
-            hideLoading();
-        } else {
-            // we retrieve from cache, because there is possibility the filter/sort will be different
-            reloadDataFromCache();
-            if (filterAndSortBottomAction.getVisibility() == View.GONE) {
-                filterAndSortBottomAction.setVisibility(View.VISIBLE);
-            }
+
+        // we retrieve from cache, because there is possibility the filter/sort will be different
+        reloadDataFromCache();
+        if (filterAndSortBottomAction.getVisibility() == View.GONE) {
+            filterAndSortBottomAction.setVisibility(View.VISIBLE);
         }
     }
 
@@ -522,6 +529,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onLoadSearchError(Throwable t) {
+        Log.i(TAG, t.toString());
         super.onLoadSearchError(t);
         String message = FlightErrorUtil.getMessageFromException(t);
         flightSearchAdapter.setErrorMessage(message);
@@ -633,12 +641,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         if (!TextUtils.isEmpty(message)) {
             NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        flightSearchPresenter.detachView();
     }
 
     @Override
