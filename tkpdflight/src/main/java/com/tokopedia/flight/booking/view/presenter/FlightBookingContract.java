@@ -2,8 +2,6 @@ package com.tokopedia.flight.booking.view.presenter;
 
 import android.support.annotation.StringRes;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -21,7 +19,7 @@ import java.util.List;
  */
 
 public interface FlightBookingContract {
-    interface View extends CustomerView {
+    interface View extends FlightBaseBookingContact.View {
 
         String getContactName();
 
@@ -65,7 +63,7 @@ public interface FlightBookingContract {
 
         FlightBookingCartData getCurrentCartPassData();
 
-        void getRenderPriceDetails(List<SimpleViewModel> prices);
+        void renderPriceListDetails(List<SimpleViewModel> prices);
 
         void renderTotalPrices(String totalPrice);
 
@@ -75,18 +73,18 @@ public interface FlightBookingContract {
 
         void showExpireTransactionDialog();
 
-        void showPriceDialogChanges(String newTotalPrice, String oldTotalPrice);
+        void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice);
 
         void navigateToReview(FlightBookingReviewModel flightBookingReviewModel);
 
-        void showUpdateDataLoading();
+        void showUpdatePriceLoading();
 
-        void hideUpdateDataLoading();
+        void hideUpdatePriceLoading();
 
         void showUpdateDataErrorStateLayout(String errorMessage);
     }
 
-    interface Presenter extends CustomerPresenter<View> {
+    interface Presenter extends FlightBaseBookingContact.Presenter<View> {
 
         void onButtonSubmitClicked();
 

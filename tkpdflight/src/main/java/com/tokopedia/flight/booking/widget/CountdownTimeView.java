@@ -126,7 +126,7 @@ public class CountdownTimeView extends BaseCustomView {
         }
     }
 
-    public void stop() {
+    public void cancel() {
         if(countDownTimer != null){
             countDownTimer.cancel();
         }

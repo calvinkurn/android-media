@@ -122,8 +122,8 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                     }
                 }
 
-                if (viewModel.getFlightBookingAmenityMetaViewModels() != null && viewModel.getFlightBookingAmenityMetaViewModels().size() > 0) {
-                    for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingAmenityMetaViewModels()) {
+                if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
+                    for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
                         simpleViewModels.add(new SimpleViewModel(
                                 itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label), TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
                         ));

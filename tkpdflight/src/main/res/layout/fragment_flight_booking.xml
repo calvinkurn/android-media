@@ -43,10 +43,10 @@
                     android:paddingTop="@dimen/padding_med">
 
                     <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Caption"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        style="@style/TextView.Caption"
                         android:text="@string/flight_booking_finish_transaction_label" />
 
                     <com.tokopedia.flight.booking.widget.CountdownTimeView
@@ -140,11 +140,11 @@
                         android:orientation="horizontal">
 
                         <android.support.v7.widget.AppCompatTextView
+                            style="@style/TextView.Title.Bold"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/flight_booking_total_price_label"
-                            android:textSize="@dimen/font_title" />
+                            android:text="@string/flight_booking_total_price_label" />
 
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_total_price"

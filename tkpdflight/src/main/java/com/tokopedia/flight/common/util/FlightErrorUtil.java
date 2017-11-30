@@ -1,5 +1,7 @@
 package com.tokopedia.flight.common.util;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.utils.ErrorHandler;
 import com.tokopedia.flight.common.data.model.FlightException;
 
@@ -11,7 +13,7 @@ public class FlightErrorUtil {
     public static String getMessageFromException(Throwable e) {
         if (e instanceof FlightException) {
 //            return ((FlightException) e).getErrorList().get(0).getTitle();
-            return ((FlightException) e).getErrorList().get(0).getTitle() + " (" + ((FlightException) e).getErrorList().get(0).getId() + ")";
+            return TextUtils.join(",", ((FlightException) e).getErrorList());
         } else {
             return ErrorHandler.getErrorMessage(e);
         }

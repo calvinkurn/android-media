@@ -19,6 +19,11 @@ public class NewFarePrice {
     public NewFarePrice() {
     }
 
+    public NewFarePrice(String id, Fare fare) {
+        this.id = id;
+        this.fare = fare;
+    }
+
     public String getId() {
         return id;
     }
