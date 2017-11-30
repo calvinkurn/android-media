@@ -89,7 +89,7 @@
     <string name="title_verify">Verifikasi</string>
     <string name="verification_code_sent_to">Kode verifikasi telah dikirimkan ke</string>
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
-    <string name="to_resend_or_use_other_verif_method">untuk kirim ulang atau gunakan metode verifikasi lain</string>
+    <string name="to_resend_or_use_other_verif_method">untuk kirim ulang\natau gunakan metode verifikasi lain</string>
     <string name="please_wait_in">Mohon tunggu dalam</string>
     <string name="countdown_finish_otp">Tidak menerima kode?\n Kirim ulang atau gunakan
         metode verifikasi lain</string>

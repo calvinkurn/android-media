@@ -15,12 +15,12 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.centralizedotp.VerificationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.viewlistener.LoginPhoneNumber;
-import com.tokopedia.di.DaggerSessionComponent;
+
 import javax.inject.Inject;
 
 /**
@@ -34,6 +34,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     EditText phoneNumber;
     TextView nextButton;
     TextView message;
+    TextView errorText;
 
     @Inject
     LoginPhoneNumberPresenter presenter;
@@ -90,6 +91,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         phoneNumber = view.findViewById(R.id.phone_number);
         message = view.findViewById(R.id.message);
         nextButton = view.findViewById(R.id.next_btn);
+        errorText = view.findViewById(R.id.error);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -135,7 +137,6 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     }
 
     private void showErrorPhoneNumber(String errorMessage) {
-        message.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
-        message.setText(errorMessage);
+        errorText.setText(errorMessage);
     }
 }

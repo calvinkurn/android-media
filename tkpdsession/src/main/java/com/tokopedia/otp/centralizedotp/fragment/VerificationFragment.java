@@ -10,7 +10,9 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +26,13 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.centralizedotp.VerificationActivity;
 import com.tokopedia.otp.centralizedotp.presenter.VerificationPresenter;
 import com.tokopedia.otp.centralizedotp.viewlistener.Verification;
 import com.tokopedia.session.R;
 
 import java.util.concurrent.TimeUnit;
-import com.tokopedia.di.DaggerSessionComponent;
 
 import javax.inject.Inject;
 
@@ -40,7 +42,9 @@ import javax.inject.Inject;
 
 public class VerificationFragment extends BaseDaggerFragment implements Verification.View {
 
-    private static final long COUNTDOWN_LENGTH = 5000;
+    private static final long COUNTDOWN_LENGTH = 10000;
+    private static final String RESEND = "Kirim ulang";
+    private static final String USE_OTHER_METHOD = "gunakan metode verifikasi lain";
     ImageView icon;
     TextView message;
     EditText inputOtp;
@@ -163,18 +167,15 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         if (!isRunningTimer) {
             countDownTimer = new CountDownTimer(COUNTDOWN_LENGTH, 1000) {
                 public void onTick(long millisUntilFinished) {
-                    try {
-                        isRunningTimer = true;
-
-                        setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
-                                (millisUntilFinished)));
-
-                    } catch (Exception e) {
-                        cancel();
-                    }
+                    isRunningTimer = true;
+                    setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
+                            (millisUntilFinished)));
+                    Log.d("NISNIS", millisUntilFinished + " " + String.valueOf(TimeUnit
+                            .MILLISECONDS.toSeconds(millisUntilFinished)));
                 }
 
                 public void onFinish() {
+                    isRunningTimer = false;
                     setFinishedCountdownText();
                 }
 
@@ -198,8 +199,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                                   ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , spannable.toString().indexOf("Kirim ulang")
-                , 11
+                , spannable.toString().indexOf(RESEND)
+                , spannable.toString().lastIndexOf(RESEND) + RESEND.length()
                 , 0);
 
         spannable.setSpan(new ClickableSpan() {
@@ -213,9 +214,12 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                                   ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , spannable.toString().indexOf("gunakan metode verifikasi lain")
+                , spannable.toString().indexOf(USE_OTHER_METHOD)
                 , spannable.length()
                 , 0);
+
+        countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
+        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void setRunningCountdownText(String countdown) {
@@ -236,14 +240,26 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                                   ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , spannable.toString().indexOf("gunakan metode verifikasi lain")
+                , spannable.toString().indexOf(USE_OTHER_METHOD)
                 , spannable.length()
                 , 0);
+
+        countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
+        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void goToOtherVerificationMethod() {
         if (getActivity() instanceof VerificationActivity) {
             ((VerificationActivity) getActivity()).goToSelectVerificationMethod();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
         }
     }
 }

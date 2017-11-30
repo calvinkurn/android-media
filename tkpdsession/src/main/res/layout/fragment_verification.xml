@@ -81,7 +81,7 @@
             android:textColor="@color/grey_500"
             android:textSize="@dimen/text_size_s_medium"
             android:textStyle="bold"
-            tools:text="Verifikasi"
+            android:text="@string/button_verify"
             />
 
         <TextView
