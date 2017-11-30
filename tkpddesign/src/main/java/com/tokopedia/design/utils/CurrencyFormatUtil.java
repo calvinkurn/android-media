@@ -1,5 +1,7 @@
 package com.tokopedia.design.utils;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -109,5 +111,20 @@ public class CurrencyFormatUtil {
             return new ThousandString(textToFormat, selectionStart);
         }
         return new ThousandString(textToFormat, selectionStart);
+    }
+
+    public static String convertPriceValueToIdrFormat(int price) {
+        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        kursIndonesia.setMaximumFractionDigits(0);
+        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setGroupingSeparator('.');
+        formatRp.setMonetaryDecimalSeparator('.');
+        formatRp.setDecimalSeparator('.');
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+        String result = kursIndonesia.format(price);
+
+        return result.replace(",", ".");
     }
 }

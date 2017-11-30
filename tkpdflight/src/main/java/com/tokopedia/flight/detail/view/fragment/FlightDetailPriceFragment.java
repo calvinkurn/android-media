@@ -64,28 +64,35 @@ public class FlightDetailPriceFragment extends Fragment {
 
     void updateView() {
         double adultPriceTotal = flightDetailViewModel.getAdultNumericPrice() * flightDetailViewModel.getCountAdult();
-        adultPrice.setText(getString(R.string.flight_label_currency,CurrencyFormatUtil.getThousandSeparatorString(adultPriceTotal, false, 0).getFormattedString()));
+        adultPrice.setText(getString(R.string.flight_label_currency, CurrencyFormatUtil.getThousandSeparatorString(adultPriceTotal, false, 0).getFormattedString()));
         labelAdultPrice.setText(getString(R.string.flight_label_adult, flightDetailViewModel.getCountAdult()));
-        if(flightDetailViewModel.getCountChild() > 0){
+        if (flightDetailViewModel.getCountChild() > 0) {
             containerChildPrice.setVisibility(View.VISIBLE);
             labelChildPrice.setText(getString(R.string.flight_label_child, flightDetailViewModel.getCountChild()));
             double childPriceTotal = flightDetailViewModel.getChildNumericPrice() * flightDetailViewModel.getCountChild();
-            childPrice.setText(getString(R.string.flight_label_currency,CurrencyFormatUtil.getThousandSeparatorString(childPriceTotal, false, 0).getFormattedString()));
+            childPrice.setText(getString(R.string.flight_label_currency, CurrencyFormatUtil.getThousandSeparatorString(childPriceTotal, false, 0).getFormattedString()));
         }
-        if(flightDetailViewModel.getCountInfant() > 0){
+        if (flightDetailViewModel.getCountInfant() > 0) {
             containerInfantPrice.setVisibility(View.VISIBLE);
             labelInfantPrice.setText(getString(R.string.flight_label_infant, flightDetailViewModel.getCountInfant()));
             double infantPriceTotal = flightDetailViewModel.getInfantNumericPrice() * flightDetailViewModel.getCountInfant();
-            infantPrice.setText(getString(R.string.flight_label_currency,CurrencyFormatUtil.getThousandSeparatorString(infantPriceTotal, false, 0).getFormattedString()));
+            infantPrice.setText(getString(R.string.flight_label_currency, CurrencyFormatUtil.getThousandSeparatorString(infantPriceTotal, false, 0).getFormattedString()));
         }
-        if(!TextUtils.isEmpty(flightDetailViewModel.getBeforeTotal())) {
+        if (!TextUtils.isEmpty(flightDetailViewModel.getBeforeTotal())) {
             containerSavingPrice.setVisibility(View.VISIBLE);
             normalPrice.setText(flightDetailViewModel.getBeforeTotal());
             savingPrice.setText(flightDetailViewModel.getBeforeTotal());
-        }else{
+        } else {
             containerSavingPrice.setVisibility(View.GONE);
         }
-        totalPrice.setText(flightDetailViewModel.getTotal());
+        totalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(calculateTotal(flightDetailViewModel)));
+    }
+
+    private int calculateTotal(FlightDetailViewModel flightDetailViewModel) {
+        int total = flightDetailViewModel.getCountAdult() * flightDetailViewModel.getAdultNumericPrice();
+        total += flightDetailViewModel.getCountChild() * flightDetailViewModel.getChildNumericPrice();
+        total += flightDetailViewModel.getCountInfant() * flightDetailViewModel.getInfantNumericPrice();
+        return total;
     }
 
     public static FlightDetailPriceFragment createInstance(FlightDetailViewModel flightDetailViewModel) {

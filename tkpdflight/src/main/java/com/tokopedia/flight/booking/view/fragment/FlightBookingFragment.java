@@ -299,7 +299,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         returnInfoView.setVisibility(View.VISIBLE);
-        returnInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
+        returnInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
         returnInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;
@@ -324,7 +324,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
+        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + "-" + returnTrip.getArrivalAirportCity());
         departureInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;

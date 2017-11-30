@@ -46,7 +46,7 @@
     <string name="flight_search_filter_airplane">Maskapai Penerbangan</string>
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
-    <string name="flight_classes_toolbar_title">Pilih Kelas Penerbangan</string>
+    <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
     <string name="flight_labe_all_airport">Semua Bandara</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
     <string name="flight_dashboard_adult_children">Anak</string>
@@ -197,7 +197,7 @@
     <string name="flight_label_second">Detik</string>
     <string name="activity_label_flight_order_list">Order List</string>
     <string name="flight_price_detail_prefixl_meal_label">Makanan </string>
-    <string name="flight_price_detail_prefix_luggage_label">Bagasi</string>
+    <string name="flight_price_detail_prefix_luggage_label">Bagasi </string>
     <string name="flight_booking_close_label">Tutup</string>
     <string name="flight_booking_trip_info_format" formatted="false">| %d %s</string>
     <string name="flight_booking_trip_info_airport_format" formatted="false">| %s %s - %s %s</string>
@@ -210,4 +210,5 @@
     <string name="flight_label_adult_review">(Dewasa)</string>
     <string name="flight_label_child_review">(Anak)</string>
     <string name="flight_label_infant_review">(Bayi)</string>
+    <string name="flight_booking_passenger_toolbar_title">Isi Penumpang</string>
 </resources>

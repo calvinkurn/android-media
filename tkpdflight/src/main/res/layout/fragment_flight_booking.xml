@@ -140,7 +140,7 @@
                         android:orientation="horizontal">
 
                         <android.support.v7.widget.AppCompatTextView
-                            style="@style/TextView.Title.Bold"
+                            style="@style/TextView.Subheading.Bold"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -152,8 +152,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:textSize="@dimen/font_headline"
-                            android:textStyle="bold"
+                            style="@style/TextView.Subheading.Bold"
                             tools:text="Rp45.846.900" />
 
                     </LinearLayout>

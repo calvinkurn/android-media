@@ -60,7 +60,7 @@
             android:theme="@style/Theme.White" />
         <activity
             android:name=".booking.view.activity.FlightBookingPassengerActivity"
-            android:label="Isi Penumpang"
+            android:label="@string/flight_booking_passenger_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
