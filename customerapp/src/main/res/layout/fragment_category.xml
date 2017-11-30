@@ -29,7 +29,7 @@
             android:padding="@dimen/padding_vs"
             android:visibility="gone" />
 
-        <com.tokopedia.tkpd.home.customview.BannerView
+        <com.tokopedia.design.banner.BannerView
             android:id="@+id/banner_container_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
