@@ -1624,7 +1624,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="error_google_map_not_chosen">Mohon Pilih Lokasi terlebih dahulu</string>
 
-    <string name="title_empty_stock">Stok Kosong</string>
+    <string name="title_empty_stock">Stok Habis</string>
     <string name="load_more">Lihat Selebihnya</string>
     <string name="dialog_spam">Apakah anda yakin ingin menandai pesan ini sebagai spam?</string>
 
