@@ -104,7 +104,7 @@ public class DistrictRecommendationAdapter extends BaseLinearRecyclerViewAdapter
 
         @Override
         public void onClick(View view) {
-            if (addresses.size() > getAdapterPosition()) {
+            if (getAdapterPosition() >= 0 && addresses.size() > getAdapterPosition()) {
                 listener.onItemClick(addresses.get(getAdapterPosition()));
             }
         }
