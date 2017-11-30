@@ -158,7 +158,7 @@ public class HotlistFragment extends SearchSectionFragment
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_BROWSE_HOT_LIST;
+        return AppScreen.SCREEN_BROWSE_HOT;
     }
 
     @Override
@@ -384,8 +384,13 @@ public class HotlistFragment extends SearchSectionFragment
 
     @Override
     protected void reloadData() {
-        HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
-        presenter.refreshSort(headerViewModel);
+        if (!hotlistAdapter.getItemList().isEmpty()) {
+            HotlistHeaderViewModel headerViewModel = (HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0);
+            presenter.refreshSort(headerViewModel);
+        } else {
+            showBottomBarNavigation(false);
+            presenter.requestDataForTheFirstTime(getHotlistInitParam());
+        }
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -436,8 +441,10 @@ public class HotlistFragment extends SearchSectionFragment
     protected TopAdsParams getTopAdsParam() {
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_HOTLIST);
-        params.getParam().put(TopAdsParams.KEY_HOTLIST_ID, getQueryModel().getHotlistID());
-        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getQueryModel().getCategoryID());
+        params.getParam().put(TopAdsParams.KEY_HOTLIST_ID,
+                getQueryModel() != null ? getQueryModel().getHotlistID() : "");
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,
+                getQueryModel() != null ? getQueryModel().getCategoryID() : "");
         enrichWithFilterAndSortParams(params);
         return params;
     }
