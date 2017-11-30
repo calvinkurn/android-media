@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
+import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private List<SimpleViewModel> viewModels;
     private boolean isArrowVisible;
     private boolean isClickable;
+    private boolean isTitleBold;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -36,6 +38,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         viewModels = new ArrayList<>();
         isArrowVisible = false;
         isClickable = false;
+        isTitleBold = false;
     }
 
     @Override
@@ -70,6 +73,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         this.isClickable = isClickable;
     }
 
+    public void setTitleBold(boolean isTitleBold) {
+        this.isTitleBold = isTitleBold;
+    }
+
     public void setInteractionListener(OnAdapterInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
@@ -94,6 +101,12 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
             arrowImageView.setVisibility(isArrowVisible ? View.VISIBLE : View.GONE);
             if (contentColorValue != 0) {
                 contentTextView.setTextColor(contentColorValue);
+            }
+
+            if (isTitleBold) {
+                titleTextView.setTypeface(Typeface.DEFAULT_BOLD);
+            } else {
+                titleTextView.setTypeface(Typeface.DEFAULT);
             }
             containerLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

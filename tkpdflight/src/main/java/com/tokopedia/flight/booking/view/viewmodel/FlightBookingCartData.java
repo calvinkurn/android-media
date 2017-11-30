@@ -24,6 +24,7 @@ public class FlightBookingCartData {
 
     public int getRefreshTime() {
         return refreshTime;
+//        return 15;
     }
 
     public void setRefreshTime(int refreshTime) {

@@ -25,7 +25,6 @@ import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
@@ -45,7 +44,6 @@ import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPriceAdapter;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewContract;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewPresenter;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -129,8 +127,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
             @Override
             public void onFinished() {
-                progressDialog.show();
-                flightBookingReviewPresenter.onUpdateCart();
+                if (!(getActivity()).isFinishing()) {
+                    progressDialog.show();
+                    flightBookingReviewPresenter.onUpdateCart();
+                }
             }
         });
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
@@ -283,7 +283,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void showExpireTransactionDialog() {
-        if(isAdded()) {
+        if (isAdded()) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             dialog.setMessage(R.string.flight_booking_expired_booking_label);
             dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
@@ -301,7 +301,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void setTimeStamp(String timestamp) {
-        flightBookingReviewModel.setDateFinishTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT,timestamp));
+        flightBookingReviewModel.setDateFinishTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT, timestamp));
     }
 
     @Override

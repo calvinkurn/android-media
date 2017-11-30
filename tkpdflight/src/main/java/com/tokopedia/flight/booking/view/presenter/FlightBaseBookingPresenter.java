@@ -28,7 +28,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -71,20 +73,25 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     @Override
                     public BaseCartData call(FlightBookingCartData flightBookingCartData) {
                         BaseCartData baseCartData = cloneViewModel(getCurrentCartData());
-                        List<Fare> fares = new ArrayList<>();
-                        for (NewFarePrice newFare : flightBookingCartData.getNewFarePrices()) {
-                            fares.add(newFare.getFare());
+                        if (flightBookingCartData != null && flightBookingCartData.getNewFarePrices().size() > 0) {
+                            List<Fare> fares = new ArrayList<>();
+                            for (NewFarePrice newFare : flightBookingCartData.getNewFarePrices()) {
+                                fares.add(newFare.getFare());
+                            }
+                            int newTotalPrice = calculateTotalFareAndAmenities(
+                                    fares,
+                                    baseCartData.getAdult(),
+                                    baseCartData.getChild(),
+                                    baseCartData.getInfant(),
+                                    baseCartData.getAmenities()
+                            );
+                            baseCartData.setNewFarePrices(flightBookingCartData.getNewFarePrices());
+                            baseCartData.setTotal(newTotalPrice);
+                        } else {
+                            baseCartData.setNewFarePrices(new ArrayList<NewFarePrice>());
                         }
-                        int newTotalPrice = calculateTotalFareAndAmenities(
-                                fares,
-                                baseCartData.getAdult(),
-                                baseCartData.getChild(),
-                                baseCartData.getInfant(),
-                                baseCartData.getAmenities()
-                        );
+
                         baseCartData.setRefreshTime(flightBookingCartData.getRefreshTime());
-                        baseCartData.setNewFarePrices(flightBookingCartData.getNewFarePrices());
-                        baseCartData.setTotal(newTotalPrice);
                         return baseCartData;
                     }
                 })
@@ -266,24 +273,48 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 );
             }
         }
+
+        Map<String, Integer> meals = new HashMap<>();
+        Map<String, Integer> luggages = new HashMap<>();
+
         for (FlightBookingPassengerViewModel flightPassengerViewModel : flightBookingPassengers) {
             for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightPassengerViewModel.getFlightBookingMealMetaViewModels()) {
                 for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : flightBookingAmenityMetaViewModel.getAmenities()) {
-                    simpleViewModels.add(
-                            new SimpleViewModel(
-                                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label), flightBookingAmenityMetaViewModel.getDescription()),
-                                    flightBookingAmenityViewModel.getPrice())
-                    );
+                    if (meals.get(flightBookingAmenityMetaViewModel.getDescription()) != null) {
+                        int total = meals.get(flightBookingAmenityMetaViewModel.getDescription());
+                        total += flightBookingAmenityViewModel.getPriceNumeric();
+                        meals.put(flightBookingAmenityMetaViewModel.getDescription(), total);
+                    } else {
+                        meals.put(flightBookingAmenityMetaViewModel.getDescription(), flightBookingAmenityViewModel.getPriceNumeric());
+                    }
                 }
+
             }
             for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightPassengerViewModel.getFlightBookingLuggageMetaViewModels()) {
                 for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageMetaViewModel.getAmenities()) {
-                    simpleViewModels.add(new SimpleViewModel(
-                            String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label), flightBookingLuggageMetaViewModel.getDescription()),
-                            flightBookingLuggageViewModel.getPrice())
-                    );
+                    if (luggages.get(flightBookingLuggageMetaViewModel.getDescription()) != null) {
+                        int total = luggages.get(flightBookingLuggageMetaViewModel.getDescription());
+                        total += flightBookingLuggageViewModel.getPriceNumeric();
+                        luggages.put(flightBookingLuggageMetaViewModel.getDescription(), total);
+                    } else {
+                        luggages.put(flightBookingLuggageMetaViewModel.getDescription(), flightBookingLuggageViewModel.getPriceNumeric());
+                    }
                 }
             }
+        }
+        for (Map.Entry<String, Integer> entry : meals.entrySet()) {
+            simpleViewModels.add(new SimpleViewModel(
+                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label),
+                            entry.getKey()),
+                    convertPriceValueToIdrFormat(entry.getValue())));
+
+        }
+        for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
+            simpleViewModels.add(new SimpleViewModel(
+                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label),
+                            entry.getKey()),
+                    convertPriceValueToIdrFormat(entry.getValue())));
+
         }
 
         getView().renderPriceListDetails(simpleViewModels);

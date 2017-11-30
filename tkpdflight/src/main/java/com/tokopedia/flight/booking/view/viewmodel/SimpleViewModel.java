@@ -72,4 +72,9 @@ public class SimpleViewModel implements ItemType, Parcelable {
             return new SimpleViewModel[size];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof SimpleViewModel && ((SimpleViewModel) obj).getLabel().equalsIgnoreCase(label);
+    }
 }

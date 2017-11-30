@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selectable_background_tokopedia"
-        android:paddingBottom="@dimen/padding_med"
+        android:paddingBottom="@dimen/padding_small"
         android:paddingTop="@dimen/padding_med"
         app:lv_show_arrow="true" />
 
@@ -24,13 +24,14 @@
         android:id="@+id/passenger_detail_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_small"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_vs"
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatTextView
@@ -39,8 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vvs"
                 android:layout_weight="1"
-                android:textSize="@dimen/font_subheading"
-                android:textStyle="bold"
+                style="@style/TextView.Body1.Bold"
                 tools:text="Nona Aisyah Sarasvati" />
 
             <android.support.v7.widget.RecyclerView

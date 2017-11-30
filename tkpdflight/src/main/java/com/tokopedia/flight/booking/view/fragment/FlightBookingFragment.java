@@ -162,7 +162,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             }
         });
 
-        adapter = new FlightBookingPassengerAdapter();
+        adapter = new FlightBookingPassengerAdapter(getActivity());
         adapter.setListener(this);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -186,6 +186,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         });
 
         priceListAdapter = new FlightSimpleAdapter();
+        priceListAdapter.setDescriptionTextColor(getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager flightSimpleAdapterLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         pricelistsRecyclerView.setLayoutManager(flightSimpleAdapterLayoutManager);
