@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
 import com.tokopedia.flight.search.data.cloud.model.response.Info;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
@@ -59,7 +59,7 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
         setDefaultAmenities(route);
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirline(), route.getFlightNumber()));
-        imageAirline.setImageResource(FlightAirlineIconUtil.getImageResource(route.getAirline()));
+        ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),R.drawable.ic_airline_default);
         setRefundableInfo(route);
     }
 

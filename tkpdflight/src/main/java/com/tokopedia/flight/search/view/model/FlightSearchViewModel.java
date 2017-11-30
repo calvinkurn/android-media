@@ -283,10 +283,6 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         return arrivalAirportCity;
     }
 
-    public List<FlightAirlineDB> getAirlineDataList() {
-        return airlineDataList;
-    }
-
     @Override
     public int describeContents() {
         return 0;

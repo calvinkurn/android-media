@@ -59,24 +59,28 @@ public class NetworkErrorHelper {
         finalDialog.show();
     }
 
+    @SuppressWarnings("Range")
     public static SnackbarRetry createSnackbarWithAction(CoordinatorLayout coordinatorLayout, final RetryClickedListener listener) {
         return new SnackbarRetry(SnackbarManager.make(coordinatorLayout,
                 coordinatorLayout.getContext().getResources().getString(R.string.msg_network_error),
                 Snackbar.LENGTH_INDEFINITE), listener);
     }
 
+    @SuppressWarnings("Range")
     public static SnackbarRetry createSnackbarWithAction(Activity activity, final RetryClickedListener listener) {
         return new SnackbarRetry(SnackbarManager.make(activity,
                 activity.getResources().getString(R.string.msg_network_error),
                 Snackbar.LENGTH_INDEFINITE), listener);
     }
 
+    @SuppressWarnings("Range")
     public static SnackbarRetry createSnackbarWithAction(Activity activity, String message, final RetryClickedListener listener) {
         return new SnackbarRetry(SnackbarManager.make(activity,
                 message,
                 Snackbar.LENGTH_INDEFINITE), listener);
     }
 
+    @SuppressWarnings("Range")
     public static void showCloseSnackbar(Activity activity, String message) {
         SnackbarManager.make(activity, message,Snackbar.LENGTH_LONG).setAction(
                 activity.getString(R.string.close), new View.OnClickListener() {
@@ -88,6 +92,24 @@ public class NetworkErrorHelper {
         ).show();
     }
 
+    @SuppressWarnings("Range")
+    public static void showRedCloseSnackbar(Activity activity, String message) {
+        showRedCloseSnackbar(SnackbarManager.getContentView(activity), message);
+    }
+
+    @SuppressWarnings("Range")
+    public static void showRedCloseSnackbar(View view, String message) {
+        SnackbarManager.makeRed(view, message,Snackbar.LENGTH_LONG).setAction(
+                view.getContext().getString(R.string.close), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // no operation
+                    }
+                }
+        ).show();
+    }
+
+    @SuppressWarnings("Range")
     public static void showSnackbar(Activity activity) {
         SnackbarManager.make(activity,
                 activity.getResources().getString(R.string.msg_network_error),
@@ -95,6 +117,7 @@ public class NetworkErrorHelper {
                 .show();
     }
 
+    @SuppressWarnings("Range")
     public static void showSnackbar(Activity activity, String error) {
         SnackbarManager.make(activity,
                 error,

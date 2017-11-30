@@ -624,7 +624,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         } else {
             flightSearchPassDataViewModel.setDepartureDate(dateString);
         }
-        //TODO check if the argument already been chagned
         flightSearchPresenter.deleteFlightCache(isReturning());
     }
 

@@ -6,6 +6,7 @@
     <!-- google.com/+MarcelUlbrich -->
 
     <!-- Use with black text -->
+    <color name="red_50">#fdebec</color>
     <color name="red_100">#f9bdbb</color> <!-- Use with black text -->
     <color name="red_200">#f69988</color> <!-- Use with black text -->
     <color name="red_300">#f36c60</color> <!-- Use with black text -->

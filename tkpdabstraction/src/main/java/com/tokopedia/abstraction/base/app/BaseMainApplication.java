@@ -29,7 +29,6 @@ public class BaseMainApplication extends MultiDexApplication{
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-
         initStetho();
     }
 
