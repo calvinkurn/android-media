@@ -1,6 +1,8 @@
 package com.tokopedia.loyalty.di.module;
 
 import com.tokopedia.loyalty.di.LoyaltyScope;
+import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
+import com.tokopedia.loyalty.view.presenter.PromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
 
 import dagger.Module;
@@ -24,5 +26,11 @@ public class PromoCodeViewModule {
     @LoyaltyScope
     CompositeSubscription provideCompositeSubscription() {
         return new CompositeSubscription();
+    }
+
+    @Provides
+    @LoyaltyScope
+    IPromoCodePresenter provideIPromoCodePresenter() {
+        return new PromoCodePresenter(view);
     }
 }

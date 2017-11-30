@@ -180,4 +180,8 @@ public class PromoCouponFragment extends BasePresenterFragment implements IPromo
     public void closeView() {
 
     }
+
+    public static PromoCouponFragment newInstance() {
+        return new PromoCouponFragment();
+    }
 }

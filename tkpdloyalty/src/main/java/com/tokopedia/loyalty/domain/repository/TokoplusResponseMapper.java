@@ -8,11 +8,17 @@ import com.tokopedia.loyalty.view.data.CouponData;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author anggaprasetiyo on 29/11/17.
  */
 
 public class TokoplusResponseMapper implements ITokoplusResponseMapper {
+
+    @Inject
+    public TokoplusResponseMapper() {
+    }
 
     @Override
     public String sampleMapper(TokoplusResponse tokoplusResponse) {
