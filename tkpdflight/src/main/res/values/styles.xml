@@ -17,10 +17,10 @@
     </style>
 
     <style name="FlightFilterLabelLayout" parent="LabelLayout">
-        <item name="android:paddingTop">@dimen/margin_sm</item>
+        <item name="android:paddingTop">12dp</item>
         <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingBottom">@dimen/margin_sm</item>
+        <item name="android:paddingBottom">12dp</item>
     </style>
 
     <style name="ButtonRound.Success">

@@ -14,7 +14,7 @@
         android:layout_height="@dimen/large_icon_size"
         android:layout_marginRight="@dimen/margin_sm"
         android:layout_marginLeft="@dimen/margin_sm"
-        tools:src="@drawable/ic_airasia"/>
+        tools:src="@drawable/ic_airline_default"/>
 
     <LinearLayout
         android:layout_width="0dp"

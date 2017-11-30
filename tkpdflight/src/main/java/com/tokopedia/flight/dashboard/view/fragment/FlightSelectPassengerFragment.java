@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
@@ -127,7 +128,6 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
         }
     }
 
-
     @Override
     public FlightPassengerViewModel getCurrentPassengerViewModel() {
         return passData;
@@ -135,45 +135,17 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void showTotalPassengerErrorMessage(@StringRes int resId) {
-
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override
     public void showInfantGreaterThanAdultErrorMessage(@StringRes int resId) {
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override
     public void showAdultShouldAtleastOneErrorMessage(@StringRes int resId) {
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction(R.string.flight_dashboard_error_close_label, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-        Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
-        snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
-        snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override
