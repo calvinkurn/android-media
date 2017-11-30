@@ -1,7 +1,10 @@
 package com.tokopedia.inbox.inboxchat.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.text.method.ScrollingMovementMethod;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -20,10 +23,12 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
 
     ChatRoomContract.View viewListener;
     TextView textHolder;
+    ScrollView scrollView;
 
     public TemplateChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
         textHolder = itemView.findViewById(R.id.text);
+//        scrollView = itemView.findViewById(R.id.children_layout);
         this.viewListener = viewListener;
     }
 
@@ -37,5 +42,6 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
                 viewListener.addTemplateString(element.getMessage());
             }
         });
+
     }
 }

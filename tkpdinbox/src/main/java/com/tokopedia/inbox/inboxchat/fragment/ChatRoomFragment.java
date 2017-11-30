@@ -208,7 +208,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void addTemplateString(String message) {
         replyColumn.setText(String.format("%s %s", replyColumn.getText(), message));
-        replyColumn.setSelection(replyColumn.getSelectionEnd());
+        replyColumn.setSelection(replyColumn.getText().length());
     }
 
 
