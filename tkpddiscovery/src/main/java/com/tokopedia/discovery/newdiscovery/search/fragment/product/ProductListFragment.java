@@ -75,6 +75,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
     private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
+    private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
 
     protected RecyclerView recyclerView;
     @Inject
@@ -88,6 +89,7 @@ public class ProductListFragment extends SearchSectionFragment
     private ProductViewModel productViewModel;
     private ProductListTypeFactory productListTypeFactory;
     private SearchParameter searchParameter;
+    private boolean forceSearch;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -112,12 +114,14 @@ public class ProductListFragment extends SearchSectionFragment
     private void loadDataFromSavedState(Bundle savedInstanceState) {
         productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
         setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
+        setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
     }
 
     private void loadDataFromArguments() {
         productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
         if (productViewModel != null) {
             setSearchParameter(productViewModel.getSearchParameter());
+            setForceSearch(productViewModel.isForceSearch());
         }
     }
 
@@ -406,6 +410,7 @@ public class ProductListFragment extends SearchSectionFragment
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, getSearchParameter());
+        outState.putBoolean(EXTRA_FORCE_SEARCH, isForceSearch());
     }
 
     @Override
@@ -553,7 +558,7 @@ public class ProductListFragment extends SearchSectionFragment
         showBottomBarNavigation(false);
         SearchParameter searchParameter
                 = generateLoadMoreParameter(0, productViewModel.getQuery());
-        presenter.loadData(searchParameter, getAdditionalParams());
+        presenter.loadData(searchParameter, isForceSearch(), getAdditionalParams());
     }
 
     private HashMap<String, String> getAdditionalParams() {
@@ -652,6 +657,21 @@ public class ProductListFragment extends SearchSectionFragment
         this.searchParameter = searchParameter;
     }
 
+    public boolean isForceSearch() {
+        return forceSearch;
+    }
+
+    public void setForceSearch(boolean forceSearch) {
+        this.forceSearch = forceSearch;
+    }
+
+    @Override
+    public void backToTop() {
+        if (recyclerView != null) {
+            recyclerView.smoothScrollToPosition(0);
+        }
+    }
+
     @Override
     protected void openFilterActivity() {
         if (isFilterDataAvailable()) {
@@ -676,5 +696,11 @@ public class ProductListFragment extends SearchSectionFragment
             getFlagFilterHelper().setSavedTextInput(new HashMap<String, String>());
             PreFilterHelper.addPreFilteredCategory(getFilters(), getFlagFilterHelper(), categoryId);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 }

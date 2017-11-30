@@ -1,10 +1,13 @@
 package com.tokopedia.digital.tokocash.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by nabillasabbaha on 8/23/17.
  */
 
-public class HeaderHistory {
+public class HeaderHistory implements Parcelable {
 
     private String name;
 
@@ -15,10 +18,35 @@ public class HeaderHistory {
     public HeaderHistory() {
     }
 
-    public HeaderHistory(String name, boolean selected) {
-        this.name = name;
-        this.selected = selected;
+    protected HeaderHistory(Parcel in) {
+        name = in.readString();
+        type = in.readString();
+        selected = in.readByte() != 0;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(type);
+        dest.writeByte((byte) (selected ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<HeaderHistory> CREATOR = new Creator<HeaderHistory>() {
+        @Override
+        public HeaderHistory createFromParcel(Parcel in) {
+            return new HeaderHistory(in);
+        }
+
+        @Override
+        public HeaderHistory[] newArray(int size) {
+            return new HeaderHistory[size];
+        }
+    };
 
     public String getName() {
         return name;

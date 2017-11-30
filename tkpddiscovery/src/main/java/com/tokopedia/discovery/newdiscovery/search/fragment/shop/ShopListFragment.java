@@ -473,4 +473,17 @@ public class ShopListFragment extends SearchSectionFragment
     public void onChangeSingleGrid() {
         recyclerView.setLayoutManager(getGridLayoutManager());
     }
+
+    @Override
+    public void backToTop() {
+        if (recyclerView != null) {
+            recyclerView.smoothScrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

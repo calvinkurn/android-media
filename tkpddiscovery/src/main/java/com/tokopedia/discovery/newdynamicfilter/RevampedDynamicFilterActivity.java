@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.ToastNetworkHandler;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.helper.KeyboardHelper;
@@ -25,6 +26,7 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
 import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterDbHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
@@ -72,6 +74,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     TextView buttonReset;
     View buttonClose;
     View mainLayout;
+    View loadingView;
 
     HashMap<String, Boolean> savedCheckedState = new HashMap<>();
     HashMap<String, String> savedTextInput = new HashMap<>();
@@ -128,6 +131,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             }
         });
         mainLayout = findViewById(R.id.main_layout);
+        loadingView = findViewById(R.id.loading_view);
     }
 
     private void initKeyboardVisibilityListener() {
@@ -336,12 +340,16 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
                 case AbstractDynamicFilterDetailActivity.REQUEST_CODE:
                     handleResultFromDetailPage(data);
                     break;
+                case DynamicFilterLocationActivity.REQUEST_CODE:
+                    handleResultFromLocationPage();
+                    break;
                 case DynamicFilterCategoryActivity.REQUEST_CODE:
                     handleResultFromCategoryPage(data);
                     break;
             }
+            adapter.notifyItemChanged(selectedExpandableItemPosition);
         }
-        adapter.notifyItemChanged(selectedExpandableItemPosition);
+        hideLoading();
     }
 
     private void handleResultFromDetailPage(Intent data) {
@@ -350,6 +358,36 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         for (Option option : optionList) {
             OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
         }
+    }
+
+    private void handleResultFromLocationPage() {
+        Observable.create(new Observable.OnSubscribe<List<Option>>() {
+            @Override
+            public void call(Subscriber<? super List<Option>> subscriber) {
+                subscriber.onNext(FilterDbHelper.loadLocationFilterOptions());
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Option>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Option> optionList) {
+                for (Option option : optionList) {
+                    OptionHelper.saveOptionInputState(option, savedCheckedState, savedTextInput);
+                }
+                adapter.notifyItemChanged(selectedExpandableItemPosition);
+                hideLoading();
+            }
+        });
     }
 
     private void handleResultFromCategoryPage(Intent data) {
@@ -453,6 +491,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     @Override
     public void onExpandableItemClicked(Filter filter) {
+        showLoading();
         selectedExpandableItemPosition = adapter.getItemPosition(filter);
         if (filter.isCategoryFilter()) {
             FilterDetailActivityRouter
@@ -461,6 +500,14 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             enrichWithInputState(filter);
             FilterDetailActivityRouter.launchDetailActivity(this, filter);
         }
+    }
+
+    private void showLoading() {
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading() {
+        loadingView.setVisibility(View.GONE);
     }
 
     private void enrichWithInputState(Filter filter) {
