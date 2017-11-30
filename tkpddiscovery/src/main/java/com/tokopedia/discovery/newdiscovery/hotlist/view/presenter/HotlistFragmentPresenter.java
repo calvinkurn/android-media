@@ -34,7 +34,6 @@ import javax.inject.Inject;
  * Created by hangnadi on 10/6/17.
  */
 
-@SuppressWarnings("WeakerAccess")
 public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl<HotlistFragmentContract.View>
         implements HotlistFragmentContract.Presenter, WishlistActionListener {
 
@@ -60,10 +59,10 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
 
     public HotlistFragmentPresenter(Context context) {
         this.context = context;
-        HotlistComponent hotlistComponent = DaggerHotlistComponent.builder()
-                .appComponent(getComponent(context))
-                .build();
-        hotlistComponent.inject(this);
+//        HotlistComponent hotlistComponent = DaggerHotlistComponent.builder()
+//                .appComponent(getComponent(context))
+//                .build();
+//        hotlistComponent.inject(this);
     }
 
     @Override
