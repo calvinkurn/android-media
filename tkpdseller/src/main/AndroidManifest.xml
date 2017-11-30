@@ -16,7 +16,7 @@
 
         <activity android:name=".seller.info.view.activity.SellerInfoActivity"
             android:screenOrientation="portrait"
-            android:label="R.string.title_seller_info"
+            android:label="@string/title_seller_info"
             android:exported="true"
             />
 
