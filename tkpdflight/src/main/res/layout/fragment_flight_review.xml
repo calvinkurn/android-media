@@ -23,10 +23,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/padding_med"
-                android:paddingEnd="@dimen/padding_ms"
-                android:paddingLeft="@dimen/padding_ms"
-                android:paddingRight="@dimen/padding_ms"
-                android:paddingStart="@dimen/padding_ms"
+                android:paddingEnd="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingStart="@dimen/padding_small"
                 android:paddingTop="@dimen/padding_med">
 
                 <android.support.v7.widget.AppCompatTextView
@@ -79,6 +79,7 @@
                         style="@style/TextView.Body1.Green.Bold"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:text="@string/flight_label_detail"
                         tools:text="Detail" />
                 </RelativeLayout>
 
@@ -116,6 +117,7 @@
                         style="@style/TextView.Body1.Green.Bold"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:text="@string/flight_label_detail"
                         tools:text="Detail" />
                 </RelativeLayout>
 
@@ -141,8 +143,6 @@
                     android:text="@string/flight_label_passenger_data" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:paddingRight="@dimen/padding_small"
-                    android:paddingLeft="@dimen/padding_small"
                     android:id="@+id/recycler_view_data_passenger"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -170,8 +170,8 @@
                     android:text="@string/flight_label_detail_price" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
+                    android:paddingLeft="@dimen/padding_med"
+                    android:paddingRight="@dimen/padding_med"
                     android:id="@+id/recycler_view_detail_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

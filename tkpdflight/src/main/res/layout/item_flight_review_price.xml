@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding_med">
+    android:paddingTop="@dimen/padding_vs"
+    android:paddingBottom="@dimen/padding_vs">
 
     <TextView
         android:id="@+id/price_label"

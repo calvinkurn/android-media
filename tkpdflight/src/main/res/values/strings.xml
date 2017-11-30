@@ -210,6 +210,7 @@
     <string name="flight_label_adult_review">(Dewasa)</string>
     <string name="flight_label_child_review">(Anak)</string>
     <string name="flight_label_infant_review">(Bayi)</string>
+    <string name="activity_label_flight_review">Rincian Pesanan</string>
     <string name="flight_booking_passenger_toolbar_title">Isi Penumpang</string>
     <string name="flight_booking_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
 </resources>

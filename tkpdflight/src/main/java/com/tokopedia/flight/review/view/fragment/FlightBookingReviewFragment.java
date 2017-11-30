@@ -6,6 +6,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,19 +20,35 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.KeyboardHandler;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment;
+import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
+import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPriceAdapter;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewContract;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewPresenter;
+import com.tokopedia.usecase.RequestParams;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,6 +59,8 @@ import javax.inject.Inject;
 public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, VoucherCartView.ActionListener {
 
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
+    private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
+    private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
 
     private CountdownTimeView reviewTime;
     private TextView reviewDetailDepartureFlight;
@@ -57,6 +78,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     FlightBookingReviewModel flightBookingReviewModel;
+    private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
@@ -107,7 +129,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
             @Override
             public void onFinished() {
                 progressDialog.show();
-                flightBookingReviewPresenter.processGetCartData();
+                flightBookingReviewPresenter.onUpdateCart();
             }
         });
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +173,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         flightBookingReviewPassengerAdapter.addData(flightBookingReviewModel.getDetailPassengers());
         recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter);
-        FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter(getContext());
+        flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter(getContext());
         flightBookingReviewPriceAdapter.addData(flightBookingReviewModel.getFlightReviewFares());
         recyclerViewDetailPrice.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
@@ -240,7 +262,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                     @Override
                     public void onRetryClicked() {
                         progressDialog.show();
-                        flightBookingReviewPresenter.getSubscriberGetCartData();
+                        flightBookingReviewPresenter.onUpdateCart();
                     }
                 }
         );
@@ -265,8 +287,122 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
-    public void onGetCartData(CartEntity cartEntity) {
+    public void setTimeStamp(String timestamp) {
+        flightBookingReviewModel.setDateFinishTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT,timestamp));
+    }
 
+    @Override
+    public void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = FlightBookingNewPriceDialogFragment.newInstance(newTotalPrice, oldTotalPrice);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_NEW_PRICE_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
+    }
+
+    @Override
+    public void hideUpdatePriceLoading() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void showUpdatePriceLoading() {
+        progressDialog.show();
+    }
+
+    @Override
+    public FlightDetailViewModel getDepartureFlightDetailViewModel() {
+        return flightBookingReviewModel.getDetailViewModelListDeparture();
+    }
+
+    @Override
+    public FlightDetailViewModel getReturnFlightDetailViewModel() {
+        return flightBookingReviewModel.getDetailViewModelListReturn();
+    }
+
+    @Override
+    public List<FlightBookingPassengerViewModel> getFlightBookingPassengers() {
+        return flightBookingReviewModel.getDetailPassengersData();
+    }
+
+    @Override
+    public void renderPriceListDetails(List<SimpleViewModel> simpleViewModels) {
+        flightBookingReviewModel.setFlightReviewFares(simpleViewModels);
+        flightBookingReviewPriceAdapter.clearData();
+        flightBookingReviewPriceAdapter.addData(simpleViewModels);
+        flightBookingReviewPriceAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void renderFinishTimeCountDown(Date date) {
+        reviewTime.cancel();
+        reviewTime.setExpiredDate(date);
+        reviewTime.start();
+    }
+
+    @Override
+    public void setTotalPrice(int totalPrice) {
+        flightBookingReviewModel.setTotalPriceNumeric(totalPrice);
+        flightBookingReviewModel.setTotalPrice(CurrencyFormatHelper.ConvertToRupiah(
+                CurrencyFormatUtil.getThousandSeparatorString(totalPrice, false, 0).getFormattedString()));
+        reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
+    }
+
+    @Override
+    public BaseCartData getCurrentCartData() {
+
+        BaseCartData baseCartData = new BaseCartData();
+        baseCartData.setNewFarePrices(flightBookingReviewModel.getFarePrices());
+        List<FlightBookingAmenityViewModel> amenityViewModels = new ArrayList<>();
+        for (FlightBookingPassengerViewModel passengerViewModel : flightBookingReviewModel.getDetailPassengersData()) {
+            for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : passengerViewModel.getFlightBookingLuggageMetaViewModels()) {
+                amenityViewModels.addAll(flightBookingAmenityMetaViewModel.getAmenities());
+            }
+            for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : passengerViewModel.getFlightBookingMealMetaViewModels()) {
+                amenityViewModels.addAll(flightBookingAmenityMetaViewModel.getAmenities());
+            }
+        }
+        baseCartData.setAmenities(amenityViewModels);
+        baseCartData.setTotal(flightBookingReviewModel.getTotalPriceNumeric());
+        baseCartData.setAdult(flightBookingReviewModel.getAdult());
+        baseCartData.setChild(flightBookingReviewModel.getChildren());
+        baseCartData.setInfant(flightBookingReviewModel.getInfant());
+        return baseCartData;
+    }
+
+    @Override
+    public FlightBookingReviewModel getCurrentBookingReviewModel() {
+        return flightBookingReviewModel;
+    }
+
+    @Override
+    public String getDepartureTripId() {
+        return flightBookingReviewModel.getDepartureTripId();
+    }
+
+    @Override
+    public String getReturnTripId() {
+        return flightBookingReviewModel.getReturnTripId();
+    }
+
+    @Override
+    public String getIdEmpotencyKey(String s) {
+        return generateIdEmpotency(s);
+    }
+
+    private String generateIdEmpotency(String requestId) {
+        String timeMillis = String.valueOf(System.currentTimeMillis());
+        String token = FlightRequestUtil.md5(timeMillis);
+        return String.format(getString(R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
+    }
+
+    @Override
+    public boolean isRoundTrip() {
+        return flightBookingReviewModel.getReturnTripId() != null && flightBookingReviewModel.getReturnTripId().length() > 0;
     }
 
     @Override

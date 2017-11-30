@@ -3,7 +3,12 @@ package com.tokopedia.flight.review.view.presenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
+import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
+import com.tokopedia.usecase.RequestParams;
 
 /**
  * Created by zulfikarrahman on 11/10/17.
@@ -11,7 +16,7 @@ import com.tokopedia.flight.review.data.model.AttributesVoucher;
 
 public interface FlightBookingReviewContract {
 
-    interface View extends CustomerView{
+    interface View extends FlightBaseBookingContact.View{
 
         void onErrorCheckVoucherCode(String e);
 
@@ -23,21 +28,29 @@ public interface FlightBookingReviewContract {
 
         void hideProgressDialog();
 
-        void showUpdateDataErrorStateLayout(String messageFromException);
-
-        void showExpireTransactionDialog();
-
-        void onGetCartData(CartEntity cartEntity);
-
         void showProgressDialog();
+
+        void setTimeStamp(String timestamp);
+
+        void setTotalPrice(int totalPrice);
+
+        BaseCartData getCurrentCartData();
+
+        FlightBookingReviewModel getCurrentBookingReviewModel();
+
+        String getDepartureTripId();
+
+        String getReturnTripId();
+
+        String getIdEmpotencyKey(String s);
+
+        boolean isRoundTrip();
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends FlightBaseBookingContact.Presenter<View>{
 
         void checkVoucherCode(String cartId, String voucherCode);
 
         void submitData();
-
-        void processGetCartData();
     }
 }
