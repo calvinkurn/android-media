@@ -30,6 +30,15 @@ public class Fare implements Parcelable {
     @Expose
     private int infantNumeric;
 
+    public Fare(String adult, String child, String infant, int adultNumeric, int childNumeric, int infantNumeric) {
+        this.adult = adult;
+        this.child = child;
+        this.infant = infant;
+        this.adultNumeric = adultNumeric;
+        this.childNumeric = childNumeric;
+        this.infantNumeric = infantNumeric;
+    }
+
     public String getAdult() {
         return adult;
     }

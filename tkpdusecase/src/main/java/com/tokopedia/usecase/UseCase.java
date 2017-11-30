@@ -49,11 +49,11 @@ public abstract class UseCase<T> implements Interactor<T> {
             if (sync) {
                 observable = Observable.just(createObservable(requestParams)
                         .defaultIfEmpty(null).toBlocking().first())
-                        .subscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread());
             } else {
                 observable = createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread());
             }
             if (subscriber != null) {

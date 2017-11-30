@@ -399,7 +399,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void getRenderPriceDetails(List<SimpleViewModel> prices) {
+    public void renderPriceListDetails(List<SimpleViewModel> prices) {
         priceListAdapter.setViewModels(prices);
         priceListAdapter.notifyDataSetChanged();
     }
@@ -430,6 +430,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onFinishTransactionTimeReached();
             }
         });
+        countdownFinishTransactionView.cancel();
         countdownFinishTransactionView.setExpiredDate(date);
         countdownFinishTransactionView.start();
     }
@@ -451,7 +452,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showPriceDialogChanges(String newTotalPrice, String oldTotalPrice) {
+    public void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
         if (previousDialog != null) {
@@ -461,6 +462,21 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         DialogFragment dialogFragment = FlightBookingNewPriceDialogFragment.newInstance(newTotalPrice, oldTotalPrice);
         dialogFragment.setTargetFragment(this, REQUEST_CODE_NEW_PRICE_DIALOG);
         dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
+    }
+
+    @Override
+    public FlightDetailViewModel getDepartureFlightDetailViewModel() {
+        return flightBookingCartData.getDepartureTrip();
+    }
+
+    @Override
+    public FlightDetailViewModel getReturnFlightDetailViewModel() {
+        return flightBookingCartData.getReturnTrip();
+    }
+
+    @Override
+    public List<FlightBookingPassengerViewModel> getFlightBookingPassengers() {
+        return paramViewModel.getPassengerViewModels();
     }
 
     private String generateIdEmpotency(String requestId) {
@@ -503,12 +519,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showUpdateDataLoading() {
+    public void showUpdatePriceLoading() {
         progressDialog.show();
     }
 
     @Override
-    public void hideUpdateDataLoading() {
+    public void hideUpdatePriceLoading() {
         progressDialog.dismiss();
     }
 
