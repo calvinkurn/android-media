@@ -3,6 +3,7 @@ package com.tokopedia.seller.seller.info.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
@@ -23,7 +24,11 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType){
             case SellerInfoModel.TYPE:
-                return null;
+                SellerInfoViewHolder sellerInfoViewHolder = new SellerInfoViewHolder(
+                        getLayoutView(parent, R.layout.item_seller_info)
+                );
+                sellerInfoViewHolder.setSellerInfoDateUtil(sellerInfoDateUtil);
+                return sellerInfoViewHolder;
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
