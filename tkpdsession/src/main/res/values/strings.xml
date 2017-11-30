@@ -86,4 +86,12 @@
     <string name="login_with_phone_number_tokocash">Masuk dengan\nNomor Ponsel TokoCash</string>
     <string name="phone_number">Nomor Ponsel</string>
     <string name="we_will_send_verification_code">Kami akan mengirimkan sms kode verifikasi</string>
+    <string name="title_verify">Verifikasi</string>
+    <string name="verification_code_sent_to">Kode verifikasi telah dikirimkan ke</string>
+    <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
+    <string name="to_resend_or_use_other_verif_method">untuk kirim ulang atau gunakan metode verifikasi lain</string>
+    <string name="please_wait_in">Mohon tunggu dalam</string>
+    <string name="countdown_finish_otp">Tidak menerima kode?\n Kirim ulang atau gunakan
+        metode verifikasi lain</string>
+    <string name="resend">Kirim ulang</string>
 </resources>

@@ -16,6 +16,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.otp.centralizedotp.VerificationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.viewlistener.LoginPhoneNumber;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 public class LoginPhoneNumberFragment extends BaseDaggerFragment
         implements LoginPhoneNumber.View {
 
+    private static final int REQUEST_VERIFY_PHONE = 101;
     EditText phoneNumber;
     TextView nextButton;
     TextView message;
@@ -127,7 +129,9 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-
+        startActivityForResult(VerificationActivity.getSmsVerificationIntent(getActivity(),
+                phoneNumber),
+                REQUEST_VERIFY_PHONE);
     }
 
     private void showErrorPhoneNumber(String errorMessage) {

@@ -62,6 +62,11 @@
             android:screenOrientation="portrait"/>
 
         <activity
+            android:name="com.tokopedia.otp.centralizedotp.VerificationActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
             android:label="@string/profile_completion_title"
             android:screenOrientation="portrait"

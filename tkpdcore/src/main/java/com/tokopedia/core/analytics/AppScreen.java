@@ -259,6 +259,9 @@ public final class AppScreen {
     public static final String SCREEN_ONBOARDING = "Screen OnBoarding ";
     public static final String SCREEN_KOL_COMMENTS = "Kol Comments Page";
     public static final String SCREEN_LOGIN_PHONE_NUMBER = "Login by Phone Number";
+    public static final String SCREEN_SELECT_VERIFICATION_METHOD = "Select Verification Method Page";
+    public static final String SCREEN_COTP_DEFAULT = "Account Verification Page";
+    public static final String SCREEN_COTP_SMS = "Account Verification - SMS ";
 
     private AppScreen() {
 
