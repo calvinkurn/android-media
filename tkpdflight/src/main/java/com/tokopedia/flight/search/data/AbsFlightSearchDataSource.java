@@ -37,17 +37,9 @@ public class AbsFlightSearchDataSource extends DataSource<FlightDataResponse<Lis
             return super.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightSearchSingleRouteDB>>>() {
                 @Override
                 public Observable<List<FlightSearchSingleRouteDB>> call(Boolean aBoolean) {
-                    return AbsFlightSearchDataSource.super.getData(FlightSearchParamUtil.toHashMap(requestParams));
+                    return AbsFlightSearchDataSource.super.getCloudData(FlightSearchParamUtil.toHashMap(requestParams));
                 }
             });
-        }
-    }
-
-    public Observable<List<FlightSearchSingleRouteDB>> getDataListCount(RequestParams requestParams) {
-        if (FlightSearchParamUtil.isFromCache(requestParams)) {
-            return super.getCacheData(FlightSearchParamUtil.toHashMap(requestParams));
-        } else {
-            return super.getData(FlightSearchParamUtil.toHashMap(requestParams));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.data.db;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
