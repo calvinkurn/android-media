@@ -42,14 +42,13 @@ public class FlightSearchGetMetaUseCase extends UseCase<FlightMetaDataDB> {
 
     @Override
     public Observable<FlightMetaDataDB> createObservable(RequestParams requestParams) {
-        return flightRepository.getFlightMetaData(requestParams).take(1).flatMap(new Func1<List<FlightMetaDataDB>, Observable<FlightMetaDataDB>>() {
+        return flightRepository.getFlightMetaData(requestParams).flatMap(new Func1<List<FlightMetaDataDB>, Observable<FlightMetaDataDB>>() {
             @Override
             public Observable<FlightMetaDataDB> call(List<FlightMetaDataDB> flightMetaDataDBs) {
                 if (flightMetaDataDBs!=null && flightMetaDataDBs.size() > 0) {
                     return Observable.just(flightMetaDataDBs.get(0));
                 } else {
-                    ///TODO use generic excpetion
-                    return Observable.error(new RuntimeException());
+                    return Observable.error(new RuntimeException("FlightMetaDataDB is empty"));
                 }
             }
         });

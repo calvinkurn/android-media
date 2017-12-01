@@ -9,11 +9,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -23,16 +21,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
@@ -54,7 +49,6 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -101,8 +95,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     FlightBookingPresenter presenter;
 
     private FlightBookingPassengerAdapter adapter;
-    private ProgressDialog progressDialog;
     private FlightSimpleAdapter priceListAdapter;
+    private ProgressDialog progressDialog;
 
 
     public static Fragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
@@ -128,7 +122,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         paramViewModel = new FlightBookingParamViewModel();
         paramViewModel.setSearchParam((FlightSearchPassDataViewModel) getArguments().getParcelable(EXTRA_SEARCH_PASS_DATA));
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
     }
 
@@ -168,7 +162,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             }
         });
 
-        adapter = new FlightBookingPassengerAdapter();
+        adapter = new FlightBookingPassengerAdapter(getActivity());
         adapter.setListener(this);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -192,6 +186,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         });
 
         priceListAdapter = new FlightSimpleAdapter();
+        priceListAdapter.setDescriptionTextColor(getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager flightSimpleAdapterLayoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         pricelistsRecyclerView.setLayoutManager(flightSimpleAdapterLayoutManager);
@@ -294,57 +289,62 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void showPassengerInfoNotFullfilled(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public FlightBookingParamViewModel getCurrentBookingParamViewModel() {
         return paramViewModel;
     }
 
     @Override
-    public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip) {
+    public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         returnInfoView.setVisibility(View.VISIBLE);
-        returnInfoView.setContent(returnTrip.getDepartureAirportName() + "-" + returnTrip.getArrivalAirportName());
-        returnInfoView.setContentInfo(searchParam.getDepartureDate());
+        returnInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
+        returnInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;
-        if (returnTrip.getAirlineList().size() > 1) {
+        if (returnTrip.getRouteList().size() > 1) {
             isTransit = true;
             airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
         } else {
-            airLineSection = returnTrip.getAirlineList().get(0).getName();
+            airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         returnInfoView.setSubContent(airLineSection);
 
         String tripInfo = "";
         if (isTransit) {
-            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_directly_trip_card));
         }
-        tripInfo += String.format("| %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         returnInfoView.setSubContentInfo(tripInfo);
     }
 
     @Override
-    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip) {
+    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirportName() + "-" + returnTrip.getArrivalAirportName());
+        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + "-" + returnTrip.getArrivalAirportCity());
         departureInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
         boolean isTransit = false;
-        if (returnTrip.getAirlineList().size() > 1) {
+        if (returnTrip.getRouteList().size() > 1) {
             isTransit = true;
             airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
         } else {
-            airLineSection = returnTrip.getAirlineList().get(0).getName();
+            airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         departureInfoView.setSubContent(airLineSection);
 
         String tripInfo = "";
         if (isTransit) {
-            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
-            tripInfo += String.format(" | %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_directly_trip_card));
         }
-        tripInfo += String.format(" | %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -369,21 +369,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void navigateToDetailTrip(FlightSearchViewModel departureTrip) {
-        FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
-        flightDetailViewModel.build(departureTrip);
-        flightDetailViewModel.build(paramViewModel.getSearchParam());
-        startActivity(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel));
+    public void navigateToDetailTrip(FlightDetailViewModel departureTrip) {
+        startActivity(FlightDetailActivity.createIntent(getActivity(), departureTrip));
     }
 
     @Override
     public String getIdEmpotencyKey(String tokenId) {
         return generateIdEmpotency(tokenId);
-    }
-
-    @Override
-    public void renderLuggageList(List<Amenity> amenities) {
-
     }
 
     @Override
@@ -409,7 +401,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void getRenderPriceDetails(List<SimpleViewModel> prices) {
+    public void renderPriceListDetails(List<SimpleViewModel> prices) {
+        paramViewModel.setPriceListDetails(prices);
         priceListAdapter.setViewModels(prices);
         priceListAdapter.notifyDataSetChanged();
     }
@@ -420,9 +413,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showGetCartDataErrorStateLayout() {
+    public void showGetCartDataErrorStateLayout(String errorMessage) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(),
+                getActivity(), getView(), errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -440,6 +433,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onFinishTransactionTimeReached();
             }
         });
+        countdownFinishTransactionView.cancel();
         countdownFinishTransactionView.setExpiredDate(date);
         countdownFinishTransactionView.start();
     }
@@ -461,7 +455,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showPriceDialogChanges(String newTotalPrice, String oldTotalPrice) {
+    public void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
         if (previousDialog != null) {
@@ -473,20 +467,29 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         dialogFragment.show(getFragmentManager().beginTransaction(), INTERRUPT_DIALOG_TAG);
     }
 
+    @Override
+    public FlightDetailViewModel getDepartureFlightDetailViewModel() {
+        return flightBookingCartData.getDepartureTrip();
+    }
+
+    @Override
+    public FlightDetailViewModel getReturnFlightDetailViewModel() {
+        return flightBookingCartData.getReturnTrip();
+    }
+
+    @Override
+    public List<FlightBookingPassengerViewModel> getFlightBookingPassengers() {
+        return paramViewModel.getPassengerViewModels();
+    }
+
     private String generateIdEmpotency(String requestId) {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = FlightRequestUtil.md5(timeMillis);
-        return String.format("%s_%s", requestId, token.isEmpty() ? timeMillis : token);
+        return String.format(getString(R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
     }
 
     private void showMessageErrorInSnackBar(int resId) {
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", null);
-        Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
-        snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
-        snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
-        snackBar.show();
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override
@@ -501,8 +504,37 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        presenter.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.onDestroyView();
         super.onDestroyView();
+    }
+
+    @Override
+    public void showUpdatePriceLoading() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideUpdatePriceLoading() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void showUpdateDataErrorStateLayout(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(), errorMessage,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.onFinishTransactionTimeReached();
+                    }
+                }
+        );
     }
 }

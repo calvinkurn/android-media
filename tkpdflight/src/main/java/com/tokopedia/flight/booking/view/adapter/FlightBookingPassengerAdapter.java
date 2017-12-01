@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
+import android.app.Activity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +12,8 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -27,12 +28,14 @@ import java.util.List;
 public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBookingPassengerAdapter.ViewHolder> {
     private List<FlightBookingPassengerViewModel> viewModels;
     private OnClickListener listener;
+    private Activity activity;
 
     public interface OnClickListener {
         void onChangePassengerData(FlightBookingPassengerViewModel viewModel);
     }
 
-    public FlightBookingPassengerAdapter() {
+    public FlightBookingPassengerAdapter(Activity activity) {
+        this.activity = activity;
         viewModels = new ArrayList<>();
     }
 
@@ -111,24 +114,28 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                 }
 
                 if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
-                    for (FlightBookingLuggageMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
+                    for (FlightBookingAmenityMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
+                        ArrayList<String> selectedLuggages = new ArrayList<>();
+                        for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getAmenities()) {
+                            selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
+                        }
                         simpleViewModels.add(new SimpleViewModel(
-                                itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getDescription(), String.valueOf(FlightDateUtil.formatDate(
-                                FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingLuggageRouteViewModel.getLuggages())
-                        ))));
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getDescription(), TextUtils.join(" + ", selectedLuggages)
+                        ));
                     }
                 }
 
                 if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
-                    for (FlightBookingMealMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
+                    for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
                         simpleViewModels.add(new SimpleViewModel(
-                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + flightBookingMealRouteViewModel.getDescription(), String.valueOf(FlightDateUtil.formatDate(
-                                FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingMealRouteViewModel.getMealViewModels())
-                        ))));
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label), TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
+                        ));
                     }
                 }
 
                 FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+                adapter.setTitleBold(true);
+                adapter.setDescriptionTextColor(activity.getResources().getColor(R.color.font_black_secondary_54));
                 LinearLayoutManager layoutManager
                         = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
                 rvPassengerDetail.setLayoutManager(layoutManager);

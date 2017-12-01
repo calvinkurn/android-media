@@ -4,10 +4,8 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
 import java.util.Date;
@@ -31,13 +29,13 @@ public interface FlightBookingPassengerContract {
 
         String getDepartureId();
 
-        List<FlightBookingLuggageMetaViewModel> getLuggageViewModels();
+        List<FlightBookingAmenityMetaViewModel> getLuggageViewModels();
 
-        List<FlightBookingMealMetaViewModel> getMealViewModels();
+        List<FlightBookingAmenityMetaViewModel> getMealViewModels();
 
-        void renderPassengerMeals(List<FlightBookingMealMetaViewModel> flightBookingMealRouteViewModels, List<FlightBookingMealMetaViewModel> selecteds);
+        void renderPassengerMeals(List<FlightBookingAmenityMetaViewModel> flightBookingMealRouteViewModels, List<FlightBookingAmenityMetaViewModel> selecteds);
 
-        void renderPassengerLuggages(List<FlightBookingLuggageMetaViewModel> flightBookingLuggageRouteViewModels, List<FlightBookingLuggageMetaViewModel> selecteds);
+        void renderPassengerLuggages(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageRouteViewModels, List<FlightBookingAmenityMetaViewModel> selecteds);
 
         void hideBirthdayInputView();
 
@@ -73,9 +71,9 @@ public interface FlightBookingPassengerContract {
 
         void renderPassengerTitle(String passengerTitle);
 
-        void navigateToLuggagePicker(List<FlightBookingLuggageViewModel> luggages, FlightBookingLuggageMetaViewModel selected);
+        void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
 
-        void navigateToMealPicker(List<FlightBookingMealViewModel> viewModel, FlightBookingMealMetaViewModel selected);
+        void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -88,15 +86,15 @@ public interface FlightBookingPassengerContract {
 
         void onBirthdateChange(int year, int month, int date);
 
-        void onPassengerLuggageClick(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel);
+        void onPassengerLuggageClick(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
 
-        void onLuggageDataChange(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel);
+        void onLuggageDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
 
-        void onDeleteMeal(FlightBookingMealMetaViewModel viewModel);
+        void onDeleteMeal(FlightBookingAmenityMetaViewModel viewModel);
 
-        void onOptionMeal(FlightBookingMealMetaViewModel viewModel);
+        void onOptionMeal(FlightBookingAmenityMetaViewModel viewModel);
 
-        void onMealDataChange(FlightBookingMealMetaViewModel flightBookingLuggageMetaViewModel);
+        void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
 
     }
 }

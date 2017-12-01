@@ -1,5 +1,7 @@
 package com.tokopedia.flight.search.data.db;
 
+import android.util.Log;
+
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
@@ -11,6 +13,7 @@ import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
 import com.tokopedia.flight.search.data.cloud.model.response.Meta;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
+import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB_Table;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
@@ -23,6 +26,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func0;
 import rx.functions.Func1;
 
 /**
@@ -36,35 +40,43 @@ public abstract class AbsFlightSearchDataDBSource
 
     @Override
     public Observable<Boolean> insertAll(final FlightDataResponse<List<FlightSearchData>> flightSearchData) {
-        return Observable.from(flightSearchData.getData())
-                .flatMap(new Func1<FlightSearchData, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(FlightSearchData flightSearchData) {
-                        insertSingleFlightData(flightSearchData);
-                        return Observable.just(true);
-                    }
-                })
-                .onErrorReturn(new Func1<Throwable, Boolean>() {
-                    @Override
-                    public Boolean call(Throwable throwable) {
-                        return false;
-                    }
-                })
-                .toList()
-                .flatMap(new Func1<List<Boolean>, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(List<Boolean> booleen) {
-                        insertFlightMetaData(flightSearchData.getMeta());
-                        return Observable.just(true);
-                    }
-                })
-                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Boolean booleen) {
-                        return Observable.just(new Select(Method.count()).from(getDBClass()).hasData());
-                    }
-                });
+        if (flightSearchData.getData() == null || flightSearchData.getData().size() == 0) {
+            return Observable.just(true).flatMap(new InsertMetaDataFunc(flightSearchData.getMeta()));
+        } else {
+            return Observable.from(flightSearchData.getData())
+                    .flatMap(new Func1<FlightSearchData, Observable<Boolean>>() {
+                        @Override
+                        public Observable<Boolean> call(FlightSearchData flightSearchData) {
+                            insertSingleFlightData(flightSearchData);
+                            return Observable.just(true);
+                        }
+                    })
+                    .onErrorReturn(new Func1<Throwable, Boolean>() {
+                        @Override
+                        public Boolean call(Throwable throwable) {
+                            return false;
+                        }
+                    })
+                    .toList()
+                    .flatMap(new Func1<List<Boolean>, Observable<Boolean>>() {
+                        @Override
+                        public Observable<Boolean> call(List<Boolean> booleen) {
+                            return Observable.just(true);
+                        }
+                    })
+                    .flatMap(new InsertMetaDataFunc(flightSearchData.getMeta()));
+        }
+    }
 
+    private class InsertMetaDataFunc implements Func1<Boolean, Observable<Boolean>> {
+        Meta meta;
+        InsertMetaDataFunc(Meta flightMeta){
+            this.meta = flightMeta;
+        }
+        @Override
+        public Observable<Boolean> call(Boolean aBoolean) {
+            return insertFlightMetaData(meta);
+        }
     }
 
     @Override
@@ -80,14 +92,25 @@ public abstract class AbsFlightSearchDataDBSource
 
     protected abstract void insertSingleFlightData(FlightSearchData flightSearchData);
 
-    protected void insertFlightMetaData(Meta meta){
-        FlightMetaDataDB flightMetaDataDB = new FlightMetaDataDB(meta);
-        flightMetaDataDB.insert();
+    private Observable<Boolean> insertFlightMetaData(final Meta meta){
+        final FlightMetaDataDB flightMetaDataDB = new FlightMetaDataDB(meta);
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                flightMetaDataDB.insert();
+                List<FlightMetaDataDB> list = new Select().from(FlightMetaDataDB.class)
+                        .where(ConditionGroup.clause()
+                                .and(FlightMetaDataDB_Table.arrival_airport.eq(meta.getArrivalAirport()))
+                                .and(FlightMetaDataDB_Table.departure_airport.eq(meta.getDepartureAirport()))
+                                .and(FlightMetaDataDB_Table.date.eq(meta.getTime())))
+                        .queryList();
+                subscriber.onNext(true);
+            }
+        });
     }
 
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> getData(HashMap<String, Object> params) {
-        //TODO get the meta from db
         final FlightFilterModel flightFilterModel = FlightSearchParamUtil.getFilterModel(params);
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightSearchSingleRouteDB>>() {
             @Override
@@ -122,7 +145,7 @@ public abstract class AbsFlightSearchDataDBSource
 
     private ConditionGroup getSQLCondition(FlightFilterModel flightFilterModel) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(getTotalNumericColumn().between(flightFilterModel.getPriceMin()).and(flightFilterModel.getPriceMax()))
+                .and(getAdultNumericColumn().between(flightFilterModel.getPriceMin()).and(flightFilterModel.getPriceMax()))
                 .and(getDurationColumn().between(flightFilterModel.getDurationMin()).and(flightFilterModel.getDurationMax()));
         List<TransitEnum> transitEnumList = flightFilterModel.getTransitTypeList();
         ConditionGroup transitConditionFroup = getTransitCondition(transitEnumList);
@@ -235,8 +258,8 @@ public abstract class AbsFlightSearchDataDBSource
         return airlineConditionGroup;
     }
 
-    private IntProperty getTotalNumericColumn() {
-        return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.TOTAL_NUMERIC);
+    private IntProperty getAdultNumericColumn() {
+        return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.ADULT_NUMERIC);
     }
 
     private IntProperty getDurationColumn() {

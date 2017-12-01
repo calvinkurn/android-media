@@ -25,12 +25,16 @@ public interface FlightRepository {
     Observable<List<FlightClassEntity>> getFlightClasses();
 
     Observable<List<FlightAirlineDB>> getAirlineList();
+
     Observable<List<FlightAirlineDB>> getAirlineList(List<String> distinctSearchResultList);
+
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);
 
     Observable<Boolean> deleteFlightCacheSearch();
+    Observable<Boolean> deleteFlightCacheSearch(boolean isReturning);
 
     Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams);
+
     Observable<List<FlightMetaDataDB>> getFlightMetaData(RequestParams requestParams);
 
     Observable<Integer> getFlightSearchCount(RequestParams requestParams);

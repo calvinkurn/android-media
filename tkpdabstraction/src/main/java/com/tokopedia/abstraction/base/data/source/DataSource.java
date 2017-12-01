@@ -29,49 +29,54 @@ public abstract class DataSource<T, U> {
         this.dataCloudManager = dataCloudManager;
     }
 
-    protected Observable<U> getRefreshedData(final HashMap<String, Object> params) {
-        return dataDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<U>>() {
+    protected Observable<U> getCloudData(final HashMap<String, Object> params) {
+        return dataCloudManager.getData(params).flatMap(new Func1<T, Observable<U>>() {
             @Override
-            public Observable<U> call(Boolean aBoolean) {
-                return dataCloudManager.getData(params).flatMap(new Func1<T, Observable<U>>() {
+            public Observable<U> call(T ts) {
+                if (isCloudDataEmpty(ts)) {
+                    return getEmptyObservable();
+                }
+                return dataDBManager.insertAll(ts).flatMap(new Func1<Boolean, Observable<U>>() {
                     @Override
-                    public Observable<U> call(T ts) {
-                        if (isCloudDataEmpty(ts)) {
+                    public Observable<U> call(Boolean isSuccessInsertData) {
+                        if (!isSuccessInsertData) {
                             return getEmptyObservable();
-                        }
-                        return dataDBManager.insertAll(ts).flatMap(new Func1<Boolean, Observable<U>>() {
-                            @Override
-                            public Observable<U> call(Boolean isSuccessInsertData) {
-                                if (!isSuccessInsertData) {
-                                    return getEmptyObservable();
-                                } else {
-                                    return dataCacheManager.updateExpiredTime().flatMap(new Func1<Boolean, Observable<U>>() {
-                                        @Override
-                                        public Observable<U> call(Boolean isSuccessUpdateExpiredTime) {
-                                            if (!isSuccessUpdateExpiredTime) {
-                                                return null;
-                                            } else {
-                                                return dataDBManager.getData(params);
-                                            }
-                                        }
-                                    });
+                        } else {
+                            return dataCacheManager.updateExpiredTime().flatMap(new Func1<Boolean, Observable<U>>() {
+                                @Override
+                                public Observable<U> call(Boolean isSuccessUpdateExpiredTime) {
+                                    if (!isSuccessUpdateExpiredTime) {
+                                        return null;
+                                    } else {
+                                        return dataDBManager.getData(params);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 });
             }
         });
     }
 
-    protected boolean isCloudDataEmpty(T data){
-        return data == null;
+    protected Observable<U> getRefreshedData(final HashMap<String, Object> params) {
+        return dataDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<U>>() {
+            @Override
+            public Observable<U> call(Boolean aBoolean) {
+                return getCloudData(params);
+            }
+        });
     }
-    protected boolean isCacheDataEmpty(U data){
+
+    protected boolean isCloudDataEmpty(T data) {
         return data == null;
     }
 
-    protected Observable<U> getEmptyObservable(){
+    protected boolean isCacheDataEmpty(U data) {
+        return data == null;
+    }
+
+    protected Observable<U> getEmptyObservable() {
         return Observable.just(null);
     }
 
@@ -112,6 +117,10 @@ public abstract class DataSource<T, U> {
 
     public Observable<Boolean> setCacheExpired() {
         return dataCacheManager.setExpired();
+    }
+
+    public Observable<Boolean> isCacheExpired() {
+        return dataCacheManager.isExpired();
     }
 
     public Observable<Boolean> deleteCache() {

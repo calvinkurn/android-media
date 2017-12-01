@@ -75,30 +75,51 @@ public class FlightRepositoryImpl implements FlightRepository {
         return flightAirlineDataListSource.getAirlineList();
     }
 
+    /**
+     * will compare between the list and the cache (if not expired)
+     * If the cache already has ALL the airline in the list, then it will return as is.
+     * Otherwise, it will hit the cloud.
+     *
+     * Example:
+     * List: CA, JT. Cache: AB, AC, CB, JT
+     * it will hit the cloud, because it does not have CA in cache
+     *
+     * List: AB, JT. Cache: AB, AC, CB, JT
+     * All in list is in the cache, so, it will not hit cloud
+     */
     @Override
     public Observable<List<FlightAirlineDB>> getAirlineList(final List<String> airlineIDFromResult) {
-        return flightAirlineDataListSource.getCacheDataList(null).flatMap(new Func1<List<FlightAirlineDB>, Observable<List<FlightAirlineDB>>>() {
+        return flightAirlineDataListSource.isCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
             @Override
-            public Observable<List<FlightAirlineDB>> call(final List<FlightAirlineDB> flightAirlineDBs) {
-                boolean isAirlineInCache = true;
-
-                HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
-                for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
-                    dbAirlineMaps.put(flightAirlineDBs.get(i).getId(), flightAirlineDBs.get(i));
-                }
-                for (int i = 0, sizei = airlineIDFromResult.size(); i < sizei; i++) {
-                    if (!dbAirlineMaps.containsKey(airlineIDFromResult.get(i))) {
-                        isAirlineInCache = false;
-                        break;
-                    }
-                }
-                if (isAirlineInCache) {
-                    return Observable.just(flightAirlineDBs);
+            public Observable<List<FlightAirlineDB>> call(Boolean expired) {
+                if (expired) {
+                    return flightAirlineDataListSource.getAirlineList();
                 } else {
-                    return flightAirlineDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
+                    return flightAirlineDataListSource.getCacheDataList(null).flatMap(new Func1<List<FlightAirlineDB>, Observable<List<FlightAirlineDB>>>() {
                         @Override
-                        public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
-                            return flightAirlineDataListSource.getAirlineList();
+                        public Observable<List<FlightAirlineDB>> call(final List<FlightAirlineDB> flightAirlineDBs) {
+                            boolean isAirlineInCache = true;
+
+                            HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
+                            for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
+                                dbAirlineMaps.put(flightAirlineDBs.get(i).getId(), flightAirlineDBs.get(i));
+                            }
+                            for (int i = 0, sizei = airlineIDFromResult.size(); i < sizei; i++) {
+                                if (!dbAirlineMaps.containsKey(airlineIDFromResult.get(i))) {
+                                    isAirlineInCache = false;
+                                    break;
+                                }
+                            }
+                            if (isAirlineInCache) {
+                                return Observable.just(flightAirlineDBs);
+                            } else {
+                                return flightAirlineDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
+                                    @Override
+                                    public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
+                                        return flightAirlineDataListSource.getAirlineList();
+                                    }
+                                });
+                            }
                         }
                     });
                 }
@@ -114,6 +135,15 @@ public class FlightRepositoryImpl implements FlightRepository {
                 return flightSearchReturnDataListSource.deleteCache();
             }
         });
+    }
+
+    @Override
+    public Observable<Boolean> deleteFlightCacheSearch(boolean isReturning) {
+        if (isReturning) {
+            return flightSearchReturnDataListSource.deleteCache();
+        } else {
+            return flightSearchSingleDataListSource.deleteCache();
+        }
     }
 
     @Override

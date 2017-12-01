@@ -1,21 +1,26 @@
 package com.tokopedia.flight.search.view.fragment;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -24,17 +29,19 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
-import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
+import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.view.model.AirportCombineModelList;
 import com.tokopedia.flight.search.view.model.FlightAirportCombineModel;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
@@ -45,6 +52,8 @@ import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStati
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,6 +65,9 @@ import javax.inject.Inject;
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel> implements FlightSearchView,
         BaseListAdapter.OnBaseListV2AdapterListener<FlightSearchViewModel>,
         FlightSearchAdapter.OnBaseFlightSearchAdapterListener {
+
+    public static final String TAG = FlightSearchFragment.class.getSimpleName();
+
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
@@ -81,9 +93,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
     private AirportCombineModelList airportCombineModelList;
     private FlightSearchAdapter flightSearchAdapter;
+    private SwipeToRefresh swipeToRefresh;
 
     public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);
+
+        void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel);
     }
 
     @Inject
@@ -182,7 +197,20 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         progressBar = (HorizontalProgressBar) view.findViewById(R.id.horizontal_progress_bar);
         setUpProgress();
         setUpBottomAction(view);
+        setUpSwipeRefresh(view);
         return view;
+    }
+
+    protected void setUpSwipeRefresh(View view) {
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                hideLoading();
+                swipeToRefresh.setEnabled(false);
+                resetDateAndReload();
+            }
+        });
     }
 
     protected int getLayout() {
@@ -393,6 +421,17 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    protected void hideLoading() {
+        super.hideLoading();
+        hideSwipeRefreshLoad();
+    }
+
+    private void hideSwipeRefreshLoad() {
+        swipeToRefresh.setEnabled(true);
+        swipeToRefresh.setRefreshing(false);
+    }
+
+    @Override
     public void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB) {
         String depAirport = flightMetaDataDB.getDepartureAirport();
         String arrivalAirport = flightMetaDataDB.getArrivalAirport();
@@ -424,6 +463,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                             flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
                             date, adult, child, infant, classID);
+                    Log.i(TAG, flightAirportCombineModel.getDepAirport() + " to " +
+                            flightAirportCombineModel.getArrAirport() + "; No Retry: " + noRetry);
                     flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel, isReturning(), flightMetaDataDB.getRefreshTime());
                 }
 
@@ -431,6 +472,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 flightAirportCombineModel.setNeedRefresh(false);
                 progress += (flightMetaDataDB.getMaxRetry() - flightAirportCombineModel.getNoOfRetry()) *
                         divideTo(halfProgressAmount, flightMetaDataDB.getMaxRetry());
+                Log.i(TAG, flightAirportCombineModel.getDepAirport() + " to " +
+                        flightAirportCombineModel.getArrAirport() + " DONE");
             }
         }
         setUpProgress();
@@ -441,29 +484,60 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             return;
         }
 
+        Log.i(TAG, "DONE Hide Loading");
+
         // will update the data
         // if there is already data loaded, reload the data from cache
         // because the data might have filter/sort in it, so cannot be added directly
-        if (isDataEmpty) {
-            hideLoading();
-        } else {
-            // we retrieve from cache, because there is possibility the filter/sort will be different
-            reloadDataFromCache();
-            if (filterAndSortBottomAction.getVisibility() == View.GONE) {
-                filterAndSortBottomAction.setVisibility(View.VISIBLE);
-            }
+
+        // we retrieve from cache, because there is possibility the filter/sort will be different
+        reloadDataFromCache();
+        if (filterAndSortBottomAction.getVisibility() == View.GONE) {
+            filterAndSortBottomAction.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
+    public void onSuccessDeleteFlightCache() {
+        resetDateAndReload();
+    }
+
+    @Override
+    public void onErrorDeleteFlightCache(Throwable throwable) {
+        resetDateAndReload();
+    }
+
+    private void resetDateAndReload() {
+        // preserve the filter and sort option
+
+        // cancel all cloud progress, setupCombination airport, reset progress, hide filter, clear current data
+        flightSearchPresenter.detachView();
+
+        onFlightSearchFragmentListener.changeDate(flightSearchPassDataViewModel);
+        flightSearchStatisticModel = null;
+
+        setUpCombinationAirport();
+        progressBar.setVisibility(View.VISIBLE);
+        progress = 0;
+        filterAndSortBottomAction.setVisibility(View.GONE);
+
+        flightSearchAdapter.clearData();
+        flightSearchAdapter.notifyDataSetChanged();
+
+        flightSearchPresenter.attachView(this);
+        loadInitialData();
+    }
+
+    @Override
     public void onLoadSearchError(Throwable t) {
+        Log.i(TAG, t.toString());
         super.onLoadSearchError(t);
-        //TODO, get message from custom throwable
-        flightSearchAdapter.setErrorMessage(t.getMessage());
+        String message = FlightErrorUtil.getMessageFromException(t);
+        flightSearchAdapter.setErrorMessage(message);
     }
 
     private int divideTo(int number, int pieces) {
-        return (int) ((number / pieces) + 0.5);
+        return (int) Math.ceil(((double) number / pieces));
     }
 
     @Override
@@ -510,17 +584,64 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void onErrorGetFlightStatistic(Throwable throwable) {
-        String message = throwable.getMessage();
-        if (!TextUtils.isEmpty(message)) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
+    public void onChangeDateClicked() {
+        final String dateInput = flightSearchPassDataViewModel.getDate(isReturning());
+        Date date = FlightDateUtil.stringToDate(dateInput);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                onSuccessDateChanged(year, month, dayOfMonth);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker = datePickerDialog.getDatePicker();
+        setMinMaxDatePicker(datePicker);
+
+        datePickerDialog.show();
+    }
+
+    private void setMinMaxDatePicker(DatePicker datePicker) {
+        if (isReturning()) {
+            String dateDepStr = flightSearchPassDataViewModel.getDate(false);
+            Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
+            datePicker.setMinDate(dateDep.getTime());
+        } else {
+            Date dateNow = FlightDateUtil.getCurrentDate();
+            datePicker.setMinDate(dateNow.getTime());
+
+            boolean isOneWay = flightSearchPassDataViewModel.isOneWay();
+            if (!isOneWay) {
+                String dateArrStr = flightSearchPassDataViewModel.getDate(true);
+                Date dateArr = FlightDateUtil.stringToDate(dateArrStr);
+                datePicker.setMaxDate(dateArr.getTime());
+            }
         }
     }
 
+    private void onSuccessDateChanged(int year, int month, int dayOfMonth) {
+        Calendar calendar = FlightDateUtil.getCurrentCalendar();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DATE, dayOfMonth);
+        Date dateToSet = calendar.getTime();
+
+        String dateString = FlightDateUtil.dateToString(dateToSet, FlightDateUtil.DEFAULT_FORMAT);
+
+        if (isReturning()) {
+            flightSearchPassDataViewModel.setReturnDate(dateString);
+        } else {
+            flightSearchPassDataViewModel.setDepartureDate(dateString);
+        }
+        flightSearchPresenter.deleteFlightCache(isReturning());
+    }
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        flightSearchPresenter.detachView();
+    public void onErrorGetFlightStatistic(Throwable throwable) {
+        String message = FlightErrorUtil.getMessageFromException(throwable);
+        if (!TextUtils.isEmpty(message)) {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
+        }
     }
 
     @Override

@@ -46,7 +46,7 @@
     <string name="flight_search_filter_airplane">Maskapai Penerbangan</string>
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
-    <string name="flight_classes_toolbar_title">Pilih Kelas Penerbangan</string>
+    <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
     <string name="flight_labe_all_airport">Semua Bandara</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
     <string name="flight_dashboard_adult_children">Anak</string>
@@ -195,4 +195,28 @@
     <string name="flight_label_hours">Jam</string>
     <string name="flight_label_minute">Menit</string>
     <string name="flight_label_second">Detik</string>
+    <string name="activity_label_flight_order_list">Order List</string>
+    <string name="flight_price_detail_prefixl_meal_label">Makanan </string>
+    <string name="flight_price_detail_prefix_luggage_label">Bagasi </string>
+    <string name="flight_booking_close_label">Tutup</string>
+    <string name="flight_booking_trip_info_format" formatted="false">| %d %s</string>
+    <string name="flight_booking_trip_info_airport_format" formatted="false">| %s %s - %s %s</string>
+    <string name="flight_booking_id_empotency_format" formatted="false">%s_%s</string>
+    <string name="flight_booking_header_passenger_format" formatted="false">%s %d (%s)</string>
+    <string name="flight_booking_passenger_price_format" formatted="false">%s - %s  %dx %s</string>
+    <string name="flight_dashboard_error_close_label">Tutup</string>
+    <string name="flight_dashboard_departure_should_different_city_error">Kota tujuan dan asal tidak boleh sama</string>
+    <string name="flight_booking_loading_title">Memperbarui Data</string>
+    <string name="flight_label_adult_review">(Dewasa)</string>
+    <string name="flight_label_child_review">(Anak)</string>
+    <string name="flight_label_infant_review">(Bayi)</string>
+    <string name="activity_label_flight_review">Rincian Pesanan</string>
+    <string name="flight_booking_passenger_toolbar_title">Isi Penumpang</string>
+    <string name="flight_booking_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
+    <string name="flight_booking_dialog_price_change_title">Harga Tiket Telah Berubah</string>
+    <string name="flight_booking_dialog_price_change_description">Perubahan harga tiket terjadi karena pengaruh nilai tukar mata uang dan sisa kursi.</string>
+    <string name="flight_booking_dialog_price_change_prev_price_label">Harga Sebelumnya</string>
+    <string name="flight_booking_dialog_price_change_after_price_label">Harga Sekarang</string>
+    <string name="flight_booking_dialog_price_change_continue_label">Lanjut Pembayaran</string>
+    <string name="flight_booking_dialog_price_change_another_flights_label">Cari Penerbangan Lain</string>
 </resources>

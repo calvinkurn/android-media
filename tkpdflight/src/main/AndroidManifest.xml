@@ -54,18 +54,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".booking.view.activity.FlightBookingLuggageActivity"
+            android:name=".booking.view.activity.FlightBookingAmenityActivity"
             android:label="@string/flight_booking_luggage_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".booking.view.activity.FlightBookingMealsActivity"
-            android:label="@string/flight_booking_meal_toolbar_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".booking.view.activity.FlightBookingPassengerActivity"
-            android:label="Isi Penumpang"
+            android:label="@string/flight_booking_passenger_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
@@ -85,8 +80,13 @@
             android:theme="@style/Theme.White" />
         <activity
             android:name=".review.view.activity.FlightBookingReviewActivity"
-            android:label="@string/activity_label_flight_issuing_country"
+            android:label="@string/activity_label_flight_review"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".orderlist.FlightOrderListActivity"
+            android:label="@string/activity_label_flight_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

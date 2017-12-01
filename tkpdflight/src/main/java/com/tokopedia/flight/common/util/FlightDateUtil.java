@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -15,7 +14,7 @@ import java.util.TimeZone;
 
 public class FlightDateUtil {
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd";
-    public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_VIEW_FORMAT = "dd MMM yyyy";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
@@ -26,6 +25,7 @@ public class FlightDateUtil {
     public static String formatToUi(String dateStr) {
         return formatDate(DEFAULT_FORMAT, DEFAULT_VIEW_FORMAT, dateStr);
     }
+
     public static String formatDate(String currentFormat, String newFormat, String dateString, Locale locale) {
 
         try {
@@ -43,7 +43,7 @@ public class FlightDateUtil {
     }
 
     public static Date stringToDate(String input) {
-        DateFormat fromFormat = new SimpleDateFormat(DEFAULT_FORMAT);
+        DateFormat fromFormat = new SimpleDateFormat(DEFAULT_FORMAT, DEFAULT_LOCALE);
         try {
             return fromFormat.parse(input);
         } catch (ParseException e) {
@@ -53,7 +53,7 @@ public class FlightDateUtil {
     }
 
     public static Date stringToDate(String format, String input) {
-        DateFormat fromFormat = new SimpleDateFormat(format);
+        DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);
         try {
             return fromFormat.parse(input);
         } catch (ParseException e) {
@@ -84,8 +84,18 @@ public class FlightDateUtil {
         return cal.getTime();
     }
 
+    public static Date getCurrentDate() {
+        Calendar now = getCurrentCalendar();
+        return now.getTime();
+    }
+
+    public static Calendar getCurrentCalendar() {
+//        return new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        return Calendar.getInstance();
+    }
+
     public static Date addTimeToCurrentDate(int field, int value) {
-        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        Calendar now = getCurrentCalendar();
         now
                 .add(field, value);
         return now.getTime();

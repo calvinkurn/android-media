@@ -17,8 +17,8 @@ public class FlightBookingPassengerViewModel implements Parcelable {
     private String headerTitle;
     private String passengerName;
     private String passengerBirthdate;
-    private List<FlightBookingLuggageMetaViewModel> flightBookingLuggageMetaViewModels;
-    private List<FlightBookingMealMetaViewModel> flightBookingMealMetaViewModels;
+    private List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels;
+    private List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels;
 
     public FlightBookingPassengerViewModel() {
     }
@@ -31,8 +31,8 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         headerTitle = in.readString();
         passengerName = in.readString();
         passengerBirthdate = in.readString();
-        flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingLuggageMetaViewModel.CREATOR);
-        flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingMealMetaViewModel.CREATOR);
+        flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
+        flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
@@ -87,11 +87,11 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.singleRoute = singleRoute;
     }
 
-    public List<FlightBookingMealMetaViewModel> getFlightBookingMealMetaViewModels() {
+    public List<FlightBookingAmenityMetaViewModel> getFlightBookingMealMetaViewModels() {
         return flightBookingMealMetaViewModels;
     }
 
-    public void setFlightBookingMealMetaViewModels(List<FlightBookingMealMetaViewModel> flightBookingMealMetaViewModels) {
+    public void setFlightBookingMealMetaViewModels(List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels) {
         this.flightBookingMealMetaViewModels = flightBookingMealMetaViewModels;
     }
 
@@ -116,11 +116,11 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.passengerId = passengerId;
     }
 
-    public List<FlightBookingLuggageMetaViewModel> getFlightBookingLuggageMetaViewModels() {
+    public List<FlightBookingAmenityMetaViewModel> getFlightBookingLuggageMetaViewModels() {
         return flightBookingLuggageMetaViewModels;
     }
 
-    public void setFlightBookingLuggageMetaViewModels(List<FlightBookingLuggageMetaViewModel> flightBookingLuggageMetaViewModels) {
+    public void setFlightBookingLuggageMetaViewModels(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels) {
         this.flightBookingLuggageMetaViewModels = flightBookingLuggageMetaViewModels;
     }
 

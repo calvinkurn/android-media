@@ -1,7 +1,7 @@
 package com.tokopedia.flight.booking.view.viewmodel;
 
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ public class FlightBookingCartData {
     private String id;
     private int refreshTime;
     private FlightBookingPhoneCodeViewModel defaultPhoneCode;
-    private FlightSearchViewModel departureTrip;
-    private FlightSearchViewModel returnTrip;
-    private List<FlightBookingLuggageMetaViewModel> luggageViewModels;
-    private List<FlightBookingMealMetaViewModel> mealViewModels;
+    private FlightDetailViewModel departureTrip;
+    private FlightDetailViewModel returnTrip;
+    private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
+    private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
 
     public FlightBookingCartData() {
@@ -24,25 +24,26 @@ public class FlightBookingCartData {
 
     public int getRefreshTime() {
         return refreshTime;
+//        return 15;
     }
 
     public void setRefreshTime(int refreshTime) {
         this.refreshTime = refreshTime;
     }
 
-    public List<FlightBookingLuggageMetaViewModel> getLuggageViewModels() {
+    public List<FlightBookingAmenityMetaViewModel> getLuggageViewModels() {
         return luggageViewModels;
     }
 
-    public void setLuggageViewModels(List<FlightBookingLuggageMetaViewModel> luggageViewModels) {
+    public void setLuggageViewModels(List<FlightBookingAmenityMetaViewModel> luggageViewModels) {
         this.luggageViewModels = luggageViewModels;
     }
 
-    public List<FlightBookingMealMetaViewModel> getMealViewModels() {
+    public List<FlightBookingAmenityMetaViewModel> getMealViewModels() {
         return mealViewModels;
     }
 
-    public void setMealViewModels(List<FlightBookingMealMetaViewModel> mealViewModels) {
+    public void setMealViewModels(List<FlightBookingAmenityMetaViewModel> mealViewModels) {
         this.mealViewModels = mealViewModels;
     }
 
@@ -62,19 +63,19 @@ public class FlightBookingCartData {
         this.id = id;
     }
 
-    public FlightSearchViewModel getDepartureTrip() {
+    public FlightDetailViewModel getDepartureTrip() {
         return departureTrip;
     }
 
-    public void setDepartureTrip(FlightSearchViewModel departureTrip) {
+    public void setDepartureTrip(FlightDetailViewModel departureTrip) {
         this.departureTrip = departureTrip;
     }
 
-    public FlightSearchViewModel getReturnTrip() {
+    public FlightDetailViewModel getReturnTrip() {
         return returnTrip;
     }
 
-    public void setReturnTrip(FlightSearchViewModel returnTrip) {
+    public void setReturnTrip(FlightDetailViewModel returnTrip) {
         this.returnTrip = returnTrip;
     }
 

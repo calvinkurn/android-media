@@ -16,7 +16,9 @@ import java.util.List;
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightClassesAdapter extends BaseListAdapter<FlightClassViewModel> {
+public class FlightClassesAdapter extends BaseListAdapter<FlightClassViewModel> implements FlightClassViewHolder.ListenerCheckedClass {
+    private int selectedId;
+
     public FlightClassesAdapter(Context context, OnBaseListV2AdapterListener<FlightClassViewModel> onBaseListV2AdapterListener) {
         super(context, onBaseListV2AdapterListener);
     }
@@ -28,6 +30,17 @@ public class FlightClassesAdapter extends BaseListAdapter<FlightClassViewModel> 
     @Override
     public BaseViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
         View view = getLayoutView(parent, FlightClassViewHolder.LAYOUT);
-        return new FlightClassViewHolder(view);
+        FlightClassViewHolder viewHolder = new FlightClassViewHolder(view);
+        viewHolder.setListenerCheckedClass(this);
+        return viewHolder;
+    }
+
+    @Override
+    public boolean isItemChecked(FlightClassViewModel selectedItem) {
+        return this.selectedId == selectedItem.getId();
+    }
+
+    public void setSelectedId(int selectedId) {
+        this.selectedId = selectedId;
     }
 }

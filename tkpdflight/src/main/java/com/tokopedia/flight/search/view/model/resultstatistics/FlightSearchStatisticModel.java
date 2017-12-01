@@ -47,8 +47,8 @@ public class FlightSearchStatisticModel implements Parcelable {
 
         for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
             FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
-            int price = flightSearchViewModel.getTotalNumeric();
-            String priceString = flightSearchViewModel.getTotal();
+            int price = flightSearchViewModel.getFare().getAdultNumeric();
+            String priceString = flightSearchViewModel.getFare().getAdult();
             if (price < minPrice) {
                 minPrice = price;
             }

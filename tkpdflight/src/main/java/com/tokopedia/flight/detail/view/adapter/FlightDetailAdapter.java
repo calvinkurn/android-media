@@ -40,7 +40,7 @@ public class FlightDetailAdapter extends BaseListAdapter<Route> {
         super.bindItemData(position, viewHolder);
         if (viewHolder instanceof FlightDetailViewHolder) {
             ((FlightDetailViewHolder) viewHolder).bindLastPosition(getDataSize() == position);
-            ((FlightDetailViewHolder) viewHolder).bindTransitInfo(getDataSize() > 1);
+            ((FlightDetailViewHolder) viewHolder).bindTransitInfo(getDataSize());
         }
     }
 

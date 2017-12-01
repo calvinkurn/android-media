@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
+import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
@@ -42,18 +43,21 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
     private FlightSearchMetaUseCase flightSearchMetaUseCase;
     private CompositeSubscription compositeSubscription;
+    private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
                                  FlightSortUseCase flightSortUseCase,
                                  FlightSearchStatisticUseCase flightSearchStatisticUseCase,
                                  FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
-                                 FlightSearchMetaUseCase flightSearchMetaUseCase) {
+                                 FlightSearchMetaUseCase flightSearchMetaUseCase,
+                                 DeleteFlightCacheUseCase deleteFlightCacheUseCase) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
         this.flightSearchMetaUseCase = flightSearchMetaUseCase;
+        this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
     }
 
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
@@ -107,6 +111,27 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         addSubscription(subscription);
     }
 
+    public void deleteFlightCache(boolean isReturning){
+        deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(isReturning), new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()){
+                    getView().onErrorDeleteFlightCache(e);
+                }
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                getView().onSuccessDeleteFlightCache();
+            }
+        });
+    }
+
     private void addSubscription(Subscription subscription) {
         if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
             compositeSubscription = new CompositeSubscription();
@@ -142,6 +167,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         flightBookingGetSingleResultUseCase.unsubscribe();
         flightSortUseCase.unsubscribe();
         flightSearchMetaUseCase.unsubscribe();
+        deleteFlightCacheUseCase.unsubscribe();
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
         }

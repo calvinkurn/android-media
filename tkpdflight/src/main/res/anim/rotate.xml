@@ -3,7 +3,7 @@
     android:interpolator="@android:anim/bounce_interpolator">
     <!-- Use your working translate animation here-->
     <rotate
-        android:duration="900"
+        android:duration="500"
         android:pivotX="50%"
         android:pivotY="50%"
         android:fromDegrees="0"

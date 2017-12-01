@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
@@ -26,6 +25,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
@@ -43,6 +43,7 @@ import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -58,8 +59,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
-    private static final int REQUEST_CODE_AIRPORT_ARRIVAL_DATE = 5;
-    private static final int REQUEST_CODE_AIRPORT_DEPARTURE_DATE = 6;
 
     private FlightDashboardViewModel viewModel;
 
@@ -110,7 +109,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
-        returnDateSeparatorView = (View) view.findViewById(R.id.view_return_date_separator);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -157,23 +155,19 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = FlightClassesActivity.getCallingIntent(getActivity());
+                Intent intent = FlightClassesActivity.getCallingIntent(getActivity(), viewModel.getFlightClass() != null ? viewModel.getFlightClass().getId() : -1);
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_CLASSES);
             }
         });
         departureDateTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = FlightDatePickerActivity.getCallingIntent(getActivity(), viewModel.getDepartureDate());
-                getActivity().startActivityForResult(intent, REQUEST_CODE_AIRPORT_ARRIVAL_DATE);*/
                 presenter.onDepartureDateButtonClicked();
             }
         });
         returnDateTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = FlightDatePickerActivity.getCallingIntent(getActivity(), viewModel.getReturnDate());
-                getActivity().startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE_DATE);*/
                 presenter.onReturnDateButtonClicked();
             }
         });
@@ -182,7 +176,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             @Override
             public void onClick(View v) {
                 presenter.onReverseAirportButtonClicked();
-                AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
                 Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
                 shake.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -200,10 +193,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
                     }
                 });
-
-                RotateAnimation rotate = new RotateAnimation(180, 360, Animation.RELATIVE_TO_SELF,
-                        0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                rotate.setDuration(500);
                 reverseAirportImageView.startAnimation(shake);
             }
         });
@@ -239,18 +228,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(true);
         roundTripAppCompatButton.setSelected(false);
         returnDateTextInputView.setVisibility(View.GONE);
-        returnDateSeparatorView.setVisibility(View.GONE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
         if (viewModel.getDepartureAirport() != null) {
-            airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
+            airportDepartureTextInputView.setText(viewModel.getAirportTextForView(getContext(), true));
         } else {
             airportDepartureTextInputView.setText(null);
             airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
         }
         if (viewModel.getArrivalAirport() != null) {
-            airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
+            airportArrivalTextInputView.setText(viewModel.getAirportTextForView(getContext(), false));
         } else {
             airportArrivalTextInputView.setText(null);
             airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));
@@ -269,19 +257,18 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(false);
         roundTripAppCompatButton.setSelected(true);
         returnDateTextInputView.setVisibility(View.VISIBLE);
-        returnDateSeparatorView.setVisibility(View.VISIBLE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         returnDateTextInputView.setText(viewModel.getReturnDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
         if (viewModel.getDepartureAirport() != null) {
-            airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
+            airportDepartureTextInputView.setText(viewModel.getAirportTextForView(getContext(), true));
         } else {
             airportDepartureTextInputView.setText(null);
             airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
         }
         if (viewModel.getArrivalAirport() != null) {
-            airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
+            airportArrivalTextInputView.setText(viewModel.getAirportTextForView(getContext(), false));
         } else {
             airportArrivalTextInputView.setText(null);
             airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));
@@ -300,12 +287,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureDatePickerDialog(Date selectedDate, Date minDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 presenter.onDepartureDateChange(year, month, dayOfMonth);
             }
-        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
         datePicker.show();
@@ -313,12 +302,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showReturnDatePickerDialog(Date selectedDate, Date minDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 presenter.onReturnDateChange(year, month, dayOfMonth);
             }
-        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
         datePicker.show();
@@ -356,6 +347,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showFlightClassPassengerIsEmpty(@StringRes int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showAirportShouldDifferentCity(@StringRes int resId) {
         showMessageErrorInSnackBar(resId);
     }
 
@@ -405,17 +401,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @SuppressWarnings("Range")
     private void showMessageErrorInSnackBar(int resId) {
-        Snackbar snackBar = SnackbarManager.make(getActivity(),
-                getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),getString(resId));
+    }
 
-                    }
-                });
-        Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
-        snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
-        snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
-        snackBar.show();
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroyView();
+        super.onDestroyView();
     }
 }

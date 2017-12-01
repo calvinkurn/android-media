@@ -3,10 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:padding="@dimen/margin_sm">
+    android:paddingTop="@dimen/margin_sm"
+    android:paddingBottom="@dimen/margin_sm"
+    android:paddingLeft="@dimen/margin_med"
+    android:paddingStart="@dimen/margin_med"
+    android:paddingRight="@dimen/margin_sm"
+    android:paddingEnd="@dimen/margin_sm">
 
     <LinearLayout
         android:layout_width="0dp"

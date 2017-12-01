@@ -2,13 +2,10 @@ package com.tokopedia.flight.search.view.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.binder.BaseEmptyDataBinder;
@@ -20,11 +17,15 @@ import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
+import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.search.util.DurationUtil;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by User on 10/26/2017.
@@ -37,6 +38,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
 
     public interface OnBaseFlightSearchAdapterListener{
         void onResetFilterClicked();
+        void onChangeDateClicked();
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
     }
 
@@ -51,7 +53,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
         TextView tvDeparture;
         TextView tvArrival;
         TextView tvAirline;
-        ImageView logoAirline;
+        FlightMultiAirlineView flightMultiAirlineView;
         TextView tvPrice;
         TextView tvDuration;
         TextView airlineRefundableInfo;
@@ -64,7 +66,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
             tvDeparture = (TextView) itemView.findViewById(R.id.departure_time);
             tvArrival = (TextView) itemView.findViewById(R.id.arrival_time);
             tvAirline = (TextView) itemView.findViewById(R.id.tv_airline);
-            logoAirline = (ImageView) itemView.findViewById(R.id.image_airline);
+            flightMultiAirlineView = (FlightMultiAirlineView) itemView.findViewById(R.id.view_multi_airline);
             airlineRefundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
             tvPrice = (TextView) itemView.findViewById(R.id.total_price);
             tvDuration = (TextView) itemView.findViewById(R.id.flight_time);
@@ -126,10 +128,20 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
 
         private void setAirline(FlightSearchViewModel flightSearchViewModel) {
             if(flightSearchViewModel.getAirlineList().size() > 1) {
-                logoAirline.setImageResource(R.drawable.ic_plane_flight);
+                List<FlightAirlineDB> flightAirlineDBs = flightSearchViewModel.getAirlineList();
+                if (flightAirlineDBs!= null && flightAirlineDBs.size() > 0) {
+                    List<String> airlineLogoList = new ArrayList<>();
+                    for (int i =0, sizei = flightAirlineDBs.size(); i<sizei; i++) {
+                        FlightAirlineDB flightAirlineDB = flightAirlineDBs.get(i);
+                        airlineLogoList.add(flightAirlineDB.getLogo());
+                    }
+                    flightMultiAirlineView.setAirlineLogos(airlineLogoList);
+                } else {
+                    flightMultiAirlineView.setAirlineLogos(null);
+                }
                 tvAirline.setText(R.string.flight_label_multi_maskapai);
             }else if(flightSearchViewModel.getAirlineList().size() == 1){
-                logoAirline.setImageResource(FlightAirlineIconUtil.getImageResource(flightSearchViewModel.getAirlineList().get(0).getId()));
+                flightMultiAirlineView.setAirlineLogo(flightSearchViewModel.getAirlineList().get(0).getLogo());
                 tvAirline.setText(flightSearchViewModel.getAirlineList().get(0).getName());
             }
         }
@@ -158,7 +170,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
 
             @Override
             public void onEmptyButtonClicked() {
-                Toast.makeText(context, "Belum dihandle", Toast.LENGTH_LONG).show();
+                onBaseFlightSearchAdapterListener.onChangeDateClicked();
             }
         });
         return emptyDataBinder;

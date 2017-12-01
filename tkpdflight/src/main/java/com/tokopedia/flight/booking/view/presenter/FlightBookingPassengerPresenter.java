@@ -3,18 +3,14 @@ package com.tokopedia.flight.booking.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -24,7 +20,6 @@ import javax.inject.Inject;
  */
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
-
 
     @Inject
     public FlightBookingPassengerPresenter() {
@@ -89,24 +84,12 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         Date maxDate, minDate, selectedDate;
 
         if (isChildPassenger()) {
-            Calendar twelveYearsAgo = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            twelveYearsAgo
-                    .add(Calendar.DATE, -4380);
-            minDate = twelveYearsAgo.getTime();
-            Calendar twoYearsAgo = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            twoYearsAgo
-                    .add(Calendar.DATE, -730);
-            maxDate = twoYearsAgo.getTime();
+            minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
+            maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
             selectedDate = maxDate;
         } else {
-            Calendar twoYearsAgo = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            twoYearsAgo
-                    .add(Calendar.DATE, -730);
-            minDate = twoYearsAgo.getTime();
-            Calendar today = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            today
-                    .add(Calendar.DATE, -1);
-            maxDate = today.getTime();
+            minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
+            maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, -1);
             selectedDate = maxDate;
         }
         if (getView().getPassengerBirthDate().length() > 0) {
@@ -117,7 +100,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void onBirthdateChange(int year, int month, int date) {
-        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, date);
@@ -127,25 +110,25 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onPassengerLuggageClick(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel) {
-        FlightBookingLuggageMetaViewModel existingSelected = null;
-        for (FlightBookingLuggageMetaViewModel selected : getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels()) {
+    public void onPassengerLuggageClick(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel) {
+        FlightBookingAmenityMetaViewModel existingSelected = null;
+        for (FlightBookingAmenityMetaViewModel selected : getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels()) {
             if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
                 existingSelected = selected;
             }
         }
         if (existingSelected == null) {
-            existingSelected = new FlightBookingLuggageMetaViewModel();
+            existingSelected = new FlightBookingAmenityMetaViewModel();
             existingSelected.setKey(flightBookingLuggageMetaViewModel.getKey());
             existingSelected.setDescription(flightBookingLuggageMetaViewModel.getDescription());
-            existingSelected.setLuggages(new ArrayList<FlightBookingLuggageViewModel>());
+            existingSelected.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
         }
-        getView().navigateToLuggagePicker(flightBookingLuggageMetaViewModel.getLuggages(), existingSelected);
+        getView().navigateToLuggagePicker(flightBookingLuggageMetaViewModel.getAmenities(), existingSelected);
     }
 
     @Override
-    public void onLuggageDataChange(FlightBookingLuggageMetaViewModel flightBookingLuggageMetaViewModel) {
-        List<FlightBookingLuggageMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels();
+    public void onLuggageDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel) {
+        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels();
         int index = viewModels.indexOf(flightBookingLuggageMetaViewModel);
         if (index != -1) {
             viewModels.set(index, flightBookingLuggageMetaViewModel);
@@ -157,21 +140,21 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onMealDataChange(FlightBookingMealMetaViewModel flightBookingMealMetaViewModel) {
-        List<FlightBookingMealMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
-        int index = viewModels.indexOf(flightBookingMealMetaViewModel);
+    public void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel) {
+        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
+        int index = viewModels.indexOf(flightBookingAmenityMetaViewModel);
         if (index != -1) {
-            viewModels.set(index, flightBookingMealMetaViewModel);
+            viewModels.set(index, flightBookingAmenityMetaViewModel);
         } else {
-            viewModels.add(flightBookingMealMetaViewModel);
+            viewModels.add(flightBookingAmenityMetaViewModel);
         }
 
         getView().renderPassengerMeals(getView().getMealViewModels(), viewModels);
     }
 
     @Override
-    public void onDeleteMeal(FlightBookingMealMetaViewModel viewModel) {
-        List<FlightBookingMealMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
+    public void onDeleteMeal(FlightBookingAmenityMetaViewModel viewModel) {
+        List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
         int index = viewModels.indexOf(viewModel);
         if (index != -1) {
             viewModels.set(index, viewModel);
@@ -183,9 +166,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onOptionMeal(FlightBookingMealMetaViewModel viewModel) {
-        FlightBookingMealMetaViewModel existingSelected = null;
-        for (FlightBookingMealMetaViewModel viewModel1 : getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels()) {
+    public void onOptionMeal(FlightBookingAmenityMetaViewModel viewModel) {
+        FlightBookingAmenityMetaViewModel existingSelected = null;
+        for (FlightBookingAmenityMetaViewModel viewModel1 : getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels()) {
             if (viewModel1.getKey().equalsIgnoreCase(viewModel.getKey())) {
                 existingSelected = viewModel1;
                 break;
@@ -193,19 +176,17 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         }
 
         if (existingSelected == null) {
-            existingSelected = new FlightBookingMealMetaViewModel();
+            existingSelected = new FlightBookingAmenityMetaViewModel();
             existingSelected.setKey(viewModel.getKey());
-            existingSelected.setMealViewModels(new ArrayList<FlightBookingMealViewModel>());
+            existingSelected.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
             existingSelected.setDescription(viewModel.getDescription());
         }
-        getView().navigateToMealPicker(viewModel.getMealViewModels(), existingSelected);
+        getView().navigateToMealPicker(viewModel.getAmenities(), existingSelected);
     }
 
     private boolean validateFields() {
         boolean isValid = true;
-        Calendar twoYearsAgo = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-        twoYearsAgo
-                .add(Calendar.DATE, -730);
+        Date twoYearsAgo = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
         if (getView().getPassengerName().isEmpty() || getView().getPassengerName().length() == 0) {
             isValid = false;
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_name_empty_error);
@@ -217,11 +198,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
         } else if (isChildPassenger() &&
                 FlightDateUtil.removeTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate()))
-                        .compareTo(FlightDateUtil.removeTime(twoYearsAgo.getTime())) > 0) {
+                        .compareTo(FlightDateUtil.removeTime(twoYearsAgo)) > 0) {
             isValid = false;
             getView().showPassengerChildBirthdateShouldMoreThan2Years(R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years);
         } else if (isInfantPassenger() && FlightDateUtil.removeTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate()))
-                .compareTo(FlightDateUtil.removeTime(twoYearsAgo.getTime())) < 0) {
+                .compareTo(FlightDateUtil.removeTime(twoYearsAgo)) < 0) {
             isValid = false;
             getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
         }
