@@ -83,7 +83,9 @@ public class ShopScheduleDialog extends DialogFragment {
     }
 
     public void closeDialog(){
-        getDialog().dismiss();
+        if (getDialog() != null) {
+            getDialog().dismiss();
+        }
     }
 
     @NonNull
