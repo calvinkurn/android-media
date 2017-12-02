@@ -169,8 +169,9 @@ public class WatermarkView extends View {
         int xText = padding;
         int yText = mutableBitmap.getHeight() - padding;
 
-        canvas.drawText(textString, xText, yText, watermarkTextPaint);
-
+        if (!TextUtils.isEmpty(textString)) {
+            canvas.drawText(textString, xText, yText, watermarkTextPaint);
+        }
         bitmap.recycle();
 
         return mutableBitmap;
