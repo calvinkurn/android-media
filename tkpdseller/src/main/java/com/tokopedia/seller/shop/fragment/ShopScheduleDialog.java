@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -342,8 +343,14 @@ public class ShopScheduleDialog extends DialogFragment {
 
     private void calculateDate(String date){
         String[] dates = date.split("/");
-        day = Integer.parseInt(dates[0]);
-        month = Integer.parseInt(dates[1]);
-        year = Integer.parseInt(dates[2]);
+        if (!TextUtils.isEmpty(dates[0])) {
+            day = Integer.parseInt(dates[0]);
+        }
+        if (!TextUtils.isEmpty(dates[1])) {
+            month = Integer.parseInt(dates[1]);
+        }
+        if (!TextUtils.isEmpty(dates[2])) {
+            year = Integer.parseInt(dates[2]);
+        }
     }
 }
