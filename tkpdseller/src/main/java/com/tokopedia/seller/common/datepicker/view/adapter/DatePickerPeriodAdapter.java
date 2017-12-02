@@ -119,7 +119,7 @@ public class DatePickerPeriodAdapter extends BaseLinearRecyclerViewAdapter {
 
     public PeriodRangeModel getSelectedDate() {
         PeriodRangeModel periodRangeModel = null;
-        if (selectedPosition >= 0 && data.size() < selectedPosition) {
+        if (selectedPosition >= 0 && selectedPosition < data.size()) {
             periodRangeModel = data.get(selectedPosition);
         }
         return periodRangeModel;
