@@ -76,7 +76,7 @@ public class MethodChecker {
     }
 
     public static Uri getUri(Context context, File outputMediaFile) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return FileProvider.getUriForFile(context,
                     context.getApplicationContext().getPackageName() + ".provider", outputMediaFile);
         } else {
