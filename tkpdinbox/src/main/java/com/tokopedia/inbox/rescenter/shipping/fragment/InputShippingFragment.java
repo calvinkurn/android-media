@@ -274,6 +274,44 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
             }
         });
+
+        attachmentAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+                super.onItemRangeChanged(positionStart, itemCount, payload);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+
+            @Override
+            public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
+            }
+        });
     }
 
     @Override
@@ -284,8 +322,8 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     @Override
     public void setConfirmButtonEnabled() {
         if(!isConfirmButtonEnabled) {
-            confirmButton.setClickable(false);
-            confirmButton.setClickable(false);
+            confirmButton.setClickable(true);
+            confirmButton.setEnabled(true);
             confirmButton.setBackground(MethodChecker.getDrawable(getActivity(),R.drawable.bg_button_save_enable));
             confirmButton.setTextColor(MethodChecker.getColor(getActivity(),R.color.white));
 
@@ -409,6 +447,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
                 attachmentData.get(position).delete();
                 attachmentData.remove(position);
                 attachmentAdapter.notifyItemRemoved(position);
+                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
             }
 
             @Override

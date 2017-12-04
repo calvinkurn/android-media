@@ -322,12 +322,14 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     @Override
-    public void onListAttachmentChanged() {
+    public void onListAttachmentChanged(int itemCount) {
+        isListAttachmentValid = (itemCount>1);
 
+        checkFormValidity();
     }
 
     private void checkFormValidity(){
-        if(isShippingRefValid && isShippingSpinnerValid){
+        if(isShippingRefValid && isShippingSpinnerValid && isListAttachmentValid){
             viewListener.setConfirmButtonEnabled();
         } else {
             viewListener.setConfirmButtonDisabled();

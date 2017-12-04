@@ -29,5 +29,5 @@ public interface InputShippingFragmentPresenter {
 
     void onShippingSpinnerChanged(int position);
 
-    void onListAttachmentChanged();
+    void onListAttachmentChanged(int itemCount);
 }
