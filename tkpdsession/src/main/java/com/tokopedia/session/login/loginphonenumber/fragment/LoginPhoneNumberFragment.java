@@ -22,6 +22,7 @@ import com.tokopedia.otp.centralizedotp.VerificationActivity;
 import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.session.login.loginphonenumber.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.login.loginphonenumber.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.viewlistener.LoginPhoneNumber;
 
@@ -38,6 +39,8 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     private static final int REQUEST_VERIFY_PHONE = 101;
     private static final int REQUEST_CHOOSE_ACCOUNT = 102;
+    private static final int REQUEST_PHONE_NOT_CONNECTED = 103;
+
     EditText phoneNumber;
     TextView nextButton;
     TextView message;
@@ -143,6 +146,14 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                 phoneNumber,
                 getListVerificationMethod()),
                 REQUEST_VERIFY_PHONE);
+    }
+
+    @Override
+    public void goToPhoneNotConnectedTokocashPage() {
+        startActivityForResult(NotConnectedTokocashActivity.getPhoneNumberNotConnectedIntent(
+                getActivity(),
+                phoneNumber.getText().toString()),
+                REQUEST_PHONE_NOT_CONNECTED);
     }
 
     private ArrayList<MethodItem> getListVerificationMethod() {

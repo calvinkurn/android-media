@@ -35,7 +35,9 @@ public class LoginPhoneNumberPresenter extends BaseDaggerPresenter<LoginPhoneNum
     @Override
     public void loginWithPhoneNumber(String phoneNumber) {
         if (isValid(phoneNumber)) {
-            getView().goToVerifyAccountPage(phoneNumber);
+//            getView().goToVerifyAccountPage(phoneNumber);
+            getView().goToPhoneNotConnectedTokocashPage();
+
         }
     }
 

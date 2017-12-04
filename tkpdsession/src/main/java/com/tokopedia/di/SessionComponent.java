@@ -5,6 +5,7 @@ import com.tokopedia.otp.centralizedotp.fragment.ChooseVerificationMethodFragmen
 import com.tokopedia.otp.centralizedotp.fragment.VerificationFragment;
 import com.tokopedia.session.login.loginphonenumber.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.session.login.loginphonenumber.fragment.LoginPhoneNumberFragment;
+import com.tokopedia.session.login.loginphonenumber.fragment.NotConnectedTokocashFragment;
 
 import dagger.Component;
 
@@ -22,5 +23,7 @@ public interface SessionComponent {
     void inject(ChooseVerificationMethodFragment selectVerificationMethodFragment);
 
     void inject(ChooseTokocashAccountFragment chooseTokocashAccountFragment);
+
+    void inject(NotConnectedTokocashFragment notConnectedTokocashFragment);
 
 }

@@ -83,6 +83,9 @@
     <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
+
+    <!-- LOGIN PHONE NUMBER -->
+
     <string name="login_with_phone_number_tokocash">Masuk dengan\nNomor Ponsel TokoCash</string>
     <string name="phone_number">Nomor Ponsel</string>
     <string name="we_will_send_verification_code">Kami akan mengirimkan sms kode verifikasi</string>
@@ -103,4 +106,12 @@
     <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan
         lewat<br>panggilan telepon ke]]></string>
     <string name="choose_account">Pilih Akun</string>
+    <string name="phone_number_not_connected_to_tokocash">Nomor Ponsel Belum\nTerhubung ke
+        TokoCash</string>
+    <string name="not_connected_tokocash_message">Untuk masuk dengan nomor ponsel akun TokoCash Anda, harap lakukan verifikasi nomor ponsel terlebih dahulu.</string>
+    <string name="login_with_other_method">Masuk dengan Pilihan Lainnya</string>
+    <string name="no_tokocash_account">Tidak ada Akun Tokopedia yang Terhubung ke TokoCash</string>
+    <string name="no_tokocash_account_message">Silakan gunakan pilihan lainnya untuk masuk. Untuk menggunakan pilihan ini, harap lakukan aktivasi TokoCash kembali dari akun Tokopedia Anda</string>
+    <string name="phone_number_not_connected">Nomor Ponsel Belum Terhubung</string>
+    <string name="no_account_connected">Tidak Ada Akun Terhubung</string>
 </resources>

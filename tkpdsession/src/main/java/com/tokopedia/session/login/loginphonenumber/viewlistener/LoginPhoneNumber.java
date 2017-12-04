@@ -15,6 +15,8 @@ public interface LoginPhoneNumber {
         void showErrorPhoneNumber(int resId);
 
         void goToVerifyAccountPage(String phoneNumber);
+
+        void goToPhoneNotConnectedTokocashPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

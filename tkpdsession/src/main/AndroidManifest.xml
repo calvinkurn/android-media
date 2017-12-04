@@ -85,6 +85,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
+        <activity
+            android:name=".login.loginphonenumber.activity.NotConnectedTokocashActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false"/>
