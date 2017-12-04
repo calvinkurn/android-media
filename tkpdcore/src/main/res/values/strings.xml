@@ -890,6 +890,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_fax_optional">Fax (Opsional)</string>
     <string name="title_process_partial">Proses sebagian</string>
     <string name="title_reject">Tolak</string>
+    <string name="title_save_button">Simpan</string>
     <string name="title_confirm_button">Konfirmasi</string>
     <string name="title_transaction_value">Jumlah transaksi</string>
     <string name="title_shipping_status">STATUS</string>
