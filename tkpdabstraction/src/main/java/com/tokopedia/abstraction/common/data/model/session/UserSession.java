@@ -9,4 +9,6 @@ public interface UserSession {
     String getAccessToken();
 
     String getFreshToken();
+
+    String getUserId();
 }

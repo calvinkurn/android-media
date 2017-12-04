@@ -9,8 +9,8 @@ import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.utils.TKPDMapParam;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -45,5 +45,5 @@ public interface FlightRepository {
 
     Observable<Boolean> getAirportListBackground();
 
-    Observable<AttributesVoucher> checkVoucherCode(TKPDMapParam<String, String> paramsAllValueInString);
+    Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString);
 }

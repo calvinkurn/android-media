@@ -3,6 +3,8 @@ package com.tokopedia.abstraction.common.network.interceptor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.utils.AuthUtil;
 import com.tokopedia.abstraction.utils.MethodChecker;
 
 import org.json.JSONArray;
@@ -31,15 +33,18 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Context context;
     private String freshAccessToken;
     private AbstractionRouter abstractionRouter;
+    protected UserSession userSession;
 
     public TkpdAuthInterceptor(String authKey,
                                Context context,
                                String freshAccessToken,
-                               AbstractionRouter abstractionRouter) {
+                               AbstractionRouter abstractionRouter,
+                               UserSession userSession) {
         this.authKey = authKey;
         this.context = context;
         this.freshAccessToken = freshAccessToken;
         this.abstractionRouter = abstractionRouter;
+        this.userSession = userSession;
     }
 
     private Lock lock = new ReentrantLock();
@@ -161,7 +166,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        return abstractionRouter.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
+        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader, userSession.getUserId());
     }
 
     void generateHeader(

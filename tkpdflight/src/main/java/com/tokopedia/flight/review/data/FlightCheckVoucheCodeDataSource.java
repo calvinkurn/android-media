@@ -1,7 +1,8 @@
 package com.tokopedia.flight.review.data;
 
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
-import com.tokopedia.usecase.utils.TKPDMapParam;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -20,7 +21,7 @@ public class FlightCheckVoucheCodeDataSource {
         this.flightCheckVoucherCodeDataSourceCloud = flightCheckVoucherCodeDataSourceCloud;
     }
 
-    public Observable<AttributesVoucher> checkVoucherCode(TKPDMapParam<String, String> paramsAllValueInString) {
+    public Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString) {
         return flightCheckVoucherCodeDataSourceCloud.checkVoucherCode(paramsAllValueInString);
     }
 }

@@ -30,6 +30,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
     public static final String EXTRA_FLIGHT_SELECTED = "EXTRA_FLIGHT_SELECTED";
+    private static final String EXTRA_FLIGHT_DISPLAY_SUBMIT = "EXTRA_FLIGHT_DISPLAY_SUBMIT";
 
     private FlightDetailViewModel flightDetailViewModel;
     private Button buttonSubmit;
@@ -39,10 +40,12 @@ public class FlightDetailActivity extends BaseTabActivity {
     private TextView departureAirportName;
     private TextView arrivalAirportCode;
     private TextView arrivalAirportName;
+    private boolean isSubmitDisplayed;
 
-    public static Intent createIntent(Context context, FlightDetailViewModel flightDetailViewModel){
+    public static Intent createIntent(Context context, FlightDetailViewModel flightDetailViewModel, boolean isSubmitDisplayed){
         Intent intent = new Intent(context, FlightDetailActivity.class);
         intent.putExtra(EXTRA_FLIGHT_SEARCH_MODEL, flightDetailViewModel);
+        intent.putExtra(EXTRA_FLIGHT_DISPLAY_SUBMIT, isSubmitDisplayed);
         return intent;
     }
 
@@ -54,6 +57,7 @@ public class FlightDetailActivity extends BaseTabActivity {
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         flightDetailViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
+        isSubmitDisplayed = getIntent().getBooleanExtra(EXTRA_FLIGHT_DISPLAY_SUBMIT, true);
         super.setupLayout(savedInstanceState);
         buttonSubmit = (Button) findViewById(R.id.button_submit);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -69,6 +73,11 @@ public class FlightDetailActivity extends BaseTabActivity {
         arrivalAirportCode.setText(flightDetailViewModel.getArrivalAirport());
         arrivalAirportName.setText(flightDetailViewModel.getArrivalAirportCity());
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+        if(isSubmitDisplayed){
+            buttonSubmit.setVisibility(View.VISIBLE);
+        }else{
+            buttonSubmit.setVisibility(View.GONE);
+        }
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

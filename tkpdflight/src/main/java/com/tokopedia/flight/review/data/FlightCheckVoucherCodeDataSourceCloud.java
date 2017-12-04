@@ -3,7 +3,8 @@ package com.tokopedia.flight.review.data;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
-import com.tokopedia.usecase.utils.TKPDMapParam;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -24,7 +25,7 @@ public class FlightCheckVoucherCodeDataSourceCloud {
         this.flightApi = flightApi;
     }
 
-    public Observable<AttributesVoucher> checkVoucherCode(TKPDMapParam<String, String> paramsAllValueInString) {
+    public Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString) {
         return flightApi.checkVoucherCode(paramsAllValueInString)
                 .flatMap(new Func1<Response<DataResponse<AttributesVoucher>>, Observable<AttributesVoucher>>() {
                     @Override

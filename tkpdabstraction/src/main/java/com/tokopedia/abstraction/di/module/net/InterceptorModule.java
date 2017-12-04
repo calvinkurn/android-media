@@ -3,11 +3,13 @@ package com.tokopedia.abstraction.di.module.net;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.di.qualifier.AuthKeyQualifier;
 import com.tokopedia.abstraction.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.utils.AuthUtil;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,19 +26,23 @@ public class InterceptorModule {
     TkpdAuthInterceptor provideTkpdAuthInterceptor(@AuthKeyQualifier String authKey,
                                                    Context context,
                                                    @FreshAccessTokenQualifier String freshAccessToken,
-                                                   AbstractionRouter abstractionRouter){
-        return new TkpdAuthInterceptor(authKey, context, freshAccessToken, abstractionRouter);
+                                                   AbstractionRouter abstractionRouter,
+                                                   UserSession userSession){
+        return new TkpdAuthInterceptor(authKey, context, freshAccessToken, abstractionRouter, userSession);
     }
 
     @AuthKeyQualifier
     @ApplicationScope
     @Provides
     String provideAuthKey(@ApplicationContext Context context){
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context).getAuthKey();
-        }else{
-            return "";
-        }
+        return AuthUtil.KEY.KEY_WSV4;
+    }
+
+
+    @ApplicationScope
+    @Provides
+    UserSession provideUserSession(AbstractionRouter abstractionRouter){
+        return abstractionRouter.getSession();
     }
 
     @ApplicationScope
@@ -52,11 +58,7 @@ public class InterceptorModule {
     @FreshAccessTokenQualifier
     @ApplicationScope
     @Provides
-    String provideFreshToken(@ApplicationContext Context context){
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context).getSession().getFreshToken();
-        }else{
-            return "";
-        }
+    String provideFreshToken(AbstractionRouter abstractionRouter){
+        return abstractionRouter.getSession().getFreshToken();
     }
 }
