@@ -54,6 +54,7 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     @Override
     public void searchAddress(String query) {
         addresses.clear();
+        getView().notifyUpdateAdapter();
         getView().updateRecommendation();
         lastPage = 0;
         getView().setInitialLoading();
@@ -99,6 +100,7 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
                     getView().hideLoading();
                     addresses.addAll(addressResponse.getAddresses());
                     hasNext = addressResponse.isNextAvailable();
+                    getView().notifyUpdateAdapter();
                     getView().updateRecommendation();
                 }
             }
@@ -121,6 +123,7 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     @Override
     public void clearData() {
         addresses.clear();
+        getView().notifyUpdateAdapter();
         getView().updateRecommendation();
     }
 
