@@ -18,35 +18,35 @@ import java.util.List;
  * @author anggaprasetiyo on 27/11/17.
  */
 
-public class TokoplusResponse {
+public class TokoPointResponse {
     private static final String KEY_DATA = "data";
     private static final String KEY_HEADER = "header";
     private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
 
     private JsonElement jsonElementData;
-    private TokoplusHeaderResponse tokoplusHeaderResponse;
+    private TokoPointHeaderResponse tokoPointHeaderResponse;
     private Object objData;
     private String strData;
     private String strResponse;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public static TokoplusResponse factory(String strResponse) throws IOException {
+    public static TokoPointResponse factory(String strResponse) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        TokoplusResponse tokoplusResponse = new TokoplusResponse();
+        TokoPointResponse tokoPointResponse = new TokoPointResponse();
         JsonElement jsonElement = new JsonParser().parse(strResponse);
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
         String strData;
 
-        TokoplusHeaderResponse tokoplusHeaderResponse = gson.fromJson(
-                jsonResponse.get(KEY_HEADER).getAsString(), TokoplusHeaderResponse.class
+        TokoPointHeaderResponse tokoPointHeaderResponse = gson.fromJson(
+                jsonResponse.get(KEY_HEADER).getAsString(), TokoPointHeaderResponse.class
         );
 
 
         if ((!jsonResponse.has(KEY_DATA) || jsonResponse.get(KEY_DATA).isJsonNull())
-                && (tokoplusHeaderResponse != null && tokoplusHeaderResponse.getErrorCode() != null
-                && tokoplusHeaderResponse.getMessage() != null)) {
-            if (!TextUtils.isEmpty(tokoplusHeaderResponse.getMessageFormatted()))
-                throw new ResponseErrorException(tokoplusHeaderResponse.getMessageFormatted());
+                && (tokoPointHeaderResponse != null && tokoPointHeaderResponse.getErrorCode() != null
+                && tokoPointHeaderResponse.getMessage() != null)) {
+            if (!TextUtils.isEmpty(tokoPointHeaderResponse.getMessageFormatted()))
+                throw new ResponseErrorException(tokoPointHeaderResponse.getMessageFormatted());
             else
                 throw new ResponseErrorException();
         } else if (jsonResponse.has(KEY_DATA) && jsonResponse.get(KEY_DATA).isJsonObject()) {
@@ -56,11 +56,11 @@ public class TokoplusResponse {
         } else {
             throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
         }
-        tokoplusResponse.setJsonElementData(jsonResponse.get(KEY_DATA));
-        tokoplusResponse.setStrData(strData);
-        tokoplusResponse.setTokoplusHeaderResponse(tokoplusHeaderResponse);
-        tokoplusResponse.setStrResponse(strResponse);
-        return tokoplusResponse;
+        tokoPointResponse.setJsonElementData(jsonResponse.get(KEY_DATA));
+        tokoPointResponse.setStrData(strData);
+        tokoPointResponse.setTokoPointHeaderResponse(tokoPointHeaderResponse);
+        tokoPointResponse.setStrResponse(strResponse);
+        return tokoPointResponse;
     }
 
     public JsonElement getJsonElementData() {
@@ -71,12 +71,12 @@ public class TokoplusResponse {
         this.jsonElementData = jsonElementData;
     }
 
-    public TokoplusHeaderResponse getTokoplusHeaderResponse() {
-        return tokoplusHeaderResponse;
+    public TokoPointHeaderResponse getTokoPointHeaderResponse() {
+        return tokoPointHeaderResponse;
     }
 
-    public void setTokoplusHeaderResponse(TokoplusHeaderResponse tokoplusHeaderResponse) {
-        this.tokoplusHeaderResponse = tokoplusHeaderResponse;
+    public void setTokoPointHeaderResponse(TokoPointHeaderResponse tokoPointHeaderResponse) {
+        this.tokoPointHeaderResponse = tokoPointHeaderResponse;
     }
 
     public Object getObjData() {

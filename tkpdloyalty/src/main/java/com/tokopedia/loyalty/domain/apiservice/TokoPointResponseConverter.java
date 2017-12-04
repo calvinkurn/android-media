@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.domain.apiservice;
 
-import com.tokopedia.loyalty.domain.entity.response.TokoplusResponse;
+import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -16,18 +16,18 @@ import retrofit2.Retrofit;
  * @author anggaprasetiyo on 29/11/17.
  */
 
-public class TokoplusResponseConverter extends Converter.Factory {
+public class TokoPointResponseConverter extends Converter.Factory {
     private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type,
                                                             Annotation[] annotations,
                                                             Retrofit retrofit) {
-        if (TokoplusResponse.class == type) {
-            return new Converter<ResponseBody, TokoplusResponse>() {
+        if (TokoPointResponse.class == type) {
+            return new Converter<ResponseBody, TokoPointResponse>() {
                 @Override
-                public TokoplusResponse convert(ResponseBody value) throws IOException {
-                    return TokoplusResponse.factory(value.string());
+                public TokoPointResponse convert(ResponseBody value) throws IOException {
+                    return TokoPointResponse.factory(value.string());
                 }
             };
         }
@@ -39,10 +39,10 @@ public class TokoplusResponseConverter extends Converter.Factory {
                                                           Annotation[] parameterAnnotations,
                                                           Annotation[] methodAnnotations,
                                                           Retrofit retrofit) {
-        if (TokoplusResponse.class == type) {
-            return new Converter<TokoplusResponse, RequestBody>() {
+        if (TokoPointResponse.class == type) {
+            return new Converter<TokoPointResponse, RequestBody>() {
                 @Override
-                public RequestBody convert(TokoplusResponse value) throws IOException {
+                public RequestBody convert(TokoPointResponse value) throws IOException {
                     return RequestBody.create(MEDIA_TYPE, value.getStrResponse());
                 }
             };
@@ -50,7 +50,7 @@ public class TokoplusResponseConverter extends Converter.Factory {
         return null;
     }
 
-    public static TokoplusResponseConverter create() {
-        return new TokoplusResponseConverter();
+    public static TokoPointResponseConverter create() {
+        return new TokoPointResponseConverter();
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.di.module;
 
 import com.tokopedia.loyalty.di.LoyaltyScope;
-import com.tokopedia.loyalty.domain.repository.TokoplusRepository;
+import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.interactor.PromoCouponInteractor;
 import com.tokopedia.loyalty.view.presenter.IPromoCouponPresenter;
@@ -33,7 +33,7 @@ public class PromoCouponViewModule {
     @Provides
     @LoyaltyScope
     IPromoCouponInteractor provideIPromoCouponInteractor(CompositeSubscription compositeSubscription,
-                                                         TokoplusRepository loyaltyRepository) {
+                                                         TokoPointRepository loyaltyRepository) {
         return new PromoCouponInteractor(compositeSubscription, loyaltyRepository);
     }
 

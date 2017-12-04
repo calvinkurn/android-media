@@ -12,28 +12,28 @@ import retrofit2.Retrofit;
  */
 
 public class
-TokoplusService extends BaseService<TokoplusApi> {
+TokoPointService extends BaseService<TokoPointApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {
-        api = retrofit.create(TokoplusApi.class);
+        api = retrofit.create(TokoPointApi.class);
     }
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.TOKOPLUS_API_DOMAIN + TkpdBaseURL.Tokoplus.VERSION; //TODO BASEURL + VERSION
+        return TkpdBaseURL.TOKOPOINT_API_DOMAIN + TkpdBaseURL.TokoPoint.VERSION; //TODO BASEURL + VERSION
     }
 
     @Override
-    public TokoplusApi getApi() {
+    public TokoPointApi getApi() {
         return api;
     }
 
     @Override
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {
-        return TokoplusRetrofitFactory.createRetrofitTokoplusConfig(processedBaseUrl)
+        return TokoPointRetrofitFactory.createRetrofitTokoPointConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientTokoplusAuth(TkpdBaseURL.Tokoplus.HMAC_KEY))
+                        .buildClientTokoplusAuth(TkpdBaseURL.TokoPoint.HMAC_KEY))
 
                 .build();
     }

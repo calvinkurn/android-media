@@ -12,9 +12,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author anggaprasetiyo on 29/11/17.
  */
 
-public class TokoplusRetrofitFactory {
+public class TokoPointRetrofitFactory {
 
-    public static Retrofit.Builder createRetrofitTokoplusConfig(String baseUrl) {
+    public static Retrofit.Builder createRetrofitTokoPointConfig(String baseUrl) {
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
@@ -23,7 +23,7 @@ public class TokoplusRetrofitFactory {
                 .create();
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(TokoplusResponseConverter.create())
+                .addConverterFactory(TokoPointResponseConverter.create())
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());

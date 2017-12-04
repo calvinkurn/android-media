@@ -3,7 +3,7 @@ package com.tokopedia.loyalty.view.interactor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
-import com.tokopedia.loyalty.domain.repository.ITokoplusRepository;
+import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.view.data.CouponData;
 
 import java.util.List;
@@ -21,11 +21,11 @@ import rx.subscriptions.CompositeSubscription;
 
 public class PromoCouponInteractor implements IPromoCouponInteractor {
     private final CompositeSubscription compositeSubscription;
-    private final ITokoplusRepository tokoplusRepository;
+    private final ITokoPointRepository tokoplusRepository;
 
     @Inject
     public PromoCouponInteractor(CompositeSubscription compositeSubscription,
-                                 ITokoplusRepository tokoplusRepository) {
+                                 ITokoPointRepository tokoplusRepository) {
         this.compositeSubscription = compositeSubscription;
         this.tokoplusRepository = tokoplusRepository;
     }

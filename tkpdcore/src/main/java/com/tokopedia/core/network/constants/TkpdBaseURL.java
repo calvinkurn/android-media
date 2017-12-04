@@ -60,7 +60,7 @@ public class TkpdBaseURL {
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
-    public static String TOKOPLUS_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
+    public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -903,7 +903,7 @@ public class TkpdBaseURL {
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
     }
 
-    public class Tokoplus {
+    public class TokoPoint {
         public static final String VERSION = "v1/";
         public static final String HMAC_KEY = "web_service_v4";
 

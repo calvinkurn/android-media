@@ -10,7 +10,7 @@ import java.util.List;
  * @author anggaprasetiyo on 27/11/17.
  */
 
-public class TokoplusHeaderResponse {
+public class TokoPointHeaderResponse {
 
     @SerializedName("process_time")
     @Expose

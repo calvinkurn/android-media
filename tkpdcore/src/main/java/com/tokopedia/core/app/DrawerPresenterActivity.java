@@ -115,7 +115,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.getProfile();
     }
 
-    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler){
+    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {
         drawerDataManager.getUserAttributes(sessionHandler);
     }
 
@@ -164,10 +164,15 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             if (!GlobalConfig.isSellerApp()) {
                 getDrawerTopPoints();
                 getDrawerTokoCash();
+                getTokoPointData();
                 getProfileCompletion();
                 getDrawerUserAttrUseCase(sessionHandler);
             }
         }
+    }
+
+    private void getTokoPointData() {
+        sendBroadcast(new Intent("com.tokopedia.loyalty.ACTION_GET_DRAWER_TOKOPOINT"));
     }
 
     @Override

@@ -1,11 +1,13 @@
 package com.tokopedia.loyalty.domain.repository;
 
+import com.tokopedia.core.drawer2.data.viewmodel.TopPointDrawerData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.loyalty.domain.apiservice.TokoplusService;
+import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
-import com.tokopedia.loyalty.domain.entity.response.TokoplusResponse;
+import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.view.data.CouponData;
 
 import java.util.List;
@@ -20,25 +22,25 @@ import rx.functions.Func1;
  * @author anggaprasetiyo on 27/11/17.
  */
 
-public class TokoplusRepository implements ITokoplusRepository {
+public class TokoPointRepository implements ITokoPointRepository {
 
-    private final TokoplusService tokoplusService;
-    private final TokoplusResponseMapper tokoplusResponseMapper;
+    private final TokoPointService tokoPointService;
+    private final TokoPointResponseMapper tokoPointResponseMapper;
 
     @Inject
-    public TokoplusRepository(TokoplusService tokoplusService,
-                              TokoplusResponseMapper tokoplusResponseMapper) {
-        this.tokoplusService = tokoplusService;
-        this.tokoplusResponseMapper = tokoplusResponseMapper;
+    public TokoPointRepository(TokoPointService tokoPointService,
+                               TokoPointResponseMapper tokoPointResponseMapper) {
+        this.tokoPointService = tokoPointService;
+        this.tokoPointResponseMapper = tokoPointResponseMapper;
     }
 
     @Override
     public Observable<List<CouponData>> getCouponList(TKPDMapParam<String, String> param) {
-        return tokoplusService.getApi().getCouponList(param)
-                .map(new Func1<Response<TokoplusResponse>, List<CouponData>>() {
+        return tokoPointService.getApi().getCouponList(param)
+                .map(new Func1<Response<TokoPointResponse>, List<CouponData>>() {
                     @Override
-                    public List<CouponData> call(Response<TokoplusResponse> tokoplusResponseResponse) {
-                        return tokoplusResponseMapper.convertCouponListData(
+                    public List<CouponData> call(Response<TokoPointResponse> tokoplusResponseResponse) {
+                        return tokoPointResponseMapper.convertCouponListData(
                                 tokoplusResponseResponse.body().convertDataObj(
                                         CouponListDataResponse.class
                                 )
@@ -68,8 +70,18 @@ public class TokoplusRepository implements ITokoplusRepository {
     }
 
     @Override
-    public Observable<String> getPointDrawer(TKPDMapParam<String, String> param) {
-        return null;
+    public Observable<TopPointDrawerData> getPointDrawer(TKPDMapParam<String, String> param) {
+        return tokoPointService.getApi().getPointDrawer(param).map(
+                new Func1<Response<TokoPointResponse>, TopPointDrawerData>() {
+                    @Override
+                    public TopPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
+                        return tokoPointResponseMapper.convertTokoplusPointDrawer(
+                                tokoplusResponseResponse.body().convertDataObj(
+                                        TokoPointDrawerDataResponse.class
+                                )
+                        );
+                    }
+                });
     }
 
     @Override
