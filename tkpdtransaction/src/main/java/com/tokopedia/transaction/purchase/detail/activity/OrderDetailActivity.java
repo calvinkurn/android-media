@@ -308,6 +308,7 @@ public class OrderDetailActivity extends TActivity
             CancelOrderFragment cancelOrderFragment = CancelOrderFragment
                     .createFragment(data.getOrderId());
             getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, cancelOrderFragment, VALIDATION_FRAGMENT_TAG)
                     .commit();
         }
@@ -319,6 +320,7 @@ public class OrderDetailActivity extends TActivity
             CancelSearchFragment cancelSearchFragment = CancelSearchFragment
                     .createFragment(data.getOrderId());
             getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, cancelSearchFragment, VALIDATION_FRAGMENT_TAG)
                     .commit();
         }
@@ -444,13 +446,13 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void cancelOrder(String orderId, String notes) {
-        //Toast.makeText(this, "Order Id: " + orderId + "Notes: " + notes, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Order Id: " + orderId + "Notes: " + notes, Toast.LENGTH_LONG).show();
         presenter.cancelOrder(this, orderId, notes);
     }
 
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
-        //Toast.makeText(this, "Order Id: " + orderId + "Reason Id: " + String.valueOf(reasonId) + "Notes: " + notes, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Order Id: " + orderId + "Reason Id: " + String.valueOf(reasonId) + "Notes: " + notes, Toast.LENGTH_LONG).show();
         presenter.cancelReplacement(this, orderId, reasonId, notes);
     }
 

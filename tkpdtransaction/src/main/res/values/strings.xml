@@ -153,7 +153,7 @@
     <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
     <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>
     <string name="title_replacement_reason_2">Pencarian toko pengganti memakan waktu yang lama</string>
-    <string name="title_replacement_reason_3">Saya sudah menemuka barang dari toko lain</string>
+    <string name="title_replacement_reason_3">Saya sudah menemukan barang dari toko lain</string>
     <string name="title_replacement_other_reason">Lainnya</string>
     <string name="error_replacement_reason">Mohon Pilih Alasan Pembatalan</string>
 </resources>

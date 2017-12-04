@@ -63,6 +63,7 @@ public class CancelOrderFragment extends TkpdFragment{
         cancelOrderConfirmButton.setOnClickListener(
                 onConfirmCancelOrderButton(cancelOrderNotesField, textInputLayout)
         );
+        cancelOrderNotesField.requestFocus();
         return view;
     }
 
