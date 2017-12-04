@@ -349,7 +349,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public String getScreenName() {
+    public String getScreenNameId() {
         return AppScreen.SCREEN_SEARCH_PAGE_PRODUCT_TAB;
     }
 
@@ -680,7 +680,7 @@ public class ProductListFragment extends SearchSectionFragment
                 addPreFilteredCategory(preFilteredSc);
             }
             Intent intent = RevampedDynamicFilterActivity.createInstance(
-                    getActivity(), getScreenName(), getFlagFilterHelper()
+                    getActivity(), getScreenNameId(), getFlagFilterHelper()
             );
             startActivityForResult(intent, getFilterRequestCode());
             getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
@@ -702,5 +702,10 @@ public class ProductListFragment extends SearchSectionFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getScreenNameId();
     }
 }
