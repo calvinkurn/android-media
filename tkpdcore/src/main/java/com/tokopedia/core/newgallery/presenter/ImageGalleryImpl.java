@@ -85,15 +85,8 @@ public class ImageGalleryImpl implements ImageGallery {
         if (file == null) {
             return false;
         }
-//        Stopwatch stopwatch4 = Stopwatch.createStarted();
-        String name = file.getName();
-//        CommonUtils.dumper("GetItemAlbum checkFile -> "+name+ " -> "+stopwatch4);
 
-//        Stopwatch stopwatch5 = Stopwatch.createStarted();
-//        if (!file.isFile()) {
-//            return true;
-//        }
-//        CommonUtils.dumper("GetItemAlbum isFile -> "+name+ " -> "+stopwatch5);
+        String name = file.getName();
 
         if (name.startsWith(".") || file.length() == 0) {
             return false;
