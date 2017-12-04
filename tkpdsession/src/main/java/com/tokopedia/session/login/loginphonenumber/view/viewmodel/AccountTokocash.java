@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginphonenumber.viewmodel;
+package com.tokopedia.session.login.loginphonenumber.view.viewmodel;
 
 /**
  * @author by nisie on 12/4/17.

@@ -1,8 +1,8 @@
-package com.tokopedia.session.login.loginphonenumber.presenter;
+package com.tokopedia.session.login.loginphonenumber.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.session.login.loginphonenumber.viewlistener.ChooseTokocashAccount;
-import com.tokopedia.session.login.loginphonenumber.viewmodel.AccountTokocash;
+import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
+import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 
 import java.util.ArrayList;
 

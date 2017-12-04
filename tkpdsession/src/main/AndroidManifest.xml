@@ -74,19 +74,19 @@
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name=".login.loginphonenumber.activity.LoginPhoneNumberActivity"
+            android:name=".login.loginphonenumber.view.activity.LoginPhoneNumberActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name=".login.loginphonenumber.activity.ChooseTokocashAccountActivity"
+            android:name=".login.loginphonenumber.view.activity.ChooseTokocashAccountActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name=".login.loginphonenumber.activity.NotConnectedTokocashActivity"
+            android:name=".login.loginphonenumber.view.activity.NotConnectedTokocashActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>

@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginphonenumber.activity;
+package com.tokopedia.session.login.loginphonenumber.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.fragment.NotConnectedTokocashFragment;
+import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTokocashFragment;
 
 
 /**
@@ -30,6 +30,7 @@ public class NotConnectedTokocashActivity extends TActivity implements HasCompon
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);
         initView();
+
     }
 
     private void initView() {

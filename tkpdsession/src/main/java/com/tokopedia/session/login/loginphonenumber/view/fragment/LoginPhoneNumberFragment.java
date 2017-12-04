@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginphonenumber.fragment;
+package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,10 +21,10 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.centralizedotp.VerificationActivity;
 import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.activity.ChooseTokocashAccountActivity;
-import com.tokopedia.session.login.loginphonenumber.activity.NotConnectedTokocashActivity;
-import com.tokopedia.session.login.loginphonenumber.presenter.LoginPhoneNumberPresenter;
-import com.tokopedia.session.login.loginphonenumber.viewlistener.LoginPhoneNumber;
+import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
+import com.tokopedia.session.login.loginphonenumber.view.presenter.LoginPhoneNumberPresenter;
+import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
 
 import java.util.ArrayList;
 
@@ -40,6 +40,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     private static final int REQUEST_VERIFY_PHONE = 101;
     private static final int REQUEST_CHOOSE_ACCOUNT = 102;
     private static final int REQUEST_PHONE_NOT_CONNECTED = 103;
+    private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 104;
 
     EditText phoneNumber;
     TextView nextButton;
@@ -149,11 +150,11 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void goToPhoneNotConnectedTokocashPage() {
-        startActivityForResult(NotConnectedTokocashActivity.getPhoneNumberNotConnectedIntent(
+    public void goToNoTokocashAccountPage() {
+        startActivityForResult(NotConnectedTokocashActivity.getNoTokocashAccountIntent(
                 getActivity(),
                 phoneNumber.getText().toString()),
-                REQUEST_PHONE_NOT_CONNECTED);
+                REQUEST_NO_TOKOCASH_ACCOUNT);
     }
 
     private ArrayList<MethodItem> getListVerificationMethod() {

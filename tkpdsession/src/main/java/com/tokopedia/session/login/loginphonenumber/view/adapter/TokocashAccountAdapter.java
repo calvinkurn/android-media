@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginphonenumber.adapter;
+package com.tokopedia.session.login.loginphonenumber.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.viewlistener.ChooseTokocashAccount;
-import com.tokopedia.session.login.loginphonenumber.viewmodel.AccountTokocash;
+import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
+import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 
 import java.util.ArrayList;
 

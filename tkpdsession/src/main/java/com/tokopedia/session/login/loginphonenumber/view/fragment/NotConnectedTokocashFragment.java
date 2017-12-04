@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginphonenumber.fragment;
+package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,7 +23,7 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.centralizedotp.VerificationActivity;
 import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.activity.NotConnectedTokocashActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.session.activity.Login;
 
 import java.util.ArrayList;

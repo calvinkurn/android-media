@@ -1,6 +1,4 @@
-package com.tokopedia.session.login.loginphonenumber.viewlistener;
-
-import android.text.Editable;
+package com.tokopedia.session.login.loginphonenumber.view.viewlistener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -16,7 +14,7 @@ public interface LoginPhoneNumber {
 
         void goToVerifyAccountPage(String phoneNumber);
 
-        void goToPhoneNotConnectedTokocashPage();
+        void goToNoTokocashAccountPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

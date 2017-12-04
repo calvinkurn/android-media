@@ -68,7 +68,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
-import com.tokopedia.session.login.loginphonenumber.activity.LoginPhoneNumberActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.session.session.presenter.Login;
@@ -591,8 +591,8 @@ LoginFragment extends Fragment implements LoginView {
 
     private LoginProviderModel.ProvidersBean getLoginPhoneNumberBean() {
         LoginProviderModel.ProvidersBean phoneNumberBean = new LoginProviderModel.ProvidersBean();
-        phoneNumberBean.setColor("#FF00FF");
-        phoneNumberBean.setName("Phone Number");
+        phoneNumberBean.setColor("#FFFFFF");
+        phoneNumberBean.setName("Nomor Ponsel");
         phoneNumberBean.setId("tokocash");
         phoneNumberBean.setImage("https://ecs7.tokopedia.net/img/cache/100-square/usr-1/2015/3/30/2590134/pic_2590134_16109006-d6a4-11e4-a5e2-d9ac4908a8c2.jpg");
         return phoneNumberBean;

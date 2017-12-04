@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginphonenumber.fragment;
+package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -18,10 +18,10 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.adapter.TokocashAccountAdapter;
-import com.tokopedia.session.login.loginphonenumber.presenter.ChooseTokocashAccountPresenter;
-import com.tokopedia.session.login.loginphonenumber.viewlistener.ChooseTokocashAccount;
-import com.tokopedia.session.login.loginphonenumber.viewmodel.AccountTokocash;
+import com.tokopedia.session.login.loginphonenumber.view.adapter.TokocashAccountAdapter;
+import com.tokopedia.session.login.loginphonenumber.view.presenter.ChooseTokocashAccountPresenter;
+import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
+import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 import com.tokopedia.di.DaggerSessionComponent;
 
 import java.util.ArrayList;
