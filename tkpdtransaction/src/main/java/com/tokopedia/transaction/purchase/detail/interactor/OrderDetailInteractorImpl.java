@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.domain.OrderDetailRepository;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -48,6 +49,15 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor{
     @Override
     public void cancelOrder(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
         compositeSubscription.add(orderDetailRepository.requestCancelOrder(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void cancelReplacement(Subscriber<String> subscriber, TKPDMapParam<String, Object> params) {
+        compositeSubscription.add(orderDetailRepository.cancelReplacement(params)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

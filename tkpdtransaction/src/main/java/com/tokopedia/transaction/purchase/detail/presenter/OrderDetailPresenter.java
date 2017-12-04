@@ -47,11 +47,13 @@ public interface OrderDetailPresenter {
 
     void processRejectOrder(Context context, OrderDetailData data);
 
-    void onCancelSearch(Context context, OrderDetailData data);
+    void processCancelSearch(Context context, OrderDetailData data);
 
     void processFinish(Context context, String orderId);
 
     void cancelOrder(Context context, String orderId, String notes);
+
+    void cancelReplacement(Context context, String orderId, int reasonCode, String reasonText);
 
     void onDestroyed();
 

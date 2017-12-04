@@ -17,6 +17,8 @@ public interface IOrderDetailRepository {
 
     Observable<String> requestCancelOrder(TKPDMapParam<String, String> params);
 
+    Observable<String> cancelReplacement(TKPDMapParam<String, Object> params);
+
     Observable<String> confirmFinishDeliver(TKPDMapParam<String, String> params);
 
 

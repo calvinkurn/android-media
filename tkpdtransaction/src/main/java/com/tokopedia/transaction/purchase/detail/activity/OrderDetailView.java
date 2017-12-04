@@ -31,6 +31,8 @@ public interface OrderDetailView {
 
     void onRequestCancelOrder(OrderDetailData data);
 
+    void onCancelSearchReplacement(OrderDetailData data);
+
     void onSellerConfirmShipping(OrderDetailData data);
 
     void onAcceptOrder(OrderDetailData data);
@@ -41,7 +43,7 @@ public interface OrderDetailView {
 
     void onRejectOrder(OrderDetailData data);
 
-    void onCancelSearchPeluang(OrderDetailData data);
+    void onSearchCancelled(String message);
 
     void onChangeAwb(OrderDetailData data);
 

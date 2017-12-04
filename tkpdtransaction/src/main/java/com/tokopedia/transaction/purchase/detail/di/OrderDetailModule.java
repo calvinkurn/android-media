@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.di;
 
+import com.tokopedia.core.network.apiservices.replacement.ReplacementActService;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
@@ -47,6 +48,12 @@ public class OrderDetailModule {
 
     @Provides
     @OrderDetailScope
+    ReplacementActService provideReplacementService() {
+        return new ReplacementActService();
+    }
+
+    @Provides
+    @OrderDetailScope
     TXOrderActService provideTransactionActionOrderService() {
         return new TXOrderActService();
     }
@@ -57,6 +64,7 @@ public class OrderDetailModule {
         return new OrderDetailRepository(
                 provideOrderDetailMapper(),
                 provideOrderDetailService(),
+                provideReplacementService(),
                 provideTransactionActionOrderService());
     }
 

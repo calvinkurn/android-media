@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.domain.mapper;
 
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Data;
@@ -14,6 +16,8 @@ import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHi
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Response;
 
 /**
  * Created by kris on 11/23/17. Tokopedia
@@ -146,6 +150,28 @@ public class OrderDetailMapper {
                 throw new ResponseRuntimeException(response.getErrorList().get(0).getDetail());
             } else throw new ResponseRuntimeException("Terjadi Kesalahan");
         }
+    }
+
+    public String getConfirmDeliverMessage(Response<TkpdResponse> response) {
+        handleResponseError(response.body());
+        return response.body().getStatusMessageJoined();
+    }
+
+    public String getCancelReplacement(Response<TkpdResponse> response) {
+        handleResponseError(response.body());
+        return response.body().getStatusMessageJoined();
+    }
+
+    public String getSuccessCancelOrder(Response<TkpdResponse> response) {
+        handleResponseError(response.body());
+        return response.body().getStatusMessageJoined();
+    }
+
+    private void handleResponseError(TkpdResponse response) {
+        if(response == null)
+            throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        else if(response.isError())
+            throw new ResponseRuntimeException(response.getErrorMessageJoined());
     }
 
 }

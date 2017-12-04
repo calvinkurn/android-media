@@ -130,8 +130,8 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void onCancelSearch(Context context, OrderDetailData data) {
-        mainView.onCancelSearchPeluang(data);
+    public void processCancelSearch(Context context, OrderDetailData data) {
+        mainView.onCancelSearchReplacement(data);
     }
 
     @Override
@@ -139,7 +139,23 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         TKPDMapParam<String, String> cancelOrderParam = new TKPDMapParam<>();
         cancelOrderParam.put("order_id", orderId);
         cancelOrderParam.put("reason_cancel", notes);
-        orderDetailInteractor.cancelOrder(cancelOrderSubscriber(), cancelOrderParam);
+        orderDetailInteractor.cancelOrder(cancelOrderSubscriber(),
+                AuthUtil.generateParamsNetwork(context, cancelOrderParam));
+    }
+
+    @Override
+    public void cancelReplacement(Context context, String orderId,
+                                  int reasonCode,
+                                  String reasonText) {
+        TKPDMapParam<String, String> temporaryParam = new TKPDMapParam<>();
+        temporaryParam.put("order_id", orderId);
+        temporaryParam.put("reason", reasonText);
+        temporaryParam.put("user_id", SessionHandler.getLoginID(context));
+        temporaryParam = AuthUtil.generateParamsNetwork(context, temporaryParam);
+        TKPDMapParam<String, Object> params = new TKPDMapParam<>();
+        params.putAll(temporaryParam);
+        params.put("r_code", reasonCode);
+        orderDetailInteractor.cancelReplacement(cancelReplacementSubscriber(), params);
     }
 
     @Override
@@ -210,6 +226,25 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onNext(String s) {
                 mainView.onOrderFinished(s);
+            }
+        };
+    }
+
+    private Subscriber<String> cancelReplacementSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.showErrorSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.onSearchCancelled(s);
             }
         };
     }

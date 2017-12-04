@@ -36,7 +36,7 @@ public class CancelOrderFragment extends TkpdFragment{
         Bundle bundle = new Bundle();
         bundle.putString(orderId, ORDER_ID_ARGUMENT);
         fragment.setArguments(bundle);
-        return new CancelOrderFragment();
+        return fragment;
     }
 
     @Override

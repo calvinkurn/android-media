@@ -75,6 +75,15 @@ public class OrderDetailButtonLayout extends LinearLayout{
         complaint.setOnClickListener(onComplaint(context, presenter, data));
         switchVisibilty(complaint, buttonData.getComplaintVisibility());
 
+        Button requestCancel;
+        requestCancel = mainView.findViewById(R.id.request_cancel_button);
+        requestCancel.setOnClickListener(onRequestCancellation(context, presenter, data));
+        //switchVisibilty(requestCancel, buttonData.getRequestCancelVisibility());
+
+        Button cancelChance;
+        cancelChance = mainView.findViewById(R.id.cancel_chance);
+        cancelChance.setOnClickListener(onCancelSearch(context, presenter, data));
+        //switchVisibilty(cancelChance, buttonData.getCancelPeluangVisibility());
     }
 
     private void setSellerOrderDetailOption(Context context, OrderDetailPresenter presenter, OrderDetailData data) {
@@ -117,18 +126,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         rejectOrder = mainView.findViewById(R.id.reject_order_button);
         rejectOrder.setOnClickListener(onRejectOrder(context, presenter, data));
         switchVisibilty(rejectOrder, buttonData.getRejectOrderVisibility());
-
-        Button requestCancel;
-        requestCancel = mainView.findViewById(R.id.request_cancel_button);
-        requestCancel.setOnClickListener(onRequestCancellation(context, presenter, data));
-        switchVisibilty(requestCancel, 1);
-        //TODO release later
-        //switchVisibilty(requestCancel, buttonData.getRequestCancelVisibility());
-
-        Button cancelChance;
-        cancelChance = mainView.findViewById(R.id.cancel_chance);
-        cancelChance.setOnClickListener(onCancelSearch(context, presenter, data));
-        switchVisibilty(cancelChance, buttonData.getCancelPeluangVisibility());
 
         Button viewComplaint = mainView.findViewById(R.id.view_complaint_button);
         viewComplaint.setOnClickListener(onViewComplaintClicked(context, presenter, data));
@@ -284,7 +281,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onCancelSearch(context, data);
+                presenter.processCancelSearch(context, data);
             }
         };
     }

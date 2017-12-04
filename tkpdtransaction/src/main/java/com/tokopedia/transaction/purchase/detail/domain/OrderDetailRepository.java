@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.domain;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.network.apiservices.replacement.ReplacementActService;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -9,8 +10,6 @@ import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
-import com.tokopedia.transaction.purchase.detail.model.history.response.OrderHistoryResponse;
-import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -26,13 +25,17 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
     private OrderDetailService service;
 
+    private ReplacementActService replacementService;
+
     private TXOrderActService orderActService;
 
     public OrderDetailRepository(OrderDetailMapper mapper,
                                  OrderDetailService service,
+                                 ReplacementActService replacementService,
                                  TXOrderActService orderActService) {
         this.mapper = mapper;
         this.service = service;
+        this.replacementService = replacementService;
         this.orderActService = orderActService;
     }
 
@@ -55,7 +58,18 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         return orderActService.getApi().requestCancelOrder(params).map(new Func1<Response<TkpdResponse>, String>() {
             @Override
             public String call(Response<TkpdResponse> tkpdResponseResponse) {
-                return getSuccessCancelOrder(tkpdResponseResponse);
+                return mapper.getSuccessCancelOrder(tkpdResponseResponse);
+            }
+        });
+    }
+
+    @Override
+    public Observable<String> cancelReplacement(TKPDMapParam<String, Object> params) {
+        return replacementService.getApi().cancelReplacement(params)
+                .map(new Func1<Response<TkpdResponse>, String>() {
+            @Override
+            public String call(Response<TkpdResponse> tkpdResponseResponse) {
+                return mapper.getCancelReplacement(tkpdResponseResponse);
             }
         });
     }
@@ -65,17 +79,9 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         return orderActService.getApi().deliveryFinishOrder(params).map(new Func1<Response<TkpdResponse>, String>() {
             @Override
             public String call(Response<TkpdResponse> response) {
-                return getConfirmDeliverMessage(response);
+                return mapper.getConfirmDeliverMessage(response);
             }
         });
-    }
-
-    private String getConfirmDeliverMessage(Response<TkpdResponse> response) {
-        return response.body().getStatusMessageJoined();
-    }
-
-    private String getSuccessCancelOrder(Response<TkpdResponse> response) {
-        return response.body().getStatusMessageJoined();
     }
 
     private void validateData(TkpdResponse response) {

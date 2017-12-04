@@ -32,6 +32,7 @@ import com.tokopedia.transaction.purchase.detail.di.OrderDetailComponent;
 import com.tokopedia.transaction.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 
@@ -44,7 +45,9 @@ import javax.inject.Inject;
 public class OrderDetailActivity extends TActivity
         implements OrderDetailView,
         FinishOrderDialog.FinishOrderDialogListener,
-        ComplaintDialog.ComplaintDialogListener, CancelOrderFragment.CancelOrderListener {
+        ComplaintDialog.ComplaintDialogListener,
+        CancelOrderFragment.CancelOrderListener,
+        CancelSearchFragment.CancelSearchReplacementListener {
 
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
@@ -312,6 +315,17 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void onCancelSearchReplacement(OrderDetailData data) {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            CancelSearchFragment cancelSearchFragment = CancelSearchFragment
+                    .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .add(R.id.main_view, cancelSearchFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
+    }
+
+    @Override
     public void onSellerConfirmShipping(OrderDetailData data) {
         //TODO Bundle important things here, dont put entire model in the bundle!!
     }
@@ -337,13 +351,14 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onCancelSearchPeluang(OrderDetailData data) {
+    public void onChangeAwb(OrderDetailData data) {
         //TODO Bundle important things here, dont put entire model in the bundle!!
     }
 
     @Override
-    public void onChangeAwb(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+    public void onSearchCancelled(String message) {
+        getFragmentManager().beginTransaction().remove(getFragmentManager()
+                .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
     }
 
     @Override
@@ -420,7 +435,14 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void cancelOrder(String orderId, String notes) {
-        presenter.cancelOrder(this, orderId, notes);
+        Toast.makeText(this, "Order Id: " + orderId + "Notes: " + notes, Toast.LENGTH_LONG).show();
+        //presenter.cancelOrder(this, orderId, notes);
+    }
+
+    @Override
+    public void cancelSearch(String orderId, int reasonId, String notes) {
+        Toast.makeText(this, "Order Id: " + orderId + "Reason Id: " + String.valueOf(reasonId) + "Notes: " + notes, Toast.LENGTH_LONG).show();
+        //presenter.cancelReplacement(this, orderId, reasonId, notes);
     }
 
     @Override

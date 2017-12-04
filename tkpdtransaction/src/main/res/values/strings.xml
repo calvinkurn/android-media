@@ -11,6 +11,7 @@
     <string name="label_error_request_cancel_order_reason_empty">Alasan pembatalan harus diisi</string>
     <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
     <string name="title_look">Lihat</string>
+    <string name="title_save">Simpan</string>
     <string name="title_status">Status</string>
     <string name="toko_cash_info">TokoCash</string>
 
@@ -149,4 +150,10 @@
     <string name="button_order_detail_cancel_chance">Batalkan Peluang</string>
     <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
     <string name="label_explanation">Keterangan</string>
+    <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
+    <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>
+    <string name="title_replacement_reason_2">Pencarian toko pengganti memakan waktu yang lama</string>
+    <string name="title_replacement_reason_3">Saya sudah menemuka barang dari toko lain</string>
+    <string name="title_replacement_other_reason">Lainnya</string>
+    <string name="error_replacement_reason">Mohon Pilih Alasan Pembatalan</string>
 </resources>

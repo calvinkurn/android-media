@@ -18,5 +18,7 @@ public interface OrderDetailInteractor {
 
     void cancelOrder(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
 
+    void cancelReplacement(Subscriber<String> subscriber, TKPDMapParam<String, Object> params);
+
     void onActivityClosed();
 }
