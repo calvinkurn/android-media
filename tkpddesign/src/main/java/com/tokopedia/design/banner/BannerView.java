@@ -36,7 +36,8 @@ public class BannerView extends BaseCustomView {
     private ViewGroup bannerIndicator;
     private View bannerSeeAll;
     private BannerPagerAdapter bannerPagerAdapter;
-    private List<PromoItem> promoList;
+    private List<String> promoImageUrls;
+    private OnPromoClickListener onPromoClickListener;
 
     private ArrayList<ImageView> indicatorItems;
     private ArrayList<Boolean> impressionStatusList;
@@ -73,13 +74,12 @@ public class BannerView extends BaseCustomView {
         bannerSeeAll = view.findViewById(R.id.promo_link);
         indicatorItems = new ArrayList<>();
         impressionStatusList = new ArrayList<>();
-        promoList = new ArrayList<>();
+        promoImageUrls = new ArrayList<>();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
         bannerSeeAll.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,21 +102,19 @@ public class BannerView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setPromoList(List<PromoItem> promoList) {
-        this.promoList = promoList;
+    public void setPromoList(List<String> promoImageUrls) {
+        this.promoImageUrls = promoImageUrls;
     }
 
     public void buildView() {
         setVisibility(VISIBLE);
-
         resetImpressionStatus();
 
         bannerIndicator.setVisibility(VISIBLE);
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
 
-
-        BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoList);
+        BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoImageUrls,onPromoClickListener);
 
         bannerRecyclerView.setHasFixedSize(true);
         indicatorItems.clear();
@@ -126,7 +124,7 @@ public class BannerView extends BaseCustomView {
         bannerRecyclerView.setLayoutManager(layoutManager);
         bannerRecyclerView.setAdapter(bannerPagerAdapter);
 
-        for (int count = 0; count < promoList.size(); count++) {
+        for (int count = 0; count < promoImageUrls.size(); count++) {
             ImageView pointView = new ImageView(getContext());
             pointView.setPadding(5, 0, 5, 0);
             if (count == 0) {
@@ -158,7 +156,7 @@ public class BannerView extends BaseCustomView {
 
         });
 
-        if (promoList.size() == 1) {
+        if (promoImageUrls.size() == 1) {
             bannerIndicator.setVisibility(View.GONE);
         }
 
@@ -218,7 +216,7 @@ public class BannerView extends BaseCustomView {
 
     public void resetImpressionStatus() {
         impressionStatusList.clear();
-        for (int i = 0; i < promoList.size(); i++) {
+        for (int i = 0; i < promoImageUrls.size(); i++) {
             impressionStatusList.add(false);
         }
     }
@@ -273,90 +271,16 @@ public class BannerView extends BaseCustomView {
         startAutoScrollBanner();
     }
 
-    public static class PromoItem implements Parcelable {
-        public String imgUrl;
-        public String promoUrl;
-        public String promoId;
-        public String promoTitle;
-        private String promoApplink;
-
-        public String getImgUrl() {
-            return imgUrl;
-        }
-
-        public void setImgUrl(String imgUrl) {
-            this.imgUrl = imgUrl;
-        }
-
-        public String getPromoUrl() {
-            return promoUrl;
-        }
-
-        public void setPromoUrl(String promoUrl) {
-            this.promoUrl = promoUrl;
-        }
-
-        public String getPromoId() {
-            return promoId;
-        }
-
-        public void setPromoId(String promoId) {
-            this.promoId = promoId;
-        }
-
-        public String getPromoTitle() {
-            return promoTitle;
-        }
-
-        public void setPromoTitle(String promoTitle) {
-            this.promoTitle = promoTitle;
-        }
-
-        public PromoItem() {
-        }
-
-        public void setPromoApplink(String promoApplink) {
-            this.promoApplink = promoApplink;
-        }
-
-        public String getPromoApplink() {
-            return promoApplink;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.imgUrl);
-            dest.writeString(this.promoUrl);
-            dest.writeString(this.promoId);
-            dest.writeString(this.promoTitle);
-            dest.writeString(this.promoApplink);
-        }
-
-        protected PromoItem(Parcel in) {
-            this.imgUrl = in.readString();
-            this.promoUrl = in.readString();
-            this.promoId = in.readString();
-            this.promoTitle = in.readString();
-            this.promoApplink = in.readString();
-        }
-
-        public static final Creator<PromoItem> CREATOR = new Creator<PromoItem>() {
-            @Override
-            public PromoItem createFromParcel(Parcel source) {
-                return new PromoItem(source);
-            }
-
-            @Override
-            public PromoItem[] newArray(int size) {
-                return new PromoItem[size];
-            }
-        };
+    public interface OnPromoClickListener {
+        void onPromoClick(int position);
     }
 
+    public OnPromoClickListener getOnPromoClickListener() {
+        return onPromoClickListener;
+    }
+
+    public void setOnPromoClickListener(OnPromoClickListener onPromoClickListener) {
+        this.onPromoClickListener = onPromoClickListener;
+    }
 }
 
