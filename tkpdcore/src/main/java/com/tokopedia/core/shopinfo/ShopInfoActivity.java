@@ -18,6 +18,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -34,10 +35,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -638,6 +637,7 @@ public class ShopInfoActivity extends BaseActivity
         if (shopModel.info.shopIsOfficial == 1) {
             ScreenTracking.eventOfficialStoreScreenAuth(shopModel.info.shopId, AppScreen.SCREEN_OFFICIAL_STORE);
         }
+        swipeAble(true);
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
@@ -1045,4 +1045,26 @@ public class ShopInfoActivity extends BaseActivity
             super.onBackPressed();
         }
     }
+
+    public void swipeAble(boolean able) {
+        final boolean swipeAble = able;
+        if (holder != null && holder.pager != null) {
+            holder.pager.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getActionMasked()) {
+                        case MotionEvent.ACTION_MOVE:
+                            return swipeAble;
+                        case MotionEvent.ACTION_DOWN:
+                            return false;
+                        case MotionEvent.ACTION_UP:
+                            return false;
+                        default:
+                            return false;
+                    }
+                }
+            });
+        }
+    }
+
 }
