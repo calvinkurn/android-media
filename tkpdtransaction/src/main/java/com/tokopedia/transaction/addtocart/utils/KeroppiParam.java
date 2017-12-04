@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.addtocart.utils;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.transaction.addtocart.model.OrderData;
@@ -7,6 +9,8 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
+
+import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 11/18/16.
@@ -50,10 +54,20 @@ public class KeroppiParam {
         params.put(UT, shop.getUt() + "");
         params.put(PRODUCT_INSURANCE, productDetail.getProductMustInsurance() == 1 ? "1" : "0");
         params.put(INSURANCE, "1");
-        params.put(ORDER_VALUE, "0");
+        params.put(ORDER_VALUE, getRawPrice(productDetail.getProductPrice()));
         params.put(CAT_ID, productDetail.getProductCatId());
 
+
+        Log.e("PARAMS__", "paramsKero");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            Log.e(entry.getKey(), entry.getValue());
+        }
+
         return params;
+    }
+
+    private static String getRawPrice(String formattedPrice){
+        return formattedPrice.replace("Rp ","").replace(".","");
     }
 
     public static TKPDMapParam<String, String> paramsKeroOrderData(OrderData orderData) {

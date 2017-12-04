@@ -64,6 +64,7 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenter;
 import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
+import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -632,6 +633,17 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (product.getShipperProductName().equals(getString(R.string.atc_selection_shipment_package_info))) {
             imgInsuranceInfo.setVisibility(View.GONE);
         } else {
+            if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
+                spInsurance.setEnabled(false);
+                spInsurance.setSelection(0);
+            } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
+                spInsurance.setEnabled(false);
+                spInsurance.setSelection(1);
+            } else {
+                spInsurance.setEnabled(true);
+                spInsurance.setSelection(1);
+            }
+
             if (product.getInsuranceUsedInfo() != null && product.getInsuranceUsedInfo().length() > 0) {
                 insuranceInfo = product.getInsuranceUsedInfo();
                 imgInsuranceInfo.setVisibility(View.VISIBLE);

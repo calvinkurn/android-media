@@ -81,6 +81,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.cart.activity.InsuranceTacActivity;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
@@ -715,16 +716,16 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     private void setInsuranceTacVisibility(CartCourierPrices cartCourierPrices) {
         Log.e("TOS_VISIBILITY_A", String.valueOf(hasLogisticInsurance));
-        Log.e("TOS_VISIBILITY_B", String.valueOf(cartCourierPrices.getInsuranceMode() == CartCourierPrices.MUST_INSURANCE));
-        Log.e("TOS_VISIBILITY_C", String.valueOf(cartCourierPrices.getInsuranceMode() == CartCourierPrices.USE_INSURANCE));
+        Log.e("TOS_VISIBILITY_B", String.valueOf(cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST));
+        Log.e("TOS_VISIBILITY_C", String.valueOf(cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL));
         Log.e("TOS_VISIBILITY_MODE", String.valueOf(cartCourierPrices.getInsuranceMode()));
         if (!hasLogisticInsurance &&
-                (cartCourierPrices.getInsuranceMode() == CartCourierPrices.MUST_INSURANCE ||
-                        cartCourierPrices.getInsuranceMode() == CartCourierPrices.USE_INSURANCE)) {
-            if (cartCourierPrices.getInsuranceUsedType() == CartCourierPrices.TOKOPEDIA_INSURANCE) {
+                (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST ||
+                        cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
+            if (cartCourierPrices.getInsuranceUsedType() == KeroppiConstants.InsuranceUsedType.TOKOPEDIA_INSURANCE) {
                 Log.e("TOS_VISIBILITY", "VISIBLE|A");
                 tvInsuranceTos.setVisibility(View.VISIBLE);
-            } else if (cartCourierPrices.getInsuranceUsedType() == CartCourierPrices.LOGISTIC_INSURANCE) {
+            } else if (cartCourierPrices.getInsuranceUsedType() == KeroppiConstants.InsuranceUsedType.LOGISTIC_INSURANCE) {
                 Log.e("TOS_VISIBILITY", "GONE|B");
                 tvInsuranceTos.setVisibility(View.GONE);
                 hasLogisticInsurance = true;

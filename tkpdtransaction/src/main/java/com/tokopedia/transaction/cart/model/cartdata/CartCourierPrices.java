@@ -13,16 +13,6 @@ import java.util.List;
 
 public class CartCourierPrices {
 
-    public static final int USE_INSURANCE = 1;
-
-    public static final int NO_INSURANCE = 2;
-
-    public static final int MUST_INSURANCE = 3;
-
-    public static final int LOGISTIC_INSURANCE = 1;
-
-    public static final int TOKOPEDIA_INSURANCE = 2;
-
     private int cartIndex;
 
     private int shipmentPrice = 0;
