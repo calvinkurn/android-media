@@ -28,6 +28,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.OfficialStoreProductAdapter;
 import com.tokopedia.core.shopinfo.listener.OsHomeFragmentView;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
@@ -223,6 +224,13 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
                 GetShopProductParam getShopProductParam = new GetShopProductParam();
                 getShopProductParam.setEtalaseId(PARAM_ALL);
                 mOfficialShopInteractionListener.OnProductListPageRedirected(getShopProductParam);
+            }
+        });
+
+        webView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                ((ShopInfoActivity) getActivity()).swipeAble(!hasFocus);
             }
         });
     }
