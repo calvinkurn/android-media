@@ -176,6 +176,12 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     @Override
     public void onSuccessCrop(String path){
         // save the new path
+        if (resultImageUrls == null) {
+            return;
+        }
+        if (imageIndex >= resultImageUrls.size()) {
+            imageIndex = resultImageUrls.size() - 1;
+        }
         resultImageUrls.set(imageIndex, path);
         addCroppedPath(path);
         imageIndex++;

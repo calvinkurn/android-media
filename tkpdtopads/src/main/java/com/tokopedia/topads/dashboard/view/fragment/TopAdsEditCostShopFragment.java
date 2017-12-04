@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -22,6 +21,14 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditShopPresent
 
 public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDetailEditShopPresenter, TopAdsDetailShopViewModel, Ad> {
 
+    public static Fragment createInstance(String shopId) {
+        Fragment fragment = new TopAdsEditCostShopFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected void initInjector() {
         super.initInjector();
@@ -35,6 +42,7 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
 
     @Override
     protected void onClickedNext() {
+        if (firstTimeCheck()) return;
         if(!isError()) {
             super.onClickedNext();
             if (detailAd != null) {
@@ -57,14 +65,6 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
     @Override
     protected void onSuggestionTitleUseClick() {
         titleSuggestionBid.setText(getString(R.string.static_suggestion_bid_recommendation));
-    }
-
-    public static Fragment createInstance(String shopId) {
-        Fragment fragment = new TopAdsEditCostShopFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopId);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     @Override

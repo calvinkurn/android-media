@@ -648,6 +648,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_my_product_seller">ULASAN PEMBELI</string>
     <string name="title_my_product">PRODUK SAYA</string>
     <string name="title_inbox_message">Pesan</string>
+    <string name="title_inbox_chat">Chat</string>
+    <string name="title_inbox_chat_all">CHAT</string>
     <string name="title_inbox_message_all">INBOX</string>
     <string name="title_inbox_sent">TERKIRIM</string>
     <string name="title_inbox_archive">ARSIP</string>
@@ -656,6 +658,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="message_undo_to_archive">Sukses memindahkan ke Arsip</string>
     <string name="message_undo_to_inbox">Sukses memindahkan ke Kotak Masuk</string>
     <string name="message_undo_to_trash">Sukses memindahkan ke Sampah</string>
+    <string name="option_organize">Atur</string>
     <string name="option_move_archive">Pindahkan ke Arsip</string>
     <string name="option_move_trash">Hapus</string>
     <string name="option_move_delete">Hapus Selamanya</string>
@@ -666,6 +669,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_between">Antara</string>
     <string name="item_all">Semua</string>
     <string name="item_unread">Belum Dibaca</string>
+    <string name="chat_edit_text">Tulis pesan ...</string>
 
     <!-- Strings related to inbox -->
 
@@ -1289,7 +1293,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_sender_city">Asal</string>
     <string name="title_receiver_city">Tujuan</string>
     <!--string related to Android PlayStore Review Dialog -->
-    <string name="label_find_own_product">Cari Produk Kamu</string>
+    <string name="label_find_own_product">Cari Produk </string>
     <string name="title_activity_buy_credit">BuyCredit</string>
     <!--string related to Security Question -->
     <string name="msg_security_question">Hi Toppers, Mohon kesediaannya menjawab pertanyaan berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
@@ -1881,6 +1885,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
+    <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="failed_create_ticket">Gagal membuat tiket</string>
     <string name="permission_camera">Kamera</string>
     <string name="permission_read_storage">Media penyimpanan</string>
@@ -2042,7 +2047,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_draft_list">Draft Produk</string>
     <string name="drawer_title_etalase_list">Etalase Toko</string>
     <string name="drawer_title_draft_product">Draft Produk</string>
-    <string name="drawer_title_inbox_message">Pesan</string>
+    <string name="drawer_title_inbox_message">Chat</string>
     <string name="drawer_title_inbox_discussion">Diskusi Produk</string>
     <string name="drawer_title_inbox_review">Ulasan</string>
     <string name="drawer_title_resolution_center">Pusat Resolusi</string>

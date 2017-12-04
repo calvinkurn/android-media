@@ -319,6 +319,7 @@ public class DrawerSellerHelper extends DrawerHelper
             closeDrawer();
         } else {
             Intent intent;
+            boolean isNeedToCloseActivity = true;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     UnifyTracking.eventDrawerSellerHome();
@@ -401,6 +402,7 @@ public class DrawerSellerHelper extends DrawerHelper
                         context.startActivity(intent);
                     }else{
                         showDialogActionGoToGMSubscribe();
+                        isNeedToCloseActivity = false;
                     }
                     break;
                 default:
@@ -408,7 +410,7 @@ public class DrawerSellerHelper extends DrawerHelper
             }
 
             if (selectedPosition != TkpdState.DrawerPosition.INDEX_HOME
-                    && item.getId() != TkpdState.DrawerPosition.LOGOUT) {
+                    && item.getId() != TkpdState.DrawerPosition.LOGOUT && isNeedToCloseActivity) {
                 context.finish();
             }
             closeDrawer();

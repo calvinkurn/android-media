@@ -190,7 +190,7 @@ public class PriceRangeInputView extends BaseCustomView {
         maxValueInput.setText(formatToRupiah(maxValue));
         minValueInput.setSelection(minValueInput.length());
         maxValueInput.setSelection(maxValueInput.length());
-        onValueChangedListener.onValueChanged(minValue, maxValue);
+        onValueChangedListener.onValueChanged(minValue, maxValue, minBound, maxBound);
         enableTextWatcher();
     }
 
@@ -368,6 +368,6 @@ public class PriceRangeInputView extends BaseCustomView {
     }
 
     public interface OnValueChangedListener {
-        void onValueChanged(int minValue, int maxValue);
+        void onValueChanged(int minValue, int maxValue, int minBound, int maxBound);
     }
 }
