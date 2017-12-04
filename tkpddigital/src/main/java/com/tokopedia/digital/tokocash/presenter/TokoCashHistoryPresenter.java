@@ -33,6 +33,34 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
     }
 
     @Override
+    public void getWaitingTransaction() {
+        page = 1;
+        interactor.getHistoryTokoCash(getWaitingTransacionSubscriber(), "pending", "", "", page);
+    }
+
+    private Subscriber<TokoCashHistoryData> getWaitingTransacionSubscriber() {
+        return new Subscriber<TokoCashHistoryData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideWaitingTransaction();
+            }
+
+            @Override
+            public void onNext(TokoCashHistoryData tokoCashHistoryData) {
+                if (tokoCashHistoryData.getItemHistoryList() != null)
+                    view.renderWaitingTransaction(tokoCashHistoryData);
+                else
+                    view.hideWaitingTransaction();
+            }
+        };
+    }
+
+    @Override
     public void getInitHistoryTokoCash(String type, String startDate, String endDate) {
         page = 1;
         interactor.getHistoryTokoCash(getTokoCashHistorySubscriber(), type, startDate, endDate, page);

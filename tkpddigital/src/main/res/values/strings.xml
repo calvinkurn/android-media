@@ -154,4 +154,7 @@
     <string name="tokocash_label_top_up">Top Up TokoCash</string>
     <string name="tokocash_label_balance">TokoCash Balance</string>
     <string name="tokocash_label_hold_balance">Dana Tertahan</string>
+
+    <string name="title_waiting_transaction_tokocash">Transaksi Menunggu</string>
+
 </resources>
