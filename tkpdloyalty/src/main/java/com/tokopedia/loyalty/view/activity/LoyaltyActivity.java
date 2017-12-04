@@ -58,7 +58,7 @@ public class LoyaltyActivity extends BasePresenterActivity implements HasCompone
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        this.isCouponActive = extras.getBoolean(EXTRA_COUPON_ACTIVE);
+        this.isCouponActive = true;
     }
 
     @Override

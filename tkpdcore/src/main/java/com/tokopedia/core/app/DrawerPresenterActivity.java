@@ -172,7 +172,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     private void getTokoPointData() {
-        sendBroadcast(new Intent("com.tokopedia.loyalty.ACTION_GET_DRAWER_TOKOPOINT"));
+        sendBroadcast(
+                new Intent(
+                        "com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver.ACTION_GET_DRAWER_TOKOPOINT"
+                )
+        );
     }
 
     @Override

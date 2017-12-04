@@ -10,10 +10,10 @@ import okhttp3.Response;
  * @author anggaprasetiyo on 29/11/17.
  */
 
-public class TokoplusAuthInterceptor extends TkpdAuthInterceptor {
-    private static final String TAG = TokoplusAuthInterceptor.class.getSimpleName();
+public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
+    private static final String TAG = TokoPointAuthInterceptor.class.getSimpleName();
 
-    public TokoplusAuthInterceptor(String hmacKey) {
+    public TokoPointAuthInterceptor(String hmacKey) {
         super(hmacKey);
     }
 
