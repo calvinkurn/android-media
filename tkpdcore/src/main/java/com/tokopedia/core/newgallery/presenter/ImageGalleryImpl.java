@@ -42,6 +42,8 @@ public class ImageGalleryImpl implements ImageGallery {
     private ArrayList<ImageModel> dataAlbum = new ArrayList<>();
 
     private Map<String, List<String>> data = new HashMap<>();
+    private boolean isGetItemAlbum = false;
+    private String tmpFolderPath = null;
 
     public ImageGalleryImpl(ImageGalleryView imageGalleryView){
         this.imageGalleryView = imageGalleryView;
@@ -66,8 +68,16 @@ public class ImageGalleryImpl implements ImageGallery {
 
     @Override
     public void getItemListAlbum(String folderPath) {
+        tmpFolderPath = folderPath;
         if (imageGalleryView != null) {
             List<String> pathFiles = data.get(folderPath);
+
+            if(pathFiles == null){
+                isGetItemAlbum = true;
+                fetchImageUsingDb();
+                return;
+            }
+
             ArrayList<ImageModel> imageModels = new ArrayList<>();
             for (String pathFile : pathFiles) {
                 imageModels.add(new ImageModel(null, pathFile, null));
@@ -147,6 +157,17 @@ public class ImageGalleryImpl implements ImageGallery {
                     @Override
                     public void onNext(List<FolderModel> folderModels) {
                         result.addAll(folderModels);
+                        if(isGetItemAlbum && tmpFolderPath != null && !tmpFolderPath.isEmpty()){
+                            List<String> pathFiles = data.get(tmpFolderPath);
+                            ArrayList<ImageModel> imageModels = new ArrayList<>();
+                            for (String pathFile : pathFiles) {
+                                imageModels.add(new ImageModel(null, pathFile, null));
+                            }
+                            imageGalleryView.retrieveItemData(imageModels);
+                            isGetItemAlbum = false;
+                            return;
+                        }
+
                         // this to support old code
                         if(imageGalleryView!=null){
                             imageGalleryView.loadData(folderModels);
