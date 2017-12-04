@@ -28,7 +28,7 @@ import java.nio.channels.FileChannel;
 public class WatermarkView extends View {
 
     public static final float TEXT_SIZE_MIN = 8; // dp
-    public static final float TEXT_SIZE_MAX = 28; // dp
+    public static final float TEXT_SIZE_MAX = 32; // dp
 
     public static final float PADDING_DEFAULT = 12; // dp
     public static final float WIDTH_MIN_FONT = 150; // dp
