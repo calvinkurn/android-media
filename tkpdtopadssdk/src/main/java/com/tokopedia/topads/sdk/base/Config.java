@@ -21,6 +21,7 @@ public class Config {
     private String clientId;
     private Endpoint endpoint;
     private boolean withPreferedCategory;
+    private boolean withMerlinCategory;
     private TopAdsParams topAdsParams;
     private DisplayMode displayMode;
 
@@ -31,13 +32,26 @@ public class Config {
         this.device = builder.device;
         this.clientId = builder.clientId;
         this.withPreferedCategory = builder.withPreferedCategory;
+        this.withMerlinCategory = builder.withMerlinCategory;
         this.endpoint = builder.endpoint;
         this.topAdsParams = builder.topAdsParams;
         this.displayMode = builder.displayMode;
     }
 
+    public void setWithPreferedCategory(boolean withPreferedCategory) {
+        this.withPreferedCategory = withPreferedCategory;
+    }
+
+    public void setWithMerlinCategory(boolean withMerlinCategory) {
+        this.withMerlinCategory = withMerlinCategory;
+    }
+
     public boolean isWithPreferedCategory() {
         return withPreferedCategory;
+    }
+
+    public boolean isWithMerlinCategory() {
+        return withMerlinCategory;
     }
 
     public String getBaseUrl() {
@@ -109,6 +123,7 @@ public class Config {
         private String clientId;
         private Endpoint endpoint;
         private boolean withPreferedCategory;
+        private boolean withMerlinCategory;
         private DisplayMode displayMode;
         private TopAdsParams topAdsParams = new TopAdsParams();
 
@@ -135,6 +150,11 @@ public class Config {
 
         public Builder withPreferedCategory() {
             this.withPreferedCategory = true;
+            return this;
+        }
+
+        public Builder withMerlinCategory() {
+            this.withMerlinCategory = true;
             return this;
         }
 

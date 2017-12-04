@@ -102,6 +102,7 @@ public class InboxTalkPresenterImpl implements InboxTalkPresenter {
     @Override
     public void unSubscribe() {
         facade.unSubscribe();
+        cacheInteractor.unsubscribe();
     }
 
     @Override

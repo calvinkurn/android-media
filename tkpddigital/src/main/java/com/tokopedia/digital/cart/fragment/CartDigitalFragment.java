@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -28,6 +27,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.voucher.VoucherCartView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
@@ -36,7 +36,6 @@ import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
 import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
-import com.tokopedia.digital.cart.compoundview.VoucherCartHolderView;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.domain.CartDigitalRepository;
@@ -67,7 +66,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
-        InputPriceHolderView.ActionListener, VoucherCartHolderView.ActionListener {
+        InputPriceHolderView.ActionListener, VoucherCartView.ActionListener {
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
@@ -86,7 +85,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @BindView(R2.id.item_cart_holder_view)
     ItemCartHolderView itemCartHolderView;
     @BindView(R2.id.voucher_cart_holder_view)
-    VoucherCartHolderView voucherCartHolderView;
+    VoucherCartView voucherCartHolderView;
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
     @BindView(R2.id.nsv_container)
@@ -657,7 +656,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onVoucherCheckButtonClicked() {
-        UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),getVoucherCode(),cartDigitalInfoDataState.getAttributes().getOperatorName());
+        UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(), getVoucherCode(), cartDigitalInfoDataState.getAttributes().getOperatorName());
         presenter.processCheckVoucher();
         KeyboardHandler.hideSoftKeyboard(getActivity());
     }
@@ -676,6 +675,21 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void disableVoucherDiscount() {
         this.voucherDigitalState = null;
         checkoutHolderView.disableVoucherDiscount();
+    }
+
+    @Override
+    public void trackingErrorVoucher(String errorMsg) {
+        UnifyTracking.eventVoucherError(errorMsg, "");
+    }
+
+    @Override
+    public void trackingSuccessVoucher(String voucherCode) {
+        UnifyTracking.eventVoucherSuccess(voucherCode, "");
+    }
+
+    @Override
+    public void trackingCancelledVoucher() {
+        UnifyTracking.eventClickCancelVoucher("", "");
     }
 
     @Override
