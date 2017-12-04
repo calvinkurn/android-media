@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
@@ -31,6 +32,7 @@ public class AppRatingDialog {
         AppRatingDialog appRatingDialog = new AppRatingDialog(activity);
         if(appRatingDialog.isDialogNeedToBeShown()) {
             appRatingDialog.buildAlertDialog().show();
+            UnifyTracking.eventAppRatingImpression();
         }
     }
 
@@ -59,12 +61,14 @@ public class AppRatingDialog {
                     public void onClick(DialogInterface dialog, int which) {
                         openPlayStore();
                         saveVersionCodeForState();
+                        UnifyTracking.eventClickAppRating();
                         dialog.dismiss();
                     }
                 })
                 .setNegativeButton(R.string.app_rating_button_later, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        UnifyTracking.eventCancelAppRating();
                         dialog.dismiss();
                     }
                 })

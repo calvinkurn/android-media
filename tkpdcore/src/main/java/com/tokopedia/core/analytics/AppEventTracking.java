@@ -150,6 +150,10 @@ public interface AppEventTracking {
         String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
+
+        String IMPRESSION_APP_RATING = "impressionAppRating";
+        String CLICK_APP_RATING = "clickAppRating";
+        String CANCEL_APP_RATING = "cancelAppRating";
     }
 
     interface Category {
@@ -249,6 +253,8 @@ public interface AppEventTracking {
         String HOMEPAGE_UNIFY = "homepage tab";
         String EVENT_TOP_NAV = "top nav";
         String CATEGORY_HOTLIST = "hotlist";
+
+        String APP_RATING = "Application Rating";
     }
 
     interface Action {
