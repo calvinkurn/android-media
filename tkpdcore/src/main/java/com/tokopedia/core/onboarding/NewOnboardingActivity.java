@@ -1,31 +1,21 @@
 package com.tokopedia.core.onboarding;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.onboarding.animation.BounceInterpolator;
 import com.tokopedia.core.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -34,7 +24,6 @@ import com.tokopedia.core.util.SessionHandler;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
 
 /**
  * Created by steven on 7/25/2017.
@@ -46,6 +35,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
     protected View bottom;
     private TextView skipView;
     private ImageButton nextView;
+    private int[] fragmentColor;
 
     @Override
     public void init(Bundle savedInstanceState) {
@@ -74,28 +64,34 @@ public class NewOnboardingActivity extends OnboardingActivity {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
+
+        fragmentColor = new int[] {R.color.green_nob,
+                R.color.blue_nob,
+                R.color.orange_nob,
+                R.color.green_nob,
+                R.color.blue_nob};
     }
 
     private void addSlides() {
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_1_title),
                 getString(R.string.nonb_1_desc), "onboarding1.json",
-                ContextCompat.getColor(getApplicationContext(), R.color.medium_green),
+                ContextCompat.getColor(getApplicationContext(), fragmentColor[0]),
                 OnBoardingFragment.VIEW_DEFAULT, 0));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_2_title),
                 getString(R.string.nonb_2_desc), "onboarding2.json",
-                ContextCompat.getColor(getApplicationContext(), R.color.light_blue_300),
+                ContextCompat.getColor(getApplicationContext(), fragmentColor[1]),
                 OnBoardingFragment.VIEW_DEFAULT, 1));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_3_title),
                 getString(R.string.nonb_3_desc), "onboarding3.json",
-                ContextCompat.getColor(getApplicationContext(), R.color.orange_300),
+                ContextCompat.getColor(getApplicationContext(), fragmentColor[2]),
                 OnBoardingFragment.VIEW_DEFAULT, 2));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_4_title),
                 getString(R.string.nonb_4_desc), "onboarding4.json",
-                ContextCompat.getColor(getApplicationContext(), R.color.medium_green),
+                ContextCompat.getColor(getApplicationContext(), fragmentColor[3]),
                 OnBoardingFragment.VIEW_DEFAULT, 3));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_5_title),
                 getString(R.string.nonb_5_desc), "onboarding5.json",
-                ContextCompat.getColor(getApplicationContext(), R.color.orange_300),
+                ContextCompat.getColor(getApplicationContext(), fragmentColor[4]),
                 OnBoardingFragment.VIEW_ENDING, 4));
     }
 

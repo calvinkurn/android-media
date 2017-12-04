@@ -67,7 +67,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     private TextView titleView;
     private int position;
     private String lottieAsset;
-    private View activtiyView;
 
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
@@ -99,7 +98,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((NewOnboardingActivity) (getActivity())).setNextResource();
-        activtiyView = getActivity().findViewById(R.id.main_view);
         animatorSet = new AnimatorSet();
 
         if (getArguments() != null && getArguments().size() != 0) {
@@ -163,8 +161,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             titleView.setTextColor(titleColor);
         }
 
-        Log.d("milhamj",title+"");
-
         descView.setText(description);
 
         i.setBackgroundResource(drawable);
@@ -172,8 +168,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             AnimationDrawable notifAnimation = (AnimationDrawable) i.getBackground();
             notifAnimation.start();
         }
-        main.setBackgroundColor(bgColor);
-        activtiyView.setBackgroundColor(bgColor);
+
         return v;
     }
 
@@ -193,12 +188,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             titleView.setTextColor(titleColor);
         }
 
-        Log.d("milhamj",title+"");
-
         descView.setText(description);
-
-        activtiyView.setBackgroundColor(bgColor);
-        main.setBackgroundColor(bgColor);
 
         login = (TextView) v.findViewById(R.id.button_login);
         login.setOnClickListener(new View.OnClickListener() {
