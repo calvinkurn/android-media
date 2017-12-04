@@ -31,6 +31,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -713,18 +714,26 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setInsuranceTacVisibility(CartCourierPrices cartCourierPrices) {
+        Log.e("TOS_VISIBILITY_A", String.valueOf(hasLogisticInsurance));
+        Log.e("TOS_VISIBILITY_B", String.valueOf(cartCourierPrices.getInsuranceMode() == CartCourierPrices.MUST_INSURANCE));
+        Log.e("TOS_VISIBILITY_C", String.valueOf(cartCourierPrices.getInsuranceMode() == CartCourierPrices.USE_INSURANCE));
+        Log.e("TOS_VISIBILITY_MODE", String.valueOf(cartCourierPrices.getInsuranceMode()));
         if (!hasLogisticInsurance &&
                 (cartCourierPrices.getInsuranceMode() == CartCourierPrices.MUST_INSURANCE ||
                         cartCourierPrices.getInsuranceMode() == CartCourierPrices.USE_INSURANCE)) {
             if (cartCourierPrices.getInsuranceUsedType() == CartCourierPrices.TOKOPEDIA_INSURANCE) {
+                Log.e("TOS_VISIBILITY", "VISIBLE|A");
                 tvInsuranceTos.setVisibility(View.VISIBLE);
             } else if (cartCourierPrices.getInsuranceUsedType() == CartCourierPrices.LOGISTIC_INSURANCE) {
+                Log.e("TOS_VISIBILITY", "GONE|B");
                 tvInsuranceTos.setVisibility(View.GONE);
                 hasLogisticInsurance = true;
             } else {
+                Log.e("TOS_VISIBILITY", "GONE|C");
                 tvInsuranceTos.setVisibility(View.GONE);
             }
         } else {
+            Log.e("TOS_VISIBILITY", "GONE|D");
             tvInsuranceTos.setVisibility(View.GONE);
         }
     }

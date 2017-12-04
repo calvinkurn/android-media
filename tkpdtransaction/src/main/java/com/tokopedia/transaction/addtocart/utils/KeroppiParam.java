@@ -51,6 +51,7 @@ public class KeroppiParam {
         params.put(PRODUCT_INSURANCE, productDetail.getProductMustInsurance() == 1 ? "1" : "0");
         params.put(INSURANCE, "1");
         params.put(ORDER_VALUE, "0");
+        params.put(CAT_ID, productDetail.getProductCatId());
 
         return params;
     }

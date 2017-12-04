@@ -352,8 +352,8 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
 
             @Override
             public void onNext(Response<TkpdResponse> response) {
+                Log.e("RES_ATC_G", response.body().getStrResponse());
                 if (!response.body().isError()) {
-                    Log.e("RES_ATC_G", response.body().getStrResponse());
                     TkpdResponse tkpdResponse = response.body();
                     if (!tkpdResponse.isNullData()) {
                         try {
