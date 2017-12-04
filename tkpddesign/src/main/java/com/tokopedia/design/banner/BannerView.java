@@ -35,18 +35,18 @@ public class BannerView extends BaseCustomView {
     private RecyclerView bannerRecyclerView;
     private ViewGroup bannerIndicator;
     private View bannerSeeAll;
-    private BannerPagerAdapter bannerPagerAdapter;
-    private List<String> promoImageUrls;
-    private OnPromoClickListener onPromoClickListener;
-
-    private ArrayList<ImageView> indicatorItems;
-    private ArrayList<Boolean> impressionStatusList;
-
-    private int currentPosition;
-
     private Handler bannerHandler;
     private Runnable runnableScrollBanner;
     private boolean autoScrollOnProgress;
+
+    private OnPromoClickListener onPromoClickListener;
+    private OnPromoScrolledListener onPromoScrolledListener;
+    private OnPromoAllClickListener onPromoAllClickListener;
+
+    private ArrayList<ImageView> indicatorItems;
+    private ArrayList<Boolean> impressionStatusList;
+    private List<String> promoImageUrls;
+    private int currentPosition;
 
     public BannerView(@NonNull Context context) {
         super(context);
@@ -63,6 +63,55 @@ public class BannerView extends BaseCustomView {
         init(attrs);
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        bannerSeeAll.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onPromoAllClickListener!=null) onPromoAllClickListener.onPromoAllClick();
+            }
+        });
+
+        invalidate();
+        requestLayout();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            setAutoScrollOnProgress(bundle.getBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS));
+            if (isAutoScrollOnProgress()) {
+                startAutoScrollBanner();
+            } else {
+                stopAutoScrollBanner();
+            }
+            state = bundle.getParcelable(SAVED);
+        }
+        super.onRestoreInstanceState(state);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SAVED, super.onSaveInstanceState());
+        bundle.putBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS, isAutoScrollOnProgress());
+        return bundle;
+    }
+
+    public interface OnPromoClickListener {
+        void onPromoClick(int position);
+    }
+
+    public interface OnPromoScrolledListener {
+        void onPromoScrolled(int position, boolean isCurrentPositionHasImpression);
+    }
+
+    public interface OnPromoAllClickListener {
+        void onPromoAllClick();
+    }
+
     private void init(AttributeSet attrs) {
         init();
     }
@@ -77,45 +126,14 @@ public class BannerView extends BaseCustomView {
         promoImageUrls = new ArrayList<>();
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        bannerSeeAll.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //TODO: banner tracking and click all
-                //UnifyTracking.eventClickViewAllPromo();
-
-
-
-               /* Intent intent = new Intent(getContext(), BannerWebView.class);
-                intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
-                intent.putExtra(BannerWebView.EXTRA_URL,
-                        TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
-                );
-                getContext().startActivity(intent);*/
-            }
-        });
-
-        invalidate();
-        requestLayout();
-    }
-
-    public void setPromoList(List<String> promoImageUrls) {
-        this.promoImageUrls = promoImageUrls;
-    }
-
     public void buildView() {
         setVisibility(VISIBLE);
         resetImpressionStatus();
-
         bannerIndicator.setVisibility(VISIBLE);
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
 
         BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoImageUrls,onPromoClickListener);
-
         bannerRecyclerView.setHasFixedSize(true);
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
@@ -143,7 +161,11 @@ public class BannerView extends BaseCustomView {
                 currentPosition =
                         ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                 setCurrentIndicator();
-                trackingImpression();
+                boolean isCurrentPositionHasImpression = isCurrentPositionHasImpression(currentPosition);
+                if (onPromoScrolledListener!=null) {
+                    onPromoScrolledListener.onPromoScrolled(currentPosition,isCurrentPositionHasImpression);
+                }
+                if (isCurrentPositionHasImpression) impressionStatusList.set(currentPosition, true);
             }
 
             @Override
@@ -155,7 +177,6 @@ public class BannerView extends BaseCustomView {
             }
 
         });
-
         if (promoImageUrls.size() == 1) {
             bannerIndicator.setVisibility(View.GONE);
         }
@@ -163,7 +184,6 @@ public class BannerView extends BaseCustomView {
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         bannerRecyclerView.setOnFlingListener(null);
         snapHelper.attachToRecyclerView(bannerRecyclerView);
-
         bannerHandler = new Handler();
         runnableScrollBanner = new Runnable() {
             @Override
@@ -177,23 +197,7 @@ public class BannerView extends BaseCustomView {
                 }
             }
         };
-
         startAutoScrollBanner();
-    }
-
-    private void trackingImpression() {
-        //TODO: banner tracking
-       /* if (!isCurrentPositionHasImpression(currentPosition)) {
-            impressionStatusList.set(currentPosition, true);
-
-            Promotion promotion = new Promotion();
-            promotion.setPromotionID(promoList.get(currentPosition).getPromoId());
-            promotion.setPromotionName(promoList.get(currentPosition).getPromoTitle());
-            promotion.setPromotionAlias(promoList.get(currentPosition).getPromoTitle());
-            promotion.setPromotionPosition(currentPosition);
-
-            PaymentTracking.eventPromoImpression(promotion);
-        }*/
     }
 
     private void setCurrentIndicator() {
@@ -243,36 +247,13 @@ public class BannerView extends BaseCustomView {
         return autoScrollOnProgress;
     }
 
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle) state;
-            setAutoScrollOnProgress(bundle.getBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS));
-            if (isAutoScrollOnProgress()) {
-                startAutoScrollBanner();
-            } else {
-                stopAutoScrollBanner();
-            }
-            state = bundle.getParcelable(SAVED);
-        }
-        super.onRestoreInstanceState(state);
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SAVED, super.onSaveInstanceState());
-        bundle.putBoolean(SAVE_STATE_AUTO_SCROLL_ON_PROGRESS, isAutoScrollOnProgress());
-        return bundle;
-    }
-
     public void restartAutoScrollBanner() {
         resetImpressionStatus();
         startAutoScrollBanner();
     }
 
-    public interface OnPromoClickListener {
-        void onPromoClick(int position);
+    public void setPromoList(List<String> promoImageUrls) {
+        this.promoImageUrls = promoImageUrls;
     }
 
     public OnPromoClickListener getOnPromoClickListener() {
@@ -281,6 +262,22 @@ public class BannerView extends BaseCustomView {
 
     public void setOnPromoClickListener(OnPromoClickListener onPromoClickListener) {
         this.onPromoClickListener = onPromoClickListener;
+    }
+
+    public OnPromoScrolledListener getOnPromoScrolledListener() {
+        return onPromoScrolledListener;
+    }
+
+    public void setOnPromoScrolledListener(OnPromoScrolledListener onPromoScrolledListener) {
+        this.onPromoScrolledListener = onPromoScrolledListener;
+    }
+
+    public OnPromoAllClickListener getOnPromoAllClickListener() {
+        return onPromoAllClickListener;
+    }
+
+    public void setOnPromoAllClickListener(OnPromoAllClickListener onPromoAllClickListener) {
+        this.onPromoAllClickListener = onPromoAllClickListener;
     }
 }
 

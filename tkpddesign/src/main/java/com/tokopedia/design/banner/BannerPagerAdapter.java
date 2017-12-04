@@ -48,6 +48,11 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
     }
 
     @Override
+    public int getItemCount() {
+        return bannerImageUrls.size();
+    }
+
+    @Override
     public BannerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new BannerViewHolder(
                 LayoutInflater.from(parent.getContext())
@@ -93,19 +98,13 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                 .error(R.drawable.ic_loading_image)
                 .into(holder.bannerImage);
 
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return bannerImageUrls.size();
     }
 
     private View.OnClickListener getBannerImageOnClickListener(final int currentPosition) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onPromoClickListener.onPromoClick(currentPosition);
+                if (onPromoClickListener!=null) onPromoClickListener.onPromoClick(currentPosition);
             }
         };
     }

@@ -148,8 +148,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
         TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener,
-        TokoCashHeaderView.ActionListener,
-        SectionListCategoryAdapter.OnApplinkClickedListener, BannerView.OnPromoClickListener {
+        TokoCashHeaderView.ActionListener, SectionListCategoryAdapter.OnApplinkClickedListener,
+        BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
+        BannerView.OnPromoAllClickListener
+    {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -208,7 +210,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 new Bundle()
         );
     }
-
 
     private class ViewHolder {
         private View MainView;
@@ -367,6 +368,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (!promoList.isEmpty()) {
             stopAutoScrollBanner();
             holder.bannerView.setOnPromoClickListener(this);
+            holder.bannerView.setOnPromoScrolledListener(this);
             holder.bannerView.setPromoList(mappingListBannerPromo(promoItemList));
             holder.bannerView.buildView();
         } else {
@@ -1135,12 +1137,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void trackingBannerClick(Context context, FacadePromo.PromoItem promoItem, int position) {
 
-       Promotion promotion = new Promotion();
+        Promotion promotion = new Promotion();
         promotion.setPromotionID(promoItem.id);
         promotion.setPromotionName(promoItem.title);
         promotion.setPromotionAlias(promoItem.title);
         promotion.setPromotionPosition(position);
-
         PaymentTracking.eventPromoClick(promotion);
     }
 
@@ -1250,6 +1251,32 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             intent.putExtra("url", url);
             context.startActivity(intent);
         }
+    }
+
+    @Override
+    public void onPromoScrolled(int position, boolean isCurrentPositionHasImpression) {
+
+        FacadePromo.PromoItem promoItem = promoItemList.get(position);
+
+        if (!isCurrentPositionHasImpression) {
+            Promotion promotion = new Promotion();
+            promotion.setPromotionID(promoItem.id);
+            promotion.setPromotionName(promoItem.title);
+            promotion.setPromotionAlias(promoItem.title);
+            promotion.setPromotionPosition(position);
+            PaymentTracking.eventPromoImpression(promotion);
+        }
+    }
+
+    @Override
+    public void onPromoAllClick() {
+        UnifyTracking.eventClickViewAllPromo();
+        Intent intent = new Intent(getContext(), BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
+        intent.putExtra(BannerWebView.EXTRA_URL,
+                TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
+        );
+        getContext().startActivity(intent);
     }
 
 }
