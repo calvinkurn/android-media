@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductGeneralAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
@@ -21,6 +22,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.C
 
 public class ChatSystemRightViewHolder extends AbstractViewHolder<ChatSystemRightViewModel> {
 
+    public static final int COUNT_MAX_PRODUCT = 5;
     @LayoutRes
     public static final int LAYOUT = R.layout.item_detail_system_right;
 
@@ -28,7 +30,7 @@ public class ChatSystemRightViewHolder extends AbstractViewHolder<ChatSystemRigh
     View layoutDate;
     TextView tvMessage, tvDate, tvTitle, tvReasonTitle, tvReason, tvAttachment;
     RecyclerView rvAttachment;
-    ChatProveAdapter adapter;
+    ChatProductGeneralAdapter adapter;
 
     public ChatSystemRightViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
@@ -64,7 +66,7 @@ public class ChatSystemRightViewHolder extends AbstractViewHolder<ChatSystemRigh
                     itemView.getContext(),
                     LinearLayoutManager.HORIZONTAL,
                     false));
-            adapter = new ChatProveAdapter(MainApplication.getAppContext(), element.getConversation().getAttachment());
+            adapter = new ChatProductGeneralAdapter(MainApplication.getAppContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
             rvAttachment.setAdapter(adapter);
         }
         if (!element.getConversation().getMessage().isEmpty()) {

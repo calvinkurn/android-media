@@ -37,6 +37,7 @@
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     context:text="penjual memasukan alamat "
+                    android:textSize="@dimen/fontvs"
                     android:padding="@dimen/padding_small"/>
 
                 <TextView
@@ -45,6 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:textSize="@dimen/fontvs"
                     android:paddingLeft="@dimen/padding_small"
                     android:paddingRight="@dimen/padding_small"
                     android:paddingBottom="@dimen/padding_small"/>

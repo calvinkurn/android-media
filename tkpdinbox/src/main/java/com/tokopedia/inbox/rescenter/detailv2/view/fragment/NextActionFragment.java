@@ -34,17 +34,20 @@ public class NextActionFragment
     NextActionFragmentPresenter presenter;
     private NextActionDomain nextActionDomain;
     private String resolutionId;
+    private int resolutionStatus;
     private TextView tvProblem, tvSolution;
     private RecyclerView rvNextAction;
     private NextActionAdapter adapter;
     private ProgressBar progressBar;
 
     public static NextActionFragment newInstance(String resolutionId,
-                                                 NextActionDomain nextActionDomain) {
+                                                 NextActionDomain nextActionDomain,
+                                                 int resolutionStatus) {
         NextActionFragment fragment = new NextActionFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(NextActionActivity.PARAM_NEXT_ACTION, nextActionDomain);
         bundle.putString(NextActionActivity.PARAM_RESOLUTION_ID, resolutionId);
+        bundle.putInt(NextActionActivity.PARAM_RESOLUTION_STATUS, resolutionStatus);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -85,12 +88,14 @@ public class NextActionFragment
     public void onSaveState(Bundle state) {
         state.putParcelable(NextActionActivity.PARAM_NEXT_ACTION, nextActionDomain);
         state.putString(NextActionActivity.PARAM_RESOLUTION_ID, resolutionId);
+        state.putInt(NextActionActivity.PARAM_RESOLUTION_STATUS, resolutionStatus);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         resolutionId = savedState.getString(NextActionActivity.PARAM_RESOLUTION_ID);
         nextActionDomain = savedState.getParcelable(NextActionActivity.PARAM_NEXT_ACTION);
+        resolutionStatus = savedState.getInt(NextActionActivity.PARAM_RESOLUTION_STATUS);
     }
 
     @Override
@@ -143,6 +148,6 @@ public class NextActionFragment
     public void populateMainView(NextActionDomain nextActionDomain) {
         tvProblem.setText(nextActionDomain.getProblem());
         tvSolution.setText(nextActionDomain.getDetail().getSolution());
-        adapter.populateAdapter(nextActionDomain.getDetail().getStep());
+        adapter.populateAdapter(nextActionDomain.getDetail().getStep(), resolutionStatus);
     }
 }

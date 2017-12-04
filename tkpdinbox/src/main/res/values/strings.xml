@@ -185,7 +185,7 @@ yang ditemukan</string>
     <string name="string_get_help">Minta Bantuan</string>
 
     <!--chat bubble-->
-    <string name="string_buyer_problem2">Kendala:</string>
+    <string name="string_buyer_problem2">Kendala dari Pembeli:</string>
     <string name="string_buyer_solution2">Solusi dari Pembeli:</string>
     <string name="string_buyer_prove">Bukti:</string>
     <string name="string_buyer_text">Keterangan:</string>

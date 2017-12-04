@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductGeneralAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatAwbLeftViewModel;
@@ -23,6 +24,7 @@ import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
 
 public class ChatAwbLeftViewHolder extends AbstractViewHolder<ChatAwbLeftViewModel> {
 
+    public static final int COUNT_MAX_PRODUCT = 5;
     public static final int ACTION_BY_USER = 1;
     public static final int ACTION_BY_SELLER = 2;
     public static final int ACTION_BY_ADMIN = 3;
@@ -36,7 +38,7 @@ public class ChatAwbLeftViewHolder extends AbstractViewHolder<ChatAwbLeftViewMod
     TextView tvMessage, tvDate, tvUserTitle, tvUsername, tvTitle, tvTitleAttachment;
     RecyclerView rvAttachment;
     Button btnTrack;
-    ChatProveAdapter adapter;
+    ChatProductGeneralAdapter adapter;
 
     public ChatAwbLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
@@ -64,8 +66,8 @@ public class ChatAwbLeftViewHolder extends AbstractViewHolder<ChatAwbLeftViewMod
         } else {
             tvTitleAttachment.setVisibility(View.VISIBLE);
             rvAttachment.setVisibility(View.VISIBLE);
-            adapter = new ChatProveAdapter(itemView.getContext(), element.getConversation().getAttachment());
-            rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+            adapter = new ChatProductGeneralAdapter(itemView.getContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
+            rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvAttachment.setAdapter(adapter);
         }
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
 
 import java.util.ArrayList;
@@ -20,13 +21,13 @@ import java.util.List;
  * Created by yoasfs on 26/10/17.
  */
 
-public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.Holder> {
+public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductGeneralAdapter.Holder> {
 
     private Context context;
-    private List<ConversationProductDomain> productList = new ArrayList<>();
+    private List<ConversationAttachmentDomain> productList = new ArrayList<>();
     private int maxShowCount = 0;
 
-    public ChatProductAdapter(Context context, List<ConversationProductDomain> productList, int maxShowCount) {
+    public ChatProductGeneralAdapter(Context context, List<ConversationAttachmentDomain> productList, int maxShowCount) {
         this.context = context;
         this.productList = productList;
         this.maxShowCount = maxShowCount;
@@ -39,8 +40,8 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        ConversationProductDomain product = productList.get(position);
-        ImageHandler.LoadImage(holder.ivImage, product.getImage().get(0).getThumb());
+        ConversationAttachmentDomain product = productList.get(position);
+        ImageHandler.LoadImage(holder.ivImage, product.getThumb());
         holder.tvMore.setVisibility(View.GONE);
         if (maxShowCount - 1 == position && maxShowCount < productList.size()) {
             holder.tvMore.setVisibility(View.VISIBLE);
