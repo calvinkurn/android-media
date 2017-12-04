@@ -1240,6 +1240,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
         <item>@string/title_last_update</item>
     </string-array>
     <string name="index_spinner_0_default">Pilih</string>
+    <string name="index_spinner_0_shipping">Pilih Kurir</string>
 
     <!-- End of Strings related Res Center -->
     <string name="title_activity_create_resolution">Buat Resolusi</string>

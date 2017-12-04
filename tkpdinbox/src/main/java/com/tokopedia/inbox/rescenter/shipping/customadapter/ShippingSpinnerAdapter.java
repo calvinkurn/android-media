@@ -41,7 +41,7 @@ public class ShippingSpinnerAdapter extends ArrayAdapter<ResCenterKurir.Kurir> {
         }
 
         if (position == 0) {
-            holder.textView.setText(getContext().getString(R.string.index_spinner_0_default));
+            holder.textView.setText(getContext().getString(R.string.index_spinner_0_shipping));
         } else {
             holder.textView.setText(Html.fromHtml(getItem(position - 1).getShipmentName()).toString());
         }
