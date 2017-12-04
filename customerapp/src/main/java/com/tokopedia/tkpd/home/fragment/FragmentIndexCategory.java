@@ -1254,18 +1254,15 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onPromoScrolled(int position, boolean isCurrentPositionHasImpression) {
+    public void onPromoScrolled(int position) {
 
         FacadePromo.PromoItem promoItem = promoItemList.get(position);
-
-        if (!isCurrentPositionHasImpression) {
-            Promotion promotion = new Promotion();
-            promotion.setPromotionID(promoItem.id);
-            promotion.setPromotionName(promoItem.title);
-            promotion.setPromotionAlias(promoItem.title);
-            promotion.setPromotionPosition(position);
-            PaymentTracking.eventPromoImpression(promotion);
-        }
+        Promotion promotion = new Promotion();
+        promotion.setPromotionID(promoItem.id);
+        promotion.setPromotionName(promoItem.title);
+        promotion.setPromotionAlias(promoItem.title);
+        promotion.setPromotionPosition(position);
+        PaymentTracking.eventPromoImpression(promotion);
     }
 
     @Override

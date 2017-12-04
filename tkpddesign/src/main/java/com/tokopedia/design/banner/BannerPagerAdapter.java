@@ -3,7 +3,6 @@ package com.tokopedia.design.banner;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 
 import com.bumptech.glide.Glide;
@@ -35,15 +35,13 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout linearLayout;
+        RelativeLayout relativeLayout;
         ImageView bannerImage;
-        CardView cardView;
 
         public BannerViewHolder(View itemView) {
             super(itemView);
-            linearLayout = itemView.findViewById(R.id.linearlayout_slider_banner_category);
+            relativeLayout = itemView.findViewById(R.id.root_banner);
             bannerImage = itemView.findViewById(R.id.image);
-            cardView = itemView.findViewById(R.id.card_view);
         }
     }
 
@@ -56,7 +54,7 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
     public BannerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new BannerViewHolder(
                 LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.layout_slider_banner_category, parent, false)
+                        .inflate(R.layout.layout_slider_banner_design, parent, false)
         );
     }
 
@@ -83,11 +81,11 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         holder.bannerImage.requestLayout();*/
 
         if (bannerImageUrls.size() == 1) {
-            holder.linearLayout.setLayoutParams(
+            holder.relativeLayout.setLayoutParams(
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             );
-            holder.linearLayout.requestLayout();
-            holder.linearLayout.setGravity(Gravity.CENTER);
+            holder.relativeLayout.requestLayout();
+            holder.relativeLayout.setGravity(Gravity.CENTER);
         }
 
         Glide.with(holder.bannerImage.getContext())

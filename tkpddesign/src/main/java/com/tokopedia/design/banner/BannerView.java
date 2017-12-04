@@ -105,7 +105,7 @@ public class BannerView extends BaseCustomView {
     }
 
     public interface OnPromoScrolledListener {
-        void onPromoScrolled(int position, boolean isCurrentPositionHasImpression);
+        void onPromoScrolled(int position);
     }
 
     public interface OnPromoAllClickListener {
@@ -161,11 +161,10 @@ public class BannerView extends BaseCustomView {
                 currentPosition =
                         ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                 setCurrentIndicator();
-                boolean isCurrentPositionHasImpression = isCurrentPositionHasImpression(currentPosition);
-                if (onPromoScrolledListener!=null) {
-                    onPromoScrolledListener.onPromoScrolled(currentPosition,isCurrentPositionHasImpression);
+                if (!isCurrentPositionHasImpression(currentPosition)) {
+                    impressionStatusList.set(currentPosition, true);
+                    onPromoScrolledListener.onPromoScrolled(currentPosition);
                 }
-                if (isCurrentPositionHasImpression) impressionStatusList.set(currentPosition, true);
             }
 
             @Override
