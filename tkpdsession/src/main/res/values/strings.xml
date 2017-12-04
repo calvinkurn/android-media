@@ -102,4 +102,5 @@
     nomor]]></string>
     <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan
         lewat<br>panggilan telepon ke]]></string>
+    <string name="choose_account">Pilih Akun</string>
 </resources>

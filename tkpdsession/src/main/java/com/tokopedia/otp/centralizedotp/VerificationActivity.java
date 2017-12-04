@@ -11,7 +11,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.otp.centralizedotp.fragment.SelectVerificationMethodFragment;
+import com.tokopedia.otp.centralizedotp.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.centralizedotp.fragment.VerificationFragment;
 import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
 import com.tokopedia.session.R;
@@ -64,7 +64,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
                 break;
             }
             default: {
-                fragment = SelectVerificationMethodFragment.createInstance(bundle);
+                fragment = ChooseVerificationMethodFragment.createInstance(bundle);
                 break;
             }
         }
@@ -121,7 +121,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
     }
 
     public void goToSelectVerificationMethod() {
-        Fragment fragment = SelectVerificationMethodFragment.createInstance(getIntent().getExtras());
+        Fragment fragment = ChooseVerificationMethodFragment.createInstance(getIntent().getExtras());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();

@@ -12,7 +12,7 @@
         android:layout_height="1dp"
         android:background="@color/grey_300"/>
 
-    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
+    <com.tokopedia.core.customwidget.RoundedCornerImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"

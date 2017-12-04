@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview;
+package com.tokopedia.core.customwidget;
 
 import android.content.Context;
 import android.graphics.Canvas;

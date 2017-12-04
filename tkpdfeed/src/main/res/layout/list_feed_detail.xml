@@ -6,7 +6,7 @@
     android:layout_height="130dp"
     android:orientation="vertical">
 
-    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
+    <com.tokopedia.core.customwidget.RoundedCornerImageView
         android:id="@+id/product_image"
         android:layout_width="@dimen/feed_detail_product"
         android:layout_height="@dimen/feed_detail_product"

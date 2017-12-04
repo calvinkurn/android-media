@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:padding="@dimen/padding_small">
 
-    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
+    <com.tokopedia.core.customwidget.RoundedCornerImageView
         android:id="@+id/user_ava"
         android:layout_width="@dimen/feed_user_ava"
         android:layout_height="@dimen/feed_user_ava"

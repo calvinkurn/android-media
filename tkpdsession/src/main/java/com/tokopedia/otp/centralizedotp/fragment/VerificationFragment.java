@@ -1,5 +1,6 @@
 package com.tokopedia.otp.centralizedotp.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -165,6 +166,13 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 }
             }
         });
+
+        verifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.verifyOtp(inputOtp.getText().toString());
+            }
+        });
     }
 
     private void disableVerifyButton() {
@@ -201,6 +209,12 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onSuccessGetOTP() {
         verifyButton.setEnabled(true);
         startTimer();
+    }
+
+    @Override
+    public void onSuccessVerifyOTP() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     private void startTimer() {

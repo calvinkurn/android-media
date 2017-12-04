@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.otp.centralizedotp.fragment.SelectVerificationMethodFragment;
 import com.tokopedia.otp.centralizedotp.viewlistener.SelectVerification;
 import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
 import com.tokopedia.session.R;

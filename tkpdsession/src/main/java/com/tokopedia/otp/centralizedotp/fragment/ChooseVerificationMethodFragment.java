@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @author by nisie on 11/29/17.
  */
 
-public class SelectVerificationMethodFragment extends BaseDaggerFragment implements
+public class ChooseVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
     RecyclerView methodList;
@@ -56,7 +56,7 @@ public class SelectVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     public static Fragment createInstance(Bundle bundle) {
-        Fragment fragment = new SelectVerificationMethodFragment();
+        Fragment fragment = new ChooseVerificationMethodFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

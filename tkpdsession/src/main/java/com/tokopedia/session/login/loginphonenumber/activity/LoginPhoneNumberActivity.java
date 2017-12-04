@@ -1,10 +1,9 @@
-package com.tokopedia.session.login.loginphonenumber;
+package com.tokopedia.session.login.loginphonenumber.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.analytics.AppScreen;
@@ -12,15 +11,13 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginphonenumber.fragment.LoginPhoneNumberFragment;
 
 /**
  * @author by nisie on 11/23/17.
  */
 
 public class LoginPhoneNumberActivity extends TActivity implements HasComponent {
-
-
-    public static final String ARGS_FORM_DATA = "ARGS_FORM_DATA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

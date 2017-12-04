@@ -263,6 +263,7 @@ public final class AppScreen {
     public static final String SCREEN_COTP_DEFAULT = "Account Verification Page";
     public static final String SCREEN_COTP_SMS = "Account Verification - SMS ";
     public static final String SCREEN_COTP_CALL = "Account Verification - Call";
+    public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "Login Tokocash - Choose Account";
 
     private AppScreen() {
 

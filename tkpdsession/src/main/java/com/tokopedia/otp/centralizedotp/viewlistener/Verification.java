@@ -11,10 +11,14 @@ import com.tokopedia.otp.centralizedotp.viewmodel.VerificationViewModel;
 public interface Verification {
     interface View extends CustomerView {
         void onSuccessGetOTP();
+
+        void onSuccessVerifyOTP();
     }
 
     interface Presenter extends CustomerPresenter<Verification.View> {
 
         void requestOTP(VerificationViewModel bundle);
+
+        void verifyOtp(String otpCode);
     }
 }

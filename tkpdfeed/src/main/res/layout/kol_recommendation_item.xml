@@ -12,7 +12,7 @@
     android:padding="@dimen/padding_small"
     >
 
-    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
+    <com.tokopedia.core.customwidget.RoundedCornerImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/kol_avatar"
         android:layout_height="@dimen/kol_avatar"

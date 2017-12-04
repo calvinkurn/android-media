@@ -1,9 +1,10 @@
 package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.otp.centralizedotp.fragment.SelectVerificationMethodFragment;
+import com.tokopedia.otp.centralizedotp.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.centralizedotp.fragment.VerificationFragment;
-import com.tokopedia.session.login.loginphonenumber.LoginPhoneNumberFragment;
+import com.tokopedia.session.login.loginphonenumber.fragment.ChooseTokocashAccountFragment;
+import com.tokopedia.session.login.loginphonenumber.fragment.LoginPhoneNumberFragment;
 
 import dagger.Component;
 
@@ -18,6 +19,8 @@ public interface SessionComponent {
 
     void inject(VerificationFragment verificationFragment);
 
-    void inject(SelectVerificationMethodFragment selectVerificationMethodFragment);
+    void inject(ChooseVerificationMethodFragment selectVerificationMethodFragment);
+
+    void inject(ChooseTokocashAccountFragment chooseTokocashAccountFragment);
 
 }

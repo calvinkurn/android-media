@@ -40,4 +40,9 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 break;
         }
     }
+
+    @Override
+    public void verifyOtp(String otpCode) {
+        getView().onSuccessVerifyOTP();
+    }
 }

@@ -1,5 +1,7 @@
-package com.tokopedia.session.login.loginphonenumber;
+package com.tokopedia.session.login.loginphonenumber.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +21,7 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.centralizedotp.VerificationActivity;
 import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginphonenumber.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.viewlistener.LoginPhoneNumber;
 
@@ -34,6 +37,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         implements LoginPhoneNumber.View {
 
     private static final int REQUEST_VERIFY_PHONE = 101;
+    private static final int REQUEST_CHOOSE_ACCOUNT = 102;
     EditText phoneNumber;
     TextView nextButton;
     TextView message;
@@ -137,11 +141,11 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         startActivityForResult(VerificationActivity.getSmsVerificationIntent(
                 getActivity(),
                 phoneNumber,
-                getListAvailableMethod()),
+                getListVerificationMethod()),
                 REQUEST_VERIFY_PHONE);
     }
 
-    private ArrayList<MethodItem> getListAvailableMethod() {
+    private ArrayList<MethodItem> getListVerificationMethod() {
         ArrayList<MethodItem> list = new ArrayList<>();
         list.add(new MethodItem(
                 VerificationActivity.TYPE_SMS,
@@ -158,5 +162,25 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     private void showErrorPhoneNumber(String errorMessage) {
         errorText.setText(errorMessage);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_VERIFY_PHONE
+                && resultCode == Activity.RESULT_OK) {
+            goToChooseAccountPage();
+        } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
+                && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void goToChooseAccountPage() {
+        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
+                getActivity()),
+                REQUEST_CHOOSE_ACCOUNT);
     }
 }
