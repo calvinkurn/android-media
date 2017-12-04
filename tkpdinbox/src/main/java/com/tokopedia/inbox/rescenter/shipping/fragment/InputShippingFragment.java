@@ -447,7 +447,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
                 attachmentData.get(position).delete();
                 attachmentData.remove(position);
                 attachmentAdapter.notifyItemRemoved(position);
-                presenter.onListAttachmentChanged(attachmentAdapter.getItemCount());
             }
 
             @Override
