@@ -17,7 +17,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsView
  */
 
 public class FavoriteCtaViewHolder extends AbstractViewHolder<FavoriteCtaViewModel> {
-    private Button searchShopButton;
+    private TextView searchShopButton;
     private TextView titleTextView;
     private TextView subtitleTextView;
 
@@ -29,7 +29,7 @@ public class FavoriteCtaViewHolder extends AbstractViewHolder<FavoriteCtaViewMod
 
         titleTextView = itemView.findViewById(R.id.title);
         subtitleTextView = itemView.findViewById(R.id.subtitle);
-        searchShopButton = (Button) itemView.findViewById(R.id.search_shop_button);
+        searchShopButton = itemView.findViewById(R.id.search_shop_button);
 
         searchShopButton.setOnClickListener(new View.OnClickListener() {
             @Override
