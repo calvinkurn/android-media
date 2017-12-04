@@ -1,71 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_sm"
+    android:background="@drawable/cards_ui_feed"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_vs">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_info" />
+
+    <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="325dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginTop="-75dp"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="empty_cactus.json"
-        app:lottie_loop="true"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_find_more_shop" />
 
-    <LinearLayout
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_vs" />
+
+    <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/text_size_14"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_med"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:text="@string/string_empty_feed"
-            android:textColor="@color/black_70"
-            android:textSize="14sp"
-            android:textStyle="normal"
-            tools:text="Oops, feed masih kosong"/>
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_vs" />
 
-        <TextView
-            android:id="@+id/subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:fontFamily="sans-serif"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="8sp"
-            android:text="@string/empty_feed_subtitle"
-            android:textColor="@color/black_54"
-            android:textSize="12sp"
-            android:textStyle="normal"
-            tools:text="Segera favoritkan toko yang Anda sukai untuk
-mendapatkan update produk terbaru di isini."/>
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_12" />
 
-        <Button
-            android:id="@+id/search_shop_button"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/green_button_rounded"
-            android:text="@string/search_shop"
-            android:textAllCaps="false"
-            android:textColor="@color/white"/>
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_info" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/search_shop_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_sm"
+        android:layout_marginRight="@dimen/margin_sm"
+        android:background="@drawable/feed_rounded_corners"
+        android:backgroundTint="@color/green_500"
+        android:gravity="center"
+        android:padding="@dimen/padding_small"
+        android:text="@string/find_shop"
+        android:textColor="@color/white" />
 
-</RelativeLayout>
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_info" />
+</LinearLayout>
