@@ -419,7 +419,8 @@ public class DetailResChatFragment
                 startActivity(NextActionActivity.newInstance(
                         getActivity(),
                         resolutionId,
-                        detailResChatDomain.getNextAction()));
+                        detailResChatDomain.getNextAction(),
+                        detailResChatDomain.getResolution().getStatus()));
                 getBottomSheetActivityTransition();
             }
         });

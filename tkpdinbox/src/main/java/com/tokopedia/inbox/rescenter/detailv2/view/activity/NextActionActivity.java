@@ -23,14 +23,17 @@ public class NextActionActivity
 
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
     public static final String PARAM_NEXT_ACTION = "next_action";
+    public static final String PARAM_RESOLUTION_STATUS = "reso_status";
 
     NextActionDomain nextActionDomain;
     String resolutionId;
+    int resolutionStatus;
 
-    public static Intent newInstance(Context context, String resolutionId, NextActionDomain nextActionDomain) {
+    public static Intent newInstance(Context context, String resolutionId, NextActionDomain nextActionDomain, int resolutionStatus) {
         Intent intent = new Intent(context, NextActionActivity.class);
         intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
         intent.putExtra(PARAM_NEXT_ACTION, nextActionDomain);
+        intent.putExtra(PARAM_RESOLUTION_STATUS, resolutionStatus);
         return intent;
     }
 
@@ -62,6 +65,7 @@ public class NextActionActivity
     protected void setupBundlePass(Bundle extras) {
         resolutionId = extras.getString(PARAM_RESOLUTION_ID);
         nextActionDomain = extras.getParcelable(PARAM_NEXT_ACTION);
+        resolutionStatus = extras.getInt(PARAM_RESOLUTION_STATUS);
     }
 
     @Override
@@ -71,7 +75,7 @@ public class NextActionActivity
 
     @Override
     protected void initialPresenter() {
-        presenter = new NextActionActivityPresenter(this, resolutionId, nextActionDomain);
+        presenter = new NextActionActivityPresenter(this, resolutionId, nextActionDomain, resolutionStatus);
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.fragment.DetailResChatFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 
 import java.util.ArrayList;
@@ -30,12 +31,14 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
     private Context context;
     private List<NextActionDetailStepDomain> stepList = new ArrayList<>();
     private HashMap<NextActionDetailStepDomain, Integer> stepMap = new HashMap<>();
+    private int resolutionStatus;
 
     public NextActionAdapter(Context context) {
         this.context = context;
     }
 
-    public void populateAdapter(List<NextActionDetailStepDomain> stepList) {
+    public void populateAdapter(List<NextActionDetailStepDomain> stepList, int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
         this.stepList = stepList;
         int itemPos = STEP_BEFORE_CURRENT;
         for (NextActionDetailStepDomain step : stepList) {
@@ -63,28 +66,34 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
         NextActionDetailStepDomain currentStep = stepList.get(position);
         int currentStepStatus = stepMap.get(currentStep);
         holder.tvAction.setText(currentStep.getName());
-        setView(holder, currentStepStatus);
-        if (position == 0) {
-            holder.ivIndicatorArrow.setVisibility(View.GONE);
-        } else {
-            holder.ivIndicatorArrow.setVisibility(View.VISIBLE);
-        }
+        setView(holder, currentStepStatus, position < stepList.size() - 1 ? stepList.get(position + 1) : null);
     }
 
 
-    private void setView(ItemHolder holder, int currentStepStatus) {
-        if (currentStepStatus == STEP_BEFORE_CURRENT) {
+    private void setView(ItemHolder holder, int currentStepStatus, NextActionDetailStepDomain nextStep) {
+        if (resolutionStatus == DetailResChatFragment.STATUS_CANCEL || resolutionStatus == DetailResChatFragment.STATUS_FINISHED) {
             setTextStyle(holder.tvAction, false);
             holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
             holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_past));
-        } else if (currentStepStatus == STEP_CURRENT) {
-            setTextStyle(holder.tvAction, true);
-            holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
-            holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_current));
-        } else if (currentStepStatus == STEP_AFTER_CURRENT) {
-            setTextStyle(holder.tvAction, false);
-            holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_dotted));
-            holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_next));
+            holder.ivIndicatorArrow.setVisibility(nextStep == null ? View.GONE : View.VISIBLE);
+        } else {
+            if (currentStepStatus == STEP_BEFORE_CURRENT) {
+                setTextStyle(holder.tvAction, false);
+                holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
+                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_past));
+            } else if (currentStepStatus == STEP_CURRENT) {
+                setTextStyle(holder.tvAction, true);
+                holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
+                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_current));
+                holder.ivIndicatorArrow.setImageDrawable(nextStep != null && stepMap.get(nextStep) == STEP_AFTER_CURRENT ?
+                        context.getResources().getDrawable(R.drawable.ic_arrow_dotted) :
+                        context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
+            } else if (currentStepStatus == STEP_AFTER_CURRENT) {
+                setTextStyle(holder.tvAction, false);
+                holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_dotted));
+                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_next));
+                holder.ivIndicatorArrow.setVisibility(nextStep == null ? View.GONE : View.VISIBLE);
+            }
         }
     }
 
@@ -114,7 +123,6 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
             ivIndicatorArrow = (ImageView) itemView.findViewById(R.id.iv_indicator_arrow);
             ivIndicatorCircle = (ImageView) itemView.findViewById(R.id.iv_indicator_circle);
             tvAction = (TextView) itemView.findViewById(R.id.tv_action);
-
         }
     }
 }

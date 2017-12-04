@@ -229,7 +229,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 startActivity(NextActionActivity.newInstance(
                         getActivity(),
                         resolutionID,
-                        getViewData().getNextActionDomain()));
+                        getViewData().getNextActionDomain(),
+                        getViewData().getDetailData().getResolutionStatus()));
             }
         });
 

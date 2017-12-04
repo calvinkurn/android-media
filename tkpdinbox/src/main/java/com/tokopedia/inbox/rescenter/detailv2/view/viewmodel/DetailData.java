@@ -23,6 +23,7 @@ public class DetailData implements Parcelable {
     private boolean received;
     private boolean cancel;
     private boolean finish;
+    private int resolutionStatus;
     private boolean canAskHelp;
 
     public DetailData() {
@@ -156,6 +157,14 @@ public class DetailData implements Parcelable {
         this.finish = finish;
     }
 
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -178,6 +187,7 @@ public class DetailData implements Parcelable {
         dest.writeByte(this.received ? (byte) 1 : (byte) 0);
         dest.writeByte(this.cancel ? (byte) 1 : (byte) 0);
         dest.writeByte(this.finish ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.resolutionStatus);
         dest.writeByte(this.canAskHelp ? (byte) 1 : (byte) 0);
     }
 
@@ -197,6 +207,7 @@ public class DetailData implements Parcelable {
         this.received = in.readByte() != 0;
         this.cancel = in.readByte() != 0;
         this.finish = in.readByte() != 0;
+        this.resolutionStatus = in.readInt();
         this.canAskHelp = in.readByte() != 0;
     }
 

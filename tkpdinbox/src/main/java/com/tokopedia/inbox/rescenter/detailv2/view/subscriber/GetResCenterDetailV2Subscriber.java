@@ -275,6 +275,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setFinish(resolutionData.getStatus().getId() == 500);
         data.setCancel(resolutionData.getStatus().getId() == 0);
         data.setCanAskHelp(detailResponseData.getButton().getReport() == 1);
+        data.setResolutionStatus(resolutionData.getStatus().getId());
         return data;
     }
 

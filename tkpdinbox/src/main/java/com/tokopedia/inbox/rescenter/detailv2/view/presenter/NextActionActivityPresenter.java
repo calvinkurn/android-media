@@ -13,13 +13,16 @@ public class NextActionActivityPresenter implements NextActionActivityListener.P
     private NextActionActivityListener.View mainView;
     private NextActionDomain nextActionDomain;
     private String resolutionId;
+    private int resolutionStatus;
 
     public NextActionActivityPresenter(NextActionActivityListener.View mainView,
                                        String resolutionId,
-                                       NextActionDomain nextActionDomain) {
+                                       NextActionDomain nextActionDomain,
+                                       int resolutionStatus) {
         this.mainView = mainView;
         this.resolutionId = resolutionId;
         this.nextActionDomain = nextActionDomain;
+        this.resolutionStatus = resolutionStatus;
     }
 
     @Override
@@ -34,7 +37,10 @@ public class NextActionActivityPresenter implements NextActionActivityListener.P
 
     @Override
     public void initFragment() {
-        mainView.inflateFragment(NextActionFragment.newInstance(resolutionId, nextActionDomain),
+        mainView.inflateFragment(NextActionFragment.newInstance(
+                resolutionId,
+                nextActionDomain,
+                resolutionStatus),
                 NextActionFragment.class.getSimpleName());
 
     }
