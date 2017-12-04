@@ -13,11 +13,10 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -39,7 +38,7 @@ public class WatermarkView extends View {
     public static final String TEMP_FILE_NAME = "temp.tmp";
     public static final float PADDING_TEXT_RATIO = 2f / 3;
 
-    private String textString;
+    private CharSequence textString;
     private int xText = 0;
     private int yText = 0;
     private TextPaint mTextPaint = new TextPaint();
@@ -99,7 +98,8 @@ public class WatermarkView extends View {
     }
 
     public void setWindowRect(@NonNull RectF windowRect) {
-        if (!this.windowRect.equals(windowRect)) {
+        if (!this.windowRect.equals(windowRect) &&
+                !TextUtils.isEmpty(textString)) {
             float left = windowRect.left;
             float right = windowRect.right;
             float top = windowRect.top;
@@ -107,14 +107,14 @@ public class WatermarkView extends View {
 
             this.windowRect = new RectF(left, top, right, bottom);
             int width = (int) (right - left);
-            setTextSize(getCalcTextSize(width, textString));
+            setTextSize(getCalcTextSize(width, textString.toString()));
             paddingDefault = mTextSize * PADDING_TEXT_RATIO;
             setTextCoord((int) left, (int) bottom);
         }
     }
 
     public void setText(String text) {
-        this.textString = text;
+        this.textString = MethodChecker.fromHtml(text);
         invalidate();
     }
 
@@ -143,12 +143,15 @@ public class WatermarkView extends View {
     }
 
     public void drawText(Canvas canvas) {
-        canvas.drawText(textString, xText, yText, mTextPaint);
+        canvas.drawText(textString,0, textString.length(), xText, yText, mTextPaint);
     }
 
     public Bitmap drawTo(Bitmap bitmap) {
         if (bitmap == null) {
             return null;
+        }
+        if (TextUtils.isEmpty(textString)) {
+            return bitmap;
         }
         Bitmap mutableBitmap;
         try {
@@ -170,7 +173,7 @@ public class WatermarkView extends View {
         int yText = mutableBitmap.getHeight() - padding;
 
         if (!TextUtils.isEmpty(textString)) {
-            canvas.drawText(textString, xText, yText, watermarkTextPaint);
+            canvas.drawText(textString, 0, textString.length(), xText, yText, watermarkTextPaint);
         }
         bitmap.recycle();
 
