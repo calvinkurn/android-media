@@ -234,6 +234,7 @@ public class ImageGalleryImpl implements ImageGallery {
 
         GetItemListAlbum(String pathAlbum) {
             this.pathAlbum = pathAlbum;
+            dataListPhoto.clear();
         }
 
         protected String doInBackground(Void... params) {
