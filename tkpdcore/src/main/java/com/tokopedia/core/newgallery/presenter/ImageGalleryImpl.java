@@ -49,9 +49,17 @@ public class ImageGalleryImpl implements ImageGallery {
         contentResolver = imageGalleryView.getContentResolver();
     }
 
+    public boolean isAlbumEmpty(){
+        return pathList.size() <= 0;
+    }
+
     @Override
     public void getItemAlbum() {
-        new GetItemAlbum().execute();
+        if (imageGalleryView != null && !isAlbumEmpty()) {
+            imageGalleryView.retrieveData(dataAlbum, pathList);
+        }else {
+            new GetItemAlbum().execute();
+        }
     }
 
     public String getFolderPath(int position) {
