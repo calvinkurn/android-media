@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -94,6 +96,11 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     TextView emptyDescTransaction;
     @BindView(R2.id.root_view)
     CoordinatorLayout rootView;
+    @BindView(R2.id.waiting_transaction_view)
+    LinearLayout waitingTransactionView;
+    @BindView(R2.id.nested_scroll_view)
+    NestedScrollView nestedScrollView;
+
 
     private int datePickerSelection = 2;
     private int datePickerType = 0;
@@ -110,6 +117,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private SnackbarRetry messageSnackbar;
     private RefreshHandler refreshHandler;
     private String stateDataAfterFilter = "";
+    private TokoCashHistoryData tokoCashHistoryData;
 
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_TRANSACTION_HISTORY)
@@ -139,6 +147,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         if (stateDataAfterFilter.equals("")) {
             refreshHandler.startRefresh();
         }
+        presenter.getWaitingTransaction();
     }
 
     @Override
@@ -190,7 +199,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
             public void onRefresh(View view) {
                 if (refreshHandler.isRefreshing()) {
                     presenter.getInitHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
-                    endlessRecyclerviewListener.resetState();
+//                    endlessRecyclerviewListener.resetState();
                 }
             }
         };
@@ -215,20 +224,16 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private void initialHistoryRecyclerView() {
         adapterHistory = new HistoryTokoCashAdapter(new ArrayList<ItemHistory>());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        endlessRecyclerviewListener = new EndlessRecyclerviewListener(linearLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                adapterHistory.showLoading(true);
-                if (isLoadMore) {
-                    presenter.getHistoryLoadMore(typeFilterSelected, startDateFormatted, endDateFormatted);
-                } else {
-                    adapterHistory.showLoading(false);
-                }
-            }
-        };
+//        endlessRecyclerviewListener = new EndlessRecyclerviewListener(linearLayoutManager) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+//
+//            }
+//        };
         historyListRecyclerView.setHasFixedSize(true);
         historyListRecyclerView.setLayoutManager(linearLayoutManager);
-        historyListRecyclerView.addOnScrollListener(endlessRecyclerviewListener);
+//        historyListRecyclerView.addOnScrollListener(endlessRecyclerviewListener);
+        historyListRecyclerView.setNestedScrollingEnabled(false);
         historyListRecyclerView.setAdapter(adapterHistory);
     }
 
@@ -264,14 +269,31 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
             public void selectFilter(String typeFilter) {
                 typeFilterSelected = typeFilter;
                 presenter.getInitHistoryTokoCash(typeFilter, startDateFormatted, endDateFormatted);
-                endlessRecyclerviewListener.resetState();
+//                endlessRecyclerviewListener.resetState();
             }
         };
     }
 
     @Override
     protected void setViewListener() {
+        nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(
+                new ViewTreeObserver.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged() {
+                        View view = (View) nestedScrollView.getChildAt(nestedScrollView.getChildCount()-1);
+                        int diff = (view.getBottom() - (nestedScrollView.getHeight() + nestedScrollView.getScrollY()));
 
+                        if (diff == 0) {
+                            adapterHistory.showLoading(true);
+                            if (isLoadMore) {
+                                presenter.getHistoryLoadMore(typeFilterSelected, startDateFormatted, endDateFormatted);
+                            } else {
+                                adapterHistory.showLoading(false);
+                            }
+                        }
+                    }
+                }
+        );
     }
 
     @Override
@@ -419,6 +441,24 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
                     }
                 }
         );
+    }
+
+    @Override
+    public void renderWaitingTransaction(TokoCashHistoryData tokoCashHistory) {
+        this.tokoCashHistoryData = tokoCashHistory;
+        waitingTransactionView.setVisibility(View.VISIBLE);
+        waitingTransactionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(WaitingTransactionActivity.newInstance(tokoCashHistoryData,
+                        getApplicationContext()));
+            }
+        });
+    }
+
+    @Override
+    public void hideWaitingTransaction() {
+        waitingTransactionView.setVisibility(View.GONE);
     }
 
     @Override
