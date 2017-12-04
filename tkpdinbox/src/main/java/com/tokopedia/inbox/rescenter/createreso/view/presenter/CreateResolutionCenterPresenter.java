@@ -83,7 +83,17 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         mainView.showLoading(false);
         resultViewModel.orderId = orderId;
         this.orderId = orderId;
-        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId),
+        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId, ""),
+                new LoadProductSubscriber(mainView));
+    }
+
+    @Override
+    public void loadProductProblem(String orderId, String resolutionId) {
+        resultViewModel.resolutionId = resolutionId;
+        mainView.showLoading(false);
+        resultViewModel.orderId = orderId;
+        this.orderId = orderId;
+        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId, resolutionId),
                 new LoadProductSubscriber(mainView));
     }
 
@@ -162,12 +172,12 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     }
 
     @Override
-    public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId) {
+    public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId, String shopName) {
 
         Intent resInboxIntent = InboxResCenterActivity.createIntent(context);
         resInboxIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId,"");
+        Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId, shopName);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(resInboxIntent);

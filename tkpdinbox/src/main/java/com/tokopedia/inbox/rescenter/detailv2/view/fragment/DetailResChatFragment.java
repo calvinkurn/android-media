@@ -41,6 +41,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -778,6 +779,16 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getRecomplainLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = CreateResCenterActivity.newRecomplaintInstance(
+                                getActivity(),
+                                String.valueOf(detailResChatDomain.getOrder().getId()),
+                                String.valueOf(detailResChatDomain.getResolution().getId()));
+                        startActivity(intent);
+                    }
+                });
             }
         }
     }

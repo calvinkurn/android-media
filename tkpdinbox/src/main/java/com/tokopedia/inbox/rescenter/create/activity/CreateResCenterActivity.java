@@ -27,12 +27,14 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     public static final String KEY_PARAM_FLAG_RECEIVED = "FLAG_RECEIVED";
     public static final String KEY_PARAM_TROUBLE_ID = "TROUBLE_ID";
     public static final String KEY_PARAM_SOLUTION_ID = "SOLUTION_ID";
+    public static final String KEY_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String TAG_STEP_1 = "step_1";
     private static final String TAG_STEP_2 = "step_2";
 
     private Bundle bundleData;
     private Uri uriData;
     private CreateResCenterReceiver receiver;
+    private String resolutionId;
 
     @Override
     public String getScreenName() {
@@ -44,6 +46,15 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         Bundle bundle = new Bundle();
         bundle.putString(KEY_PARAM_ORDER_ID, orderID);
         bundle.putInt(KEY_PARAM_FLAG_RECEIVED, 1);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newRecomplaintInstance(Context context, String orderID, String resolutionId) {
+        Intent intent = new Intent(context, CreateResCenterActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_PARAM_ORDER_ID, orderID);
+        bundle.putString(KEY_PARAM_RESOLUTION_ID, resolutionId);
         intent.putExtras(bundle);
         return intent;
     }
@@ -75,6 +86,9 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     @Override
     protected void setupBundlePass(Bundle extras) {
         this.bundleData = extras;
+        if (extras.get(KEY_PARAM_RESOLUTION_ID) != null) {
+            resolutionId = extras.getString(KEY_PARAM_RESOLUTION_ID);
+        }
     }
 
     @Override
@@ -89,7 +103,11 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
 
     @Override
     protected void initView() {
-        presenter.initFragment(this, uriData, bundleData);
+        if (resolutionId == null) {
+            presenter.initFragment(this, uriData, bundleData);
+        } else {
+            presenter.initRecomplaintFragment(this, uriData, bundleData, resolutionId);
+        }
     }
 
     @Override

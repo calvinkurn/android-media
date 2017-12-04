@@ -24,6 +24,8 @@ public class ResultViewModel implements Parcelable {
     public int attachmentCount;
     public String orderId;
     public boolean isAttachmentRequired;
+    public String resolutionId;
+    public boolean isRecomplaint;
     public List<AttachmentViewModel> attachmentList = new ArrayList<>();
 
     public ResultViewModel() {

@@ -49,7 +49,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
     public static final String PROBLEM_RESULT_LIST_DATA = "problem_result_list_data";
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
-    public static final String RESOLUTION_ID = "reso_id";
+    public static final String PARAM_RESOLUTION_ID = "reso_id";
 
     private static final int REQUEST_STEP1 = 1001;
     private static final int REQUEST_STEP2 = 1002;
@@ -67,6 +67,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     TypedValue typedValue100, typedValue70, typedValue38;
     Float float100, float70, float38;
 
+    String resolutionId;
+
     @Inject
     CreateResolutionCenterPresenter presenter;
 
@@ -74,6 +76,15 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         CreateResolutionCenterFragment fragment = new CreateResolutionCenterFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEY_PARAM_PASS_DATA, passData);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static CreateResolutionCenterFragment newRecomplaintInstance(ActionParameterPassData passData, String resolutionId) {
+        CreateResolutionCenterFragment fragment = new CreateResolutionCenterFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_PARAM_PASS_DATA, passData);
+        bundle.putString(PARAM_RESOLUTION_ID , resolutionId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -120,11 +131,13 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void onSaveState(Bundle state) {
         state.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
+        state.putString(PARAM_RESOLUTION_ID, resolutionId);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         resultViewModel = savedState.getParcelable(RESULT_VIEW_MODEL_DATA);
+        resolutionId = savedState.getString(resolutionId);
         presenter.getRestoreData(resultViewModel);
     }
 
@@ -132,6 +145,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     protected void setupArguments(Bundle arguments) {
         ActionParameterPassData actionParameterPassData = (ActionParameterPassData) arguments.get(KEY_PARAM_PASS_DATA);
         orderId = actionParameterPassData.getOrderID();
+        if (arguments.get(PARAM_RESOLUTION_ID) != null) {
+            resolutionId = arguments.getString(PARAM_RESOLUTION_ID);
+        }
     }
 
     @Override
@@ -416,9 +432,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void successCreateResoWithoutAttachment(String resolutionId, String cacheKey, String message) {
+    public void successCreateResoWithoutAttachment(String resolutionId, String cacheKey, String message, String shopName) {
         dismissProgressBar();
-        finishResolution(resolutionId, message);
+        finishResolution(resolutionId, message, shopName);
     }
 
     @Override
@@ -428,9 +444,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void successCreateResoWithAttachment(String resolutionId, String message) {
+    public void successCreateResoWithAttachment(String resolutionId, String message, String shopName) {
         dismissProgressBar();
-        finishResolution(resolutionId, message);
+        finishResolution(resolutionId, message, shopName);
     }
 
     @Override
@@ -439,10 +455,10 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
-    private void finishResolution(String resolutionId, String message) {
+    private void finishResolution(String resolutionId, String message, String shopName) {
         dismissProgressBar();
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        presenter.getInboxAndDetailResoStackBuilder(context, resolutionId).startActivities();
+        presenter.getInboxAndDetailResoStackBuilder(context, resolutionId, shopName).startActivities();
         getActivity().finish();
     }
 

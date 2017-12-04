@@ -17,6 +17,7 @@ import rx.Observable;
 public class CreateResoWithoutAttachmentUseCase extends UseCase<CreateResoWithoutAttachmentDomain> {
     public static final String ORDER_ID = "order_id";
     public static final String PARAM_RESULT = "result";
+    public static final String PARAM_RESOLUTION_ID = "resolutionID";
 
     private CreateResoWithoutAttachmentRepository createResoWithoutAttachmentRepository;
 
@@ -37,6 +38,9 @@ public class CreateResoWithoutAttachmentUseCase extends UseCase<CreateResoWithou
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, resultViewModel.orderId);
             params.putString(PARAM_RESULT, resultViewModel.writeToJson().toString());
+            if (resultViewModel.resolutionId != null) {
+                params.putString(PARAM_RESOLUTION_ID, resultViewModel.resolutionId);
+            }
             return params;
         } catch (Exception e) {
             e.printStackTrace();

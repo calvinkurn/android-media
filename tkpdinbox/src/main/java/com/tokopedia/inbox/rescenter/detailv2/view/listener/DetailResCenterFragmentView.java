@@ -37,6 +37,8 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionAcceptSolutionClick();
 
+    void setOnActionRecomplaintClick();
+
     void setOnActionInputAddressClick();
 
     void setOnActionAcceptAdminSolutionClick();

@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class OrderResponse {
 
+    @SerializedName("id")
+    private int id;
+
     @SerializedName("openAmount")
     private int openAmount;
 
@@ -28,5 +31,13 @@ public class OrderResponse {
 
     public void setShippingPrices(int shippingPrices) {
         this.shippingPrices = shippingPrices;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
