@@ -6,7 +6,7 @@ import com.tokopedia.gm.featured.data.model.GMFeaturedProductSubmitModel;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCase;
 import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductMapper;
 import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductSubmitMapper;
-import com.tokopedia.gm.featured.domain.model.GMFeaturedProductDomainModel;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.gm.featured.domain.model.GMFeaturedProductSubmitDomainModel;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 

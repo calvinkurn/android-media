@@ -115,4 +115,9 @@ public class HistoryAddressActivity extends BasePresenterActivity<HistoryAddress
                 .resolutionDetailModule(new ResolutionDetailModule())
                 .build();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

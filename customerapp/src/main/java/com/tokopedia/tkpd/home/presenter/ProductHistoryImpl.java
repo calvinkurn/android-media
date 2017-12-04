@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.entity.home.recentView.RecentViewData;
 import com.tokopedia.core.rxjava.RxUtils;
@@ -121,13 +120,6 @@ public class ProductHistoryImpl implements ProductHistory {
         if (mPaging.CheckNextPage()) {
             mPaging.nextPage();
             fetchDataFromInternet(context);
-        }
-    }
-
-    @Override
-    public void setLocalyticFlow(Context context, String screenName) {
-        if (context != null) {
-            ScreenTracking.screenLoca(screenName);
         }
     }
 

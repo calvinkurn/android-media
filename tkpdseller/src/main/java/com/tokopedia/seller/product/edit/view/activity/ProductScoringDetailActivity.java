@@ -34,4 +34,9 @@ public class ProductScoringDetailActivity extends BaseSimpleActivity implements 
     public ProductComponent getComponent() {
         return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }

@@ -41,11 +41,20 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     protected SwipeToRefresh swipeToRefresh;
     protected LinearLayoutManager layoutManager;
     protected int totalItem;
-    protected boolean searchMode;
     protected int currentPage;
     protected SnackbarRetry snackBarRetry;
+
+    private boolean searchMode;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
+
+    protected boolean isSearchMode() {
+        return searchMode;
+    }
+
+    protected void setSearchMode(boolean searchMode) {
+        this.searchMode = searchMode;
+    }
 
     public BaseListFragment() {
         // Required empty public constructor
@@ -130,10 +139,17 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
                 @Override
                 public void onRefresh(View view) {
-                    setAndSearchForPage(getStartPage());
+                    onPullToRefresh();
                 }
             });
         }
+    }
+
+    /**
+     * Manual refresh from pull to refresh
+     */
+    protected void onPullToRefresh() {
+        setAndSearchForPage(getStartPage());
     }
 
     @Override

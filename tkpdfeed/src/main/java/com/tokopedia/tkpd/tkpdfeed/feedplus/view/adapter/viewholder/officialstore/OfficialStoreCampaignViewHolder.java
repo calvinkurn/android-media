@@ -14,7 +14,6 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.OfficialStoreCampaignAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.BorderItemDecoration;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 
@@ -83,13 +82,12 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         recyclerView.setAdapter(adapter);
 
 
-
-
     }
 
     @Override
     public void bind(final OfficialStoreCampaignViewModel officialStoreViewModel) {
-        adapter.setList(officialStoreViewModel.getListProduct());
+        officialStoreViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(officialStoreViewModel);
         ImageHandler.LoadImage(imageView, officialStoreViewModel.getOfficialStoreHeaderImageUrl());
         title.setText(MethodChecker.fromHtml(officialStoreViewModel.getTitle()));
         mainView.setBackgroundColor(Color.parseColor(officialStoreViewModel.getHexColor()));
@@ -97,20 +95,29 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToCampaign(officialStoreViewModel.getRedirectUrl(),
+                viewListener.onGoToCampaign(
+                        officialStoreViewModel.getPage(),
+                        officialStoreViewModel.getRowNumber(),
+                        officialStoreViewModel.getRedirectUrl(),
                         officialStoreViewModel.getTitle());
             }
         });
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onSeeAllOfficialStoresFromCampaign(officialStoreViewModel.getRedirectUrl());
+                viewListener.onSeeAllOfficialStoresFromCampaign(
+                        officialStoreViewModel.getPage(),
+                        officialStoreViewModel.getRowNumber(),
+                        officialStoreViewModel.getRedirectUrl());
             }
         });
         seeAllText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onSeeAllOfficialStoresFromCampaign(officialStoreViewModel.getRedirectUrl());
+                viewListener.onSeeAllOfficialStoresFromCampaign(
+                        officialStoreViewModel.getPage(),
+                        officialStoreViewModel.getRowNumber(),
+                        officialStoreViewModel.getRedirectUrl());
             }
         });
     }

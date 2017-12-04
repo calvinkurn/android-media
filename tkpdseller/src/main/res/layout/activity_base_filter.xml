@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -42,6 +43,6 @@
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
-            android:text="@string/label_top_ads_choose_credit" />
+            android:text="@string/apply_text_description" />
     </LinearLayout>
 </LinearLayout>

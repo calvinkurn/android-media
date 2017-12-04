@@ -23,10 +23,13 @@ import com.tokopedia.core.app.MainApplication;
  */
 public class ShopProductListHeaderDelegate {
 
-    public interface ProductHeaderListListener{
+    public interface ProductHeaderListListener {
         void onToggleView();
+
         void onEtalaseClick(int pos);
+
         void onFilterClick(View v);
+
         void onSpinnerEtalaseClick();
     }
 
@@ -43,7 +46,7 @@ public class ShopProductListHeaderDelegate {
         spinnerInteractionListener = new SpinnerInteractionListener();
     }
 
-    private class VHolder extends RecyclerView.ViewHolder{
+    private class VHolder extends RecyclerView.ViewHolder {
 
         public ImageView toggle;
         public Spinner etalase;
@@ -56,14 +59,14 @@ public class ShopProductListHeaderDelegate {
             super(itemView);
             toggle = (ImageView) itemView.findViewById(R.id.toggle_view);
             filterClick = itemView.findViewById(R.id.btn_filter_sort);
-            etalase = (Spinner)itemView.findViewById(R.id.spinner_etalase);
+            etalase = (Spinner) itemView.findViewById(R.id.spinner_etalase);
             featuredProductList = (RecyclerView) itemView.findViewById(R.id.featured_product_list);
             featuredProductTitle = (TextView) itemView.findViewById(R.id.featured_product_title);
             productSectionTitle = (TextView) itemView.findViewById(R.id.product_section_title);
         }
     }
 
-    public void setEtalaseAdapter(ArrayAdapter<EtalaseAdapterModel> etalaseAdapter){
+    public void setEtalaseAdapter(ArrayAdapter<EtalaseAdapterModel> etalaseAdapter) {
         this.etalaseAdapter = etalaseAdapter;
     }
 
@@ -71,33 +74,33 @@ public class ShopProductListHeaderDelegate {
         this.featuredProductAdapter = featuredProductAdapter;
     }
 
-    public void setSelectedEtalase(int pos){
+    public void setSelectedEtalase(int pos) {
         spinnerLastPos = pos;
         spinnerSelectedPos = pos;
-        if(listener!=null) {
+        if (listener != null) {
             listener.onEtalaseClick(pos);
         }
     }
 
-    public void setProductListHeader(ProductHeaderListListener listener){
+    public void setProductListHeader(ProductHeaderListListener listener) {
         this.listener = listener;
     }
 
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent){
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shop_product_list_header, parent, false);
         return new VHolder(view);
     }
 
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int toggleIcon){
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int toggleIcon) {
         vholder = (VHolder) holder;
         vholder.toggle.setOnClickListener(onToggleView());
         vholder.filterClick.setOnClickListener(onFilterClick());
         vholder.etalase.setOnItemSelectedListener(spinnerInteractionListener);
         vholder.etalase.setOnTouchListener(spinnerInteractionListener);
-        if(vholder.etalase.getAdapter() == null)
+        if (vholder.etalase.getAdapter() == null)
             vholder.etalase.setAdapter(etalaseAdapter);
         vholder.toggle.setImageResource(toggleIcon);
-        if(hasSelection(spinnerSelectedPos))
+        if (hasSelection(spinnerSelectedPos))
             vholder.etalase.setSelection(spinnerSelectedPos);
 
         if (featuredProductAdapter.getItemCount() > 0 && isAllEtalaseSelected()) {
@@ -123,9 +126,13 @@ public class ShopProductListHeaderDelegate {
     }
 
     private boolean isAllEtalaseSelected() {
-        return etalaseAdapter != null &&
-                etalaseAdapter.getCount() > spinnerLastPos &&
-                GetShopProductParam.DEFAULT_ALL_ETALASE_ID.equals(etalaseAdapter.getItem(spinnerLastPos).getEtalaseId());
+        if (spinnerLastPos >= 0) {
+            return etalaseAdapter != null &&
+                    etalaseAdapter.getCount() > spinnerLastPos &&
+                    GetShopProductParam.DEFAULT_ALL_ETALASE_ID.equals(etalaseAdapter.getItem(spinnerLastPos).getEtalaseId());
+        } else {
+            return false;
+        }
     }
 
     private boolean hasSelection(int spinnerSelectedPos) {
@@ -145,7 +152,7 @@ public class ShopProductListHeaderDelegate {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long i) {
             if (userSelect) {
-                if(i != spinnerLastPos) {
+                if (i != spinnerLastPos) {
                     spinnerLastPos = pos;
                     if (listener != null) {
                         listener.onEtalaseClick(pos);
@@ -153,12 +160,13 @@ public class ShopProductListHeaderDelegate {
                 }
                 userSelect = false;
             }
-            if(i == spinnerSelectedPos)
+            if (i == spinnerSelectedPos)
                 spinnerSelectedPos = -1;
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
+
         }
 
     }

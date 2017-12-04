@@ -72,7 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_ms"
-                    android:background="@drawable/rect_stroke_light_gray"
+                    android:background="@drawable/bg_rect_stroke_light_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"

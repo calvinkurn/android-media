@@ -2,9 +2,7 @@ package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
 import android.text.SpannableStringBuilder;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,24 +77,25 @@ public class ProductAdditionalInfoView extends RelativeLayout {
     }
 
     @SuppressWarnings("deprecation")
-    public void convertDetailWithHtml(Product product) {
-        CharSequence detail = MethodChecker.fromHtml(product.getDetail());
-        SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
-        URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
-        for (final URLSpan span : urls) {
-            int start = strBuilderDetail.getSpanStart(span);
-            int end = strBuilderDetail.getSpanEnd(span);
-            int flags = strBuilderDetail.getSpanFlags(span);
-            ClickableSpan clickable = new ClickableSpan() {
-                public void onClick(View view) {
-                    actionListener.onProductLinkClicked(span.getURL());
-                }
-            };
-            strBuilderDetail.setSpan(clickable, start, end, flags);
-            strBuilderDetail.removeSpan(span);
+    public void convertDetailWithHtml(final Product product) {
+        if (TextUtils.isEmpty(product.getDetailUrl()) ||  TextUtils.isEmpty(product.getDetailUrlText())) {
+            tvInfo.setText(MethodChecker.fromHtml(product.getDetail()));
+        } else {
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(MethodChecker.fromHtml(product.getDetail()));
+            String detailUrl = "<a href=\"" + product.getDetailUrl() + "\"> " +
+                    product.getDetailUrlText() + "</a>";
+            stringBuilder.append(" ");
+            stringBuilder.append(MethodChecker.fromHtml(detailUrl));
+            tvInfo.setText(stringBuilder);
         }
-        tvInfo.setText(strBuilderDetail);
-        tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
+        tvInfo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!TextUtils.isEmpty(product.getDetailUrl()) & !TextUtils.isEmpty(product.getDetailUrlText())) {
+                    actionListener.onProductLinkClicked(product.getDetailUrl());
+                }
+            }
+        });
     }
 
     public interface ActionListener {

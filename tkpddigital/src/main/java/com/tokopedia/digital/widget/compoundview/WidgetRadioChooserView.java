@@ -11,10 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.operator.Operator;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class WidgetRadioChooserView extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public void renderDataView(final List<RechargeOperatorModel> operators, final LastOrder lastOrder,
+    public void renderDataView(final List<Operator> operators, final LastOrder lastOrder,
                                String lastOperatorSelected) {
         radioGroup = new RadioGroup(getContext());
         radioGroupContainer.addView(radioGroup);
@@ -66,33 +66,32 @@ public class WidgetRadioChooserView extends LinearLayout {
         for (int i = 0; i < operators.size(); i++) {
             RadioButton radioButton = new RadioButton(getContext());
             radioButton.setId(i);
-            radioButton.setText(operators.get(i).name);
+            radioButton.setText(operators.get(i).getAttributes().getName());
             radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /
                     getResources().getDisplayMetrics().density);
             radioButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_600));
             radioGroup.addView(radioButton);
         }
         radioGroup.check(radioGroup.getChildAt(0).getId());
-        RechargeOperatorModel operatorModel = operators.get(radioGroup.getChildAt(0).getId());
+        Operator operatorModel = operators.get(radioGroup.getChildAt(0).getId());
         listener.onCheckChange(operatorModel);
-        checkRadioButtonBasedOnLastOrder(operators, radioGroup, lastOrder, lastOperatorSelected);
-        radioGroup.setOnTouchListener(getOnTouchListener());
+        initCheckRadioButtonBasedOnLastOrder(operators, radioGroup, lastOrder, lastOperatorSelected);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 listener.onResetClientNumber();
                 listener.onCheckChange(operators.get(i));
+                listener.onTrackingOperator();
             }
         });
     }
 
-    private void checkRadioButtonBasedOnLastOrder(List<RechargeOperatorModel> operators,
+    private void initCheckRadioButtonBasedOnLastOrder(List<Operator> operators,
                                                   RadioGroup radioGroup, LastOrder lastOrder,
                                                   String lastOperatorSelected) {
-        if (lastOrder != null && lastOrder.getData() != null
-                && lastOrder.getData().getAttributes() != null && radioGroup != null) {
+        if (lastOrder != null && lastOrder.getAttributes() != null && radioGroup != null) {
             for (int i = 0; i < operators.size(); i++) {
-                if (operators.get(i).operatorId == lastOrder.getData().getAttributes().getOperator_id()) {
+                if (operators.get(i).getId() == lastOrder.getAttributes().getOperatorId()) {
                     radioGroup.check(radioGroup.getChildAt(i).getId());
                     listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
                 }
@@ -100,7 +99,7 @@ public class WidgetRadioChooserView extends LinearLayout {
         } else {
             if (radioGroup != null)
                 for (int i = 0; i < operators.size(); i++) {
-                    if (String.valueOf(operators.get(i).operatorId)
+                    if (String.valueOf(operators.get(i).getId())
                             .equalsIgnoreCase(lastOperatorSelected)) {
                         radioGroup.check(radioGroup.getChildAt(i).getId());
                         listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
@@ -109,20 +108,19 @@ public class WidgetRadioChooserView extends LinearLayout {
         }
     }
 
-    private View.OnTouchListener getOnTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    listener.onTrackingOperator();
+    public void checkRadioButtonBasedOnLastOrder(List<Operator> operators, LastOrder lastOrder) {
+        if (lastOrder.getAttributes() != null && radioGroup != null) {
+            for (int i = 0; i < operators.size(); i++) {
+                if (operators.get(i).getId() == lastOrder.getAttributes().getOperatorId()) {
+                    radioGroup.check(radioGroup.getChildAt(i).getId());
+                    listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
                 }
-                return false;
             }
-        };
+        }
     }
 
     public interface RadioChoserListener {
-        void onCheckChange(RechargeOperatorModel selectedOperator);
+        void onCheckChange(Operator selectedOperator);
 
         void onResetClientNumber();
 

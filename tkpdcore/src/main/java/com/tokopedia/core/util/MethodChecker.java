@@ -94,6 +94,11 @@ public class MethodChecker {
         return result;
     }
 
+    public static Spanned fromHtmlPreserveLineBreak(String text) {
+        String lineBreakHtmlResult = text.replace("\n", "<br />");
+        return fromHtml(lineBreakHtmlResult);
+    }
+
     public static SmsMessage createSmsFromPdu(Intent intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             SmsMessage[] msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent);

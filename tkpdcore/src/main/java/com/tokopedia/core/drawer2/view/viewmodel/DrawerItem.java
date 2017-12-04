@@ -24,6 +24,14 @@ public class DrawerItem {
         this.isNew=isNew;
     }
 
+    public DrawerItem(String label, int id, boolean isExpanded,boolean isNew) {
+        this.id = id;
+        this.label = label;
+        this.isExpanded = isExpanded;
+        this.notif = 0;
+        this.isNew=isNew;
+    }
+
     public DrawerItem(String label, int iconId, int id, boolean isExpanded) {
         this.id = id;
         this.label = label;

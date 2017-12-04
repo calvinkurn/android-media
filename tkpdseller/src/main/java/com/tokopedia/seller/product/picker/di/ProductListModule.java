@@ -1,6 +1,10 @@
 package com.tokopedia.seller.product.picker.di;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
@@ -40,5 +44,15 @@ public class ProductListModule {
     @Provides
     GetProductListSellerApi provideGetProductListApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(GetProductListSellerApi.class);
+    }
+
+    @ProductListScope
+    @Provides
+    SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
+        if(context instanceof SellerModuleRouter){
+            return ((SellerModuleRouter)context);
+        }else{
+            return null;
+        }
     }
 }

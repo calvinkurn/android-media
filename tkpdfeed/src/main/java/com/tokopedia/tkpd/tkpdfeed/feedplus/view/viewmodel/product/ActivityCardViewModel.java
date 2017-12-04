@@ -18,6 +18,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
     private String feedId;
     private String shareLinkDescription;
     private String cursor;
+    private int rowNumber;
 
     public ActivityCardViewModel(ProductCardHeaderViewModel productCardHeaderViewModel,
                                  ArrayList<ProductFeedViewModel> listProduct,
@@ -106,5 +107,13 @@ public class ActivityCardViewModel extends ProductCardViewModel {
 
     public int getPage() {
         return page;
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
     }
 }

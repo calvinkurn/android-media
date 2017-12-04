@@ -77,74 +77,11 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
         return photo.getAbsolutePath();
     }
 
-    public static File writeImageToTkpdPath(InputStream source) {
-        OutputStream outStream = null;
-        File dest = null;
-        try {
-
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            outStream = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = source.read(buffer)) > 0) {
-
-                outStream.write(buffer, 0, length);
-
-            }
-
-            source.close();
-            outStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
-    }
-
-    public static File writeImageToTkpdPath(File source) {
-        InputStream inStream = null;
-        OutputStream outStream = null;
-        File dest = null;
-        try {
-
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            inStream = new FileInputStream(source);
-            outStream = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = inStream.read(buffer)) > 0) {
-
-                outStream.write(buffer, 0, length);
-
-            }
-
-            inStream.close();
-            outStream.close();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
-    }
-
+    /**
+     * Folder Path for upload is random, and generated everytime the function called
+     * use FileUtils.writeImageToTkpdPath instead
+     */
+    @Deprecated
     public static File writeImageToTkpdPath(byte[] buffer) {
         File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
         if (!directory.exists()) {

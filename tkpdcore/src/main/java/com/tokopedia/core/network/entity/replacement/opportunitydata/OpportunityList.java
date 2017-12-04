@@ -56,6 +56,15 @@ public class OpportunityList {
     @SerializedName("order_destination")
     @Expose
     private OrderDestination orderDestination;
+    @SerializedName("replacement_multiplier_value")
+    @Expose
+    private int replacementMultiplierValue;
+    @SerializedName("replacement_multiplier_value_str")
+    @Expose
+    private String replacementMultiplierValueStr;
+    @SerializedName("replacement_multiplier_color")
+    @Expose
+    private String replacementMultiplierColor;
 
     public int getOrderReplacementId() {
         return orderReplacementId;
@@ -185,4 +194,15 @@ public class OpportunityList {
         this.orderDestination = orderDestination;
     }
 
+    public int getReplacementMultiplierValue() {
+        return replacementMultiplierValue;
+    }
+
+    public String getReplacementMultiplierValueStr() {
+        return replacementMultiplierValueStr;
+    }
+
+    public String getReplacementMultiplierColor() {
+        return replacementMultiplierColor;
+    }
 }

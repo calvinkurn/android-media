@@ -103,7 +103,7 @@ public class RecommendShopRecyclerViewAdapter extends RecyclerView.Adapter<Recom
 
     private void setShopCover(ViewHolder holder,ImageView shopCover, String coverUri) {
         if(coverUri == null ){
-            shopCover.setImageResource(R.drawable.ic_loading_toped);
+            shopCover.setImageResource(R.drawable.loading_page);
         }else {
 //            ImageHandler.LoadImageFit(shopCover, coverUri);
             ImageHandler.loadImageFit2(holder.getContext(),shopCover, coverUri);
@@ -129,7 +129,7 @@ public class RecommendShopRecyclerViewAdapter extends RecyclerView.Adapter<Recom
             @Override
             public void onClick(View view) {
                 TopAdsUtil.clickTopAdsAction(context, shop.shopClickUrl);
-                UnifyTracking.eventFavoriteViewRecommendation(shop.name);
+                UnifyTracking.eventFavoriteViewRecommendation();
                 Intent intent = new Intent(context, ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(shop.id, "", shop.name, shop.iconUri, shop.coverUri, Integer.parseInt(shop.isFav));
                 bundle.putString(ShopInfoActivity.SHOP_AD_KEY, shop.adKey);

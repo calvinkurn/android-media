@@ -18,11 +18,9 @@ import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.utils.DeviceUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -156,6 +154,11 @@ public class CategoryProductStyle1View extends
         }
     }
 
+    @Override
+    public void clearFocusOnClientNumber() {
+        clientNumberInputView.clearFocus();
+    }
+
     /**
      * apakah mendukung instant checkout ?
      */
@@ -196,15 +199,9 @@ public class CategoryProductStyle1View extends
             clientNumberInputView.setText(lastClientNumberHistory);
         }
 
-
         if (hasLastOrderHistoryData()) {
             if (!data.getClientNumberList().isEmpty()) {
-                List<String> recentClientNumberString = new ArrayList<>();
-                for (OrderClientNumber orderClientNumber
-                        : historyClientNumber.getRecentClientNumberList()) {
-                    recentClientNumberString.add(orderClientNumber.getClientNumber());
-                }
-                clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
+                clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
             }
         }
     }
@@ -353,6 +350,19 @@ public class CategoryProductStyle1View extends
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
+            }
+
+            @Override
+            public void onClientNumberHasFocus(String clientNumber) {
+                actionListener.onClientNumberClicked(clientNumber,
+                        data.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
+            }
+
+            @Override
+            public void onClientNumberCleared() {
+                actionListener.onClientNumberCleared(data.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
             }
         };
     }

@@ -28,18 +28,22 @@ public class TkpdDigitalResponse {
 
     private static final String KEY_DATA = "data";
     private static final String KEY_INCLUDED = "included";
+    private static final String KEY_META = "meta";
     private static final String KEY_ERROR = "errors";
     private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
 
 
     private JsonElement jsonElementData;
     private JsonElement jsonElementIncluded;
+    private JsonElement jsonElementMeta;
     private Object objData;
     private Object objIncluded;
+    private Object objMeta;
     private String message;
     private String strResponse;
     private String strData;
     private String strIncluded;
+    private String strMeta;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static TkpdDigitalResponse factory(String strResponse) throws IOException {
@@ -49,6 +53,7 @@ public class TkpdDigitalResponse {
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
         String strData;
         String strIncluded;
+        String strMeta;
         if (!jsonResponse.has(KEY_DATA) || jsonResponse.get(KEY_DATA).isJsonNull()) {
             if (jsonResponse.has(KEY_ERROR)) {
                 try {
@@ -80,12 +85,24 @@ public class TkpdDigitalResponse {
         } else {
             strIncluded = null;
         }
+
+        if (!jsonResponse.has(KEY_META) || jsonResponse.get(KEY_META).isJsonNull()) {
+            strMeta = null;
+        } else if (jsonResponse.has(KEY_META) && jsonResponse.get(KEY_META).isJsonObject()) {
+            strMeta = jsonResponse.get(KEY_META).getAsJsonObject().toString();
+        } else if (jsonResponse.has(KEY_META) && jsonResponse.get(KEY_META).isJsonArray()) {
+            strMeta = jsonResponse.get(KEY_META).getAsJsonArray().toString();
+        } else {
+            strMeta = null;
+        }
         tkpdDigitalResponse.setJsonElementData(jsonResponse.get(KEY_DATA));
         tkpdDigitalResponse.setJsonElementIncluded(jsonResponse.get(KEY_INCLUDED));
+        tkpdDigitalResponse.setJsonElementMeta(jsonResponse.get(KEY_META));
         tkpdDigitalResponse.setMessage("");
         tkpdDigitalResponse.setStrData(strData);
         tkpdDigitalResponse.setStrIncluded(strIncluded);
         tkpdDigitalResponse.setStrResponse(strResponse);
+        tkpdDigitalResponse.setStrMeta(strMeta);
         return tkpdDigitalResponse;
     }
 
@@ -107,6 +124,30 @@ public class TkpdDigitalResponse {
 
     private void setJsonElementData(JsonElement jsonElementData) {
         this.jsonElementData = jsonElementData;
+    }
+
+    public Object getObjMeta() {
+        return objMeta;
+    }
+
+    public void setObjMeta(Object objMeta) {
+        this.objMeta = objMeta;
+    }
+
+    public String getStrMeta() {
+        return strMeta;
+    }
+
+    public void setStrMeta(String strMeta) {
+        this.strMeta = strMeta;
+    }
+
+    public JsonElement getJsonElementMeta() {
+        return jsonElementMeta;
+    }
+
+    public void setJsonElementMeta(JsonElement jsonElementMeta) {
+        this.jsonElementMeta = jsonElementMeta;
     }
 
     void setMessage(String message) {
@@ -206,6 +247,38 @@ public class TkpdDigitalResponse {
             return (List<T>) objIncluded;
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public <T> T convertMetaObj(Class<T> clazz) {
+        if (objMeta == null) {
+            try {
+                this.objMeta = gson.fromJson(strMeta, clazz);
+                return (T) objMeta;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return (T) objMeta;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> convertMetaList(Class<T[]> clazz) {
+        if (objMeta == null) {
+            try {
+                this.objMeta = Arrays.asList((T[])
+                        (this.objMeta = gson.fromJson(strMeta, clazz)));
+                return (List<T>) objMeta;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return (List<T>) objMeta;
+        }
+    }
+
 
     /**
      * @author anggaprasetiyo on 3/7/17.

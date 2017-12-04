@@ -31,7 +31,7 @@ import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
 import com.tokopedia.gm.statistic.view.adapter.GMStatisticTransactionTableAdapter;
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
-import com.tokopedia.gm.statistic.view.builder.CheckedBottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 
@@ -134,7 +134,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_gmstat_transaction_table, menu);
+        inflater.inflate(R.menu.menu_gm_statistic_transaction_table, menu);
     }
 
     @Override

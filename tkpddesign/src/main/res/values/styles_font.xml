@@ -107,6 +107,9 @@
     <style name="TextView.Body1.Green.Bold">
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="TextView.Body1.Orange">
+        <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
     <style name="TextView.Body1.BlackPrimary">
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>

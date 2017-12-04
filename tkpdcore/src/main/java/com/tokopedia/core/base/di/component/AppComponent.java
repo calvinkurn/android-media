@@ -16,6 +16,7 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
 import com.tokopedia.core.cache.di.module.CacheModule;
 import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
@@ -30,6 +31,8 @@ import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -61,11 +64,11 @@ public interface AppComponent {
 
     void inject(TActivity baseActivity);
 
-    @ApplicationContext
-    Context context();
-
     @TopAdsQualifier
     Retrofit topAdsRetrofit();
+
+    @ApplicationContext
+    Context context();
 
     @AceQualifier
     Retrofit aceRetrofit();
@@ -78,6 +81,12 @@ public interface AppComponent {
 
     @MojitoQualifier
     Retrofit mojitoRetrofit();
+
+    @MojitoGetWishlistQualifier
+    Retrofit mojitoGetWishlistRetrofit();
+
+    @MojitoWishlistActionQualifier
+    Retrofit mojitoWishlistActionRetrofit();
 
     @HadesQualifier
     Retrofit hadesRetrofit();
@@ -129,11 +138,13 @@ public interface AppComponent {
     @ApiCacheQualifier
     LocalCacheHandler localCacheHandler();
 
+    CacheApiDataManager cacheApiDataManager();
+
     ApiCacheRepository apiCacheRepository();
 
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
 
-    ApiCacheDataSource cacheHelper();
+    ApiCacheDataSource apiCacheDataSource();
 
     CacheApiClearAllUseCase cacheApiClearAllUseCase();
 }

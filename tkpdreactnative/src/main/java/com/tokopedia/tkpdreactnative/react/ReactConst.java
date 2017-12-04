@@ -9,8 +9,11 @@ public interface ReactConst {
     String GET = "GET";
     String POST = "POST";
     String DELETE = "DELETE";
+    String PUT = "PUT";
+    String HEAD = "HEAD";
     String MAIN_MODULE = "MAIN";
     String KEY_SCREEN = "Screen";
+    String SUB_PAGE = "SubPage";
     String CODE_PUSH_DEPLOYMENT_KEY_STAGING = "KVr25gFyi1fzn-AA9KP88Ly2dRoeb85766e2-9e25-4371-8aa3-080b8952449b";
     String CODE_PUSH_DEPLOYMENT_KEY = "mZj7iHeXLW9NvlYFf7vANLKYJ7jub85766e2-9e25-4371-8aa3-080b8952449b";
 
@@ -18,6 +21,7 @@ public interface ReactConst {
         String HOTLIST = "HotList";
         String OFFICIAL_STORE = "official-store";
         String PROMO = "promo-page";
+        String PROMO_TERMS = "promo-terms";
     }
 
     interface EventEmitter{
@@ -29,4 +33,15 @@ public interface ReactConst {
         String PAGE_DESTROYED = "PageDestroyed";
     }
 
+    interface Networking{
+        String WSAUTH = "wsauth";
+        String BEARER = "bearer";
+
+        String URL = "url";
+        String PARAMS = "params";
+        String METHOD = "method";
+        String ENCODING = "encoding";
+        String HEADERS = "headers";
+        String AUTHORIZATIONMODE = "authorizationMode";
+    }
 }

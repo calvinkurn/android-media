@@ -1,20 +1,23 @@
 package com.tokopedia.core.app;
 
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.localytics.android.Localytics;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -48,6 +51,9 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -70,9 +76,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
-    @Inject
+
     protected SessionHandler sessionHandler;
-    @Inject
+
     protected GCMHandler gcmHandler;
 
     private Boolean isPause = false;
@@ -92,12 +98,12 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-
+        sessionHandler = new SessionHandler(getBaseContext());
         categoryDatabaseManager = new CategoryDatabaseManager();
+        gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
-        Localytics.registerPush(gcmHandler.getSenderID());
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
@@ -203,7 +209,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Localytics.onNewIntent(this, intent);
     }
 
     public void initGTM() {
@@ -229,6 +234,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
             } else {
+                invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -355,12 +361,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
+                            invalidateCategoryCache();
                             Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
                     }
                 });
+    }
+
+    private void invalidateCategoryCache() {
+        ((TkpdCoreRouter) getApplication()).invalidateCategoryMenuData();
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -387,5 +398,4 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
-
 }

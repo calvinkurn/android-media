@@ -65,6 +65,11 @@ public class EtalasePickerActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     public ProductComponent getComponent() {
         return ((SellerModuleRouter) getApplication()).getProductComponent();
     }

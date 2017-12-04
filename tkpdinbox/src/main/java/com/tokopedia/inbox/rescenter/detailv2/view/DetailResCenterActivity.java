@@ -126,4 +126,9 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     public AppComponent getComponent() {
         return getApplicationComponent();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -67,9 +67,7 @@
         <item name="android:textColor">@color/text_submit_button</item>
     </style>
 
-    <style name="Button.Submit.Green.WithoutBorder">
-        <item name="android:background">@drawable/bg_button_green</item>
-        <item name="android:textColor">@color/text_submit_button</item>
+    <style name="Button.Submit.Green.Full">
         <item name="android:layout_marginLeft">0dp</item>
         <item name="android:layout_marginRight">0dp</item>
         <item name="android:layout_marginBottom">0dp</item>
@@ -112,6 +110,16 @@
     <style name="CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:textSize">@dimen/font_subheading</item>
         <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
+
+    <style name="CardViewWidget" parent="CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="CardViewWidget.Voucher" >
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardElevation">0dp</item>
     </style>
 
 </resources>

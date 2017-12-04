@@ -76,4 +76,9 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity impl
     protected void onResume() {
         super.onResume();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -78,6 +78,7 @@ public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailVi
                     .setPrice(data.getInfo().getProductPrice())
                     .setUri(data.getInfo().getProductUrl())
                     .setType(ShareData.PRODUCT_TYPE)
+                    .setId(data.getInfo().getProductId().toString())
                     .build();
             listener.onProductShareClicked(shareData);
         }

@@ -15,4 +15,10 @@ public class ProductListPickerConstant {
     public static final String QUERY_KEYWORD = "keyword";
     public static final String EXTRA_PRODUCT_LIST_SUBMIT = "extra_product_list_submit";
     public static final String PRODUCT_LIST_PICKER_IS_EMPTY_ALLOW_EXTRA = "product_list_picker_is_empty_allow_extra";
+    public static final String QUERY_CATALOG = "catalog_id";
+    public static final String QUERY_CONDITION = "condition";
+    public static final String QUERY_DEPARTMENT_ID = "department_id";
+    public static final String QUERY_ETALASE_ID = "etalase_id";
+    public static final String QUERY_PICTURE_STATUS = "picture_status";
+    public static final String REQUEST_PER_PAGE_MANAGE_PRODUCT = "20";
 }

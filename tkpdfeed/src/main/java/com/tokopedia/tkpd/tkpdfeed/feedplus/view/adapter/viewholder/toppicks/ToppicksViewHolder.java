@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.ToppicksAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
@@ -26,6 +25,7 @@ public class ToppicksViewHolder extends AbstractViewHolder<ToppicksViewModel> {
     private TextView seeAll;
     private ToppicksAdapter adapter;
     private FeedPlus.View.Toppicks toppicksListener;
+    private ToppicksViewModel toppicksViewModel;
 
     public ToppicksViewHolder(View itemView, final FeedPlus.View.Toppicks toppicksListener) {
         super(itemView);
@@ -37,17 +37,19 @@ public class ToppicksViewHolder extends AbstractViewHolder<ToppicksViewModel> {
         adapter = new ToppicksAdapter(toppicksListener);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
-
     }
 
     @Override
-    public void bind(ToppicksViewModel element) {
-        adapter.setList(element.getList());
+    public void bind(final ToppicksViewModel toppicksViewModel) {
+        this.toppicksViewModel = toppicksViewModel;
+        this.toppicksViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(this.toppicksViewModel);
 
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toppicksListener.onSeeAllToppicks();
+                toppicksListener.onSeeAllToppicks(toppicksViewModel.getPage(),
+                        toppicksViewModel.getRowNumber());
             }
         });
     }

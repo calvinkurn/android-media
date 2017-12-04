@@ -3,7 +3,6 @@ package com.tokopedia.core.cache.domain.interactor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 
@@ -23,21 +22,16 @@ public class SaveToDbUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
         super(threadExecutor, postExecutionThread, apiCacheRepository);
     }
 
-    public SaveToDbUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
-        super(apiCacheRepository);
-    }
-
     @Override
     public Observable<Boolean> createChildObservable(RequestParams requestParams) {
         final Response response = (Response) requestParams.getObject(RESPONSE);
-
-        return apiCacheRepository.isInWhiteListRaw(paramsCacheApiData.getHost(), paramsCacheApiData.getPath()).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
+        return apiCacheRepository.getWhiteList(cacheApiData.getHost(), cacheApiData.getPath()).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
                 if (cacheApiWhitelist != null) {
-                    return apiCacheRepository.updateResponse(paramsCacheApiData, cacheApiWhitelist, response);
+                    return apiCacheRepository.updateResponse(response, (int) cacheApiWhitelist.getExpiredTime());
                 } else {
-                    return null;
+                    return Observable.just(false);
                 }
             }
         });

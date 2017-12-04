@@ -1,14 +1,15 @@
 package com.tokopedia.tkpd.remoteconfig;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.R;
 
 /**
@@ -16,45 +17,54 @@ import com.tokopedia.tkpd.R;
  */
 
 public class RemoteConfigFetcher {
-    private static final int CONFIG_CACHE_EXPIRATION = 1000;
+    private static final int THREE_HOURS = 10800000;
+    private static final int CONFIG_CACHE_EXPIRATION = THREE_HOURS;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private Activity activity;
-    private static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "mainapp_show_app_share_button";
-    private static final String APP_SHARE_DESCRIPTION_KEY = "app_share_description";
 
+    public static FirebaseRemoteConfig initRemoteConfig(Context context) {
+        try {
+            if (FirebaseApp.getInstance() == null) {
+                FirebaseApp.initializeApp(context);
+            }
+
+            return FirebaseRemoteConfig.getInstance();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     public RemoteConfigFetcher(Activity activity) {
-        this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        this.firebaseRemoteConfig = initRemoteConfig(activity);
         this.activity = activity;
     }
 
-    public void fetch(final Listener listener) {
-        firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
-        firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
-                .addOnCompleteListener(this.activity, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            firebaseRemoteConfig.activateFetched();
+    public void fetch(@Nullable final Listener listener) {
+        if (firebaseRemoteConfig != null && activity != null) {
+            firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
+            firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
+                    .addOnCompleteListener(activity, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                firebaseRemoteConfig.activateFetched();
+                            }
+                            if (activity != null && listener != null) {
+                                listener.onComplete(firebaseRemoteConfig);
+                            }
                         }
-                        listener.onComplete(firebaseRemoteConfig);
-                        saveFetchedDataToCache();
-                    }
-                })
-                .addOnFailureListener(this.activity, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        listener.onError(e);
-                    }
-                });
-    }
-
-    private void saveFetchedDataToCache() {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.FIREBASE_REMOTE_CONFIG);
-        localCacheHandler.putBoolean(TkpdCache.Key.SHOW_HIDE_APP_SHARE_BUTTON_KEY, firebaseRemoteConfig.getBoolean(SHOW_HIDE_APP_SHARE_BUTTON_KEY));
-        localCacheHandler.putString(TkpdCache.Key.APP_SHARE_DESCRIPTION_KEY, firebaseRemoteConfig.getString(APP_SHARE_DESCRIPTION_KEY));
-        localCacheHandler.applyEditor();
+                    })
+                    .addOnFailureListener(this.activity, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (activity != null && listener != null) {
+                                listener.onError(e);
+                            }
+                        }
+                    });
+        }
     }
 
     public interface Listener {

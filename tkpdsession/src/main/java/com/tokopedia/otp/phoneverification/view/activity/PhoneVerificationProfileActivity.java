@@ -111,4 +111,9 @@ public class PhoneVerificationProfileActivity extends BasePresenterActivity {
     protected void setActionVar() {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

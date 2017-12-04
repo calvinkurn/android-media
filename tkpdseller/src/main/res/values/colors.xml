@@ -21,4 +21,8 @@
     <color name="colorSheetText">#DE000000</color>
     <color name="colorSheetTitle">#8A000000</color>
     <color name="colorSheetDivider">#3f717171</color>
+    <color name="colorStockEmpty">#fff7bc</color>
+
+    <color name="redTransparant">#AAd50000</color>
+    <color name="watermark_text_color">#26DDDDDD</color>
 </resources>

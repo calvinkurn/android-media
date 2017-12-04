@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.transaction">
-
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
@@ -47,12 +46,16 @@
         <activity
             android:name=".wallet.WalletActivity"
             android:label="@string/toko_cash_info"/>
+        <activity
+            android:name=".bcaoneklik.activity.CreditCardAuthenticationActivity"
+            android:label="Pengaturan Autentikasi"/>
 
-        <activity android:name=".bcaoneklik.BcaOneClickActivity" />
+        <activity android:name=".bcaoneklik.BcaOneClickActivity"/>
 
-        <activity android:name=".bcaoneklik.BcaOneClickEditActivity" />
+        <activity android:name=".bcaoneklik.BcaOneClickEditActivity"/>
 
-        <activity android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
+        <activity
+            android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
             android:label="@string/label_payment_setting"/>
 
         <service

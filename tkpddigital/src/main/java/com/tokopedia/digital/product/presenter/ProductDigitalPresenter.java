@@ -27,6 +27,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
@@ -39,11 +40,13 @@ import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 import com.tokopedia.digital.product.model.PulsaBalance;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
+import com.tokopedia.digital.widget.presenter.BaseDigitalWidgetPresenter;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -57,7 +60,12 @@ import rx.Subscriber;
  * @author anggaprasetiyo on 4/26/17.
  */
 
-public class ProductDigitalPresenter implements IProductDigitalPresenter {
+public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
+        implements IProductDigitalPresenter {
+
+    private static final String PULSA_CATEGORY_ID = "1";
+    private static final String PAKET_DATA_CATEGORY_ID = "2";
+    private static final String ROAMING_CATEGORY_ID = "20";
 
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
@@ -88,9 +96,11 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
+    private final static String balance = "balance";
 
     public ProductDigitalPresenter(IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor) {
+        super(view.getActivity());
         this.view = view;
         this.productDigitalInteractor = productDigitalInteractor;
     }
@@ -98,18 +108,26 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     @Override
     public void processGetCategoryAndBannerData() {
         String categoryId = view.getCategoryId();
+
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         if (GlobalConfig.isSellerApp()) {
             paramQueryCategory.put(PARAM_IS_RESELLER, "1");
         }
+
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
+
+        TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
+        paramQueryNumberList.put("category_id", categoryId);
+        paramQueryNumberList.put("sort", "label");
+
         view.showInitialProgressLoading();
+
         productDigitalInteractor.getCategoryAndBanner(
                 view.getCategoryId(),
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
                 view.getGeneratedAuthParamNetwork(paramQueryBanner),
-                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
+                view.getGeneratedAuthParamNetwork(paramQueryNumberList),
                 view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
                 getSubscriberProductDigitalData()
         );
@@ -301,6 +319,22 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 List<BannerData> otherBannerDataList = productDigitalData.getOtherBannerDataList();
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
+                if (historyClientNumber.getLastOrderClientNumber() == null) {
+                    String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
+                    String verifiedNumber = SessionHandler.getPhoneNumber();
+                    if (!TextUtils.isEmpty(lastTypedClientNumber)) {
+                        historyClientNumber.setLastOrderClientNumber(
+                                new OrderClientNumber.Builder()
+                                        .clientNumber(lastTypedClientNumber)
+                                        .build());
+                    } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
+                            !TextUtils.isEmpty(verifiedNumber)) {
+                        historyClientNumber.setLastOrderClientNumber(
+                                new OrderClientNumber.Builder()
+                                        .clientNumber(verifiedNumber)
+                                        .build());
+                    }
+                }
                 renderCategoryDataAndBannerToView(
                         categoryData, bannerDataList, otherBannerDataList, historyClientNumber
                 );
@@ -308,6 +342,10 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         };
     }
 
+    private boolean isPulsaOrPaketDataOrRoaming(String categoryId) {
+        return categoryId.equals(PULSA_CATEGORY_ID) || categoryId.equals(PAKET_DATA_CATEGORY_ID) ||
+                categoryId.equals(ROAMING_CATEGORY_ID);
+    }
 
     private void renderCategoryDataAndBannerToView(CategoryData categoryData,
                                                    List<BannerData> bannerDataList,
@@ -361,7 +399,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     private void renderCheckPulsaBalanceDataToView() {
-        view.renderCheckPulsaBalanceData(null);
+        view.renderCheckPulsaBalanceData();
     }
 
     @Override
@@ -372,9 +410,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
-
             }
-
         } else {
             view.showAccessibilityAlertDialog();
         }
@@ -495,12 +531,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message, int selectedSim) {
-        String number = getDeviceMobileNumber(selectedSim);
+        String number = getUssdPhoneNumberFromCache(selectedSim);
         if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getUssdPhoneNumberFromCache(selectedSim);
+            number = getDeviceMobileNumber(selectedSim);
         }
         RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
-        requestBodyPulsaBalance.setType("balance");
+        requestBodyPulsaBalance.setType(balance);
         Attributes attributes = new Attributes();
         attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator(selectedSim).getOperatorId()));
         attributes.setMessage(message);
@@ -528,9 +564,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     @Override
     public Operator getSelectedUssdOperator(int selectedSim) {
-        String number = getDeviceMobileNumber(selectedSim);
+        String number = getUssdPhoneNumberFromCache(selectedSim);
         if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getUssdPhoneNumberFromCache(selectedSim);
+            number = getDeviceMobileNumber(selectedSim);
         }
         List<Operator> selectedOperatorList = getSelectedUssdOperatorList(selectedSim);
         for (Operator operator : selectedOperatorList) {
@@ -584,7 +620,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         if (ussdHandler != null) {
             ussdHandler.removeCallbacksAndMessages(null);
         }
-
     }
 
     @Override

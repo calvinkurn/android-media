@@ -41,8 +41,8 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     CategoryPickerPresenter presenter;
 
     private CategoryPickerLevelAdapter adapter;
-    private CategoryPickerFragmentListener listener;
-    private long selectedCategoryId;
+    protected CategoryPickerFragmentListener listener;
+    protected long selectedCategoryId;
 
     public static CategoryPickerFragment createInstance(long currentSelected) {
         CategoryPickerFragment categoryPickerFragment = new CategoryPickerFragment();
@@ -95,7 +95,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         presenter.unsubscribe();
     }
 
-    private void setupRecyclerView(View view) {
+    protected void setupRecyclerView(View view) {
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
         categoryRecyclerView.setMotionEventSplittingEnabled(false);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -111,7 +111,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         categoryRecyclerView.setAdapter(adapter);
     }
 
-    private void initVar() {
+    protected void initVar() {
         if (selectedCategoryId == INIT_UNSELECTED) {
             presenter.fetchCategoryLevelOne();
         } else {

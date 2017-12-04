@@ -2,7 +2,7 @@ package com.tokopedia.discovery.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -45,9 +45,11 @@ import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.ShareActivity;
-import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
@@ -56,7 +58,6 @@ import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.fragment.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.presenter.BrowsePresenter;
@@ -64,8 +65,11 @@ import com.tokopedia.discovery.presenter.BrowsePresenterImpl;
 import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.view.BrowseProductParentView;
-
-import org.json.JSONObject;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,6 +95,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String CHANGE_GRID_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".LAYOUT";
     public static final String GRID_TYPE_EXTRA = "GRID_TYPE_EXTRA";
+    public static final String TAG_SHOWCASE_BOTTOM_NAV = "-SHOWCASE_BOTTOM_NAVIGATION";
     public static final int REQUEST_SORT = 121;
     private static final String SEARCH_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SEARCH";
     private static final int BOTTOM_BAR_GRID_TYPE_ITEM_POSITION = 2;
@@ -100,6 +105,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private FragmentManager fragmentManager;
     private BrowsePresenter browsePresenter;
     private MenuItem searchItem;
+
+    private ShowCaseDialog showCaseDialog;
 
     @BindView(R2.id.progressBar)
     ProgressBar progressBar;
@@ -114,60 +121,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @BindView(R2.id.search)
     DiscoverySearchView discoverySearchView;
 
-
-    @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
-    public static Intent getCallingIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putString(AD_SRC, TopAdsApi.SRC_DIRECTORY);// ini yang buat ganti ganti
-        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
-        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_DIRECTORY);
-        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
-        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
-        return intent
-                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
-                .putExtras(bundle);
-    }
-
-    @DeepLink(Constants.Applinks.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
-        intent.putExtra(EXTRAS_SEARCH_TERM, bundle.getString(BrowseApi.Q, bundle.getString("keyword", "")));
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putString(AD_SRC, TopAdsApi.SRC_BROWSE_PRODUCT);
-        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
-        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_DIRECTORY);
-        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
-        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT);
-        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
-        return intent
-                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
-                .putExtras(bundle);
-    }
-
-    @DeepLink(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL)
-    public static Intent getCallingApplinkHostlistIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putString(AD_SRC, TopAdsApi.SRC_HOTLIST);
-        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, bundle.getString("alias", ""));
-        intent.putExtra(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, bundle.getString("alias", ""));
-        BrowseProductActivityModel browseProductActivityModel = new BrowseProductActivityModel();
-        browseProductActivityModel.setAdSrc(TopAdsApi.SRC_HOTLIST);
-        browseProductActivityModel.setDepartmentId(bundle.getString(BrowseProductRouter.DEPARTMENT_ID, "0"));
-        browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-        browseProductActivityModel.setAlias(bundle.getString("alias", ""));
-        browseProductActivityModel.setFilterOptions(convertBundleToMaps(bundle));
-
-        return intent
-                .putExtra(BrowsePresenterImpl.EXTRA_BROWSE_MODEL, browseProductActivityModel)
-                .putExtras(bundle);
-    }
-
     private static HashMap<String, String> convertBundleToMaps(Bundle bundle) {
         HashMap<String, String> maps = new HashMap<>();
         Set<String> keys = bundle.keySet();
@@ -176,7 +129,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
         return maps;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -465,7 +417,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void openCategoryNavigation(
-                           String departmentId) {
+            String departmentId) {
         CategoryNavigationActivity.moveTo(BrowseProductActivity.this, departmentId);
 
     }
@@ -488,6 +440,50 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             items.add(new AHBottomNavigationItem(getString(R.string.title_category), R.drawable.ic_category_black));
         }
         return items;
+    }
+
+    private void startShowCase() {
+        final String showCaseTag = BrowseProductActivity.class.getName()+TAG_SHOWCASE_BOTTOM_NAV;
+        if (ShowCasePreference.hasShown(BrowseProductActivity.this, showCaseTag) || showCaseDialog != null) {
+            return;
+        }
+        showCaseDialog = createShowCase();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
+
+        Rect rectToShowCase = new Rect();
+        bottomNavigation.getGlobalVisibleRect(rectToShowCase);
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+        showCaseObjectList.add(new ShowCaseObject(
+                bottomNavigation,
+                getResources().getString(R.string.choose_category),
+                getResources().getString(R.string.choose_category_desc),
+                ShowCaseContentPosition.UNDEFINED,
+                R.color.tkpd_main_green).withCustomTarget(new int[]{ rectToShowCase.right-(bottomNavigation.getWidth()/bottomNavigation.getItemsCount()),
+                rectToShowCase.top-(int)getResources().getDimension(R.dimen.bottom_navigation_height_elevation), rectToShowCase.right, rectToShowCase.bottom}));
+        showCaseDialog.show(BrowseProductActivity.this, showCaseTag, showCaseObjectList);
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.view_onboarding_category_nav)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.title_done)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .arrowWidth(R.dimen.category_nav_showcase_arrow)
+                .build();
     }
 
     @Override
@@ -606,6 +602,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     public void setupAllItemsBottomBar(String source) {
         setupBottomBar(getBottomItemsAll(), source);
+
+        if (browsePresenter.isFromCategory()) {
+            startShowCase();
+        }
     }
 
     @Override
@@ -615,7 +615,15 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void close() {
-        finish();
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -684,9 +692,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void startShareActivity(ShareData shareData) {
-        Intent intent = new Intent(BrowseProductActivity.this, ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
-        startActivity(intent);
+       startActivity(ShareActivity.createIntent(BrowseProductActivity.this,shareData));
     }
 
     @Override
@@ -794,7 +800,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void onBackPressed() {
         if (discoverySearchView.isSearchOpen()) {
             if (discoverySearchView.isFinishOnClose()) {
-                finish();
+               // finish();
+                close();
             } else {
                 discoverySearchView.closeSearch();
             }

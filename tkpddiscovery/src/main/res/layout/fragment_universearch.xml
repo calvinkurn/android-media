@@ -13,12 +13,13 @@
         app:tabBackground="@color/white"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/tkpd_green_header"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/tkpd_green_header">
 
     </android.support.design.widget.TabLayout>
 
-    <android.support.v4.view.ViewPager
+    <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
+import com.tokopedia.core.cache.util.CacheApiUtils;
 
 import javax.inject.Inject;
 
@@ -17,7 +17,8 @@ import rx.Observable;
 
 public class CacheApiDataDeleteUseCase extends UseCase<Boolean> {
 
-    public static final String DELETE_WHITELIST_DATA = "DELETE_WHITELIST_DATA";
+    private static final String PARAM_DOMAIN = "PARAM_DOMAIN";
+    private static final String PARAM_PATH = "PARAM_PATH";
 
     private ApiCacheRepository apiCacheRepository;
 
@@ -32,13 +33,22 @@ public class CacheApiDataDeleteUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        Object object = requestParams.getObject(DELETE_WHITELIST_DATA);
-        return apiCacheRepository.singleDataDelete((CacheApiDataDomain) object);
+        String domain = requestParams.getString(PARAM_DOMAIN, "");
+        String path = requestParams.getString(PARAM_PATH, "");
+        return apiCacheRepository.deleteCachedData(domain, path);
     }
 
-    public static RequestParams createParams(CacheApiDataDomain cacheApiDataDomainToDelete){
+    public static RequestParams createParams(String url) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(DELETE_WHITELIST_DATA, cacheApiDataDomainToDelete);
+        requestParams.putObject(PARAM_DOMAIN, CacheApiUtils.getHost(url));
+        requestParams.putObject(PARAM_PATH, CacheApiUtils.getPath(url));
+        return requestParams;
+    }
+
+    public static RequestParams createParams(String host, String path) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(PARAM_DOMAIN, host);
+        requestParams.putObject(PARAM_PATH, path);
         return requestParams;
     }
 }

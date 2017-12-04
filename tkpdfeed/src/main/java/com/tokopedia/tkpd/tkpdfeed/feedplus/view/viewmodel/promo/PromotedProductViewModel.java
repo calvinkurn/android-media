@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 public class PromotedProductViewModel extends ProductCardViewModel {
 
+    private int rowNumber;
+
     public PromotedProductViewModel(ArrayList<ProductFeedViewModel> listProduct) {
         this.listProduct = listProduct;
     }
@@ -25,7 +27,11 @@ public class PromotedProductViewModel extends ProductCardViewModel {
         return listProduct;
     }
 
-    public void setListProduct(ArrayList<ProductFeedViewModel> listProduct) {
-        this.listProduct = listProduct;
+    public int getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
     }
 }

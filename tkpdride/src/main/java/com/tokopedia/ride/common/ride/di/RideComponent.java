@@ -23,14 +23,9 @@ import dagger.Component;
 @RideScope
 @Component(modules = RideModule.class, dependencies = AppComponent.class)
 public interface RideComponent {
-    ApiCacheRepository apiCacheRepository();
-
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
-
-    ApiCacheDataSource cacheHelper();
 
     GCMHandler gcmHandler();
-
+    
     SessionHandler sessionHandler();
 
     ThreadExecutor threadExecutor();

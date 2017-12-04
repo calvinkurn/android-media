@@ -152,6 +152,35 @@ public class KMNumbers {
         }
     }
 
+    /**
+     * 25.123 => 25.12
+     * 25.2555 => 25.26
+     * 26 => 26
+     */
+    public static String formatDouble2PCheckRound(double number, boolean useCommaAsThousand) {
+        // check if integer
+        String numberString;
+        // if the difference between rounded and not rounded is 0
+        if (number - Math.floor(number) == 0) {
+            numberString = formatDecimalString(Math.round(number), useCommaAsThousand);
+        } else {
+            numberString = formatDouble2P(number, useCommaAsThousand);
+        }
+        return numberString;
+    }
+
+    /**
+     * 25.123 => 25.12
+     * 25.2555 => 25.26
+     */
+    public static String formatDouble2P(Double number, boolean useCommaAsThousand) {
+        if (useCommaAsThousand) {
+            return String.format(Locale.US, FORMAT_2_DOUBLE, number);
+        } else {
+            return String.format(locale, FORMAT_2_DOUBLE, number);
+        }
+    }
+
     public static String formatDouble2P(Double number) {
         return String.format(locale, FORMAT_2_DOUBLE, number);
     }

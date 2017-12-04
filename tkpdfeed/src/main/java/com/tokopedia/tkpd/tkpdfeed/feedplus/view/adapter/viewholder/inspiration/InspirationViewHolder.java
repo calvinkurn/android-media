@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.InspirationAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 
 /**
@@ -26,8 +25,6 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
     TextView textView;
 
     private InspirationAdapter adapter;
-
-    private InspirationViewModel inspirationViewModel;
 
     public InspirationViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
@@ -60,9 +57,9 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
 
     @Override
     public void bind(InspirationViewModel inspirationViewModel) {
-        this.inspirationViewModel = inspirationViewModel;
-        adapter.setList(inspirationViewModel.getListProduct());
-        textView.setText(inspirationViewModel.getInspired());
+        inspirationViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(inspirationViewModel);
+        textView.setText(inspirationViewModel.getTitle());
     }
 
 }

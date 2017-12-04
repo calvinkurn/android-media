@@ -33,10 +33,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
+
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
+
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 
@@ -54,10 +55,14 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author Erry Suprayogi
  */
+@SuppressWarnings("all")
 public class DiscoverySearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
     private static final String TAG = DiscoverySearchView.class.getSimpleName();
     private static final String LOCALE_INDONESIA = "in_ID";
+    public static final int TAB_SHOP_SUGGESTION = 1;
+    public static final int TAB_PRODUCT_SUGGESTION = 0;
+    public static final int TAB_DEFAULT_SUGGESTION = TAB_PRODUCT_SUGGESTION;
     private MenuItem mMenuItem;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
@@ -300,6 +305,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         public void onClick(View v) {
             if (v == mBackBtn) {
                 if (finishOnClose && activity != null) {
+                    KeyboardHandler.DropKeyboard(activity, mSearchSrcTextView);
                     activity.finish();
                 } else {
                     closeSearch();
@@ -599,13 +605,24 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }
         }
 
-        String source = ((BrowseProductActivity) activity).getBrowseProductActivityModel().getSource();
-        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP.equals(source)) {
-            mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_SHOP);
-        } else {
-            mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_PRODUCT);
-        }
         mIsSearchOpen = true;
+    }
+
+    public void showSearch(boolean animate, int tab) {
+        showSearch(animate);
+
+        switch (tab) {
+            case TAB_SHOP_SUGGESTION:
+                mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_SHOP);
+                break;
+            case TAB_PRODUCT_SUGGESTION:
+                mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_PRODUCT);
+                break;
+            default:
+                mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_PRODUCT);
+                break;
+        }
+
     }
 
     private void setVisibleWithAnimation() {
@@ -664,6 +681,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public void setLastQuery(String lastQuery) {
         this.lastQuery = lastQuery;
+    }
+
+    public String getLastQuery() {
+        return lastQuery;
     }
 
     /**

@@ -26,6 +26,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_OFFICIAL_VALUE;
+
 
 /**
  * @author Angga.Prasetiyo on 27/10/2015.
@@ -36,6 +38,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private ImageView ivGoldShop;
     private ImageView ivOfficialStore;
     private ImageView ivLuckyShop;
+    private ImageView ivLocation;
     private TextView tvShopName;
     private TextView tvShopLoc;
     private TextView tvLastOnline;
@@ -93,13 +96,19 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         llRating = (LinearLayout) findViewById(R.id.l_rating);
         llReputationMedal = (LinearLayout) findViewById(R.id.l_medal);
         lastOnlineImageView = (ImageView) findViewById(R.id.last_online_icon);
+        ivLocation = (ImageView) findViewById(R.id.icon_location);
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
         tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
-        tvShopLoc.setText(data.getShopInfo().getShopLocation());
+        if (data.getShopInfo().getShopIsOfficial()==SHOP_OFFICIAL_VALUE) {
+            ivLocation.setImageDrawable(ContextCompat.getDrawable(getContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
+            tvShopLoc.setText(getResources().getString(com.tokopedia.core.R.string.authorized));
+        } else {
+            tvShopLoc.setText(data.getShopInfo().getShopLocation());
+        }
         if (data.getShopInfo().getShopStats().getShopBadge() != null) generateMedal(data);
         ImageHandler.loadImage2(ivShopAva, data.getShopInfo().getShopAvatar(),
                 R.drawable.ic_default_shop_ava);
@@ -107,7 +116,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
 
         displayLastLogin(data);
 
-        favoriteButton.setVisibility(data.getShopInfo().getShopIsOwner() == 1 ? GONE : VISIBLE);
+        favoriteButton.setVisibility(data.getShopInfo().getShopIsAllowManage() == 1 ? GONE : VISIBLE);
         ivGoldShop.setVisibility(showGoldBadge(data) ? VISIBLE : GONE);
         switchOfficialStoreBadge(data.getShopInfo().getShopIsOfficial());
 
@@ -205,7 +214,9 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                                 String.valueOf(data.getShopInfo().getShopId()),
                                 data.getShopInfo().getShopName(),
                                 data.getInfo().getProductName(),
-                                TkpdInboxRouter.PRODUCT);
+                                data.getInfo().getProductUrl(),
+                                TkpdInboxRouter.PRODUCT,
+                                data.getShopInfo().getShopAvatar());
                 listener.onProductShopMessageClicked(intent);
             }
         }

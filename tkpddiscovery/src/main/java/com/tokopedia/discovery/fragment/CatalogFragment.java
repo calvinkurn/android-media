@@ -321,6 +321,15 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         browseCatalogAdapter.incrementPage();
     }
 
+    @Override
+    public void displayEmptyResult() {
+        topAdsRecyclerAdapter.shouldLoadAds(false);
+        browseCatalogAdapter.setSearchNotFound();
+        browseCatalogAdapter.notifyItemInserted(1);
+        setLoading(false);
+        ((BrowseProductActivity) getActivity()).showLoading(false);
+    }
+
     private int getLastItemPosition() {
         switch (gridType) {
             case GRID_1:

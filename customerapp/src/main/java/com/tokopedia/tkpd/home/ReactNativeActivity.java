@@ -3,16 +3,8 @@ package com.tokopedia.tkpd.home;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,17 +13,20 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
-public class ReactNativeActivity extends BasePresenterActivity {
+public class ReactNativeActivity extends BasePresenterActivity implements ReactNativeView {
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String EXTRA_URL = "EXTRA_URL";
+    public static final String OS_PROMO_PAGE = "OS Promo Page";
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
@@ -43,10 +38,30 @@ public class ReactNativeActivity extends BasePresenterActivity {
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO})
     public static Intent getOfficialStoresPromoApplinkCallingIntent(Context context, Bundle bundle) {
+        ScreenTracking.screen(OS_PROMO_PAGE);
         return ReactNativeActivity.createBannerReactNativeActivity(
                 context, ReactConst.Screen.PROMO,
                 bundle.getString("slug")
         ).putExtras(bundle);
+    }
+
+    @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
+    public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle) {
+        ScreenTracking.screen(OS_PROMO_PAGE);
+        return ReactNativeActivity.createBannerReactNativeActivity(
+                context, ReactConst.Screen.PROMO,
+                bundle.getString("slug")
+        ).putExtras(bundle);
+    }
+
+    @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO_TERMS})
+    public static Intent getOffiicialStoreTermsIntent(Context context, Bundle bundle) {
+        return ReactNativeActivity.createOfficialStoreTerms(
+                context,
+                ReactConst.Screen.PROMO,
+                context.getString(R.string.official_store_term_conditions_title),
+                bundle
+        );
     }
 
     public static Intent createOfficialStoresReactNativeActivity(Context context,
@@ -72,36 +87,21 @@ public class ReactNativeActivity extends BasePresenterActivity {
         return intent;
     }
 
+    private static Intent createOfficialStoreTerms(Context context, String reactScreenName, String title, Bundle extras) {
+        Intent intent = new Intent(context, ReactNativeActivity.class);
+        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
+        extras.putString(EXTRA_TITLE, title);
+        intent.putExtras(extras);
+        return intent;
+    }
+
     private void setToolbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.white)));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        CommonUtils.dumper("GAv4 "+getIntent().getExtras().getString(EXTRA_TITLE));
         if (getIntent() != null && getIntent().getExtras() != null) {
             String title = getIntent().getExtras().getString(EXTRA_TITLE);
             if (!TextUtils.isEmpty(title)) {
                 toolbar.setTitle(title);
             }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-        }
-
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
     }
 
@@ -128,13 +128,26 @@ public class ReactNativeActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         setToolbar();
-        Bundle initialProps = getIntent().getExtras();
+        Bundle initialProps = getReactNativeProps();
         ReactNativeOfficialStoreFragment fragment = ReactNativeOfficialStoreFragment.createInstance(initialProps);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
+    }
+
+    private Bundle getReactNativeProps() {
+        Bundle bundle = getIntent().getExtras();
+        Bundle newBundle = new Bundle();
+        for (String key : bundle.keySet()) {
+            if (!key.equalsIgnoreCase("is_deep_link_flag") &&
+                    !key.equalsIgnoreCase("android.intent.extra.REFERRER") &&
+                    !key.equalsIgnoreCase("deep_link_uri")){
+                newBundle.putString(key, bundle.getString(key));
+            }
+        }
+        return newBundle;
     }
 
     @Override
@@ -171,5 +184,10 @@ public class ReactNativeActivity extends BasePresenterActivity {
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void actionSetToolbarTitle(String title) {
+        toolbar.setTitle(title);
     }
 }

@@ -66,6 +66,17 @@ public class Datum {
     @SerializedName("label_of")
     @Expose
     private String labelOf;
+    @SerializedName("group_bid")
+    @Expose
+    private int groupBid;
+
+    public int getGroupBid() {
+        return groupBid;
+    }
+
+    public void setGroupBid(int groupBid) {
+        this.groupBid = groupBid;
+    }
 
     public int getKeywordId() {
         return keywordId;

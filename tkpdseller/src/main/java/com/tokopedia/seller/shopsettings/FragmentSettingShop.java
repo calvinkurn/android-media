@@ -58,7 +58,6 @@ public class FragmentSettingShop extends TkpdFragment{
 		ResID.clear();
 		Name.add(getString(R.string.title_shop_information_menu));
 		Name.add(getString(R.string.title_shipping_menu));
-		Name.add(getString(R.string.title_payment_menu));
 		Name.add(getString(R.string.title_etalase_menu));
 		Name.add(getString(R.string.title_notes_menu));
 		Name.add(getString(R.string.title_location_menu));
@@ -90,21 +89,16 @@ public class FragmentSettingShop extends TkpdFragment{
 						startActivity(intent);
 						break;
 					case 2:
-						UnifyTracking.eventManageShopPayment();
-						intent = new Intent(getActivity(), PaymentEditor.class);
-						startActivity(intent);
-						break;
-					case 3:
 						UnifyTracking.eventManageShopEtalase();
 						intent = new Intent(getActivity(), EtalaseShopEditor.class);
 						startActivity(intent);
 						break;
-					case 4:
+					case 3:
 						UnifyTracking.eventManageShopNotes();
 						intent = new Intent(getActivity(), ManageShopNotesActivity.class);
 						startActivity(intent);
 						break;
-					case 5:
+					case 4:
 						UnifyTracking.eventManageShopLocation();
 						intent = new Intent(getActivity(), ManageShopAddress.class);
 						startActivity(intent);

@@ -16,7 +16,7 @@ import com.tokopedia.core.deposit.presenter.WithdrawPresenter;
 /**
  * Created by Nisie on 4/13/16.
  */
-public class WithdrawActivity extends BasePresenterActivity<WithdrawPresenter>{
+public class WithdrawActivity extends BasePresenterActivity<WithdrawPresenter> {
 
     @Override
     public String getScreenName() {
@@ -69,5 +69,10 @@ public class WithdrawActivity extends BasePresenterActivity<WithdrawPresenter>{
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }
