@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -127,6 +128,7 @@ public class DetailResChatFragment
     private boolean isLoadingMore = false;
     private int oldAddressId;
     private int conversationId;
+    private int buttonWidth;
 
     private Dialog resCenterDialog;
     @Inject
@@ -307,6 +309,11 @@ public class DetailResChatFragment
         attachmentAdapter = AttachmentAdapter.createAdapter(getActivity(), true);
         attachmentAdapter.setListener(getAttachmentAdapterListener());
         rvAttachment.setAdapter(attachmentAdapter);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        buttonWidth = (displayMetrics.widthPixels / 4) - (5 * (int) getResources().getDimension(R.dimen.margin_vs));
+
         initView();
     }
 
@@ -413,6 +420,7 @@ public class DetailResChatFragment
                         getActivity(),
                         resolutionId,
                         detailResChatDomain.getNextAction()));
+                getBottomSheetActivityTransition();
             }
         });
 
@@ -558,10 +566,15 @@ public class DetailResChatFragment
     public void successGetConversation(DetailResChatDomain detailResChatDomain) {
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
-        etChat.setEnabled(!(detailResChatDomain.getResolution().getStatus() == STATUS_CANCEL
-                || detailResChatDomain.getResolution().getStatus() == STATUS_FINISHED));
-        ivSend.setEnabled(!(detailResChatDomain.getResolution().getStatus() == STATUS_CANCEL
-                || detailResChatDomain.getResolution().getStatus() == STATUS_FINISHED));
+        if (detailResChatDomain.getResolution().getStatus() == STATUS_CANCEL ||
+                detailResChatDomain.getResolution().getStatus() == STATUS_FINISHED) {
+            etChat.setEnabled(false);
+            ivSend.setEnabled(false);
+            etChat.clearFocus();
+        } else {
+            etChat.setEnabled(true);
+            ivSend.setEnabled(true);
+        }
     }
 
     @Override
@@ -724,8 +737,10 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showActionDialog(buttonDomain.getAcceptLabel(), buttonDomain
-                                .getAcceptText(), new View.OnClickListener() {
+                        showAcceptActionDialog(buttonDomain.getAcceptLabel(),
+                                buttonDomain.getAcceptText(),
+                                detailResChatDomain.getLast().getSolution().getName(),
+                                new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 presenter.actionAcceptSolution();
@@ -770,7 +785,7 @@ public class DetailResChatFragment
         Button button = new Button(getActivity());
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_chat_button_action));
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
-        button.setLayoutParams(new LinearLayout.LayoutParams((int) getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_width),
+        button.setLayoutParams(new LinearLayout.LayoutParams(buttonWidth,
                 (int) getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_height)));
         button.setGravity(Gravity.CENTER);
         button.setText(name);
@@ -793,9 +808,38 @@ public class DetailResChatFragment
         ImageView ivClose = resCenterDialog.findViewById(R.id.iv_close);
         Button btnBack = resCenterDialog.findViewById(R.id.btn_back);
         Button btnAccept = resCenterDialog.findViewById(R.id.btn_yes);
-        String newTitle = title + " ?";
+        String newTitle = title + "?";
         tvTitle.setText(newTitle);
         tvSolution.setText(MethodChecker.fromHtml(solution));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resCenterDialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resCenterDialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(action);
+        resCenterDialog.show();
+    }
+
+    private void showAcceptActionDialog(String title, String solutionTitle, String solution, View.OnClickListener action) {
+        resCenterDialog = new Dialog(getActivity());
+        resCenterDialog.setContentView(R.layout.layout_rescenter_accept_dialog);
+        TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
+        TextView tvSolutionTitle = resCenterDialog.findViewById(R.id.tv_solution_title);
+        TextView tvSolution = resCenterDialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = resCenterDialog.findViewById(R.id.iv_close);
+        Button btnBack = resCenterDialog.findViewById(R.id.btn_back);
+        Button btnAccept = resCenterDialog.findViewById(R.id.btn_yes);
+        String newTitle = title + "?";
+        tvTitle.setText(newTitle);
+        tvSolution.setText(MethodChecker.fromHtml(solution));
+        tvSolutionTitle.setText(MethodChecker.fromHtml(solutionTitle));
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -818,6 +862,7 @@ public class DetailResChatFragment
                 InputShippingActivity.createNewPageIntent(getActivity(), resolutionId),
                 REQUEST_INPUT_SHIPPING
         );
+        getBottomSheetActivityTransition();
     }
 
     private void doInputAddress() {
@@ -1056,6 +1101,10 @@ public class DetailResChatFragment
     @Override
     public void doEditSolution() {
         startActivityForResult(getIntentEditResCenter(), REQUEST_EDIT_SOLUTION);
+    }
+
+    public void getBottomSheetActivityTransition() {
+        getActivity().overridePendingTransition(R.anim.pull_up, R.anim.push_down);
     }
 
     @Override

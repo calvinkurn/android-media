@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 
@@ -36,7 +37,7 @@ public class ChatProveAdapter extends RecyclerView.Adapter<ChatProveAdapter.Hold
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         ConversationAttachmentDomain attachment = attachmentList.get(position);
-        Glide.with(context).load(attachment.getThumb()).into(holder.ivImage);
+        ImageHandler.LoadImage(holder.ivImage, attachment.getThumb());
     }
 
     @Override

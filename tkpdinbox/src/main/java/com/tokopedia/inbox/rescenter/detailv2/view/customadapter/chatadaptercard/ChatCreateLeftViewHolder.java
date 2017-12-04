@@ -98,25 +98,26 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
                 mainView.intentToSeeAllProducts();
             }
         });
+        rvProve.setVisibility(View.GONE);
+        tvProve.setVisibility(View.GONE);
         if (element.getConversationDomain().getAttachment() != null && element.getConversationDomain().getAttachment().size() != 0) {
             rvProve.setVisibility(View.VISIBLE);
             tvProve.setVisibility(View.VISIBLE);
             rvProve.setLayoutManager(new LinearLayoutManager(context));
             proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
             rvProve.setAdapter(proveAdapter);
-        } else {
-            rvProve.setVisibility(View.GONE);
-            tvProve.setVisibility(View.GONE);
         }
+
+        ffBubble2.setVisibility(View.GONE);
+        layoutDate2.setVisibility(View.GONE);
         if (element.getConversationDomain().getProduct() != null && element.getConversationDomain().getProduct().size() != 0) {
             ffBubble2.setVisibility(View.VISIBLE);
+            layoutDate2.setVisibility(View.VISIBLE);
             rvProduct.setLayoutManager(new GridLayoutManager(context, COUNT_MAX_PRODUCT));
             productAdapter = new ChatProductAdapter(context,
                     element.getConversationDomain().getProduct(),
                     COUNT_MAX_PRODUCT);
             rvProduct.setAdapter(productAdapter);
-        } else {
-            ffBubble2.setVisibility(View.GONE);
         }
     }
 

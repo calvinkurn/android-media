@@ -36,6 +36,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_54"
                     android:textStyle="bold"
+                    android:textSize="@dimen/fontvs"
                     context:text="meminta bantuan admin"/>
 
                 <TextView
@@ -45,6 +46,7 @@
                     android:textColor="@color/black_54"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:visibility="gone"
+                    android:textSize="@dimen/fontvs"
                     context:visibility="visible"
                     context:text="Content 2"/>
 

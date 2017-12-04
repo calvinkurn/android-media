@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductGeneralAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
@@ -21,6 +22,8 @@ import com.tokopedia.inbox.rescenter.utils.ChatTitleColorUtil;
  */
 
 public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftViewModel> {
+
+    public static final int COUNT_MAX_PRODUCT = 5;
 
     public static final int ACTION_BY_USER = 1;
     public static final int ACTION_BY_SELLER = 2;
@@ -34,7 +37,7 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
     View layoutDate, layoutTitle;
     TextView tvMessage, tvDate, tvTitle, tvReasonTitle, tvReason, tvAttachment, tvUserTitle, tvUsername;
     RecyclerView rvAttachment;
-    ChatProveAdapter adapter;
+    ChatProductGeneralAdapter adapter;
 
     public ChatSystemLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
@@ -89,7 +92,7 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
                     itemView.getContext(),
                     LinearLayoutManager.HORIZONTAL,
                     false));
-            adapter = new ChatProveAdapter(MainApplication.getAppContext(), element.getConversation().getAttachment());
+            adapter = new ChatProductGeneralAdapter(MainApplication.getAppContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
             rvAttachment.setAdapter(adapter);
         }
 

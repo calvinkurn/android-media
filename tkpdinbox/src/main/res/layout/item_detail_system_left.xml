@@ -34,11 +34,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tv_message"
                     android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -47,15 +49,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
                     android:text="@string/string_reason"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tv_reason"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontvs"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:textColor="@color/black_54"/>
 
@@ -64,15 +67,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
                     android:text="@string/string_awb_attachment"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/fontvs"
                     android:textStyle="bold"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_attachment"
                     android:layout_width="wrap_content"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     android:visibility="visible"/>
             </LinearLayout>

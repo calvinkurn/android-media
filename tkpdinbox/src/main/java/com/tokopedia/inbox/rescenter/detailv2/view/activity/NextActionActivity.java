@@ -83,6 +83,13 @@ public class NextActionActivity
     protected void initView() {
         toolbar.setTitle(getResources().getString(R.string.string_title_next_step));
         presenter.initFragment();
+
+    }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
     }
 
     @Override

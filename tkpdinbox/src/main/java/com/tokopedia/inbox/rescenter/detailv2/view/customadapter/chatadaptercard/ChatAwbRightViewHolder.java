@@ -12,6 +12,8 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductAdapter;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductGeneralAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatAwbRightViewModel;
@@ -25,11 +27,13 @@ public class ChatAwbRightViewHolder extends AbstractViewHolder<ChatAwbRightViewM
     @LayoutRes
     public static final int LAYOUT = R.layout.item_detail_awb_right;
 
+    public static final int COUNT_MAX_PRODUCT = 5;
+
     DetailResChatFragmentListener.View mainView;
     View layoutDate;
     TextView tvMessage, tvDate, tvTitle, tvTitleAttachment;
     RecyclerView rvAttachment;
-    ChatProveAdapter adapter;
+    ChatProductGeneralAdapter adapter;
     Button btnTrack, btnEdit;
 
     public ChatAwbRightViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
@@ -65,8 +69,8 @@ public class ChatAwbRightViewHolder extends AbstractViewHolder<ChatAwbRightViewM
         } else {
             rvAttachment.setVisibility(View.VISIBLE);
             tvTitleAttachment.setVisibility(View.VISIBLE);
-            adapter = new ChatProveAdapter(itemView.getContext(), element.getConversation().getAttachment());
-            rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+            adapter = new ChatProductGeneralAdapter(itemView.getContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
+            rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvAttachment.setAdapter(adapter);
         }
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());

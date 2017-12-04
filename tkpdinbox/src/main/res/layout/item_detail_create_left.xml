@@ -38,6 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
                     context:text="title"/>
 
                 <TextView
@@ -54,6 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vs"
+                    android:textSize="@dimen/fontvs"
                     android:textColor="@color/black_54"/>
 
                 <TextView
@@ -70,6 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vs"
+                    android:textSize="@dimen/fontvs"
                     android:textColor="@color/black_54"/>
 
                 <TextView
@@ -86,6 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_vs"
+                    android:textSize="@dimen/fontvs"
                     android:textColor="@color/black_54"/>
 
                 <TextView
@@ -96,14 +100,17 @@
                     android:text="@string/string_buyer_prove"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/fontvs"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    context:visibility="visible"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_prove"
                     android:layout_width="wrap_content"
                     android:layout_height="80dp"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:visibility="visible"/>
+                    android:visibility="gone"
+                    context:visibility="visible"/>
             </LinearLayout>
 
         </FrameLayout>
