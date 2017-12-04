@@ -7,8 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-
 /**
  * Created by Angga.Prasetiyo on 01/02/2016.
  */
@@ -33,11 +31,6 @@ public class GlobalMainTabSelectedListener implements TabLayout.OnTabSelectedLis
             View focus = activity.getCurrentFocus();
             if (focus != null) {
                  hiddenKeyboard(focus,this.activity);
-            }
-            if (tab.getPosition() == 0 && viewPager.getAdapter().getCount() == 5) {
-                if (activity instanceof ShopInfoActivity) {
-                    ((ShopInfoActivity) activity).swipeAble(true);
-                }
             }
         }
     }
