@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -22,11 +22,12 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
@@ -124,7 +125,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                                 == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                             listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                         } else {
+
                             prepareAndExecuteApplinkNotification(data);
+
                         }
                     } else {
                         prepareAndExecuteApplinkNotification(data);
@@ -148,17 +151,22 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         String serverId = "";
         switch (category) {
             case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
-                if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
-                    serverId = Uri.parse(applinks).getLastPathSegment();
+                if (MainApplication.getInstance() instanceof RemoteConfigRouter
+                        && !((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
+                        (TkpdInboxRouter.ENABLE_TOPCHAT)) {
+
+                    customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
+                    if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
+                        serverId = Uri.parse(applinks).getLastPathSegment();
+                    }
+                    saveApplinkPushNotification(
+                            category,
+                            convertBundleToJsonString(data),
+                            customIndex,
+                            serverId,
+                            new SavePushNotificationCallback()
+                    );
                 }
-                saveApplinkPushNotification(
-                        category,
-                        convertBundleToJsonString(data),
-                        customIndex,
-                        serverId,
-                        new SavePushNotificationCallback()
-                );
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
                 customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
@@ -184,6 +192,25 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 }
                 break;
 
+            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                if (MainApplication.getInstance() instanceof RemoteConfigRouter
+                        && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
+                        (TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                        NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                        listener.onGetNotif(data);
+                    } else {
+                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                        String fullname = data
+                                .getString("full_name");
+                        applink += "?" + "fullname=" + fullname;
+                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                        ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                        applinkBuildAndShowNotification.showApplinkNotification(data);
+                    }
+                }
+                break;
             default:
                 ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
                 applinkBuildAndShowNotification.showApplinkNotification(data);

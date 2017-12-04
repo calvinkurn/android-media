@@ -17,6 +17,9 @@ public class HotListBannerModel implements Parcelable {
     @SerializedName("info")
     public Info info;
 
+    @SerializedName("disable_topads")
+    public int disableTopads;
+
     public static class Query implements Parcelable {
         @SerializedName("ob")
         public String ob;
@@ -190,6 +193,9 @@ public class HotListBannerModel implements Parcelable {
     }
 
 
+    public HotListBannerModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -199,19 +205,16 @@ public class HotListBannerModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.query, flags);
         dest.writeParcelable(this.info, flags);
-    }
-
-    public HotListBannerModel() {
+        dest.writeInt(this.disableTopads);
     }
 
     protected HotListBannerModel(Parcel in) {
         this.query = in.readParcelable(Query.class.getClassLoader());
         this.info = in.readParcelable(Info.class.getClassLoader());
+        this.disableTopads = in.readInt();
     }
 
-    public static final Parcelable.Creator<HotListBannerModel> CREATOR
-            = new Parcelable.Creator<HotListBannerModel>() {
-
+    public static final Creator<HotListBannerModel> CREATOR = new Creator<HotListBannerModel>() {
         @Override
         public HotListBannerModel createFromParcel(Parcel source) {
             return new HotListBannerModel(source);

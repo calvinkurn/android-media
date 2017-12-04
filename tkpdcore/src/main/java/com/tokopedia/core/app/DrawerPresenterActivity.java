@@ -27,6 +27,8 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
+import static android.R.string.no;
+
 /**
  * Created on 3/23/16.
  */
@@ -115,7 +117,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.getProfile();
     }
 
-    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler){
+    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {
         drawerDataManager.getUserAttributes(sessionHandler);
     }
 
@@ -190,6 +192,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     }
 
+    @Override
+    public void onGetNotif(Bundle data) {
+
+    }
+
     public void setDrawerEnabled(boolean isEnabled) {
         drawerHelper.setEnabled(isEnabled);
     }
@@ -220,8 +227,9 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onGetNotificationDrawer(DrawerNotification notification) {
+        onSuccessGetTopChatNotification(notification.getInboxMessage());
 
-        int notificationCount = notification.getTotalNotif();
+        int notificationCount = drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF);
 
         TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
         if (notifRed != null) {
@@ -229,11 +237,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                 notifRed.setVisibility(View.GONE);
             } else {
                 notifRed.setVisibility(View.VISIBLE);
-                String totalNotif = notification.getTotalNotif() > MAX_NOTIF ?
-                        getString(R.string.max_notif) : String.valueOf(notification.getTotalNotif());
+                String totalNotif = drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF) > MAX_NOTIF ?
+                        getString(R.string.max_notif) : String.valueOf(drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF));
                 notifRed.setText(totalNotif);
             }
         }
+
         if (notification.isUnread()) {
             MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.green_circle));
         } else {
@@ -241,6 +250,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         }
 
         setDataDrawer();
+
+    }
+
+    @Override
+    public void onErrorGetNotificationTopchat(String errorMessage) {
 
     }
 
@@ -346,5 +360,10 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     @Override
     public void onRetryTokoCash() {
         drawerDataManager.getTokoCash();
+    }
+
+    @Override
+    public void onSuccessGetTopChatNotification(int notifUnreads) {
+
     }
 }

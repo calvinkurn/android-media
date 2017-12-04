@@ -44,7 +44,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected TextView titleSuggestionBid;
     protected V detailAd;
     private TextInputLayout maxPriceInputLayout;
-    private PrefixEditText maxPriceEditText;
+    protected PrefixEditText maxPriceEditText;
     private RadioGroup budgetRadioGroup;
     private RadioButton budgetLifeTimeRadioButton;
     private RadioButton budgetPerDayRadioButton;
@@ -53,7 +53,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     private PrefixEditText budgetPerDayEditText;
     private String suggestionBidText;
     private String prefixSuggestion;
-    private boolean isFirstTime; // when first time, all edit text should be empty without validation
+    protected boolean isFirstTime; // when first time, all edit text should be empty without validation
     private String IS_FIRST_TIME = "IS_FIRST_TIME";
 
     protected void onClickedNext() {
@@ -127,6 +127,14 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         setSuggestionBidText(data.getData().get(0).getMedianFmt());
     }
 
+    protected void setSuggestionBidText(@Nullable TextView text, @Nullable GetSuggestionResponse data){
+        if(data == null || text == null)
+            return;
+        this.suggestionBidText = data.getData().get(0).getMedianFmt();
+
+        text.setText(getSuggestionBidRaw());
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -172,12 +180,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
                     return;
                 }
 
-                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
-                if (!TextUtils.isEmpty(errorMessage)) {
-                    maxPriceInputLayout.setError(errorMessage);
-                } else {
-                    maxPriceInputLayout.setError(null);
-                }
+                checkMaxPrice(number);
 
                 String suggestionBidRaw = getSuggestionBidRaw();
                 if (suggestionBidRaw == null)
@@ -233,7 +236,19 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
+    private void checkMaxPrice(double number) {
+        String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
+        if (!TextUtils.isEmpty(errorMessage)) {
+            maxPriceInputLayout.setError(errorMessage);
+        } else {
+            maxPriceInputLayout.setError(null);
+        }
+    }
+
     protected void setDefaultSuggestionBidText() {
+        if(getSuggestionBidRaw() != null && !getSuggestionBidRaw().isEmpty()){
+            return;
+        }
         titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
         titleSuggestionBidUse.setVisibility(View.GONE);
     }
@@ -258,8 +273,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     protected void populateDataFromFields() {
         String priceBid = maxPriceEditText.getTextWithoutPrefix();
+
         if (TextUtils.isEmpty(priceBid)) {
-            detailAd.setPriceBid(Float.valueOf(getSuggestionBidRaw()));
+            detailAd.setPriceBid(0);
         } else {
             detailAd.setPriceBid(Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(priceBid)));
         }
@@ -275,6 +291,15 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             }
             detailAd.setBudget(true);
         }
+    }
+
+    protected boolean firstTimeCheck() {
+        if (isFirstTime) {
+            isFirstTime = false;
+            checkMaxPrice(0);
+            return true;
+        }
+        return false;
     }
 
     protected void loadAd(V detailAd) {
