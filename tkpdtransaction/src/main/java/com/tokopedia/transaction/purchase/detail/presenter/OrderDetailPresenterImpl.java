@@ -136,6 +136,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void cancelOrder(Context context, String orderId, String notes) {
+        mainView.showProgressDialog();
         TKPDMapParam<String, String> cancelOrderParam = new TKPDMapParam<>();
         cancelOrderParam.put("order_id", orderId);
         cancelOrderParam.put("reason_cancel", notes);
@@ -147,6 +148,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     public void cancelReplacement(Context context, String orderId,
                                   int reasonCode,
                                   String reasonText) {
+        mainView.showProgressDialog();
         TKPDMapParam<String, String> temporaryParam = new TKPDMapParam<>();
         temporaryParam.put("order_id", orderId);
         temporaryParam.put("reason", reasonText);
@@ -220,11 +222,13 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
             @Override
             public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
                 mainView.showErrorSnackbar(e.getMessage());
             }
 
             @Override
             public void onNext(String s) {
+                mainView.dismissProgressDialog();
                 mainView.onOrderFinished(s);
             }
         };
@@ -239,11 +243,13 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
             @Override
             public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
                 mainView.showErrorSnackbar(e.getMessage());
             }
 
             @Override
             public void onNext(String s) {
+                mainView.dismissProgressDialog();
                 mainView.onSearchCancelled(s);
             }
         };

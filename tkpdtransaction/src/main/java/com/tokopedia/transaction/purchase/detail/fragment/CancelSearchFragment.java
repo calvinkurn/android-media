@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
@@ -117,6 +118,7 @@ public class CancelSearchFragment extends TkpdFragment{
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if(checked) {
                     otherReasonRadioButton.setChecked(false);
+                    otherReasonField.setVisibility(View.GONE);
                     otherRadioButton1.setChecked(false);
                     otherRadioButton2.setChecked(false);
                 }
@@ -133,6 +135,7 @@ public class CancelSearchFragment extends TkpdFragment{
                     reasonRadioButton2.setChecked(false);
                     reasonRadioButton3.setChecked(false);
                 }
+                otherReasonField.setVisibility(View.VISIBLE);
                 otherReasonField.requestFocus();
                 otherReasonField.setSelection(otherReasonField.getText().length());
             }
@@ -152,6 +155,7 @@ public class CancelSearchFragment extends TkpdFragment{
                     otherRadioButton1.setChecked(false);
                     otherRadioButton2.setChecked(false);
                     otherReasonRadioButton.setChecked(false);
+                    otherReasonField.setVisibility(View.GONE);
                 }
             }
         };
@@ -163,6 +167,7 @@ public class CancelSearchFragment extends TkpdFragment{
             public void onClick(View view) {
                 if(!otherReasonRadioButton.isChecked()) {
                     otherReasonRadioButton.setChecked(true);
+                    otherReasonField.setVisibility(View.VISIBLE);
                     reasonRadioButton1.setChecked(false);
                     reasonRadioButton2.setChecked(false);
                     reasonRadioButton3.setChecked(false);
@@ -195,12 +200,22 @@ public class CancelSearchFragment extends TkpdFragment{
                             13,
                             reason3.getText().toString()
                     );
+                } else if(otherReasonRadioButton.isChecked()){
+                    if(otherReasonField.getText().toString().isEmpty()) {
+                        otherReasonField.setError(getActivity()
+                                .getString(com.tokopedia.core.R.string.error_note_empty));
+                    } else {
+                        listener.cancelSearch(
+                                getArguments().getString(ORDER_ID_ARGUMENT),
+                                14,
+                                otherReasonField.getText().toString()
+                        );
+                    }
                 } else {
-                    listener.cancelSearch(
-                            getArguments().getString(ORDER_ID_ARGUMENT),
-                            14,
-                            otherReasonField.getText().toString()
-                    );
+                    Toast.makeText(
+                            getActivity(),
+                            "Mohon Pilih Salah Satu",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         };

@@ -58,7 +58,9 @@ public class OrderDetailActivity extends TActivity
     @Inject
     OrderDetailPresenterImpl presenter;
 
-    private TkpdProgressDialog progressDialog;
+    private TkpdProgressDialog mainProgressDialog;
+
+    private TkpdProgressDialog smallProgressDialog;
 
     public static Intent createInstance(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
@@ -82,11 +84,8 @@ public class OrderDetailActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.order_detail_page);
-        toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
-                .WebViewToolbarSubtitleText);
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
+        mainProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
+        smallProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         initInjector();
         presenter.setMainViewListener(this);
         presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
@@ -363,13 +362,13 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void showMainViewLoadingPage() {
-        progressDialog.showDialog();
+        mainProgressDialog.showDialog();
         getMainView().setVisibility(View.GONE);
     }
 
     @Override
     public void hideMainViewLoadingPage() {
-        progressDialog.dismiss();
+        mainProgressDialog.dismiss();
         getMainView().setVisibility(View.VISIBLE);
     }
 
@@ -382,6 +381,16 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void showErrorSnackbar(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        smallProgressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        smallProgressDialog.dismiss();
     }
 
     @Override
@@ -435,14 +444,14 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void cancelOrder(String orderId, String notes) {
-        Toast.makeText(this, "Order Id: " + orderId + "Notes: " + notes, Toast.LENGTH_LONG).show();
-        //presenter.cancelOrder(this, orderId, notes);
+        //Toast.makeText(this, "Order Id: " + orderId + "Notes: " + notes, Toast.LENGTH_LONG).show();
+        presenter.cancelOrder(this, orderId, notes);
     }
 
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
-        Toast.makeText(this, "Order Id: " + orderId + "Reason Id: " + String.valueOf(reasonId) + "Notes: " + notes, Toast.LENGTH_LONG).show();
-        //presenter.cancelReplacement(this, orderId, reasonId, notes);
+        //Toast.makeText(this, "Order Id: " + orderId + "Reason Id: " + String.valueOf(reasonId) + "Notes: " + notes, Toast.LENGTH_LONG).show();
+        presenter.cancelReplacement(this, orderId, reasonId, notes);
     }
 
     @Override

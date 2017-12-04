@@ -28,6 +28,8 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
 
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
 
+    private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
+
     private View mainViewContainer;
 
     private TkpdProgressDialog mainProgressDialog;
@@ -35,9 +37,12 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
     @Inject
     OrderHistoryPresenterImpl presenter;
 
-    public static Intent createInstance(Context context, String orderId) {
+    public static Intent createInstance(Context context, String orderId, int userMode) {
         Intent intent = new Intent(context, OrderHistoryActivity.class);
-        intent.putExtra(EXTRA_ORDER_ID, orderId);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_ORDER_ID, orderId);
+        bundle.putInt(EXTRA_USER_MODE, userMode);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -49,7 +54,7 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
         mainViewContainer = findViewById(R.id.main_container);
         initInjector();
         presenter.setMainViewListener(this);
-        presenter.fetchHistoryData(this, getExtraOrderId());
+        presenter.fetchHistoryData(this, getExtraOrderId(), getExtraUserMode());
     }
 
     private void initInjector() {
@@ -83,7 +88,9 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
         NetworkErrorHelper.showEmptyState(this, mainViewContainer, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.fetchHistoryData(OrderHistoryActivity.this, getExtraOrderId());
+                presenter.fetchHistoryData(OrderHistoryActivity.this,
+                        getExtraOrderId(),
+                        getExtraUserMode());
             }
         });
     }
@@ -107,6 +114,10 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
     }
 
     private String getExtraOrderId() {
-        return getIntent().getStringExtra(EXTRA_ORDER_ID);
+        return getIntent().getExtras().getString(EXTRA_ORDER_ID);
+    }
+
+    private int getExtraUserMode() {
+        return getIntent().getExtras().getInt(EXTRA_USER_MODE);
     }
 }

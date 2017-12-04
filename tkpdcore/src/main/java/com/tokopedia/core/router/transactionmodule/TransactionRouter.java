@@ -1,6 +1,7 @@
 package com.tokopedia.core.router.transactionmodule;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 /**
@@ -10,4 +11,6 @@ import android.os.Bundle;
 public interface TransactionRouter {
 
     void goToUserPaymentList(Activity activity);
+
+    void goToOrderHistory(Context context, String orderId, int userMode);
 }

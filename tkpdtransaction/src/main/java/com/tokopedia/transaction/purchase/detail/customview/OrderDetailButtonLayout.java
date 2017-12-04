@@ -78,12 +78,12 @@ public class OrderDetailButtonLayout extends LinearLayout{
         Button requestCancel;
         requestCancel = mainView.findViewById(R.id.request_cancel_button);
         requestCancel.setOnClickListener(onRequestCancellation(context, presenter, data));
-        //switchVisibilty(requestCancel, buttonData.getRequestCancelVisibility());
+        switchVisibilty(requestCancel, buttonData.getRequestCancelVisibility());
 
         Button cancelChance;
         cancelChance = mainView.findViewById(R.id.cancel_chance);
         cancelChance.setOnClickListener(onCancelSearch(context, presenter, data));
-        //switchVisibilty(cancelChance, buttonData.getCancelPeluangVisibility());
+        switchVisibilty(cancelChance, buttonData.getCancelPeluangVisibility());
     }
 
     private void setSellerOrderDetailOption(Context context, OrderDetailPresenter presenter, OrderDetailData data) {

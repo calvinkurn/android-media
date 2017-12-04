@@ -55,4 +55,8 @@ public interface OrderDetailView {
 
     void showErrorSnackbar(String errorMessage);
 
+    void showProgressDialog();
+
+    void dismissProgressDialog();
+
 }

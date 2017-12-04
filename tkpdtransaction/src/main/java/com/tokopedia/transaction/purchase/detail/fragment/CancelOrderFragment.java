@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,22 +57,32 @@ public class CancelOrderFragment extends TkpdFragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.cancel_order_fragment, container, false);
+        TextInputLayout textInputLayout = view.findViewById(R.id.notes_text_input_layout);
         EditText cancelOrderNotesField = view.findViewById(R.id.cancel_order_notes_field);
         Button cancelOrderConfirmButton = view.findViewById(R.id.cancel_order_confirm_button);
         cancelOrderConfirmButton.setOnClickListener(
-                onConfirmCancelOrderButton(cancelOrderNotesField)
+                onConfirmCancelOrderButton(cancelOrderNotesField, textInputLayout)
         );
         return view;
     }
 
-    private View.OnClickListener onConfirmCancelOrderButton(final EditText notesField) {
+    private View.OnClickListener onConfirmCancelOrderButton(
+            final EditText notesField,
+            final TextInputLayout notesTextInputLayout) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.cancelOrder(
-                        getArguments().getString(ORDER_ID_ARGUMENT),
-                        notesField.getText().toString()
-                );
+                if(notesField.getText().toString().isEmpty()) {
+                    notesTextInputLayout.setError(
+                            getActivity()
+                                    .getString(com.tokopedia.core.R.string.error_note_empty)
+                    );
+                }else {
+                    listener.cancelOrder(
+                            getArguments().getString(ORDER_ID_ARGUMENT),
+                            notesField.getText().toString()
+                    );
+                }
             }
         };
     }

@@ -8,7 +8,7 @@ import android.content.Context;
 
 public interface OrderHistoryPresenter {
 
-    void fetchHistoryData(Context context, String orderId);
+    void fetchHistoryData(Context context, String orderId, int userMode);
 
     void onDestroy();
 

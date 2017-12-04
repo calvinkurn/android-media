@@ -29,7 +29,7 @@ public class OrderHistoryPresenterImpl implements OrderHistoryPresenter {
     }
 
     @Override
-    public void fetchHistoryData(Context context, String orderId) {
+    public void fetchHistoryData(Context context, String orderId, int userMode) {
         mainView.showMainViewLoadingPage();
         TKPDMapParam<String, String> temporaryParams = new TKPDMapParam<>();
         temporaryParams.put("order_id", orderId);
@@ -37,7 +37,7 @@ public class OrderHistoryPresenterImpl implements OrderHistoryPresenter {
         temporaryParams.put("lang", "id");
         TKPDMapParam<String, Object> params = new TKPDMapParam<>();
         params.putAll(temporaryParams);
-        params.put("request_by", 1);
+        params.put("request_by", userMode);
         orderHistoryInteractor.requestOrderHistoryData(getOrderHistorySubscriber(), params);
     }
 
