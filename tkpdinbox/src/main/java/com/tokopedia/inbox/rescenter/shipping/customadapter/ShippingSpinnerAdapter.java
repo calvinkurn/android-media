@@ -56,7 +56,7 @@ public class ShippingSpinnerAdapter extends ArrayAdapter<ResCenterKurir.Kurir> {
         holderDropDown.textView = (TextView) localView.findViewById(android.R.id.text1);
 
         if (position == 0) {
-            holderDropDown.textView.setText(getContext().getString(R.string.index_spinner_0_default));
+            holderDropDown.textView.setText(getContext().getString(R.string.index_spinner_0_shipping));
         } else {
             holderDropDown.textView.setText(Html.fromHtml(getItem(position - 1).getShipmentName()).toString());
         }
