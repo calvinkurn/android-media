@@ -205,7 +205,7 @@ public class OrderDetailActivity extends TActivity
             @Override
             public void onClick(View v) {
                 Intent intent = OrderHistoryActivity
-                        .createInstance(OrderDetailActivity.this, orderId);
+                        .createInstance(OrderDetailActivity.this, orderId, getExtraUserMode());
                 startActivity(intent);
             }
         };
