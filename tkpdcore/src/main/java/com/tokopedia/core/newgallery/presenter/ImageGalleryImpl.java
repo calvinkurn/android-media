@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -37,7 +39,7 @@ public class ImageGalleryImpl implements ImageGallery {
 
     private final ContentResolver contentResolver;
     private ImageGalleryView imageGalleryView;
-    private ArrayList<String> pathList = new ArrayList<>();
+    private Set<String> pathList = new HashSet<>();
     private ArrayList<ImageModel> dataAlbum = new ArrayList<>();
     private ArrayList<ImageModel> dataListPhoto = new ArrayList<>();
 
@@ -56,7 +58,7 @@ public class ImageGalleryImpl implements ImageGallery {
     @Override
     public void getItemAlbum() {
         if (imageGalleryView != null && !isAlbumEmpty()) {
-            imageGalleryView.retrieveData(dataAlbum, pathList);
+            imageGalleryView.retrieveData(dataAlbum, new ArrayList<>(pathList));
         }else {
             new GetItemAlbum().execute();
         }
@@ -75,7 +77,7 @@ public class ImageGalleryImpl implements ImageGallery {
         new GetItemListAlbum(folderPath).execute();
     }
 
-    private boolean Check(String a, ArrayList<String> list) {
+    private boolean Check(String a, Set<String> list) {
         return !list.isEmpty() && list.contains(a);
     }
 
@@ -83,10 +85,9 @@ public class ImageGalleryImpl implements ImageGallery {
         if (file == null) {
             return false;
         }
-        if (!file.isFile()) {
-            return true;
-        }
+
         String name = file.getName();
+
         if (name.startsWith(".") || file.length() == 0) {
             return false;
         }
@@ -203,12 +204,10 @@ public class ImageGalleryImpl implements ImageGallery {
                         continue;
                     }
                     File file = new File(pathFile);
-                    if (file.exists()) {
-                        boolean check = ImageGalleryImpl.this.checkFile(file);
-                        if (!ImageGalleryImpl.this.Check(file.getParent(), ImageGalleryImpl.this.pathList) && check) {
+                    boolean check = checkFile(file);
+                    if (!Check(file.getParent(), ImageGalleryImpl.this.pathList) && check) {
                             ImageGalleryImpl.this.pathList.add(file.getParent());
                             ImageGalleryImpl.this.dataAlbum.add(new ImageModel(bucketName, pathFile, file.getParent()));
-                        }
                     }
                 }
                 cursor.close();
@@ -218,7 +217,7 @@ public class ImageGalleryImpl implements ImageGallery {
 
         protected void onPostExecute(String result) {
             if (imageGalleryView != null) {
-                imageGalleryView.retrieveData(dataAlbum, pathList);
+                imageGalleryView.retrieveData(dataAlbum, new ArrayList<String>(pathList));
             }
         }
 
@@ -242,7 +241,7 @@ public class ImageGalleryImpl implements ImageGallery {
             if (file.isDirectory()) {
                 for (File fileTmp : file.listFiles()) {
                     if (fileTmp.exists()) {
-                        boolean check = ImageGalleryImpl.this.checkFile(fileTmp);
+                        boolean check = checkFile(fileTmp);
                         if (!fileTmp.isDirectory() && check) {
                             ImageGalleryImpl.this.dataListPhoto.add(new ImageModel(fileTmp.getName(), fileTmp.getAbsolutePath(), fileTmp.getAbsolutePath()));
                             publishProgress();
@@ -273,7 +272,7 @@ public class ImageGalleryImpl implements ImageGallery {
             }
 
             if (imageGalleryView != null) {
-                imageGalleryView.retrieveItemData(dataListPhoto, pathList);
+                imageGalleryView.retrieveItemData(dataListPhoto, new ArrayList<>(pathList));
             }
         }
 
