@@ -98,12 +98,6 @@ public abstract class AbsFlightSearchDataDBSource
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 flightMetaDataDB.insert();
-                List<FlightMetaDataDB> list = new Select().from(FlightMetaDataDB.class)
-                        .where(ConditionGroup.clause()
-                                .and(FlightMetaDataDB_Table.arrival_airport.eq(meta.getArrivalAirport()))
-                                .and(FlightMetaDataDB_Table.departure_airport.eq(meta.getDepartureAirport()))
-                                .and(FlightMetaDataDB_Table.date.eq(meta.getTime())))
-                        .queryList();
                 subscriber.onNext(true);
             }
         });
