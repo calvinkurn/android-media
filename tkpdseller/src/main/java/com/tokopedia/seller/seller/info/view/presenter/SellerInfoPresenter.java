@@ -68,6 +68,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListene
         sellerInfoModel.setCreateTimeUnix(list.getCreateTimeUnix());
         sellerInfoModel.setTitle(list.getTitle());
         sellerInfoModel.setInfoThumbnailUrl(list.getInfoThumbnailUrl());
+        sellerInfoModel.setExternalLink(list.getExternalLink());
         return sellerInfoModel;
     }
 }
