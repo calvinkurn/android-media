@@ -209,6 +209,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     , selectedAddress.getCityName()
                     , selectedAddress.getDistrictName());
         } else if (openShopModel.getShopShipping().provinceName == null || openShopModel.getShopShipping().provinceName.isEmpty()) {
+            setShopInfoFromOpenShop(model);
             view.setLocationProvinceCityDistrict();
         } else {
             view.setLocationProvinceCityDistrict(openShopModel.getShopShipping().provinceName
@@ -219,6 +220,20 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         displayCourierOpenShop(model);
         setFragmentHeaderData();
         view.finishStartingFragment();
+    }
+
+    private void setShopInfoFromOpenShop(OpenShopData model) {
+        if (model.getOpenShopHashMap() != null) {
+            if (model.getOpenShopHashMap().get("addr_street") != null) {
+                shopInformation.addrStreet = model.getOpenShopHashMap().get("addr_street");
+            }
+            if (model.getOpenShopHashMap().get("latitude") != null) {
+                shopInformation.latitude = model.getOpenShopHashMap().get("latitude");
+            }
+            if (model.getOpenShopHashMap().get("longitude") != null) {
+                shopInformation.longitude = model.getOpenShopHashMap().get("longitude");
+            }
+        }
     }
 
     private EditShippingRetrofitInteractor.CourierListListener fetchDataByLocationListener(final String districtID) {
