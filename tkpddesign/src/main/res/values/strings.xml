@@ -19,5 +19,6 @@
     <string name="error_voucher">Kode promo tidak ditemukan</string>
     <string name="use_voucher">Gunakan</string>
     <string name="empty_voucher">Masukkan kode promo terlebih dahulu</string>
+    <string name="button_copy_voucher_code">Salin Kode</string>
 
 </resources>
