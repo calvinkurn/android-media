@@ -328,6 +328,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_ID, confirmBookingViewModel.getProductId());
         requestParams.putString(CreateRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
         requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_NAME, confirmBookingViewModel.getProductDisplayName());
+        requestParams.putString(CreateRideRequestUseCase.PARAM_API_VERSION, "v2");
         if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
             requestParams.putString(CreateRideRequestUseCase.PARAM_PROMO_CODE, confirmBookingViewModel.getPromoCode());
             requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_TYPE, presenter.getDeviceName());

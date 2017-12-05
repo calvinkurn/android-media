@@ -22,6 +22,8 @@ import java.util.Set;
 
 public class PaymentMethodListMapper {
 
+    private final int FOUR = 4;
+
     public PaymentMethodListMapper() {
     }
 
@@ -88,8 +90,8 @@ public class PaymentMethodListMapper {
     private String transform(String label, String mode) {
         if (!mode.equalsIgnoreCase("wallet")) {
             //pick last 4 digits only
-            if (label != null && label.length() > 4) {
-                label = "\u2022\u2022\u2022\u2022 " + label.substring(label.length() - 4);
+            if (label != null && label.length() > FOUR) {
+                label = "\u2022\u2022\u2022\u2022 " + label.substring(label.length() - FOUR);
             }
         }
 

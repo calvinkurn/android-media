@@ -12,10 +12,6 @@ import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodTypeFact
  */
 
 public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactory>, Parcelable {
-    public static String MODE_CC = "cc";
-    public static String MODE_WALLET = "wallet";
-
-
     private String name;
     private String cardType;
     private boolean isActive;

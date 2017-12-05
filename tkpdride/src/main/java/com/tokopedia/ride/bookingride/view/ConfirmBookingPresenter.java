@@ -10,6 +10,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethod;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
@@ -136,7 +137,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
     @Override
     public void getPaymentMethodList() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetPaymentMethodListUseCase.PARAM_PAYMENT_METHOD, "cc");
+        requestParams.putString(GetPaymentMethodListUseCase.PARAM_PAYMENT_METHOD, PaymentMode.CC);
         getPaymentMethodListUseCase.execute(requestParams, new Subscriber<PaymentMethodList>() {
             @Override
             public void onCompleted() {

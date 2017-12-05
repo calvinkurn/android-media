@@ -12,6 +12,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.bookingride.view.adapter.PaymentMethodItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
+import com.tokopedia.ride.common.configuration.PaymentMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,7 +59,7 @@ public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
 
         paymentMethodName.setText(element.getName());
 
-        if (element.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET)) {
+        if (element.getType().equalsIgnoreCase(PaymentMode.WALLET)) {
             imageView.setImageResource(R.drawable.ic_tokocash_icon);
         } else {
             Glide.with(context).load(element.getImageUrl())

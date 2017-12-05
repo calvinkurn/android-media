@@ -13,6 +13,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.EditDeleteCreditCardFragment;
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
@@ -47,7 +48,7 @@ public class EditDeleteCreditCardActivity extends BaseActivity implements HasCom
         initInjector();
 
         PaymentMethodViewModel paymentMethodViewModel = (PaymentMethodViewModel) getIntent().getParcelableExtra(KEY_PAYMENT_METHOD_VIEW_MODEL);
-        setupToolbar(paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET) ? getString(R.string.title_tokocash) : getString(R.string.credit_card));
+        setupToolbar(paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMode.WALLET) ? getString(R.string.title_tokocash) : getString(R.string.credit_card));
         EditDeleteCreditCardFragment fragment = EditDeleteCreditCardFragment.newInstance(paymentMethodViewModel);
         backButtonListener = fragment.getBackButtonListener();
         replaceFragment(R.id.fl_container, fragment);

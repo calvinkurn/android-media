@@ -13,7 +13,7 @@ public class Payment implements Parcelable {
     private int pendingAmount;
     private String paidAmount;
     private boolean receiptReady;
-    private String paymentMethod
+    private String paymentMethod;
 
     public String getCurrency() {
         return currency;

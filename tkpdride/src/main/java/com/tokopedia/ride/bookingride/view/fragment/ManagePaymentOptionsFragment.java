@@ -26,6 +26,7 @@ import com.tokopedia.ride.bookingride.view.adapter.PaymentMethodItemClickListene
 import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodAdapterTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.scrooge.ScroogePGUtil;
 
@@ -77,7 +78,7 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
     @Override
     public void onPaymentMethodSelected(PaymentMethodViewModel paymentMethodViewModel) {
 
-        if (type == TYPE_MANAGE_PAYMENT_OPTION && paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
+        if (type == TYPE_MANAGE_PAYMENT_OPTION && paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMode.CC)) {
             startActivityForResult(EditDeleteCreditCardActivity.getCallingActivity(getActivity(), paymentMethodViewModel), REQUEST_CODE_EDIT_CARD_DETAIL);
         } else if (type == TYPE_CHANGE_PAYMENT_OPTION) {
             //set payment method and close the activity in result

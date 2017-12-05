@@ -19,6 +19,7 @@ public class PaymentMethodListCacheImpl implements PaymentMethodListCache {
 
     private GlobalCacheManager cacheManager;
     private static final String PAYMENT_METHOD_LIST_CACHE = "PAYMENT_METHOD_LIST_CACHE";
+    private final int CACHE_DURATION = 86400;
 
     public PaymentMethodListCacheImpl() {
         cacheManager = new GlobalCacheManager();
@@ -34,7 +35,7 @@ public class PaymentMethodListCacheImpl implements PaymentMethodListCache {
         // set value
         cacheManager.setKey(PAYMENT_METHOD_LIST_CACHE);
         cacheManager.setValue(CacheUtil.convertModelToString(entity, type));
-        cacheManager.setCacheDuration(86400);
+        cacheManager.setCacheDuration(CACHE_DURATION);
         cacheManager.store();
     }
 

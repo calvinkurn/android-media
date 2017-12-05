@@ -1,5 +1,6 @@
 package com.tokopedia.ride.history.view.viewmodel;
 
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.domain.model.RideHistory;
@@ -86,12 +87,12 @@ public class RideHistoryViewModelMapper {
     }
 
     private String transformPaymentMethod(String paymentMethod) {
-        if (paymentMethod != null && paymentMethod.equalsIgnoreCase("cc")) {
-            return "Credit Card";
-        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase("wallet")) {
-            return "TokoCash";
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.CC)) {
+            return PaymentMode.CC_DISPLAY_NAME;
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.WALLET)) {
+            return PaymentMode.WALLET_DISPLAY_NAME;
         }
 
-        return "Amount";
+        return PaymentMode.DEFAULT_DISPLAY_NAME;
     }
 }

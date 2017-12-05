@@ -25,6 +25,7 @@ import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
 import com.tokopedia.ride.bookingride.domain.RequestApiUseCase;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.data.PaymentMethodListCacheImpl;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethod;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
@@ -72,7 +73,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
     public void getPaymentMethodsFromCloud() {
         getView().showProgress();
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetPaymentMethodListUseCase.PARAM_PAYMENT_METHOD, "cc");
+        requestParams.putString(GetPaymentMethodListUseCase.PARAM_PAYMENT_METHOD, PaymentMode.CC);
         getPaymentMethodListUseCase.execute(requestParams, new Subscriber<PaymentMethodList>() {
             @Override
             public void onCompleted() {
@@ -137,7 +138,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
                 visitable.setSaveWebView(paymentMethod.isSaveWebView());
                 visitable.setBankImage(paymentMethod.getBankImage());
 
-                if (tokoCashBalance != null && paymentMethod.getMode() != null && paymentMethod.getMode().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET)) {
+                if (tokoCashBalance != null && paymentMethod.getMode() != null && paymentMethod.getMode().equalsIgnoreCase(PaymentMode.WALLET)) {
                     visitable.setTokoCashBalance(tokoCashBalance);
                 }
 
@@ -169,7 +170,6 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
     public void selectPaymentOption(final PaymentMethodViewModel paymentMethodViewModel) {
         if (paymentMethodViewModel.isSaveWebView()) {
             getView().showAutoDebitDialog(paymentMethodViewModel);
-            //getView().openScroogePage(paymentMethodViewModel.getSaveurl(), true, paymentMethodViewModel.getSaveBody());
         } else {
             getView().showProgressBar();
             saveUrlUseCase.setUrl(paymentMethodViewModel.getSaveurl());
@@ -315,7 +315,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
                 if (visitable instanceof PaymentMethodViewModel) {
                     PaymentMethodViewModel model = (PaymentMethodViewModel) visitable;
 
-                    if (model != null && model.getType() != null && model.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET)) {
+                    if (model != null && model.getType() != null && model.getType().equalsIgnoreCase(PaymentMode.WALLET)) {
                         model.setTokoCashBalance(tokoCashBalance);
 
                         getView().renderPaymentMethodList(visitables);
