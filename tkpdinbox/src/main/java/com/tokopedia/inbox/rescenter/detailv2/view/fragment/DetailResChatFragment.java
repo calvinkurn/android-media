@@ -1115,7 +1115,7 @@ public class DetailResChatFragment
     }
 
     @Override
-    public void doEditAwb(String resolutionId, String conversationId,
+    public void doEditAwb(String conversationId,
                           String shippingId, String shippingRefNum) {
         startActivity(InputShippingActivity.createEditPageIntent(
                 getActivity(),

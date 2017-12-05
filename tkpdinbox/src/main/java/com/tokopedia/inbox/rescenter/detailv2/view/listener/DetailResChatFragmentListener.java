@@ -96,7 +96,7 @@ public interface DetailResChatFragmentListener {
 
         void doTrackShipping(String shipmentID, String shipmentRef);
 
-        void doEditAwb(String resolutionId, String conversationId,
+        void doEditAwb(String conversationId,
                        String shippingId, String shippingRefNum);
     }
 
