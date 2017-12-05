@@ -313,7 +313,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             slideAnimatorX = slideToX(next, -1, 0, mScreenWidth / 2);
             goneAnimation = setVisibilityGone(next);
             expandAnimator = expandTextView(login, mScreenWidth);
-            fadeAnimator = fadeText(login, getActivity(), R.color.transparent, R.color.medium_green);
+            fadeAnimator = fadeText(login, getActivity(), R.color.transparent, R.color.blue_nob);
 
             goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.25));
             expandAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.5));
