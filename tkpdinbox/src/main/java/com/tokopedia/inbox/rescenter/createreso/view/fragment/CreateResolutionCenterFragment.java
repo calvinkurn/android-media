@@ -50,6 +50,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     public static final String PROBLEM_RESULT_LIST_DATA = "problem_result_list_data";
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     public static final String PARAM_RESOLUTION_ID = "reso_id";
+    public static final String PARAM_ORDER_ID = "order_id";
 
     private static final int REQUEST_STEP1 = 1001;
     private static final int REQUEST_STEP2 = 1002;
@@ -80,10 +81,10 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         return fragment;
     }
 
-    public static CreateResolutionCenterFragment newRecomplaintInstance(ActionParameterPassData passData, String resolutionId) {
+    public static CreateResolutionCenterFragment newRecomplaintInstance(String orderId, String resolutionId) {
         CreateResolutionCenterFragment fragment = new CreateResolutionCenterFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_PARAM_PASS_DATA, passData);
+        bundle.putString(PARAM_ORDER_ID, orderId);
         bundle.putString(PARAM_RESOLUTION_ID , resolutionId);
         fragment.setArguments(bundle);
         return fragment;
@@ -143,10 +144,12 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        ActionParameterPassData actionParameterPassData = (ActionParameterPassData) arguments.get(KEY_PARAM_PASS_DATA);
-        orderId = actionParameterPassData.getOrderID();
         if (arguments.get(PARAM_RESOLUTION_ID) != null) {
             resolutionId = arguments.getString(PARAM_RESOLUTION_ID);
+            orderId = arguments.getString(PARAM_ORDER_ID);
+        } else {
+            ActionParameterPassData actionParameterPassData = (ActionParameterPassData) arguments.get(KEY_PARAM_PASS_DATA);
+            orderId = actionParameterPassData.getOrderID();
         }
     }
 
@@ -192,7 +195,11 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         rlProgress = (RelativeLayout) view.findViewById(R.id.rl_progress);
         updateView(new ResultViewModel());
-        presenter.loadProductProblem(orderId);
+        if (resolutionId != null) {
+            presenter.loadProductProblem(orderId, resolutionId);
+        } else {
+            presenter.loadProductProblem(orderId);
+        }
     }
 
     @Override
@@ -426,7 +433,11 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         NetworkErrorHelper.showEmptyState(context, getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.loadProductProblem(orderId);
+                if (resolutionId != null) {
+                    presenter.loadProductProblem(orderId, resolutionId);
+                } else {
+                    presenter.loadProductProblem(orderId);
+                }
             }
         });
     }

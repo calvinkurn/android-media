@@ -61,6 +61,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     private ResultViewModel resultViewModel;
     private String orderId;
+    private String resolutionId;
 
     @Inject
     public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
@@ -93,6 +94,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         mainView.showLoading(false);
         resultViewModel.orderId = orderId;
         this.orderId = orderId;
+        this.resolutionId = resolutionId;
         getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId, resolutionId),
                 new LoadProductSubscriber(mainView));
     }
@@ -135,6 +137,9 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         resultViewModel = new ResultViewModel();
         resultViewModel.problem = problemResultList;
         resultViewModel.orderId = orderId;
+        if (resolutionId != null) {
+            resultViewModel.resolutionId = resolutionId;
+        }
         mainView.updateView(resultViewModel);
     }
 

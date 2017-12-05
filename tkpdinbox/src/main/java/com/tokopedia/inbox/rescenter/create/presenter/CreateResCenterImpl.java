@@ -29,8 +29,8 @@ public class CreateResCenterImpl implements CreateResCenterPresenter {
     }
 
     @Override
-    public void initRecomplaintFragment(@NonNull Context context, Uri uriData, Bundle bundleData, String resolutionId) {
-        listener.inflateFragment(CreateResolutionCenterFragment.newRecomplaintInstance(generatePassData(bundleData, uriData), resolutionId),
+    public void initRecomplaintFragment(@NonNull Context context, String orderId, String resolutionId) {
+        listener.inflateFragment(CreateResolutionCenterFragment.newRecomplaintInstance(orderId, resolutionId),
                 CreateResolutionCenterFragment.class.getSimpleName());
     }
 

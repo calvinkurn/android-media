@@ -11,5 +11,5 @@ import android.support.annotation.NonNull;
 public interface CreateResCenterPresenter {
 
     void initFragment(@NonNull Context context, Uri uriData, Bundle bundleData);
-    void initRecomplaintFragment(@NonNull Context context, Uri uriData, Bundle bundleData, String resolutionId);
+    void initRecomplaintFragment(@NonNull Context context, String orderId, String resolutionId);
 }

@@ -39,6 +39,7 @@ import rx.Subscriber;
 public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> {
 
     public static final String CREATE = "create";
+    public static final String RECOMPLAIN = "recomplain";
     public static final String EDIT_SOLUTION = "edit_solution";
     public static final String REPLY_CONVERSATION = "reply_conversation";
     public static final String ACCEPT_ADMIN_SOLUTION = "accept_admin_resolution";
@@ -72,12 +73,13 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
         List<Visitable> items = new ArrayList<>();
         for (ConversationDomain conversationDomain : conversationListDomain.getConversationDomains()) {
             String actionType = conversationDomain.getAction().getType();
-            if (actionType.equals(CREATE)) {
+            if (actionType.equals(CREATE) || actionType.equals(RECOMPLAIN)) {
                 lastAction = 0;
                 items.add(new ChatCreateLeftViewModel(
                         shopDomain,
                         lastDomain,
-                        conversationDomain));
+                        conversationDomain,
+                        actionType));
             } else if (actionType.equals(REPLY_CONVERSATION)) {
                 if (actionBy == conversationDomain.getAction().getBy()) {
                     items.add(new ChatRightViewModel(

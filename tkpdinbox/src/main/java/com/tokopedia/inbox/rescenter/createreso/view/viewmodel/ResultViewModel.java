@@ -25,7 +25,6 @@ public class ResultViewModel implements Parcelable {
     public String orderId;
     public boolean isAttachmentRequired;
     public String resolutionId;
-    public boolean isRecomplaint;
     public List<AttachmentViewModel> attachmentList = new ArrayList<>();
 
     public ResultViewModel() {
@@ -67,6 +66,9 @@ public class ResultViewModel implements Parcelable {
                     object.put("message", message.writeToJson());
                 }
             }
+            if (resolutionId != null) {
+                object.put("resolutionID", Integer.valueOf(resolutionId));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,6 +103,7 @@ public class ResultViewModel implements Parcelable {
         dest.writeInt(this.attachmentCount);
         dest.writeString(this.orderId);
         dest.writeByte(this.isAttachmentRequired ? (byte) 1 : (byte) 0);
+        dest.writeString(this.resolutionId);
         dest.writeTypedList(this.attachmentList);
     }
 
@@ -113,6 +116,7 @@ public class ResultViewModel implements Parcelable {
         this.attachmentCount = in.readInt();
         this.orderId = in.readString();
         this.isAttachmentRequired = in.readByte() != 0;
+        this.resolutionId = in.readString();
         this.attachmentList = in.createTypedArrayList(AttachmentViewModel.CREATOR);
     }
 

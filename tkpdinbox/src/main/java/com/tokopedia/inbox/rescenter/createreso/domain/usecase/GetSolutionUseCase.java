@@ -39,12 +39,13 @@ public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
         JSONObject problemObject = new JSONObject();
         try {
             problemObject.put(PARAM_PROBLEM, resultViewModel.getProblemArray());
+            if (resultViewModel.resolutionId != null) {
+                problemObject.put(PARAM_RESOLUTION_ID, Integer.valueOf(resultViewModel.resolutionId));
+            }
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, resultViewModel.orderId);
             params.putString(PARAM_PROBLEM, problemObject.toString());
-            if (resultViewModel.resolutionId != null) {
-                params.putString(PARAM_RESOLUTION_ID, resultViewModel.resolutionId);
-            }
+
             return params;
         } catch (Exception e) {
             e.printStackTrace();

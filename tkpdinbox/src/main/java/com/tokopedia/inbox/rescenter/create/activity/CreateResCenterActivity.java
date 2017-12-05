@@ -7,10 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseProductTroubleFragment;
 import com.tokopedia.inbox.rescenter.create.fragment.ChooseSolutionFragment;
 import com.tokopedia.inbox.rescenter.create.listener.CreateResCenterListener;
@@ -35,6 +35,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     private Uri uriData;
     private CreateResCenterReceiver receiver;
     private String resolutionId;
+    private String orderId;
 
     @Override
     public String getScreenName() {
@@ -88,6 +89,9 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         this.bundleData = extras;
         if (extras.get(KEY_PARAM_RESOLUTION_ID) != null) {
             resolutionId = extras.getString(KEY_PARAM_RESOLUTION_ID);
+            orderId = extras.getString(KEY_PARAM_ORDER_ID);
+            toolbar.setTitle(R.string.string_title_create_recomplaint);
+            setTitle(getResources().getString(R.string.string_title_create_recomplaint));
         }
     }
 
@@ -106,7 +110,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         if (resolutionId == null) {
             presenter.initFragment(this, uriData, bundleData);
         } else {
-            presenter.initRecomplaintFragment(this, uriData, bundleData, resolutionId);
+            presenter.initRecomplaintFragment(this, orderId, resolutionId);
         }
     }
 
