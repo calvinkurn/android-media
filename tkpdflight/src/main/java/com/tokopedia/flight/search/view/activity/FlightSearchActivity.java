@@ -2,22 +2,21 @@ package com.tokopedia.flight.search.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 
-public class FlightSearchActivity extends BaseSimpleActivity
+public class FlightSearchActivity extends BaseFlightActivity
         implements FlightSearchFragment.OnFlightSearchFragmentListener{
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     protected String dateString;

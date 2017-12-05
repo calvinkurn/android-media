@@ -3,9 +3,9 @@ package com.tokopedia.flight.dashboard.view.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
@@ -14,7 +14,7 @@ import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightDashboardActivity extends BaseSimpleActivity implements HasComponent<FlightDashboardComponent> {
+public class FlightDashboardActivity extends BaseFlightActivity implements HasComponent<FlightDashboardComponent> {
 
     @Override
     protected Fragment getNewFragment() {

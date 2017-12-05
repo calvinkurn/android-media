@@ -6,27 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
@@ -80,12 +72,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     public static FlightDashboardFragment getInstance() {
         return new FlightDashboardFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -204,15 +190,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.initialize();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_flight_dashboard, menu);
-        if (getActivity() instanceof BaseSimpleActivity) {
-            ((BaseSimpleActivity) getActivity()).updateOptionMenuColorWhite(menu);
-        }
     }
 
     @Override
