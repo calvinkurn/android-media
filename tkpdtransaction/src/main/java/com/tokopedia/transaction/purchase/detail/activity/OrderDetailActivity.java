@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.detail.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -200,7 +201,10 @@ public class OrderDetailActivity extends TActivity
             timeLimitLayout.setVisibility(View.GONE);
         } else {
             responseTime.setText(data.getResponseTimeLimit());
-            responseTime.setBackgroundColor(Color.parseColor(data.getDeadlineColorString()));
+            responseTime.getBackground()
+                    .setColorFilter(
+                            Color.parseColor(data.getDeadlineColorString()), PorterDuff.Mode.DST
+                    );
         }
     }
 
