@@ -211,13 +211,17 @@ public class DistrictRecommendationFragment
         if (searchAddress.getQuery().toString().length() == 0) {
             showMessage(getString(R.string.hint_advice_search_address));
         } else {
-            adapter.notifyDataSetChanged();
             if (adapter.getItemCount() == 0) {
                 showMessage(getString(R.string.hint_search_address_no_result));
             } else {
                 hideMessage();
             }
         }
+    }
+
+    @Override
+    public void notifyClearAdapter() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -40,6 +40,7 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
     @Override
     public void searchAddress(String query) {
         addresses.clear();
+        view.notifyClearAdapter();
         lastPage = 0;
         query(query);
     }
@@ -55,6 +56,7 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
                             view.hideLoading();
                             addresses.addAll(model.getAddresses());
                             hasNext = model.isNextAvailable();
+                            view.notifyClearAdapter();
                             view.updateRecommendation();
                         }
                     }
@@ -100,6 +102,7 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
     @Override
     public void clearData() {
         addresses.clear();
+        view.notifyClearAdapter();
         view.updateRecommendation();
     }
 
