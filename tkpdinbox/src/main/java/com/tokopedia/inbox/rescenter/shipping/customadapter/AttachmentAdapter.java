@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.shipping.customadapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +36,14 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView attachment;
+        ImageView deleteAttachment;
         View mainView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             this.mainView = itemView;
             this.attachment = (ImageView) itemView.findViewById(R.id.attachment);
+            this.deleteAttachment = (ImageView) itemView.findViewById(R.id.delete_attachment);
         }
     }
 
@@ -62,7 +65,13 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
             public void onClick(View view) {
                 if (holder.getAdapterPosition() == dataSet.size()) {
                     listener.onClickAddAttachment(view);
-                } else {
+                }
+            }
+        });
+        holder.deleteAttachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(holder.getAdapterPosition() != dataSet.size()) {
                     listener.onClickOpenAttachment(view, holder.getAdapterPosition());
                 }
             }
@@ -76,6 +85,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     private void setValue(ViewHolder holder, int position) {
+        holder.deleteAttachment.setVisibility(View.GONE);
         if (position < dataSet.size()) {
             loadImage(holder, position);
         } else {
@@ -90,6 +100,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     private void loadImage(ViewHolder holder, int position) {
         File imgFile = new  File(dataSet.get(position).imagePath);
         ImageHandler.loadImageFromFile(holder.itemView.getContext(), holder.attachment, imgFile);
+        holder.deleteAttachment.setVisibility(View.VISIBLE);
     }
 
     @Override
