@@ -9,7 +9,10 @@ import android.support.v4.content.ContextCompat;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
+import com.tokopedia.flight.common.constant.FlightFlowConstant;
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
@@ -17,12 +20,14 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 
 public class FlightSearchActivity extends BaseFlightActivity
-        implements FlightSearchFragment.OnFlightSearchFragmentListener{
+        implements FlightSearchFragment.OnFlightSearchFragmentListener {
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     protected String dateString;
     protected String passengerString;
     protected String classString;
 
+    private static final int REQUEST_CODE_BOOKING = 10;
+    private static final int REQUEST_CODE_RETURN = 11;
     protected FlightSearchPassDataViewModel passDataViewModel;
 
     public static void start(Context context, FlightSearchPassDataViewModel passDataViewModel) {
@@ -44,12 +49,12 @@ public class FlightSearchActivity extends BaseFlightActivity
         setupFlightToolbar();
     }
 
-    private void initializeDataFromIntent(){
+    private void initializeDataFromIntent() {
         passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
         initializeToolbarData();
     }
 
-    protected void initializeToolbarData(){
+    protected void initializeToolbarData() {
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
@@ -97,9 +102,9 @@ public class FlightSearchActivity extends BaseFlightActivity
     @Override
     public void selectFlight(String selectedFlightID) {
         if (passDataViewModel.isOneWay()) {
-            startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedFlightID));
+            startActivityForResult(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedFlightID), REQUEST_CODE_BOOKING);
         } else {
-            FlightSearchReturnActivity.start(this, passDataViewModel, selectedFlightID);
+            startActivityForResult(FlightSearchReturnActivity.getCallingIntent(this, passDataViewModel, selectedFlightID), REQUEST_CODE_RETURN);
         }
     }
 
@@ -110,4 +115,29 @@ public class FlightSearchActivity extends BaseFlightActivity
         setupFlightToolbar();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_RETURN:
+            case REQUEST_CODE_BOOKING:
+                if (data != null) {
+                    switch (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)) {
+                        case FlightFlowConstant.PRICE_CHANGE:
+                            Fragment fragment = getFragment();
+                            if (fragment instanceof FlightSearchFragment) {
+                                ((FlightSearchFragment) fragment).loadInitialData();
+                            }
+                            break;
+                        case FlightFlowConstant.EXPIRED_JOURNEY:
+                            FlightFlowUtil.actionSetResultAndClose(this,
+                                    getIntent(),
+                                    FlightFlowConstant.EXPIRED_JOURNEY
+                            );
+                            break;
+                    }
+                }
+                break;
+        }
+    }
 }

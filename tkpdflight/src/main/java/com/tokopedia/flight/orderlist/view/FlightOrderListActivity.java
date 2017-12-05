@@ -1,4 +1,4 @@
-package com.tokopedia.flight.orderlist;
+package com.tokopedia.flight.orderlist.view;
 
 import android.support.v4.app.Fragment;
 

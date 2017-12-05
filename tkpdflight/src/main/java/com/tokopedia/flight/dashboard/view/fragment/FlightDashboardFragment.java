@@ -51,6 +51,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
+    private static final int REQUEST_CODE_SEARCH = 5;
 
     private FlightDashboardViewModel viewModel;
 
@@ -343,7 +344,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setIsOneWay(currentDashboardViewModel.isOneWay())
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
-        startActivity(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel));
+        startActivityForResult(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
     }
 
     @Override
@@ -371,6 +372,9 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 case REQUEST_CODE_AIRPORT_ARRIVAL:
                     FlightAirportDB arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onArrivalAirportChange(arrivalAirport);
+                    break;
+                case REQUEST_CODE_SEARCH:
+
                     break;
             }
         }

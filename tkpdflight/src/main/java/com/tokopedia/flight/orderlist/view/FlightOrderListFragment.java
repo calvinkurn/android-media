@@ -1,6 +1,4 @@
-package com.tokopedia.flight.orderlist;
-
-import android.support.v4.app.Fragment;
+package com.tokopedia.flight.orderlist.view;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
