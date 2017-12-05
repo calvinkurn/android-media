@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductGeneralAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
@@ -50,7 +51,7 @@ public class ChatAwbRightViewHolder extends AbstractViewHolder<ChatAwbRightViewM
     }
 
     @Override
-    public void bind(ChatAwbRightViewModel element) {
+    public void bind(final ChatAwbRightViewModel element) {
         if (element.getConversation().getAction().getTitle() != null) {
             tvTitle.setText(
                 String.format(
@@ -83,14 +84,20 @@ public class ChatAwbRightViewHolder extends AbstractViewHolder<ChatAwbRightViewM
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mainView.doEditAwb(
+                        String.valueOf(element.getConversation().getResConvId()),
+                        String.valueOf(element.getConversation().getShippingDetail().getId()),
+                        element.getConversation().getShippingDetail().getAwbNumber()
+                );
             }
         });
 
         btnTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mainView.doTrackShipping(
+                        String.valueOf(element.getConversation().getShippingDetail().getId()),
+                        element.getConversation().getShippingDetail().getAwbNumber());
             }
         });
     }
