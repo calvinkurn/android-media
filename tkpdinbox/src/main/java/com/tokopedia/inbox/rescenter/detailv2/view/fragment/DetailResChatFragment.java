@@ -1114,6 +1114,18 @@ public class DetailResChatFragment
         );
     }
 
+    @Override
+    public void doEditAwb(String resolutionId, String conversationId,
+                          String shippingId, String shippingRefNum) {
+        startActivity(InputShippingActivity.createEditPageIntent(
+                getActivity(),
+                resolutionId,
+                conversationId,
+                shippingId,
+                shippingRefNum
+        ));
+    }
+
     public void getBottomSheetActivityTransition() {
         getActivity().overridePendingTransition(R.anim.pull_up, R.anim.push_down);
     }
