@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -197,7 +198,10 @@ public class OrderDetailActivity extends TActivity
         TextView responseTime = findViewById(R.id.description_response_time);
         if (data.getResponseTimeLimit() == null || data.getResponseTimeLimit().isEmpty()) {
             timeLimitLayout.setVisibility(View.GONE);
-        } else responseTime.setText(data.getResponseTimeLimit());
+        } else {
+            responseTime.setText(data.getResponseTimeLimit());
+            responseTime.setBackgroundColor(Color.parseColor(data.getDeadlineColorString()));
+        }
     }
 
     private View.OnClickListener onStatusLayoutClickedListener(final String orderId) {
@@ -446,13 +450,13 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void cancelOrder(String orderId, String notes) {
-        Toast.makeText(this, "Order Id: " + orderId + "Notes: " + notes, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Order Id: " + orderId + "Notes: " + notes, Toast.LENGTH_LONG).show();
         presenter.cancelOrder(this, orderId, notes);
     }
 
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
-        Toast.makeText(this, "Order Id: " + orderId + "Reason Id: " + String.valueOf(reasonId) + "Notes: " + notes, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Order Id: " + orderId + "Reason Id: " + String.valueOf(reasonId) + "Notes: " + notes, Toast.LENGTH_LONG).show();
         presenter.cancelReplacement(this, orderId, reasonId, notes);
     }
 

@@ -62,7 +62,6 @@ public class ComplaintDialog extends DialogFragment{
                 .getText().toString().replace("YYY", getArguments().getString(SHOP_NAME_EXTRA)));
         complaintText.setText(getString(R.string.text_complaint_dialog));
         complaintButton.setOnClickListener(onComplaintButtonListener());
-        complaintButton.setOnClickListener(onCancelButtonListener());
         cancelButton.setOnClickListener(onCancelButtonListener());
         return view;
     }

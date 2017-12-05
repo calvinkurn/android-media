@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData;
 
@@ -47,9 +48,12 @@ public class OrderHistoryStepperLayout extends LinearLayout{
     }
 
     public void setStepperStatus(OrderHistoryData model) {
-        TextView title = (TextView) findViewById(R.id.stepper_title);
-        ImageView stepperImage = (ImageView) findViewById(R.id.stepper_image);
+        TextView title = findViewById(R.id.stepper_title);
+        ImageView stepperImage = findViewById(R.id.stepper_image);
         title.setText(model.getStepperStatusTitle());
+        if(model.getHistoryImage() == null
+                || model.getHistoryImage().isEmpty()) setVisibility(GONE);
+        else ImageHandler.LoadImage(stepperImage, model.getHistoryImage());
         stepperImage.setImageResource(generateStepperImage(model.getStepperMode()));
     }
 

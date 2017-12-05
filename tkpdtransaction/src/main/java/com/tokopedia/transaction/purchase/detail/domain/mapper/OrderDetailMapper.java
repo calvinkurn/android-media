@@ -36,6 +36,7 @@ public class OrderDetailMapper {
         viewData.setPurchaseDate(responseData.getDetail().getPaymentVerifiedDate());
         if(responseData.getDetail().getDeadline() != null) {
             viewData.setResponseTimeLimit(responseData.getDetail().getDeadline().getText());
+            viewData.setDeadlineColorString(responseData.getDetail().getDeadline().getColor());
         }
         if(responseData.getDetail().getShop() !=null) {
             viewData.setShopId(String.valueOf(responseData.getDetail().getShop().getId()));
@@ -120,36 +121,6 @@ public class OrderDetailMapper {
     private String getPartialOrderStatus(int partialOrder) {
         if(partialOrder == 1) return "Ya";
         else return "Tidak";
-    }
-
-    public OrderHistoryData getOrderHistoryData(OrderHistoryResponse response) {
-        validateHistoryData(response);
-        OrderHistoryData viewData = new OrderHistoryData();
-        com.tokopedia.transaction.purchase.detail.model.history.response
-                .Data historyData = response.getData();
-        viewData.setStepperMode(historyData.getOrderStatusCode());
-        viewData.setStepperStatusTitle(historyData.getOrderStatus());
-        List<OrderHistoryListData> historyListData = new ArrayList<>();
-        List<History> orderHistories = historyData.getHistories();
-        for(int i = 0; i < orderHistories.size(); i++) {
-            OrderHistoryListData listData = new OrderHistoryListData();
-            listData.setOrderHistoryDate(orderHistories.get(i).getDate());
-            listData.setActionBy(orderHistories.get(i).getActionBy());
-            listData.setOrderHistoryTitle(orderHistories.get(i).getStatus());
-            listData.setColor(orderHistories.get(i).getOrderStatusColor());
-            listData.setOrderHistoryTime(orderHistories.get(i).getHour());
-            historyListData.add(listData);
-        }
-        viewData.setOrderListData(historyListData);
-        return viewData;
-    }
-
-    private void validateHistoryData(OrderHistoryResponse response) {
-        if(response.getData() == null) {
-            if(response.getErrorList() != null && response.getErrorList().size() > 1) {
-                throw new ResponseRuntimeException(response.getErrorList().get(0).getDetail());
-            } else throw new ResponseRuntimeException("Terjadi Kesalahan");
-        }
     }
 
     public String getConfirmDeliverMessage(Response<TkpdResponse> response) {

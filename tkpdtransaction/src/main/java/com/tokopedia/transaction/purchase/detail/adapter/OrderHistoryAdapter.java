@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.adapter;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,7 @@ public class OrderHistoryAdapter extends RecyclerView
                         + historyListDatas.get(position).getOrderHistoryDate()
         );
         holder.orderHistoryDescription
-                .setText(historyListDatas.get(position).getOrderHistoryTitle());
+                .setText(Html.fromHtml(historyListDatas.get(position).getOrderHistoryTitle()));
         holder.orderHistoryTime.setText(historyListDatas.get(position).getOrderHistoryTime());
         holder.dot.setColorFilter(Color.parseColor(historyListDatas.get(position).getColor()));
         holder.dotTrail

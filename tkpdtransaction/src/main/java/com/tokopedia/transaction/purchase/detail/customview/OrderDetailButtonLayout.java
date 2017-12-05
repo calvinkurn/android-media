@@ -62,7 +62,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
         finishOrder.setOnClickListener(onFinishButtonClicked(context, presenter, data));
         switchVisibilty(finishOrder, buttonData.getFinishOrderVisibility());
 
-        Button track = mainView.findViewById(R.id.track_button);
+        Button track = mainView.findViewById(R.id.order_detail_track_button);
         track.setOnClickListener(onTrackButtonClicked(context, presenter, data));
         switchVisibilty(track, buttonData.getTrackVisibility());
 
@@ -287,8 +287,14 @@ public class OrderDetailButtonLayout extends LinearLayout{
     }
 
     private void switchVisibilty(Button button, int responseVisibility) {
-        if(responseVisibility == 1) button.setVisibility(VISIBLE);
-        else button.setVisibility(GONE);
+        if(responseVisibility == 1) {
+            button.setVisibility(VISIBLE);
+            button.setBackgroundResource(R.drawable.white_button_rounded);
+        } else if(responseVisibility == 2) {
+            button.setVisibility(VISIBLE);
+            button.setBackgroundResource(R.drawable.green_button_rounded_unify);
+            button.setTextColor(getResources().getColor(R.color.white));
+        } else button.setVisibility(GONE);
     }
 
     private void switchConfirmButtonMode(Button button,
@@ -308,4 +314,5 @@ public class OrderDetailButtonLayout extends LinearLayout{
             button.setBackgroundResource(R.drawable.white_button_rounded);
         }
     }
+
 }

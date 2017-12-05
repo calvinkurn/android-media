@@ -20,6 +20,8 @@ public class OrderDetailData {
 
     private String responseTimeLimit;
 
+    private String deadlineColorString;
+
     private String shopId;
 
     private String shopName;
@@ -108,6 +110,14 @@ public class OrderDetailData {
 
     public void setResponseTimeLimit(String responseTimeLimit) {
         this.responseTimeLimit = responseTimeLimit;
+    }
+
+    public String getDeadlineColorString() {
+        return deadlineColorString;
+    }
+
+    public void setDeadlineColorString(String deadlineColorString) {
+        this.deadlineColorString = deadlineColorString;
     }
 
     public String getShopId() {

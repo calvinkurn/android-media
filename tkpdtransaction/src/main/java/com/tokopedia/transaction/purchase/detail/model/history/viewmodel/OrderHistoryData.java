@@ -24,6 +24,8 @@ public class OrderHistoryData {
 
     private String stepperStatusTitle;
 
+    private String historyImage;
+
     private List<OrderHistoryListData> orderListData;
 
     public int getStepperMode() {
@@ -48,5 +50,13 @@ public class OrderHistoryData {
 
     public void setOrderListData(List<OrderHistoryListData> orderListData) {
         this.orderListData = orderListData;
+    }
+
+    public String getHistoryImage() {
+        return historyImage;
+    }
+
+    public void setHistoryImage(String historyImage) {
+        this.historyImage = historyImage;
     }
 }

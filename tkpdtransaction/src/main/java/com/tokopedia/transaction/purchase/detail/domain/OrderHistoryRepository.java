@@ -43,7 +43,10 @@ public class OrderHistoryRepository implements IOrderHistoryRepository{
         com.tokopedia.transaction.purchase.detail.model.history.response
                 .Data historyData = response.getData();
         viewData.setStepperMode(historyData.getOrderStatusCode());
-        viewData.setStepperStatusTitle(historyData.getOrderStatus());
+        viewData.setStepperStatusTitle(historyData.getHistoryTitle());
+        if(response.getData().getHistoryImg() != null) {
+            viewData.setHistoryImage(historyData.getHistoryImg());
+        } else viewData.setHistoryImage("");
         List<OrderHistoryListData> historyListData = new ArrayList<>();
         List<History> orderHistories = historyData.getHistories();
         for(int i = 0; i < orderHistories.size(); i++) {

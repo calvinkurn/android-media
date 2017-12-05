@@ -78,7 +78,7 @@
         android:textColor="@color/white" />
 
     <Button
-        android:id="@+id/track_button"
+        android:id="@+id/order_detail_track_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"

@@ -66,11 +66,10 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
     }
 
     private void initView(OrderHistoryData data) {
-        OrderHistoryStepperLayout stepperLayout = (OrderHistoryStepperLayout)
-                findViewById(R.id.order_history_stepper_layout);
+        OrderHistoryStepperLayout stepperLayout = findViewById(R.id.order_history_stepper_layout);
         stepperLayout.setStepperStatus(data);
 
-        RecyclerView orderHistoryList = (RecyclerView) findViewById(R.id.order_history_list);
+        RecyclerView orderHistoryList = findViewById(R.id.order_history_list);
 
         orderHistoryList.setNestedScrollingEnabled(false);
         orderHistoryList.setLayoutManager(new LinearLayoutManager(this));
