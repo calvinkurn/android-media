@@ -168,6 +168,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             AnimationDrawable notifAnimation = (AnimationDrawable) i.getBackground();
             notifAnimation.start();
         }
+        main.setBackgroundColor(bgColor);
 
         return v;
     }
@@ -189,6 +190,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         }
 
         descView.setText(description);
+
+        main.setBackgroundColor(bgColor);
 
         login = (TextView) v.findViewById(R.id.button_login);
         login.setOnClickListener(new View.OnClickListener() {
