@@ -94,7 +94,7 @@ public interface DetailResChatFragmentListener {
 
         void doEditSolution();
 
-
+        void doTrackShipping(String shipmentID, String shipmentRef);
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {

@@ -45,6 +45,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivi
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
@@ -1102,6 +1103,15 @@ public class DetailResChatFragment
     @Override
     public void doEditSolution() {
         startActivityForResult(getIntentEditResCenter(), REQUEST_EDIT_SOLUTION);
+    }
+
+    @Override
+    public void doTrackShipping(String shipmentID, String shipmentRef) {
+        startActivity(TrackShippingActivity.newInstance(
+                getActivity(),
+                shipmentID,
+                shipmentRef)
+        );
     }
 
     public void getBottomSheetActivityTransition() {
