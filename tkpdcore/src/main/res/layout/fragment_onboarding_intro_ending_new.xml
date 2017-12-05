@@ -105,9 +105,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:layout_gravity="center"
+                android:layout_margin="32dp"
                 android:gravity="center"
                 android:padding="@dimen/padding_button_nob"
-                android:text="@string/title_activity_login"
+                android:text="@string/onboarding_start_now"
                 android:textSize="@dimen/text_size_medium"
                 android:fontFamily="sans-serif-medium"
                 tools:layout_width="match_parent"/>

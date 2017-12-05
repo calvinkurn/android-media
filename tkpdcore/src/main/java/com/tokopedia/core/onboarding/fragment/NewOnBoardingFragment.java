@@ -197,7 +197,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
+                //TODO uncomment this
+//                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
                 Intent intent = new Intent();
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
@@ -210,7 +211,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
+                //TODO uncomment this
+//                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
                 Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
                 startActivity(intent);
                 getActivity().finish();
@@ -288,6 +290,10 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
     public void playAnimation() {
         final int viewType = getArguments().getInt(ARG_VIEW_TYPE);
+        if (viewType == VIEW_ENDING) {
+            next = getView().findViewById(R.id.dummy_next);
+            resetAnimation();
+        }
 
         titleView.setVisibility(View.VISIBLE);
         descView.setVisibility(View.VISIBLE);
@@ -304,29 +310,17 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         set.start();
 
         if (viewType == VIEW_ENDING) {
-
-            next = getView().findViewById(R.id.dummy_next);
-            resetAnimation();
-
             slideAnimatorX = slideToX(next, -1, 0, mScreenWidth / 2);
             goneAnimation = setVisibilityGone(next);
             expandAnimator = expandTextView(login, mScreenWidth);
             fadeAnimator = fadeText(login, getActivity(), R.color.transparent, R.color.medium_green);
-            slideAnimator = slideToY(login, UP_DIRECTION);
-
-            fadeAnimator2 = fadeText(skip, getActivity(), R.color.transparent, R.color.white);
-            slideAnimator2 = slideToY(skip, DOWN_DIRECTION);
-
 
             goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.25));
             expandAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.5));
             fadeAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.5));
 
-            slideAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.5));
-            fadeAnimator2.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.75));
-            slideAnimator2.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.75));
 
-            animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator, slideAnimator, fadeAnimator2, slideAnimator2);
+            animatorSet.playTogether(slideAnimatorX, goneAnimation, expandAnimator, fadeAnimator);
 
             if (!animatorSet.isRunning()) {
                 animatorSet.start();
@@ -335,12 +329,12 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     }
 
     private void resetAnimation() {
-        next.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams layoutParams = login.getLayoutParams();
         layoutParams.width = 0;
         login.setLayoutParams(layoutParams);
         login.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
         skip.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
+        next.setVisibility(View.VISIBLE);
     }
 
     public void clearAnimation() {
