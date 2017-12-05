@@ -13,8 +13,11 @@ import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
 import com.tokopedia.seller.seller.info.data.source.SellerInfoApi;
 import com.tokopedia.seller.seller.info.di.component.DaggerSellerInfoComponent;
+import com.tokopedia.seller.seller.info.domain.interactor.SellerInfoUseCase;
+import com.tokopedia.seller.seller.info.view.SellerInfoView;
 import com.tokopedia.seller.seller.info.view.adapter.SellerInfoAdapter;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
+import com.tokopedia.seller.seller.info.view.presenter.SellerInfoPresenter;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
 
 import java.util.ArrayList;
@@ -31,14 +34,14 @@ import rx.schedulers.Schedulers;
  * Created by normansyahputa on 11/30/17.
  */
 
-public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerInfoModel> {
+public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerInfoModel>{
 
     private SellerInfoDateUtil sellerInfoDateUtil;
 
     private static final String TAG = "SellerInfoFragment";
 
     @Inject
-    SellerInfoApi sellerInfoApi;
+    SellerInfoPresenter sellerInfoPresenter;
 
     public static SellerInfoFragment newInstance(){
         return new SellerInfoFragment();
@@ -57,6 +60,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
         String[] monthNamesAbrev = getResources().getStringArray(R.array.lib_date_picker_month_entries);
         sellerInfoDateUtil = new SellerInfoDateUtil(monthNamesAbrev);
         super.onViewCreated(view, savedInstanceState);
+        sellerInfoPresenter.attachView(this);
     }
 
     @Override
@@ -66,48 +70,13 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     protected void searchForPage(int page) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString("page",Integer.toString(page));
-        sellerInfoApi.listSellerInfo(requestParams.getParamsAllValueInString())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Response<ResponseSellerInfoModel>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.toString());
-                    }
-
-                    @Override
-                    public void onNext(Response<ResponseSellerInfoModel> responseSellerInfoModelResponse) {
-                        Log.e(TAG, responseSellerInfoModelResponse.toString());
-
-                        adapter.addData(conv(responseSellerInfoModelResponse));
-                    }
-                });
+        sellerInfoPresenter.getSellerInfoList(page);
     }
 
-    private List<SellerInfoModel> conv(Response<ResponseSellerInfoModel> responseSellerInfoModelResponse){
-        ResponseSellerInfoModel body = responseSellerInfoModelResponse.body();
-        List<SellerInfoModel> res = new ArrayList<>();
-        for (ResponseSellerInfoModel.List list : body.getData().getList()) {
-            res.add(conv(list));
-        }
-        return res;
-    }
-
-    private SellerInfoModel conv(ResponseSellerInfoModel.List list){
-        SellerInfoModel sellerInfoModel = new SellerInfoModel();
-        sellerInfoModel.setContent(list.getContent());
-        sellerInfoModel.setCreateTimeUnix(list.getCreateTimeUnix());
-        sellerInfoModel.setTitle(list.getTitle());
-        sellerInfoModel.setInfoThumbnailUrl(list.getInfoThumbnailUrl());
-        return sellerInfoModel;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        sellerInfoPresenter.detachView();
     }
 
     @Override
