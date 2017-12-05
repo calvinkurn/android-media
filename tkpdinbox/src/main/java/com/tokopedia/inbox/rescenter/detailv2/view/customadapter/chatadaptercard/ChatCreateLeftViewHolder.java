@@ -112,6 +112,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
             rvProve.setLayoutManager(new LinearLayoutManager(context));
             proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
             rvProve.setAdapter(proveAdapter);
+            rvProve.setHasFixedSize(true);
         }
 
         ffBubble2.setVisibility(View.GONE);
@@ -124,6 +125,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
                     element.getConversationDomain().getProduct(),
                     COUNT_MAX_PRODUCT);
             rvProduct.setAdapter(productAdapter);
+            rvProduct.setHasFixedSize(true);
         }
     }
 

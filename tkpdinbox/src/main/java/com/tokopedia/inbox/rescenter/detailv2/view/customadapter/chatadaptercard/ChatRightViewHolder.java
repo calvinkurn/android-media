@@ -53,6 +53,7 @@ public class ChatRightViewHolder extends AbstractViewHolder<ChatRightViewModel> 
             rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvAttachment.setAdapter(adapter);
         }
+        rvAttachment.setHasFixedSize(true);
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
     }

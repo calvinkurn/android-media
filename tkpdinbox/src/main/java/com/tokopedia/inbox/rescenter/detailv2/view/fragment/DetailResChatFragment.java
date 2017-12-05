@@ -310,7 +310,6 @@ public class DetailResChatFragment
         attachmentAdapter = AttachmentAdapter.createAdapter(getActivity(), true);
         attachmentAdapter.setListener(getAttachmentAdapterListener());
         rvAttachment.setAdapter(attachmentAdapter);
-
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         buttonWidth = (displayMetrics.widthPixels / 4) - (1 * (int) getResources().getDimension(R.dimen.margin_vs));
@@ -440,6 +439,8 @@ public class DetailResChatFragment
                 chatAdapter.notifyDataSetChanged();
                 scrollChatToBottom(false);
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
+                rvAttachment.setVisibility(View.GONE);
+                initActionButton(detailResChatDomain.getButton());
             }
         });
 
@@ -527,8 +528,8 @@ public class DetailResChatFragment
                     attachment.getFileType() == AttachmentViewModel.FILE_IMAGE ?
                             "image" :
                             "video",
-                    attachment.getImgThumb(),
-                    attachment.getImgLarge());
+                    attachment.getFileLoc(),
+                    attachment.getFileLoc());
             domainList.add(domain);
         }
         return domainList;
