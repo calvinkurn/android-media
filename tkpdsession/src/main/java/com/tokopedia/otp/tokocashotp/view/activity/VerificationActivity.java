@@ -1,4 +1,4 @@
-package com.tokopedia.otp.centralizedotp;
+package com.tokopedia.otp.tokocashotp.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +11,9 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.otp.centralizedotp.fragment.ChooseVerificationMethodFragment;
-import com.tokopedia.otp.centralizedotp.fragment.VerificationFragment;
-import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
+import com.tokopedia.otp.tokocashotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;

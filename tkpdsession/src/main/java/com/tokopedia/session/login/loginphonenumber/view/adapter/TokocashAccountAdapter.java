@@ -24,12 +24,6 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
     private ChooseTokocashAccount.View viewListener;
     private ArrayList<AccountTokocash> list;
 
-    public void setList(ArrayList<AccountTokocash> listAccount) {
-        this.list.clear();
-        this.list.addAll(listAccount);
-        notifyDataSetChanged();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView avatar;
@@ -54,12 +48,12 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
     }
 
     public static TokocashAccountAdapter createInstance(ChooseTokocashAccount.View
-                                                                viewListener) {
-        return new TokocashAccountAdapter(viewListener);
+                                                                viewListener, ArrayList<AccountTokocash> listAccount) {
+        return new TokocashAccountAdapter(viewListener, listAccount);
     }
 
-    public TokocashAccountAdapter(ChooseTokocashAccount.View viewListener) {
-        this.list = new ArrayList<>();
+    public TokocashAccountAdapter(ChooseTokocashAccount.View viewListener, ArrayList<AccountTokocash> listAccount) {
+        this.list = listAccount;
         this.viewListener = viewListener;
     }
 

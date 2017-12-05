@@ -18,13 +18,14 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.otp.centralizedotp.VerificationActivity;
-import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
+import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.login.loginphonenumber.view.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
+import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 
 import java.util.ArrayList;
 
@@ -180,7 +181,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {
-            goToChooseAccountPage();
+            goToChooseAccountPage(data);
         } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
                 && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
@@ -190,9 +191,14 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         }
     }
 
-    private void goToChooseAccountPage() {
+    private void goToChooseAccountPage(Intent data) {
         startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
-                getActivity()),
+                getActivity(),
+                getChooseAccountData(data)),
                 REQUEST_CHOOSE_ACCOUNT);
+    }
+
+    private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
+        return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
     }
 }

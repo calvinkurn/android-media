@@ -1,4 +1,4 @@
-package com.tokopedia.otp.centralizedotp.fragment;
+package com.tokopedia.otp.tokocashotp.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,10 +14,10 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.otp.centralizedotp.VerificationActivity;
-import com.tokopedia.otp.centralizedotp.adapter.VerificationMethodAdapter;
-import com.tokopedia.otp.centralizedotp.viewlistener.SelectVerification;
-import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
+import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.tokocashotp.view.adapter.VerificationMethodAdapter;
+import com.tokopedia.otp.tokocashotp.view.viewlistener.SelectVerification;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;

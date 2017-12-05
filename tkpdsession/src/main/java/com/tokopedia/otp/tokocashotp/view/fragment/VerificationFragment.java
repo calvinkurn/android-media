@@ -1,6 +1,7 @@
-package com.tokopedia.otp.centralizedotp.fragment;
+package com.tokopedia.otp.tokocashotp.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -21,19 +22,26 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.otp.centralizedotp.VerificationActivity;
-import com.tokopedia.otp.centralizedotp.presenter.VerificationPresenter;
-import com.tokopedia.otp.centralizedotp.viewlistener.Verification;
-import com.tokopedia.otp.centralizedotp.viewmodel.VerificationViewModel;
+import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.tokocashotp.view.presenter.VerificationPresenter;
+import com.tokopedia.otp.tokocashotp.view.viewlistener.Verification;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.VerificationViewModel;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.VerifyOtpTokoCashViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
+import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 
 import java.util.concurrent.TimeUnit;
 
@@ -62,9 +70,12 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     TextView verifyButton;
 
     CountDownTimer countDownTimer;
+    TkpdProgressDialog progressDialog;
+
     private boolean isRunningTimer = false;
     protected LocalCacheHandler cacheHandler;
     private VerificationViewModel viewModel;
+
     @Inject
     VerificationPresenter presenter;
 
@@ -170,7 +181,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.verifyOtp(inputOtp.getText().toString());
+                presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
             }
         });
     }
@@ -212,8 +223,46 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onSuccessVerifyOTP() {
-        getActivity().setResult(Activity.RESULT_OK);
+    public void onSuccessVerifyOTP(VerifyOtpTokoCashViewModel verifyOtpTokoCashViewModel) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
+                new ChooseTokoCashAccountViewModel(verifyOtpTokoCashViewModel.getList(),
+                        viewModel.getPhoneNumber()));
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onErrorGetOTP(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onErrorVerifyOtp(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void showLoadingProgress() {
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+                    .NORMAL_PROGRESS);
+
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissLoadingProgress() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void onErrorNoAccountTokoCash() {
+        startActivity(NotConnectedTokocashActivity.getNoTokocashAccountIntent(getActivity(),
+                viewModel.getPhoneNumber()));
         getActivity().finish();
     }
 
@@ -320,6 +369,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             countDownTimer.cancel();
             countDownTimer = null;
         }
+        progressDialog = null;
     }
 
     public void setData(Bundle bundle) {

@@ -9,6 +9,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.apiservices.tokocash.WalletBaseService;
 import com.tokopedia.core.network.apiservices.user.InterruptService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -17,7 +18,11 @@ import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.domain.mapper.RequestOTPMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOTPMapper;
-import com.tokopedia.otp.phoneverification.data.mapper.ChangePhoneNumberMapper;
+import com.tokopedia.otp.tokocashotp.data.source.TokoCashOtpSource;
+import com.tokopedia.otp.tokocashotp.data.mapper.RequestOtpTokoCashMapper;
+import com.tokopedia.otp.tokocashotp.data.mapper.VerifyOtpTokoCashMapper;
+import com.tokopedia.otp.tokocashotp.domain.interactor.RequestOtpTokoCashUseCase;
+import com.tokopedia.otp.tokocashotp.domain.interactor.VerifyOtpTokoCashUseCase;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -243,5 +248,6 @@ public class SessionModule {
         return new ValidateOtpUseCase(
                 threadExecutor, postExecutionThread, otpSource, sessionHandler);
     }
+
 
 }

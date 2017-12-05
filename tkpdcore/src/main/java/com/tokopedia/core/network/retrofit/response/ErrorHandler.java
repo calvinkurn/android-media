@@ -8,6 +8,7 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.exception.ResponseErrorException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +31,7 @@ public class ErrorHandler {
     private static final String UNKNOWN_INFO = "Network Error";
     private static final String TIMEOUT_INFO = "Network Timeout";
     private static final String ERROR_MESSAGE = "message_error";
+    private static final String ERROR_MESSAGE_TOKOCASH = "errors";
 
     public ErrorHandler(@NonNull ErrorListener listener, int code) {
         switch (code) {
@@ -137,6 +139,14 @@ public class ErrorHandler {
             else {
                 return e.getLocalizedMessage();
             }
+        }else if (e instanceof ResponseErrorException
+                && e.getLocalizedMessage() != null) {
+            if (!e.getLocalizedMessage().contains(context.getString(R.string.code_error)))
+                return e.getLocalizedMessage() + " " +
+                        context.getString(R.string.code_error) + ErrorCode.WS_ERROR;
+            else {
+                return e.getLocalizedMessage();
+            }
         }  else if (BuildConfig.DEBUG) {
             return e.getLocalizedMessage();
         }else {
@@ -195,5 +205,28 @@ public class ErrorHandler {
         return MainApplication.getAppContext().getString(R.string.default_request_error_unknown)
                 + " " + MainApplication.getAppContext().getString(R.string.code_error)
                 + " " + errorCode;
+    }
+
+    public static String getErrorMessageTokoCash(Response<TkpdDigitalResponse> response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response.errorBody().string());
+
+            if (hasErrorMessageTokoCash(jsonObject)) {
+                JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE_TOKOCASH);
+                return getErrorMessageJoined(jsonArray);
+            } else {
+                return "";
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private static boolean hasErrorMessageTokoCash(JSONObject jsonObject) {
+        return jsonObject.has(ERROR_MESSAGE_TOKOCASH);
     }
 }

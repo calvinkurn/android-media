@@ -15,15 +15,11 @@ public interface ChooseTokocashAccount {
 
         void onSelectedTokocashAccount(AccountTokocash accountTokocash);
 
-        void onSuccessGetTokocashAccounts(ArrayList<AccountTokocash> accountTokocashes);
-
         void onSuccessLogin();
 
     }
 
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {
-
-        void getTokocashAccounts();
 
         void loginWithTokocash(AccountTokocash accountTokocash);
     }

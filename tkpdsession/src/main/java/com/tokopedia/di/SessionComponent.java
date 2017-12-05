@@ -1,8 +1,8 @@
 package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.otp.centralizedotp.fragment.ChooseVerificationMethodFragment;
-import com.tokopedia.otp.centralizedotp.fragment.VerificationFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.VerificationFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.LoginPhoneNumberFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTokocashFragment;

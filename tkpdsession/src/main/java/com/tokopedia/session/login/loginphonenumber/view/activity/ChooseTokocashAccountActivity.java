@@ -12,12 +12,15 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
+import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 
 /**
  * @author by nisie on 12/4/17.
  */
 
 public class ChooseTokocashAccountActivity extends TActivity implements HasComponent {
+
+    public static final String ARGS_DATA = "data";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,11 @@ public class ChooseTokocashAccountActivity extends TActivity implements HasCompo
         return getApplicationComponent();
     }
 
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, ChooseTokocashAccountActivity.class);
+    public static Intent getCallingIntent(Context context, ChooseTokoCashAccountViewModel model) {
+        Intent intent = new Intent(context, ChooseTokocashAccountActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARGS_DATA, model);
+        intent.putExtras(bundle);
+        return intent;
     }
 }

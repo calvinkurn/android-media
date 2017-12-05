@@ -1,4 +1,4 @@
-package com.tokopedia.otp.centralizedotp.viewmodel;
+package com.tokopedia.otp.tokocashotp.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;

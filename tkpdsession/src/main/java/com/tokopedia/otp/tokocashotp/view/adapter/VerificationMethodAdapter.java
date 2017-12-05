@@ -1,4 +1,4 @@
-package com.tokopedia.otp.centralizedotp.adapter;
+package com.tokopedia.otp.tokocashotp.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.otp.centralizedotp.viewlistener.SelectVerification;
-import com.tokopedia.otp.centralizedotp.viewmodel.MethodItem;
+import com.tokopedia.otp.tokocashotp.view.viewlistener.SelectVerification;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
