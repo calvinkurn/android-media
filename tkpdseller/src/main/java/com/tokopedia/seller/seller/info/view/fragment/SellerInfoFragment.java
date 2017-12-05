@@ -15,6 +15,7 @@ import com.tokopedia.seller.seller.info.data.source.SellerInfoApi;
 import com.tokopedia.seller.seller.info.di.component.DaggerSellerInfoComponent;
 import com.tokopedia.seller.seller.info.domain.interactor.SellerInfoUseCase;
 import com.tokopedia.seller.seller.info.view.SellerInfoView;
+import com.tokopedia.seller.seller.info.view.activity.SellerInfoWebViewActivity;
 import com.tokopedia.seller.seller.info.view.adapter.SellerInfoAdapter;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.presenter.SellerInfoPresenter;
@@ -81,6 +82,6 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     public void onItemClicked(SellerInfoModel sellerInfoModel) {
-
+        startActivity(SellerInfoWebViewActivity.getCallingIntent(this, sellerInfoModel.getExternalLink()));
     }
 }
