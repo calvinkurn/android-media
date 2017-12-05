@@ -30,11 +30,14 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     public static final int DESTROY_BROWSE_PARENT = 99;
     public static final int DESTROY_INTERMEDIARY = 98;
+    public static final String EXTRA_SELECTED_CATEGORY_ID = "EXTRA_SELECTED_CATEGORY_ID";
+    public static final String EXTRA_SELECTED_CATEGORY_NAME = "EXTRA_SELECTED_CATEGORY_NAME";
 
     private FragmentManager fragmentManager;
     private String departmentId = "0";
     private String rootDepartementId = "";
     private TextView topBarTitle;
+    View buttonClose;
 
     ProgressBar progressBar;
 
@@ -71,17 +74,16 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     }
 
     private void initView() {
-        topBarTitle = (TextView) findViewById(com.tokopedia.tkpdpdp.R.id.simple_top_bar_title);
-        topBarTitle.setText(getString(R.string.title_category));
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        findViewById(com.tokopedia.tkpdpdp.R.id.simple_top_bar_close_button)
+        buttonClose = findViewById(com.tokopedia.discovery.R.id.top_bar_close_button);
+        buttonClose
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        finish();
-                        CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-                    }
-                });
+                        onBackPressed();
+                    CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);}
+                });topBarTitle = (TextView) findViewById(R.id.top_bar_title);
+        topBarTitle.setText(getString(R.string.title_category));
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         Fragment fragment =
                 (fragmentManager.findFragmentByTag(CategoryNavigationFragment.TAG));
         if (fragment == null) {
@@ -122,6 +124,11 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
         }
     }
 
+    public static Intent createInstance(Context context, String departmentId) {
+        Intent intent = new Intent(context, CategoryNavigationActivity.class);
+        intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, departmentId);
+        return intent;
+    }
     public ProgressBar getProgressBar() {
         return progressBar;
     }
@@ -131,9 +138,9 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core.R.anim.push_down);
     }
 
 

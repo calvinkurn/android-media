@@ -1,5 +1,6 @@
 package com.tokopedia.digital.tokocash.entity;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -9,26 +10,37 @@ import com.google.gson.annotations.SerializedName;
 public class ResponseHelpHistoryEntity {
 
     @SerializedName("Topic")
+    @Expose
     private String topic;
     @SerializedName("email")
+    @Expose
     private String email;
     @SerializedName("name")
+    @Expose
     private String name;
     @SerializedName("subject")
+    @Expose
     private String subject;
     @SerializedName("message")
+    @Expose
     private String message;
     @SerializedName("invoice")
+    @Expose
     private String invoice;
     @SerializedName("product")
+    @Expose
     private String product;
     @SerializedName("created_by")
+    @Expose
     private String createdBy;
     @SerializedName("categories")
+    @Expose
     private String categories;
     @SerializedName("categories_delimiter")
+    @Expose
     private String categoriesDelimiter;
     @SerializedName("user_agent")
+    @Expose
     private String userAgent;
 
     public String getTopic() {

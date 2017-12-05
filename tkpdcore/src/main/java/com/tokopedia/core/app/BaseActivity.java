@@ -1,6 +1,7 @@
 package com.tokopedia.core.app;
 
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -50,6 +51,9 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -72,9 +76,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
-    @Inject
+
     protected SessionHandler sessionHandler;
-    @Inject
+
     protected GCMHandler gcmHandler;
 
     private Boolean isPause = false;
@@ -94,8 +98,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-
+        sessionHandler = new SessionHandler(getBaseContext());
         categoryDatabaseManager = new CategoryDatabaseManager();
+        gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
@@ -392,29 +397,5 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isTaskRoot()) {
-            ApplicationInfo ai = null;
-            try {
-                ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-                Bundle bundle = ai.metaData;
-                String i = bundle.getString("APPS_HOME", "");
-                if (!TextUtils.isEmpty(i)) {
-                    Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
-                            (this);
-                    startActivity(intentHome);
-                } else {
-                    super.onBackPressed();
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-                super.onBackPressed();
-            }
-        } else {
-            super.onBackPressed();
-        }
     }
 }

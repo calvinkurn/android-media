@@ -6,6 +6,7 @@ import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataStore;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.geolocation.model.coordinate.Location;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -52,8 +53,8 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .language(deviceLanguage)
                                 .ssid(ssid)
                                 .carrier(carrier)
-                                .deviceLat(String.valueOf(LocationCache.getLocation().getLatitude()))
-                                .deviceLng(String.valueOf(LocationCache.getLocation().getLongitude()))
+                                .deviceLat(LocationCache.getLatitudeCache())
+                                .deviceLng(LocationCache.getLongitudeCache())
                                 .build();
 
                         return fp;

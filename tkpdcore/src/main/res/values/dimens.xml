@@ -74,6 +74,7 @@
     <!-- Inbox Message -->
     <dimen name="checked_indicator_msg">100dp</dimen>
     <dimen name="message_width">300dp</dimen>
+    <dimen name="chat_width">270dp</dimen>
     <dimen name="message_corner">12dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
