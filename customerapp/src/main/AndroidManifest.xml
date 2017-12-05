@@ -202,7 +202,7 @@
             android:name=".home.ReactNativeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".home.thankyou.view.ReactNativeThankYouPageActivity"
+            android:name=".thankyou.view.ReactNativeThankYouPageActivity"
             android:screenOrientation="portrait" />
 
         <service
@@ -217,7 +217,7 @@
                 android:resource="@xml/config_accessibility_service" />
         </service>
         <service
-            android:name=".home.thankyou.view.ThanksAnalyticsService"
+            android:name=".thankyou.view.ThanksTrackerService"
             android:exported="false" />
         <activity android:name=".datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"

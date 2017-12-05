@@ -11,7 +11,6 @@ import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
-import com.tokopedia.core.network.di.qualifier.RechargeDigitalAuthQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
@@ -26,7 +25,6 @@ import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
-import com.tokopedia.core.network.di.qualifier.WsV4Auth;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
@@ -178,13 +176,5 @@ public class NetModule {
                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOPADS_DOMAIN).client(okHttpClient).build();
 
-    }
-
-    @RechargeDigitalAuthQualifier
-    @ApplicationScope
-    @Provides
-    public Retrofit provideRechargeWsV4Retrofit(OkHttpClient okHttpClient,
-                                                Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.RECHARGE_API_DOMAIN).client(okHttpClient).build();
     }
 }
