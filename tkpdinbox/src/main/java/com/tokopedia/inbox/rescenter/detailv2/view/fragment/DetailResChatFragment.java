@@ -313,7 +313,7 @@ public class DetailResChatFragment
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        buttonWidth = (displayMetrics.widthPixels / 4) - (5 * (int) getResources().getDimension(R.dimen.margin_vs));
+        buttonWidth = (displayMetrics.widthPixels / 4) - (1 * (int) getResources().getDimension(R.dimen.margin_vs));
 
         initView();
     }
