@@ -4,12 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/header_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@drawable/digital_gradient_black" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/waiting_transaction_rv"
         android:layout_width="match_parent"

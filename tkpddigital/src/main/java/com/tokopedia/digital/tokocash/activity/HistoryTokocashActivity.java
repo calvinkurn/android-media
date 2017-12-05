@@ -15,23 +15,21 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.apiservices.tokocash.WalletService;
-import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.tokocash.adapter.FilterTokoCashAdapter;
@@ -46,6 +44,7 @@ import com.tokopedia.digital.tokocash.model.ItemHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
 import com.tokopedia.digital.tokocash.presenter.ITokoCashHistoryPresenter;
 import com.tokopedia.digital.tokocash.presenter.TokoCashHistoryPresenter;
+import com.tokopedia.digital.utils.DatePickerTokoCashUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,8 +85,6 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     RelativeLayout viewEmptyNoHistory;
     @BindView(R2.id.main_content)
     LinearLayout mainContent;
-    @BindView(R2.id.loading_history)
-    ProgressBar loadingHistory;
     @BindView(R2.id.text_empty_page)
     TextView emptyTextTransaction;
     @BindView(R2.id.icon_empty_page)
@@ -100,6 +97,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     LinearLayout waitingTransactionView;
     @BindView(R2.id.nested_scroll_view)
     NestedScrollView nestedScrollView;
+    @BindView(R2.id.bottom_action_view)
+    BottomActionView bottomActionView;
 
 
     private int datePickerSelection = 2;
@@ -112,12 +111,12 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private long endDate;
     private FilterTokoCashAdapter adapterFilter;
     private HistoryTokoCashAdapter adapterHistory;
-    private EndlessRecyclerviewListener endlessRecyclerviewListener;
     private CompositeSubscription compositeSubscription;
     private SnackbarRetry messageSnackbar;
     private RefreshHandler refreshHandler;
     private String stateDataAfterFilter = "";
     private TokoCashHistoryData tokoCashHistoryData;
+    private int oldScrollY = 0;
 
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_TRANSACTION_HISTORY)
@@ -189,17 +188,15 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         initialRangeDateFilter();
         initialFilterRecyclerView();
         initialHistoryRecyclerView();
-        refreshHandler = new RefreshHandler(this, getWindow().getDecorView().getRootView(),
-                getRefreshHandlerListener());
     }
 
+    @NonNull
     private RefreshHandler.OnRefreshHandlerListener getRefreshHandlerListener() {
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
                 if (refreshHandler.isRefreshing()) {
                     presenter.getInitHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
-//                    endlessRecyclerviewListener.resetState();
                 }
             }
         };
@@ -224,15 +221,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private void initialHistoryRecyclerView() {
         adapterHistory = new HistoryTokoCashAdapter(new ArrayList<ItemHistory>());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        endlessRecyclerviewListener = new EndlessRecyclerviewListener(linearLayoutManager) {
-//            @Override
-//            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-//
-//            }
-//        };
         historyListRecyclerView.setHasFixedSize(true);
         historyListRecyclerView.setLayoutManager(linearLayoutManager);
-//        historyListRecyclerView.addOnScrollListener(endlessRecyclerviewListener);
         historyListRecyclerView.setNestedScrollingEnabled(false);
         historyListRecyclerView.setAdapter(adapterHistory);
     }
@@ -269,7 +259,6 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
             public void selectFilter(String typeFilter) {
                 typeFilterSelected = typeFilter;
                 presenter.getInitHistoryTokoCash(typeFilter, startDateFormatted, endDateFormatted);
-//                endlessRecyclerviewListener.resetState();
             }
         };
     }
@@ -280,25 +269,42 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
                 new ViewTreeObserver.OnScrollChangedListener() {
                     @Override
                     public void onScrollChanged() {
-                        View view = (View) nestedScrollView.getChildAt(nestedScrollView.getChildCount()-1);
-                        int diff = (view.getBottom() - (nestedScrollView.getHeight() + nestedScrollView.getScrollY()));
-
-                        if (diff == 0) {
-                            adapterHistory.showLoading(true);
-                            if (isLoadMore) {
-                                presenter.getHistoryLoadMore(typeFilterSelected, startDateFormatted, endDateFormatted);
-                            } else {
-                                adapterHistory.showLoading(false);
-                            }
-                        }
+                        showBottomActionWhenScrollingUp();
+                        loadMoreContentWhenReachBottom();
                     }
                 }
         );
     }
 
+    @NonNull
+    private void showBottomActionWhenScrollingUp() {
+        if (nestedScrollView.getScrollY() < oldScrollY && nestedScrollView.getScrollY() != 0) {
+            bottomActionView.setVisibility(View.VISIBLE);
+        } else {
+            bottomActionView.setVisibility(View.GONE);
+        }
+        oldScrollY = nestedScrollView.getScrollY();
+    }
+
+    /**
+     * Using nestedscrollview because this page contain swipe refresh & endless scroll view
+     */
+    @NonNull
+    private void loadMoreContentWhenReachBottom() {
+        View view = (View) nestedScrollView.getChildAt(nestedScrollView.getChildCount() - 1);
+        int diff = (view.getBottom() - (nestedScrollView.getHeight() + nestedScrollView.getScrollY()));
+
+        if (diff == 0) {
+            if (isLoadMore) {
+                presenter.getHistoryLoadMore(typeFilterSelected, startDateFormatted, endDateFormatted);
+            }
+        }
+    }
+
     @Override
     protected void initVar() {
-
+        refreshHandler = new RefreshHandler(this, getWindow().getDecorView().getRootView(),
+                getRefreshHandlerListener());
     }
 
     @Override
@@ -309,52 +315,31 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
                 Application application = HistoryTokocashActivity.this.getApplication();
                 if (application != null && application instanceof TokoCashRouter) {
                     Intent intent = ((TokoCashRouter) application)
-                            .goToDatePicker(HistoryTokocashActivity.this, getPeriodRangeModel(),
+                            .goToDatePicker(HistoryTokocashActivity.this,
+                                    DatePickerTokoCashUtil.getPeriodRangeModel(getApplicationContext()),
                                     startDate, endDate, datePickerSelection, datePickerType);
                     startActivityForResult(intent, EXTRA_INTENT_DATE_PICKER);
                     stateDataAfterFilter = STATE_SAVED;
                 }
             }
         });
+
+        bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nestedScrollView.scrollTo(0, 0);
+            }
+        });
+
+        waitingTransactionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(WaitingTransactionActivity.newInstance(tokoCashHistoryData,
+                        getApplicationContext()));
+            }
+        });
     }
 
-    private List<PeriodRangeModelCore> getPeriodRangeModel() {
-        List<PeriodRangeModelCore> periodRangeModelCoreList = new ArrayList<>();
-        Calendar startCalendar = Calendar.getInstance();
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.DATE, 0);
-        startCalendar.add(Calendar.DATE, 0);
-        periodRangeModelCoreList.add(convert(startCalendar.getTimeInMillis(),
-                endCalendar.getTimeInMillis(), getString(R.string.range_date_today)));
-        startCalendar = Calendar.getInstance();
-        startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
-        startCalendar.add(Calendar.DATE, -6);
-        periodRangeModelCoreList.add(convert(startCalendar.getTimeInMillis(),
-                endCalendar.getTimeInMillis(), getString(R.string.range_date_seven_days_ago)));
-        startCalendar = Calendar.getInstance();
-        startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
-        startCalendar.add(Calendar.DATE, -29);
-        periodRangeModelCoreList.add(convert(startCalendar.getTimeInMillis(),
-                endCalendar.getTimeInMillis(), getString(R.string.range_date_thirty_days_ago)));
-        startCalendar = Calendar.getInstance();
-        startCalendar.set(Calendar.DAY_OF_MONTH, startCalendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-        periodRangeModelCoreList.add(convert(startCalendar.getTimeInMillis(),
-                endCalendar.getTimeInMillis(), getString(R.string.range_date_this_month)));
-        startCalendar = Calendar.getInstance();
-        startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
-        startCalendar.add(Calendar.MONTH, -1);
-        startCalendar.set(Calendar.DATE, 1);
-        endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.MONTH, -1);
-        endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        periodRangeModelCoreList.add(convert(startCalendar.getTimeInMillis(),
-                endCalendar.getTimeInMillis(), getString(R.string.range_date_last_month)));
-        return periodRangeModelCoreList;
-    }
-
-    public PeriodRangeModelCore convert(long startDate, long endDate, String label) {
-        return new PeriodRangeModelCore(startDate, endDate, label);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -383,7 +368,6 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     public void renderDataTokoCashHistory(TokoCashHistoryData tokoCashHistoryData, boolean firstTimeLoad) {
         historyListRecyclerView.setVisibility(View.VISIBLE);
         viewEmptyNoHistory.setVisibility(View.GONE);
-        adapterHistory.showLoading(false);
         refreshHandler.finishRefresh();
         mainContent.setVisibility(View.VISIBLE);
         adapterFilter.setListener(getFilterTokoCashListener());
@@ -447,13 +431,6 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     public void renderWaitingTransaction(TokoCashHistoryData tokoCashHistory) {
         this.tokoCashHistoryData = tokoCashHistory;
         waitingTransactionView.setVisibility(View.VISIBLE);
-        waitingTransactionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(WaitingTransactionActivity.newInstance(tokoCashHistoryData,
-                        getApplicationContext()));
-            }
-        });
     }
 
     @Override
@@ -470,6 +447,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     @Override
     public void setHasNextPage(boolean hasNextPage) {
         isLoadMore = hasNextPage;
+        adapterHistory.isNextUri(hasNextPage);
     }
 
     @Override
