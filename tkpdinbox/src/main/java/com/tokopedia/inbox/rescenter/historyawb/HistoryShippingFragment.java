@@ -14,6 +14,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
 import com.tokopedia.inbox.rescenter.historyawb.di.module.HistoryAwbModule;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
@@ -242,7 +243,11 @@ public class HistoryShippingFragment extends BaseDaggerFragment
 
     @Override
     public void onActionTrackClick(String shipmentID, String shippingRefNumber) {
-        presenter.doActionTrack(shippingRefNumber, shipmentID);
+        startActivity(TrackShippingActivity.newInstance(
+                getActivity(),
+                shipmentID,
+                shippingRefNumber)
+        );
     }
 
     @Override
