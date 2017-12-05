@@ -46,6 +46,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
@@ -322,6 +323,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
+                TkpdState.DrawerPosition.SELLER_INFO,
+                drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
         return inboxMenu;
     }
 
@@ -517,6 +522,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                         ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
                         UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
                     }
+                    break;
+                case TkpdState.DrawerPosition.SELLER_INFO:
+                    intent = new Intent(context, SellerInfoActivity.class);
+                    context.startActivity(intent);
                     break;
                 default:
                     super.onItemClicked(item);

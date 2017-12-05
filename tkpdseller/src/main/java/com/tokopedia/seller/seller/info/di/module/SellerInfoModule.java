@@ -1,8 +1,11 @@
 package com.tokopedia.seller.seller.info.di.module;
 
 import com.tokopedia.core.network.di.qualifier.SellerInfoQualifier;
+import com.tokopedia.seller.seller.info.data.repository.SellerInfoRepositoryImpl;
 import com.tokopedia.seller.seller.info.data.source.SellerInfoApi;
+import com.tokopedia.seller.seller.info.data.source.cloud.SellerInfoDataSource;
 import com.tokopedia.seller.seller.info.di.scope.SellerInfoScope;
+import com.tokopedia.seller.seller.info.domain.SellerInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,5 +22,11 @@ public class SellerInfoModule {
     @Provides
     public SellerInfoApi provideSellerInfoApi(@SellerInfoQualifier Retrofit retrofit){
         return retrofit.create(SellerInfoApi.class);
+    }
+
+    @SellerInfoScope
+    @Provides
+    public SellerInfoRepository provideSellerInfoRepository(SellerInfoDataSource sellerInfoDataSource){
+        return new SellerInfoRepositoryImpl(sellerInfoDataSource);
     }
 }
