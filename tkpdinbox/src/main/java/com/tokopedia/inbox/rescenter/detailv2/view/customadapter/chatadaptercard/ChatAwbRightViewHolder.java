@@ -83,7 +83,11 @@ public class ChatAwbRightViewHolder extends AbstractViewHolder<ChatAwbRightViewM
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mainView.doEditAwb(
+                        String.valueOf(element.getConversation().getResConvId()),
+                        String.valueOf(element.getConversation().getShippingDetail().getId()),
+                        element.getConversation().getShippingDetail().getAwbNumber()
+                );
             }
         });
 

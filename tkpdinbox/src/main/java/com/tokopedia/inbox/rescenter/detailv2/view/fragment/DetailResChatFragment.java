@@ -1117,13 +1117,13 @@ public class DetailResChatFragment
     @Override
     public void doEditAwb(String conversationId,
                           String shippingId, String shippingRefNum) {
-        startActivity(InputShippingActivity.createEditPageIntent(
+        startActivityForResult(InputShippingActivity.createEditPageIntent(
                 getActivity(),
                 resolutionId,
                 conversationId,
                 shippingId,
-                shippingRefNum
-        ));
+                shippingRefNum),
+                REQUEST_EDIT_SHIPPING);
     }
 
     public void getBottomSheetActivityTransition() {
