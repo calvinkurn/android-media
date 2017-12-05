@@ -300,33 +300,6 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void doOnTrackingTimeOut() {
-        showLoadingDialog(false);
-        showTimeOutMessage();
-    }
-
-    @Override
-    public void doOnTrackingSuccess(TrackingDialogViewModel model) {
-        showLoadingDialog(false);
-        TrackShippingDialog.Builder(getActivity())
-                .initView()
-                .initValue(model)
-                .show();
-    }
-
-    @Override
-    public void doOnTrackingFailed() {
-        showLoadingDialog(false);
-        showSnackBar(null);
-    }
-
-    @Override
-    public void doOnTrackingError(String messageError) {
-        showLoadingDialog(false);
-        showSnackBar(messageError);
-    }
-
-    @Override
     public void resetList() {
         adapter.setArraylist(new ArrayList<HistoryAwbViewItem>());
         adapter.notifyDataSetChanged();
