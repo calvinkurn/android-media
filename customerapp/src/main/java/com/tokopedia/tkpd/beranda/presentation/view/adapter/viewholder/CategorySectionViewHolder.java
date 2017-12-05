@@ -2,23 +2,20 @@ package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.network.entity.hotlist.List;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.GridSpacingItemDecoration;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +32,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
     RecyclerView recyclerView;
     private SectionItemAdapter adapter;
     private Context context;
-    private static final int spanCount = 4;
+    private static final int spanCount = 5;
     private HomeCategoryListener listener;
 
     public CategorySectionViewHolder(View itemView, HomeCategoryListener listener) {
@@ -76,6 +73,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         @Override
         public void onBindViewHolder(SectionItemViewHolder holder, final int position) {
             holder.title.setText(sectionViewModel.getSectionList().get(position).getTitle());
+            holder.icon.setImageResource(sectionViewModel.getSectionList().get(position).getIcon());
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -94,7 +92,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
     public class SectionItemViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.icon)
-        ImageView icon;
+        AppCompatImageView icon;
         @BindView(R.id.title)
         TextView title;
         @BindView(R.id.container)

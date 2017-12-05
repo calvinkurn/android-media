@@ -1,10 +1,16 @@
 package com.tokopedia.tkpd.beranda.presentation.presenter;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
+import com.tokopedia.digital.widget.model.status.Status;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
@@ -12,6 +18,7 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 
 import java.util.List;
 
@@ -47,8 +54,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
+    private final Context context;
 
-    public HomePresenter() {
+    public HomePresenter(Context context) {
+        this.context = context;
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
     }
@@ -67,7 +76,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getTopPicksUseCase.getExecuteObservableAsync(getTopPicksUseCase.getRequestParam()),
-                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), new HomeDataMapper(getView().getContext()))
+                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), new HomeDataMapper(context))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {

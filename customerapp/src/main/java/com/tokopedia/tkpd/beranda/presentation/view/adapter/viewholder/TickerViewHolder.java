@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
 
+import android.content.res.ColorStateList;
 import android.support.annotation.LayoutRes;
 import android.util.Log;
 import android.view.View;

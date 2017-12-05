@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.beranda.data.mapper;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.entity.home.Ticker;
@@ -24,6 +25,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rx.functions.Func5;
@@ -44,6 +46,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
     public List<Visitable> call(HomeBannerResponseModel homeBannerResponseModel, Ticker ticker,
                                 BrandsOfficialStoreResponseModel brandsOfficialStoreResponseModel,
                                 TopPicksResponseModel topPicksResponseModel,
+
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
         if (homeBannerResponseModel.isSuccess()) {
@@ -52,22 +55,33 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         if (ticker.getData().getTickers().size() > 0) {
             list.add(mappingTicker(ticker.getData().getTickers()));
         }
-        if (homeCategoryResponseModel.isSuccess()) {
-            list.add(mappingCategorySection(homeCategoryResponseModel.getData().getLayoutSections()));
+        if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
+            list.add(mappingCategorySection());
         }
-        if (topPicksResponseModel.isSuccess()) {
+        if (topPicksResponseModel.isSuccess() && topPicksResponseModel.getData().getGroups().size() > 0) {
             for (TopPicksGroupsModel topPicksGroups : topPicksResponseModel.getData().getGroups()) {
                 for (TopPicksModel topPick : topPicksGroups.getToppicks()) {
                     list.add(mappingTopPicks(topPick));
                 }
             }
         }
-        if (brandsOfficialStoreResponseModel.isSuccess()) {
+        if (brandsOfficialStoreResponseModel.isSuccess() && brandsOfficialStoreResponseModel.getData().size() > 0) {
             list.add(mappingBrandsOs(brandsOfficialStoreResponseModel.getData()));
         }
-        if (homeCategoryResponseModel.isSuccess()) {
+        if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
         }
+        return rearrangeList(list);
+    }
+
+    private List<Visitable> rearrangeList(List<Visitable> list) {
+        int brandIndex = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof BrandsViewModel) {
+                brandIndex = i;
+            }
+        }
+        Collections.swap(list, brandIndex, (brandIndex + 1));
         return list;
     }
 
@@ -79,21 +93,25 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         return viewModel;
     }
 
-    private Visitable mappingCategorySection(List<CategoryLayoutSectionsModel> layoutSections) {
+    private Visitable mappingCategorySection() {
         CategorySectionViewModel viewModel = new CategorySectionViewModel();
-        for (CategoryLayoutSectionsModel sections : layoutSections) {
-            viewModel.addSection(new LayoutSections(sections.getTitle(), R.drawable.ic_cat_clothing_big));
+        String[] title = context.getResources().getStringArray(R.array.section_title);
+        TypedArray icons = context.getResources().obtainTypedArray(R.array.section_icon);
+        for (int i = 0; i < title.length; i++) {
+            viewModel.addSection(new LayoutSections(title[i], icons.getResourceId(i, R.drawable.ic_beli)));
         }
         return viewModel;
     }
 
     private List<Visitable> mappingCategoryItem(List<CategoryLayoutSectionsModel> layoutSections) {
         List<Visitable> list = new ArrayList<>();
-        for (CategoryLayoutSectionsModel sections : layoutSections) {
+        for (int i = 0; i < layoutSections.size(); i++) {
+            CategoryLayoutSectionsModel sections = layoutSections.get(i);
             if (sections.getId() == 22) { //Id 22 == Digitals
-                list.add(new DigitalsViewModel(sections.getTitle()));
+                list.add(new DigitalsViewModel(sections.getTitle(), i));
             } else {
                 CategoryItemViewModel viewModel = new CategoryItemViewModel();
+                viewModel.setSectionId(i);
                 viewModel.setTitle(sections.getTitle());
                 viewModel.setItemList(sections.getLayoutRows());
                 list.add(viewModel);

@@ -47,4 +47,12 @@ public class HomeRecycleAdapter extends BaseAdapter {
         this.visitables = items;
         notifyDataSetChanged();
     }
+
+    public Visitable getItem(int pos){
+        return visitables.get(pos);
+    }
+
+    public List<Visitable> getItems(){
+        return visitables;
+    }
 }

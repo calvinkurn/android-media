@@ -10,9 +10,19 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFact
 public class DigitalsViewModel implements Visitable<HomeTypeFactory> {
 
     private String title;
+    private int sectionId;
 
-    public DigitalsViewModel(String title) {
+    public DigitalsViewModel(String title, int sectionId) {
         this.title = title;
+        this.sectionId = sectionId;
+    }
+
+    public int getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(int sectionId) {
+        this.sectionId = sectionId;
     }
 
     public String getTitle() {

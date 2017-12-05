@@ -12,8 +12,17 @@ import java.util.List;
 
 public class CategoryItemViewModel implements Visitable<HomeTypeFactory> {
 
+    private int sectionId;
     private String title;
     private List<CategoryLayoutRowModel> itemList;
+
+    public int getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(int sectionId) {
+        this.sectionId = sectionId;
+    }
 
     public String getTitle() {
         return title;

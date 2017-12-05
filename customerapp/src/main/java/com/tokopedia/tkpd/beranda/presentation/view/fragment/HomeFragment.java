@@ -2,22 +2,26 @@ package com.tokopedia.tkpd.beranda.presentation.view.fragment;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -35,6 +39,7 @@ import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -52,10 +57,17 @@ import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
+import com.tokopedia.tkpd.beranda.listener.OnSectionChangeListener;
 import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
+import com.tokopedia.tkpd.beranda.presentation.view.SectionContainer;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.HomeRecycleAdapter;
+import com.tokopedia.tkpd.beranda.listener.HomeRecycleScrollListener;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -75,13 +87,17 @@ import javax.inject.Inject;
  */
 
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
-        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, TokoCashUpdateListener {
+        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, TokoCashUpdateListener,
+        OnSectionChangeListener, TabLayout.OnTabSelectedListener {
 
     @Inject
     HomePresenter presenter;
 
+    private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
     private RecyclerView recyclerView;
+    private TabLayout tabLayout;
+    private SectionContainer tabContainer;
     private SwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
     private FirebaseRemoteConfig firebaseRemoteConfig;
@@ -89,6 +105,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Trace trace;
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private IntentFilter intentFilerTokoCash;
+    private SnackbarRetry messageSnackbar;
+    private HomeAdapterFactory adapterFactory;
+    private String[] tabSectionTitle;
 
     public static HomeFragment newInstance() {
 
@@ -138,6 +157,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.list);
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.sw_refresh_layout);
+        tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+        tabContainer = (SectionContainer) view.findViewById(R.id.tab_container);
         return view;
     }
 
@@ -152,10 +173,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initTabNavigation();
         initAdapter();
         initRefreshLayout();
         fetchRemoteConfig();
         initTokoCashReceiver();
+    }
+
+    private void initTabNavigation() {
+        tabSectionTitle = getResources().getStringArray(R.array.section_title);
+        TypedArray icons = getResources().obtainTypedArray(R.array.section_icon);
+        for (int i = 0; i < tabSectionTitle.length; i++) {
+            TabLayout.Tab tab = tabLayout.newTab();
+            tab.setIcon(icons.getResourceId(i, R.drawable.ic_beli));
+            tabLayout.addTab(tab);
+        }
+        tabLayout.addOnTabSelectedListener(this);
     }
 
     private void initTokoCashReceiver() {
@@ -192,14 +225,81 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initAdapter() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        adapter = new HomeRecycleAdapter(new HomeAdapterFactory(this), new ArrayList<Visitable>());
+        LinearLayoutManager layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this);
+        adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home)));
+        recyclerView.addOnScrollListener(new HomeRecycleScrollListener(layoutManager, this));
+    }
+
+    @Override
+    public void onChange(int firstPosition) {
+        toggleSectionTab(firstPosition);
+        Visitable visitable = adapter.getItem(firstPosition);
+        if (visitable instanceof CategoryItemViewModel) {
+            tabLayout.getTabAt(((CategoryItemViewModel) visitable).getSectionId()).select();
+        } else if (visitable instanceof DigitalsViewModel) {
+            tabLayout.getTabAt(((DigitalsViewModel) visitable).getSectionId()).select();
+        }
+    }
+
+    private void toggleSectionTab(int firstPosition) {
+        if (firstPosition >= 2) {
+            tabContainer.setVisibility(View.VISIBLE);
+        } else {
+            tabContainer.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(int newState, int firstPosition) {
+        switch (newState) {
+            case RecyclerView.SCROLL_STATE_DRAGGING:
+            case RecyclerView.SCROLL_STATE_SETTLING:
+                tabLayout.removeOnTabSelectedListener(this);
+                break;
+            case RecyclerView.SCROLL_STATE_IDLE:
+                tabLayout.addOnTabSelectedListener(this);
+                toggleSectionTab(firstPosition);
+                break;
+
+        }
+    }
+
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        focusView(tabSectionTitle[tab.getPosition()]);
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 
     @Override
     public void onSectionItemClicked(LayoutSections sections, int parentPosition, int childPosition) {
+        focusView(sections.getTitle());
+        tabLayout.getTabAt(childPosition).select();
+    }
 
+    private void focusView(String title) {
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) refreshLayout.getLayoutParams();
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            Visitable visitable = adapter.getItem(i);
+            if ((visitable instanceof CategoryItemViewModel && ((CategoryItemViewModel) visitable).getTitle().startsWith(title))
+                    || (visitable instanceof DigitalsViewModel && ((DigitalsViewModel) visitable).getTitle().startsWith(title))) {
+                recyclerView.smoothScrollToPosition(i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -354,7 +454,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onReceivedTokoCashData(final DrawerTokoCash data) {
 //        holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
         final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(getActivity());
-        if(config != null) {
+        if (config != null) {
             config.setDefaults(R.xml.remote_config_default);
             config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
                 @Override
@@ -400,7 +500,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void showNetworkError() {
-
+        if (messageSnackbar == null) {
+            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.getHomeData();
+                }
+            });
+        }
+        messageSnackbar.showRetrySnackbar();
     }
 
     @Override

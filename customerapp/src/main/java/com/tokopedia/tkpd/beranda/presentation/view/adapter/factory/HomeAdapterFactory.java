@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter.factory;
 
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,8 +31,10 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolComme
 public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTypeFactory {
 
     private final HomeCategoryListener listener;
+    private final FragmentManager fragmentManager;
 
-    public HomeAdapterFactory(HomeCategoryListener listener) {
+    public HomeAdapterFactory(FragmentManager fragmentManager, HomeCategoryListener listener) {
+        this.fragmentManager = fragmentManager;
         this.listener = listener;
     }
 
@@ -82,7 +85,7 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         else if (type == BrandsViewHolder.LAYOUT)
             viewHolder = new BrandsViewHolder(view, listener);
         else if (type == DigitalsViewHolder.LAYOUT)
-            viewHolder = new DigitalsViewHolder(view, listener);
+            viewHolder = new DigitalsViewHolder(fragmentManager, view, listener);
         else if (type == CategorySectionViewHolder.LAYOUT)
             viewHolder = new CategorySectionViewHolder(view, listener);
         else if (type == CategoryItemViewHolder.LAYOUT)
