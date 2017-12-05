@@ -1006,6 +1006,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 final Status status = locationSettingsResult.getStatus();
                 //final LocationSettingsStates s= result.getLocationSettingsStates();
 
+                if(!isViewAttached()){
+                    return;
+                }
+
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can

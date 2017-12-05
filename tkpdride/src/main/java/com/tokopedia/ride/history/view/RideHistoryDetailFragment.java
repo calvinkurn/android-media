@@ -114,6 +114,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     View seperator;
     @BindView(R2.id.tv_trip_id)
     TextView tripIdTextView;
+    @BindView(R2.id.label_total_charged)
+    TextView amountChargedLabel;
 
     ProgressDialog mProgressDialog;
 
@@ -248,6 +250,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         tokocashChargedTexView.setText(rideHistory.getTokoCashCharged());
         rideFareTextView.setText(rideHistory.getTotalFare());
         totalFareValueTextView.setText(rideHistory.getTotalFare());
+        amountChargedLabel.setText(rideHistory.getPaymentMethod() + " " + getString(R.string.label_charged));
 
         if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {
             paymentDetailsLayout.setVisibility(View.VISIBLE);

@@ -27,6 +27,7 @@ public class RideHistoryViewModelMapper {
         viewModel.setTokoCashCharged(RideUtils.formatStringToPriceString(rideHistory.getPayment().getPaidAmount(), rideHistory.getPayment().getCurrency()));
         viewModel.setPendingAmountDisplayFormat(RideUtils.formaNumberToPriceString(rideHistory.getPayment().getPendingAmount(), rideHistory.getPayment().getCurrency()));
         viewModel.setPendingAmount(rideHistory.getPayment().getPendingAmount());
+        viewModel.setPaymentMethod(transformPaymentMethod(rideHistory.getPayment().getPaymentMethod()));
         viewModel.setCashback(rideHistory.getCashbackAmount());
         viewModel.setDiscount(rideHistory.getDiscountAmount());
         viewModel.setCashbackDisplayFormat(
@@ -82,5 +83,15 @@ public class RideHistoryViewModelMapper {
         }
 
         return urlBuffer.toString();
+    }
+
+    private String transformPaymentMethod(String paymentMethod) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase("cc")) {
+            return "Credit Card";
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase("wallet")) {
+            return "TokoCash";
+        }
+
+        return "Amount";
     }
 }

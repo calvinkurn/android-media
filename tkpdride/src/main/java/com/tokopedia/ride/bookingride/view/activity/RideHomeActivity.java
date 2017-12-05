@@ -896,15 +896,19 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void actionBackToProductList() {
-        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
-            getFragmentManager().popBackStack();
-            onBottomContainerChangeToProductListScreen();
-            ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
-            ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
-            UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
-                    viewModel.getDestination());
-            replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
-            sendScreenEventWithDelay();
+        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment && !isFinishing()) {
+            try {
+                getFragmentManager().popBackStack();
+                onBottomContainerChangeToProductListScreen();
+                ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+                ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
+                UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
+                        viewModel.getDestination());
+                replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
+                sendScreenEventWithDelay();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

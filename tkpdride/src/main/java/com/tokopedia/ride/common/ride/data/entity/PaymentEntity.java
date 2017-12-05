@@ -32,6 +32,10 @@ public class PaymentEntity {
     @Expose
     private String paidAmount;
 
+    @SerializedName("payment_method")
+    @Expose
+    private String paymentMethod;
+
     public PaymentEntity() {
     }
 
@@ -57,5 +61,9 @@ public class PaymentEntity {
 
     public String getPaidAmount() {
         return paidAmount;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 }

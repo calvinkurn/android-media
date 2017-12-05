@@ -41,6 +41,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String pendingAmountDisplayFormat;
     private String tokoCashCharged;
     private int pendingAmount;
+    private String paymentMethod;
 
     public RideHistoryViewModel() {
     }
@@ -72,6 +73,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         pendingAmountDisplayFormat = in.readString();
         tokoCashCharged = in.readString();
         pendingAmount = in.readInt();
+        paymentMethod = in.readString();
     }
 
     public static final Creator<RideHistoryViewModel> CREATOR = new Creator<RideHistoryViewModel>() {
@@ -291,6 +293,14 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.pendingAmount = pendingAmount;
     }
 
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
     public static String transformToDisplayStatus(String status) {
         switch (status) {
             case "arriving":
@@ -369,5 +379,6 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeString(pendingAmountDisplayFormat);
         parcel.writeString(tokoCashCharged);
         parcel.writeInt(pendingAmount);
+        parcel.writeString(paymentMethod);
     }
 }

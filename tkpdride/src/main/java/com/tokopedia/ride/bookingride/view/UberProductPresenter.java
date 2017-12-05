@@ -186,6 +186,11 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     }
 
     private void actionSetProductListWhenItsAvailable(PlacePassViewModel destination) {
+        if (!isViewAttached()) {
+            return;
+        }
+
+
         List<Visitable> existingProductList = getView().getProductList();
         if (existingProductList != null && existingProductList.size() > 0) {
             List<Visitable> updatedList = new ArrayList<>();
