@@ -37,6 +37,7 @@ import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideT
 public class NewOnBoardingFragment extends OnBoardingFragment implements CustomAnimationPageTransformerDelegate {
 
     private static final String ARG_LOTTIE = "lottie";
+    private static final String SCREEN_NAME = "Screen OnBoarding - ";
     private int mScreenWidth;
     private int mScreenHeight;
     private TextView startNow;
@@ -346,6 +347,12 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         animatorSet = new AnimatorSet();
         animatorSet.playTogether(slideTitle, slideDesc);
         animatorSet.start();
+    }
+
+    @Override
+    protected String getScreenName() {
+        int pageNumber = position+1;
+        return SCREEN_NAME + pageNumber;
     }
 }
 

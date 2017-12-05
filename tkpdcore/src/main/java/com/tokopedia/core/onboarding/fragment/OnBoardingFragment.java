@@ -21,13 +21,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.onboarding.ISlideBackgroundColorHolder;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
-public class OnBoardingFragment extends Fragment implements ISlideBackgroundColorHolder{
+public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBackgroundColorHolder{
 
     protected static final String ARG_TITLE = "title";
     protected static final String ARG_DESC = "desc";
@@ -236,5 +237,9 @@ public class OnBoardingFragment extends Fragment implements ISlideBackgroundColo
         }
     }
 
+    @Override
+    protected String getScreenName() {
+        return "Screen OnBoarding";
+    }
 }
 
