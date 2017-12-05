@@ -15,11 +15,13 @@ public class ChatCreateLeftViewModel implements Visitable<DetailChatTypeFactory>
     private ShopDomain shopDomain;
     private LastDomain lastDomain;
     private ConversationDomain conversationDomain;
+    private String actionType;
 
-    public ChatCreateLeftViewModel(ShopDomain shopDomain, LastDomain lastDomain, ConversationDomain conversationDomain) {
+    public ChatCreateLeftViewModel(ShopDomain shopDomain, LastDomain lastDomain, ConversationDomain conversationDomain, String actionType) {
         this.shopDomain = shopDomain;
         this.lastDomain = lastDomain;
         this.conversationDomain = conversationDomain;
+        this.actionType = actionType;
     }
 
     public ShopDomain getShopDomain() {
@@ -44,6 +46,14 @@ public class ChatCreateLeftViewModel implements Visitable<DetailChatTypeFactory>
 
     public void setConversationDomain(ConversationDomain conversationDomain) {
         this.conversationDomain = conversationDomain;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
     }
 
     @Override

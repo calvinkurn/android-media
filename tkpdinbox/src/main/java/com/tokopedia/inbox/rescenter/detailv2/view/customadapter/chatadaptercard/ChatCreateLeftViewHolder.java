@@ -29,6 +29,8 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
     @LayoutRes
     public static final int LAYOUT = R.layout.item_detail_create_left;
 
+    public static final String CREATE = "create";
+    public static final String RECOMPLAIN = "recomplain";
     public static final int COUNT_MAX_PRODUCT = 5;
 
     DetailResChatFragmentListener.View mainView;
@@ -71,10 +73,14 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
     @Override
     public void bind(final ChatCreateLeftViewModel element) {
         final Context context = itemView.getContext();
-        tvTitle.setText(MethodChecker.fromHtml(
-                context.getResources().getString(R.string.string_complaint_title)
-                        .replace(context.getResources().getString(R.string.string_complaint_title_identifier),
-                                buildComplaintStoreName(element.getShopDomain().getName()))));
+        if (element.getActionType().equals(CREATE)) {
+            tvTitle.setText(MethodChecker.fromHtml(
+                    context.getResources().getString(R.string.string_complaint_title)
+                            .replace(context.getResources().getString(R.string.string_complaint_title_identifier),
+                                    buildComplaintStoreName(element.getShopDomain().getName()))));
+        } else {
+            tvTitle.setText(element.getConversationDomain().getAction().getTitle());
+        }
         tvBuyerProblem.setText(element.getConversationDomain().getTrouble().getString());
         tvBuyerSolution.setText(element.getConversationDomain().getSolution().getName());
         tvBuyerText.setText(MethodChecker.fromHtml(element.getConversationDomain().getMessage()));
@@ -106,6 +112,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
             rvProve.setLayoutManager(new LinearLayoutManager(context));
             proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
             rvProve.setAdapter(proveAdapter);
+            rvProve.setHasFixedSize(true);
         }
 
         ffBubble2.setVisibility(View.GONE);
@@ -118,6 +125,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
                     element.getConversationDomain().getProduct(),
                     COUNT_MAX_PRODUCT);
             rvProduct.setAdapter(productAdapter);
+            rvProduct.setHasFixedSize(true);
         }
     }
 

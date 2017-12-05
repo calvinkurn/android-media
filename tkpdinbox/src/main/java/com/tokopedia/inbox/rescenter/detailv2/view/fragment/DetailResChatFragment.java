@@ -41,6 +41,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -310,10 +311,9 @@ public class DetailResChatFragment
         attachmentAdapter = AttachmentAdapter.createAdapter(getActivity(), true);
         attachmentAdapter.setListener(getAttachmentAdapterListener());
         rvAttachment.setAdapter(attachmentAdapter);
-
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        buttonWidth = (displayMetrics.widthPixels / 4) - (5 * (int) getResources().getDimension(R.dimen.margin_vs));
+        buttonWidth = (displayMetrics.widthPixels / 4) - (1 * (int) getResources().getDimension(R.dimen.margin_vs));
 
         initView();
     }
@@ -440,6 +440,8 @@ public class DetailResChatFragment
                 chatAdapter.notifyDataSetChanged();
                 scrollChatToBottom(false);
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
+                rvAttachment.setVisibility(View.GONE);
+                initActionButton(detailResChatDomain.getButton());
             }
         });
 
@@ -527,8 +529,8 @@ public class DetailResChatFragment
                     attachment.getFileType() == AttachmentViewModel.FILE_IMAGE ?
                             "image" :
                             "video",
-                    attachment.getImgThumb(),
-                    attachment.getImgLarge());
+                    attachment.getFileLoc(),
+                    attachment.getFileLoc());
             domainList.add(domain);
         }
         return domainList;
@@ -779,6 +781,16 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getRecomplainLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = CreateResCenterActivity.newRecomplaintInstance(
+                                getActivity(),
+                                String.valueOf(detailResChatDomain.getOrder().getId()),
+                                String.valueOf(detailResChatDomain.getResolution().getId()));
+                        startActivity(intent);
+                    }
+                });
             }
         }
     }

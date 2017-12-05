@@ -8,28 +8,14 @@ import android.os.Parcelable;
  */
 
 public class OrderDomain implements Parcelable {
-    public static final Parcelable.Creator<OrderDomain> CREATOR = new Parcelable.Creator<OrderDomain>() {
-        @Override
-        public OrderDomain createFromParcel(Parcel source) {
-            return new OrderDomain(source);
-        }
-
-        @Override
-        public OrderDomain[] newArray(int size) {
-            return new OrderDomain[size];
-        }
-    };
+    private int id;
     private int openAmount;
     private int shippingPrices;
 
-    public OrderDomain(int openAmount, int shippingPrices) {
+    public OrderDomain(int id, int openAmount, int shippingPrices) {
+        this.id = id;
         this.openAmount = openAmount;
         this.shippingPrices = shippingPrices;
-    }
-
-    protected OrderDomain(Parcel in) {
-        this.openAmount = in.readInt();
-        this.shippingPrices = in.readInt();
     }
 
     public int getOpenAmount() {
@@ -48,6 +34,14 @@ public class OrderDomain implements Parcelable {
         this.shippingPrices = shippingPrices;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -55,7 +49,26 @@ public class OrderDomain implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
         dest.writeInt(this.openAmount);
         dest.writeInt(this.shippingPrices);
     }
+
+    protected OrderDomain(Parcel in) {
+        this.id = in.readInt();
+        this.openAmount = in.readInt();
+        this.shippingPrices = in.readInt();
+    }
+
+    public static final Creator<OrderDomain> CREATOR = new Creator<OrderDomain>() {
+        @Override
+        public OrderDomain createFromParcel(Parcel source) {
+            return new OrderDomain(source);
+        }
+
+        @Override
+        public OrderDomain[] newArray(int size) {
+            return new OrderDomain[size];
+        }
+    };
 }

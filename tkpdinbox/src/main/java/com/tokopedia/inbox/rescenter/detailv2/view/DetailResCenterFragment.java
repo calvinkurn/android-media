@@ -27,6 +27,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
@@ -452,6 +453,15 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                             resCenterDialog.dismiss();
                     }
                 });
+    }
+
+    @Override
+    public void setOnActionRecomplaintClick() {
+        Intent intent = CreateResCenterActivity.newRecomplaintInstance(
+                getActivity(),
+                String.valueOf(getViewData().getDetailData().getOrderID()),
+                resolutionID);
+        startActivity(intent);
     }
 
     @Override

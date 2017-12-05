@@ -224,7 +224,7 @@ public class GetDetailResChatMoreMapper implements Func1<Response<TkpdResponse>,
     }
 
     private OrderDomain mappingOrderDomain(OrderResponse response) {
-        return new OrderDomain(response.getOpenAmount(), response.getShippingPrices());
+        return new OrderDomain(response.getId(), response.getOpenAmount(), response.getShippingPrices());
     }
 
     private LastDomain mappingLastDomain(LastResponse response) {

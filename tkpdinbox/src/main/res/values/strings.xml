@@ -183,6 +183,7 @@ yang ditemukan</string>
     <string name="string_ic_discussion">Diskusi</string>
     <string name="string_change">Ubah</string>
     <string name="string_get_help">Minta Bantuan</string>
+    <string name="string_title_create_recomplaint">Komplain Ulang</string>
 
     <!--chat bubble-->
     <string name="string_buyer_problem2">Kendala dari Pembeli:</string>
