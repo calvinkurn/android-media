@@ -14,4 +14,10 @@ public interface ThanksAnalyticsConst {
         String INSTANT_PAYMENT = "instant_payment";
     }
 
+    interface Key {
+        String ID = "order_id";
+        String PLATFORM = "platform";
+        String TEMPLATE = "template";
+    }
+
 }

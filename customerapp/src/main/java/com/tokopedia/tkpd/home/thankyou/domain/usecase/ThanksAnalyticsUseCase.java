@@ -12,11 +12,11 @@ import rx.Observable;
  * Created by okasurya on 12/4/17.
  */
 
-public class ThanksAnalyticsUsecase extends UseCase<String> {
-    ThanksAnalyticsRepository thanksAnalyticsRepository;
+public class ThanksAnalyticsUseCase extends UseCase<String> {
+    private ThanksAnalyticsRepository thanksAnalyticsRepository;
 
-    public ThanksAnalyticsUsecase() {
-
+    public ThanksAnalyticsUseCase(ThanksAnalyticsRepository thanksAnalyticsRepository) {
+        this.thanksAnalyticsRepository = thanksAnalyticsRepository;
     }
 
     @Override

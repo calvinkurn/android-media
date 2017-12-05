@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home.thankyou.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.tkpd.home.thankyou.domain.model.ThanksAnalyticsConst;
 
 import rx.Observable;
 

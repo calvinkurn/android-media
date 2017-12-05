@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
+import com.tokopedia.tkpd.home.thankyou.domain.model.ThanksAnalyticsConst;
 import com.tokopedia.tkpd.home.thankyou.view.viewmodel.ThanksAnalyticsData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
@@ -26,7 +27,6 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
-        Log.d("oka", bundle.getString("deep_link_uri"));
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, ReactConst.Screen.THANK_YOU_PAGE,
                 "Thank You"
@@ -82,11 +82,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         initialProps.remove("is_deep_link_flag");
         initialProps.remove("deep_link_uri");
         Log.i("ReactNative", initialProps.toString());
-        sendAnalytics(
-            initialProps.getString("platform"),
-            initialProps.getString("template"),
-            initialProps.getString("id")
-        );
+        sendAnalytics(initialProps);
         ReactNativeThankYouPageFragment fragment = ReactNativeThankYouPageFragment.createInstance(initialProps);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
@@ -124,14 +120,13 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
             return true;
         }
         return super.onKeyUp(keyCode, event);
-
     }
 
-    private void sendAnalytics(String platform, String template, String id) {
+    private void sendAnalytics(Bundle initialProps) {
         ThanksAnalyticsData data = new ThanksAnalyticsData();
-        data.setPlatform(platform);
-        data.setTemplate(template);
-        data.setId(id);
+        data.setPlatform(initialProps.getString(ThanksAnalyticsConst.Key.PLATFORM));
+        data.setTemplate(initialProps.getString(ThanksAnalyticsConst.Key.TEMPLATE));
+        data.setId(initialProps.getString(ThanksAnalyticsConst.Key.ID));
         ThanksAnalyticsService.start(this, data);
     }
 }

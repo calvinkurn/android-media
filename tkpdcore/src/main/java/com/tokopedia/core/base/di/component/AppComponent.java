@@ -33,6 +33,7 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
+import com.tokopedia.core.network.di.qualifier.RechargeDigitalAuthQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -118,6 +119,9 @@ public interface AppComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
+
+    @RechargeDigitalAuthQualifier
+    Retrofit rechargeWsV4Retrofit();
 
     ThreadExecutor threadExecutor();
 

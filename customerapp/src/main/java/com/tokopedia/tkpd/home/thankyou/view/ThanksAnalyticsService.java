@@ -30,13 +30,12 @@ public class ThanksAnalyticsService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        initInjection();
-
-        if(intent != null) {
+        try {
+            initInjection();
             ThanksAnalyticsData data = intent.getParcelableExtra(DATA);
-            if(data != null) {
-                presenter.doAnalytics(data);
-            }
+            presenter.doAnalytics(data);
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 

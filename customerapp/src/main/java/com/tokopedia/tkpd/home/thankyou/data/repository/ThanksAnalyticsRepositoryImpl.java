@@ -10,7 +10,11 @@ import rx.Observable;
  */
 
 public class ThanksAnalyticsRepositoryImpl implements ThanksAnalyticsRepository {
-    ThanksAnalyticsFactory thanksAnalyticsFactory;
+    private ThanksAnalyticsFactory thanksAnalyticsFactory;
+
+    public ThanksAnalyticsRepositoryImpl(ThanksAnalyticsFactory thanksAnalyticsFactory) {
+        this.thanksAnalyticsFactory = thanksAnalyticsFactory;
+    }
 
     @Override
     public Observable<String> sendAnalytics(RequestParams requestParams) {
