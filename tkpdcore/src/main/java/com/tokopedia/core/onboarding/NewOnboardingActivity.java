@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -120,6 +121,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     @Override
     public void onDonePressed() {
+        UnifyTracking.eventOnboardingSkip(pager.getCurrentItem()+1);
         SessionHandler.setFirstTimeUserNewOnboard(this, false);
         Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
         startActivity(intent);

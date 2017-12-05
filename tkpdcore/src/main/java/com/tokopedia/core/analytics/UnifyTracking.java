@@ -2690,4 +2690,22 @@ public class UnifyTracking extends TrackingUtils {
                 ""
         ).getEvent());
     }
+
+    public static void eventOnboardingSkip(int pageNumber){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_ONBOARDING,
+                AppEventTracking.Category.ONBOARDING,
+                AppEventTracking.Action.ONBOARDING_SKIP,
+                AppEventTracking.EventLabel.ONBOARDING_SKIP_LABEL + pageNumber
+        ).getEvent());
+    }
+
+    public static void eventOnboardingStartNow(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_ONBOARDING,
+                AppEventTracking.Category.ONBOARDING,
+                AppEventTracking.Action.ONBOARDING_START,
+                AppEventTracking.EventLabel.ONBOARDING_START_LABEL
+        ).getEvent());
+    }
 }

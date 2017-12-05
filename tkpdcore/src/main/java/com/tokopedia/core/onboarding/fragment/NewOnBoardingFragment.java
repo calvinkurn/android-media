@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.onboarding.CustomAnimationPageTransformerDelegate;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -188,6 +189,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             public void onClick(View v) {
                 //TODO uncomment this
 //                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
+                UnifyTracking.eventOnboardingStartNow();
                 Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
                 startActivity(intent);
                 getActivity().finish();

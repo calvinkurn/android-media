@@ -150,6 +150,8 @@ public interface AppEventTracking {
         String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
+
+        String EVENT_ONBOARDING = "onBoardingEvent";
     }
 
     interface Category {
@@ -249,6 +251,8 @@ public interface AppEventTracking {
         String HOMEPAGE_UNIFY = "homepage tab";
         String EVENT_TOP_NAV = "top nav";
         String CATEGORY_HOTLIST = "hotlist";
+
+        String ONBOARDING = "onboarding";
     }
 
     interface Action {
@@ -363,6 +367,9 @@ public interface AppEventTracking {
         String SEARCH_PRODUCT_SUGGESTION = "search product - suggestion";
         String SEARCH_SHOP = "search shop";
         String SEARCH_AUTOCOMPLETE_SHOP = "search shop - autocomplete";
+
+        String ONBOARDING_SKIP = "click - skip button";
+        String ONBOARDING_START = "click - mulai";
     }
 
     interface EventLabel {
@@ -683,6 +690,9 @@ public interface AppEventTracking {
 
         String SELECT_PRODUCT_FROM_WIDGET = "select Product - ";
         String CLICK_WIDGET_BAR = "click ";
+
+        String ONBOARDING_SKIP_LABEL = "skip - ";
+        String ONBOARDING_START_LABEL = "click mulai sekarang";
     }
 
     interface SOCIAL_MEDIA {
