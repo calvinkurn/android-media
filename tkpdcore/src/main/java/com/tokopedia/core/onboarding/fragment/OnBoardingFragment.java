@@ -18,17 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.ISlideBackgroundColorHolder;
-import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -149,7 +144,7 @@ public class OnBoardingFragment extends Fragment implements ISlideBackgroundColo
         i.setImageDrawable(ContextCompat.getDrawable(getActivity(), drawable));
         main.setBackgroundColor(bgColor);
 
-        Button login = (Button) v.findViewById(R.id.button_login);
+        Button login = (Button) v.findViewById(R.id.button_start_now);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -4,23 +4,18 @@ package com.tokopedia.core.onboarding.fragment;
  * Created by hafizh HERDI on 3/21/2016.
  */
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -28,28 +23,22 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.onboarding.CustomAnimationPageTransformerDelegate;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DEFAULT_ANIMATION_DURATION;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DOWN_DIRECTION;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.UP_DIRECTION;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.appearText;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.expandTextView;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.fadeText;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.setVisibilityGone;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideReverseX;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToX;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToY;
 
 public class NewOnBoardingFragment extends OnBoardingFragment implements CustomAnimationPageTransformerDelegate {
 
     private static final String ARG_LOTTIE = "lottie";
     private int mScreenWidth;
     private int mScreenHeight;
-    private TextView login;
+    private TextView startNow;
     private ValueAnimator expandAnimator;
     private ObjectAnimator fadeAnimator;
     private AnimatorSet animatorSet;
@@ -193,16 +182,14 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
         main.setBackgroundColor(bgColor);
 
-        login = (TextView) v.findViewById(R.id.button_login);
-        login.setOnClickListener(new View.OnClickListener() {
+        startNow = (TextView) v.findViewById(R.id.button_start_now);
+        startNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO uncomment this
 //                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
-                Intent intent = new Intent();
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                getActivity().setResult(Activity.RESULT_OK, intent);
+                Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
+                startActivity(intent);
                 getActivity().finish();
             }
         });
@@ -237,7 +224,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     public void onDestroyView() {
         super.onDestroyView();
         if (viewType == VIEW_ENDING) {
-            login.clearAnimation();
+            startNow.clearAnimation();
             skip.clearAnimation();
         }
 
@@ -312,8 +299,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         if (viewType == VIEW_ENDING) {
             slideAnimatorX = slideToX(next, -1, 0, mScreenWidth / 2);
             goneAnimation = setVisibilityGone(next);
-            expandAnimator = expandTextView(login, mScreenWidth);
-            fadeAnimator = fadeText(login, getActivity(), R.color.transparent, R.color.blue_nob);
+            expandAnimator = expandTextView(startNow, mScreenWidth);
+            fadeAnimator = fadeText(startNow, getActivity(), R.color.transparent, R.color.blue_nob);
 
             goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.25));
             expandAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.5));
@@ -329,10 +316,10 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     }
 
     private void resetAnimation() {
-        ViewGroup.LayoutParams layoutParams = login.getLayoutParams();
+        ViewGroup.LayoutParams layoutParams = startNow.getLayoutParams();
         layoutParams.width = 0;
-        login.setLayoutParams(layoutParams);
-        login.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
+        startNow.setLayoutParams(layoutParams);
+        startNow.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
         skip.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
         next.setVisibility(View.VISIBLE);
     }
@@ -342,7 +329,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             animatorSet.cancel();
         }
         if (viewType == VIEW_ENDING) {
-            login.setVisibility(View.INVISIBLE);
+            startNow.setVisibility(View.INVISIBLE);
             skip.setVisibility(View.INVISIBLE);
         }
     }

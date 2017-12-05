@@ -99,7 +99,7 @@
                 tools:textColor="@color/red_100"/>
 
             <TextView
-                android:id="@+id/button_login"
+                android:id="@+id/button_start_now"
                 android:layout_width="0dp"
                 android:lines="1"
                 android:layout_height="wrap_content"
