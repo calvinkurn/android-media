@@ -56,7 +56,7 @@ public class ChatAwbLeftViewHolder extends AbstractViewHolder<ChatAwbLeftViewMod
     }
 
     @Override
-    public void bind(ChatAwbLeftViewModel element) {
+    public void bind(final ChatAwbLeftViewModel element) {
         tvTitle.setText(String.format(
                         MainApplication.getAppContext().getResources().getString(R.string.string_common_chat_title),
                         element.getConversation().getAction().getTitle()));
@@ -98,7 +98,9 @@ public class ChatAwbLeftViewHolder extends AbstractViewHolder<ChatAwbLeftViewMod
         btnTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mainView.doTrackShipping(
+                        String.valueOf(element.getConversation().getShippingDetail().getId()),
+                        element.getConversation().getShippingDetail().getAwbNumber());
             }
         });
     }
