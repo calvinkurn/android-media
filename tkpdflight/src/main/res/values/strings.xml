@@ -160,7 +160,7 @@
     <string name="flight_booking_passenger_adult_subtitle">Usia diatas 12 tahun</string>
     <string name="flight_booking_passenger_child_subtitle">Usia 2 - 12 tahun</string>
     <string name="flight_booking_passenger_infant_subtitle">Usia dibawah 2 tahun</string>
-    <string name="flight_booking_passenger_name_empty_error">Nama penumpang harus diisi</string>
+    <string name="flight_booking_passenger_first_name_empty_error">Nama depan harus diisi</string>
     <string name="flight_bookingpassenger_title_error">Title Penumpang harus dipilih</string>
     <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
@@ -181,8 +181,10 @@
     <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
     <string name="change_date">Ubah Tanggal</string>
     <string name="reset_filter">Reset Filter</string>
-    <string name="flight_booking_passenger_name_hint">Nama (sesuai KTP/SIM/Passport)</string>
-    <string name="flight_booking_passenger_name_secondary_hint">Isi Nama Lengkap</string>
+    <string name="flight_booking_passenger_first_name_hint">Nama Depan</string>
+    <string name="flight_booking_passenger_firstname_secondary_hint">Isi Nama Depan</string>
+    <string name="flight_booking_passenger_last_name_hint">Nama Belakang</string>
+    <string name="flight_booking_passenger_last_name_secondary_hint">Isi Nama Belakang</string>
     <string name="flight_booking_passenger_birthdate_hint">Tanggal Lahir</string>
     <string name="flight_booking_passenger_birthdate_secondary_hint">Pilih Tanggal Lahir</string>
     <string name="flight_booking_passenger_luggage_label">Bagasi</string>
@@ -219,4 +221,9 @@
     <string name="flight_booking_dialog_price_change_after_price_label">Harga Sekarang</string>
     <string name="flight_booking_dialog_price_change_continue_label">Lanjut Pembayaran</string>
     <string name="flight_booking_dialog_price_change_another_flights_label">Cari Penerbangan Lain</string>
+    <string name="flight_booking_passenger_first_name_max_error">Nama depan tidak boleh lebih dari 48 karakter</string>
+    <string name="flight_booking_passenger_last_name_max_error">Nama belakang tidak boleh melebihi 48 karakter</string>
+    <string name="flight_booking_passenger_last_name_single_word_error">Nama belakang harus satu kata</string>
+    <string name="flight_booking_passenger_first_name_alpha_space_error">Nama depan harus terdiri alfabet dan space</string>
+    <string name="flight_booking_passenger_last_name_alpha_space_error">Nama belakang hanya alfabet dan spasi</string>
 </resources>

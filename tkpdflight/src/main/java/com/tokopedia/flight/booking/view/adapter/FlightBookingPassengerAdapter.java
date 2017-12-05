@@ -98,10 +98,10 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                     }
                 }
             });
-            if (viewModel.getPassengerName() != null) {
+            if (viewModel.getPassengerFirstName() != null) {
                 passengerDetailLayout.setVisibility(View.VISIBLE);
                 headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_change_label));
-                String passengerName = viewModel.getPassengerName();
+                String passengerName = viewModel.getPassengerFirstName() + " " + viewModel.getPassengerLastName();
                 if (viewModel.getPassengerTitle() != null && viewModel.getPassengerTitle().length() > 0) {
                     passengerName = String.format("%s %s", viewModel.getPassengerTitle(), passengerName);
                 }
