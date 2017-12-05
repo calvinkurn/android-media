@@ -25,6 +25,7 @@ import com.tokopedia.core.onboarding.CustomAnimationPageTransformerDelegate;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DEFAULT_ANIMATION_DURATION;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.appearText;
@@ -188,21 +189,20 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         startNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO uncomment this
-//                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
+                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
                 UnifyTracking.eventOnboardingStartNow();
                 Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
                 startActivity(intent);
                 getActivity().finish();
             }
         });
+        startNow.setWidth(0);
 
         skip = (TextView) v.findViewById(R.id.button_register);
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO uncomment this
-//                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
+                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
                 Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
                 startActivity(intent);
                 getActivity().finish();
