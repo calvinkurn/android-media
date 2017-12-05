@@ -4,7 +4,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.BearerService;
-import com.tokopedia.topads.common.util.TopAdsOkHttpFactory;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 
 import retrofit2.Retrofit;
@@ -42,7 +41,7 @@ public class TopAdsManagementService extends BearerService<TopAdsManagementApi> 
     @Override
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {
         return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
-                .client(TopAdsOkHttpFactory.create()
+                .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
                         .buildClientTopAdsAuth(getOauthAuthorization()))
                 .build();

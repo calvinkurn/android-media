@@ -40,17 +40,4 @@
         <!--android:layout_margin="@dimen/fab_margin"-->
         <!--android:src="@android:drawable/ic_menu_camera" />-->
 
-    <com.tkpd.library.ui.floatbutton.FabSpeedDial
-        android:id="@+id/fab_speed_dial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        app:touchGuardDrawable="@drawable/background_blur"
-        app:fabGravity="bottom_end"
-        app:fabMenu="@menu/menu_add_product_instoped_camera"
-        app:fabBackgroundTint="@color/green_500"
-        app:miniFabBackgroundTint="@color/mini_fab_title_background_tint"
-        app:miniFabDrawableTint="@android:color/white"
-        app:miniFabTitleTextColor="@android:color/white" />
-
 </android.support.design.widget.CoordinatorLayout>

@@ -47,10 +47,10 @@ public class Data implements Parcelable {
     private Integer view;
     @SerializedName("is_revamp")
     @Expose
-    private Boolean isRevamp;
+    private Boolean isRevamp = false;
     @SerializedName("is_intermediary")
     @Expose
-    private Boolean isIntermediary;
+    private Boolean isIntermediary = false;
     @SerializedName("banner")
     @Expose
     private Banner banner;

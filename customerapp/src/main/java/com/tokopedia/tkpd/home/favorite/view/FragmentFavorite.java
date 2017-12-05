@@ -16,6 +16,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -32,7 +33,6 @@ import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
-import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +184,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     protected void initInjector() {
         DaggerFavoriteComponent daggerFavoriteComponent
                 = (DaggerFavoriteComponent) DaggerFavoriteComponent.builder()
-                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
+                .appComponent(MainApplication.getInstance().getApplicationComponent())
                 .build();
         daggerFavoriteComponent.inject(this);
     }

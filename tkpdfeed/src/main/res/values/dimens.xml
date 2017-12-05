@@ -38,4 +38,7 @@
     <dimen name="header_official_store_height">44dp</dimen>
     <dimen name="official_store_item_height">300dp</dimen>
     <dimen name="unified_margin_vvs">3dp</dimen>
+    <dimen name="footer_height">48dp</dimen>
+    <dimen name="kol_avatar">60dp</dimen>
+    <dimen name="small_wishlist_kol">20dp</dimen>
 </resources>
