@@ -37,4 +37,6 @@
     <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="result_count_template_text">%s Produk</string>
+    <string name="title_promo_code">Kode Promo</string>
+    <string name="button_term_and_condition"><![CDATA[Syarat & Ketentuan]]></string>
 </resources>
