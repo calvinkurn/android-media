@@ -1,5 +1,6 @@
 package com.tokopedia.seller.seller.info.view.presenter;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -41,7 +42,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListene
 
             @Override
             public void onError(Throwable e) {
-
+                CommonUtils.dumper(e);
             }
 
             @Override

@@ -20,6 +20,24 @@ public class SellerInfoModel implements ItemType {
     private long createTimeUnix;
     private long expireTimeUnix;
 
+    private boolean isToday, isYesterday;
+
+    public boolean isToday() {
+        return isToday;
+    }
+
+    public void setToday(boolean today) {
+        isToday = today;
+    }
+
+    public boolean isYesterday() {
+        return isYesterday;
+    }
+
+    public void setYesterday(boolean yesterday) {
+        isYesterday = yesterday;
+    }
+
     public static int getTYPE() {
         return TYPE;
     }
