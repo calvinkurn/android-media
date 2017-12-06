@@ -441,6 +441,7 @@ public class DetailResChatFragment
                 chatAdapter.notifyDataSetChanged();
                 scrollChatToBottom(false);
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
+                etChat.setText("");
                 rvAttachment.setVisibility(View.GONE);
                 initActionButton(detailResChatDomain.getButton());
             }
