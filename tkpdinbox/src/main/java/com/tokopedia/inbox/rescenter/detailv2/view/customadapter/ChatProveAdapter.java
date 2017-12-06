@@ -70,7 +70,7 @@ public class ChatProveAdapter extends RecyclerView.Adapter<ChatProveAdapter.Hold
     }
 
     private String getTypeFromModel(ConversationAttachmentDomain model) {
-        return (model.getType() == null) ? model.getType() : "";
+        return (model.getType() != null) ? model.getType() : "";
     }
 
     private void openVideoPlayer(String urlVideo) {
