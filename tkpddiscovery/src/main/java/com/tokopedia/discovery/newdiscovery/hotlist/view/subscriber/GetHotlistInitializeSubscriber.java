@@ -9,6 +9,8 @@ import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistBannerModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistHashtagModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistModel;
+import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistPromoInfo;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.SearchEmptyViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
@@ -153,7 +155,18 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         headerViewModel.setImageUrl(banner.getBannerImage());
         headerViewModel.setDesc(banner.getBannerDesc());
         headerViewModel.setHashTags(mappingHashtags(hashTags));
+        headerViewModel.setHotlistPromo(banner.getHotlistPromoInfo() != null ? mappingHotlistPromo(banner.getHotlistPromoInfo()) : null);
         return headerViewModel;
+    }
+
+    private HotlistPromo mappingHotlistPromo(HotlistPromoInfo info) {
+        HotlistPromo hotlistPromo = new HotlistPromo();
+        hotlistPromo.setTitle(info.getTitle());
+        hotlistPromo.setVoucherCode(info.getVoucherCode());
+        hotlistPromo.setPromoPeriod(info.getValidDate());
+        hotlistPromo.setMinimunTransaction(info.getMinimunTransaction());
+        hotlistPromo.setUrlTermCondition(info.getUrlTermCondition());
+        return hotlistPromo;
     }
 
     private List<HotlistHashTagViewModel> mappingHashtags(List<HotlistHashtagModel> hashTags) {

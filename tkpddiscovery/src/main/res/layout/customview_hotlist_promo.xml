@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/title_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/height_button_voucher"
@@ -61,7 +61,7 @@
             />
 
         <TextView
-            android:id="@+id/text_voucher_deadline"
+            android:id="@+id/text_min_transaction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -79,13 +79,14 @@
             />
 
         <TextView
+            android:id="@+id/text_period_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@id/button_term_and_condition"
             android:layout_toStartOf="@id/button_term_and_condition"
-            android:layout_below="@id/text_voucher_deadline"
+            android:layout_below="@id/text_min_transaction"
             android:textSize="@dimen/font_small"
             android:fontFamily="sans-serif"
             android:textStyle="normal"

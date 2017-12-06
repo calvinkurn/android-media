@@ -6,6 +6,7 @@ import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistBannerModel;
+import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistPromoInfo;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistQueryModel;
 
 import retrofit2.Response;
@@ -39,9 +40,20 @@ public class HotlistBannerMapper implements Func1<Response<TkpdResponse>, Hotlis
         HotlistBannerModel domainModel = new HotlistBannerModel();
         domainModel.setBannerImage(pojoModel.info.coverImg);
         domainModel.setBannerDesc(pojoModel.info.hotlistDescription);
+        domainModel.setHotlistPromoInfo(pojoModel.promoInfo != null ? mappingBannerPromo(pojoModel.promoInfo) : null);
         domainModel.setHotlistQueryModel(mappingQuery(pojoModel.query));
         domainModel.setDisableTopads(pojoModel.disableTopads == 1);
         return domainModel;
+    }
+
+    private HotlistPromoInfo mappingBannerPromo(HotListBannerModel.PromoInfo promoInfo) {
+        HotlistPromoInfo hotlistPromoInfo = new HotlistPromoInfo();
+        hotlistPromoInfo.setMinimunTransaction(promoInfo.getMinTx());
+        hotlistPromoInfo.setTitle(promoInfo.getText());
+        hotlistPromoInfo.setUrlTermCondition(promoInfo.getTcApplink());
+        hotlistPromoInfo.setPromoPeriod(promoInfo.getPromoPeriod());
+        hotlistPromoInfo.setVoucherCode(promoInfo.getVoucherCode());
+        return hotlistPromoInfo;
     }
 
     private HotlistQueryModel mappingQuery(HotListBannerModel.Query pojoQuery) {
