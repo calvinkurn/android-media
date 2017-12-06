@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.beranda.presentation.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,11 +19,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
-import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
@@ -63,7 +58,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 
@@ -89,8 +83,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     TokoCashUseCase tokoCashUseCase;
     @Inject
     TopPointsUseCase topPointsUseCase;
-    @Inject
-    GlobalCacheManager cacheManager;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
@@ -112,20 +104,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    @Override
-    public void getSaldoData() {
-        if (SessionHandler.isV4Login(context)) {
-            subscription = Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                    topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                    new SaldoDataMapper()).subscribe(new SaldoSubscriber());
-            compositeSubscription.add(subscription);
-        } else if(isViewAttached()){
-            getView().hideLoading();
-        }
-    }
-
-    @Override
-    public void getHomeData() {
+    private void getHomeDataItem(){
         subscription = Observable.zip(getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
                 getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
@@ -140,9 +119,60 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                         }
                     }
                 })
-                .doOnNext(new saveToCache())
                 .subscribe(new HomeDataSubscriber());
         compositeSubscription.add(subscription);
+    }
+
+    private void getSaldoData(DefaultSubscriber<HomeSaldoModel> subscriber) {
+        if (SessionHandler.isV4Login(context)) {
+            subscription = Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                    topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                    new SaldoDataMapper()).subscribe(subscriber);
+            compositeSubscription.add(subscription);
+        } else if(isViewAttached()){
+            getView().hideLoading();
+        }
+    }
+
+    @Override
+    public void getHomeData() {
+        getSaldoData(new DefaultSubscriber<HomeSaldoModel>(){
+            @Override
+            public void onStart() {
+                if(isViewAttached()){
+                    getView().removeNetworkError();
+                    getView().showLoading();
+                }
+            }
+
+            @Override
+            public void onNext(final HomeSaldoModel saldoModel) {
+                final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
+                if (config != null) {
+                    config.setDefaults(R.xml.remote_config_default);
+                    config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                config.activateFetched();
+                                mappingSaldoData(saldoModel);
+                            }
+                        }
+                    });
+                }
+                mappingSaldoData(saldoModel);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onCompleted();
+            }
+
+            @Override
+            public void onCompleted() {
+                getHomeDataItem();
+            }
+        });
     }
 
 
@@ -187,14 +217,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
         });
         getShopInfoRetrofit.getShopInfo();
-    }
-
-    @Override
-    public void onResume() {
-    }
-
-    @Override
-    public void onPause() {
     }
 
     @Override
@@ -275,46 +297,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getShopInfoRetrofit.getShopInfo();
     }
 
-    private static class saveToCache implements Action1<List<Visitable>> {
-        @Override
-        public void call(List<Visitable> visitables) {
-
-        }
-    }
-
-    private class SaldoSubscriber extends DefaultSubscriber<HomeSaldoModel> {
-
-        @Override
-        public void onNext(final HomeSaldoModel saldoModel) {
-            final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
-            if (config != null) {
-                config.setDefaults(R.xml.remote_config_default);
-                config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            config.activateFetched();
-                            mappingSaldoData(saldoModel);
-                        }
-                    }
-                });
-            }
-            mappingSaldoData(saldoModel);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            onCompleted();
-        }
-
-        @Override
-        public void onCompleted() {
-            if(isViewAttached()){
-                getView().hideLoading();
-            }
-        }
-    }
-
     private void mappingSaldoData(HomeSaldoModel saldoModel) {
         SaldoViewModel cashViewModel = new SaldoViewModel();
         if (saldoModel.hasTokoCash()) {
@@ -342,17 +324,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
 
         @Override
-        public void onStart() {
-            if (isViewAttached()) {
-                getView().removeNetworkError();
-                getView().showLoading();
-            }
-        }
-
-        @Override
         public void onCompleted() {
             if (isViewAttached()) {
-                getSaldoData();
+                getView().hideLoading();
             }
         }
 
@@ -360,13 +334,14 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         public void onError(Throwable e) {
             if (isViewAttached()) {
                 getView().showNetworkError();
+                onCompleted();
             }
         }
 
         @Override
         public void onNext(List<Visitable> visitables) {
             if (isViewAttached()) {
-                getView().setItems(visitables);
+                getView().addItems(visitables);
             }
         }
     }

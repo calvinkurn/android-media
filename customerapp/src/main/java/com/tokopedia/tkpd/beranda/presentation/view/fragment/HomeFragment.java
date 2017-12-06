@@ -179,12 +179,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onResume();
     }
 
     @Override
     public void onPause() {
-        presenter.onPause();
         super.onPause();
     }
 
@@ -340,15 +338,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setSaldoItem(SaldoViewModel saldoItem) {
-        int positionInsert = 0;
-        if (adapter.getItemCount() > positionInsert && adapter.getItem(positionInsert) instanceof SaldoViewModel) {
-            adapter.getItems().set(positionInsert, saldoItem);
-            adapter.notifyItemChanged(positionInsert);
-        } else {
-            adapter.getItems().add(positionInsert, saldoItem);
-            adapter.notifyItemInserted(positionInsert);
-        }
-        recyclerView.scrollToPosition(positionInsert);
+        adapter.clearItems();
+        adapter.getItems().add(saldoItem);
     }
 
     @Override
@@ -531,8 +522,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<Visitable> items) {
-        adapter.setItems(items);
+    public void addItems(List<Visitable> items) {
+        adapter.getItems().addAll(items);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

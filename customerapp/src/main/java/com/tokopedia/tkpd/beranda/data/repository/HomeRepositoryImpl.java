@@ -39,17 +39,17 @@ public class HomeRepositoryImpl implements HomeRepository {
     }
 
     @Override
-    public Observable<HomeCategoryResponseModel> getHomeCategorysNetwork() {
+    public Observable<HomeCategoryResponseModel> getHomeCategorys() {
         return categoryDataSource.getHomeCategory();
     }
 
     @Override
-    public Observable<TopPicksResponseModel> getTopPicksNetwork(RequestParams requestParams) {
+    public Observable<TopPicksResponseModel> getTopPicks(RequestParams requestParams) {
         return topPicksDataSource.getTopPicks(requestParams);
     }
 
     @Override
-    public Observable<HomeBannerResponseModel> getBannersNetwork(RequestParams requestParams) {
+    public Observable<HomeBannerResponseModel> getBanners(RequestParams requestParams) {
         return homeBannerDataSource.getHomeBanner(requestParams);
     }
 
@@ -62,4 +62,6 @@ public class HomeRepositoryImpl implements HomeRepository {
     public Observable<Ticker> getTickers() {
         return tickerDataSource.getTicker();
     }
+
+
 }

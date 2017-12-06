@@ -51,7 +51,6 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
         try {
             List<CategoryMenuModel> results = homeCategoryMenuDbManager.getDataHomeCategoryMenu();
             listener.onSuccessFetchHomeCategoryListFromDb(results);
-
         } catch (Throwable throwable) {
             listener.onErrorFetchHomeCategoryListFromDb(throwable);
         }

@@ -19,5 +19,5 @@
         android:background="@drawable/indicator_new_brands"
         android:text="BARU"
         android:textColor="@color/white"
-        android:textSize="10sp" />
+        android:textSize="8sp" />
 </RelativeLayout>

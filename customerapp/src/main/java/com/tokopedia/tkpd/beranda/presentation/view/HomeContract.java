@@ -23,7 +23,7 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items);
+        void addItems(List<Visitable> items);
 
         void showNetworkError();
 
@@ -45,15 +45,9 @@ public interface HomeContract {
     interface Presenter extends CustomerPresenter<View> {
         void getHomeData();
 
-        void getSaldoData();
-
         void getShopInfo(String url, String shopDomain);
 
         void openProductPageIfValid(String url, String shopDomain);
-
-        void onResume();
-
-        void onPause();
 
         void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
     }

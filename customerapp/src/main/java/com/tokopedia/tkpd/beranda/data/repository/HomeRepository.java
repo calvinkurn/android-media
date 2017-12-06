@@ -15,11 +15,11 @@ import rx.Observable;
 
 public interface HomeRepository {
 
-    Observable<HomeCategoryResponseModel> getHomeCategorysNetwork();
+    Observable<HomeCategoryResponseModel> getHomeCategorys();
 
-    Observable<TopPicksResponseModel> getTopPicksNetwork(RequestParams requestParams);
+    Observable<TopPicksResponseModel> getTopPicks(RequestParams requestParams);
 
-    Observable<HomeBannerResponseModel> getBannersNetwork(RequestParams requestParams);
+    Observable<HomeBannerResponseModel> getBanners(RequestParams requestParams);
 
     Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStore();
 

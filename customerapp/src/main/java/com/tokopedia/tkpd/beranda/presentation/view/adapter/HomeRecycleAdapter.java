@@ -55,4 +55,8 @@ public class HomeRecycleAdapter extends BaseAdapter {
     public List<Visitable> getItems(){
         return visitables;
     }
+
+    public void clearItems() {
+        visitables.clear();
+    }
 }

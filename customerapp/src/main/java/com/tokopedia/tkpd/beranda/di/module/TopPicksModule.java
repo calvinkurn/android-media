@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.beranda.di.module;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.ace.apis.SearchApi;
 import com.tokopedia.tkpd.beranda.data.mapper.TopPicksMapper;
 import com.tokopedia.tkpd.beranda.data.repository.HomeRepository;
@@ -20,8 +21,8 @@ import dagger.Provides;
 public class TopPicksModule {
 
     @Provides
-    TopPicksDataSource topPicksDataSource(SearchApi searchApi, TopPicksMapper topPicksMapper){
-        return new TopPicksDataSource(searchApi, topPicksMapper);
+    TopPicksDataSource topPicksDataSource(SearchApi searchApi, TopPicksMapper topPicksMapper, GlobalCacheManager cacheManager, Gson gson){
+        return new TopPicksDataSource(searchApi, topPicksMapper, cacheManager, gson);
     }
 
     @Provides

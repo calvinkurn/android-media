@@ -30,7 +30,7 @@ public class GetTopPicksUseCase extends UseCase<TopPicksResponseModel> {
 
     @Override
     public Observable<TopPicksResponseModel> createObservable(RequestParams requestParams) {
-        return homeRepository.getTopPicksNetwork(requestParams);
+        return homeRepository.getTopPicks(requestParams);
     }
 
     public RequestParams getRequestParam() {

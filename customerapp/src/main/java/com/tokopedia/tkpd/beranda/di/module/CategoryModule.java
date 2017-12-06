@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeCategoryMapper;
@@ -32,8 +33,10 @@ public class CategoryModule {
     @Provides
     HomeCategoryDataSource homeCategoryDataSource(MojitoApi mojitoApi,
                                                   HomeCategoryMapper homeCategoryMapper,
-                                                  SessionHandler sessionHandler){
-        return new HomeCategoryDataSource(mojitoApi, homeCategoryMapper, sessionHandler);
+                                                  SessionHandler sessionHandler,
+                                                  GlobalCacheManager cacheManager,
+                                                  Gson gson){
+        return new HomeCategoryDataSource(mojitoApi, homeCategoryMapper, sessionHandler, cacheManager, gson);
     }
 
     @Provides

@@ -25,6 +25,6 @@ public class GetHomeCategoryUseCase extends UseCase<HomeCategoryResponseModel> {
 
     @Override
     public Observable<HomeCategoryResponseModel> createObservable(RequestParams requestParams) {
-        return homeRepository.getHomeCategorysNetwork();
+        return homeRepository.getHomeCategorys();
     }
 }
