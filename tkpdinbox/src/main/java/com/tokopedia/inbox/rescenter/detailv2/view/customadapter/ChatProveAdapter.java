@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.inbox.R;
@@ -71,14 +70,7 @@ public class ChatProveAdapter extends RecyclerView.Adapter<ChatProveAdapter.Hold
     }
 
     private String getTypeFromModel(ConversationAttachmentDomain model) {
-        String type;
-        try {
-            type = model.getType();
-        } catch (Exception e) {
-            type = "";
-            e.printStackTrace();
-        }
-        return type;
+        return (model.getType() == null) ? model.getType() : "";
     }
 
     private void openVideoPlayer(String urlVideo) {

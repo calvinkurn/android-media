@@ -65,6 +65,7 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
     private void openProductPreview(List<ConversationAttachmentDomain> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
         for (ConversationAttachmentDomain model : list) {
+
             if(getTypeFromModel(model).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
                 imageUrls.add(model.getFull());
             }
@@ -78,14 +79,7 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
     }
 
     private String getTypeFromModel(ConversationAttachmentDomain model) {
-        String type;
-        try {
-            type = model.getType();
-        } catch (Exception e) {
-            type = "";
-            e.printStackTrace();
-        }
-        return type;
+        return (model.getType() == null) ? model.getType() : "";
     }
 
     private void openVideoPlayer(String urlVideo) {
