@@ -69,6 +69,15 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListene
         sellerInfoModel.setTitle(list.getTitle());
         sellerInfoModel.setInfoThumbnailUrl(list.getInfoThumbnailUrl());
         sellerInfoModel.setExternalLink(list.getExternalLink());
+        sellerInfoModel.setRead(list.isIsRead());
+        sellerInfoModel.setStatus(list.getStatus());
+
+        SellerInfoModel.Section section = new SellerInfoModel.Section();
+        section.setIconUrl(list.getSection().getIconUrl());
+        section.setName(list.getSection().getName());
+        section.setSectionId(list.getSection().getSectionId());
+
+        sellerInfoModel.setSection(section);
         return sellerInfoModel;
     }
 }

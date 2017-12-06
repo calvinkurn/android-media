@@ -23,6 +23,7 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
     private final TextView textDateDescription;
     private final TextView textTitle;
     private final View sellerInfoContainer;
+    private final TextView textDateDesctionSection;
 
     private int lightGreenColor, whiteColor;
 
@@ -35,6 +36,12 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
 
         String s = sellerInfoDateUtil.fromUnixTime(sellerInfoModel.getCreateTimeUnix());
         textDateDescription.setText(s);
+
+        textDateDesctionSection.setText(itemView
+                .getResources()
+                .getString(
+                        R.string.seller_info_title_description_format_,
+                        sellerInfoModel.getSection().getName()));
 
         textTitle.setText(sellerInfoModel.getTitle());
 
@@ -53,11 +60,11 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
 
     public SellerInfoViewHolder(View itemView) {
         super(itemView);
-
         imageSellerInfo = itemView.findViewById(R.id.image_seller_info);
-        textDateDescription = itemView.findViewById(R.id.text_date_description);
+        textDateDescription = itemView.findViewById(R.id.text_date_description_date);
         textTitle = itemView.findViewById(R.id.text_title);
         sellerInfoContainer = itemView.findViewById(R.id.item_seller_info_container);
+        textDateDesctionSection = itemView.findViewById(R.id.text_date_description_section);
 
         lightGreenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.light_green, null);
         whiteColor = ResourcesCompat.getColor(itemView.getResources(), R.color.white, null);

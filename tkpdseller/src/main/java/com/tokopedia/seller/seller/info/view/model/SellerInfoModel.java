@@ -126,4 +126,46 @@ public class SellerInfoModel implements ItemType {
     public int getType() {
         return TYPE;
     }
+
+    private Section section;
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
+    public static class Section {
+
+        private long sectionId;
+        private String name;
+        private String iconUrl;
+
+        public long getSectionId() {
+            return sectionId;
+        }
+
+        public void setSectionId(long sectionId) {
+            this.sectionId = sectionId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getIconUrl() {
+            return iconUrl;
+        }
+
+        public void setIconUrl(String iconUrl) {
+            this.iconUrl = iconUrl;
+        }
+
+    }
 }
