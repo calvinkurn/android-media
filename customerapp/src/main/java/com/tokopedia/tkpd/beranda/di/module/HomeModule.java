@@ -1,11 +1,25 @@
 package com.tokopedia.tkpd.beranda.di.module;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
+import com.tokopedia.core.drawer2.data.factory.TopPointsSourceFactory;
+import com.tokopedia.core.drawer2.data.mapper.TokoCashMapper;
+import com.tokopedia.core.drawer2.data.mapper.TopPointsMapper;
+import com.tokopedia.core.drawer2.data.repository.TokoCashRepositoryImpl;
+import com.tokopedia.core.drawer2.data.repository.TopPointsRepositoryImpl;
+import com.tokopedia.core.drawer2.domain.TokoCashRepository;
+import com.tokopedia.core.drawer2.domain.TopPointsRepository;
+import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.util.SessionHandler;
@@ -40,9 +54,64 @@ import dagger.Provides;
 @Module(includes = {CategoryModule.class, BannerModule.class, BrandsModule.class, TopPicksModule.class, TickerModule.class})
 public class HomeModule {
 
+    @HomeScope
     @Provides
-    HomePresenter homePresenter(@ApplicationContext Context context){
+    GlobalCacheManager globalCacheManager() {
+        return new GlobalCacheManager();
+    }
+
+    @HomeScope
+    @Provides
+    HomePresenter homePresenter(@ApplicationContext Context context) {
         return new HomePresenter(context);
+    }
+
+    @HomeScope
+    @Provides
+    TokoCashUseCase tokoCashUseCase(ThreadExecutor threadExecutor,
+                                    PostExecutionThread postExecutionThread,
+                                    TokoCashRepository tokoCashRepository) {
+        return new TokoCashUseCase(threadExecutor, postExecutionThread, tokoCashRepository);
+    }
+
+    @HomeScope
+    @Provides
+    TopPointsUseCase topPointsUseCase(ThreadExecutor threadExecutor,
+                                      PostExecutionThread postExecutionThread,
+                                      TopPointsRepository topPointsRepository) {
+        return new TopPointsUseCase(threadExecutor, postExecutionThread, topPointsRepository);
+    }
+
+    @HomeScope
+    @Provides
+    TokoCashRepository tokoCashRepository(TokoCashSourceFactory tokoCashSourceFactory){
+        return new TokoCashRepositoryImpl(tokoCashSourceFactory);
+    }
+
+    @HomeScope
+    @Provides
+    TopPointsRepository topPointsRepository(TopPointsSourceFactory topPointsSourceFactory) {
+        return new TopPointsRepositoryImpl(topPointsSourceFactory);
+    }
+
+    @HomeScope
+    @Provides
+    TokoCashSourceFactory tokoCashSourceFactory(@ApplicationContext Context context,
+                                                SessionHandler sessionHandler,
+                                                GlobalCacheManager globalCacheManager){
+        Bundle bundle = new Bundle();
+        String authKey = sessionHandler.getAccessToken(context);
+        authKey = "Bearer " + authKey;
+        bundle.putString(AccountsService.AUTH_KEY, authKey);
+        AccountsService accountsService = new AccountsService(bundle);
+        return new TokoCashSourceFactory(context, accountsService, new TokoCashMapper(), globalCacheManager);
+    }
+
+    @HomeScope
+    @Provides
+    TopPointsSourceFactory topPointsSourceFactory(@ApplicationContext Context context,
+                                                  GlobalCacheManager globalCacheManager) {
+        return new TopPointsSourceFactory(context, new CloverService(), new TopPointsMapper(), globalCacheManager);
     }
 
     @HomeScope
@@ -51,7 +120,7 @@ public class HomeModule {
                                   HomeBannerDataSource homeBannerDataSource,
                                   BrandsOfficialStoreDataSource brandsOfficialStoreDataSource,
                                   TopPicksDataSource topPicksDataSource,
-                                  TickerDataSource tickerDataSource){
+                                  TickerDataSource tickerDataSource) {
         return new HomeRepositoryImpl(homeCategoryDataSource, homeBannerDataSource, brandsOfficialStoreDataSource, topPicksDataSource, tickerDataSource);
     }
 

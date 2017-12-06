@@ -1,30 +1,64 @@
 package com.tokopedia.tkpd.beranda.presentation.presenter;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
-import com.tokopedia.digital.widget.model.status.Status;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
+import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TokoCashTypeDef;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
+import com.tokopedia.tkpd.beranda.data.mapper.SaldoDataMapper;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
+import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.tkpd.beranda.domain.model.saldo.HomeSaldoModel;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Notification;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -51,10 +85,18 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetTopPicksUseCase getTopPicksUseCase;
     @Inject
     GetHomeCategoryUseCase getHomeCategoryUseCase;
+    @Inject
+    TokoCashUseCase tokoCashUseCase;
+    @Inject
+    TopPointsUseCase topPointsUseCase;
+    @Inject
+    GlobalCacheManager cacheManager;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
     private final Context context;
+    private GetShopInfoRetrofit getShopInfoRetrofit;
+    private TokoCashData tokoCashData;
 
     public HomePresenter(Context context) {
         this.context = context;
@@ -71,28 +113,230 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     @Override
+    public void getSaldoData() {
+        if (SessionHandler.isV4Login(context)) {
+            subscription = Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                    topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                    new SaldoDataMapper()).subscribe(new SaldoSubscriber());
+            compositeSubscription.add(subscription);
+        } else if(isViewAttached()){
+            getView().hideLoading();
+        }
+    }
+
+    @Override
     public void getHomeData() {
         subscription = Observable.zip(getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
                 getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getTopPicksUseCase.getExecuteObservableAsync(getTopPicksUseCase.getRequestParam()),
                 getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), new HomeDataMapper(context))
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        Log.d(TAG, "On Subscribe");
-                    }
-                })
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
                         Log.w(TAG, "On Terminated");
-                        if(isViewAttached()){
+                        if (isViewAttached()) {
                             getView().hideLoading();
                         }
                     }
-                }).subscribe(new HomeDataSubscriber());
+                })
+                .doOnNext(new saveToCache())
+                .subscribe(new HomeDataSubscriber());
         compositeSubscription.add(subscription);
+    }
+
+
+    @Override
+    public void getShopInfo(final String url, String shopDomain) {
+        getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", shopDomain);
+        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+            @Override
+            public void onSuccess(String result) {
+                if (isViewAttached()) {
+                    try {
+                        ShopModel shopModel = new Gson().fromJson(result, ShopModel.class);
+                        if (shopModel.info != null) {
+                            JSONObject shop = new JSONObject(result);
+                            JSONObject shopInfo = new JSONObject(shop.getString("info"));
+                            Bundle bundle = ShopInfoActivity.createBundle(
+                                    shopInfo.getString("shop_id"), shopInfo.getString("shop_domain"));
+                            Intent intent = new Intent(context, ShopInfoActivity.class);
+                            intent.putExtras(bundle);
+                            context.startActivity(intent);
+                        } else {
+                            getView().openWebViewURL(url, context);
+                        }
+                    } catch (Exception e) {
+                        getView().openWebViewURL(url, context);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (isViewAttached()) {
+                    getView().openWebViewURL(url, context);
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                if (isViewAttached()) {
+                    getView().openWebViewURL(url, context);
+                }
+            }
+        });
+        getShopInfoRetrofit.getShopInfo();
+    }
+
+    @Override
+    public void onResume() {
+    }
+
+    @Override
+    public void onPause() {
+    }
+
+    @Override
+    public void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+        Activity activity = getView().getActivity();
+        if (activity != null && !activity.isFinishing()) {
+            UnifyTracking.eventClickCategoriesIcon(data.getName());
+            if (String.valueOf(data.getCategoryId()).equalsIgnoreCase("103")
+                    && tokoCashData != null
+                    && tokoCashData.getLink()
+                    == TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                WalletRouterUtil.navigateWallet(activity.getApplication(),this,
+                        IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                        tokoCashData.getAction().getmAppLinks() == null ? ""
+                                : tokoCashData.getAction().getmAppLinks(),
+                        tokoCashData.getAction().getRedirectUrl() == null ? ""
+                                : tokoCashData.getAction().getRedirectUrl(),
+                        new Bundle()
+                );
+            } else {
+                if (activity != null && ((TkpdCoreRouter) activity.getApplication())
+                        .isSupportedDelegateDeepLink(data.getApplinks())) {
+                    DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                            .appLinks(data.getApplinks())
+                            .categoryId(String.valueOf(data.getCategoryId()))
+                            .categoryName(data.getName())
+                            .url(data.getUrl())
+                            .build();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+                    Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
+                    intent.putExtras(bundle);
+                    intent.setData(Uri.parse(data.getApplinks()));
+                    activity.startActivity(intent);
+                } else {
+                    getView().onGimickItemClicked(data, parentPosition, childPosition);
+                }
+            }
+            TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
+        }
+    }
+
+    @Override
+    public void openProductPageIfValid(final String url, String shopDomain) {
+        getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", shopDomain);
+        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+            @Override
+            public void onSuccess(String result) {
+                if (isViewAttached()) {
+                    try {
+                        ShopModel shopModel = new Gson().fromJson(result,
+                                ShopModel.class);
+                        if (shopModel.info != null) {
+                            DeepLinkChecker.openProduct(url, context);
+                        } else {
+                            getView().openWebViewURL(url, context);
+                        }
+                    } catch (Exception e) {
+                        getView().openWebViewURL(url, context);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (isViewAttached()) {
+                    getView().openWebViewURL(url, context);
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                if (isViewAttached()) {
+                    getView().openWebViewURL(url, context);
+                }
+            }
+        });
+        getShopInfoRetrofit.getShopInfo();
+    }
+
+    private static class saveToCache implements Action1<List<Visitable>> {
+        @Override
+        public void call(List<Visitable> visitables) {
+
+        }
+    }
+
+    private class SaldoSubscriber extends DefaultSubscriber<HomeSaldoModel> {
+
+        @Override
+        public void onNext(final HomeSaldoModel saldoModel) {
+            final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
+            if (config != null) {
+                config.setDefaults(R.xml.remote_config_default);
+                config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            config.activateFetched();
+                            mappingSaldoData(saldoModel);
+                        }
+                    }
+                });
+            }
+            mappingSaldoData(saldoModel);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            onCompleted();
+        }
+
+        @Override
+        public void onCompleted() {
+            if(isViewAttached()){
+                getView().hideLoading();
+            }
+        }
+    }
+
+    private void mappingSaldoData(HomeSaldoModel saldoModel) {
+        SaldoViewModel cashViewModel = new SaldoViewModel();
+        if (saldoModel.hasTokoCash()) {
+            SaldoViewModel.ItemModel tokoCash = new SaldoViewModel.ItemModel();
+            tokoCash.setIcon(R.drawable.ic_tokocash_icon);
+            tokoCash.setType(saldoModel.getTokoCashData().getLink() ==
+                    TokoCashTypeDef.TOKOCASH_ACTIVE ? DrawerWalletAction.TYPE_ACTION_BALANCE
+                    : DrawerWalletAction.TYPE_ACTION_ACTIVATION);
+            tokoCash.setTitle(saldoModel.getTokoCashData().getText());
+            tokoCash.setSubtitle(saldoModel.getTokoCashData().getBalance());
+            this.tokoCashData = saldoModel.getTokoCashData();
+            cashViewModel.addItem(tokoCash);
+        }
+        if (saldoModel.hasTopPoint()) {
+            SaldoViewModel.ItemModel topPoint = new SaldoViewModel.ItemModel();
+            topPoint.setIcon(R.drawable.ic_logo_toppoint);
+            topPoint.setSubtitle(saldoModel.getTopPointsData().getLoyaltyPoint().getAmount());
+            cashViewModel.addItem(topPoint);
+        }
+        if(isViewAttached()) {
+            getView().setSaldoItem(cashViewModel);
+        }
     }
 
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
@@ -108,7 +352,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onCompleted() {
             if (isViewAttached()) {
-                getView().hideLoading();
+                getSaldoData();
             }
         }
 
@@ -121,7 +365,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
         @Override
         public void onNext(List<Visitable> visitables) {
-            Log.d(TAG, "onNext items " + visitables.size());
             if (isViewAttached()) {
                 getView().setItems(visitables);
             }

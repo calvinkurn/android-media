@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.beranda.listener;
 
+import com.tokopedia.tkpd.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
@@ -32,4 +33,8 @@ public interface HomeCategoryListener {
     void onDigitalMoreClicked(int pos);
 
     void onCloseTicker(int pos);
+
+    void onPromoClick(BannerSlidesModel slidesModel);
+
+    void openShop();
 }

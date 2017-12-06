@@ -69,7 +69,7 @@ public class BannerView extends BaseCustomView {
         bannerSeeAll.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onPromoAllClickListener!=null) onPromoAllClickListener.onPromoAllClick();
+                if (onPromoAllClickListener != null) onPromoAllClickListener.onPromoAllClick();
             }
         });
 
@@ -133,7 +133,7 @@ public class BannerView extends BaseCustomView {
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
 
-        BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoImageUrls,onPromoClickListener);
+        BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
         bannerRecyclerView.setHasFixedSize(true);
         indicatorItems.clear();
         bannerIndicator.removeAllViews();
@@ -153,7 +153,7 @@ public class BannerView extends BaseCustomView {
             indicatorItems.add(pointView);
             bannerIndicator.addView(pointView);
         }
-
+        bannerRecyclerView.clearOnScrollListeners();
         bannerRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -179,24 +179,25 @@ public class BannerView extends BaseCustomView {
         if (promoImageUrls.size() == 1) {
             bannerIndicator.setVisibility(View.GONE);
         }
-
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         bannerRecyclerView.setOnFlingListener(null);
         snapHelper.attachToRecyclerView(bannerRecyclerView);
-        bannerHandler = new Handler();
-        runnableScrollBanner = new Runnable() {
-            @Override
-            public void run() {
-                if (bannerRecyclerView != null) {
-                    if (currentPosition == bannerRecyclerView.getAdapter().getItemCount() - 1) {
-                        currentPosition = -1;
+        if (bannerHandler == null && runnableScrollBanner == null) {
+            bannerHandler = new Handler();
+            runnableScrollBanner = new Runnable() {
+                @Override
+                public void run() {
+                    if (bannerRecyclerView != null) {
+                        if (currentPosition == bannerRecyclerView.getAdapter().getItemCount() - 1) {
+                            currentPosition = -1;
+                        }
+                        bannerRecyclerView.smoothScrollToPosition(currentPosition + 1);
+                        bannerHandler.postDelayed(this, SLIDE_DELAY);
                     }
-                    bannerRecyclerView.smoothScrollToPosition(currentPosition + 1);
-                    bannerHandler.postDelayed(this, SLIDE_DELAY);
                 }
-            }
-        };
-        startAutoScrollBanner();
+            };
+            startAutoScrollBanner();
+        }
     }
 
     private void setCurrentIndicator() {
@@ -277,6 +278,10 @@ public class BannerView extends BaseCustomView {
 
     public void setOnPromoAllClickListener(OnPromoAllClickListener onPromoAllClickListener) {
         this.onPromoAllClickListener = onPromoAllClickListener;
+    }
+
+    public boolean isInitialized() {
+        return (bannerHandler != null && runnableScrollBanner != null && !promoImageUrls.isEmpty());
     }
 }
 

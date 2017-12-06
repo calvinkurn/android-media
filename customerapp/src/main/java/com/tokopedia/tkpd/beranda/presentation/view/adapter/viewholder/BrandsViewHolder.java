@@ -61,7 +61,7 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
     }
 
     @OnClick(R.id.see_more)
-    void onSeeMore(){
+    void onSeeMore() {
         listener.onBrandsMoreClicked(getAdapterPosition());
     }
 
@@ -94,6 +94,11 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
                     listener.onBrandsItemClicked(data.get(position), getAdapterPosition(), position);
                 }
             });
+            if (data.get(position).getIsNew() == 1) {
+                holder.newIndicator.setVisibility(View.VISIBLE);
+            } else {
+                holder.newIndicator.setVisibility(View.INVISIBLE);
+            }
         }
 
         @Override
@@ -105,6 +110,8 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
 
             @BindView(R.id.image)
             ImageView image;
+            @BindView(R.id.new_indicator)
+            TextView newIndicator;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);

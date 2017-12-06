@@ -1,11 +1,14 @@
 package com.tokopedia.tkpd.beranda.presentation.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 
 import java.util.List;
 
@@ -29,9 +32,29 @@ public interface HomeContract {
         String getString(@StringRes int res);
 
         Context getContext();
+
+        void openWebViewURL(String url, Context context);
+
+        Activity getActivity();
+
+        void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+
+        void setSaldoItem(SaldoViewModel cashViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getHomeData();
+
+        void getSaldoData();
+
+        void getShopInfo(String url, String shopDomain);
+
+        void openProductPageIfValid(String url, String shopDomain);
+
+        void onResume();
+
+        void onPause();
+
+        void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
     }
 }

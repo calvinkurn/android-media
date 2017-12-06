@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.beranda.presentation.view.adapter.factory;
 
 import android.support.v4.app.FragmentManager;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -12,6 +11,8 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.BrandsVie
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.CategoryItemViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.CategorySectionViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.EmptyShopViewHolder;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.SaldoViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.TopPicksViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
@@ -19,10 +20,10 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolCommentHeaderViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolCommentViewHolder;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -69,15 +70,25 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
+    public int type(EmptyShopViewModel emptyShopViewModel) {
+        return EmptyShopViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(CategoryItemViewModel categoryItemViewModel) {
         return CategoryItemViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(SaldoViewModel saldoViewModel) {
+        return SaldoViewHolder.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == BannerViewHolder.LAYOUT)
-            viewHolder = new BannerViewHolder(view);
+            viewHolder = new BannerViewHolder(view, listener);
         else if (type == TickerViewHolder.LAYOUT)
             viewHolder = new TickerViewHolder(view, listener);
         else if (type == TopPicksViewHolder.LAYOUT)
@@ -90,6 +101,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new CategorySectionViewHolder(view, listener);
         else if (type == CategoryItemViewHolder.LAYOUT)
             viewHolder = new CategoryItemViewHolder(view, listener);
+        else if (type == EmptyShopViewHolder.LAYOUT)
+            viewHolder = new EmptyShopViewHolder(view, listener);
+        else if (type == SaldoViewHolder.LAYOUT)
+            viewHolder = new SaldoViewHolder(view, listener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

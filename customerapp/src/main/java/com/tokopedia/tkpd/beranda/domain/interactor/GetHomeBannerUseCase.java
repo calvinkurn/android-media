@@ -31,7 +31,7 @@ public class GetHomeBannerUseCase extends UseCase<HomeBannerResponseModel> {
 
     @Override
     public Observable<HomeBannerResponseModel> createObservable(RequestParams requestParams) {
-        return homeRepository.getBanners(requestParams);
+        return homeRepository.getBannersNetwork(requestParams);
     }
 
     public RequestParams getRequestParam() {

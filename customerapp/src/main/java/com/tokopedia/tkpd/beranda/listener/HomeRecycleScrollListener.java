@@ -35,7 +35,7 @@ public class HomeRecycleScrollListener extends RecyclerView.OnScrollListener {
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
         sectionChangeListener.onScrollStateChanged(newState, layoutManager.findFirstVisibleItemPosition());
-        if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
+        if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
             isDragged = true;
         } else {
             isDragged = false;

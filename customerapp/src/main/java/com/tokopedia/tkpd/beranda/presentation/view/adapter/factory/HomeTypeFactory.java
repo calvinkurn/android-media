@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter.factory;
 
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
@@ -9,7 +8,9 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 
 /**
@@ -31,6 +32,10 @@ public interface HomeTypeFactory {
     int type(CategorySectionViewModel categorySectionViewModel);
 
     int type(CategoryItemViewModel categoryItemViewModel);
+
+    int type(EmptyShopViewModel emptyShopViewModel);
+
+    int type(SaldoViewModel saldoViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 

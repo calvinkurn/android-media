@@ -26,7 +26,7 @@ public class HomeCategoryDataSource {
     }
 
     public Observable<HomeCategoryResponseModel> getHomeCategory() {
-        return mojitoApi.getHomeCategoryMenu(sessionHandler.getLoginID(), GlobalConfig.getPackageApplicationName())
+        return mojitoApi.getHomeCategoryMenuV2(sessionHandler.getLoginID(), GlobalConfig.getPackageApplicationName())
                 .map(homeCategoryMapper);
     }
 }

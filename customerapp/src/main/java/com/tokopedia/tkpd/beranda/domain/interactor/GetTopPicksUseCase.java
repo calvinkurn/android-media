@@ -4,7 +4,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi;
 import com.tokopedia.tkpd.beranda.data.repository.HomeRepository;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksResponseModel;
 
@@ -31,7 +30,7 @@ public class GetTopPicksUseCase extends UseCase<TopPicksResponseModel> {
 
     @Override
     public Observable<TopPicksResponseModel> createObservable(RequestParams requestParams) {
-        return homeRepository.getTopPicks(requestParams);
+        return homeRepository.getTopPicksNetwork(requestParams);
     }
 
     public RequestParams getRequestParam() {

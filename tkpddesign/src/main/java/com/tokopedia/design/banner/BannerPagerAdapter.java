@@ -28,7 +28,7 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
     private final List<String> bannerImageUrls;
     private final BannerView.OnPromoClickListener onPromoClickListener;
 
-    public BannerPagerAdapter(List<String> bannerImageUrls,  BannerView.OnPromoClickListener onPromoClickListener) {
+    public BannerPagerAdapter(List<String> bannerImageUrls, BannerView.OnPromoClickListener onPromoClickListener) {
         this.bannerImageUrls = bannerImageUrls;
         this.onPromoClickListener = onPromoClickListener;
     }
@@ -60,25 +60,12 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
 
     @Override
     public void onBindViewHolder(BannerViewHolder holder, int position) {
-        if (bannerImageUrls.get(position)!=null &&
-                bannerImageUrls.get(position).length()>0) {
+        if (bannerImageUrls.get(position) != null &&
+                bannerImageUrls.get(position).length() > 0) {
             holder.bannerImage.setOnClickListener(
                     getBannerImageOnClickListener(position)
             );
         }
-
-/*        float scale = holder.itemView.getContext().getResources().getDisplayMetrics().density;
-        int padding_8dp = (int) (4 * scale + 0.5f);
-        holder.itemView.setPadding(padding_8dp, padding_8dp, padding_8dp, padding_8dp);
-
-        int width320dp = (int) holder.itemView.getContext().getResources().getDimension(R.dimen.item_banner_width_category);
-        int height160dp = (int) holder.itemView.getContext().getResources().getDimension(R.dimen.item_banner_height_category);
-
-        ViewGroup.LayoutParams layoutParams = holder.bannerImage.getLayoutParams();
-        layoutParams.height = height160dp;
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        holder.bannerImage.setLayoutParams(layoutParams);
-        holder.bannerImage.requestLayout();*/
 
         if (bannerImageUrls.size() == 1) {
             holder.relativeLayout.setLayoutParams(
@@ -87,14 +74,16 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
             holder.relativeLayout.requestLayout();
             holder.relativeLayout.setGravity(Gravity.CENTER);
         }
-
-        Glide.with(holder.bannerImage.getContext())
-                .load(bannerImageUrls.get(position))
-                .fitCenter()
-                .dontAnimate()
-                .placeholder(R.drawable.ic_loading_image)
-                .error(R.drawable.ic_loading_image)
-                .into(holder.bannerImage);
+        Activity activity = getActivity(holder.itemView);
+        if (activity != null && !activity.isFinishing()) {
+            Glide.with(activity)
+                    .load(bannerImageUrls.get(position))
+                    .fitCenter()
+                    .dontAnimate()
+                    .placeholder(R.drawable.ic_loading_image)
+                    .error(R.drawable.ic_loading_image)
+                    .into(holder.bannerImage);
+        }
 
     }
 
@@ -102,7 +91,8 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onPromoClickListener!=null) onPromoClickListener.onPromoClick(currentPosition);
+                if (onPromoClickListener != null)
+                    onPromoClickListener.onPromoClick(currentPosition);
             }
         };
     }

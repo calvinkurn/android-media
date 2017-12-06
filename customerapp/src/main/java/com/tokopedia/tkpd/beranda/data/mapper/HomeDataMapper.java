@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
@@ -14,12 +15,12 @@ import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseMode
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksGroupsModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksResponseModel;
-import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
@@ -36,7 +37,7 @@ import rx.functions.Func5;
 public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         BrandsOfficialStoreResponseModel, TopPicksResponseModel,
         HomeCategoryResponseModel, List<Visitable>> {
-    private Context context;
+    private final Context context;
 
     public HomeDataMapper(Context context) {
         this.context = context;
@@ -46,9 +47,9 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
     public List<Visitable> call(HomeBannerResponseModel homeBannerResponseModel, Ticker ticker,
                                 BrandsOfficialStoreResponseModel brandsOfficialStoreResponseModel,
                                 TopPicksResponseModel topPicksResponseModel,
-
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
+        boolean isLogin = !SessionHandler.isV4Login(context);
         if (homeBannerResponseModel.isSuccess()) {
             list.add(mappingBanner(homeBannerResponseModel));
         }
@@ -70,6 +71,9 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         }
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
+        }
+        if(isLogin){
+            list.add(new EmptyShopViewModel());
         }
         return rearrangeList(list);
     }
