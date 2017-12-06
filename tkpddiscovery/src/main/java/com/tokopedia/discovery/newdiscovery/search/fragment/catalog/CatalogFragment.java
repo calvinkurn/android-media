@@ -131,7 +131,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public String getScreenName() {
+    public String getScreenNameId() {
         return AppScreen.SCREEN_SEARCH_PAGE_CATALOG_TAB;
     }
 
@@ -551,12 +551,19 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void backToTop() {
-        recyclerView.smoothScrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.smoothScrollToPosition(0);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getScreenNameId();
     }
 }
