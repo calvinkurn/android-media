@@ -95,4 +95,10 @@ public class TrackShippingActivity extends BasePresenterActivity<TrackShippingAc
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+    }
 }
