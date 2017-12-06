@@ -328,7 +328,7 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
         List<ConversationAttachmentDomain> domainList = new ArrayList<>();
         if (responseList != null)
             for (ConversationAttachmentResponse response : responseList) {
-            domainList.add(new ConversationAttachmentDomain(null, response.getThumb(), response.getFull()));
+            domainList.add(new ConversationAttachmentDomain(response.getType(), response.getThumb(), response.getFull()));
         }
         return domainList;
     }
