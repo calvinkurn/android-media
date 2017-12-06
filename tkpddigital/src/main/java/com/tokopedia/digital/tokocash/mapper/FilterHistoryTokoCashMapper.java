@@ -43,7 +43,7 @@ public class FilterHistoryTokoCashMapper {
 
             return quickFilterItemList;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     private int[] addColorBorderFilter() {

@@ -1,7 +1,6 @@
 package com.tokopedia.design.quickfilter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -23,16 +22,15 @@ import java.util.List;
 public class QuickFilterAdapter extends RecyclerView.Adapter {
 
     private List<QuickFilterItem> filterList;
-    private FilterTokoCashListener listener;
+    private ActionListener listener;
     private Context context;
     private QuickFilterItem lastHeaderItemColor;
-    private int pos;
 
     public QuickFilterAdapter() {
         this.filterList = new ArrayList<>();
     }
 
-    public void setListener(FilterTokoCashListener listener) {
+    public void setListener(ActionListener listener) {
         this.listener = listener;
     }
 
@@ -46,10 +44,10 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        renderItemViewHolder((ItemViewFilter) holder, filterList.get(position), position);
+        renderItemViewHolder((ItemViewFilter) holder, filterList.get(position));
     }
 
-    private void renderItemViewHolder(final ItemViewFilter itemViewFilter, final QuickFilterItem filterItem, final int position) {
+    private void renderItemViewHolder(final ItemViewFilter itemViewFilter, final QuickFilterItem filterItem) {
         itemViewFilter.filterName.setText(setTextFilter(filterItem.getName()));
         itemViewFilter.layoutBorder.setBackgroundResource(R.drawable.bg_round_corner);
         itemViewFilter.layoutInside.setBackgroundResource(R.drawable.bg_round_corner);
@@ -57,21 +55,26 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
         itemViewFilter.layoutBorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (filterItem.isSelected()) {
-                    listener.clearFilter();
-                    filterItem.setSelected(false);
-                } else {
-                    listener.selectFilter(filterItem.getType());
-                    filterItem.setSelected(true);
-                    if (lastHeaderItemColor != null) {
-                        filterList.get(pos).setSelected(false);
-                        notifyItemChanged(pos);
+                    if (filterItem.isSelected()) {
+                        if (listener != null) {
+                            listener.clearFilter();
+                        }
+                        filterItem.setSelected(false);
+                    } else {
+                        if (listener != null) {
+                            listener.selectFilter(filterItem.getType());
+                        }
+                        filterItem.setSelected(true);
+                        if (lastHeaderItemColor != null) {
+                            filterList.get(itemViewFilter.getAdapterPosition()).setSelected(false);
+                            notifyItemChanged(itemViewFilter.getAdapterPosition());
+                        }
+                        lastHeaderItemColor = filterItem;
+
                     }
-                    lastHeaderItemColor = filterItem;
-                    pos = position;
+                    handleViewFilter(itemViewFilter, filterItem.isSelected(), filterItem);
                 }
-                handleViewFilter(itemViewFilter, filterItem.isSelected(), filterItem);
-            }
+
         });
     }
 
@@ -133,7 +136,7 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public interface FilterTokoCashListener {
+    public interface ActionListener {
 
         void clearFilter();
 

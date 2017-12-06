@@ -254,8 +254,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     }
 
     @NonNull
-    private QuickFilterAdapter.FilterTokoCashListener getFilterTokoCashListener() {
-        return new QuickFilterAdapter.FilterTokoCashListener() {
+    private QuickFilterAdapter.ActionListener getFilterTokoCashListener() {
+        return new QuickFilterAdapter.ActionListener() {
             @Override
             public void clearFilter() {
                 typeFilterSelected = "";
