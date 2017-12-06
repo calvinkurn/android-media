@@ -10,104 +10,107 @@
         android:id="@+id/loading"
         android:layout_centerInParent="true" />
 
-    <LinearLayout
-        android:id="@+id/main_view"
+    <TextView
+        android:id="@+id/confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_button_save_disable"
+        android:gravity="center"
+        android:text="@string/title_save_button"
+        android:textColor="@color/black_38"
+        android:textStyle="bold"
+        android:clickable="false"
+        android:enabled="false"/>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        android:layout_above="@id/confirm_button">
 
         <LinearLayout
+            android:id="@+id/main_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:padding="@dimen/padding_small"
-            android:layout_weight="2"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/string_input_awb_title"
-                android:textSize="@dimen/font_medium"
-                android:textColor="@color/black_54"/>
+                android:padding="@dimen/padding_small"
+                android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/img_awb_example"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:padding="@dimen/padding_small"
-            android:orientation="vertical">
-
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/ref_number"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/title_reference_number"
-                    android:drawableRight="@drawable/ic_select_awb"
-                    android:drawableEnd="@drawable/ic_select_awb"
-                    android:maxLength="17"/>
+                    android:text="@string/string_input_awb_title"
+                    android:textSize="@dimen/font_medium"
+                    android:textColor="@color/black_54"/>
 
-            </android.support.design.widget.TextInputLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:src="@drawable/img_awb_example"/>
+            </LinearLayout>
 
-            <Spinner
-                android:id="@+id/spinner_kurir"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:minHeight="48dp"
-                />
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:padding="@dimen/padding_small"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/error_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="@string/title_select_agency_error"
-                android:textColor="@color/tkpd_dark_red"
-                android:visibility="gone" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:paddingTop="@dimen/padding_vs"
-                android:paddingBottom="@dimen/padding_vs"
-                android:textColor="@color/black_54"
-                android:text="@string/string_awb_attachment_title"
-                android:textSize="@dimen/font_medium" />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list_upload_proof"
-                android:layout_width="match_parent"
-                android:layout_height="72dp">
+                    <EditText
+                        android:id="@+id/ref_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/title_reference_number"
+                        android:drawableRight="@drawable/ic_select_awb"
+                        android:drawableEnd="@drawable/ic_select_awb"
+                        android:maxLength="17"/>
 
-            </android.support.v7.widget.RecyclerView>
+                </android.support.design.widget.TextInputLayout>
+
+                <Spinner
+                    android:id="@+id/spinner_kurir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:minHeight="48dp"
+                    />
+
+                <TextView
+                    android:id="@+id/error_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@string/title_select_agency_error"
+                    android:textColor="@color/tkpd_dark_red"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:paddingTop="@dimen/padding_vs"
+                    android:paddingBottom="@dimen/padding_vs"
+                    android:textColor="@color/black_54"
+                    android:text="@string/string_awb_attachment_title"
+                    android:textSize="@dimen/font_medium" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_upload_proof"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
         </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/confirm_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_height"
-            android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/bg_button_save_disable"
-            android:gravity="center"
-            android:text="@string/title_save_button"
-            android:textColor="@color/black_38"
-            android:textStyle="bold"
-            android:clickable="false"
-            android:enabled="false"/>
-    </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -285,7 +286,7 @@ public class DetailResChatFragment
 
     @Override
     protected void initView(View view) {
-        uploadImageDialog = ImageUploadHandler.createInstance(getActivity());
+        uploadImageDialog = ImageUploadHandler.createInstance(this);
         tvNextStep = view.findViewById(R.id.tv_next_step);
         rvChat = view.findViewById(R.id.rv_chat);
         rvAttachment = view.findViewById(R.id.rv_attachment);
@@ -944,7 +945,7 @@ public class DetailResChatFragment
 
     @Override
     public void errorReplyDiscussion(String error) {
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+        showErrorWithRefresh(error);
         chatAdapter.deleteLastItem();
         etChat.requestFocus();
     }
@@ -958,7 +959,7 @@ public class DetailResChatFragment
     @Override
     public void errorAcceptSolution(String error) {
         dismissProgressBar();
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+        showErrorWithRefresh(error);
     }
 
     @Override
@@ -970,7 +971,7 @@ public class DetailResChatFragment
     @Override
     public void errorCancelComplaint(String error) {
         dismissProgressBar();
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+        showErrorWithRefresh(error);
     }
 
     @Override
@@ -982,7 +983,7 @@ public class DetailResChatFragment
     @Override
     public void errorAskHelp(String error) {
         dismissProgressBar();
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+        showErrorWithRefresh(error);
     }
 
     @Override
@@ -994,7 +995,7 @@ public class DetailResChatFragment
     @Override
     public void errorInputAddress(String error) {
         dismissProgressBar();
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+        showErrorWithRefresh(error);
     }
 
     @Override
@@ -1006,7 +1007,7 @@ public class DetailResChatFragment
     @Override
     public void errorEditAddress(String error) {
         dismissProgressBar();
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+        showErrorWithRefresh(error);
     }
 
     @Override
@@ -1018,7 +1019,7 @@ public class DetailResChatFragment
     @Override
     public void errorFinishResolution(String error) {
         dismissProgressBar();
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+        showErrorWithRefresh(error);
     }
 
     @Override
@@ -1031,6 +1032,20 @@ public class DetailResChatFragment
         doEditAddress();
         this.conversationId = conversationId;
         this.oldAddressId = oldAddressId;
+    }
+
+    private void showErrorWithRefresh(String error) {
+        NetworkErrorHelper.createSnackbarWithAction(
+                getActivity(),
+                error,
+                Snackbar.LENGTH_LONG,getResources().getString(R.string.string_reload_page),
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                initView();
+            }
+        }).showRetrySnackbar();
+
     }
 
     @Override
