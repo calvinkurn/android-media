@@ -5,6 +5,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
@@ -12,6 +13,7 @@ import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -31,6 +33,7 @@ public interface FlightRepository {
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);
 
     Observable<Boolean> deleteFlightCacheSearch();
+
     Observable<Boolean> deleteFlightCacheSearch(boolean isReturning);
 
     Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams);
@@ -46,4 +49,8 @@ public interface FlightRepository {
     Observable<Boolean> getAirportListBackground();
 
     Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString);
+
+    Observable<List<OrderEntity>> getOrders(Map<String, Object> maps);
+
+    Observable<OrderEntity> getOrder(String id);
 }
