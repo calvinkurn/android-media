@@ -23,6 +23,7 @@ public class Amenity implements Parcelable {
     public String getIcon() {
         return icon;
     }
+
     public String getLabel() {
         return label;
     }
