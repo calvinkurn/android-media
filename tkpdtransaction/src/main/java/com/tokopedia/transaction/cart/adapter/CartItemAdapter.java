@@ -11,7 +11,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -590,18 +589,21 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if (cartData.getCartCannotInsurance() == 1 || (cartData.getCartForceInsurance() == 1
                 || isProductMustInsurance(cartData.getCartProducts()))) {
-            Log.e("InsuranceEdit", "FALSE1");
             holder.spUseInsurance.setEnabled(false);
         } else if(unEditable(cartData)) {
-            Log.e("InsuranceEdit", "FALSE2");
             holder.spUseInsurance.setEnabled(false);
         }else {
-            Log.e("InsuranceEdit", "TRUE");
             holder.spUseInsurance.setEnabled(true);
         }
 
         cartInsuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.spUseInsurance.setAdapter(cartInsuranceAdapter);
+
+        if(cartItemEditable.getInsuranceUsedInfo() == null || cartItemEditable.getInsuranceUsedInfo().length() == 0){
+            holder.imgInsuranceInfo.setVisibility(View.GONE);
+        } else {
+            holder.imgInsuranceInfo.setVisibility(View.VISIBLE);
+        }
         holder.imgInsuranceInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -610,7 +612,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .BottomSheetFieldBuilder()
                         .setTitle(hostFragment.getActivity().getString(R.string.title_bottomsheet_insurance))
                         .setBody(cartItemEditable.getInsuranceUsedInfo())
-                        .setImg(R.drawable.ic_insurance_bottomsheet)
+                        .setImg(R.drawable.ic_insurance)
                         .build());
 
                 bottomSheetView.show();

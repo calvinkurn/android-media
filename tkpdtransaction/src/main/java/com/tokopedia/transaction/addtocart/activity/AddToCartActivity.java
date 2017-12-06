@@ -795,7 +795,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 .BottomSheetFieldBuilder()
                 .setTitle(getString(R.string.title_bottomsheet_insurance))
                 .setBody(insuranceInfo)
-                .setImg(R.drawable.ic_insurance_bottomsheet)
+                .setImg(R.drawable.ic_insurance)
                 .build());
 
         bottomSheetView.show();
