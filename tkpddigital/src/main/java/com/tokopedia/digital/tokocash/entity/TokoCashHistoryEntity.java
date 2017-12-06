@@ -1,5 +1,8 @@
 package com.tokopedia.digital.tokocash.entity;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -8,10 +11,14 @@ import java.util.List;
 
 public class TokoCashHistoryEntity {
 
+    @SerializedName("header")
+    @Expose
     private List<HeaderHistoryEntity> header;
-
+    @SerializedName("items")
+    @Expose
     private List<ItemHistoryEntity> items;
-
+    @SerializedName("next_uri")
+    @Expose
     private boolean next_uri;
 
     public List<HeaderHistoryEntity> getHeader() {

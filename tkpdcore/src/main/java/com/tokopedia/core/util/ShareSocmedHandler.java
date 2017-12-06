@@ -316,7 +316,7 @@ public class ShareSocmedHandler {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("STUART", e.getMessage());
+
                             }
 
                             @Override

@@ -540,4 +540,11 @@ public class ImageHandler {
                 .fitCenter()
                 .into(imageView);
     }
+
+    public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
+        Glide.with(imageView.getContext()).load(gifDrawable)
+                .asGif()
+                .placeholder(placeholder)
+                .into(imageView);
+    }
 }

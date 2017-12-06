@@ -10,10 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,16 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.design.label.DateLabelView;
-import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
@@ -55,6 +51,30 @@ public abstract class TopAdsAdListFragment<P extends
         AdListMenuListener, BaseListViewListener<T>, TopAdsFilterViewListener,
         BaseListAdapter.Callback<T>,SearchInputView.Listener {
 
+    protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
+    protected static final String EXTRA_STATUS = "EXTRA_STATUS";
+    protected static final String EXTRA_KEYWORD = "EXTRA_KEYWORD";
+    protected static final int REQUEST_CODE_AD_CHANGE = 2;
+    protected static final int REQUEST_CODE_AD_FILTER = 3;
+    protected static final int REQUEST_CODE_AD_ADD = 4;
+    protected SearchInputView searchInputView;
+    protected int status;
+    protected String keyword;
+    private AppBarLayout appBarLayout;
+    private DateLabelView dateLabelView;
+    private BottomActionView buttonActionView;
+    private MenuItem menuAdd;
+    private CoordinatorLayout.Behavior appBarBehaviour;
+    private int scrollFlags;
+    @Px
+    private int tempTopPaddingRecycleView;
+    @Px
+    private int tempBottomPaddingRecycleView;
+    private OnAdListFragmentListener listener;
+    public TopAdsAdListFragment() {
+        // Required empty public constructor
+    }
+
     @Override
     public void onSearchSubmitted(String newText) {
         CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
@@ -66,40 +86,6 @@ public abstract class TopAdsAdListFragment<P extends
         if (TextUtils.isEmpty(query)) {
             onQueryTextSubmit(query);
         }
-    }
-
-    public interface OnAdListFragmentListener {
-        void startShowCase();
-    }
-
-    protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
-    protected static final String EXTRA_STATUS = "EXTRA_STATUS";
-    protected static final String EXTRA_KEYWORD = "EXTRA_KEYWORD";
-
-    protected static final int REQUEST_CODE_AD_CHANGE = 2;
-    protected static final int REQUEST_CODE_AD_FILTER = 3;
-    protected static final int REQUEST_CODE_AD_ADD = 4;
-
-    private AppBarLayout appBarLayout;
-    private DateLabelView dateLabelView;
-    protected SearchInputView searchInputView;
-    private BottomActionView buttonActionView;
-    private MenuItem menuAdd;
-
-    protected int status;
-    protected String keyword;
-
-    private CoordinatorLayout.Behavior appBarBehaviour;
-    private int scrollFlags;
-    @Px
-    private int tempTopPaddingRecycleView;
-    @Px
-    private int tempBottomPaddingRecycleView;
-
-    private OnAdListFragmentListener listener;
-
-    public TopAdsAdListFragment() {
-        // Required empty public constructor
     }
 
     protected TopAdsComponent getTopAdsComponent(){
@@ -261,7 +247,6 @@ public abstract class TopAdsAdListFragment<P extends
         }
     }
 
-
     public boolean onQueryTextSubmit(String query) {
         onSearch(query);
         return true;
@@ -393,5 +378,9 @@ public abstract class TopAdsAdListFragment<P extends
     @Override
     public View getSearchView() {
         return searchInputView;
+    }
+
+    public interface OnAdListFragmentListener {
+        void startShowCase();
     }
 }
