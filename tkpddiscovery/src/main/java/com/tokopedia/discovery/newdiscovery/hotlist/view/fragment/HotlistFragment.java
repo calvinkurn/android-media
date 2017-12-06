@@ -23,7 +23,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -638,7 +638,7 @@ public class HotlistFragment extends SearchSectionFragment
         Bundle extras = new Bundle();
         extras.putInt(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         extras.putString("product_id", productID);
-        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtras(extras);
         startActivity(intent);
     }

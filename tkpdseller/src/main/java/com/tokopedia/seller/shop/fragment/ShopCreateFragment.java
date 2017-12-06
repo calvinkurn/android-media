@@ -29,13 +29,12 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -192,7 +191,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     public void showVerificationDialog() {
-        startActivityForResult(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
+        startActivityForResult(OldSessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
                 REQUEST_VERIFY_PHONE_NUMBER);
     }
 

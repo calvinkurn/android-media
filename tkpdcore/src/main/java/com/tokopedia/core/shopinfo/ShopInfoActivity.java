@@ -34,10 +34,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -52,7 +50,7 @@ import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -828,7 +826,7 @@ public class ShopInfoActivity extends BaseActivity
                     holder.favorite.startAnimation(animateFav);
                     facadeAction.actionToggleFav();
                 } else {
-                    Intent intent = SessionRouter.getLoginActivityIntent(ShopInfoActivity.this);
+                    Intent intent = OldSessionRouter.getLoginActivityIntent(ShopInfoActivity.this);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                             TkpdState.DrawerPosition.LOGIN);
                     startActivityForResult(intent, ShopInfoActivity.FAVORITE_LOGIN_REQUEST_CODE);
@@ -869,7 +867,7 @@ public class ShopInfoActivity extends BaseActivity
         }
         else {
             bundle.putBoolean("login", true);
-            intent = SessionRouter.getLoginActivityIntent(this);
+            intent = OldSessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
             bundle.putString(PARAM_OWNER_FULLNAME, shopModel.info.shopName);
@@ -937,7 +935,7 @@ public class ShopInfoActivity extends BaseActivity
                 }
             } else {
                 redirectionUrl = url;
-                Intent intent = SessionRouter.getLoginActivityIntent(this);
+                Intent intent = OldSessionRouter.getLoginActivityIntent(this);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                         TkpdState.DrawerPosition.LOGIN);
                 startActivityForResult(intent, REQUEST_CODE_LOGIN);

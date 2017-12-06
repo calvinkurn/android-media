@@ -14,7 +14,6 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -35,6 +34,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -97,6 +97,7 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
+import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -122,7 +123,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
-        TokoCashRouter, IWalletRouter, RemoteConfigRouter {
+        TokoCashRouter, IWalletRouter, RemoteConfigRouter, SessionRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -826,4 +827,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         dbManager.deleteAll();
     }
 
+    @Override
+    public Intent getTrueCallerIntent(Context context) {
+        return TruecallerActivity.getCallingIntent(context);
+    }
 }

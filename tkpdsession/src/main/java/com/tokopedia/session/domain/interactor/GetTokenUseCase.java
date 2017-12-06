@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -39,6 +41,7 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
 
     private final GetTokenDataSource repository;
 
+    @Inject
     public GetTokenUseCase(ThreadExecutor threadExecutor,
                            PostExecutionThread postExecutionThread,
                            GetTokenDataSource repository) {

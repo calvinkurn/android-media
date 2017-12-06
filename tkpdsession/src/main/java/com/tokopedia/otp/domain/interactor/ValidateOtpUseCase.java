@@ -10,6 +10,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.model.ValidateOTPDomain;
 import com.tokopedia.otp.data.source.OtpSource;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -27,6 +29,7 @@ public class ValidateOtpUseCase extends UseCase<ValidateOTPDomain> {
 
     private final OtpSource otpSource;
 
+    @Inject
     public ValidateOtpUseCase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
                               OtpSource otpSource,

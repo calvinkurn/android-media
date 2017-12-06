@@ -10,6 +10,8 @@ import com.tokopedia.otp.data.model.ValidateOTPDomain;
 import com.tokopedia.otp.domain.pojo.ValidateOtpPojo;
 import com.tokopedia.session.R;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -18,6 +20,11 @@ import rx.functions.Func1;
  */
 
 public class ValidateOTPMapper implements Func1<Response<TkpdResponse>, ValidateOTPDomain> {
+
+    @Inject
+    public ValidateOTPMapper() {
+    }
+
     @Override
     public ValidateOTPDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {

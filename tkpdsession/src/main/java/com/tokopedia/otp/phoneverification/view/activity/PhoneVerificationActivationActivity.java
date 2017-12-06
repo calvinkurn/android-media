@@ -2,11 +2,13 @@ package com.tokopedia.otp.phoneverification.view.activity;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -150,6 +152,10 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, PhoneVerificationActivationActivity.class);
     }
 
     @Override

@@ -37,7 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.PolyUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -284,7 +284,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                 TkpdState.DrawerPosition.LOGIN);
         startActivityForResult(intent, LOGIN_REQUEST_CODE);

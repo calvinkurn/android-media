@@ -84,6 +84,18 @@
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
 
+    <string name="error_empty_provider">Gagal mendownload provider.</string>
+    <string name="facebook_error_not_authorized">Gagal login facebook. Silahkan coba lagi.</string>
+    <string name="default_datepicker">Tanggal / Bulan / Tahun</string>
+    <string name="terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="privacy">Kebijakan Privasi</string>
+    <string name="i_have_read_and_understand">Saya sudah membaca dan menyetujui</string>
+    <string name="you_must_agree">Untuk dapat menggunakan layanan Tokopedia, anda harus menyetujui Syarat dan Ketentuan dari Tokopedia</string>
+    <string name="day_month_year">Tanggal / Bulan / Tahun</string>
+    <string name="error_register_webview">Terjadi kesalahan. Mohon coba kembali.</string>
+    <string name="hi">Hai</string>
+    <string name="success_request_otp">Kode verifikasi telah dikirim.</string>
+
     <!-- LOGIN PHONE NUMBER -->
     <string name="login_with_phone_number_tokocash">Masuk dengan\nNomor Ponsel TokoCash</string>
     <string name="phone_number">Nomor Ponsel</string>

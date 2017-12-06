@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -32,6 +31,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -91,6 +91,7 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.remoteconfig.RemoteConfigFetcher;
+import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -117,7 +118,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, RemoteConfigRouter {
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
+        RemoteConfigRouter, SessionRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -533,7 +535,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+        if (MainApplication.getInstance() instanceof RemoteConfigRouter
                 && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
@@ -545,7 +547,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+        if (MainApplication.getInstance() instanceof RemoteConfigRouter
                 && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
         else
@@ -557,7 +559,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+        if (MainApplication.getInstance() instanceof RemoteConfigRouter
                 && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
@@ -651,7 +653,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+        if (MainApplication.getInstance() instanceof RemoteConfigRouter
                 && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
             return InboxChatActivity.getCallingIntent(context);
         else
@@ -665,7 +667,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean getBooleanConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
+        if (getFirebaseRemoteConfig() != null) {
             return getFirebaseRemoteConfig().getBoolean(key);
         }
         return false;
@@ -673,7 +675,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public byte[] getByteArrayConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
+        if (getFirebaseRemoteConfig() != null) {
             return getFirebaseRemoteConfig().getByteArray(key);
         }
         return new byte[0];
@@ -681,7 +683,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public double getDoubleConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
+        if (getFirebaseRemoteConfig() != null) {
             return getFirebaseRemoteConfig().getDouble(key);
         }
         return 0.0D;
@@ -689,7 +691,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public long getLongConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
+        if (getFirebaseRemoteConfig() != null) {
             return getFirebaseRemoteConfig().getLong(key);
         }
         return 0L;
@@ -697,7 +699,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public String getStringConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
+        if (getFirebaseRemoteConfig() != null) {
             return getFirebaseRemoteConfig().getString(key);
         }
         return "";
@@ -705,5 +707,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private FirebaseRemoteConfig getFirebaseRemoteConfig() {
         return RemoteConfigFetcher.initRemoteConfig(this);
+    }
+
+    @Override
+    public Intent getTrueCallerIntent(Context context) {
+        return TruecallerActivity.getCallingIntent(context);
     }
 }

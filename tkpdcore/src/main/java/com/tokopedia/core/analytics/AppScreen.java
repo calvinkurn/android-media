@@ -1,7 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 
 
@@ -266,6 +266,9 @@ public final class AppScreen {
     public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "Login Tokocash - Choose Account";
     public static final String SCREEN_NOT_CONNECTED_TO_TOKOCASH = "Login Tokocash - Not Connected";
 
+    public static final String SCREEN_SECURITY_QUESTION = "Security Question Page";
+    public static final String SCREEN_CHANGE_PHONE_NUMBER = "Change Phone Number Page";
+
     private AppScreen() {
 
     }
@@ -279,7 +282,7 @@ public final class AppScreen {
     }
 
     public static String convertAFFragmentEvent(String tag) {
-        if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+        if (tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
             return AFInAppEventType.COMPLETE_REGISTRATION;
         } else {
             return AFInAppEventType.CONTENT_VIEW;

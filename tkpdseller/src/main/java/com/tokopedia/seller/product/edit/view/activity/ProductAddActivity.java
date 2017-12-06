@@ -26,7 +26,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -238,7 +238,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                 return false;
             }
         } else {
-            Intent intentLogin = SessionRouter.getLoginActivityIntent(this);
+            Intent intentLogin = OldSessionRouter.getLoginActivityIntent(this);
             intentLogin.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intentLogin);
             finish();

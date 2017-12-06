@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
@@ -271,7 +271,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                     digitalCheckoutPassDataState =
                             widgetWrapperBuyView.getGeneratedCheckoutPassData(getDataPreCheckout());
 
-                    Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+                    Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
 
                     presenter.storeLastClientNumberTyped(String.valueOf(category.getId()),

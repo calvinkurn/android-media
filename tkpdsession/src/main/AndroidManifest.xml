@@ -45,7 +45,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".changephonenumber.activity.ChangePhoneNumberRequestActivity"
+            android:name="com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity"
             android:label="@string/title_change_phone_number_request"
             android:screenOrientation="portrait"/>
         <activity

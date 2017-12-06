@@ -29,7 +29,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -38,8 +38,6 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.var.TkpdState;
-
-import java.net.URL;
 
 /**
  * Created by Nisie on 8/25/2015.
@@ -177,7 +175,7 @@ public class FragmentBannerWebView extends Fragment {
         } else {
             String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
             if (query != null && query.equals(QUERY_PARAM_PLUS)) {
-                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+                Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
                 intent.putExtra("login", DownloadService.GOOGLE);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 startActivityForResult(intent, LOGIN_GPLUS);

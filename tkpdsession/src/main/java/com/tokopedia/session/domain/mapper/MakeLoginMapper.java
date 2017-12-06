@@ -19,6 +19,8 @@ import com.tokopedia.session.domain.pojo.login.SecurityPojo;
 import com.tokopedia.session.domain.pojo.login.ShopReputationPojo;
 import com.tokopedia.session.domain.pojo.login.UserReputationPojo;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -30,6 +32,10 @@ public class MakeLoginMapper implements Func1<Response<TkpdResponse>, MakeLoginD
 
     private static final String TRUE = "true";
     private static final String TRUE_1 = "1";
+
+    @Inject
+    public MakeLoginMapper() {
+    }
 
     @Override
     public MakeLoginDomain call(Response<TkpdResponse> response) {

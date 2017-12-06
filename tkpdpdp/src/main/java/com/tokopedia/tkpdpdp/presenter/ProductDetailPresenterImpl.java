@@ -49,7 +49,7 @@ import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -134,7 +134,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToLogin(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = SessionRouter.getLoginActivityIntent(context);
+        Intent intent = OldSessionRouter.getLoginActivityIntent(context);
         intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                 TkpdState.DrawerPosition.LOGIN);
         viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
@@ -197,7 +197,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             viewListener.navigateToActivity(intent);
         } else {
-            intent = SessionRouter.getLoginActivityIntent(context);
+            intent = OldSessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                     TkpdState.DrawerPosition.LOGIN);
             viewListener.navigateToActivityRequest(intent,
@@ -212,7 +212,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.showReportDialog();
         } else {
             UnifyTracking.eventPDPReportNotLogin();
-            Intent intent = SessionRouter.getLoginActivityIntent(context);
+            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                     TkpdState.DrawerPosition.LOGIN);
             viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
@@ -235,7 +235,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         if (SessionHandler.isV4Login(context)) {
             viewListener.navigateToActivity(sendMessageIntent);
         } else {
-            intent = SessionRouter.getLoginActivityIntent(context);
+            intent = OldSessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                     TkpdState.DrawerPosition.LOGIN);
             viewListener.navigateToActivityRequest(intent,
@@ -351,7 +351,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                     });
         } else {
-            Intent intent = SessionRouter.getLoginActivityIntent(context);
+            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                     TkpdState.DrawerPosition.LOGIN);
             viewListener.navigateToActivityRequest(intent,
@@ -600,7 +600,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             }
         } else {
             cacheInteractor.deleteProductDetail(product.getInfo().getProductId());
-            Intent intent = SessionRouter.getLoginActivityIntent(context);
+            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             intent.putExtra("product_id", String.valueOf(product.getInfo().getProductId()));
             viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);

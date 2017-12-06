@@ -9,6 +9,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.otp.data.model.RequestOtpViewModel;
 import com.tokopedia.otp.data.source.OtpSource;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -31,6 +33,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
 
     private final OtpSource otpSource;
 
+    @Inject
     public RequestOtpUseCase(ThreadExecutor threadExecutor,
                              PostExecutionThread postExecutionThread,
                              OtpSource otpSource) {

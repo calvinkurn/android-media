@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -32,7 +31,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractor;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractorImpl;
@@ -47,7 +45,7 @@ import com.tokopedia.core.reputationproduct.model.LikeDislike;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.review.model.product_review.ReviewProductDetailModel;
 import com.tokopedia.core.review.model.product_review.ReviewProductModel;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
@@ -598,7 +596,7 @@ public class FragmentReputationProductView extends Fragment {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+                Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
                 intent.putExtra("product_id", productID);
                 intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);

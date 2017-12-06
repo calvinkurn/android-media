@@ -60,6 +60,10 @@ public class SessionModule {
         return new GlobalCacheManager();
     }
 
+    /**
+     * @return https://accounts.tokopedia.com
+     * with Authorization : Tkpd
+     */
     @SessionScope
     @Named(HMAC_SERVICE)
     @Provides
@@ -70,6 +74,10 @@ public class SessionModule {
         return new AccountsService(bundle);
     }
 
+    /**
+     * @return https://accounts.tokopedia.com
+     * with Authorization : Basic
+     */
     @SessionScope
     @Named(BASIC_SERVICE)
     @Provides
@@ -79,6 +87,12 @@ public class SessionModule {
         return new AccountsService(bundle);
     }
 
+    /**
+     * @param context
+     * @param sessionHandler
+     * @return https://accounts.tokopedia.com
+     * with Authorization : Bearer {Access Token}
+     */
     @SessionScope
     @Named(BEARER_SERVICE)
     @Provides
@@ -113,13 +127,6 @@ public class SessionModule {
         return new AccountsService(bundle);
     }
 
-
-    @SessionScope
-    @Provides
-    TokenMapper provideTokenMapper() {
-        return new TokenMapper();
-    }
-
     @SessionScope
     @Provides
     GetTokenDataSource provideGetTokenDataSource(@Named(BASIC_SERVICE) AccountsService
@@ -127,14 +134,6 @@ public class SessionModule {
                                                  TokenMapper tokenMapper,
                                                  SessionHandler sessionHandler) {
         return new GetTokenDataSource(accountsService, tokenMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    GetTokenUseCase provideGetTokenUseCase(ThreadExecutor threadExecutor,
-                                           PostExecutionThread postExecutionThread,
-                                           GetTokenDataSource getTokenDataSource) {
-        return new GetTokenUseCase(threadExecutor, postExecutionThread, getTokenDataSource);
     }
 
     @SessionScope
@@ -168,7 +167,6 @@ public class SessionModule {
         return new ProfileRepositoryImpl(profileSourceFactory);
     }
 
-
     @SessionScope
     @Provides
     GetUserInfoUseCase provideGetUserInfoUseCase(ThreadExecutor threadExecutor,
@@ -187,67 +185,11 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    MakeLoginUseCase provideMakeLoginUseCase(ThreadExecutor threadExecutor,
-                                             PostExecutionThread postExecutionThread,
-                                             MakeLoginDataSource makeLoginDataSource,
-                                             SessionHandler sessionHandler) {
-        return new MakeLoginUseCase(
-                threadExecutor, postExecutionThread, makeLoginDataSource);
-    }
-
-
-    @SessionScope
-    @Provides
-    MakeLoginMapper provideMakeLoginMapper() {
-        return new MakeLoginMapper();
-    }
-
-    @SessionScope
-    @Provides
-    InterruptService provideInterruptService() {
-        return new InterruptService();
-    }
-
-    @SessionScope
-    @Provides
     OtpSource provideOtpSource(@Named(BEARER_SERVICE) AccountsService accountsService,
                                RequestOTPMapper requestOTPMapper,
                                ValidateOTPMapper validateOTPMapper,
                                SessionHandler sessionHandler) {
         return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
     }
-
-    @SessionScope
-    @Provides
-    RequestOTPMapper provideRequestOTPMapper() {
-        return new RequestOTPMapper();
-    }
-
-    @SessionScope
-    @Provides
-    RequestOtpUseCase provideRequestOtpUseCase(ThreadExecutor threadExecutor,
-                                               PostExecutionThread postExecutionThread,
-                                               OtpSource otpSource,
-                                               SessionHandler sessionHandler) {
-        return new RequestOtpUseCase(
-                threadExecutor, postExecutionThread, otpSource);
-    }
-
-    @SessionScope
-    @Provides
-    ValidateOTPMapper provideValidateOtpMapper() {
-        return new ValidateOTPMapper();
-    }
-
-    @SessionScope
-    @Provides
-    ValidateOtpUseCase provideValidateOtpUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 OtpSource otpSource,
-                                                 SessionHandler sessionHandler) {
-        return new ValidateOtpUseCase(
-                threadExecutor, postExecutionThread, otpSource, sessionHandler);
-    }
-
 
 }

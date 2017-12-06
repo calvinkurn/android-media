@@ -9,6 +9,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -20,6 +22,7 @@ public class MakeLoginUseCase extends UseCase<MakeLoginDomain> {
     public static final String PARAM_USER_ID = "user_id";
     private final MakeLoginDataSource makeLoginDataSource;
 
+    @Inject
     public MakeLoginUseCase(ThreadExecutor threadExecutor,
                             PostExecutionThread postExecutionThread,
                             MakeLoginDataSource makeLoginDataSource) {

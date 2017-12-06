@@ -10,6 +10,8 @@ import com.tokopedia.otp.data.model.RequestOtpViewModel;
 import com.tokopedia.otp.domain.pojo.RequestOtpPojo;
 import com.tokopedia.session.R;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -18,6 +20,11 @@ import rx.functions.Func1;
  */
 
 public class RequestOTPMapper implements Func1<Response<TkpdResponse>, RequestOtpViewModel> {
+
+    @Inject
+    public RequestOTPMapper() {
+    }
+
     @Override
     public RequestOtpViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
