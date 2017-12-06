@@ -271,17 +271,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 switch (state){
                     case COLLAPSED:
                         isAppBarCollapsed = true;
-                        initStatusBarLight();
-                        initToolbarLight();
-                        fabWishlist.hide();
+                        collapsedAppBar();
                         break;
                     case EXPANDED:
                         isAppBarCollapsed = false;
-                        initStatusBarDark();
-                        initToolbarTransparant();
-                        if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
-                            fabWishlist.show();
-                        }
+                        expandedAppBar();
                         break;
                 }
             }
@@ -299,6 +293,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
         }
 
+    }
+
+    private void collapsedAppBar(){
+        initStatusBarLight();
+        initToolbarLight();
+        fabWishlist.hide();
+    }
+
+    private void expandedAppBar(){
+        initStatusBarDark();
+        initToolbarTransparant();
+        if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
+            fabWishlist.show();
+        }
     }
 
     @Override
@@ -1175,7 +1183,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void restoreIsAppBarCollapsed(boolean isAppBarCollapsed) {
-        Log.d("milhamj", "restoring isAppBarCollapsed" + isAppBarCollapsed);
         this.isAppBarCollapsed = isAppBarCollapsed;
+        if(isAppBarCollapsed) {
+            collapsedAppBar();
+        } else {
+            expandedAppBar();
+        }
     }
 }
