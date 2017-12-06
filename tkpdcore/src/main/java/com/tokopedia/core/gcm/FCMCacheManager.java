@@ -288,7 +288,7 @@ public class FCMCacheManager {
                 public Boolean call(Boolean aBoolean) {
                     try {
                         FirebaseInstanceId.getInstance().deleteInstanceId();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
                         FirebaseInstanceId.getInstance().getToken();
