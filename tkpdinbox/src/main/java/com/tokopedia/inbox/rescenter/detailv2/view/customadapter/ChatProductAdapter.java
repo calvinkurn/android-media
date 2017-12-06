@@ -55,36 +55,9 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openProductPreview(productList, position);
+
             }
         });
-    }
-
-    private void openProductPreview(List<ConversationProductDomain> list, int position) {
-        ArrayList<String> imageUrls = new ArrayList<>();
-        for (ConversationProductDomain model : list) {
-            for(ConversationAttachmentDomain attachmentDomain : model.getImage()){
-                if(attachmentDomain.getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)){
-                    imageUrls.add(attachmentDomain.getFull());
-                    //we only need one image
-                    break;
-                }
-            }
-        }
-        Intent intent = new Intent(context, PreviewProductImage.class);
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("fileloc", imageUrls);
-        bundle.putInt("img_pos", position);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    private void openVideoPlayer(String urlVideo) {
-        Intent intent = new Intent(context, VideoPlayerActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, urlVideo);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
     }
 
     @Override
