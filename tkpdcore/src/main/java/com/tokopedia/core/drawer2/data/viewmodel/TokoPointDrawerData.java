@@ -1,5 +1,8 @@
 package com.tokopedia.core.drawer2.data.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * @author anggaprasetiyo on 04/12/17.
  */
 
-public class TokoPointDrawerData {
+public class TokoPointDrawerData implements Parcelable {
 
     @SerializedName("off_flag")
     @Expose
@@ -54,7 +57,8 @@ public class TokoPointDrawerData {
         this.popUpNotif = popUpNotif;
     }
 
-    public static class Catalog {
+
+    public static class Catalog implements Parcelable {
         @SerializedName("title")
         @Expose
         private String title;
@@ -110,9 +114,46 @@ public class TokoPointDrawerData {
         public void setThumbnailUrlMobile(String thumbnailUrlMobile) {
             this.thumbnailUrlMobile = thumbnailUrlMobile;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.title);
+            dest.writeString(this.subTitle);
+            dest.writeInt(this.points);
+            dest.writeString(this.thumbnailUrl);
+            dest.writeString(this.thumbnailUrlMobile);
+        }
+
+        public Catalog() {
+        }
+
+        protected Catalog(Parcel in) {
+            this.title = in.readString();
+            this.subTitle = in.readString();
+            this.points = in.readInt();
+            this.thumbnailUrl = in.readString();
+            this.thumbnailUrlMobile = in.readString();
+        }
+
+        public static final Parcelable.Creator<Catalog> CREATOR = new Parcelable.Creator<Catalog>() {
+            @Override
+            public Catalog createFromParcel(Parcel source) {
+                return new Catalog(source);
+            }
+
+            @Override
+            public Catalog[] newArray(int size) {
+                return new Catalog[size];
+            }
+        };
     }
 
-    public static class PopUpNotif {
+    public static class PopUpNotif implements Parcelable {
 
         @SerializedName("title")
         @Expose
@@ -202,9 +243,52 @@ public class TokoPointDrawerData {
         public void setCatalog(Catalog catalog) {
             this.catalog = catalog;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.title);
+            dest.writeString(this.text);
+            dest.writeString(this.imageUrl);
+            dest.writeString(this.buttonText);
+            dest.writeString(this.buttonUrl);
+            dest.writeString(this.appLink);
+            dest.writeString(this.notes);
+            dest.writeParcelable(this.catalog, flags);
+        }
+
+        public PopUpNotif() {
+        }
+
+        protected PopUpNotif(Parcel in) {
+            this.title = in.readString();
+            this.text = in.readString();
+            this.imageUrl = in.readString();
+            this.buttonText = in.readString();
+            this.buttonUrl = in.readString();
+            this.appLink = in.readString();
+            this.notes = in.readString();
+            this.catalog = in.readParcelable(Catalog.class.getClassLoader());
+        }
+
+        public static final Parcelable.Creator<PopUpNotif> CREATOR = new Parcelable.Creator<PopUpNotif>() {
+            @Override
+            public PopUpNotif createFromParcel(Parcel source) {
+                return new PopUpNotif(source);
+            }
+
+            @Override
+            public PopUpNotif[] newArray(int size) {
+                return new PopUpNotif[size];
+            }
+        };
     }
 
-    public static class UserTier {
+    public static class UserTier implements Parcelable {
 
         @SerializedName("tier_id")
         @Expose
@@ -250,5 +334,76 @@ public class TokoPointDrawerData {
         public void setRewardPoints(int rewardPoints) {
             this.rewardPoints = rewardPoints;
         }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.tierId);
+            dest.writeString(this.tierName);
+            dest.writeString(this.tierImageUrl);
+            dest.writeInt(this.rewardPoints);
+        }
+
+        public UserTier() {
+        }
+
+        protected UserTier(Parcel in) {
+            this.tierId = in.readInt();
+            this.tierName = in.readString();
+            this.tierImageUrl = in.readString();
+            this.rewardPoints = in.readInt();
+        }
+
+        public static final Parcelable.Creator<UserTier> CREATOR = new Parcelable.Creator<UserTier>() {
+            @Override
+            public UserTier createFromParcel(Parcel source) {
+                return new UserTier(source);
+            }
+
+            @Override
+            public UserTier[] newArray(int size) {
+                return new UserTier[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.offFlag);
+        dest.writeInt(this.hasNotif);
+        dest.writeParcelable(this.userTier, flags);
+        dest.writeParcelable(this.popUpNotif, flags);
+    }
+
+    public TokoPointDrawerData() {
+    }
+
+    protected TokoPointDrawerData(Parcel in) {
+        this.offFlag = in.readInt();
+        this.hasNotif = in.readInt();
+        this.userTier = in.readParcelable(UserTier.class.getClassLoader());
+        this.popUpNotif = in.readParcelable(PopUpNotif.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<TokoPointDrawerData> CREATOR = new Parcelable.Creator<TokoPointDrawerData>() {
+        @Override
+        public TokoPointDrawerData createFromParcel(Parcel source) {
+            return new TokoPointDrawerData(source);
+        }
+
+        @Override
+        public TokoPointDrawerData[] newArray(int size) {
+            return new TokoPointDrawerData[size];
+        }
+    };
 }

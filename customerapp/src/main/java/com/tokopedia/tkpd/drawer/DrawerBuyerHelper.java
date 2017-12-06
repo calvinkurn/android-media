@@ -31,7 +31,6 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -589,6 +588,11 @@ public class DrawerBuyerHelper extends DrawerHelper
         );
     }
 
+    @Override
+    public void onTokoPointActionClicked(String url) {
+
+    }
+
     private void onGoToCreateShop() {
         Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
         intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
@@ -605,7 +609,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void showAppShareButton(ArrayList<DrawerItem> data) {
-        if(firebaseRemoteConfig != null && firebaseRemoteConfig.getBoolean(TkpdCache.Key.CONFIG_SHOW_HIDE_APP_SHARE_BUTTON)) {
+        if (firebaseRemoteConfig != null && firebaseRemoteConfig.getBoolean(TkpdCache.Key.CONFIG_SHOW_HIDE_APP_SHARE_BUTTON)) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
                     R.drawable.share_ke_teman,
                     TkpdState.DrawerPosition.APPSHARE,

@@ -73,4 +73,12 @@ public class DrawerData {
     public void setProfileCompletion(int completion) {
         this.profileCompletion = completion;
     }
+
+    public TokoPointDrawerData getTokoPointDrawerData() {
+        return tokoPointDrawerData;
+    }
+
+    public void setTokoPointDrawerData(TokoPointDrawerData tokoPointDrawerData) {
+        this.tokoPointDrawerData = tokoPointDrawerData;
+    }
 }
