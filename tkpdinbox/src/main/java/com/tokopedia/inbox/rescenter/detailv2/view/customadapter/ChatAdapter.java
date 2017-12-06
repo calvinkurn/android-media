@@ -97,5 +97,6 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void deleteLastItem() {
         this.list.remove(this.list.size() - 1);
+        notifyItemRemoved(this.list.size() - 1);
     }
 }
