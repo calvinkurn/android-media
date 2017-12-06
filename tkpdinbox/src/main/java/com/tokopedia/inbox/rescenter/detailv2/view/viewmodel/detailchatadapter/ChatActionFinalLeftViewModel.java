@@ -14,9 +14,6 @@ public class ChatActionFinalLeftViewModel implements Visitable<DetailChatTypeFac
     private ConversationDomain conversation;
     private String type;
 
-    public ChatActionFinalLeftViewModel() {
-    }
-
     public ChatActionFinalLeftViewModel(ConversationDomain conversation, String type) {
         this.conversation = conversation;
         this.type = type;
