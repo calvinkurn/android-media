@@ -5,9 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.tokopedia.core.drawer2.data.viewmodel.TopPointDrawerData;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.loyalty.di.component.DaggerTokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.component.TokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.module.ServiceApiModule;
@@ -40,14 +39,12 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
 
 
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("user_id", SessionHandler.getLoginID(context));
         compositeSubscription.add(
-                tokoplusRepository.getPointDrawer(param)
+                tokoplusRepository.getPointDrawer(AuthUtil.generateParamsNetwork(context))
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(new Subscriber<TopPointDrawerData>() {
+                        .subscribe(new Subscriber<TokoPointDrawerData>() {
                             @Override
                             public void onCompleted() {
 
@@ -59,7 +56,7 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
                             }
 
                             @Override
-                            public void onNext(TopPointDrawerData topPointDrawerData) {
+                            public void onNext(TokoPointDrawerData topPointDrawerData) {
                                 Log.d("TokoPointDrawerBR", topPointDrawerData.toString());
                             }
                         })

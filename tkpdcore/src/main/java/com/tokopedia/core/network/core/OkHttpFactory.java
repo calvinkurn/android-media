@@ -442,7 +442,10 @@ public class OkHttpFactory {
     }
 
     public OkHttpClient buildClientTokoplusAuth(String authorizationString) {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(loggingInterceptor)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TokoPointAuthInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())

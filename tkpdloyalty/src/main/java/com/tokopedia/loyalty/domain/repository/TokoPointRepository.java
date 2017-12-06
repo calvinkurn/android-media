@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.domain.repository;
 
-import com.tokopedia.core.drawer2.data.viewmodel.TopPointDrawerData;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
@@ -70,11 +70,11 @@ public class TokoPointRepository implements ITokoPointRepository {
     }
 
     @Override
-    public Observable<TopPointDrawerData> getPointDrawer(TKPDMapParam<String, String> param) {
+    public Observable<TokoPointDrawerData> getPointDrawer(TKPDMapParam<String, String> param) {
         return tokoPointService.getApi().getPointDrawer(param).map(
-                new Func1<Response<TokoPointResponse>, TopPointDrawerData>() {
+                new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
                     @Override
-                    public TopPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
+                    public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
                         return tokoPointResponseMapper.convertTokoplusPointDrawer(
                                 tokoplusResponseResponse.body().convertDataObj(
                                         TokoPointDrawerDataResponse.class

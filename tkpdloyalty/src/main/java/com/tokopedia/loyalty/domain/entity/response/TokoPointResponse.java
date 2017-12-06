@@ -1,6 +1,7 @@
 package com.tokopedia.loyalty.domain.entity.response;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,6 +32,7 @@ public class TokoPointResponse {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static TokoPointResponse factory(String strResponse) throws IOException {
+        Log.d("HCK RESPONSE SUCCESS: ", strResponse);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         TokoPointResponse tokoPointResponse = new TokoPointResponse();
         JsonElement jsonElement = new JsonParser().parse(strResponse);

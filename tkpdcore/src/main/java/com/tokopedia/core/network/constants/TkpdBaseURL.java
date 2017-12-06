@@ -907,16 +907,16 @@ public class TkpdBaseURL {
         public static final String VERSION = "v1/";
         public static final String HMAC_KEY = "web_service_v4";
 
-        public static final String POST_COUPON_VALIDATE_REDEEM = "coupon/validate/redeem/";
-        public static final String POST_COUPON_REDEEM = "coupon/redeem/";
-        public static final String GET_COUPON_LIST = "coupon/list/";
-        public static final String GET_POINT_RECENT_HISTORY = "points/history/";
-        public static final String GET_POINT_MAIN = "points/main/";
-        public static final String GET_POINT_DRAWER = "points/drawer/";
-        public static final String GET_POINT_STATUS = "points/status/";
-        public static final String GET_CATALOG_LIST = "catalog/list/";
-        public static final String GET_CATALOG_DETAIL = "catalog/detail/";
-        public static final String GET_CATALOG_FILTER_CATEGORY = "catalog/filter/";
+        public static final String POST_COUPON_VALIDATE_REDEEM = "coupon/validate/redeem";
+        public static final String POST_COUPON_REDEEM = "coupon/redeem";
+        public static final String GET_COUPON_LIST = "coupon/list";
+        public static final String GET_POINT_RECENT_HISTORY = "points/history";
+        public static final String GET_POINT_MAIN = "points/main";
+        public static final String GET_POINT_DRAWER = "points/drawer";
+        public static final String GET_POINT_STATUS = "points/status";
+        public static final String GET_CATALOG_LIST = "catalog/list";
+        public static final String GET_CATALOG_DETAIL = "catalog/detail";
+        public static final String GET_CATALOG_FILTER_CATEGORY = "catalog/filter";
 
 
     }

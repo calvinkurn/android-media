@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * @author anggaprasetiyo on 04/12/17.
  */
 
-public class TopPointDrawerData {
+public class TokoPointDrawerData {
 
     @SerializedName("off_flag")
     @Expose

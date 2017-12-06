@@ -114,6 +114,16 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         View drawerHeader;
 
 
+        @BindView(R2.id.tokopoint_container)
+        View tokoPointContainer;
+        @BindView(R2.id.iv_tokopoint_badge)
+        ImageView ivTokoPointBadge;
+        @BindView(R2.id.tv_tokopoint_action)
+        TextView tvTokoPointAction;
+        @BindView(R2.id.tv_tokopoint_count)
+        TextView tvTokoPointCount;
+
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

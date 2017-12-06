@@ -10,6 +10,7 @@ public class DrawerData {
     private DrawerTokoCash drawerTokoCash;
     private DrawerTopPoints drawerTopPoints;
     private DrawerDeposit drawerDeposit;
+    private TokoPointDrawerData tokoPointDrawerData;
     private int profileCompletion;
 
     public DrawerData() {

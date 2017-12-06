@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.domain.repository;
 
-import com.tokopedia.core.drawer2.data.viewmodel.TopPointDrawerData;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
@@ -18,5 +18,5 @@ public interface ITokoPointResponseMapper {
 
     List<CouponData> convertCouponListData(CouponListDataResponse couponListDataResponse);
 
-    TopPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData);
+    TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData);
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.exception.HttpErrorException;
 
 import java.io.IOException;
@@ -19,6 +21,9 @@ public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
 
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
+        if (response.body() != null)
+            Log.d("HCK RESPONSE ERROR: ", response.body().string() == null ? "" : response.body().string());
+        response.body().close();
         throw new HttpErrorException(response.code());
     }
 }
