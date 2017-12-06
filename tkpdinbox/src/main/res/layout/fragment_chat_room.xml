@@ -143,8 +143,6 @@
             android:layout_above="@+id/layout_template"
             android:layout_below="@id/header"
             android:layout_gravity="center"
-            android:paddingLeft="@dimen/margin_sm"
-            android:paddingRight="@dimen/margin_sm"
             android:scrollbars="vertical" />
 
         <TextView
