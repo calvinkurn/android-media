@@ -1,6 +1,7 @@
 package com.tokopedia.flightmockapp;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -14,7 +15,6 @@ import com.tokopedia.flight.common.di.component.DaggerFlightComponent;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Created by User on 10/24/2017.
@@ -120,9 +120,19 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
 
             @Override
             public String getUserId() {
-                return null;
+                return "";
+            }
+
+            @Override
+            public boolean isLoggedIn() {
+                return true;
             }
         };
         return userSession;
+    }
+
+    @Override
+    public Intent getLoginIntent() {
+        return null;
     }
 }

@@ -49,6 +49,10 @@ public interface FlightDashboardContract {
         void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel);
 
         void showAirportShouldDifferentCity(@StringRes int resId);
+
+        void navigateToLoginPage();
+
+        void closePage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -80,5 +84,7 @@ public interface FlightDashboardContract {
         void onSearchTicketButtonClicked();
 
         void onDestroyView();
+
+        void onLoginResultReceived();
     }
 }
