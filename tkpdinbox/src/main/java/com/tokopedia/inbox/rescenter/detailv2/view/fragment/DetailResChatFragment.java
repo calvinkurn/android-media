@@ -799,6 +799,7 @@ public class DetailResChatFragment
         Button button = new Button(getActivity());
         button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_chat_button_action));
         button.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        button.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_small));
         button.setLayoutParams(new LinearLayout.LayoutParams(buttonWidth,
                 (int) getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_height)));
         button.setGravity(Gravity.CENTER);
