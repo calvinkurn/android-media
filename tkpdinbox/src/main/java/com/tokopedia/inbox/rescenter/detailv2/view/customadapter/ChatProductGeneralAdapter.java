@@ -4,21 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.util.ArrayList;
@@ -70,7 +65,7 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
     private void openProductPreview(List<ConversationAttachmentDomain> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
         for (ConversationAttachmentDomain model : list) {
-            if(model.getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+            if(getTypeFromModel(model).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
                 imageUrls.add(model.getFull());
             }
         }
@@ -80,6 +75,17 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
         bundle.putInt("img_pos", position);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    private String getTypeFromModel(ConversationAttachmentDomain model) {
+        String type;
+        try {
+            type = model.getType();
+        } catch (Exception e) {
+            type = "";
+            e.printStackTrace();
+        }
+        return type;
     }
 
     private void openVideoPlayer(String urlVideo) {

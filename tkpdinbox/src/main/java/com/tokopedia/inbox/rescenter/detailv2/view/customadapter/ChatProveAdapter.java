@@ -58,7 +58,7 @@ public class ChatProveAdapter extends RecyclerView.Adapter<ChatProveAdapter.Hold
     private void openProductPreview(List<ConversationAttachmentDomain> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
         for (ConversationAttachmentDomain model : list) {
-            if(model.getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+            if(getTypeFromModel(model).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
                 imageUrls.add(model.getFull());
             }
         }
@@ -68,6 +68,17 @@ public class ChatProveAdapter extends RecyclerView.Adapter<ChatProveAdapter.Hold
         bundle.putInt("img_pos", position);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    private String getTypeFromModel(ConversationAttachmentDomain model) {
+        String type;
+        try {
+            type = model.getType();
+        } catch (Exception e) {
+            type = "";
+            e.printStackTrace();
+        }
+        return type;
     }
 
     private void openVideoPlayer(String urlVideo) {
