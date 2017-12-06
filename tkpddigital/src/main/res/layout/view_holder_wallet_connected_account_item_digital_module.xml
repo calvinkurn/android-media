@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/digital_padding_20"
+              android:paddingRight="@dimen/digital_padding_20"
+              android:paddingTop="@dimen/digital_padding_20">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/digital_padding_20">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            tools:src="@drawable/ic_toped_step_01"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/digital_padding_10">
+
+            <TextView
+                android:id="@+id/tv_email"
+                style="@style/TextTitleMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="angga.prasetiyo@tokopedia.com"/>
+
+            <TextView
+                android:id="@+id/tv_registered_date"
+                style="@style/TextSubTitleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/digital_padding_6"
+                android:textColor="@color/digital_voucher_notes"
+                tools:text="Terhubung sejak dahulu kala"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_delete"
+        style="@style/DigitalButtonBuy"
+        android:layout_height="wrap_content"
+        android:background="@drawable/digital_white_button"
+        android:padding="@dimen/digital_padding_10"
+        android:textColor="@color/digital_voucher"
+        android:textSize="@dimen/fontvs"
+        android:visibility="visible"
+        android:text="@string/tokocash_unlink_account_button"
+        tools:visibility="visible"/>
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/digital_padding_20"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/digital_separator"/>
+
+</LinearLayout>
