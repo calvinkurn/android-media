@@ -96,5 +96,6 @@
     <dimen name="gm_featured_product_drag_icon_height">20dp</dimen>
 
     <dimen name="product_manage_width_menu_popup_window">220dp</dimen>
+    <dimen name="margin_legacy_edittext_hint">4dp</dimen>
 
 </resources>
