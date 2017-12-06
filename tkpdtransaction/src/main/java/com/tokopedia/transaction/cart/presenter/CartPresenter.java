@@ -793,7 +793,7 @@ public class CartPresenter implements ICartPresenter {
                 if (cartRatesData.getRatesResponse() == null) {
                     view.setCartError(cartRatesData.getRatesIndex());
                 } else {
-                    Log.e("CART_PRESENTER", cartRatesData.getRatesResponse());
+                    Log.e("CP_keroRatesListener", cartRatesData.getRatesResponse());
                     Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
                             Rates.class);
                     CartCourierPrices cartCourierPrices = new CartCourierPrices();

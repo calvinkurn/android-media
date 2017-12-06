@@ -189,8 +189,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView instantInsertVoucherButton;
     @BindView(R2.id.instant_promo_placeholder)
     CardView instantPromoPlaceHolder;
-    @BindView(R2.id.tv_insurance_tos)
-    TextView tvInsuranceTos;
+    @BindView(R2.id.tv_insurance_terms)
+    TextView tvInsuranceTerms;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
@@ -260,8 +260,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     protected void initView(View view) {
         Spannable tosAgreementText = formatInsuranceTacText();
 
-        tvInsuranceTos.setText(tosAgreementText);
-        tvInsuranceTos.setVisibility(View.VISIBLE);
+        tvInsuranceTerms.setText(tosAgreementText);
+//        tvInsuranceTerms.setVisibility(View.VISIBLE);
 
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         stopNestedScrollingView();
@@ -286,7 +286,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         "https://www.google.co.id/"));
             }
         }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvInsuranceTos.setMovementMethod(LinkMovementMethod.getInstance());
+        tvInsuranceTerms.setMovementMethod(LinkMovementMethod.getInstance());
         return tosAgreementText;
     }
 
@@ -711,11 +711,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void setCartSubTotal(CartCourierPrices cartCourierPrices) {
         cartItemAdapter.setRates(cartCourierPrices);
-        setInsuranceTacVisibility(cartCourierPrices);
+        setInsuranceTermsVisibility(cartCourierPrices);
     }
 
-    private void setInsuranceTacVisibility(CartCourierPrices cartCourierPrices) {
-        Log.e("TOS_VISIBILITY_A", String.valueOf(hasLogisticInsurance));
+    private void setInsuranceTermsVisibility(CartCourierPrices cartCourierPrices) {
+        Log.e("TOS_VISIBILITY_A", String.valueOf(!hasLogisticInsurance));
         Log.e("TOS_VISIBILITY_B", String.valueOf(cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST));
         Log.e("TOS_VISIBILITY_C", String.valueOf(cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL));
         Log.e("TOS_VISIBILITY_MODE", String.valueOf(cartCourierPrices.getInsuranceMode()));
@@ -724,18 +724,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
             if (cartCourierPrices.getInsuranceUsedType() == KeroppiConstants.InsuranceUsedType.TOKOPEDIA_INSURANCE) {
                 Log.e("TOS_VISIBILITY", "VISIBLE|A");
-                tvInsuranceTos.setVisibility(View.VISIBLE);
+                tvInsuranceTerms.setVisibility(View.VISIBLE);
             } else if (cartCourierPrices.getInsuranceUsedType() == KeroppiConstants.InsuranceUsedType.LOGISTIC_INSURANCE) {
                 Log.e("TOS_VISIBILITY", "GONE|B");
-                tvInsuranceTos.setVisibility(View.GONE);
+                tvInsuranceTerms.setVisibility(View.GONE);
                 hasLogisticInsurance = true;
             } else {
                 Log.e("TOS_VISIBILITY", "GONE|C");
-                tvInsuranceTos.setVisibility(View.GONE);
+                tvInsuranceTerms.setVisibility(View.GONE);
             }
         } else {
             Log.e("TOS_VISIBILITY", "GONE|D");
-            tvInsuranceTos.setVisibility(View.GONE);
+            tvInsuranceTerms.setVisibility(View.GONE);
         }
     }
 
