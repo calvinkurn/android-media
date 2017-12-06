@@ -73,7 +73,11 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
     public void onBindViewHolder(ComplaintProductVH holder, int position) {
         ImageHandler.LoadImage(holder.productImage, getProductItems().get(position).getProductImageUrl());
         holder.productName.setText(getProductItems().get(position).getProductName());
-        holder.itemView.setOnClickListener(new OnProductClick(getProductItems().get(position).getProductID()));
+        holder.itemView.setOnClickListener(
+                new OnProductClick(
+                        getProductItems().get(position).getProductID(),
+                        getProductItems().get(position).getProductName()
+                ));
     }
 
     @Override
@@ -99,14 +103,16 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
 
     private class OnProductClick implements View.OnClickListener {
         private final String productID;
+        private final String productName;
 
-        public OnProductClick(String productID) {
+        public OnProductClick(String productID, String productName) {
             this.productID = productID;
+            this.productName = productName;
         }
 
         @Override
         public void onClick(View view) {
-            listener.setOnActionProductClick(productID);
+            listener.setOnActionProductClick(productID, productName);
         }
     }
 }

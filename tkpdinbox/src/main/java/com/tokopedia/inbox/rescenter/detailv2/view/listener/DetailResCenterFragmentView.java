@@ -59,7 +59,7 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionEditAddressClick();
 
-    void setOnActionProductClick(String productID);
+    void setOnActionProductClick(String productID, String productName);
 
     void setOnActionPeopleDetailClick(String buyerID);
 
