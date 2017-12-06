@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.interactor.MerlinRecomendationUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.PreferedCategoryUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
@@ -27,6 +28,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     private TopAdsUseCase adsUseCase;
     private OpenTopAdsUseCase openTopAdsUseCase;
     private PreferedCategoryUseCase preferedCategoryUseCase;
+    private MerlinRecomendationUseCase merlinRecomendationUseCase;
     private TopAdsParams adsParams;
     private Config config;
 
@@ -36,6 +38,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
         this.openTopAdsUseCase = new OpenTopAdsUseCase(context);
         CacheHandler cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
         this.preferedCategoryUseCase = new PreferedCategoryUseCase(context, this, cacheHandler);
+        this.merlinRecomendationUseCase = new MerlinRecomendationUseCase(context, this);
         this.adsParams = new TopAdsParams();
     }
 
@@ -73,7 +76,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
         config.setDisplayMode(displayMode);
     }
 
-    public DisplayMode getDisplayMode(){
+    public DisplayMode getDisplayMode() {
         return adsUseCase.getDisplayMode();
     }
 
@@ -96,11 +99,13 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     public void loadTopAds() {
         Log.d(TAG, "Load TopAds");
         replaceSourceParams();
-        if(config.getEndpoint()!=null) {
+        if (config.getEndpoint() != null) {
             setEndpoinParam(config.getEndpoint().getDescription());
         }
-        if(config.isWithPreferedCategory()){
+        if (config.isWithPreferedCategory()) {
             getPreferedCategory();
+        } else if(config.isWithMerlinCategory()){
+            getMerlinCategory();
         } else {
             adsParams.getParam().put(TopAdsParams.KEY_USER_ID, config.getUserId());
             adsUseCase.setConfig(config);
@@ -109,11 +114,13 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     }
 
     private void replaceSourceParams() {
-        if (adsParams.getParam().get(TopAdsParams.KEY_SRC).contains(TopAdsParams.DEFAULT_KEY_SRC)) {
-            adsParams.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.DEFAULT_KEY_SRC);
-        }
-        if (adsParams.getParam().get(TopAdsParams.KEY_SRC).contains("hot_product")) {
-            adsParams.getParam().put(TopAdsParams.KEY_SRC, "hotlist");
+        if (adsParams.getParam().containsKey(TopAdsParams.KEY_SRC)) {
+            if (adsParams.getParam().get(TopAdsParams.KEY_SRC).contains(TopAdsParams.DEFAULT_KEY_SRC)) {
+                adsParams.getParam().put(TopAdsParams.KEY_SRC, TopAdsParams.DEFAULT_KEY_SRC);
+            }
+            if (adsParams.getParam().get(TopAdsParams.KEY_SRC).contains("hot_product")) {
+                adsParams.getParam().put(TopAdsParams.KEY_SRC, "hotlist");
+            }
         }
     }
 
@@ -175,5 +182,11 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     public void getPreferedCategory() {
         preferedCategoryUseCase.setConfig(config);
         preferedCategoryUseCase.execute(adsParams, adsView);
+    }
+
+    @Override
+    public void getMerlinCategory() {
+        merlinRecomendationUseCase.setConfig(config);
+        merlinRecomendationUseCase.execute(adsParams, adsView);
     }
 }

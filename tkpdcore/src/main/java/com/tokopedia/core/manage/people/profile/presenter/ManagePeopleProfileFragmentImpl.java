@@ -2,6 +2,7 @@ package com.tokopedia.core.manage.people.profile.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
@@ -170,7 +171,7 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     @Override
     public void setOnVerificationButtonClick(Context context, String userPhone) {
-        if (!userPhone.isEmpty()) {
+        if (!TextUtils.isEmpty(userPhone)) {
             view.showPhoneVerificationDialog(userPhone);
         } else {
             view.setVerificationError(context.getString(R.string.error_field_required));
