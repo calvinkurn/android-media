@@ -1,12 +1,15 @@
 package com.tokopedia.digital.cart.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -58,12 +61,16 @@ import com.tokopedia.payment.model.PaymentPassData;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
  */
-
+@RuntimePermissions
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
         InputPriceHolderView.ActionListener, VoucherCartView.ActionListener {
@@ -150,6 +157,22 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     protected boolean getOptionsMenuEnable() {
         return false;
     }
+
+    @NeedsPermission({Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    void requestNOtpWithPermission() {
+        presenter.callPermissionCheckSuccess();
+    }
+
+    @OnPermissionDenied({Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    void requestNOtpPermissionDenied() {
+        presenter.callPermissionCheckFail();
+    }
+
+    @OnNeverAskAgain({Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    void requestNOtpPermissionNeverAsk() {
+        presenter.callPermissionCheckFail();
+    }
+
 
     @Override
     protected void initialPresenter() {
@@ -620,6 +643,23 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         );
     }
 
+    public void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData) {
+        if (cartDigitalInfoData != null) {
+            this.cartDigitalInfoDataState = cartDigitalInfoData;
+            buildCheckoutData(cartDigitalInfoData);
+        }
+    }
+
+    public void checkCallPermissionForNOTP() {
+        CartDigitalFragmentPermissionsDispatcher.requestNOtpWithPermissionWithCheck(this);
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        return getActivity().getApplicationContext();
+    }
+
+
     @Override
     public void interruptRequestTokenVerification() {
         navigateToActivityRequest(
@@ -691,7 +731,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void trackingCancelledVoucher() {
         UnifyTracking.eventClickCancelVoucher("", "");
     }
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        CartDigitalFragmentPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

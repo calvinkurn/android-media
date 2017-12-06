@@ -135,4 +135,6 @@ dependencies {
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    compile 'dnsjava:dnsjava:2.1.8'
+    compile project(':exotelVerificationLibrary')
 }

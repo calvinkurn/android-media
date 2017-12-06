@@ -24,6 +24,7 @@ import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
+import com.tokopedia.digital.cart.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.utils.DeviceUtil;
 
@@ -97,7 +98,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
-            view.interruptRequestTokenVerification();
+            view.checkCallPermissionForNOTP();
             return;
         }
         view.showProgressLoading();
@@ -111,7 +112,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToInstantCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
-            view.interruptRequestTokenVerification();
+            view.checkCallPermissionForNOTP();
             return;
         }
         cartDigitalInteractor.instantCheckout(
@@ -143,6 +144,16 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 getSubscriberCartInfo()
         );
 
+    }
+
+    @Override
+    public void callPermissionCheckSuccess() {
+        needToVerifyOTP();
+    }
+
+    @Override
+    public void callPermissionCheckFail() {
+        view.interruptRequestTokenVerification();
     }
 
     @NonNull
@@ -327,7 +338,8 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
                     view.clearContentRendered();
-                    view.interruptRequestTokenVerification(cartDigitalInfoData);
+                    view.setCartDigitalInfo(cartDigitalInfoData);
+                    view.checkCallPermissionForNOTP();
                 } else {
                     view.renderAddToCartData(cartDigitalInfoData);
                 }
@@ -335,6 +347,23 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         };
     }
 
+
+    private void needToVerifyOTP() {
+        view.showProgressLoading();
+        NOTPExotelVerification.getmInstance().verifyNo(view.getClientNumber(), view.getApplicationContext(), new NOTPExotelVerification.NOTPVerificationListener() {
+            @Override
+            public void onVerificationSuccess() {
+                view.hideProgressLoading();
+                processPatchOtpCart();
+            }
+
+            @Override
+            public void onVerificationFail() {
+                view.hideProgressLoading();
+                view.interruptRequestTokenVerification();
+            }
+        });
+    }
 
     @NonNull
     private Subscriber<CartDigitalInfoData> getSubscriberCartInfo() {
