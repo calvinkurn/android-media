@@ -63,7 +63,13 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
     private void openProductPreview(List<ConversationProductDomain> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
         for (ConversationProductDomain model : list) {
-            imageUrls.add(model.getImage().get(0).getFull());
+            for(ConversationAttachmentDomain attachmentDomain : model.getImage()){
+                if(attachmentDomain.getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)){
+                    imageUrls.add(attachmentDomain.getFull());
+                    //we only need one image
+                    break;
+                }
+            }
         }
         Intent intent = new Intent(context, PreviewProductImage.class);
         Bundle bundle = new Bundle();
