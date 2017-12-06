@@ -196,7 +196,7 @@ public class ListProductFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setOnProductItemClick(String productID) {
+    public void setOnProductItemClick(String productID, String productName) {
         startActivity(ProductDetailActivity.newInstance(getActivity(), getResolutionID(), productID));
     }
 
