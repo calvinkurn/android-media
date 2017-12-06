@@ -66,14 +66,6 @@ public class ProveAdapter extends RecyclerView.Adapter<ProveAdapter.Holder> {
         context.startActivity(intent);
     }
 
-    private void openVideoPlayer(String urlVideo) {
-        Intent intent = new Intent(context, VideoPlayerActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, urlVideo);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
     @Override
     public int getItemCount() {
         return attachmentDataList.size();
