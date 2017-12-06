@@ -603,8 +603,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setOnActionProductClick(String productID) {
-        startActivity(ProductDetailActivity.newInstance(getActivity(), getResolutionID(), productID));
+    public void setOnActionProductClick(String productID, String productName) {
+        startActivity(ProductDetailActivity.newInstance(getActivity(), getResolutionID(), productID, productName));
     }
 
     @Override
