@@ -54,7 +54,9 @@ public class ChatProveAdapter extends RecyclerView.Adapter<ChatProveAdapter.Hold
     private void openProductPreview(List<ConversationAttachmentDomain> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
         for (ConversationAttachmentDomain model : list) {
-            imageUrls.add(model.getFull());
+            if(model.getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+                imageUrls.add(model.getFull());
+            }
         }
         Intent intent = new Intent(context, PreviewProductImage.class);
         Bundle bundle = new Bundle();
