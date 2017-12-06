@@ -223,7 +223,7 @@ yang ditemukan</string>
     <string name="string_common_chat_title">%1$s:</string>
 
     <!--Track Shipping-->
-    <string name="title_track_shipping">Lacak</string>
+    <string name="title_track_shipping">Lacak Paket</string>
     <string name="string_awb_number">No. Resi :</string>
     <string name="string_receiver_name">Nama Penerima :</string>
     <string name="string_status">Status :</string>
