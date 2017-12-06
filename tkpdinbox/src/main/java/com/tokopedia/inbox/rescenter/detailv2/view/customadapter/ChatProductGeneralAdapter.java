@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +46,6 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
         final ConversationAttachmentDomain product = productList.get(position);
         ImageHandler.LoadImage(holder.ivImage, product.getThumb());
         holder.tvMore.setVisibility(View.GONE);
-        if (maxShowCount - 1 == position && maxShowCount < productList.size()) {
-            holder.tvMore.setVisibility(View.VISIBLE);
-            holder.tvMore.setText("+" + (productList.size() - position));
-        }
 
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
