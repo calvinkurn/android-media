@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -84,6 +85,15 @@ public class TrackingUtils extends TrackingConfig {
         }
         if (!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(MainApplication.getAppContext())))
             PushManager.getInstance().refreshToken(MainApplication.getAppContext(), FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
+    }
+
+    public static String getNetworkSpeed(Context context){
+        if(ConnectivityUtils.isConnected(context))
+        {
+            return ConnectivityUtils.getConnectionType(context);
+        }else{
+            return ConnectivityUtils.CONN_UNKNOWN;
+        }
     }
 
     public static void setMoEUserAttributes(UserAttribute.Data profileData) {
