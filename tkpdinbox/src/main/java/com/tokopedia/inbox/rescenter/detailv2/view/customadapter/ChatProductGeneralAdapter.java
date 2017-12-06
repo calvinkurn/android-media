@@ -58,7 +58,11 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openProductPreview(productList, position);
+                if(productList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+                    openProductPreview(productList, position);
+                } else if (productList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_VIDEO)) {
+                    openVideoPlayer(productList.get(position).getFull());
+                }
             }
         });
     }
