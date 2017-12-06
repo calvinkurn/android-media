@@ -28,8 +28,7 @@
             android:layout_width="@dimen/image_width_xxxs"
             android:layout_height="@dimen/image_width_xxs"
             android:layout_marginLeft="@dimen/margin_vs"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_arrow_right" />
+            android:scaleType="fitCenter"/>
     </LinearLayout>
 
     <com.tokopedia.seller.shopscore.view.widget.ShopScoreMainProgressBarWithLimit

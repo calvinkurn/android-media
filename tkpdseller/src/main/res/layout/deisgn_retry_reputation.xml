@@ -67,8 +67,7 @@
             android:layout_height="@dimen/image_width_xxs"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_arrow_right" />
+            android:layout_marginStart="8dp"/>
     </LinearLayout>
 
 </RelativeLayout>
