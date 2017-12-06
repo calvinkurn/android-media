@@ -32,13 +32,8 @@ public class BrandsOfficialStoreDataSource {
     }
 
     public Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStore(){
-        return getCache().onErrorResumeNext(new Func1<Throwable, Observable<? extends BrandsOfficialStoreResponseModel>>() {
-            @Override
-            public Observable<? extends BrandsOfficialStoreResponseModel> call(Throwable throwable) {
-                return mojitoApi.getBrandsOfficialStore().map(brandsOfficialStoreMapper)
-                        .doOnNext(saveToCache());
-            }
-        });
+        return getCache().onErrorResumeNext(mojitoApi.getBrandsOfficialStore().map(brandsOfficialStoreMapper)
+                .doOnNext(saveToCache()));
     }
 
     private Action1<BrandsOfficialStoreResponseModel> saveToCache() {

@@ -50,7 +50,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void bind(BannerViewModel element) {
-        if (!bannerView.isInitialized()) {
+        if (!bannerView.isInitialized() && element.getSlides() != null) {
             slidesList = element.getSlides();
             List<String> promoUrls = new ArrayList<>();
             for (BannerSlidesModel slidesModel : slidesList) {

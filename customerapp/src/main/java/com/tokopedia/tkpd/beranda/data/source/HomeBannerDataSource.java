@@ -40,14 +40,9 @@ public class HomeBannerDataSource {
     }
 
     public Observable<HomeBannerResponseModel> getHomeBanner(final RequestParams requestParams){
-        return getCache().onErrorResumeNext(new Func1<Throwable, Observable<HomeBannerResponseModel>>() {
-            @Override
-            public Observable<HomeBannerResponseModel> call(Throwable throwable) {
-                return categoryApi.getBanners(SessionHandler.getLoginID(context), requestParams.getParameters())
+        return getCache().onErrorResumeNext(categoryApi.getBanners(SessionHandler.getLoginID(context), requestParams.getParameters())
                         .map(homeBannerMapper)
-                        .doOnNext(saveToCache());
-            }
-        });
+                        .doOnNext(saveToCache()));
     }
 
     private Action1<HomeBannerResponseModel> saveToCache() {

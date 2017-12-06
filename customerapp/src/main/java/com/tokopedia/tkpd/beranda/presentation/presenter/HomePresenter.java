@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.beranda.presentation.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,9 +21,11 @@ import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
+import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
@@ -41,15 +44,31 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
+import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
+import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutSectionsModel;
+import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.saldo.HomeSaldoModel;
+import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksGroupsModel;
+import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksModel;
+import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksResponseModel;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,6 +77,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 
@@ -104,7 +124,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    private void getHomeDataItem(){
+    private void getHomeDataItem(Visitable visitable) {
         subscription = Observable.zip(getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
                 getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
@@ -119,7 +139,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                         }
                     }
                 })
-                .subscribe(new HomeDataSubscriber());
+                .subscribe(new HomeDataSubscriber(visitable));
         compositeSubscription.add(subscription);
     }
 
@@ -127,19 +147,20 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (SessionHandler.isV4Login(context)) {
             subscription = Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                     topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                    new SaldoDataMapper()).subscribe(subscriber);
+                    new SaldoDataMapper())
+                    .subscribe(subscriber);
             compositeSubscription.add(subscription);
-        } else if(isViewAttached()){
-            getView().hideLoading();
+        } else if (isViewAttached()) {
+            getHomeDataItem(null);
         }
     }
 
     @Override
     public void getHomeData() {
-        getSaldoData(new DefaultSubscriber<HomeSaldoModel>(){
+        getSaldoData(new DefaultSubscriber<HomeSaldoModel>() {
             @Override
             public void onStart() {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().removeNetworkError();
                     getView().showLoading();
                 }
@@ -147,30 +168,28 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
             @Override
             public void onNext(final HomeSaldoModel saldoModel) {
-                final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
-                if (config != null) {
-                    config.setDefaults(R.xml.remote_config_default);
-                    config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                config.activateFetched();
-                                mappingSaldoData(saldoModel);
+                if (isViewAttached()) {
+                    final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
+                    if (config != null) {
+                        config.setDefaults(R.xml.remote_config_default);
+                        config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    config.activateFetched();
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+                    Visitable visitable = mappingSaldoData(saldoModel);
+                    getView().setItem(0, visitable);
+                    getHomeDataItem(visitable);
                 }
-                mappingSaldoData(saldoModel);
             }
 
             @Override
             public void onError(Throwable e) {
-                onCompleted();
-            }
-
-            @Override
-            public void onCompleted() {
-                getHomeDataItem();
+                getHomeDataItem(null);
             }
         });
     }
@@ -228,7 +247,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     && tokoCashData != null
                     && tokoCashData.getLink()
                     == TokoCashTypeDef.TOKOCASH_ACTIVE) {
-                WalletRouterUtil.navigateWallet(activity.getApplication(),this,
+                WalletRouterUtil.navigateWallet(activity.getApplication(), this,
                         IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
                         tokoCashData.getAction().getmAppLinks() == null ? ""
                                 : tokoCashData.getAction().getmAppLinks(),
@@ -297,7 +316,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getShopInfoRetrofit.getShopInfo();
     }
 
-    private void mappingSaldoData(HomeSaldoModel saldoModel) {
+    private Visitable mappingSaldoData(HomeSaldoModel saldoModel) {
         SaldoViewModel cashViewModel = new SaldoViewModel();
         if (saldoModel.hasTokoCash()) {
             SaldoViewModel.ItemModel tokoCash = new SaldoViewModel.ItemModel();
@@ -316,12 +335,19 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             topPoint.setSubtitle(saldoModel.getTopPointsData().getLoyaltyPoint().getAmount());
             cashViewModel.addItem(topPoint);
         }
-        if(isViewAttached()) {
-            getView().setSaldoItem(cashViewModel);
-        }
+        return cashViewModel;
     }
 
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
+
+        private List<Visitable> itemsList;
+
+        public HomeDataSubscriber(Visitable item) {
+            this.itemsList = new ArrayList<>();
+            if (item != null) {
+                this.itemsList.add(item);
+            }
+        }
 
         @Override
         public void onCompleted() {
@@ -341,7 +367,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onNext(List<Visitable> visitables) {
             if (isViewAttached()) {
-                getView().addItems(visitables);
+                itemsList.addAll(visitables);
+                getView().setItems(itemsList);
             }
         }
     }

@@ -23,7 +23,11 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void addItems(List<Visitable> items);
+        void setItems(List<Visitable> items);
+
+        void setItem(int pos, Visitable item);
+
+        void refreshAdapter();
 
         void showNetworkError();
 
@@ -39,7 +43,6 @@ public interface HomeContract {
 
         void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
 
-        void setSaldoItem(SaldoViewModel cashViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {

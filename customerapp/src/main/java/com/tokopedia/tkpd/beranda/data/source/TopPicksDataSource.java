@@ -33,14 +33,9 @@ public class TopPicksDataSource {
     }
 
     public Observable<TopPicksResponseModel> getTopPicks(final RequestParams requestParams){
-        return getCache().onErrorResumeNext(new Func1<Throwable, Observable<? extends TopPicksResponseModel>>() {
-            @Override
-            public Observable<? extends TopPicksResponseModel> call(Throwable throwable) {
-                return searchApi.getTopPicks(requestParams.getParamsAllValueInString(),
+        return getCache().onErrorResumeNext(searchApi.getTopPicks(requestParams.getParamsAllValueInString(),
                         GlobalConfig.VERSION_NAME, "android").map(topPicksMapper)
-                        .doOnNext(saveToCache());
-            }
-        });
+                        .doOnNext(saveToCache()));
     }
 
     private Action1<TopPicksResponseModel> saveToCache() {

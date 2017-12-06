@@ -42,14 +42,9 @@ public class HomeCategoryDataSource {
     }
 
     public Observable<HomeCategoryResponseModel> getHomeCategory() {
-        return getCache().onErrorResumeNext(new Func1<Throwable, Observable<HomeCategoryResponseModel>>() {
-            @Override
-            public Observable<HomeCategoryResponseModel> call(Throwable throwable) {
-                return mojitoApi.getHomeCategoryMenuV2(sessionHandler.getLoginID(), GlobalConfig.getPackageApplicationName())
+        return getCache().onErrorResumeNext(mojitoApi.getHomeCategoryMenuV2(sessionHandler.getLoginID(), GlobalConfig.getPackageApplicationName())
                         .map(homeCategoryMapper)
-                        .doOnNext(saveToCache());
-            }
-        });
+                        .doOnNext(saveToCache()));
     }
 
     @NonNull

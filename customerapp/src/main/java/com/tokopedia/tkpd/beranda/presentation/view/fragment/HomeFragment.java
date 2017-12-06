@@ -213,12 +213,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onChange(int firstPosition) {
-        Visitable visitable = adapter.getItem(firstPosition);
-        if (visitable instanceof CategoryItemViewModel) {
-            tabLayout.getTabAt(((CategoryItemViewModel) visitable).getSectionId()).select();
-        } else if (visitable instanceof DigitalsViewModel) {
-            tabLayout.getTabAt(((DigitalsViewModel) visitable).getSectionId()).select();
+    public void onChange(int position) {
+        if (adapter.getItemCount() > position) {
+            Visitable visitable = adapter.getItem(position);
+            if (visitable instanceof CategoryItemViewModel) {
+                tabLayout.getTabAt(((CategoryItemViewModel) visitable).getSectionId()).select();
+            } else if (visitable instanceof DigitalsViewModel) {
+                tabLayout.getTabAt(((DigitalsViewModel) visitable).getSectionId()).select();
+            }
         }
     }
 
@@ -334,12 +336,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     Uri.encode(redirectUrl), MainApplication.getAppContext());
             openWebViewGimicURL(resultGenerateUrl, data.getUrl(), data.getName());
         }
-    }
-
-    @Override
-    public void setSaldoItem(SaldoViewModel saldoItem) {
-        adapter.clearItems();
-        adapter.getItems().add(saldoItem);
     }
 
     @Override
@@ -522,8 +518,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void addItems(List<Visitable> items) {
-        adapter.getItems().addAll(items);
+    public void setItems(List<Visitable> items) {
+        adapter.setItems(items);
+    }
+
+    @Override
+    public void setItem(int pos, Visitable item) {
+        if (adapter.getItemCount() > 0 && adapter.getItemCount() > pos) {
+            adapter.getItems().set(pos, item);
+        } else {
+            adapter.getItems().add(pos, item);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refreshAdapter() {
         adapter.notifyDataSetChanged();
     }
 
