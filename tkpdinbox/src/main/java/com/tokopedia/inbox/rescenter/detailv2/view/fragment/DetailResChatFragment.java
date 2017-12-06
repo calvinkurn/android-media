@@ -81,6 +81,8 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain.TYPE_IMAGE;
+
 /**
  * Created by yoasfs on 10/6/17.
  */
@@ -529,8 +531,8 @@ public class DetailResChatFragment
         for (AttachmentViewModel attachment : attachmentList) {
             ConversationAttachmentDomain domain = new ConversationAttachmentDomain(
                     attachment.getFileType() == AttachmentViewModel.FILE_IMAGE ?
-                            "image" :
-                            "video",
+                            ConversationAttachmentDomain.TYPE_IMAGE :
+                            ConversationAttachmentDomain.TYPE_VIDEO,
                     attachment.getFileLoc(),
                     attachment.getFileLoc());
             domainList.add(domain);

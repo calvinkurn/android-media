@@ -1,18 +1,21 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
+import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +42,49 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
-        ConversationAttachmentDomain product = productList.get(position);
+    public void onBindViewHolder(Holder holder, final int position) {
+        final ConversationAttachmentDomain product = productList.get(position);
         ImageHandler.LoadImage(holder.ivImage, product.getThumb());
         holder.tvMore.setVisibility(View.GONE);
-        if (maxShowCount - 1 == position && maxShowCount < productList.size()) {
-            holder.tvMore.setVisibility(View.VISIBLE);
-            holder.tvMore.setText("+" + (productList.size() - position));
+
+        holder.ivImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(productList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+                    openProductPreview(productList, position);
+                } else if (productList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_VIDEO)) {
+                    openVideoPlayer(productList.get(position).getFull());
+                }
+            }
+        });
+    }
+
+    private void openProductPreview(List<ConversationAttachmentDomain> list, int position) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        for (ConversationAttachmentDomain model : list) {
+
+            if(getTypeFromModel(model).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+                imageUrls.add(model.getFull());
+            }
         }
+        Intent intent = new Intent(context, PreviewProductImage.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("fileloc", imageUrls);
+        bundle.putInt("img_pos", position);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    private String getTypeFromModel(ConversationAttachmentDomain model) {
+        return (model.getType() != null) ? model.getType() : "";
+    }
+
+    private void openVideoPlayer(String urlVideo) {
+        Intent intent = new Intent(context, VideoPlayerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, urlVideo);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override

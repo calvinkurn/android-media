@@ -169,6 +169,12 @@ public class TrackShippingFragment extends BaseDaggerFragment implements TrackSh
         showEmptyState();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
+
     private void loadDataToView(TrackingDialogViewModel trackingDialogViewModel){
         awbNumber.setText(trackingDialogViewModel.getShippingRefNum());
         if(trackingDialogViewModel.getReceiverName() != null && !
