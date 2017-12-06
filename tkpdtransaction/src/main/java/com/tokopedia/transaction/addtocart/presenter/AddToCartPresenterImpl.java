@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -47,6 +48,7 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.Shipment;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ShipmentPackage;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
+import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.addtocart.utils.NetParamUtil;
 
@@ -63,6 +65,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
     private static final String GOJEK_ID = "10";
+    private String productInsurance;
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
@@ -210,6 +213,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                     public void onSuccess(String price) {
                         viewListener.renderProductPrice(price);
                         viewListener.enableBuyButton();
+                        calculateKeroAddressShipping(context, orderData);
                     }
 
                     @Override
@@ -230,6 +234,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void calculateKeroAddressShipping(@NonNull Context context,
                                              @NonNull final OrderData orderData) {
+        Log.e("CalculateKero", "A");
         keroNetInteractor.calculateKeroCartAddressShipping(context,
                 AuthUtil.generateParamsNetwork(
                         context, KeroppiParam.paramsKeroOrderData(orderData)
@@ -258,7 +263,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public void calculateAllPrices(@NonNull Context context, @NonNull final OrderData orderData) {
+    public void calculateAllPrices(@NonNull final Context context, @NonNull final OrderData orderData) {
         if ((orderData.getShipment() != null
                 && orderData.getShipmentPackage() != null
                 && orderData.getAddress() != null)
@@ -266,6 +271,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 && orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)) {
             viewListener.disableBuyButton();
             CommonUtils.dumper("rates/v1 kerorates called calculateAllShipping");
+            Log.e("CalculateKero", "B");
             keroNetInteractor.calculateKeroCartAddressShipping(context,
                     AuthUtil.generateParamsNetwork(
                             context, KeroppiParam.paramsKeroOrderData(orderData)
@@ -273,6 +279,14 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                     new KeroNetInteractor.OnCalculateKeroAddressShipping() {
                         @Override
                         public void onSuccess(List<Attribute> datas) {
+                            if (productInsurance == null) {
+                                Log.e("ProductInsurance", "Null");
+                                productInsurance = orderData.getInsurance();
+                            } else {
+                                Log.e("ProductInsurance", productInsurance);
+                                orderData.setInsurance(productInsurance);
+                            }
+
                             viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
                                     datas, orderData.getShipments())
                             );
@@ -285,6 +299,20 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                             viewListener.showCalculateShippingErrorMessage();
                         }
                     });
+        }
+    }
+
+    private void getSelectedCourierProduct(List<Attribute> datas) {
+        Product currentCourierProduct = viewListener.getSelectedCourerProduct();
+        if (currentCourierProduct != null) {
+            for (int i = 0; i < datas.size(); i++) {
+                for (Product product : datas.get(i).getProducts()) {
+                    if (product.getShipperProductId().equals(currentCourierProduct.getShipperProductId())) {
+                        viewListener.setInsuranceSpinnerVisibility(product);
+                        break;
+                    }
+                }
+            }
         }
     }
 

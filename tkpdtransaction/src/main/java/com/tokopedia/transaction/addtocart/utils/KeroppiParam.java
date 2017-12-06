@@ -57,7 +57,6 @@ public class KeroppiParam {
         params.put(ORDER_VALUE, getRawPrice(productDetail.getProductPrice()));
         params.put(CAT_ID, productDetail.getProductCatId());
 
-
         Log.e("PARAMS__", "paramsKero");
         for (Map.Entry<String, String> entry : params.entrySet()) {
             Log.e(entry.getKey(), entry.getValue());
@@ -87,6 +86,17 @@ public class KeroppiParam {
         params.put(TOKEN, orderData.getShop().getToken());
         params.put(UT, orderData.getShop().getUt() + "");
         params.put(APP_VERSION, GlobalConfig.VERSION_NAME);
+
+        params.put(PRODUCT_INSURANCE, orderData.getInsurance());
+        params.put(INSURANCE, "1");
+        params.put(ORDER_VALUE, getRawPrice(orderData.getPriceTotal()));
+        params.put(CAT_ID, orderData.getCatId());
+
+        Log.e("PARAMS__", "paramsKeroOrderData");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            Log.e(entry.getKey(), entry.getValue());
+        }
+
         return params;
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.transaction.addtocart.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
@@ -33,6 +34,7 @@ public class OrderData implements Parcelable {
     private String priceTotal;
     private Shop shop;
     private List<Shipment> shipments;
+    private String catId;
 
     public OrderData() {
     }
@@ -157,6 +159,14 @@ public class OrderData implements Parcelable {
         this.shipments = shipments;
     }
 
+    public String getCatId() {
+        return catId;
+    }
+
+    public void setCatId(String catId) {
+        this.catId = catId;
+    }
+
     protected OrderData(Parcel in) {
         insurance = in.readString();
         notes = in.readString();
@@ -173,6 +183,7 @@ public class OrderData implements Parcelable {
         shop = (Shop) in.readValue(Shop.class.getClassLoader());
         initWeight = in.readString();
         shipments = in.readArrayList(Shipment.class.getClassLoader());
+        catId = in.readString();
     }
 
     @Override
@@ -197,6 +208,7 @@ public class OrderData implements Parcelable {
         dest.writeValue(shop);
         dest.writeString(initWeight);
         dest.writeArray(shipments.toArray());
+        dest.writeString(catId);
     }
 
     @SuppressWarnings("unused")
@@ -228,6 +240,7 @@ public class OrderData implements Parcelable {
         orderData.setShop(data.getShop());
         orderData.setInitWeight(data.getForm().getProductDetail().getProductWeight());
         orderData.setShipments(data.getForm().getShipment());
+        orderData.setCatId(data.getForm().getProductDetail().getProductCatId());
         return orderData;
     }
 }

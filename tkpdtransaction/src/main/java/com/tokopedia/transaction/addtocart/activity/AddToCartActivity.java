@@ -108,6 +108,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
     private SnackbarRetry snackbarRetry;
     private String insuranceInfo;
+    private Product currentProduct;
+    private boolean mustInsurance;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -614,6 +616,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
+                currentProduct = product;
                 setInsuranceInfoButtonVisibility(product);
             }
             if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
@@ -633,16 +636,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (product.getShipperProductName().equals(getString(R.string.atc_selection_shipment_package_info))) {
             imgInsuranceInfo.setVisibility(View.GONE);
         } else {
-            if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
-                spInsurance.setEnabled(false);
-                spInsurance.setSelection(0);
-            } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
-                spInsurance.setEnabled(false);
-                spInsurance.setSelection(1);
-            } else {
-                spInsurance.setEnabled(true);
-                spInsurance.setSelection(1);
-            }
+            setInsuranceSpinnerVisibility(product);
 
             if (product.getInsuranceUsedInfo() != null && product.getInsuranceUsedInfo().length() > 0) {
                 insuranceInfo = product.getInsuranceUsedInfo();
@@ -651,6 +645,25 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 imgInsuranceInfo.setVisibility(View.GONE);
             }
         }
+    }
+
+    @Override
+    public void setInsuranceSpinnerVisibility(Product product) {
+        if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
+            spInsurance.setEnabled(false);
+            spInsurance.setSelection(0);
+        } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
+            spInsurance.setEnabled(false);
+            spInsurance.setSelection(1);
+        } else {
+            spInsurance.setEnabled(true);
+            spInsurance.setSelection(1);
+        }
+    }
+
+    @Override
+    public Product getSelectedCourerProduct() {
+        return currentProduct;
     }
 
     @Override
