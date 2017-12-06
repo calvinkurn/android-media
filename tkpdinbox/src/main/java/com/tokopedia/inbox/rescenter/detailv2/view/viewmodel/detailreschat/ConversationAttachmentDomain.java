@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 
 public class ConversationAttachmentDomain implements Parcelable {
+    public static final String TYPE_IMAGE = "image";
+    public static final String TYPE_VIDEO = "video";
 
     public static final Parcelable.Creator<ConversationAttachmentDomain> CREATOR = new Parcelable.Creator<ConversationAttachmentDomain>() {
         @Override
