@@ -93,6 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
+            android:layout_marginBottom="@dimen/margin_small"
             android:orientation="vertical">
 
             <TextView
@@ -119,7 +120,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginStart="@dimen/margin_med"
-            android:layout_marginTop="@dimen/margin_small"
             android:orientation="vertical">
 
             <TextView

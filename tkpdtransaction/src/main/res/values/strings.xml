@@ -19,9 +19,9 @@
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
     <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
-    <string name="label_order_shipping_address">Alamat Pengiriman</string>
-    <string name="label_response_limit">Batas Respon</string>
-    <string name="label_accept_partial_order">Terima Sebagian</string>
+    <string name="label_order_shipping_address">Alamat Pengiriman :</string>
+    <string name="label_response_limit">Batas Respon :</string>
+    <string name="label_accept_partial_order">Terima Sebagian :</string>
     <string name="shipment_data_not_complete">Data tidak lengkap.</string>
     <string name="label_title_empty_cart">Keranjang belanja Anda Kosong.</string>
     <string name="label_order_detail_shipping_courier">Kurir Pengiriman : </string>
@@ -44,10 +44,10 @@
     <string name="label_insurance_price">Biaya Asuransi</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
     <string name="label_error_default_top_pay">Proses pembayaran gagal, mohon ulangi lagi</string>
-    <string name="label_tag_product_item_cart_preorder">Preorder</string>
-    <string name="label_dropshipper">Dropshipper</string>
-    <string name="label_dropshipper_name">Nama Dropshipper</string>
-    <string name="label_dropshipper_number">Nomor Dropshipper</string>
+    <string name="label_tag_product_item_cart_preorder">Preorder :</string>
+    <string name="label_dropshipper">Dropshipper :</string>
+    <string name="label_dropshipper_name">Nama Dropshipper :</string>
+    <string name="label_dropshipper_number">Nomor Dropshipper :</string>
     <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
     <string name="label_hint_cart_item_dropshipper_phone">No. Telp pengirim</string>
     <string name="title_tab_purchase_summary">PEMBELIAN</string>
@@ -69,7 +69,7 @@
     <string name="label_transaction_bank_account_destination">Rekening Tujuan</string>
     <string name="label_transaction_bank_account_source">Rekening Anda</string>
     <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
-    <string name="label_transaction_date_purchase">Tanggal Pembelian</string>
+    <string name="label_transaction_date_purchase">Tanggal Pembelian :</string>
     <string name="label_purchase_of">Pembelian Oleh : </string>
     <string name="label_item_quantity">Jumlah Barang</string>
     <string name="label_delivery_price">Ongkos Kirim</string>

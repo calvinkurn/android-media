@@ -76,7 +76,7 @@ public class MethodChecker {
     }
 
     public static Uri getUri(Context context, File outputMediaFile) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return FileProvider.getUriForFile(context,
                     context.getApplicationContext().getPackageName() + ".provider", outputMediaFile);
         } else {
@@ -85,6 +85,9 @@ public class MethodChecker {
     }
 
     public static Spanned fromHtml(String text) {
+        if (text == null) {
+            text = "";
+        }
         Spanned result;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);

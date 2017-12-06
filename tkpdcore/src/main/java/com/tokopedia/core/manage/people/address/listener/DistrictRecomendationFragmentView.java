@@ -10,6 +10,8 @@ public interface DistrictRecomendationFragmentView {
 
     void updateRecommendation();
 
+    void notifyClearAdapter();
+
     void showLoading();
 
     void hideLoading();
