@@ -212,7 +212,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
                 .drawable.green_button_rounded));
         inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-
+        errorOtp.setVisibility(View.GONE);
     }
 
     @Override
