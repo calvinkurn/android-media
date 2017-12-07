@@ -40,7 +40,7 @@ public class TokoPointResponse {
         String strData;
 
         TokoPointHeaderResponse tokoPointHeaderResponse = gson.fromJson(
-                jsonResponse.get(KEY_HEADER).getAsString(), TokoPointHeaderResponse.class
+                jsonResponse.get(KEY_HEADER).getAsJsonObject().toString(), TokoPointHeaderResponse.class
         );
 
 
