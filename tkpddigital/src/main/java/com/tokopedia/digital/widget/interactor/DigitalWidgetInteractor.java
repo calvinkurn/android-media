@@ -1,14 +1,13 @@
 package com.tokopedia.digital.widget.interactor;
 
+import android.support.v4.util.Pair;
+
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.mapper.OperatorMapper;
 import com.tokopedia.digital.widget.model.mapper.ProductMapper;
@@ -63,8 +62,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     }
 
     @Override
-    public void getProductsFromPrefix(Subscriber<List<Product>> subscriber, final int categoryId, String prefix,
-                                      Boolean validatePrefix) {
+    public void getOperatorAndProductsFromPrefix(Subscriber<Pair<Operator, List<Product>>> subscriber,
+                                                 int categoryId, String prefix, Boolean validatePrefix) {
         compositeSubscription.add(
                 Observable.zip(
                         getOperatorByPrefix(prefix),
@@ -78,22 +77,61 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                                     throw new RuntimeException("kosong");
                                             }
                                         }
-                                ), new Func2<List<Operator>, List<Product>, List<Product>>() {
+                                ),
+                        new Func2<List<Operator>, List<Product>, Pair<Operator, List<Product>>>() {
                             @Override
-                            public List<Product> call(List<Operator> operators, List<Product> products) {
-                                return Observable.from(products)
-                                        .filter(isProductValidToOperator(categoryId, operators.get(0).getId()))
-                                        .toList()
-                                        .toBlocking()
-                                        .single();
+                            public Pair<Operator, List<Product>> call(List<Operator> operators, List<Product> products) {
+                                return Pair.create(operators.get(0), products);
                             }
                         })
-                        .onErrorResumeNext(new Func1<Throwable, Observable<? extends List<Product>>>() {
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
+                        .subscribe(subscriber));
+    }
+
+    @Override
+    public void getOperatorAndProductsByOperatorId(Subscriber<Pair<Operator, List<Product>>> subscriber,
+                                                  int categoryId, String operatorId) {
+        compositeSubscription.add(
+                Observable.zip(
+                        getOperatorById(operatorId),
+                        digitalWidgetRepository.getObservableProducts(useCache)
+                                .map(productMapper)
+                                .doOnNext(
+                                        new Action1<List<Product>>() {
+                                            @Override
+                                            public void call(List<Product> products) {
+                                                if (products.size() == 0)
+                                                    throw new RuntimeException("kosong");
+                                            }
+                                        }
+                                ),
+                        new Func2<List<Operator>, List<Product>, Pair<Operator, List<Product>>>() {
                             @Override
-                            public Observable<? extends List<Product>> call(Throwable throwable) {
-                                return Observable.just(new ArrayList<Product>());
+                            public Pair<Operator, List<Product>> call(List<Operator> operators, List<Product> products) {
+                                return Pair.create(operators.get(0), products);
                             }
                         })
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
+                        .subscribe(subscriber));
+    }
+
+    @Override
+    public void getProductsByOperatorId(Subscriber<List<Product>> subscriber, int categoryId, String operatorId) {
+        compositeSubscription.add(
+                digitalWidgetRepository.getObservableProducts(useCache)
+                        .map(productMapper)
+                        .flatMap(new Func1<List<Product>, Observable<Product>>() {
+                            @Override
+                            public Observable<Product> call(List<Product> products) {
+                                return Observable.from(products);
+                            }
+                        })
+                        .filter(isProductValidToOperator(categoryId, Integer.parseInt(operatorId)))
+                        .toList()
                         .unsubscribeOn(Schedulers.from(threadExecutor))
                         .subscribeOn(Schedulers.from(threadExecutor))
                         .observeOn(postExecutionThread.getScheduler())
@@ -132,8 +170,34 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                 });
     }
 
+    private Observable<List<Operator>> getOperatorById(final String operatorId) {
+        return digitalWidgetRepository.getObservableOperators(useCache)
+                .map(operatorMapper)
+                .flatMap(new Func1<List<Operator>, Observable<Operator>>() {
+                    @Override
+                    public Observable<Operator> call(List<Operator> operators) {
+                        return Observable.from(operators);
+                    }
+                })
+                .filter(new Func1<Operator, Boolean>() {
+                    @Override
+                    public Boolean call(Operator operator) {
+                        return String.valueOf(operator.getId()).equals(operatorId);
+                    }
+                })
+                .toList()
+                .doOnNext(new Action1<List<Operator>>() {
+                    @Override
+                    public void call(List<Operator> operators) {
+                        if (operators.size() == 0) {
+                            throw new RuntimeException("kosong");
+                        }
+                    }
+                });
+    }
+
     @Override
-    public void getOperatorsFromCategory(Subscriber<List<Operator>> subscriber, final int categoryId) {
+    public void getOperatorsByCategoryId(Subscriber<List<Operator>> subscriber, final int categoryId) {
         compositeSubscription.add(Observable.zip(
                 digitalWidgetRepository.getObservableOperators(useCache).map(operatorMapper),
                 getIdOperators(categoryId), new Func2<List<Operator>, List<Integer>, List<Operator>>() {
@@ -190,25 +254,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         return operatorIds;
                     }
                 });
-    }
-
-    @Override
-    public void getProductsFromOperator(Subscriber<List<Product>> subscriber, int categoryId, String operatorId) {
-        compositeSubscription.add(
-                digitalWidgetRepository.getObservableProducts(useCache)
-                        .map(productMapper)
-                        .flatMap(new Func1<List<Product>, Observable<Product>>() {
-                            @Override
-                            public Observable<Product> call(List<Product> products) {
-                                return Observable.from(products);
-                            }
-                        })
-                        .filter(isProductValidToOperator(categoryId, Integer.parseInt(operatorId)))
-                        .toList()
-                        .unsubscribeOn(Schedulers.from(threadExecutor))
-                        .subscribeOn(Schedulers.from(threadExecutor))
-                        .observeOn(postExecutionThread.getScheduler())
-                        .subscribe(subscriber));
     }
 
     @Override

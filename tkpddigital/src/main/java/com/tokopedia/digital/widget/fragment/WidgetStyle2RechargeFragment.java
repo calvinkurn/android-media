@@ -62,16 +62,21 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     LinearLayout holderWidgetSpinnerProduct;
 
     private DigitalWidgetStyle2Presenter presenter;
+
     private WidgetClientNumberView widgetClientNumberView;
     private WidgetWrapperBuyView widgetWrapperBuyView;
     private WidgetProductChooserView widgetProductChooserView;
     private WidgetRadioChooserView widgetRadioChooserView;
+
     private Operator selectedOperator;
-    private LastOrder lastOrder;
     private Product selectedProduct;
+
+    private LastOrder lastOrder;
+
     private String selectedOperatorId;
     private int minLengthDefaultOperator;
     private boolean showPrice = true;
+
     private CompositeSubscription compositeSubscription;
 
     private List<Operator> operators;
@@ -88,7 +93,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     protected void onFirstTimeLaunched() {
-        lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
         lastProductSelected = presenter.getLastProductSelected(String.valueOf(category.getId()));
 
@@ -398,7 +402,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void renderOperator(Operator rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
         selectedOperatorId = String.valueOf(selectedOperator.getId());
-        widgetClientNumberView.setText(lastClientNumberTyped);
     }
 
     @Override
@@ -432,7 +435,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
-    public void renderLastTypedClientNumber() {
+    public void renderLastTypedClientNumber(String lastClientNumberTyped) {
         if (category.getAttributes().isValidatePrefix()) {
             widgetClientNumberView.setText(lastClientNumberTyped);
         } else {
