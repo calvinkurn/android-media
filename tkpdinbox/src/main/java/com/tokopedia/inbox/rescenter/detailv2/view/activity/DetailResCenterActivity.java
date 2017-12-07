@@ -170,5 +170,10 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     public void onBackPressed() {
         setResult(RESULT_OK);
         finish();
+        getBottomBackSheetActivityTransition();
+    }
+
+    public void getBottomBackSheetActivityTransition() {
+        overridePendingTransition(R.anim.push_down, R.anim.pull_up);
     }
 }

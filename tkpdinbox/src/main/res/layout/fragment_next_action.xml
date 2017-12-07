@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
                 android:textStyle="bold"
-                android:textSize="@dimen/text_size_s_medium"
+                android:textSize="@dimen/fontvs"
                 android:textColor="#de000000"/>
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:textSize="@dimen/text_size_s_medium"
+                android:textSize="@dimen/fontvs"
                 android:textStyle="bold"
                 android:textColor="#de000000"/>
 

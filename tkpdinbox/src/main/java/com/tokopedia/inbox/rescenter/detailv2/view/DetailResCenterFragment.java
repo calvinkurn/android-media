@@ -250,6 +250,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
+                getBottomBackSheetActivityTransition();
             }
         });
     }
@@ -784,5 +785,13 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.setOnDestroyView();
+    }
+
+    public void getBottomSheetActivityTransition() {
+        getActivity().overridePendingTransition(R.anim.pull_up, R.anim.push_down);
+    }
+
+    public void getBottomBackSheetActivityTransition() {
+        getActivity().overridePendingTransition(R.anim.push_down, R.anim.pull_up);
     }
 }

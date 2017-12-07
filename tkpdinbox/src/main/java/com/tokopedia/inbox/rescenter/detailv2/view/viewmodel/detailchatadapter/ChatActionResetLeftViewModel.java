@@ -16,7 +16,6 @@ public class ChatActionResetLeftViewModel implements Visitable<DetailChatTypeFac
     private ShopDomain shop;
     private CustomerDomain customer;
     private ConversationDomain conversation;
-    private boolean isShowTitle;
 
     public ChatActionResetLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation) {
         this.shop = shop;
@@ -46,14 +45,6 @@ public class ChatActionResetLeftViewModel implements Visitable<DetailChatTypeFac
 
     public void setConversation(ConversationDomain conversation) {
         this.conversation = conversation;
-    }
-
-    public boolean isShowTitle() {
-        return isShowTitle;
-    }
-
-    public void setShowTitle(boolean showTitle) {
-        isShowTitle = showTitle;
     }
 
     @Override

@@ -60,8 +60,6 @@ public class ChatActionResetLeftViewHolder extends AbstractViewHolder<ChatAction
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
 
-        layoutTitle.setVisibility(element.isShowTitle() ? View.VISIBLE : View.GONE);
-
         tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_title));
         tvUsername.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_username));
         ChatTitleColorUtil.adminColorTitle(tvUserTitle, tvUsername);

@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -128,6 +129,7 @@ public class DetailResChatFragment
     private FloatingActionButton fabChat;
     private ImageView ivNextStepStatic;
     private GlowingView glowingView;
+    private FrameLayout ffChat;
 
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
@@ -301,6 +303,7 @@ public class DetailResChatFragment
         progressBar = view.findViewById(R.id.progress_bar);
         actionButtonLayout = view.findViewById(R.id.layout_action);
         fabChat = view.findViewById(R.id.fab_chat);
+        ffChat = view.findViewById(R.id.ff_chat);
         ivNextStepStatic = view.findViewById(R.id.iv_next_step_static);
         glowingView = view.findViewById(R.id.view_glowing);
 
@@ -318,7 +321,7 @@ public class DetailResChatFragment
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         buttonWidth = (displayMetrics.widthPixels / 4) - (1 * (int) getResources().getDimension(R.dimen.margin_vs));
-
+        ffChat.setVisibility(View.GONE);
         initView();
     }
 
@@ -587,6 +590,7 @@ public class DetailResChatFragment
             etChat.clearFocus();
             ivNextStepStatic.setVisibility(View.VISIBLE);
         } else {
+            ffChat.setVisibility(View.VISIBLE);
             etChat.setEnabled(true);
             ivSend.setEnabled(true);
             glowingView.setVisibility(View.VISIBLE);

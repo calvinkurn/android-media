@@ -81,6 +81,7 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
                 else if (buttonType.equals(BUTTON_INPUT_AWB)) listener.setOnActionInputAwbNumberClick();
                 else if (buttonType.equals(BUTTON_REPORT)) listener.setOnActionHelpClick();
                 else if (buttonType.equals(BUTTON_CANCEL)) listener.setOnActionCancelResolutionClick();
+                else if (buttonType.equals(BUTTON_RECOMPLAINT)) listener.setOnActionRecomplaintClick();
             }
         };
     }

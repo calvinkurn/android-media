@@ -3,7 +3,7 @@
                 xmlns:context="http://schemas.android.com/tools"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="80dp"
+                android:layout_marginRight="60dp"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:orientation="vertical">
 
@@ -76,6 +76,7 @@
                     android:textColor="@color/black_54"/>
 
                 <TextView
+                    android:id="@+id/tv_buyer_text_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
@@ -146,7 +147,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_complained_product"
                     android:layout_width="wrap_content"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     android:visibility="visible"/>
 

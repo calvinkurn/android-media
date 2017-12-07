@@ -35,7 +35,8 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
 
     DetailResChatFragmentListener.View mainView;
     View layoutTitle, layoutDate1, layoutDate2, layoutDate3;
-    TextView tvTitle, tvBuyerProblem, tvBuyerSolution, tvBuyerText, tvProve, tvSellerChoice, tvUserTitle, tvUsername, tvDate1, tvDate2, tvDate3;
+    TextView tvTitle, tvBuyerProblem, tvBuyerSolution, tvBuyerText, tvProve, tvSellerChoice,
+            tvUserTitle, tvUsername, tvDate1, tvDate2, tvDate3, tvBuyerTextTitle;
     RecyclerView rvProve, rvProduct;
     Button btnSeeAllProduct;
     ChatProveAdapter proveAdapter;
@@ -57,6 +58,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         btnSeeAllProduct = itemView.findViewById(R.id.btn_see_all_product);
         flSeeAllProducts = itemView.findViewById(R.id.fl_see_all_product);
         ffBubble2 = itemView.findViewById(R.id.ff_bubble_left_2);
+        tvBuyerTextTitle = itemView.findViewById(R.id.tv_buyer_text_title);
 
         layoutTitle = itemView.findViewById(R.id.layout_title);
         layoutDate1 = itemView.findViewById(R.id.layout_date_1);
@@ -83,6 +85,10 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         }
         tvBuyerProblem.setText(element.getConversationDomain().getTrouble().getString());
         tvBuyerSolution.setText(element.getConversationDomain().getSolution().getName());
+        if (element.getConversationDomain().getMessage().isEmpty()) {
+            tvBuyerTextTitle.setVisibility(View.GONE);
+            tvBuyerText.setVisibility(View.GONE);
+        }
         tvBuyerText.setText(MethodChecker.fromHtml(element.getConversationDomain().getMessage()));
 
         tvUserTitle.setText(context.getResources().getString(R.string.string_tokopedia_system));
@@ -93,10 +99,6 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         tvDate2.setText(date);
         tvDate3.setText(date);
 
-        flSeeAllProducts.setVisibility(
-                element.getConversationDomain().getAttachment().size() < 2 ?
-                        View.GONE :
-                        View.VISIBLE);
 
         btnSeeAllProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +128,10 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
                     COUNT_MAX_PRODUCT);
             rvProduct.setAdapter(productAdapter);
             rvProduct.setHasFixedSize(true);
+            flSeeAllProducts.setVisibility(
+                    element.getConversationDomain().getProduct().size() < 2 ?
+                            View.GONE :
+                            View.VISIBLE);
         }
     }
 

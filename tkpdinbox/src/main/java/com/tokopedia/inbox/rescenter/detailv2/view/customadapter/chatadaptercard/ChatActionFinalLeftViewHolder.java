@@ -43,10 +43,10 @@ public class ChatActionFinalLeftViewHolder extends AbstractViewHolder<ChatAction
         tvUserName2 = (TextView) layoutTitle2.findViewById(R.id.tv_username);
 
         layoutDate1 = itemView.findViewById(R.id.layout_date_1);
-        tvUserName1 = (TextView) layoutDate1.findViewById(R.id.tv_username);
+        tvDate1 = (TextView) layoutDate1.findViewById(R.id.tv_date);
 
         layoutDate2 = itemView.findViewById(R.id.layout_date_2);
-        tvUserName2 = (TextView) layoutDate2.findViewById(R.id.tv_username);
+        tvDate2 = (TextView) layoutDate2.findViewById(R.id.tv_date);
 
     }
 

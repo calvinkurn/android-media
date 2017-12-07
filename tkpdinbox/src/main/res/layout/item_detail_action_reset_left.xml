@@ -36,6 +36,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_54"
                     android:textStyle="bold"
+                    android:textSize="@dimen/fontvs"
                     context:text="asd"/>
 
                 <TextView
@@ -43,12 +44,14 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontvs"
                     context:text="asd"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
                     android:textColor="@color/black_54"
                     android:textStyle="bold"
                     android:text="@string/string_reason"/>
@@ -56,6 +59,7 @@
                 <TextView
                     android:id="@+id/tv_reason"
                     android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     context:text="asd"/>
