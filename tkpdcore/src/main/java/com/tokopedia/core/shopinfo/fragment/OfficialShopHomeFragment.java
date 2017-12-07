@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
@@ -85,7 +83,6 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     OfficialStoreProductAdapter adapter;
 
     private ProductModel productModel;
-    private GestureDetector gestureDetector;
 
     public interface OfficialShopInteractionListener {
         void OnProductListPageRedirected(GetShopProductParam productParam);
@@ -229,40 +226,6 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
                 mOfficialShopInteractionListener.OnProductListPageRedirected(getShopProductParam);
             }
         });
-
-        webView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getActionMasked()) {
-                    case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_MOVE:
-                        if (!view.hasFocus()) {
-                            view.requestFocus();
-                        }
-                        break;
-                    default:
-                        if (view.hasFocus()) {
-                            view.clearFocus();
-                            requestFocusFromTouch();
-                        }
-                        break;
-                }
-                return false;
-            }
-        });
-
-        webView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                ((ShopInfoActivity) getActivity()).swipeAble(!hasFocus);
-            }
-        });
-    }
-
-    private void requestFocusFromTouch() {
-        if (getView() != null) {
-            getView().requestFocus();
-        }
     }
 
     @Override
@@ -296,6 +259,13 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
                 webView.onPause();
             } else {
                 webView.onResume();
+            }
+        }
+
+        if (isVisibleToUser) {
+            if (getActivity() != null &&
+                    getActivity() instanceof ShopInfoActivity) {
+                ((ShopInfoActivity) getActivity()).swipeAble(false);
             }
         }
     }
