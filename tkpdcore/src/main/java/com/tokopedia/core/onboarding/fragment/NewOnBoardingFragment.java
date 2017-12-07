@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -152,8 +153,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         if (titleColor != 0) {
             titleView.setTextColor(titleColor);
         }
-
-        descView.setText(description);
+        descView.setText(Html.fromHtml(description.toString()));
 
         i.setBackgroundResource(drawable);
         if (i.getBackground() instanceof AnimationDrawable) {
@@ -181,7 +181,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             titleView.setTextColor(titleColor);
         }
 
-        descView.setText(description);
+        descView.setText(Html.fromHtml(description.toString()));
 
         main.setBackgroundColor(bgColor);
 
