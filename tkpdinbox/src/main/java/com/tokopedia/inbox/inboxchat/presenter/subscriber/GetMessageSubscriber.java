@@ -52,6 +52,7 @@ public class GetMessageSubscriber extends Subscriber<InboxChatViewModel>{
 
         view.setResultFetch(messageData);
         presenter.prepareNextPage(messageData.isHasNext());
+        view.saveResult();
 
         view.setMustRefresh(false);
     }

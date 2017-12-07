@@ -50,34 +50,34 @@ public class InboxChatActivity extends DrawerPresenterActivity
     @BindView(R2.id.indicator)
     TabLayout indicator;
     private ArrayList<Fragment> fragmentList;
-
-    @DeepLink(Constants.Applinks.MESSAGE)
-    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-
-        Intent homeIntent = null;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivity(context);
-        }
-        Intent destination;
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-            destination = new Intent(context, InboxChatActivity.class)
-                    .setData(uri.build())
-                    .putExtras(extras);
-        } else {
-            destination = new Intent(context, InboxMessageActivity.class)
-                    .setData(uri.build())
-                    .putExtras(extras);
-        }
-
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
-    }
+//
+//    @DeepLink(Constants.Applinks.MESSAGE)
+//    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+//        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+//
+//        Intent homeIntent = null;
+//        if (GlobalConfig.isSellerApp()) {
+//            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+//        } else {
+//            homeIntent = HomeRouter.getHomeActivity(context);
+//        }
+//        Intent destination;
+//        if(MainApplication.getInstance() instanceof RemoteConfigRouter
+//                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+//            destination = new Intent(context, InboxChatActivity.class)
+//                    .setData(uri.build())
+//                    .putExtras(extras);
+//        } else {
+//            destination = new Intent(context, InboxMessageActivity.class)
+//                    .setData(uri.build())
+//                    .putExtras(extras);
+//        }
+//
+//        taskStackBuilder.addNextIntent(homeIntent);
+//        taskStackBuilder.addNextIntent(destination);
+//        return taskStackBuilder;
+//    }
 
     @DeepLink(Constants.Applinks.TOPCHAT_IDLESS)
     public static Intent getCallingIntentTopchatWithoutId(Context context, Bundle extras) {

@@ -1,4 +1,4 @@
-package com.tokopedia.usecase.utils;
+package com.tokopedia.abstraction.utils;
 
 import java.util.HashMap;
 

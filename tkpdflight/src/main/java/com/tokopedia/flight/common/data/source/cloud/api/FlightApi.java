@@ -12,7 +12,6 @@ import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.search.data.cloud.model.request.FlightSearchSingleRequestData;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
-import com.tokopedia.usecase.utils.TKPDMapParam;
 
 import java.util.HashMap;
 import java.util.List;

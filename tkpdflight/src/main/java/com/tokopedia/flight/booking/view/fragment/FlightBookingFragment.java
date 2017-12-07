@@ -370,7 +370,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void navigateToDetailTrip(FlightDetailViewModel departureTrip) {
-        startActivity(FlightDetailActivity.createIntent(getActivity(), departureTrip));
+        startActivity(FlightDetailActivity.createIntent(getActivity(), departureTrip, false));
     }
 
     @Override

@@ -106,16 +106,6 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
     }
 
     @Override
-    public Map<String, String> generateHeaders(String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
-    }
-
-    @Override
-    public String getAuthKey() {
-        return AuthUtil.KEY.KEY_WSV4;
-    }
-
-    @Override
     public UserSession getSession() {
         UserSession userSession = new UserSession() {
             @Override
@@ -126,6 +116,11 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
             @Override
             public String getFreshToken() {
                 return SessionHandler.getAccessToken();
+            }
+
+            @Override
+            public String getUserId() {
+                return null;
             }
         };
         return userSession;

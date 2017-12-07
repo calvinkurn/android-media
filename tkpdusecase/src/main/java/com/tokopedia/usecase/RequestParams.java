@@ -1,7 +1,6 @@
 package com.tokopedia.usecase;
 
-import com.tokopedia.usecase.utils.TKPDMapParam;
-
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,7 +9,7 @@ import java.util.Map;
 public class RequestParams {
     public static final RequestParams EMPTY = RequestParams.create();
 
-    private final TKPDMapParam<String, Object> parameters = new TKPDMapParam<>();
+    private final HashMap<String, Object> parameters = new HashMap<>();
 
     private RequestParams() {
     }
@@ -95,16 +94,16 @@ public class RequestParams {
         parameters.remove(key);
     }
 
-    public TKPDMapParam<String, Object> getParameters() {
+    public HashMap<String, Object> getParameters() {
         return parameters;
     }
 
-    public TKPDMapParam<String, String> getParamsAllValueInString() {
+    public HashMap<String, String> getParamsAllValueInString() {
         return convertMapObjectToString(parameters);
     }
 
-    private TKPDMapParam<String, String> convertMapObjectToString(TKPDMapParam<String,Object> map) {
-        TKPDMapParam<String,String> newMap =new TKPDMapParam<>();
+    private HashMap<String, String> convertMapObjectToString(HashMap<String,Object> map) {
+        HashMap<String,String> newMap =new HashMap<>();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             if(entry.getValue() instanceof String){
                 newMap.put(entry.getKey(), String.valueOf(entry.getValue()));

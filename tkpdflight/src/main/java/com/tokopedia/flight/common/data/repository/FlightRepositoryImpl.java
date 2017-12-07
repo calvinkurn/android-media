@@ -21,7 +21,6 @@ import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchMetaParamUtil;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.utils.TKPDMapParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -199,7 +198,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<AttributesVoucher> checkVoucherCode(TKPDMapParam<String, String> paramsAllValueInString) {
+    public Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString) {
         return flightCheckVoucheCodeDataSource.checkVoucherCode(paramsAllValueInString);
     }
 }

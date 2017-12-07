@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.di.module.AppModule;
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.di.qualifier.AuthKeyQualifier;
@@ -34,6 +35,8 @@ public interface BaseAppComponent {
 
     @AuthKeyQualifier
     String provideAuthKey();
+
+    UserSession userSession();
 
     AbstractionRouter provideAbstractionRouter();
 

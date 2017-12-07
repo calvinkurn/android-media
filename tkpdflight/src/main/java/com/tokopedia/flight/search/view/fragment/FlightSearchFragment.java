@@ -571,7 +571,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
         flightDetailViewModel.build(flightSearchViewModel);
         flightDetailViewModel.build(flightSearchPassDataViewModel);
-        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel),
+        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel, true),
                 REQUEST_CODE_SEE_DETAIL_FLIGHT);
     }
 

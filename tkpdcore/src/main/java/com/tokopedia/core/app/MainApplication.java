@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -77,6 +78,13 @@ public abstract class MainApplication extends BaseMainApplication{
 
     public static MainApplication getInstance() {
         return instance;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base)
+    {
+        super.attachBaseContext(base);
+        MultiDex.install(MainApplication.this);
     }
 
     public static boolean isAppIsInBackground(Context context) {

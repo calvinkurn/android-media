@@ -17,7 +17,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_simple;
+        return R.layout.seller_activity_base_simple;
     }
 
     protected void setupFragment(Bundle savedInstance) {

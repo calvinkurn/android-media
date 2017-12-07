@@ -142,13 +142,13 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewDetailReturnFlight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(FlightDetailActivity.createIntent(getActivity(), flightBookingReviewModel.getDetailViewModelListReturn()));
+                startActivity(FlightDetailActivity.createIntent(getActivity(), flightBookingReviewModel.getDetailViewModelListReturn(), false));
             }
         });
         reviewDetailDepartureFlight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(FlightDetailActivity.createIntent(getActivity(), flightBookingReviewModel.getDetailViewModelListDeparture()));
+                startActivity(FlightDetailActivity.createIntent(getActivity(), flightBookingReviewModel.getDetailViewModelListDeparture(), false));
             }
         });
         voucherCartView.setActionListener(this);
