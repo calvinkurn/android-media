@@ -24,12 +24,14 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_title"
-            style="@style/WidgetSelectPassengerViewTitle"
+            android:layout_width="match_parent"
+            style="@style/TextView.Title"
             tools:text="Dewasa" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_subtitle"
-            style="@style/WidgetSelectPassengerViewSubtitle"
+            android:layout_width="match_parent"
+            style="@style/TextView.Caption.BlackSecondary"
             tools:text="(Lebih dari 12 tahun)" />
     </LinearLayout>
 
