@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -31,7 +32,9 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
@@ -53,6 +56,7 @@ import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +65,7 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightBookingFragment extends BaseDaggerFragment implements FlightBookingContract.View, FlightBookingPassengerAdapter.OnClickListener {
+public class FlightBookingFragment extends BaseDaggerFragment implements FlightBookingContract.View, FlightBookingPassengerActionListener {
     private static final String EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA";
     private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
     private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
@@ -165,9 +169,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onButtonSubmitClicked();
             }
         });
-
-        adapter = new FlightBookingPassengerAdapter(getActivity());
-        adapter.setListener(this);
+        FlightBookingPassengerAdapterTypeFactory adapterTypeFactory = new FlightBookingPassengerAdapterTypeFactory(this);
+        adapter = new FlightBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         passengerRecyclerView.setLayoutManager(layoutManager);
@@ -367,7 +370,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderPassengersList(List<FlightBookingPassengerViewModel> passengerViewModels) {
-        adapter.addPassengers(passengerViewModels);
+        List<Visitable> visitables = new ArrayList<>();
+        visitables.addAll(passengerViewModels);
+        adapter.clearData();
+        adapter.addElement(visitables);
     }
 
     @Override

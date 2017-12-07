@@ -128,7 +128,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
             @Override
             public void onFinished() {
-                if (!(getActivity()).isFinishing()) {
+                if (getActivity() != null && !(getActivity()).isFinishing()) {
                     progressDialog.show();
                     flightBookingReviewPresenter.onUpdateCart();
                 }

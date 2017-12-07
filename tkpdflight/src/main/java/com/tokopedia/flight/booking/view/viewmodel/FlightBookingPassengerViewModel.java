@@ -3,13 +3,16 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerTypeFactory;
+
 import java.util.List;
 
 /**
  * @author by alvarisi on 11/7/17.
  */
 
-public class FlightBookingPassengerViewModel implements Parcelable {
+public class FlightBookingPassengerViewModel implements Parcelable, Visitable<FlightBookingPassengerTypeFactory> {
     private int passengerId; //passengerLocalNumber
     private boolean singleRoute;
     private int type;
@@ -159,5 +162,10 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         parcel.writeString(passengerBirthdate);
         parcel.writeTypedList(flightBookingLuggageMetaViewModels);
         parcel.writeTypedList(flightBookingMealMetaViewModels);
+    }
+
+    @Override
+    public int type(FlightBookingPassengerTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }

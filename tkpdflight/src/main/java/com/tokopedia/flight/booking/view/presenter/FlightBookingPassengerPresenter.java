@@ -79,7 +79,6 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                     FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getView().getPassengerBirthDate())
             );
             getView().getCurrentPassengerViewModel().setPassengerLastName(getView().getPassengerLastName());
-            // TODO : set passenger luggage and meals
             getView().navigateResultUpdatePassengerData(getView().getCurrentPassengerViewModel());
         }
     }
@@ -238,10 +237,6 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     private boolean isSingleWord(String passengerLastName) {
         return TextUtils.split(passengerLastName, " ").length == 1;
-    }
-
-    private boolean isRoundTrip() {
-        return getView().getReturnTripId() != null;
     }
 
     private boolean isAdultPassenger() {
