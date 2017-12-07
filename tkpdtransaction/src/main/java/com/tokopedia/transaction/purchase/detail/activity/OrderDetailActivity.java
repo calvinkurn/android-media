@@ -244,7 +244,6 @@ public class OrderDetailActivity extends TActivity
                                 getExtraUserMode());
                     }
                 });
-        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
