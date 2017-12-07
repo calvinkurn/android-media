@@ -143,7 +143,6 @@ public class NewOnboardingActivity extends OnboardingActivity {
             setButtonVisibility(indicator, VISIBLE);
         }
         int pageNumber = pager.getCurrentItem()+1;
-        Log.d("milhamj", SCREEN_NAME + pageNumber);
         ScreenTracking.screen(SCREEN_NAME + pageNumber);
     }
 
