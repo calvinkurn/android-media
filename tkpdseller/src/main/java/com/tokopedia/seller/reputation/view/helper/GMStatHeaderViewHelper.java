@@ -118,6 +118,9 @@ public class GMStatHeaderViewHelper {
     }
 
     protected void setImageIcon() {
+        Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(itemView.getContext()
+                , R.drawable.ic_set_date_next);
+        calendarArrowIcon.setImageDrawable(setDateNext);
         calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
     }
 

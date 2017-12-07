@@ -52,5 +52,11 @@
                 tools:text="@string/app_id" />
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/arrow_left"
+            android:layout_width="@dimen/image_width_xxs"
+            android:layout_height="@dimen/image_width_xxs"
+            android:src="@drawable/ic_arrow_right" />
+
     </LinearLayout>
 </FrameLayout>

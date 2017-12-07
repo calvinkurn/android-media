@@ -24,6 +24,7 @@ public class LabelView extends BaseCustomView {
 
     private TextView titleTextView;
     private TextView contentTextView;
+    private ImageView arrow;
 
     private String titleText;
     @ColorInt
@@ -81,6 +82,7 @@ public class LabelView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_label_view, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
+        arrow = (ImageView) view.findViewById(R.id.arrow_left);
     }
 
     @Override
@@ -90,6 +92,7 @@ public class LabelView extends BaseCustomView {
         setContent(contentText);
         contentTextView.setTextColor(contentColorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
+        setVisibleArrow(showArrow);
         contentTextView.setMaxLines(maxLines);
         titleTextView.setTypeface(null, titleTextStyleValue);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
@@ -101,6 +104,7 @@ public class LabelView extends BaseCustomView {
 
     public void resetContentText() {
         setContent(contentText);
+        setVisibleArrow(showArrow);
         invalidate();
         requestLayout();
     }
@@ -116,9 +120,12 @@ public class LabelView extends BaseCustomView {
         if (enabled) {
             titleTextView.setTextColor(titleColorValue);
             contentTextView.setTextColor(contentColorValue);
+            arrow.clearColorFilter();
         } else {
             titleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
             contentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+            arrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_400),
+                    PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -164,5 +171,13 @@ public class LabelView extends BaseCustomView {
         contentTextView.setTextColor(colorValue);
         invalidate();
         requestLayout();
+    }
+
+    public void setVisibleArrow(boolean isVisible) {
+        if (isVisible) {
+            arrow.setVisibility(VISIBLE);
+        } else {
+            arrow.setVisibility(GONE);
+        }
     }
 }
