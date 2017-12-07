@@ -198,7 +198,7 @@ public class ListViewShopTxDetailProdListV2 extends BaseAdapter{
         holder.ProductPrice.setText(model.Price);
         holder.TotalOrder.setText(" x " + model.TotalOrder + " Barang");
         holder.TotalPrice.setText(model.TotalPrice);
-        ImageHandler.loadImageRounded2(context, holder.ProductImage, model.ImageUrl);
+        ImageHandler.loadImageRounded2(holder.TotalPrice.getContext(), holder.ProductImage, model.ImageUrl);
 //        ImageHandler.LoadImageRounded(holder.ProductImage, model.ImageUrl);
         //holder.Message.setMovementMethod(new ScrollingMovementMethod());
         if(CommonUtils.checkNullForZeroJson(model.Message)){
