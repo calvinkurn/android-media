@@ -84,7 +84,7 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
 
     @Override
     public void onLoadError(String message) {
-        NetworkErrorHelper.showEmptyState(this, mainViewContainer, new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(this, getMainView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 presenter.fetchHistoryData(OrderHistoryActivity.this,
@@ -92,6 +92,10 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
                         getExtraUserMode());
             }
         });
+    }
+
+    private View getMainView() {
+        return findViewById(R.id.main_view);
     }
 
     @Override
@@ -110,6 +114,11 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 
     private String getExtraOrderId() {
