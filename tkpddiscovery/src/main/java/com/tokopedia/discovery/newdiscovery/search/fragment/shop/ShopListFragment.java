@@ -251,7 +251,7 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    public String getScreenName() {
+    public String getScreenNameId() {
         return AppScreen.SCREEN_SEARCH_PAGE_SHOP_TAB;
     }
 
@@ -485,5 +485,10 @@ public class ShopListFragment extends SearchSectionFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getScreenNameId();
     }
 }

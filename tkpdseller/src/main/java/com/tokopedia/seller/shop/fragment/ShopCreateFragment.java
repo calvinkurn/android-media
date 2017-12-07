@@ -199,7 +199,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void setShopAvatar(String imagePath) {
         if (!TextUtils.isEmpty(imagePath)) {
             imageText.setVisibility(View.GONE);
-            ImageHandler.loadImageFit2(getActivity()
+            ImageHandler.loadImageFit2(imageText.getContext()
                     , shopAvatar
                     , MethodChecker.getUri(getActivity(), new File(imagePath)).toString());
             presenter.saveShopAvatarUrl(imagePath);

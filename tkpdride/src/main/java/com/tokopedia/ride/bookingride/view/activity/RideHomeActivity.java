@@ -62,6 +62,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.RideHomeContract;
 import com.tokopedia.ride.bookingride.view.RideHomePresenter;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
@@ -76,6 +77,7 @@ import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
@@ -379,6 +381,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void showPendingFareInterrupt(GetPending getPending) {
+        startActivity(PayPendingFareActivity.getCallingIntent(this, getPending));
+    }
+
+    @Override
     public void actionNavigateToOnTripScreen(RideRequest rideRequest) {
         Intent intent = OnTripActivity.getCallingIntent(this, rideRequest);
         startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_REQUEST_CODE);
@@ -625,6 +632,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void renderNearbyRides(NearbyRides nearbyRides) {
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.renderNearbyRides(nearbyRides);
+        }
+    }
+
+    @Override
     public void onProductClicked(ConfirmBookingPassData confirmBookingPassData) {
         onBottomContainerChangeToBookingScreen();
 
@@ -649,7 +664,17 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             fragment.setSharedElementEnterTransition(changeBoundsTransition);
         }
         replaceFragment(R.id.bottom_container, fragment, CONFIRM_FRAGMENT_TAG);
+
         sendScreenEventWithDelay();
+    }
+
+    private void sendScreenEventWithDelay() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ScreenTracking.sendScreen(RideHomeActivity.this, RideHomeActivity.this);
+            }
+        }, 50);
     }
 
     private void onBottomContainerChangeToBookingScreen() {
@@ -782,7 +807,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel) {
-        RideGATracking.eventClickRequestRideOption(getScreenName(),confirmBookingViewModel.getProductDisplayName());
+        RideGATracking.eventClickRequestRideOption(getScreenName(), confirmBookingViewModel.getProductDisplayName());
         Intent intent = OnTripActivity.getCallingIntent(this, confirmBookingViewModel);
         startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_REQUEST_CODE);
     }
@@ -797,27 +822,21 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             RideGATracking.eventClickOnTrip(getScreenName());
             actionNavigateToHistory();
             return true;
+        } else if (i == R.id.action_payment) {
+            actionNavigateToPayment();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
-    private void sendScreenEventWithDelay() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ScreenTracking.sendScreen(RideHomeActivity.this, RideHomeActivity.this);
-                }catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }, 50);
-    }
-
     private void actionNavigateToHistory() {
         Intent intent = RideHistoryActivity.getCallingIntent(this);
         startActivity(intent);
+    }
+
+    private void actionNavigateToPayment() {
+        startActivity(ManagePaymentOptionsActivity.getCallingActivity(this, ManagePaymentOptionsActivity.TYPE_MANAGE_PAYMENT_OPTION));
     }
 
     @Override
@@ -831,7 +850,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public String getScreenName() {
         if (getFragmentManager() != null && (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment)) {
             return AppScreen.SCREEN_RIDE_BOOKING;
-        }else {
+        } else {
             return AppScreen.SCREEN_RIDE_HOME;
         }
     }
@@ -877,15 +896,19 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void actionBackToProductList() {
-        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
-            getFragmentManager().popBackStack();
-            onBottomContainerChangeToProductListScreen();
-            ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
-            ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
-            UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
-                    viewModel.getDestination());
-            replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
-            sendScreenEventWithDelay();
+        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment && !isFinishing()) {
+            try {
+                getFragmentManager().popBackStack();
+                onBottomContainerChangeToProductListScreen();
+                ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+                ConfirmBookingPassData viewModel = fragment.getActiveConfirmBooking();
+                UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
+                        viewModel.getDestination());
+                replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
+                sendScreenEventWithDelay();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

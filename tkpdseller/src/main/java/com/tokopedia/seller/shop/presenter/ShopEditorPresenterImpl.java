@@ -158,9 +158,11 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
     public void onClickCloseShop(ShopEditorPresenter presenter) {
         FragmentTransaction ft = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
         ft.addToBackStack(null);
-        editScheduleDialog = ShopScheduleDialog.newInstance(modelShopData.getClosedDetail(), modelShopData.getClosedScheduleDetail());
-        editScheduleDialog.setShopEditorPresenter(presenter);
-        editScheduleDialog.show(ft, "edit_chedusle_dialog");
+        if (modelShopData != null && modelShopData != null) {
+            editScheduleDialog = ShopScheduleDialog.newInstance(modelShopData.getClosedDetail(), modelShopData.getClosedScheduleDetail());
+            editScheduleDialog.setShopEditorPresenter(presenter);
+            editScheduleDialog.show(ft, "edit_chedusle_dialog");
+        }
     }
 
     @Override

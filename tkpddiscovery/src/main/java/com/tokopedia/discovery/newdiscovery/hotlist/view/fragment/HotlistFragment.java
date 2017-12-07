@@ -157,7 +157,7 @@ public class HotlistFragment extends SearchSectionFragment
 
 
     @Override
-    public String getScreenName() {
+    public String getScreenNameId() {
         return AppScreen.SCREEN_BROWSE_HOT;
     }
 
@@ -705,7 +705,7 @@ public class HotlistFragment extends SearchSectionFragment
         if (element.isFeatured()) {
             Hotlist hotlist = new Hotlist();
             hotlist.setHotlistAlias(getHotlistAlias());
-            hotlist.setScreenName(getScreenName());
+            hotlist.setScreenName(getScreenNameId());
             hotlist.setPosition(adapterPosition);
 
             List<Hotlist.Product> list = new ArrayList<>();
@@ -734,7 +734,7 @@ public class HotlistFragment extends SearchSectionFragment
         if (!extractList.isEmpty()) {
             Hotlist hotlist = new Hotlist();
             hotlist.setHotlistAlias(getHotlistAlias());
-            hotlist.setScreenName(getScreenName());
+            hotlist.setScreenName(getScreenNameId());
 
             List<Hotlist.Product> list = new ArrayList<>();
             for (HotlistProductViewModel model : extractList) {
@@ -751,4 +751,8 @@ public class HotlistFragment extends SearchSectionFragment
 
     }
 
+    @Override
+    protected String getScreenName() {
+        return getScreenNameId();
+    }
 }

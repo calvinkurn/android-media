@@ -301,7 +301,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     }
 
     @Override
-    public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList) {
+    public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryAlbumFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryAlbumFragment) {
             ImageGalleryAlbumFragment imageGalleryAlbumFragment = (ImageGalleryAlbumFragment) fragment;
@@ -311,7 +311,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     }
 
     @Override
-    public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> data, ArrayList<String> pathList) {
+    public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> data) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment) {
             ((ImageGalleryFragment) fragment).addItems(data);
@@ -703,5 +703,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         super.onDestroy();
         if (unbinder != null)
             unbinder.unbind();
+        imageGalleryPresenter.detach();
     }
 }
