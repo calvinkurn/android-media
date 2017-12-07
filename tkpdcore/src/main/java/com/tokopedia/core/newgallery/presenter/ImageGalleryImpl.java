@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
@@ -48,9 +49,17 @@ public class ImageGalleryImpl implements ImageGallery {
         contentResolver = imageGalleryView.getContentResolver();
     }
 
+    public boolean isAlbumEmpty(){
+        return pathList.size() <= 0;
+    }
+
     @Override
     public void getItemAlbum() {
-        new GetItemAlbum().execute();
+        if (imageGalleryView != null && !isAlbumEmpty()) {
+            imageGalleryView.retrieveData(dataAlbum, pathList);
+        }else {
+            new GetItemAlbum().execute();
+        }
     }
 
     public String getFolderPath(int position) {
@@ -190,6 +199,9 @@ public class ImageGalleryImpl implements ImageGallery {
                 while (cursor.moveToNext()) {
                     String pathFile = cursor.getString(column_index_data);
                     String bucketName = cursor.getString(bucketColumn);
+                    if (TextUtils.isEmpty(pathFile) || TextUtils.isEmpty(bucketName)) {
+                        continue;
+                    }
                     File file = new File(pathFile);
                     if (file.exists()) {
                         boolean check = ImageGalleryImpl.this.checkFile(file);

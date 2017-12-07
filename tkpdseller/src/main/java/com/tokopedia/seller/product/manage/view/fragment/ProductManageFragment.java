@@ -737,6 +737,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {
+        if (!isAdded() || goldMerchant == null) {
+            return;
+        }
         ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment =
                 ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant);
         productManageEditPriceDialogFragment.setListenerDialogEditPrice(new ProductManageEditPriceDialogFragment.ListenerDialogEditPrice() {

@@ -167,9 +167,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         opportunityList.setAdapter(adapter);
 
         refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
-        initHeaderText();
+        headerInfo.setVisibility(View.VISIBLE);
     }
 
+    // TODO need confirm to put this logic when initView
     private void initHeaderText() {
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_SEEN_OPPORTUNITY);
         if (cacheHandler.getBoolean(HAS_SEEN_OPPORTUNITY, false)) {
@@ -177,6 +178,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         } else {
             headerInfo.setVisibility(View.VISIBLE);
             cacheHandler.putBoolean(HAS_SEEN_OPPORTUNITY, true);
+            cacheHandler.applyEditor();
         }
     }
 
@@ -231,13 +233,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                     opportunityParam.getQuery(),
                                     opportunityParam.getListFilter());
                         }
-
-                        UnifyTracking.eventOpportunity(
-                                OpportunityTrackingEventLabel.EventName.SCROLL_OPPORTUNITY,
-                                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-                                AppEventTracking.Action.SCROLL,
-                                OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
-                        );
+                        // TODO modify this unifytracking, do not send every scroll!
+//                        UnifyTracking.eventOpportunity(
+//                                OpportunityTrackingEventLabel.EventName.SCROLL_OPPORTUNITY,
+//                                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+//                                AppEventTracking.Action.SCROLL,
+//                                OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
+//                        );
                     }
                 });
 
