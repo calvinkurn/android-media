@@ -35,18 +35,22 @@ public class TopPicksDataSource {
     }
 
     public Observable<TopPicksResponseModel> getTopPicks(final RequestParams requestParams) {
-        return getCache(requestParams).doOnNext(checkData(requestParams));
+        return getCloud(requestParams).onErrorResumeNext(getCache(requestParams));
     }
 
     @NonNull
-    private Action1<TopPicksResponseModel> checkData(final RequestParams requestParams) {
-        return new Action1<TopPicksResponseModel>() {
+    private Func1<TopPicksResponseModel, Boolean> getPredicate() {
+        return new Func1<TopPicksResponseModel, Boolean>() {
             @Override
-            public void call(TopPicksResponseModel model) {
-                if (model.getExpiredTime() == 0 || model.getExpiredTime() < System.currentTimeMillis())
-                    getCloud(requestParams);
+            public Boolean call(TopPicksResponseModel topPicksResponseModel) {
+                return topPicksResponseModel.isSuccess()
+                        && !isExpired(topPicksResponseModel.getExpiredTime());
             }
         };
+    }
+
+    private boolean isExpired(long expiredTime) {
+        return expiredTime < System.currentTimeMillis();
     }
 
     @NonNull

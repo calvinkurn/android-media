@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.beranda.data.source;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -23,6 +24,7 @@ import rx.functions.Func1;
 
 public class HomeBannerDataSource {
 
+    private static final String TAG = HomeBannerDataSource.class.getSimpleName();
     private final Context context;
     private final CategoryApi categoryApi;
     private final HomeBannerMapper homeBannerMapper;
@@ -41,17 +43,22 @@ public class HomeBannerDataSource {
     }
 
     public Observable<HomeBannerResponseModel> getHomeBanner(final RequestParams requestParams) {
-        return getCache(requestParams).doOnNext(checkData(requestParams));
+        return getCloud(requestParams).onErrorResumeNext(getCache(requestParams));
     }
+
     @NonNull
-    private Action1<HomeBannerResponseModel> checkData(final RequestParams requestParams) {
-        return new Action1<HomeBannerResponseModel>() {
+    private Func1<HomeBannerResponseModel, Boolean> getPredicate() {
+        return new Func1<HomeBannerResponseModel, Boolean>() {
             @Override
-            public void call(HomeBannerResponseModel model) {
-                if (model.getExpiredTime() == 0 || model.getExpiredTime() < System.currentTimeMillis())
-                    getCloud(requestParams);
+            public Boolean call(HomeBannerResponseModel homeBannerResponseModel) {
+                return homeBannerResponseModel.isSuccess()
+                        && !isExpired(homeBannerResponseModel.getExpiredTime());
             }
         };
+    }
+
+    private boolean isExpired(long expiredTime) {
+        return expiredTime < System.currentTimeMillis();
     }
 
     @NonNull

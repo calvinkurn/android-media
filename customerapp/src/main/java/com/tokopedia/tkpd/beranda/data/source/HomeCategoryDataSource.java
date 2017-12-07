@@ -43,18 +43,7 @@ public class HomeCategoryDataSource {
     }
 
     public Observable<HomeCategoryResponseModel> getHomeCategory() {
-        return getCache().onErrorResumeNext(getCloud()).doOnNext(checkData());
-    }
-
-    @NonNull
-    private Action1<HomeCategoryResponseModel> checkData() {
-        return new Action1<HomeCategoryResponseModel>() {
-            @Override
-            public void call(HomeCategoryResponseModel model) {
-                if (model.getExpiredTime() == 0 || model.getExpiredTime() < System.currentTimeMillis())
-                    getCloud();
-            }
-        };
+        return getCloud().onErrorResumeNext(getCache());
     }
 
     @NonNull

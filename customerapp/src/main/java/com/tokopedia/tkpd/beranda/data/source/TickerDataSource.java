@@ -38,7 +38,7 @@ public class TickerDataSource {
     }
 
     public Observable<Ticker> getTicker() {
-        return Observable.concat(getCache(), getCloud()).first(getPredicate());
+        return getCloud().onErrorResumeNext(getCache());
     }
 
     @NonNull
@@ -76,9 +76,8 @@ public class TickerDataSource {
                 String cache = cacheManager.getValueString(TkpdCache.Key.HOME_TICKER_CACHE);
                 if (cache != null)
                     return gson.fromJson(cache, Ticker.class);
-                else
-                    return null;
+                throw new RuntimeException("Cache is empty!!");
             }
-        });
+        }).onErrorResumeNext(getCloud());
     }
 }

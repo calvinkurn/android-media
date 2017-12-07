@@ -7,6 +7,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.beranda.data.mapper.BrandsOfficialStoreMapper;
+import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 
 import rx.Observable;
@@ -33,18 +34,22 @@ public class BrandsOfficialStoreDataSource {
     }
 
     public Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStore() {
-        return getCache().onErrorResumeNext(getCloud()).doOnNext(checkData());
+        return getCloud().onErrorResumeNext(getCache());
     }
 
     @NonNull
-    private Action1<BrandsOfficialStoreResponseModel> checkData() {
-        return new Action1<BrandsOfficialStoreResponseModel>() {
+    private Func1<BrandsOfficialStoreResponseModel, Boolean> getPredicate() {
+        return new Func1<BrandsOfficialStoreResponseModel, Boolean>() {
             @Override
-            public void call(BrandsOfficialStoreResponseModel model) {
-                if (model.getExpiredTime() == 0 || model.getExpiredTime() < System.currentTimeMillis())
-                    getCloud();
+            public Boolean call(BrandsOfficialStoreResponseModel model) {
+                return model.isSuccess()
+                        && !isExpired(model.getExpiredTime());
             }
         };
+    }
+
+    private boolean isExpired(long expiredTime) {
+        return expiredTime < System.currentTimeMillis();
     }
 
     @NonNull
@@ -73,6 +78,6 @@ public class BrandsOfficialStoreDataSource {
                     return gson.fromJson(cache, BrandsOfficialStoreResponseModel.class);
                 throw new RuntimeException("Cache is empty!!");
             }
-        });
+        }).onErrorResumeNext(getCloud());
     }
 }
