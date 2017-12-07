@@ -224,14 +224,20 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private void setShopInfoFromOpenShopData(OpenShopData model) {
         if (model.getOpenShopHashMap() != null) {
-            if (model.getOpenShopHashMap().get("addr_street") != null) {
-                shopInformation.addrStreet = model.getOpenShopHashMap().get("addr_street");
+            if (model.getOpenShopHashMap().get(EditShippingPresenter.ADDR_STREET) != null) {
+                shopInformation.addrStreet = model.getOpenShopHashMap().get(EditShippingPresenter.ADDR_STREET);
             }
-            if (model.getOpenShopHashMap().get("latitude") != null) {
-                shopInformation.latitude = model.getOpenShopHashMap().get("latitude");
+            if (model.getOpenShopHashMap().get(EditShippingPresenter.LATITUDE) != null) {
+                shopInformation.latitude = model.getOpenShopHashMap().get(EditShippingPresenter.LATITUDE);
             }
-            if (model.getOpenShopHashMap().get("longitude") != null) {
-                shopInformation.longitude = model.getOpenShopHashMap().get("longitude");
+            if (model.getOpenShopHashMap().get(EditShippingPresenter.LONGITUDE) != null) {
+                shopInformation.longitude = model.getOpenShopHashMap().get(EditShippingPresenter.LONGITUDE);
+            }
+            if (model.getOpenShopHashMap().get(EditShippingPresenter.POSTAL) != null) {
+                shopInformation.postalCode = model.getOpenShopHashMap().get(EditShippingPresenter.POSTAL);
+            }
+            if (model.getOpenShopHashMap().get(EditShippingPresenter.DISTRICT_AND_CITY) != null) {
+                shopInformation.districtName = model.getOpenShopHashMap().get(EditShippingPresenter.DISTRICT_AND_CITY);
             }
         }
     }
@@ -400,6 +406,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
             shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
         }
+        shippingParams.put(DISTRICT_AND_CITY, view.getDistrictAndCity());
         addAdditionalOptionsConfigurations(shippingParams);
     }
 

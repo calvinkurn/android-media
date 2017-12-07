@@ -41,6 +41,8 @@ public interface EditShippingPresenter {
 
     String DISTRICT_ID = "shop_courier_origin";
 
+    String DISTRICT_AND_CITY = "district_and_city";
+
     int MINIMUM_WEIGHT_POLICY_CHARACTER_SIZE = 0;
 
     void fetchData();

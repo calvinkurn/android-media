@@ -145,6 +145,10 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         return zipCode.getText().toString();
     }
 
+    public String getDistrictAndCity() {
+        return shopCity.getText().toString();
+    }
+
     private TextWatcher postTextWatcher() {
         return new TextWatcher() {
             @Override
