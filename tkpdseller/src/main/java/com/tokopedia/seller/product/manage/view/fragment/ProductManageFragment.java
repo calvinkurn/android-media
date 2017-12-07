@@ -647,17 +647,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {
-        if (GlobalConfig.isSellerApp()) {
-            if (goldMerchant) {
-                showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
-                        productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
-            } else {
-                showDialogActionGoToGMSubscribe();
-            }
+        if (goldMerchant == null) {
+            return;
+        }
+        if (!GlobalConfig.isSellerApp() && getActivity().getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
+            return;
+        }
+        if (goldMerchant) {
+            showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
+                    productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
         } else {
-            if (getActivity().getApplication() instanceof SellerModuleRouter) {
-                ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
-            }
+            showDialogActionGoToGMSubscribe();
         }
     }
 
@@ -737,6 +738,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {
+        if (!isAdded() || goldMerchant == null) {
+            return;
+        }
         ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment =
                 ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant);
         productManageEditPriceDialogFragment.setListenerDialogEditPrice(new ProductManageEditPriceDialogFragment.ListenerDialogEditPrice() {
