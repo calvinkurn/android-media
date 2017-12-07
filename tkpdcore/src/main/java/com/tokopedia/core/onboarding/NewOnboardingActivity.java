@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
@@ -24,6 +25,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import static android.view.View.GONE;
+import static android.view.View.SCREEN_STATE_OFF;
 import static android.view.View.VISIBLE;
 
 /**
@@ -32,6 +34,7 @@ import static android.view.View.VISIBLE;
 
 public class NewOnboardingActivity extends OnboardingActivity {
 
+    private static final String SCREEN_NAME = "Screen OnBoarding - ";
     protected View indicator;
     protected View bottom;
     private TextView skipView;
@@ -139,6 +142,9 @@ public class NewOnboardingActivity extends OnboardingActivity {
             setButtonVisibility(skipButton, VISIBLE);
             setButtonVisibility(indicator, VISIBLE);
         }
+        int pageNumber = pager.getCurrentItem()+1;
+        Log.d("milhamj", SCREEN_NAME + pageNumber);
+        ScreenTracking.screen(SCREEN_NAME + pageNumber);
     }
 
     private void setButtonVisibility(View view, int visible) {
