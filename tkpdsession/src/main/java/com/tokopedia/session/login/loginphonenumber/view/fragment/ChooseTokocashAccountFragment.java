@@ -1,6 +1,7 @@
 package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,12 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.adapter.TokocashAccountAdapter;
 import com.tokopedia.session.login.loginphonenumber.view.presenter.ChooseTokocashAccountPresenter;
@@ -34,15 +39,18 @@ import javax.inject.Inject;
 
 public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         ChooseTokocashAccount.View {
+    private int REQUEST_SECURITY_QUESTION = 101;
 
     TextView message;
     RecyclerView listAccount;
     TokocashAccountAdapter adapter;
 
     ChooseTokoCashAccountViewModel viewModel;
+    TkpdProgressDialog progressDialog;
 
     @Inject
     ChooseTokocashAccountPresenter presenter;
+
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new ChooseTokocashAccountFragment();
@@ -110,13 +118,45 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSelectedTokocashAccount(AccountTokocash accountTokocash) {
-        presenter.loginWithTokocash(accountTokocash);
+        presenter.loginWithTokocash(viewModel.getKey(),
+                accountTokocash);
     }
 
     @Override
     public void onSuccessLogin() {
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+//        getActivity().setResult(Activity.RESULT_OK);
+//        getActivity().finish();
+        NetworkErrorHelper.showSnackbar(getActivity(), "SUKSES LOGIN");
+    }
+
+    @Override
+    public void showLoadingProgress() {
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissLoadingProgress() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+
+    }
+
+    @Override
+    public void onErrorLoginTokoCash(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void goToSecurityQuestion(MakeLoginDomain makeLoginDomain) {
+        Intent intent = SecurityQuestionActivity.getCallingIntent(getActivity(),
+                makeLoginDomain.getSecurityDomain(),
+                makeLoginDomain.getFullName(),
+                "",
+                viewModel.getPhoneNumber());
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
     }
 
     @Override
@@ -129,5 +169,14 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         return MethodChecker.fromHtml(getString(R.string.prompt_choose_tokocash_account,
                 viewModel.getListAccount().size(),
                 viewModel.getPhoneNumber()));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+            onSuccessLogin();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

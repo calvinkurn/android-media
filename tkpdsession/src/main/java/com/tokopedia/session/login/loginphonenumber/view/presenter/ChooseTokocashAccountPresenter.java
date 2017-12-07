@@ -1,11 +1,10 @@
 package com.tokopedia.session.login.loginphonenumber.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.otp.tokocashotp.domain.interactor.LoginTokoCashUseCase;
+import com.tokopedia.session.login.loginphonenumber.domain.interactor.LoginPhoneNumberUseCase;
+import com.tokopedia.session.login.loginphonenumber.view.subscriber.LoginTokoCashSubscriber;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -16,8 +15,11 @@ import javax.inject.Inject;
 public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTokocashAccount.View>
         implements ChooseTokocashAccount.Presenter {
 
+    private final LoginPhoneNumberUseCase loginTokoCashUseCase;
+
     @Inject
-    public ChooseTokocashAccountPresenter(LoginTokoCashUseCase loginTokoCashUseCase) {
+    public ChooseTokocashAccountPresenter(LoginPhoneNumberUseCase loginTokoCashUseCase) {
+        this.loginTokoCashUseCase = loginTokoCashUseCase;
     }
 
     @Override
@@ -26,7 +28,13 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
     }
 
     @Override
-    public void loginWithTokocash(AccountTokocash accountTokocash) {
-        getView().onSuccessLogin();
+    public void loginWithTokocash(String key, AccountTokocash accountTokocash) {
+        getView().showLoadingProgress();
+        loginTokoCashUseCase.execute(LoginPhoneNumberUseCase.getParam(
+                key,
+                accountTokocash.getEmail(),
+                accountTokocash.getUserId()
+        ), new LoginTokoCashSubscriber
+                (getView()));
     }
 }

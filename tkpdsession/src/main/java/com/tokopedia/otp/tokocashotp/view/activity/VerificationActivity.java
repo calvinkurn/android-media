@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
@@ -34,6 +36,9 @@ public class VerificationActivity extends TActivity implements HasComponent {
     public static final String PARAM_APP_SCREEN = "app_screen";
     public static final String PARAM_METHOD_LIST = "method_list";
 
+    private static final String FIRST_FRAGMENT_TAG = "first";
+    private static final String CHOOSE_FRAGMENT_TAG = "choose";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +55,16 @@ public class VerificationActivity extends TActivity implements HasComponent {
         fragment = getFragment(getIntent().getExtras().getInt(PARAM_FRAGMENT_TYPE, -1), bundle);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
+        fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         fragmentTransaction.commit();
 
+        Log.d("NISNIS", getSupportFragmentManager().getBackStackEntryCount() + " " + (
+                getSupportFragmentManager().getBackStackEntryCount() > 0 ? getSupportFragmentManager()
+                        .getBackStackEntryAt
+                                (getSupportFragmentManager()
+                                        .getBackStackEntryCount() - 1).getName() : "No fragment at " +
+                        "backstack"));
     }
 
     private Fragment getFragment(int type, Bundle bundle) {
@@ -123,36 +135,41 @@ public class VerificationActivity extends TActivity implements HasComponent {
     public void goToSelectVerificationMethod() {
         Fragment fragment = ChooseVerificationMethodFragment.createInstance(getIntent().getExtras());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
+                .tokopedia.core.R.animator.slide_out_right);
+        fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
+        fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
         fragmentTransaction.commit();
     }
 
     public void goToSmsVerification() {
         if (getIntent().getExtras() != null) {
+
+            getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             String phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER, "");
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(VerificationFragment.class
-                    .getSimpleName());
-            if (fragment == null)
-                fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
-            else
-                ((VerificationFragment) fragment).setData(createSmsBundle(phoneNumber));
+
+            Fragment fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
+                    com.tokopedia.core.R.animator.slide_out_right);
+            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
         }
     }
 
     public void goToCallVerification() {
         if (getIntent().getExtras() != null) {
+
+            getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             String phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER, "");
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(VerificationFragment.class
-                    .getSimpleName());
-            if (fragment == null)
-                fragment = VerificationFragment.createInstance(createCallBundle(phoneNumber));
-            else
-                ((VerificationFragment) fragment).setData(createSmsBundle(phoneNumber));
+
+            Fragment fragment = VerificationFragment.createInstance(createCallBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
+                    com.tokopedia.core.R.animator.slide_out_right);
+            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
         }
     }
@@ -177,4 +194,12 @@ public class VerificationActivity extends TActivity implements HasComponent {
         return bundle;
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            finish();
+        }
+    }
 }

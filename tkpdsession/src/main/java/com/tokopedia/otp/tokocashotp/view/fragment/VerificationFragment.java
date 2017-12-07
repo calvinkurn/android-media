@@ -2,6 +2,7 @@ package com.tokopedia.otp.tokocashotp.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -14,22 +15,20 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -65,9 +64,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     ImageView icon;
     TextView message;
-    EditText inputOtp;
+    PinEntryEditText inputOtp;
     TextView countdownText;
     TextView verifyButton;
+    TextView errorOtp;
+    View limitOtp;
 
     CountDownTimer countDownTimer;
     TkpdProgressDialog progressDialog;
@@ -151,12 +152,23 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         inputOtp = view.findViewById(R.id.input_otp);
         countdownText = view.findViewById(R.id.countdown_text);
         verifyButton = view.findViewById(R.id.verify_button);
+        limitOtp = view.findViewById(R.id.limit_otp);
+        errorOtp = view.findViewById(R.id.error_otp);
         prepareView();
         presenter.attachView(this);
         return view;
     }
 
     private void prepareView() {
+        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_TIMER, false)) {
+            startTimer();
+        } else {
+            setLimitReachedCountdownText();
+        }
+
+        limitOtp.setVisibility(View.GONE);
+        countdownText.setHighlightColor(Color.TRANSPARENT);
+
         inputOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -191,6 +203,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
         MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
                 .drawable.grey_button_rounded));
+        inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
     private void enableVerifyButton() {
@@ -198,6 +211,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
                 .drawable.green_button_rounded));
+        inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
     }
 
     @Override
@@ -209,9 +224,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private void initData() {
         int imageId = viewModel.getIconResId();
         ImageHandler.loadImageWithId(icon, imageId);
-
         message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
-
         verifyButton.setEnabled(false);
         presenter.requestOTP(viewModel);
     }
@@ -228,7 +241,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         Bundle bundle = new Bundle();
         bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
                 new ChooseTokoCashAccountViewModel(verifyOtpTokoCashViewModel.getList(),
-                        viewModel.getPhoneNumber()));
+                        viewModel.getPhoneNumber(),
+                        verifyOtpTokoCashViewModel.getKey()));
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
@@ -236,12 +250,21 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onErrorGetOTP(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        if (errorMessage.contains(getString(R.string.limit_otp_reached))) {
+            limitOtp.setVisibility(View.VISIBLE);
+            setLimitReachedCountdownText();
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            setFinishedCountdownText();
+        }
     }
 
     @Override
     public void onErrorVerifyOtp(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        inputOtp.setError(true);
+        errorOtp.setVisibility(View.VISIBLE);
+        inputOtp.setCompoundDrawables(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_cancel_red), null);
     }
 
     @Override
@@ -250,7 +273,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
                     .NORMAL_PROGRESS);
 
-        progressDialog.showDialog();
+        if (!progressDialog.isProgress())
+            progressDialog.showDialog();
     }
 
     @Override
@@ -266,6 +290,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         getActivity().finish();
     }
 
+    @Override
+    public boolean isCountdownFinished() {
+        return cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false);
+    }
+
     private void startTimer() {
         if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false)) {
             cacheHandler.putBoolean(HAS_TIMER, true);
@@ -279,8 +308,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                     isRunningTimer = true;
                     setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
                             (millisUntilFinished)));
-                    Log.d("NISNIS", millisUntilFinished + " " + String.valueOf(TimeUnit
-                            .MILLISECONDS.toSeconds(millisUntilFinished)));
                 }
 
                 public void onFinish() {
@@ -330,12 +357,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         countdownText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private void setRunningCountdownText(String countdown) {
-        Spannable spannable = new SpannableString(getString(R.string.please_wait_in)
-                + " " +
-                countdown
-                + " " +
-                getString(R.string.to_resend_or_use_other_verif_method));
+    private void setLimitReachedCountdownText() {
+        Spannable spannable = new SpannableString(getString(R.string.login_with_other_method));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -348,9 +371,20 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                                   ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , spannable.toString().indexOf(USE_OTHER_METHOD)
+                , spannable.toString().indexOf(getString(R.string.login_with_other_method))
                 , spannable.length()
                 , 0);
+
+        countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
+        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void setRunningCountdownText(String countdown) {
+        Spannable spannable = new SpannableString(getString(R.string.please_wait_in)
+                + " " +
+                countdown
+                + " " +
+                getString(R.string.to_resend_otp));
 
         countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
         countdownText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -374,6 +408,5 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     public void setData(Bundle bundle) {
         viewModel = createViewModel(bundle);
-        initData();
     }
 }

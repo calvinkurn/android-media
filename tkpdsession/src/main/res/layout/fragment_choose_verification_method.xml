@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_marginBottom="@dimen/margin_med"
               android:background="@color/white"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/padding_med">
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,12 +23,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/margin_med"
         android:layout_marginRight="@dimen/margin_med"
         android:layout_marginTop="@dimen/new_margin_small"
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal"
         android:lineSpacingExtra="6sp"
         android:text="@string/pick_one_of_these_method_to_get_verification_code"
         android:textColor="@color/black_54"

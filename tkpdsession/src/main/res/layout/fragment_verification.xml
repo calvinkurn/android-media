@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+    >
+
+    <LinearLayout
+        android:id="@+id/limit_otp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/red_100"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white">
+            android:layout_height="1dp"
+            android:background="@color/red_500"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:paddingBottom="@dimen/padding_activity"
+            android:paddingLeft="@dimen/padding_small_sm"
+            android:paddingRight="@dimen/padding_small_sm"
+            android:paddingTop="@dimen/padding_activity"
+            android:text="@string/limit_otp_reached"
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            tools:text="Anda sudah 3 kali melakukan pengiriman  ulang, silakan coba lagi dalam 60 menit."/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/limit_otp"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
         <ImageView
@@ -53,7 +87,6 @@
             android:id="@+id/input_otp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_large"
             android:layout_marginLeft="@dimen/margin_vl"
             android:layout_marginRight="@dimen/margin_vl"
             android:layout_marginTop="@dimen/margin_large"
@@ -70,6 +103,22 @@
             app:pinLineColors="@color/pin_line_colors"/>
 
         <TextView
+            android:id="@+id/error_otp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:fontFamily="sans-serif"
+            android:text="@string/error_wrong_otp"
+            android:textColor="@color/red_500"
+            android:textSize="@dimen/text_size_small"
+            android:textStyle="normal"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
+
+        <TextView
             android:id="@+id/verify_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
@@ -78,10 +127,10 @@
             android:background="@drawable/grey_button_rounded"
             android:fontFamily="sans-serif"
             android:gravity="center"
+            android:text="@string/button_verify"
             android:textColor="@color/grey_500"
             android:textSize="@dimen/text_size_s_medium"
             android:textStyle="bold"
-            android:text="@string/button_verify"
             />
 
         <TextView
@@ -100,4 +149,6 @@
 atau gunakan metode verifikasi lain"
             />
     </LinearLayout>
-</ScrollView>
+
+
+</RelativeLayout>

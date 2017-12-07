@@ -592,9 +592,10 @@ LoginFragment extends Fragment implements LoginView {
     private LoginProviderModel.ProvidersBean getLoginPhoneNumberBean() {
         LoginProviderModel.ProvidersBean phoneNumberBean = new LoginProviderModel.ProvidersBean();
         phoneNumberBean.setColor("#FFFFFF");
-        phoneNumberBean.setName("Nomor Ponsel");
+        phoneNumberBean.setName(getString(com.tokopedia.session.R.string.phone_number));
         phoneNumberBean.setId("tokocash");
-        phoneNumberBean.setImage("https://ecs7.tokopedia.net/img/cache/100-square/usr-1/2015/3/30/2590134/pic_2590134_16109006-d6a4-11e4-a5e2-d9ac4908a8c2.jpg");
+        phoneNumberBean.setImage("");
+        phoneNumberBean.setImageResource(com.tokopedia.session.R.drawable.ic_phone);
         return phoneNumberBean;
     }
 
@@ -622,7 +623,11 @@ LoginFragment extends Fragment implements LoginView {
                 }
                 LoginTextView tv = new LoginTextView(getActivity(), colorInt);
                 tv.setTextLogin(listProvider.get(i).getName());
-                tv.setImage(listProvider.get(i).getImage());
+                if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
+                    tv.setImage(listProvider.get(i).getImage());
+                } else if (listProvider.get(i).getImageResource() != 0) {
+                    tv.setImageResource(listProvider.get(i).getImageResource());
+                }
                 tv.setRoundCorner(10);
                 if (listProvider.get(i).getId().equalsIgnoreCase("facebook")) {
                     tv.setOnClickListener(new View.OnClickListener() {
@@ -650,7 +655,7 @@ LoginFragment extends Fragment implements LoginView {
                             goToLoginWithPhoneNumber();
                         }
                     });
-                }else{
+                } else {
                     final int finalI = i;
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override

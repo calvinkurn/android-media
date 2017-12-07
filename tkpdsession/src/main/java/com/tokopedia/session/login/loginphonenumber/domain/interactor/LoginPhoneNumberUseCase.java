@@ -1,0 +1,151 @@
+package com.tokopedia.session.login.loginphonenumber.domain.interactor;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
+import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
+import com.tokopedia.session.domain.interactor.GetTokenUseCase;
+import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
+import com.tokopedia.session.domain.pojo.token.TokenViewModel;
+import com.tokopedia.session.login.loginphonenumber.domain.model.AccessTokenTokoCashDomain;
+import com.tokopedia.session.login.loginphonenumber.domain.model.CodeTokoCashDomain;
+
+import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Func1;
+
+/**
+ * @author by nisie on 12/5/17.
+ */
+
+public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
+
+    private GetCodeTokoCashUseCase getCodeTokoCashUseCase;
+    private GetAccessTokenTokoCashUseCase getAccessTokenTokoCashUseCase;
+    private GetTokenUseCase getTokenUseCase;
+    private MakeLoginUseCase makeLoginUseCase;
+
+    @Inject
+    public LoginPhoneNumberUseCase(ThreadExecutor threadExecutor,
+                                   PostExecutionThread postExecutionThread,
+                                   GetCodeTokoCashUseCase getCodeTokoCashUseCase,
+                                   GetAccessTokenTokoCashUseCase getAccessTokenTokoCashUseCase,
+                                   GetTokenUseCase getTokenUseCase,
+                                   MakeLoginUseCase makeLoginUseCase) {
+        super(threadExecutor, postExecutionThread);
+        this.getCodeTokoCashUseCase = getCodeTokoCashUseCase;
+        this.getAccessTokenTokoCashUseCase = getAccessTokenTokoCashUseCase;
+        this.getTokenUseCase = getTokenUseCase;
+        this.makeLoginUseCase = makeLoginUseCase;
+    }
+
+    @Override
+    public Observable<LoginTokoCashViewModel> createObservable(RequestParams requestParams) {
+        final LoginTokoCashViewModel loginTokoCashViewModel = new LoginTokoCashViewModel();
+        return Observable.just(loginTokoCashViewModel)
+                .flatMap(getCodeTokoCash(requestParams))
+                .flatMap(getAccessTokenTokoCash())
+                .flatMap(getTokenAccounts(loginTokoCashViewModel, requestParams))
+                .flatMap(makeLogin(loginTokoCashViewModel, requestParams));
+    }
+
+    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getAccessTokenTokoCash() {
+        return new Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>>() {
+            @Override
+            public Observable<LoginTokoCashViewModel> call(final LoginTokoCashViewModel loginTokoCashViewModel) {
+                return getAccessTokenTokoCashUseCase.createObservable(getAccessTokenTokoCashParam
+                        (loginTokoCashViewModel))
+                        .flatMap(new Func1<AccessTokenTokoCashDomain, Observable<LoginTokoCashViewModel>>() {
+                            @Override
+                            public Observable<LoginTokoCashViewModel> call(AccessTokenTokoCashDomain accessTokenTokoCashDomain) {
+                                loginTokoCashViewModel.setAccessTokenTokoCash
+                                        (accessTokenTokoCashDomain);
+                                return Observable.just(loginTokoCashViewModel);
+                            }
+                        });
+            }
+        };
+    }
+
+    private RequestParams getAccessTokenTokoCashParam(LoginTokoCashViewModel loginTokoCashViewModel) {
+        return GetAccessTokenTokoCashUseCase.getParam(loginTokoCashViewModel
+                .getTokoCashCode().getCode());
+    }
+
+    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> makeLogin(final LoginTokoCashViewModel loginTokoCashViewModel, final RequestParams requestParams) {
+        return new Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>>() {
+            @Override
+            public Observable<LoginTokoCashViewModel> call(final LoginTokoCashViewModel loginTokoCashViewModel) {
+                return makeLoginUseCase.createObservable(getMakeLoginParam(requestParams))
+                        .flatMap(new Func1<MakeLoginDomain, Observable<LoginTokoCashViewModel>>() {
+                            @Override
+                            public Observable<LoginTokoCashViewModel> call(MakeLoginDomain makeLoginDomain) {
+                                loginTokoCashViewModel.setMakeLoginDomain(makeLoginDomain);
+                                return Observable.just(loginTokoCashViewModel);
+                            }
+                        });
+            }
+        };
+    }
+
+    private RequestParams getMakeLoginParam(RequestParams requestParams) {
+        return MakeLoginUseCase.getParam(requestParams.getString(MakeLoginUseCase.PARAM_USER_ID, ""));
+    }
+
+    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getTokenAccounts(LoginTokoCashViewModel loginTokoCashViewModel, final RequestParams requestParams) {
+        return new Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>>() {
+            @Override
+            public Observable<LoginTokoCashViewModel> call(final LoginTokoCashViewModel loginTokoCashViewModel) {
+                return getTokenUseCase.createObservable(getTokenParam(loginTokoCashViewModel))
+                        .flatMap(new Func1<TokenViewModel, Observable<LoginTokoCashViewModel>>() {
+                            @Override
+                            public Observable<LoginTokoCashViewModel> call(TokenViewModel tokenViewModel) {
+                                loginTokoCashViewModel.setAccountsToken(tokenViewModel);
+                                return Observable.just(loginTokoCashViewModel);
+                            }
+                        });
+            }
+        };
+    }
+
+    private RequestParams getTokenParam(LoginTokoCashViewModel loginTokoCashViewModel) {
+        return GetTokenUseCase.getParamThirdParty(GetTokenUseCase.SOCIAL_TYPE_PHONE_NUMBER,
+                loginTokoCashViewModel.getAccessTokenTokoCash()
+                        .getAccessToken());
+    }
+
+    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getCodeTokoCash
+            (final RequestParams requestParams) {
+        return new Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>>() {
+            @Override
+            public Observable<LoginTokoCashViewModel> call(final LoginTokoCashViewModel loginTokoCashViewModel) {
+                return getCodeTokoCashUseCase.createObservable(getAccessTokenParams(requestParams))
+                        .flatMap(new Func1<CodeTokoCashDomain, Observable<LoginTokoCashViewModel>>() {
+                            @Override
+                            public Observable<LoginTokoCashViewModel> call(CodeTokoCashDomain accessTokenTokoCashDomain) {
+                                loginTokoCashViewModel.setTokoCashCode(accessTokenTokoCashDomain);
+                                return Observable.just(loginTokoCashViewModel);
+                            }
+                        });
+            }
+        };
+    }
+
+    private RequestParams getAccessTokenParams(RequestParams requestParams) {
+        return GetCodeTokoCashUseCase.getParam(
+                requestParams.getString(GetCodeTokoCashUseCase.PARAM_KEY, ""),
+                requestParams.getString(GetCodeTokoCashUseCase.PARAM_EMAIL, ""));
+    }
+
+    public static RequestParams getParam(String accessToken, String email, int userId) {
+        RequestParams params = RequestParams.create();
+        params.putAll(GetCodeTokoCashUseCase.getParam(accessToken, email).getParameters());
+        params.putAll(MakeLoginUseCase.getParam(String.valueOf(userId)).getParameters());
+        return params;
+    }
+
+
+}

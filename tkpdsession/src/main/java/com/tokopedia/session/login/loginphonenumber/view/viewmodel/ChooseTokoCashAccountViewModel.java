@@ -11,17 +11,22 @@ import java.util.ArrayList;
 
 public class ChooseTokoCashAccountViewModel implements Parcelable{
 
-    ArrayList<AccountTokocash> listAccount;
-    String phoneNumber;
+    private ArrayList<AccountTokocash> listAccount;
+    private String phoneNumber;
+    private String accessToken;
 
-    public ChooseTokoCashAccountViewModel(ArrayList<AccountTokocash> listAccount, String phoneNumber) {
+    public ChooseTokoCashAccountViewModel(ArrayList<AccountTokocash> listAccount,
+                                          String phoneNumber,
+                                          String accessToken) {
         this.listAccount = listAccount;
         this.phoneNumber = phoneNumber;
+        this.accessToken = accessToken;
     }
 
     protected ChooseTokoCashAccountViewModel(Parcel in) {
         listAccount = in.createTypedArrayList(AccountTokocash.CREATOR);
         phoneNumber = in.readString();
+        accessToken = in.readString();
     }
 
     public static final Creator<ChooseTokoCashAccountViewModel> CREATOR = new Creator<ChooseTokoCashAccountViewModel>() {
@@ -45,6 +50,7 @@ public class ChooseTokoCashAccountViewModel implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(listAccount);
         dest.writeString(phoneNumber);
+        dest.writeString(accessToken);
     }
 
     public ArrayList<AccountTokocash> getListAccount() {
@@ -53,5 +59,9 @@ public class ChooseTokoCashAccountViewModel implements Parcelable{
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public String getKey() {
+        return accessToken;
     }
 }

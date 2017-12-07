@@ -50,6 +50,16 @@ public interface WalletApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Wallet.AUTHORIZE)
-    Observable<Response<TkpdDigitalResponse>> getAccessToken(@FieldMap Map<String,
+    Observable<Response<TkpdDigitalResponse>> getAuthorizeCode(@FieldMap Map<String,
+                    Object> parameters);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Wallet.CHECK_MSISDN)
+    Observable<Response<TkpdDigitalResponse>> checkMsisdn(@FieldMap Map<String,
+            Object> parameters);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Wallet.GET_TOKEN)
+    Observable<Response<String>> getToken(@FieldMap Map<String,
             Object> parameters);
 }

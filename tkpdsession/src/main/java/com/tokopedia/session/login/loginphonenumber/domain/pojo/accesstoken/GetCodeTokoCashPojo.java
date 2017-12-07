@@ -1,10 +1,9 @@
-
-package com.tokopedia.otp.tokocashotp.domain.pojo.accesstoken;
+package com.tokopedia.session.login.loginphonenumber.domain.pojo.accesstoken;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GetAccessTokenTokoCashPojo {
+public class GetCodeTokoCashPojo {
 
     @SerializedName("code")
     @Expose

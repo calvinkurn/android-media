@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -47,6 +48,8 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     TextView nextButton;
     TextView message;
     TextView errorText;
+
+    TkpdProgressDialog progressDialog;
 
     @Inject
     LoginPhoneNumberPresenter presenter;
@@ -158,6 +161,21 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                 REQUEST_NO_TOKOCASH_ACCOUNT);
     }
 
+    @Override
+    public void dismissLoading() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void showLoading() {
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+                    .NORMAL_PROGRESS);
+
+        progressDialog.showDialog();
+    }
+
     private ArrayList<MethodItem> getListVerificationMethod() {
         ArrayList<MethodItem> list = new ArrayList<>();
         list.add(new MethodItem(
@@ -173,7 +191,8 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         return list;
     }
 
-    private void showErrorPhoneNumber(String errorMessage) {
+    @Override
+    public void showErrorPhoneNumber(String errorMessage) {
         errorText.setText(errorMessage);
     }
 
@@ -181,7 +200,13 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {
-            goToChooseAccountPage(data);
+            ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
+            if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
+                    .getListAccount().isEmpty()) {
+                goToChooseAccountPage(chooseTokoCashAccountViewModel);
+            } else {
+                goToNoTokocashAccountPage();
+            }
         } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
                 && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
@@ -191,10 +216,10 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         }
     }
 
-    private void goToChooseAccountPage(Intent data) {
+    private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
         startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
                 getActivity(),
-                getChooseAccountData(data)),
+                data),
                 REQUEST_CHOOSE_ACCOUNT);
     }
 

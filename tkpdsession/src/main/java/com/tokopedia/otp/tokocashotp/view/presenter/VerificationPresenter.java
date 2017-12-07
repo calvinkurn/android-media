@@ -47,7 +47,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
 
     @Override
     public void requestOTP(VerificationViewModel viewModel) {
-        if (!TextUtils.isEmpty(viewModel.getPhoneNumber())) {
+        if (!TextUtils.isEmpty(viewModel.getPhoneNumber()) && getView().isCountdownFinished()) {
             getView().showLoadingProgress();
             int type = viewModel.getType();
             switch (type) {
@@ -68,39 +68,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     @Override
     public void verifyOtp(String phoneNumber, String otpCode) {
         getView().showLoadingProgress();
-
-//        getView().onSuccessVerifyOTP(new VerifyOtpTokoCashViewModel(
-//                "asd",
-//                true,
-//                true,
-//                getDummyList()
-//        ));
-
         verifyTokoCashOTPUseCase.execute(VerifyOtpTokoCashUseCase.getParam(phoneNumber, otpCode), new
                 VerifyOtpTokoCashSubscriber(getView()));
-    }
-
-    private ArrayList<AccountTokocash> getDummyList() {
-        ArrayList<AccountTokocash> listAccount = new ArrayList<>();
-        listAccount.add(new AccountTokocash(
-                101,
-                "Nisie 1",
-                "nisie@nisie.com",
-                "https://ecs7.tokopedia.net/img/cache/100-square/usr-1/2015/3/30/2590134/pic_2590134_16109006-d6a4-11e4-a5e2-d9ac4908a8c2.jpg"
-        ));
-        listAccount.add(new AccountTokocash(
-                102,
-                "Nisie 2",
-                "nisie@nisie.com",
-                "https://ecs7.tokopedia.net/img/cache/100-square/usr-1/2015/3/30/2590134/pic_2590134_16109006-d6a4-11e4-a5e2-d9ac4908a8c2.jpg"
-        ));
-        listAccount.add(new AccountTokocash(
-                103,
-                "Nisie 3",
-                "nisie@nisie.com",
-                "https://ecs7.tokopedia.net/img/cache/100-square/usr-1/2015/3/30/2590134/pic_2590134_16109006-d6a4-11e4-a5e2-d9ac4908a8c2.jpg"
-        ));
-
-        return listAccount;
     }
 }

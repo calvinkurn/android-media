@@ -1,12 +1,12 @@
-package com.tokopedia.otp.tokocashotp.data.mapper;
+package com.tokopedia.session.login.loginphonenumber.data.mapper;
 
 import android.text.TextUtils;
 
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.otp.tokocashotp.domain.pojo.accesstoken.GetAccessTokenTokoCashPojo;
-import com.tokopedia.otp.tokocashotp.domain.model.AccessTokenTokoCashDomain;
+import com.tokopedia.session.login.loginphonenumber.domain.model.CodeTokoCashDomain;
+import com.tokopedia.session.login.loginphonenumber.domain.pojo.accesstoken.GetCodeTokoCashPojo;
 
 import javax.inject.Inject;
 
@@ -17,17 +17,17 @@ import rx.functions.Func1;
  * @author by nisie on 12/5/17.
  */
 
-public class GetAccessTokenTokoCashMapper implements Func1<Response<TkpdDigitalResponse>,
-        AccessTokenTokoCashDomain> {
+public class GetCodeTokoCashMapper implements Func1<Response<TkpdDigitalResponse>,
+        CodeTokoCashDomain> {
 
     @Inject
-    public GetAccessTokenTokoCashMapper() {
+    public GetCodeTokoCashMapper() {
     }
 
     @Override
-    public AccessTokenTokoCashDomain call(Response<TkpdDigitalResponse> response) {
+    public CodeTokoCashDomain call(Response<TkpdDigitalResponse> response) {
         if (response.isSuccessful()) {
-            GetAccessTokenTokoCashPojo pojo = response.body().convertDataObj(GetAccessTokenTokoCashPojo.class);
+            GetCodeTokoCashPojo pojo = response.body().convertDataObj(GetCodeTokoCashPojo.class);
             return convertToDomain(pojo);
         } else {
             String messageError = ErrorHandler.getErrorMessageTokoCash(response);
@@ -39,7 +39,7 @@ public class GetAccessTokenTokoCashMapper implements Func1<Response<TkpdDigitalR
         }
     }
 
-    private AccessTokenTokoCashDomain convertToDomain(GetAccessTokenTokoCashPojo pojo) {
-        return new AccessTokenTokoCashDomain(pojo.getCode());
+    private CodeTokoCashDomain convertToDomain(GetCodeTokoCashPojo pojo) {
+        return new CodeTokoCashDomain(pojo.getCode());
     }
 }

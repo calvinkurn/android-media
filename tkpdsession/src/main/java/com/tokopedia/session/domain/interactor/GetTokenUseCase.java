@@ -23,6 +23,7 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
 
     public static final int SOCIAL_TYPE_FACEBOOK = 1;
     public static final int SOCIAL_TYPE_GPLUS = 2;
+    public static final int SOCIAL_TYPE_PHONE_NUMBER = 5;
 
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
@@ -49,12 +50,11 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
         this.repository = repository;
     }
 
-    @Override
     public Observable<TokenViewModel> createObservable(RequestParams requestParams) {
         return repository.getAccessToken(requestParams);
     }
 
-    public static RequestParams getParamRegisterThirdParty(int socialType, String accessToken) {
+    public static RequestParams getParamThirdParty(int socialType, String accessToken) {
         RequestParams params = RequestParams.create();
         params.putString(GRANT_TYPE, GRANT_SDK);
         params.putInt(SOCIAL_TYPE, socialType);

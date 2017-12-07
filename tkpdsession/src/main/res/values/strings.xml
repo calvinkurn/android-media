@@ -103,7 +103,7 @@
     <string name="title_verify">Verifikasi</string>
     <string name="verification_code_sent_to_sms">Kode verifikasi telah dikirimkan ke</string>
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
-    <string name="to_resend_or_use_other_verif_method">untuk kirim ulang\natau gunakan metode verifikasi lain</string>
+    <string name="to_resend_otp">untuk kirim ulang</string>
     <string name="please_wait_in">Mohon tunggu dalam</string>
     <string name="countdown_finish_otp">Tidak menerima kode?\n Kirim ulang atau gunakan
         metode verifikasi lain</string>
@@ -127,5 +127,9 @@
     <string name="no_account_connected">Tidak Ada Akun Terhubung</string>
     <string name="prompt_choose_tokocash_account"><![CDATA[Anda memiliki <b>%1$d akun </b>dengan
     nomor ponsel %2$s. Pilih salah satu akun untuk masuk.]]></string>
+    <string name="limit_otp_reached">Anda sudah 3 kali melakukan pengiriman ulang, silakan coba lagi dalam 60 menit.</string>
+    <string name="phone_number_not_registered">Nomor ponsel belum terdaftar</string>
+    <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
+    <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
 
 </resources>

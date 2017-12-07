@@ -370,6 +370,7 @@ public class PinEntryEditText extends EditText {
 
     public void setError(boolean hasError) {
         mHasError = hasError;
+
     }
 
     public boolean isError() {

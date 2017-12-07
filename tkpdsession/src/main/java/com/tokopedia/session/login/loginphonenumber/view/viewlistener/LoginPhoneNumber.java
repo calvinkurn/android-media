@@ -12,9 +12,16 @@ public interface LoginPhoneNumber {
 
         void showErrorPhoneNumber(int resId);
 
+        void showErrorPhoneNumber(String errorMessage);
+
         void goToVerifyAccountPage(String phoneNumber);
 
         void goToNoTokocashAccountPage();
+
+        void dismissLoading();
+
+        void showLoading();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
