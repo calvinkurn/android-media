@@ -1,17 +1,21 @@
-package com.tokopedia.design.voucher;
+package com.tokopedia.digital.cart.compoundview;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.digital.R;
+import com.tokopedia.digital.R2;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 
@@ -20,49 +24,46 @@ import com.tokopedia.design.base.BaseCustomView;
  * this custom view is for voucher view in cart
  */
 
-public class VoucherCartView extends BaseCustomView {
+public class VoucherCartHolderView extends RelativeLayout {
 
-    private CheckBox checkBoxVoucher;
-    private RelativeLayout holderInputVoucher;
-    private RelativeLayout holderVoucher;
-    private TextView buttonVoucher;
-    private TextView buttonCancel;
-    private EditText editTextVoucher;
-    private TextView errorVoucher;
-    private TextView usedVoucher;
-    private TextView labelUsedVoucher;
+    @BindView(R2.id.textview_voucher)
+    TextView labelUseVoucher;
+    @BindView(R2.id.label_promo_code)
+    TextView labelPromoCode;
+    @BindView(R2.id.textview_promo_code)
+    TextView textviewPromoCode;
+    @BindView(R2.id.textview_voucher_detail)
+    TextView textviewVoucherDetail;
+    @BindView(R2.id.button_cancel)
+    ImageView buttonCancel;
+    @BindView(R2.id.cardview_used_promo)
+    CardView cardUsedPromo;
+    @BindView(R2.id.cardview_input_promo)
+    CardView cardInputPromo;
 
-    private View rootView;
     private ActionListener actionListener;
     private String voucherCode = "";
+    private Context context;
 
-    public VoucherCartView(@NonNull Context context) {
+    public VoucherCartHolderView(Context context) {
         super(context);
         init(context);
     }
 
-    public VoucherCartView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public VoucherCartHolderView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public VoucherCartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public VoucherCartHolderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     private void init(Context context) {
-        rootView = inflate(context, R.layout.widget_voucher_cart, this);
-        checkBoxVoucher = (CheckBox) rootView.findViewById(R.id.checkbox_voucher);
-        holderInputVoucher = (RelativeLayout) rootView.findViewById(R.id.holder_input_voucher);
-        holderVoucher = (RelativeLayout) rootView.findViewById(R.id.holder_voucher);
-        buttonVoucher = (TextView) rootView.findViewById(R.id.button_voucher);
-        buttonCancel = (TextView) rootView.findViewById(R.id.button_cancel);
-        editTextVoucher = (EditText) rootView.findViewById(R.id.edittext_voucher);
-        errorVoucher = (TextView) rootView.findViewById(R.id.error_voucher);
-        usedVoucher = (TextView) rootView.findViewById(R.id.textview_voucher);
-        labelUsedVoucher = (TextView) rootView.findViewById(R.id.text_checkedbox);
-
+        this.context = context;
+        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_voucher_digital_module, this, true);
+        ButterKnife.bind(this);
         actionVoucher();
     }
 
@@ -71,137 +72,74 @@ public class VoucherCartView extends BaseCustomView {
     }
 
     private void actionVoucher() {
-        checkBoxVoucher.setOnCheckedChangeListener(getCheckboxVoucherListener());
-        labelUsedVoucher.setOnClickListener(new OnClickListener() {
+        labelUseVoucher.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                checkBoxVoucher.setChecked(!(checkBoxVoucher.isChecked()));
+            public void onClick(View view) {
+                actionListener.onClickUseVoucher();
             }
         });
-        buttonVoucher.setOnClickListener(getVoucherListener());
-        buttonCancel.setOnClickListener(getCancelVoucherListener());
+
+        buttonCancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelVoucher();
+                actionListener.onClickCloseButton();
+            }
+        });
     }
 
-    private CompoundButton.OnCheckedChangeListener getCheckboxVoucherListener() {
-        return new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) {
-                    if (actionListener != null) {
-                        hideHolderVoucher();
-                        editTextVoucher.setText("");
-                        errorVoucher.setVisibility(GONE);
-                        actionListener.forceHideSoftKeyboardVoucherInput();
-                        actionListener.disableVoucherDiscount();
-                    }
-                } else {
-                    editTextVoucher.requestFocus();
-                    if (actionListener != null) actionListener.forceShowSoftKeyboardVoucherInput();
-                }
-                holderInputVoucher.setVisibility(isChecked ? VISIBLE : GONE);
-            }
-        };
-    }
-
-    private OnClickListener getVoucherListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isEditTextVoucherEmpty()) {
-                    if (actionListener != null) {
-                        voucherCode = editTextVoucher.getText().toString().trim();
-                        actionListener.onVoucherCheckButtonClicked();
-                    } else throw new IllegalArgumentException("Action Listener null coy!!");
-                } else {
-                    hideHolderVoucher();
-                    errorVoucher.setText(getContext().getString(R.string.empty_voucher));
-                    errorVoucher.setVisibility(VISIBLE);
-                }
-            }
-        };
+    private void cancelVoucher() {
+        voucherCode = "";
+        cardUsedPromo.setVisibility(GONE);
+        cardInputPromo.setVisibility(VISIBLE);
     }
 
     public String getVoucherCode() {
-        if (TextUtils.isEmpty(voucherCode) && checkBoxVoucher.isChecked())
-            checkBoxVoucher.setChecked(false);
         return voucherCode;
     }
 
-    /**
-     *
-     * @param voucherName voucher code
-     * @param message message that has been show up when success/failed verify voucher code
-     */
+    public void setPromo(String voucherName, String message) {
+        UnifyTracking.eventVoucherSuccess(voucherCode,"");
 
-    public void setUsedVoucher(String voucherName, String message) {
-        actionListener.trackingSuccessVoucher(voucherName);
+        cardInputPromo.setVisibility(GONE);
+
         voucherCode = voucherName;
-        usedVoucher.setText(message);
-        holderVoucher.setVisibility(VISIBLE);
-        errorVoucher.setVisibility(GONE);
+        labelPromoCode.setText("Kode Promo: ");
+        textviewPromoCode.setText(voucherName);
+        textviewVoucherDetail.setText(message);
+
+        cardUsedPromo.setVisibility(VISIBLE);
     }
 
-    /**
-     *
-     * @param errorMessage
-     */
+//    private boolean isEditTextVoucherEmpty() {
+//        return TextUtils.isEmpty(editTextVoucher.getText().toString());
+//    }
 
-    public void setErrorVoucher(String errorMessage) {
-        actionListener.trackingErrorVoucher(errorMessage);
-        hideHolderVoucher();
-        errorVoucher.setVisibility(VISIBLE);
-        errorVoucher.setText(errorMessage);
-        actionListener.disableVoucherDiscount();
-    }
-
-    private boolean isEditTextVoucherEmpty() {
-        return TextUtils.isEmpty(editTextVoucher.getText().toString());
-    }
-
-    private OnClickListener getCancelVoucherListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.trackingCancelledVoucher();
-                hideHolderVoucher();
-                editTextVoucher.setText("");
-                checkBoxVoucher.setChecked(false);
-            }
-        };
-    }
-
-    private void hideHolderVoucher() {
-        voucherCode = "";
-        holderVoucher.setVisibility(GONE);
-    }
-
-    /**
-     *
-     * @param voucherAutoCode voucher code
-     */
+//    @NotNull
+//    private OnClickListener getCancelVoucherListener() {
+//        return new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                UnifyTracking.eventClickCancelVoucher("","");
+//                hideHolderVoucher();
+//                editTextVoucher.setText("");
+//                checkBoxVoucher.setChecked(false);
+//            }
+//        };
+//    }
 
     public void renderVoucherAutoCode(String voucherAutoCode) {
         if (!TextUtils.isEmpty(voucherAutoCode)) {
-            checkBoxVoucher.setChecked(true);
-            editTextVoucher.setText(voucherAutoCode);
             voucherCode = voucherAutoCode;
-            actionListener.onVoucherCheckButtonClicked();
+//            actionListener.onVoucherCheckButtonClicked();
         }
     }
 
     public interface ActionListener {
-        void onVoucherCheckButtonClicked();
-
-        void forceHideSoftKeyboardVoucherInput();
-
-        void forceShowSoftKeyboardVoucherInput();
-
         void disableVoucherDiscount();
 
-        void trackingErrorVoucher(String errorMsg);
+        void onClickUseVoucher();
 
-        void trackingSuccessVoucher(String voucherName);
-
-        void trackingCancelledVoucher();
+        void onClickCloseButton();
     }
 }
