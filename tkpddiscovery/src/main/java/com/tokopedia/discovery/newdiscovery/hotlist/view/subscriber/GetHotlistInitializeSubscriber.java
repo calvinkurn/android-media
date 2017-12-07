@@ -165,6 +165,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         hotlistPromo.setVoucherCode(info.getVoucherCode());
         hotlistPromo.setPromoPeriod(info.getValidDate());
         hotlistPromo.setMinimunTransaction(info.getMinimunTransaction());
+        hotlistPromo.setApplinkTermCondition(info.getApplinkTermCondition());
         hotlistPromo.setUrlTermCondition(info.getUrlTermCondition());
         return hotlistPromo;
     }

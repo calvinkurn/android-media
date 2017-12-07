@@ -10,6 +10,7 @@ public class HotlistPromoInfo {
     private String voucherCode;
     private String minimunTransaction;
     private String validDate;
+    private String applinkTermCondition;
     private String urlTermCondition;
 
     public String getTitle() {
@@ -44,11 +45,19 @@ public class HotlistPromoInfo {
         this.validDate = validDate;
     }
 
-    public String getUrlTermCondition() {
-        return urlTermCondition;
+    public String getApplinkTermCondition() {
+        return applinkTermCondition;
+    }
+
+    public void setApplinkTermCondition(String applinkTermCondition) {
+        this.applinkTermCondition = applinkTermCondition;
     }
 
     public void setUrlTermCondition(String urlTermCondition) {
         this.urlTermCondition = urlTermCondition;
+    }
+
+    public String getUrlTermCondition() {
+        return urlTermCondition;
     }
 }

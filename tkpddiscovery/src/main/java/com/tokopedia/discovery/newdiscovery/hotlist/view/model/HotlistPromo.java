@@ -13,6 +13,7 @@ public class HotlistPromo implements Parcelable {
     private String voucherCode;
     private String minimunTransaction;
     private String promoPeriod;
+    private String applinkTermCondition;
     private String urlTermCondition;
 
     public String getTitle() {
@@ -47,16 +48,24 @@ public class HotlistPromo implements Parcelable {
         this.promoPeriod = promoPeriod;
     }
 
-    public String getUrlTermCondition() {
-        return urlTermCondition;
+    public String getApplinkTermCondition() {
+        return applinkTermCondition;
+    }
+
+    public void setApplinkTermCondition(String applinkTermCondition) {
+        this.applinkTermCondition = applinkTermCondition;
+    }
+
+
+    public HotlistPromo() {
     }
 
     public void setUrlTermCondition(String urlTermCondition) {
         this.urlTermCondition = urlTermCondition;
     }
 
-
-    public HotlistPromo() {
+    public String getUrlTermCondition() {
+        return urlTermCondition;
     }
 
     @Override
@@ -70,6 +79,7 @@ public class HotlistPromo implements Parcelable {
         dest.writeString(this.voucherCode);
         dest.writeString(this.minimunTransaction);
         dest.writeString(this.promoPeriod);
+        dest.writeString(this.applinkTermCondition);
         dest.writeString(this.urlTermCondition);
     }
 
@@ -78,6 +88,7 @@ public class HotlistPromo implements Parcelable {
         this.voucherCode = in.readString();
         this.minimunTransaction = in.readString();
         this.promoPeriod = in.readString();
+        this.applinkTermCondition = in.readString();
         this.urlTermCondition = in.readString();
     }
 

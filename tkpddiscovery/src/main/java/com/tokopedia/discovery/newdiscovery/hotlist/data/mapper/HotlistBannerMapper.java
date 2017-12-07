@@ -50,7 +50,8 @@ public class HotlistBannerMapper implements Func1<Response<TkpdResponse>, Hotlis
         HotlistPromoInfo hotlistPromoInfo = new HotlistPromoInfo();
         hotlistPromoInfo.setMinimunTransaction(promoInfo.getMinTx());
         hotlistPromoInfo.setTitle(promoInfo.getText());
-        hotlistPromoInfo.setUrlTermCondition(promoInfo.getTcApplink());
+        hotlistPromoInfo.setApplinkTermCondition(promoInfo.getTcApplink());
+        hotlistPromoInfo.setUrlTermCondition(promoInfo.getTcLink());
         hotlistPromoInfo.setPromoPeriod(promoInfo.getPromoPeriod());
         hotlistPromoInfo.setVoucherCode(promoInfo.getVoucherCode());
         return hotlistPromoInfo;
