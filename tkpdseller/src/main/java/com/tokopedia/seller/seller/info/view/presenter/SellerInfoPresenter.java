@@ -3,11 +3,9 @@ package com.tokopedia.seller.seller.info.view.presenter;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
 import com.tokopedia.seller.seller.info.domain.interactor.SellerInfoUseCase;
-import com.tokopedia.seller.seller.info.view.SellerInfoView;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 
 import java.util.ArrayList;
@@ -15,7 +13,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
 /**
@@ -23,6 +20,7 @@ import rx.Subscriber;
  */
 
 public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListener<SellerInfoModel>> {
+    public static final int NO_HAS_NEXT_VALUE = 1;
     SellerInfoUseCase sellerInfoUseCase;
 
     @Inject
@@ -48,7 +46,9 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListene
             @Override
             public void onNext(ResponseSellerInfoModel response ) {
                 if(isViewAttached()){
-                    getView().onSearchLoaded(conv(response), 1);
+                    List<SellerInfoModel> result = conv(response);
+                    int totalItem = response.getData().getPaging().isHasNext() ? result.size() + 1 : NO_HAS_NEXT_VALUE;
+                    getView().onSearchLoaded(result, totalItem);
                 }
             }
         });

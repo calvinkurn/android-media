@@ -6,18 +6,15 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Created by normansyahputa on 11/30/17.
@@ -76,12 +73,17 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
     public void addData(List<SellerInfoModel> data) {
         Collections.sort(data, new Comparator<SellerInfoModel>() {
             public int compare(SellerInfoModel o1, SellerInfoModel o2) {
-                return sellerInfoDateUtil.fromUnixTime(o1.getCreateTimeUnix())
+                return sellerInfoDateUtil.fromUnixTime(o2.getCreateTimeUnix())
                         .compareTo(
-                                sellerInfoDateUtil.fromUnixTime(o2.getCreateTimeUnix())
+                                sellerInfoDateUtil.fromUnixTime(o1.getCreateTimeUnix())
                         );
             }
         });
+
+        Calendar todayDate = Calendar.getInstance();
+
+        Calendar yesterdayDate = Calendar.getInstance();
+        yesterdayDate.add(Calendar.DATE, -1);
 
         // for today
         if(data.size() > 1){
@@ -99,33 +101,38 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
 
         // add sections in here
         List<SellerInfoModel> result = new ArrayList<>();
-        result.addAll(data);
         SellerInfoSectionModel sectionTmp = null;
-        for(int i=0;i<result.size();i++){
+        int i = 0;
+        for (; i < data.size(); ) {
+            SellerInfoModel sellerInfoModel = data.get(i);
+
             if(sectionTmp==null){
                 sectionTmp = new SellerInfoSectionModel();
-                sectionTmp.setCreateTimeUnix(result.get(i).getCreateTimeUnix());
+                sectionTmp.setCreateTimeUnix(sellerInfoModel.getCreateTimeUnix());
 
-                if(data.get(i).isToday()){
-                    sectionTmp.setToday(data.get(i).isToday());
+                if (sellerInfoModel.isToday()) {
+                    sectionTmp.setToday(sellerInfoModel.isToday());
                 }
 
-                if(data.get(i).isYesterday()){
-                    sectionTmp.setToday(data.get(i).isYesterday());
+                if (sellerInfoModel.isYesterday()) {
+                    sectionTmp.setYesterday(sellerInfoModel.isYesterday());
                 }
 
-                result.add(i, sectionTmp);
+                result.add(sectionTmp);
                 continue;
             }
 
-            boolean isSectionDiff = sectionTmp.getCreateTimeUnix()==result.get(i).getCreateTimeUnix();
-            if(isSectionDiff)
+            boolean isSectionDiff = sectionTmp.getCreateTimeUnix() == sellerInfoModel.getCreateTimeUnix();
+            if (!isSectionDiff) {
+                sectionTmp = null;
                 continue;
+            }
 
-            sectionTmp = new SellerInfoSectionModel();
-            sectionTmp.setCreateTimeUnix(result.get(i).getCreateTimeUnix());
-            result.add(i, sectionTmp);
+            result.add(sellerInfoModel);
+
+            i++;
         }
+
 
         super.addData(result);
     }

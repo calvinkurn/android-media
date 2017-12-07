@@ -36,7 +36,7 @@ public class SellerInfoDateUtil {
     }
 
     public Date yesterdayDate(){
-        return GoldMerchantDateUtils.getPreviousDateInDate(Calendar.getInstance().getTimeInMillis(), 7);
+        return GoldMerchantDateUtils.getPreviousDateInDate(Calendar.getInstance().getTimeInMillis(), 1);
     }
 
     public Date todayDate(){
@@ -44,7 +44,7 @@ public class SellerInfoDateUtil {
     }
 
     public String yesterdayNumberFormat(){
-        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 7) / 1000;
+        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 1) / 1000;
         return fromUnixTimeNumberFormat(unixTime);
     }
 
@@ -54,7 +54,7 @@ public class SellerInfoDateUtil {
     }
 
     public String yesterday(){
-        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 7) / 1000;
+        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 1) / 1000;
         return fromUnixTime(unixTime);
     }
 
