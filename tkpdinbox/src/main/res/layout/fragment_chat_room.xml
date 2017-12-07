@@ -65,74 +65,92 @@
 
         </RelativeLayout>
 
-        <include
-            android:id="@+id/layout_template"
-            layout="@layout/layout_list_template"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:visibility="visible"
-            android:layout_marginLeft="@dimen/margin_vvvs"
-            android:layout_marginRight="@dimen/margin_vvvs"
-            android:layout_above="@id/add_comment_area"/>
 
-        <RelativeLayout
-            android:id="@+id/add_comment_area"
+        <LinearLayout android:id="@+id/add_comment_area"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginTop="@dimen/margin_vs"
-            android:background="@drawable/cards_ui_chat"
-            android:paddingBottom="@dimen/padding_vs"
-            android:paddingTop="@dimen/padding_vs"
-            android:visibility="visible">
+            xmlns:android="http://schemas.android.com/apk/res/android">
 
-            <ImageView
-                android:id="@+id/add_url"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_attach" />
-
-
-            <EditText
-                android:id="@+id/new_comment"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_template"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_toLeftOf="@+id/send_but"
-                android:layout_toRightOf="@+id/add_url"
-                android:background="@color/white"
-                android:hint="@string/chat_edit_text"
-                android:inputType="textMultiLine"
-                android:maxLines="5"
-                android:padding="@dimen/padding_vs"
-                android:textSize="@dimen/font_medium" />
+                android:layout_marginLeft="@dimen/margin_vvvs"
+                android:layout_marginRight="@dimen/margin_vvvs"/>
 
-            <ImageView
-                android:id="@+id/send_but"
-                android:layout_width="wrap_content"
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_send_24dp_green" />
+                android:background="@drawable/cards_ui_chat"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:paddingBottom="@dimen/padding_vs"
+                android:paddingTop="@dimen/padding_vs"
+                android:paddingLeft="@dimen/padding_vs"
+                android:paddingRight="@dimen/padding_vs"
+                android:visibility="visible">
 
-            <ProgressBar
-                android:id="@+id/loading"
-                android:layout_width="@dimen/comment_msg_btn_w"
-                android:layout_height="@dimen/comment_msg_btn_h"
-                android:layout_gravity="center"
-                android:visibility="gone" />
-        </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/add_url"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small"
+                    android:src="@drawable/ic_attach" />
+
+                <ImageView
+                    android:id="@+id/send_but"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/add_url"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/padding_small"
+                    android:src="@drawable/ic_send_24dp_green" />
+
+                <EditText
+                    android:id="@+id/new_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/add_url"
+                    android:layout_toEndOf="@+id/add_url"
+                    android:layout_toLeftOf="@+id/send_but"
+                    android:layout_toRightOf="@+id/add_url"
+                    android:layout_toStartOf="@+id/send_but"
+                    android:background="@color/white"
+                    android:hint="@string/chat_edit_text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="5"
+                    android:padding="@dimen/padding_vs"
+                    android:textSize="@dimen/font_medium" />
+
+
+
+                <ProgressBar
+                    android:id="@+id/loading"
+                    android:layout_width="@dimen/comment_msg_btn_w"
+                    android:layout_height="@dimen/comment_msg_btn_h"
+                    android:layout_alignBottom="@+id/add_url"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
 
         <ProgressBar
             android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_above="@+id/layout_template"
+            android:layout_above="@+id/add_comment_area"
             android:layout_below="@id/header"
             android:layout_centerInParent="true" />
 
@@ -140,7 +158,7 @@
             android:id="@+id/reply_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/layout_template"
+            android:layout_above="@+id/add_comment_area"
             android:layout_below="@id/header"
             android:layout_gravity="center"
             android:scrollbars="vertical" />
