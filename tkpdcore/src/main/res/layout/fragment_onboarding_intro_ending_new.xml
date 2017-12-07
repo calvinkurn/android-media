@@ -11,25 +11,13 @@
     android:gravity="bottom">
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:background="@color/colorAccent">
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_centerInParent="true" />
-
-    </RelativeLayout>
-
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_med"
         android:scaleType="centerCrop"
         android:visibility="invisible"/>
 
@@ -42,6 +30,7 @@
         android:layout_marginTop="@dimen/margin_small"
         android:fontFamily="sans-serif"
         android:layout_gravity="center"
+        android:gravity="center"
         android:letterSpacing="0.02"
         android:lineSpacingExtra="@dimen/line_spacing_6"
         android:visibility="invisible"
@@ -64,6 +53,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/font_large"
         android:textStyle="normal"
+        android:layout_gravity="center"
         android:gravity="center"
         tools:text="Deskripsi"
         tools:textColor="@color/colorPrimaryDark" />
@@ -123,6 +113,19 @@
             tools:src="@drawable/circle"
             android:layout_alignParentRight="true"
             android:layout_alignBottom="@id/footer"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:background="@color/colorAccent">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>
