@@ -3,9 +3,7 @@ package com.tokopedia.core.drawer2.view;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.drawer2.view.databinder.DrawerGroupDataBinder;
-import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSeparatorDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;

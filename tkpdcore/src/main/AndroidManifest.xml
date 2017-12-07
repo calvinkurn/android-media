@@ -188,10 +188,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".NotificationCenter"
-            android:label="@string/title_notification"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".talk.talkproduct.activity.TalkAddNew"
             android:label="@string/title_activity_talk_add_new"
             android:screenOrientation="portrait" />
