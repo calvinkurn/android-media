@@ -176,6 +176,12 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (getUserVisibleHint()) {
+            if (getActivity() != null &&
+                    getActivity() instanceof ShopInfoActivity) {
+                ((ShopInfoActivity) getActivity()).swipeAble(false);
+            }
+        }
     }
 
     @Override
