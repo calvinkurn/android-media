@@ -135,8 +135,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         spTitle = (SpinnerTextView) view.findViewById(R.id.sp_title);
         tilFirstName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_first_name);
         etFirstName = (AppCompatEditText) view.findViewById(R.id.et_first_name);
-        tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_first_name);
-        etLastName = (AppCompatEditText) view.findViewById(R.id.et_first_name);
+        tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_last_name);
+        etLastName = (AppCompatEditText) view.findViewById(R.id.et_last_name);
         tilBirthDate = (TkpdHintTextInputLayout) view.findViewById(R.id.til_birth_date);
         etBirthDate = (AppCompatEditText) view.findViewById(R.id.et_birth_date);
         luggageContainer = (LinearLayout) view.findViewById(R.id.luggage_container);

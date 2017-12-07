@@ -4,8 +4,9 @@ package com.tokopedia.abstraction.base.view.adapter.viewholders;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.base.adapter.model.ErrorNetworkModel;
+import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+
 
 /**
  * @author by erry on 02/02/17.

@@ -81,4 +81,44 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         visitables.remove(errorNetworkModel);
         notifyDataSetChanged();
     }
+
+    public void addElement(List<Visitable> visitables) {
+        this.visitables.addAll(visitables);
+        notifyDataSetChanged();
+    }
+
+    public void setElement(int position, Visitable element) {
+        visitables.set(position, element);
+        notifyDataSetChanged();
+    }
+
+    public void setElements(int position, List<Visitable> data) {
+        visitables.addAll(position, data);
+        notifyDataSetChanged();
+    }
+
+    public void addElement(int position, Visitable element) {
+        visitables.add(position, element);
+        notifyDataSetChanged();
+    }
+
+    public void addElement(Visitable element) {
+        visitables.add(element);
+        notifyDataSetChanged();
+    }
+
+    public void setElement(List<Visitable> data) {
+        visitables.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public void clearData() {
+        visitables.clear();
+    }
+
+    public void addMoreData(List<Visitable> data) {
+        final int positionStart = visitables.size() + 1;
+        visitables.addAll(data);
+        notifyItemRangeInserted(positionStart, data.size());
+    }
 }
