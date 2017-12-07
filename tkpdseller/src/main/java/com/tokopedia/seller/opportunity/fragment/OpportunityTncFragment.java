@@ -1,0 +1,205 @@
+package com.tokopedia.seller.opportunity.fragment;
+
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BaseWebViewFragment;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
+import com.tokopedia.seller.opportunity.listener.OpportunityView;
+import com.tokopedia.seller.opportunity.presentation.ActionViewData;
+import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
+import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
+
+public class OpportunityTncFragment extends BaseWebViewFragment implements OpportunityView {
+    private OpportunityItemViewModel opportunityItemViewModel;
+    private OpportunityPresenter opportunityPresenter;
+
+    private OnOpportunityFragmentListener listener;
+
+    TkpdProgressDialog progressDialog;
+    private View btnTakeOpportunity;
+
+    public interface OnOpportunityFragmentListener{
+        OpportunityItemViewModel getItemViewModel();
+    }
+
+    public static OpportunityTncFragment newInstance() {
+        return new OpportunityTncFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.opportunityItemViewModel = listener.getItemViewModel();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        opportunityPresenter = new OpportunityImpl(getActivity(), this);
+
+        btnTakeOpportunity = view.findViewById(R.id.button_take_opportunity);
+        btnTakeOpportunity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onActionConfirmClicked();
+            }
+        });
+        btnTakeOpportunity.setVisibility(View.GONE);
+        return view;
+    }
+
+    @Override
+    protected void onLoadFinished() {
+        super.onLoadFinished();
+        if (btnTakeOpportunity!= null) {
+            btnTakeOpportunity.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_opportunity_tnc;
+    }
+
+    @Override
+    protected String getUrl() {
+        return opportunityItemViewModel.getReplacementTnc();
+    }
+
+    @Override
+    public void onActionDeleteClicked() {
+        // no delete here
+    }
+
+    @Override
+    public void onActionConfirmClicked() {
+        UnifyTracking.eventOpportunity(
+                OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE,
+                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                AppEventTracking.Action.CLICK,
+                OpportunityTrackingEventLabel.EventLabel.TAKE_OPPORTUNITY
+        );
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.message_dialog_accept_opportunity);
+
+        builder.setPositiveButton(R.string.action_agree, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_YES,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.CLICK,
+                        OpportunityTrackingEventLabel.EventLabel.YES
+                );
+
+                opportunityPresenter.acceptOpportunity();
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.action_back, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_NO,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.CLICK,
+                        OpportunityTrackingEventLabel.EventLabel.NO
+                );
+                dialogInterface.dismiss();
+            }
+        });
+        Dialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @Override
+    public void onReputationLabelClicked() {
+        // have no label here
+    }
+
+    @Override
+    public void onActionSeeDetailProduct(String productId) {
+        // have no detail here
+    }
+
+    @Override
+    public String getOpportunityId() {
+        return String.valueOf(opportunityItemViewModel.getOrderReplacementId());
+    }
+
+    @Override
+    public void showLoadingProgress() {
+        if (progressDialog == null && getActivity() != null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if (progressDialog != null && getActivity() != null)
+            progressDialog.showDialog();
+    }
+
+    @Override
+    public void onSuccessTakeOpportunity(ActionViewData actionViewData) {
+        finishLoadingProgress();
+        CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
+
+    private void finishLoadingProgress() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        opportunityPresenter.unsubscribeObservable();
+    }
+
+    @Override
+    public void onErrorTakeOpportunity(String errorMessage) {
+        finishLoadingProgress();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachListener(activity);
+        }
+    }
+
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachListener(context);
+    }
+
+    protected void onAttachListener(Context context) {
+        this.listener = (OnOpportunityFragmentListener) context;
+    }
+}

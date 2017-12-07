@@ -11,6 +11,8 @@ public interface OpportunityView {
 
     void onActionConfirmClicked();
 
+    void onReputationLabelClicked();
+
     void onActionSeeDetailProduct(String productId);
 
     String getOpportunityId();

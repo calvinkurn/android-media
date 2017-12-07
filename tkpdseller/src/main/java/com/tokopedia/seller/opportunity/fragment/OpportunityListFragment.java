@@ -177,6 +177,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         } else {
             headerInfo.setVisibility(View.VISIBLE);
             cacheHandler.putBoolean(HAS_SEEN_OPPORTUNITY, true);
+            cacheHandler.applyEditor();
         }
     }
 
@@ -231,13 +232,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                     opportunityParam.getQuery(),
                                     opportunityParam.getListFilter());
                         }
-
-                        UnifyTracking.eventOpportunity(
-                                OpportunityTrackingEventLabel.EventName.SCROLL_OPPORTUNITY,
-                                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-                                AppEventTracking.Action.SCROLL,
-                                OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
-                        );
+                        // TODO modify this unifytracking, do not send every scroll!
+//                        UnifyTracking.eventOpportunity(
+//                                OpportunityTrackingEventLabel.EventName.SCROLL_OPPORTUNITY,
+//                                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+//                                AppEventTracking.Action.SCROLL,
+//                                OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
+//                        );
                     }
                 });
 

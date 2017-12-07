@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/greyish_bg"
     tools:context=".opportunity.activity.OpportunityDetailActivity">
 
@@ -10,13 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/customview_opportunity_detail_button_view"
-        />
+        android:id="@+id/button_take_opportunity" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/customview_opportunity_detail_button_view">
+        android:layout_above="@+id/button_take_opportunity">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,22 +24,19 @@
             android:orientation="vertical">
 
             <com.tokopedia.seller.opportunity.customview.OpportunityDetailStatusView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/customview_opportunity_detail_status_view"
-                />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <com.tokopedia.seller.opportunity.customview.OpportunityDetailProductView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/customview_opportunity_detail_product_view"
-                />
+                android:id="@+id/customview_opportunity_detail_product_view" />
 
             <com.tokopedia.seller.opportunity.customview.OpportunityDetailSummaryView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/customview_opportunity_detail_summary_view"
-                />
+                android:id="@+id/customview_opportunity_detail_summary_view"/>
 
         </LinearLayout>
     </ScrollView>
