@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.purchase.constant.OrderDetailTypeDef;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenter;
@@ -60,7 +61,13 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button finishOrder = mainView.findViewById(R.id.finish_button);
         finishOrder.setOnClickListener(onFinishButtonClicked(context, presenter, data));
-        switchVisibilty(finishOrder, buttonData.getFinishOrderVisibility());
+        int visibilityButton;
+        if (buttonData.getReceiveConfirmationVisibility() != OrderDetailTypeDef.HIDE_BUTTON) {
+            visibilityButton = buttonData.getReceiveConfirmationVisibility();
+        } else {
+            visibilityButton = buttonData.getFinishOrderVisibility();
+        }
+        switchVisibilty(finishOrder, visibilityButton);
 
         Button track = mainView.findViewById(R.id.order_detail_track_button);
         track.setOnClickListener(onTrackButtonClicked(context, presenter, data));
@@ -287,10 +294,10 @@ public class OrderDetailButtonLayout extends LinearLayout{
     }
 
     private void switchVisibilty(Button button, int responseVisibility) {
-        if(responseVisibility == 1) {
+        if(responseVisibility == OrderDetailTypeDef.WHITE_BUTTON) {
             button.setVisibility(VISIBLE);
             button.setBackgroundResource(R.drawable.white_button_rounded);
-        } else if(responseVisibility == 2) {
+        } else if(responseVisibility == OrderDetailTypeDef.GREEN_BUTTON) {
             button.setVisibility(VISIBLE);
             button.setBackgroundResource(R.drawable.green_button_rounded_unify);
             button.setTextColor(getResources().getColor(R.color.white));

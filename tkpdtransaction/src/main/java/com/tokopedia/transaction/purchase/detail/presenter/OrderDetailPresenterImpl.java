@@ -229,7 +229,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onNext(String s) {
                 mainView.dismissProgressDialog();
-                mainView.onOrderFinished(s);
+                mainView.onOrderCancelled(s);
             }
         };
     }

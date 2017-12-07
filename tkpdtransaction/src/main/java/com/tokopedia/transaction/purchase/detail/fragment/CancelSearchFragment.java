@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,14 +35,11 @@ public class CancelSearchFragment extends TkpdFragment{
     private TextView reason2;
     private TextView reason3;
     private EditText otherReasonField;
+    private RelativeLayout layoutCancelSearch;
 
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    public CancelSearchFragment() {
-
     }
 
     @Override
@@ -77,6 +75,7 @@ public class CancelSearchFragment extends TkpdFragment{
         reasonRadioButton3 = view.findViewById(R.id.radio_button_3);
         otherReasonField = view.findViewById(R.id.other_reason_field);
         otherReasonRadioButton = view.findViewById(R.id.radio_button_4);
+        layoutCancelSearch = view.findViewById(R.id.layout_cancel_search_replacement);
 
         reasonRadioButton1.setOnCheckedChangeListener(onRadioButtonClickedListener(
                 reasonRadioButton2,
@@ -103,6 +102,7 @@ public class CancelSearchFragment extends TkpdFragment{
                 reasonRadioButton3));
         otherReasonRadioButton.setOnCheckedChangeListener(onOtherReasonClickedListener());
         otherReasonField.setOnClickListener(onOtherReasonTextSelected());
+        layoutCancelSearch.setOnClickListener(onEmptyAction());
         TextView submitButton = view.findViewById(R.id.submit_button);
         submitButton.setOnClickListener(onSubmitButtonClickedListener());
         return view;
@@ -217,6 +217,14 @@ public class CancelSearchFragment extends TkpdFragment{
                             "Mohon Pilih Salah Satu",
                             Toast.LENGTH_LONG).show();
                 }
+            }
+        };
+    }
+
+    private View.OnClickListener onEmptyAction() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
             }
         };
     }

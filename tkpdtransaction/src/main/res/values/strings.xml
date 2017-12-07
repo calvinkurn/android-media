@@ -156,4 +156,5 @@
     <string name="title_replacement_reason_3">Saya sudah menemukan barang dari toko lain</string>
     <string name="title_replacement_other_reason">Lainnya</string>
     <string name="error_replacement_reason">Mohon Pilih Alasan Pembatalan</string>
+    <string name="success_request_cancel_order">Sukses mengajukan pembatalan</string>
 </resources>
