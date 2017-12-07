@@ -42,6 +42,7 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
 
     @Override
     public void unSubscribe() {
+        super.unsubscribe();
         if (groupAdInteractor != null) {
             groupAdInteractor.unSubscribe();
         }
@@ -65,7 +66,8 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
 
             @Override
             public void onError(Throwable throwable) {
-                topAdsDetailListener.onLoadAdError();
+                if(topAdsDetailListener != null)
+                    topAdsDetailListener.onLoadAdError();
             }
         });
     }
@@ -79,7 +81,8 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
 
             @Override
             public void onError(Throwable e) {
-                topAdsDetailListener.onLoadAdError();
+                if(topAdsDetailListener != null)
+                    topAdsDetailListener.onLoadAdError();
             }
 
             @Override
@@ -111,7 +114,8 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
 
             @Override
             public void onError(Throwable e) {
-                topAdsDetailListener.onLoadAdError();
+                if(topAdsDetailListener != null)
+                    topAdsDetailListener.onLoadAdError();
             }
 
             @Override

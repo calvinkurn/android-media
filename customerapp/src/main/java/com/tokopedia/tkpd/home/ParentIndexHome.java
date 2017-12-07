@@ -49,6 +49,7 @@ import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
@@ -545,6 +546,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onResume() {
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
+        FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
             content.clear();
