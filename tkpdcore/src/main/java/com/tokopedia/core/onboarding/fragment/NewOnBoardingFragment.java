@@ -47,7 +47,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     private AnimatorSet animatorSet;
     private ObjectAnimator slideAnimator;
     private ValueAnimator slideAnimator2;
-    private TextView skip;
     private ObjectAnimator fadeAnimator2;
     private ValueAnimator slideAnimatorX;
     private ObjectAnimator goneAnimation;
@@ -198,17 +197,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         });
         startNow.setWidth(0);
 
-        skip = (TextView) v.findViewById(R.id.button_register);
-        skip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
-                Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
-
         footer = v.findViewById(R.id.footer);
         return v;
     }
@@ -228,7 +216,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         super.onDestroyView();
         if (viewType == VIEW_ENDING) {
             startNow.clearAnimation();
-            skip.clearAnimation();
         }
 
     }
@@ -323,7 +310,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         layoutParams.width = 0;
         startNow.setLayoutParams(layoutParams);
         startNow.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
-        skip.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
         next.setVisibility(View.VISIBLE);
     }
 
@@ -333,7 +319,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         }
         if (viewType == VIEW_ENDING) {
             startNow.setVisibility(View.INVISIBLE);
-            skip.setVisibility(View.INVISIBLE);
         }
     }
 

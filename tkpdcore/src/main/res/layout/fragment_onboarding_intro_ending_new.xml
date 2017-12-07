@@ -76,21 +76,8 @@
             android:layout_marginBottom="@dimen/margin_bottom_button_nob">
 
             <TextView
-                android:id="@+id/button_register"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:padding="@dimen/padding_button_nob"
-                android:text="@string/title_skip_2"
-                android:gravity="center"
-                android:textColor="@color/transparent"
-                android:textSize="@dimen/text_size_medium"
-                android:fontFamily="sans-serif-medium"
-                tools:textColor="@color/red_100"/>
-
-            <TextView
                 android:id="@+id/button_start_now"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:lines="1"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
