@@ -95,43 +95,12 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     @Override
     public void onActionConfirmClicked() {
         UnifyTracking.eventOpportunity(
-                OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE,
+                OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_YES,
                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                 AppEventTracking.Action.CLICK,
-                OpportunityTrackingEventLabel.EventLabel.TAKE_OPPORTUNITY
+                OpportunityTrackingEventLabel.EventLabel.YES
         );
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.message_dialog_accept_opportunity);
-
-        builder.setPositiveButton(R.string.action_agree, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                UnifyTracking.eventOpportunity(
-                        OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_YES,
-                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-                        AppEventTracking.Action.CLICK,
-                        OpportunityTrackingEventLabel.EventLabel.YES
-                );
-
-                opportunityPresenter.acceptOpportunity();
-                dialogInterface.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.action_back, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                UnifyTracking.eventOpportunity(
-                        OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_NO,
-                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-                        AppEventTracking.Action.CLICK,
-                        OpportunityTrackingEventLabel.EventLabel.NO
-                );
-                dialogInterface.dismiss();
-            }
-        });
-        Dialog dialog = builder.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
+        opportunityPresenter.acceptOpportunity();
     }
 
     @Override

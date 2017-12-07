@@ -67,6 +67,12 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     public void onActionConfirmClicked() {
+        UnifyTracking.eventOpportunity(
+                OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE,
+                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                AppEventTracking.Action.CLICK,
+                OpportunityTrackingEventLabel.EventLabel.TAKE_OPPORTUNITY
+        );
         if (TextUtils.isEmpty(oppItemViewModel.getReplacementTnc())){
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.message_dialog_accept_opportunity);

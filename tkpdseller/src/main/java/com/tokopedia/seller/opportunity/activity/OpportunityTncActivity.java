@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.fragment.OpportunityTncFragment;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 
@@ -29,6 +32,17 @@ public class OpportunityTncActivity extends BaseSimpleActivity implements Opport
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         opportunityItemViewModel = getIntent().getParcelableExtra(OPPORTUNITY_EXTRA_PARAM);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventOpportunity(
+                OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_NO,
+                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                AppEventTracking.Action.CLICK,
+                OpportunityTrackingEventLabel.EventLabel.NO
+        );
     }
 
     @Override
