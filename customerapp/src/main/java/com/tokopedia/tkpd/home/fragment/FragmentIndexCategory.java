@@ -751,8 +751,15 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onItemClicked(String toppickName, Item topPickItem, int position) {
-        String url = topPickItem.getUrl();
-        UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
+        //TODO remove hardcode
+        String url = "https://ace.tokopedia.com/hoth/discovery/api/page/must-have-coat";
+
+        getActivity().startActivity(
+                ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+                        getActivity(), ReactConst.Screen.DISCOVERY_PAGE,
+                        topPickItem.getName(), "must-have-coat"
+                ));
+       /* UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
                 DeepLinkChecker.openBrowse(url, getActivity());
@@ -763,9 +770,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             case DeepLinkChecker.CATALOG:
                 DeepLinkChecker.openCatalog(url, getActivity());
                 break;
+            case DeepLinkChecker.DISCOVERY_PAGE:
+                DeepLinkChecker.openCatalog(url, getActivity());
+                openDiscoveryPage(topPickItem.getName(),DeepLinkChecker.getDiscoveryPageId(topPickItem.getUrl()));
+                break;
             default:
                 openWebViewTopPicksURL(url);
-        }
+        }*/
     }
 
     @Override
@@ -1093,6 +1104,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED,
                 position);
         localCacheHandler.applyEditor();
+    }
+
+    private void openDiscoveryPage(String title, String pageId) {
+        getActivity().startActivity(
+                ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+                        getActivity(), ReactConst.Screen.DISCOVERY_PAGE,
+                        title, pageId
+                ));
     }
 
 }
