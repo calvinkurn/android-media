@@ -2693,7 +2693,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventKolContentFollowClick(String type) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_NAME_FEED_KOL,
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_FOLLOW_CONTENT,
                 generateKolEventLabel(false, type)
@@ -2702,7 +2702,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventKolContentUnfollowClick(String type) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_NAME_FEED_KOL,
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_UNFOLLOW_CONTENT,
                 generateKolEventLabel(true, type)

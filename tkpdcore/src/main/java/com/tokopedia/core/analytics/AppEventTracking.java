@@ -150,7 +150,7 @@ public interface AppEventTracking {
         String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
-        String EVENT_NAME_FEED_KOL ="feedKol";
+        String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
     }
 
     interface Category {
