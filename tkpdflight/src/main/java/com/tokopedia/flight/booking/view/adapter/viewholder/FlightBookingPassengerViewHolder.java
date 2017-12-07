@@ -84,7 +84,8 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
                         selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
                     }
                     simpleViewModels.add(new SimpleViewModel(
-                            itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getDescription(), TextUtils.join(" + ", selectedLuggages)
+                            itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription(),
+                            TextUtils.join(" + ", selectedLuggages)
                     ));
                 }
             }
@@ -92,7 +93,8 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
             if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
                 for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
                     simpleViewModels.add(new SimpleViewModel(
-                            itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label), TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
+                            itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + " " + flightBookingMealRouteViewModel.getDescription(),
+                            TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
                     ));
                 }
             }
