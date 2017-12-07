@@ -41,6 +41,9 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListene
             @Override
             public void onError(Throwable e) {
                 CommonUtils.dumper(e);
+                if (isViewAttached()) {
+                    getView().onLoadSearchError(e);
+                }
             }
 
             @Override
