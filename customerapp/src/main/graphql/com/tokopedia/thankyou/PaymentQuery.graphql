@@ -1,10 +1,10 @@
-query MarketplacePaymentData($paymentId: Int!) {{
-  payment(payment_id: $paymentId){
+query PaymentQuery($paymentId:Int!) {
+  payment(payment_id:$paymentId){
     payment_id
     payment_ref_num
     orders{
-    	order_id
-    	phone
+        order_id
+        phone
     }
     payment_method{
       method
@@ -15,7 +15,7 @@ query MarketplacePaymentData($paymentId: Int!) {{
         }
       }
       transfer{
-      	destination_account
+        destination_account
       }
     }
   }

@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd.thankyou.di.module;
 
+import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.factory.ThanksTrackerFactory;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepository;
@@ -15,6 +18,7 @@ import com.tokopedia.tkpd.thankyou.view.presenter.ThanksTrackerPresenter;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by okasurya on 12/4/17.
@@ -36,11 +40,21 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    ThanksTrackerFactory provideThanksAnalyticsFactory(Gson gson,
-                                                       DigitalTrackerApi digitalTrackerApi,
+    ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
+        return ApolloClient.builder()
+                .okHttpClient(okHttpClient)
+                .serverUrl(TkpdBaseURL.PAYMENT_DOMAIN + "graphql")
+                .build();
+    }
+
+    @Provides
+    @ThanksTrackerScope
+    ThanksTrackerFactory provideThanksAnalyticsFactory(DigitalTrackerApi digitalTrackerApi,
+                                                       ApolloClient apolloClient,
+                                                       Gson gson,
                                                        SessionHandler sessionHandler,
                                                        GCMHandler gcmHandler) {
-        return new ThanksTrackerFactory(digitalTrackerApi, gson, sessionHandler, gcmHandler);
+        return new ThanksTrackerFactory(digitalTrackerApi, apolloClient, gson, sessionHandler, gcmHandler);
     }
 
     @Provides

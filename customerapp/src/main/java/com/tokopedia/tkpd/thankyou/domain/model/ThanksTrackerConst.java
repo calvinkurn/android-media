@@ -15,7 +15,7 @@ public interface ThanksTrackerConst {
     }
 
     interface Key {
-        String ID = "order_id";
+        String ID = "transaction_id";
         String PLATFORM = "platform";
         String TEMPLATE = "template";
     }

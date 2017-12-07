@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.thankyou.data.factory;
 
+import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -16,15 +17,18 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 
 public class ThanksTrackerFactory {
     private DigitalTrackerApi digitalTrackerApi;
+    private ApolloClient apolloClient;
     private Gson gson;
     private SessionHandler sessionHandler;
     private GCMHandler gcmHandler;
 
     public ThanksTrackerFactory(DigitalTrackerApi digitalTrackerApi,
+                                ApolloClient apolloClient,
                                 Gson gson,
                                 SessionHandler sessionHandler,
                                 GCMHandler gcmHandler) {
         this.digitalTrackerApi = digitalTrackerApi;
+        this.apolloClient = apolloClient;
         this.gson = gson;
         this.sessionHandler = sessionHandler;
         this.gcmHandler = gcmHandler;
@@ -37,7 +41,7 @@ public class ThanksTrackerFactory {
             if (platform.equals(ThanksTrackerConst.Platform.DIGITAL)) {
                 return new DigitalTrackerCloudSource(params, digitalTrackerApi, gson, sessionHandler, gcmHandler);
             } else if (platform.equals(ThanksTrackerConst.Platform.MARKETPLACE)) {
-                return new MarketplaceTrackerCloudSource(params);
+                return new MarketplaceTrackerCloudSource(params, apolloClient);
             }
         }
 
