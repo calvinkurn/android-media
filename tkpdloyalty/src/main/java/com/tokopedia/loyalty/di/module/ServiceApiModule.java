@@ -51,6 +51,11 @@ public class ServiceApiModule {
                                                      TXVoucherService txVoucherService,
                                                      TXService txService
     ) {
-        return new TokoPointRepository(tokoPointService, tokoPointDBService, tokoPointResponseMapper);
+        return new TokoPointRepository(
+                tokoPointService,
+                tokoPointDBService,
+                tokoPointResponseMapper,
+                txVoucherService,
+                txService);
     }
 }

@@ -107,7 +107,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     protected void setActionVar() {
-
+        dPresenter.processGetCouponList();
     }
 
     @Override
