@@ -12,6 +12,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeCategoryMapper;
+import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseModel;
 
 import retrofit2.Response;
@@ -42,9 +43,25 @@ public class HomeCategoryDataSource {
     }
 
     public Observable<HomeCategoryResponseModel> getHomeCategory() {
-        return getCache().onErrorResumeNext(mojitoApi.getHomeCategoryMenuV2(sessionHandler.getLoginID(), GlobalConfig.getPackageApplicationName())
-                        .map(homeCategoryMapper)
-                        .doOnNext(saveToCache()));
+        return getCache().onErrorResumeNext(getCloud()).doOnNext(checkData());
+    }
+
+    @NonNull
+    private Action1<HomeCategoryResponseModel> checkData() {
+        return new Action1<HomeCategoryResponseModel>() {
+            @Override
+            public void call(HomeCategoryResponseModel model) {
+                if (model.getExpiredTime() == 0 || model.getExpiredTime() < System.currentTimeMillis())
+                    getCloud();
+            }
+        };
+    }
+
+    @NonNull
+    private Observable<HomeCategoryResponseModel> getCloud() {
+        return mojitoApi.getHomeCategoryMenuV2(sessionHandler.getLoginID(), GlobalConfig.getPackageApplicationName())
+                .map(homeCategoryMapper)
+                .doOnNext(saveToCache());
     }
 
     @NonNull
@@ -54,7 +71,6 @@ public class HomeCategoryDataSource {
             public void call(HomeCategoryResponseModel homeCategoryResponseModel) {
                 cacheManager.setKey(TkpdCache.Key.HOME_CATEGORY_CACHE);
                 cacheManager.setValue(gson.toJson(homeCategoryResponseModel));
-                cacheManager.setCacheDuration(60);
                 cacheManager.store();
             }
         };
@@ -65,10 +81,9 @@ public class HomeCategoryDataSource {
             @Override
             public HomeCategoryResponseModel call(Boolean aBoolean) {
                 String cache = cacheManager.getValueString(TkpdCache.Key.HOME_CATEGORY_CACHE);
-                if(cache!=null)
+                if (cache != null)
                     return gson.fromJson(cache, HomeCategoryResponseModel.class);
-                else
-                    throw new RuntimeException("Cache has expired");
+                throw new RuntimeException("Cache is empty!!");
             }
         });
     }

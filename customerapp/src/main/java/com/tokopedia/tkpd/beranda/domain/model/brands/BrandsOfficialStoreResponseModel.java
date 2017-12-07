@@ -1,6 +1,9 @@
 package com.tokopedia.tkpd.beranda.domain.model.brands;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 
 import java.util.List;
 
@@ -17,6 +20,16 @@ public class BrandsOfficialStoreResponseModel {
     @SerializedName("data")
     private List<BrandDataModel> data;
     private boolean isSuccess;
+    private long expiredTime = 0;
+
+
+    public long getExpiredTime() {
+        return expiredTime;
+    }
+
+    public void setExpiredTime(long expiredTime) {
+        this.expiredTime = expiredTime;
+    }
 
     public boolean isSuccess() {
         return isSuccess;

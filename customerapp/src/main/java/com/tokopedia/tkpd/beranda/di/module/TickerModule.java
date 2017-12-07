@@ -2,9 +2,11 @@ package com.tokopedia.tkpd.beranda.di.module;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi;
 import com.tokopedia.tkpd.beranda.data.mapper.TickerMapper;
 import com.tokopedia.tkpd.beranda.data.repository.HomeRepository;
@@ -22,8 +24,9 @@ import dagger.Provides;
 public class TickerModule {
 
     @Provides
-    TickerDataSource tickerDataSource(@ApplicationContext Context context, CategoryApi categoryApi, TickerMapper tickerMapper){
-        return new TickerDataSource(context, categoryApi, tickerMapper);
+    TickerDataSource tickerDataSource(@ApplicationContext Context context, CategoryApi categoryApi,
+                                      TickerMapper tickerMapper, GlobalCacheManager cacheManager, Gson gson){
+        return new TickerDataSource(context, categoryApi, tickerMapper, cacheManager, gson);
     }
 
     @Provides

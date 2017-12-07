@@ -23,6 +23,7 @@ public class TopPicksMapper implements Func1<Response<String>, TopPicksResponseM
         TopPicksResponseModel responseModel = new TopPicksResponseModel();
         if(stringResponse.isSuccessful()){
             responseModel = gson.fromJson(stringResponse.body(), TopPicksResponseModel.class);
+            responseModel.setExpiredTime(System.currentTimeMillis() + (60 * 1000));
             responseModel.setSuccess(true);
         } else {
             responseModel.setSuccess(false);

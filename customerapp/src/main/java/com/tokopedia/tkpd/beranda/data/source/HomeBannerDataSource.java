@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.beranda.data.source;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -39,10 +40,25 @@ public class HomeBannerDataSource {
         this.gson = gson;
     }
 
-    public Observable<HomeBannerResponseModel> getHomeBanner(final RequestParams requestParams){
-        return getCache().onErrorResumeNext(categoryApi.getBanners(SessionHandler.getLoginID(context), requestParams.getParameters())
-                        .map(homeBannerMapper)
-                        .doOnNext(saveToCache()));
+    public Observable<HomeBannerResponseModel> getHomeBanner(final RequestParams requestParams) {
+        return getCache(requestParams).doOnNext(checkData(requestParams));
+    }
+    @NonNull
+    private Action1<HomeBannerResponseModel> checkData(final RequestParams requestParams) {
+        return new Action1<HomeBannerResponseModel>() {
+            @Override
+            public void call(HomeBannerResponseModel model) {
+                if (model.getExpiredTime() == 0 || model.getExpiredTime() < System.currentTimeMillis())
+                    getCloud(requestParams);
+            }
+        };
+    }
+
+    @NonNull
+    private Observable<HomeBannerResponseModel> getCloud(RequestParams requestParams) {
+        return categoryApi.getBanners(SessionHandler.getLoginID(context), requestParams.getParameters())
+                .map(homeBannerMapper)
+                .doOnNext(saveToCache());
     }
 
     private Action1<HomeBannerResponseModel> saveToCache() {
@@ -51,22 +67,20 @@ public class HomeBannerDataSource {
             public void call(HomeBannerResponseModel homeBannerResponseModel) {
                 cacheManager.setKey(TkpdCache.Key.HOME_BANNER_CACHE);
                 cacheManager.setValue(gson.toJson(homeBannerResponseModel));
-                cacheManager.setCacheDuration(60);
                 cacheManager.store();
             }
         };
     }
 
-    public Observable<HomeBannerResponseModel> getCache() {
+    private Observable<HomeBannerResponseModel> getCache(RequestParams requestParams) {
         return Observable.just(true).map(new Func1<Boolean, HomeBannerResponseModel>() {
             @Override
             public HomeBannerResponseModel call(Boolean aBoolean) {
                 String cache = cacheManager.getValueString(TkpdCache.Key.HOME_BANNER_CACHE);
-                if(cache!=null)
+                if (cache != null)
                     return gson.fromJson(cache, HomeBannerResponseModel.class);
-                else
-                    throw new RuntimeException("Cache has expired");
+                throw new RuntimeException("Cache is empty!!");
             }
-        });
+        }).onErrorResumeNext(getCloud(requestParams));
     }
 }

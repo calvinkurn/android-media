@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.beranda.data.source;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -32,34 +34,48 @@ public class TopPicksDataSource {
         this.gson = gson;
     }
 
-    public Observable<TopPicksResponseModel> getTopPicks(final RequestParams requestParams){
-        return getCache().onErrorResumeNext(searchApi.getTopPicks(requestParams.getParamsAllValueInString(),
-                        GlobalConfig.VERSION_NAME, "android").map(topPicksMapper)
-                        .doOnNext(saveToCache()));
+    public Observable<TopPicksResponseModel> getTopPicks(final RequestParams requestParams) {
+        return getCache(requestParams).doOnNext(checkData(requestParams));
+    }
+
+    @NonNull
+    private Action1<TopPicksResponseModel> checkData(final RequestParams requestParams) {
+        return new Action1<TopPicksResponseModel>() {
+            @Override
+            public void call(TopPicksResponseModel model) {
+                if (model.getExpiredTime() == 0 || model.getExpiredTime() < System.currentTimeMillis())
+                    getCloud(requestParams);
+            }
+        };
+    }
+
+    @NonNull
+    private Observable<TopPicksResponseModel> getCloud(RequestParams requestParams) {
+        return searchApi.getTopPicks(requestParams.getParamsAllValueInString(),
+                GlobalConfig.VERSION_NAME, "android").map(topPicksMapper)
+                .doOnNext(saveToCache());
     }
 
     private Action1<TopPicksResponseModel> saveToCache() {
         return new Action1<TopPicksResponseModel>() {
             @Override
             public void call(TopPicksResponseModel topPicksResponseModel) {
-                cacheManager.setKey(TkpdCache.Key.HOME_BANNER_CACHE);
+                cacheManager.setKey(TkpdCache.Key.HOME_TOP_PICK_CACHE);
                 cacheManager.setValue(gson.toJson(topPicksResponseModel));
-                cacheManager.setCacheDuration(60);
                 cacheManager.store();
             }
         };
     }
 
-    public Observable<TopPicksResponseModel> getCache() {
+    private Observable<TopPicksResponseModel> getCache(RequestParams requestParams) {
         return Observable.just(true).map(new Func1<Boolean, TopPicksResponseModel>() {
             @Override
             public TopPicksResponseModel call(Boolean aBoolean) {
                 String cache = cacheManager.getValueString(TkpdCache.Key.HOME_TOP_PICK_CACHE);
-                if(cache!=null)
+                if (cache != null)
                     return gson.fromJson(cache, TopPicksResponseModel.class);
-                else
-                    throw new RuntimeException("Cache has expired");
+                throw new RuntimeException("Cache is empty!!");
             }
-        });
+        }).onErrorResumeNext(getCloud(requestParams));
     }
 }

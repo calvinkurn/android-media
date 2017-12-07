@@ -14,6 +14,16 @@ public class HomeBannerResponseModel {
     @SerializedName("data")
     private BannerDataModel data;
     private boolean isSuccess;
+    private long expiredTime = 0;
+
+
+    public long getExpiredTime() {
+        return expiredTime;
+    }
+
+    public void setExpiredTime(long expiredTime) {
+        this.expiredTime = expiredTime;
+    }
 
     public boolean isSuccess() {
         return isSuccess;

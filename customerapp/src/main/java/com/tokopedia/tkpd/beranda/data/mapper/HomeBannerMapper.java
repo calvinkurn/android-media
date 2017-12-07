@@ -23,6 +23,7 @@ public class HomeBannerMapper implements Func1<Response<String>, HomeBannerRespo
         HomeBannerResponseModel responseModel = new HomeBannerResponseModel();
         if(stringResponse.isSuccessful()){
             responseModel = gson.fromJson(stringResponse.body(), HomeBannerResponseModel.class);
+            responseModel.setExpiredTime(System.currentTimeMillis() + (60 * 1000));
             responseModel.setSuccess(true);
         } else {
             responseModel.setSuccess(false);

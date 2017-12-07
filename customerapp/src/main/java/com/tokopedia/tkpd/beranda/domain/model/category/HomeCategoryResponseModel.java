@@ -14,6 +14,16 @@ public class HomeCategoryResponseModel {
     @SerializedName("data")
     private CategoryDataModel data;
     private boolean isSuccess;
+    private long expiredTime = 0;
+
+
+    public long getExpiredTime() {
+        return expiredTime;
+    }
+
+    public void setExpiredTime(long expiredTime) {
+        this.expiredTime = expiredTime;
+    }
 
     public boolean isSuccess() {
         return isSuccess;

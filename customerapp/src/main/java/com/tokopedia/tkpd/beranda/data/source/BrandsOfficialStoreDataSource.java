@@ -1,9 +1,10 @@
 package com.tokopedia.tkpd.beranda.data.source;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.entity.intermediary.brands.Brand;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.beranda.data.mapper.BrandsOfficialStoreMapper;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
@@ -31,9 +32,25 @@ public class BrandsOfficialStoreDataSource {
         this.gson = gson;
     }
 
-    public Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStore(){
-        return getCache().onErrorResumeNext(mojitoApi.getBrandsOfficialStore().map(brandsOfficialStoreMapper)
-                .doOnNext(saveToCache()));
+    public Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStore() {
+        return getCache().onErrorResumeNext(getCloud()).doOnNext(checkData());
+    }
+
+    @NonNull
+    private Action1<BrandsOfficialStoreResponseModel> checkData() {
+        return new Action1<BrandsOfficialStoreResponseModel>() {
+            @Override
+            public void call(BrandsOfficialStoreResponseModel model) {
+                if (model.getExpiredTime() == 0 || model.getExpiredTime() < System.currentTimeMillis())
+                    getCloud();
+            }
+        };
+    }
+
+    @NonNull
+    private Observable<BrandsOfficialStoreResponseModel> getCloud() {
+        return mojitoApi.getBrandsOfficialStore().map(brandsOfficialStoreMapper)
+                .doOnNext(saveToCache());
     }
 
     private Action1<BrandsOfficialStoreResponseModel> saveToCache() {
@@ -42,21 +59,19 @@ public class BrandsOfficialStoreDataSource {
             public void call(BrandsOfficialStoreResponseModel brandsOfficialStoreResponseModel) {
                 cacheManager.setKey(TkpdCache.Key.HOME_BRAND_OS_CACHE);
                 cacheManager.setValue(gson.toJson(brandsOfficialStoreResponseModel));
-                cacheManager.setCacheDuration(60);
                 cacheManager.store();
             }
         };
     }
 
-    public Observable<BrandsOfficialStoreResponseModel> getCache() {
+    private Observable<BrandsOfficialStoreResponseModel> getCache() {
         return Observable.just(true).map(new Func1<Boolean, BrandsOfficialStoreResponseModel>() {
             @Override
             public BrandsOfficialStoreResponseModel call(Boolean aBoolean) {
                 String cache = cacheManager.getValueString(TkpdCache.Key.HOME_BRAND_OS_CACHE);
-                if(cache!=null)
+                if (cache != null)
                     return gson.fromJson(cache, BrandsOfficialStoreResponseModel.class);
-                else
-                    throw new RuntimeException("Cache has expired");
+                throw new RuntimeException("Cache is empty!!");
             }
         });
     }

@@ -25,6 +25,7 @@ public class HomeCategoryMapper implements Func1<Response<String>, HomeCategoryR
         HomeCategoryResponseModel responseModel = new HomeCategoryResponseModel();
         if(stringResponse.isSuccessful()) {
             responseModel = gson.fromJson(stringResponse.body(), HomeCategoryResponseModel.class);
+            responseModel.setExpiredTime(System.currentTimeMillis() + (60 * 1000));
             responseModel.setSuccess(true);
         } else {
             responseModel.setSuccess(false);

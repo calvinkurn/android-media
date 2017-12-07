@@ -350,6 +350,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
 
         @Override
+        public void onStart() {
+            if(isViewAttached()){
+                getView().showLoading();
+            }
+        }
+
+        @Override
         public void onCompleted() {
             if (isViewAttached()) {
                 getView().hideLoading();
