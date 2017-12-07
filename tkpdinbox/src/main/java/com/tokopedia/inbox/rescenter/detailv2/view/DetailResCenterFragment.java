@@ -319,6 +319,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     private void renderData() {
+        glowingView.setVisibility(View.GONE);
+        ivNextStepStatic.setVisibility(View.GONE);
         cvNextStep.setVisibility(View.VISIBLE);
         cvDiscussion.setVisibility(View.VISIBLE);
         for (NextActionDetailStepDomain nextStep : getViewData().getNextActionDomain().getDetail().getStep()) {

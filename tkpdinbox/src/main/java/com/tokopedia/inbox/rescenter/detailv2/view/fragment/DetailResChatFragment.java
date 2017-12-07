@@ -304,12 +304,6 @@ public class DetailResChatFragment
         ivNextStepStatic = view.findViewById(R.id.iv_next_step_static);
         glowingView = view.findViewById(R.id.view_glowing);
 
-        actionButtonLayout.setVisibility(View.GONE);
-        mainView.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
-        glowingView.setVisibility(View.GONE);
-        ivNextStepStatic.setVisibility(View.GONE);
-
         presenter.initUploadImageHandler(getActivity(), uploadImageDialog);
 
         fabChat.hide();
@@ -418,6 +412,11 @@ public class DetailResChatFragment
 
     private void initView() {
         chatAdapter.clearData();
+        actionButtonLayout.setVisibility(View.GONE);
+        mainView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
+        glowingView.setVisibility(View.GONE);
+        ivNextStepStatic.setVisibility(View.GONE);
         presenter.initView(resolutionId);
     }
 
