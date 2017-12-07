@@ -117,4 +117,6 @@ public interface ICartView extends IBaseView {
 
     void renderInstantPromo(CartPromo cartPromo);
 
+    void updateInsuranceTermsVisibility(List<CartItem> cartItems);
+
 }

@@ -373,6 +373,7 @@ public class CartPresenter implements ICartPresenter {
                         );
                         if (!responseTransform.getMessageSuccess().isEmpty()) {
                             messageSuccess = responseTransform.getMessageSuccess();
+                            view.updateInsuranceTermsVisibility(cartData.getCartItemList());
                         }
                         view.showToastMessage(messageSuccess);
                         try {
@@ -381,6 +382,7 @@ public class CartPresenter implements ICartPresenter {
                             e.printStackTrace();
                         }
                         switchInsurancePrice(cartItemEditable, useInsurance);
+                        processRenderViewCartData(cartData);
                     }
                 });
     }
@@ -779,6 +781,7 @@ public class CartPresenter implements ICartPresenter {
         }
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
+        processCartRates(data.getTokenKero(), data.getUt(), data.getCartItemList());
     }
 
     @Override
@@ -846,6 +849,7 @@ public class CartPresenter implements ICartPresenter {
             if (currentKeroShipmentServiceId == shipmentServiceId) {
                 courierPrices.setShipmentPrice(keroShipmentServices.get(i).getPrice());
                 courierPrices.setInsuranceMode(keroShipmentServices.get(i).getInsuranceMode());
+                Log.e("InsuranceMode", String.valueOf(keroShipmentServices.get(i).getInsuranceMode()));
                 if (courierPrices.getInsuranceMode() == MUST_INSURANCE_MODE) {
                     courierPrices.setInsurancePrice(keroShipmentServices.get(i)
                             .getInsurancePrice());
@@ -858,6 +862,7 @@ public class CartPresenter implements ICartPresenter {
                     courierPrices.setCartSubtotal(false);
                 }
                 courierPrices.setKeroValue(keroShipmentServices.get(i));
+                courierPrices.setCartInsuranceProd(cartRatesData.isInsuranced() ? 1 : 0);
                 courierPrices.setInsuranceUsedInfo(keroShipmentServices.get(i).getInsuranceUsedInfo());
                 courierPrices.setInsuranceUsedType(keroShipmentServices.get(i).getInsuranceUsedType());
             }
