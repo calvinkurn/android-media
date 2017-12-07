@@ -1,7 +1,6 @@
 package com.tokopedia.seller.seller.info.view.adapter;
 
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +28,18 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
 
     private SellerInfoDateUtil sellerInfoDateUtil;
 
+    public SellerInfoViewHolder(View itemView) {
+        super(itemView);
+        imageSellerInfo = itemView.findViewById(R.id.image_seller_info);
+        textDateDescription = itemView.findViewById(R.id.text_date_description_date);
+        textTitle = itemView.findViewById(R.id.text_title);
+        sellerInfoContainer = itemView.findViewById(R.id.item_seller_info_container);
+        textDateDesctionSection = itemView.findViewById(R.id.text_date_description_section);
+
+        lightGreenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.light_green, null);
+        whiteColor = ResourcesCompat.getColor(itemView.getResources(), R.color.white, null);
+    }
+
     @Override
     public void bindObject(SellerInfoModel sellerInfoModel) {
         if(sellerInfoModel instanceof SellerInfoSectionModel)
@@ -40,7 +51,7 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
         textDateDesctionSection.setText(itemView
                 .getResources()
                 .getString(
-                        R.string.seller_info_title_description_format_,
+                        R.string.seller_info_title_description_format,
                         sellerInfoModel.getSection().getName()));
 
         textTitle.setText(sellerInfoModel.getTitle());
@@ -56,17 +67,5 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
 
     public void setSellerInfoDateUtil(SellerInfoDateUtil sellerInfoDateUtil) {
         this.sellerInfoDateUtil = sellerInfoDateUtil;
-    }
-
-    public SellerInfoViewHolder(View itemView) {
-        super(itemView);
-        imageSellerInfo = itemView.findViewById(R.id.image_seller_info);
-        textDateDescription = itemView.findViewById(R.id.text_date_description_date);
-        textTitle = itemView.findViewById(R.id.text_title);
-        sellerInfoContainer = itemView.findViewById(R.id.item_seller_info_container);
-        textDateDesctionSection = itemView.findViewById(R.id.text_date_description_section);
-
-        lightGreenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.light_green, null);
-        whiteColor = ResourcesCompat.getColor(itemView.getResources(), R.color.white, null);
     }
 }
