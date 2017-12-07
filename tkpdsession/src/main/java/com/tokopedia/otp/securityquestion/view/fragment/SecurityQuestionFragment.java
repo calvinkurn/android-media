@@ -88,11 +88,13 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     private TextView titleSecurity;
     private View vOtp;
     private View vError;
+    private View vSecurity;
     private TextView vSendOtp;
     private TextView vSendOtpCall;
     private TextView vSaveBut;
     private TextView changeNumber;
     private TextView verifyTrueCaller;
+    private View progressFull;
 
     private CountDownTimer countDownTimer;
     private IncomingSmsReceiver smsReceiver;
@@ -169,6 +171,8 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         vSaveBut = view.findViewById(R.id.save_but);
         changeNumber = view.findViewById(R.id.title_change_number);
         verifyTrueCaller = view.findViewById(R.id.verify_button);
+        progressFull = view.findViewById(R.id.progress);
+        vSecurity = view.findViewById(R.id.view_security);
         prepareView();
         setViewListener();
         presenter.attachView(this);
@@ -323,7 +327,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
                                   ds.setColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.action_send_otp_with_call).indexOf("lewat")
+                , getString(R.string.action_send_otp_with_call).indexOf("telepon")
                 , getString(R.string.action_send_otp_with_call).length()
                 , 0);
 
@@ -511,6 +515,23 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         SnackbarManager.make(getActivity(),
                 getString(com.tokopedia.core.R.string.success_fetch_truecaller),
                 Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showLoadingFull() {
+        vSecurity.setVisibility(View.GONE);
+        vOtp.setVisibility(View.GONE);
+        vSaveBut.setVisibility(View.GONE);
+        progressFull.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void dismissLoadingFull() {
+        vSecurity.setVisibility(View.VISIBLE);
+        vOtp.setVisibility(View.VISIBLE);
+        vSaveBut.setVisibility(View.VISIBLE);
+        progressFull.setVisibility(View.GONE);
     }
 
     @Override

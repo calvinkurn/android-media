@@ -145,6 +145,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onErrorLoginTokoCash(String errorMessage) {
+        presenter.clearUserData();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -175,6 +176,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             onSuccessLogin();
         } else {
+            presenter.clearUserData();
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

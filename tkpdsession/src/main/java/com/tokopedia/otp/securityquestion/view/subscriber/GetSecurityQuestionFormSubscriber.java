@@ -28,11 +28,13 @@ public class GetSecurityQuestionFormSubscriber extends Subscriber<QuestionViewMo
 
     @Override
     public void onError(Throwable e) {
+        viewListener.dismissLoadingFull();
         viewListener.onErrorGetQuestion(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(QuestionViewModel questionViewModel) {
+        viewListener.dismissLoadingFull();
         if (questionViewModel.getQuestion().equals(OTP_PHONE_NUMBER)) {
             viewListener.onSuccessGetQuestionPhone(questionViewModel);
         } else if (questionViewModel.getQuestion().equals(OTP_EMAIL)) {

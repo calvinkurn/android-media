@@ -464,6 +464,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         }
 
         AccountsService accountService = new AccountsService(bundle);
+        bundle.putBoolean(AccountsService.IS_BASIC, true);
         Observable<Response<String>> observable = accountService.getApi()
                 .getTokenOld(AuthUtil
                         .generateParams(getApplicationContext(), params));

@@ -90,6 +90,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
 
     @Override
     public void getQuestionForm(SecurityDomain securityDomain) {
+        viewListener.showLoadingFull();
         getSecurityQuestionFormUseCase.execute(getSecurityQuestionFormUseCase.getParam(
                 securityDomain.getUserCheckSecurity1(),
                 securityDomain.getUserCheckSecurity2()

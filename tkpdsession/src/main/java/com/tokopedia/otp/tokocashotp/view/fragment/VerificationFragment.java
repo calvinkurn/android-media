@@ -31,6 +31,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.presenter.VerificationPresenter;
@@ -237,6 +238,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onSuccessVerifyOTP(VerifyOtpTokoCashViewModel verifyOtpTokoCashViewModel) {
+        resetCountDown();
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
@@ -246,6 +248,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    private void resetCountDown() {
+        cacheHandler.putBoolean(HAS_TIMER, false);
+        cacheHandler.applyEditor();
     }
 
     @Override

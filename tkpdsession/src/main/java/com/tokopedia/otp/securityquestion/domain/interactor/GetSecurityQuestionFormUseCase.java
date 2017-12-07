@@ -44,10 +44,12 @@ public class GetSecurityQuestionFormUseCase extends UseCase<QuestionViewModel> {
 
     public RequestParams getParam(int userCheckSecurity1, int userCheckSecurity2) {
         RequestParams params = RequestParams.create();
-        params.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(), params.getParameters()));
         params.putInt(USER_CHECK_SECURITY_ONE, userCheckSecurity1);
         params.putInt(USER_CHECK_SECURITY_TWO, userCheckSecurity2);
         params.putString(USER_ID, sessionHandler.getTempLoginSession(MainApplication.getAppContext()));
+        params.putAll(AuthUtil.generateParamsNetworkObject(MainApplication.getAppContext(),
+                params.getParameters(),
+                sessionHandler.getTempLoginSession(MainApplication.getAppContext())));
         return params;
     }
 }

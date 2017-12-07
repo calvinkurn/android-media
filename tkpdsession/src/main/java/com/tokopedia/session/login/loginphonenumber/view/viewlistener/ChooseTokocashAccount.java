@@ -28,5 +28,7 @@ public interface ChooseTokocashAccount {
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {
 
         void loginWithTokocash(String accessToken, AccountTokocash accountTokocash);
+
+        void clearUserData();
     }
 }

@@ -37,9 +37,10 @@ public class MakeLoginUseCase extends UseCase<MakeLoginDomain> {
 
     public static RequestParams getParam(String userId) {
         RequestParams params = RequestParams.create();
-        params.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
-                RequestParams.EMPTY.getParameters()));
         params.putString(PARAM_USER_ID, userId);
+        params.putAll(AuthUtil.generateParamsNetworkObject(MainApplication.getAppContext(),
+                params.getParameters(),
+                userId));
         return params;
     }
 }

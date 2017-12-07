@@ -329,7 +329,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
             return responseString.toLowerCase().contains("invalid_request")
-                    && request.header("authorization").contains("Bearer");
+                    && request.header("authorization").contains("Bearer")
+                    && !response.request().url().encodedPath().contains("token");
         } catch (IOException e) {
             e.printStackTrace();
             return false;

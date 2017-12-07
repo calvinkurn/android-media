@@ -47,7 +47,6 @@ public class VerifyOtpTokoCashMapper implements Func1<Response<TkpdDigitalRespon
     private VerifyOtpTokoCashViewModel convertToDomain(VerifyOtpTokoCashPojo pojo) {
         return new VerifyOtpTokoCashViewModel(
                 pojo.getKey(),
-                pojo.isTokocashAccountExist(),
                 pojo.isVerified(),
                 convertToDomainAccountList(pojo.getUserDetails())
         );

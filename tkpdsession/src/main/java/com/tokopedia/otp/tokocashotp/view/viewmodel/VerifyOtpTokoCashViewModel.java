@@ -11,25 +11,18 @@ import java.util.ArrayList;
 public class VerifyOtpTokoCashViewModel {
 
     private String key;
-    private boolean hasTokocashAccount;
     private boolean isVerified;
     private ArrayList<AccountTokocash> list;
 
     public VerifyOtpTokoCashViewModel(String key,
-                                      boolean hasTokocashAccount,
                                       boolean isVerified, ArrayList<AccountTokocash> list) {
         this.key = key;
-        this.hasTokocashAccount = hasTokocashAccount;
         this.isVerified = isVerified;
         this.list = list;
     }
 
     public String getKey() {
         return key;
-    }
-
-    public boolean isHasTokocashAccount() {
-        return hasTokocashAccount;
     }
 
     public boolean isVerified() {

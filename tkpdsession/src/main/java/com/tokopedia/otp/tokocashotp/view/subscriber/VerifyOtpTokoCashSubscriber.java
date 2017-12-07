@@ -32,7 +32,6 @@ public class VerifyOtpTokoCashSubscriber extends Subscriber<VerifyOtpTokoCashVie
     public void onNext(VerifyOtpTokoCashViewModel verifyOtpTokoCashViewModel) {
         view.dismissLoadingProgress();
         if (verifyOtpTokoCashViewModel.isVerified()
-                && verifyOtpTokoCashViewModel.isHasTokocashAccount()
                 && !verifyOtpTokoCashViewModel.getList().isEmpty())
             view.onSuccessVerifyOTP(verifyOtpTokoCashViewModel);
         else {
