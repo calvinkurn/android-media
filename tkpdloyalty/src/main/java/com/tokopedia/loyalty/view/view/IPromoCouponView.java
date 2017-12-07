@@ -15,6 +15,8 @@ import java.util.List;
 public interface IPromoCouponView extends IBaseView {
     void renderCouponListDataResult(List<CouponData> couponData);
 
+    void couponDataNoResult();
+
     void receiveResult(CouponViewModel couponViewModel);
 
     void couponError();

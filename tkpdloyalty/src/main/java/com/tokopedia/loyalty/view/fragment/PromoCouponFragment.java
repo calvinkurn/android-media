@@ -127,6 +127,11 @@ public class PromoCouponFragment extends BasePresenterFragment
     }
 
     @Override
+    public void couponDataNoResult() {
+        
+    }
+
+    @Override
     public void receiveResult(CouponViewModel couponViewModel) {
         listener.onCouponSuccess(couponViewModel.getCode(),
                 couponViewModel.getMessage(),

@@ -34,6 +34,9 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     public void processGetCouponList() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("user_id", SessionHandler.getLoginID(view.getContext()));
+        param.put("type", "marketplace");
+        param.put("page", "1");
+        param.put("page_size", "10");
         promoCouponInteractor.getCouponList(
                 AuthUtil.generateParamsNetwork(view.getContext(), param),
                 new Subscriber<List<CouponData>>() {
@@ -49,7 +52,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
                     @Override
                     public void onNext(List<CouponData> couponData) {
-                        view.renderCouponListDataResult(couponData);
+                        if (couponData.size() < 1) {
+                            view.couponDataNoResult();
+                        } else {
+                            view.renderCouponListDataResult(couponData);
+                        }
                     }
                 });
     }

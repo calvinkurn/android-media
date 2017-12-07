@@ -939,14 +939,15 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     break;
             }
         } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
-            Bundle bundle = data.getExtras();
             if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
                 setVoucherResultLayout(
                         bundle.getString(LoyaltyActivity.VOUCHER_CODE, ""),
                         bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
                         bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
                 );
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
                 promoResultLayout.setVisibility(View.VISIBLE);
                 labelPromoType.setText("Kode Kupon: ");
                 promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
