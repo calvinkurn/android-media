@@ -1,5 +1,7 @@
 package com.tokopedia.core.myproduct.model;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +37,9 @@ public class FolderModel {
 
     public static List<ImageModel> searchImageModels(List<FolderModel> folderModels, String bucketName) {
         for (FolderModel folderModel : folderModels) {
-            if (folderModel.getPath().equals(bucketName))
+            if (!TextUtils.isEmpty(bucketName) && folderModel.getPath().equals(bucketName)) {
                 return folderModel.getImageModels();
+            }
         }
         return null;
     }

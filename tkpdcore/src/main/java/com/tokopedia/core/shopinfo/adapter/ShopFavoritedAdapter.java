@@ -90,7 +90,10 @@ public class ShopFavoritedAdapter extends BaseLinearRecyclerViewAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(context, PeopleInfoNoDrawerActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("user_id", list.get(holder.getAdapterPosition()).getUserId());
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition >= 0 && adapterPosition < list.size()) {
+                    bundle.putString("user_id", list.get(adapterPosition).getUserId());
+                }
                 bundle.putBoolean("is_owner", false);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
