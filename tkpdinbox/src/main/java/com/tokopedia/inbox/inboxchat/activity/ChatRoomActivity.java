@@ -92,7 +92,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         }
     }
 
-    @DeepLink({Constants.Applinks.MESSAGE_DETAIL, Constants.Applinks.TOPCHAT})
+    @DeepLink(Constants.Applinks.TOPCHAT)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         Intent homeIntent = null;
         if (GlobalConfig.isSellerApp()) {
