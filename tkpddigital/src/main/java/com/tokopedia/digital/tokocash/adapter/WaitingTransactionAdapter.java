@@ -49,7 +49,7 @@ public class WaitingTransactionAdapter extends RecyclerView.Adapter {
         itemViewHolder.descItem.setText(!TextUtils.isEmpty(itemHistory.getNotes()) ? itemHistory.getNotes() :
                 itemHistory.getDescription());
         itemViewHolder.titleItem.setText(itemHistory.getTitle());
-        itemViewHolder.priceItem.setText("+ " + itemHistory.getAmountChanges());
+        itemViewHolder.priceItem.setText("+ " + itemHistory.getAmountPending());
         itemViewHolder.dateItem.setText(itemHistory.getTransactionInfoId() + " - " +
                 itemHistory.getTransactionInfoDate());
     }
