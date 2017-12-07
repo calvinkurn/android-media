@@ -102,7 +102,7 @@ public class NextActionFragment
     protected void setupArguments(Bundle arguments) {
         resolutionId = arguments.getString(NextActionActivity.PARAM_RESOLUTION_ID);
         nextActionDomain = arguments.getParcelable(NextActionActivity.PARAM_NEXT_ACTION);
-
+        resolutionStatus = arguments.getInt(NextActionActivity.PARAM_RESOLUTION_STATUS);
     }
 
     @Override

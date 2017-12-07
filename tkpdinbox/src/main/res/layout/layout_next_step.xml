@@ -28,10 +28,17 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:id="@+id/iv_next_step_static"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_step_current"/>
+                android:src="@drawable/ic_check_circle_48dp"/>
+
+            <com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView
+                android:id="@+id/view_glowing"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"/>
 
             <TextView
                 android:id="@+id/tv_next_step"

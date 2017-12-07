@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -82,7 +83,11 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
     }
 
     private String generateInformationText(SolutionData data) {
-        return getContext().getString(R.string.template_last_solution_provider_v2, data.getSolutionProviderName(), data.getSolutionDate());
+        return "<i>" + getContext().getString(R.string.template_last_solution_provider_v2, buildBoldName(data.getSolutionProviderName()), DateFormatUtils.formatDateForResoChatV2(data.getSolutionDate())) + "</i>";
+    }
+
+    private String buildBoldName(String string){
+        return "<b>" + string + "</b>";
     }
 
 }

@@ -35,6 +35,7 @@ import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailCompo
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
@@ -79,6 +80,9 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 890;
     private static final int REQUEST_EDIT_ADDRESS = 901;
 
+    public static final int STATUS_FINISHED = 500;
+    public static final int STATUS_CANCEL = 0;
+
     protected Bundle savedState;
 
     View loading;
@@ -97,6 +101,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     private TkpdProgressDialog normalLoading;
     private Dialog resCenterDialog;
+    private ImageView ivNextStepStatic;
+    private GlowingView glowingView;
 
     private String resolutionID;
     private DetailViewModel viewData;
@@ -206,10 +212,14 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         proveView = view.findViewById(R.id.prove_view);
         historyView = view.findViewById(R.id.history_view);
         cvDiscussion = view.findViewById(R.id.cv_discussion);
+        ivNextStepStatic = view.findViewById(R.id.iv_next_step_static);
+        glowingView = view.findViewById(R.id.view_glowing);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         cvNextStep.setVisibility(View.GONE);
         timeView.setVisibility(View.GONE);
+        glowingView.setVisibility(View.GONE);
+        ivNextStepStatic.setVisibility(View.GONE);
     }
 
     @Override
@@ -334,6 +344,13 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 timeView.setVisibility(View.GONE);
             }
             timeView.invalidate();
+            if (getViewData().getDetailData().getResolutionStatus() == STATUS_FINISHED
+                    || getViewData().getDetailData().getResolutionStatus() == STATUS_CANCEL) {
+                ivNextStepStatic.setVisibility(View.VISIBLE);
+            } else {
+                glowingView.setVisibility(View.VISIBLE);
+                glowingView.renderData(new Object());
+            }
         }
         if (getViewData().getProductData() != null) {
             listProductView.renderData(getViewData().getProductData());
@@ -760,7 +777,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         btnAccept.setOnClickListener(action);
         resCenterDialog.show();
     }
-
 
     @Override
     public void onDestroyView() {

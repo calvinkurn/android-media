@@ -25,6 +25,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private List<HistoryItem> historyItems;
     private boolean limit;
     private DetailResCenterFragmentView listener;
+    private String lastMonth, lastDay;
 
     public HistoryAdapter() {
         historyItems = new ArrayList<>();
@@ -53,6 +54,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     public void setHistoryItems(List<HistoryItem> historyItems) {
         this.historyItems = historyItems;
+        this.lastMonth = "";
+        this.lastDay = "";
     }
 
     private boolean isLimit() {
@@ -93,6 +96,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 listener.setOnActionMoreHistoryClick();
             }
         });
+        if (lastDay.equals(holder.tvDateNumber.getText().toString()) && lastMonth.equals(holder.tvMonth.getText().toString())) {
+            holder.tvDateNumber.setVisibility(View.GONE);
+            holder.tvMonth.setVisibility(View.GONE);
+        }
+        lastDay = holder.tvDateNumber.getText().toString();
+        lastMonth = holder.tvMonth.getText().toString();
     }
 
     @Override

@@ -48,6 +48,7 @@ import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetai
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
@@ -125,6 +126,8 @@ public class DetailResChatFragment
     private View actionButtonLayout;
     private ImageUploadHandler uploadImageDialog;
     private FloatingActionButton fabChat;
+    private ImageView ivNextStepStatic;
+    private GlowingView glowingView;
 
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
@@ -298,10 +301,14 @@ public class DetailResChatFragment
         progressBar = view.findViewById(R.id.progress_bar);
         actionButtonLayout = view.findViewById(R.id.layout_action);
         fabChat = view.findViewById(R.id.fab_chat);
+        ivNextStepStatic = view.findViewById(R.id.iv_next_step_static);
+        glowingView = view.findViewById(R.id.view_glowing);
 
         actionButtonLayout.setVisibility(View.GONE);
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
+        glowingView.setVisibility(View.GONE);
+        ivNextStepStatic.setVisibility(View.GONE);
 
         presenter.initUploadImageHandler(getActivity(), uploadImageDialog);
 
@@ -579,9 +586,13 @@ public class DetailResChatFragment
             etChat.setEnabled(false);
             ivSend.setEnabled(false);
             etChat.clearFocus();
+            ivNextStepStatic.setVisibility(View.VISIBLE);
         } else {
             etChat.setEnabled(true);
             ivSend.setEnabled(true);
+            glowingView.setVisibility(View.VISIBLE);
+            glowingView.renderData(new Object());
+
         }
     }
 

@@ -30,7 +30,7 @@
     <string name="action_edit_solution">Ubah Solusi</string>
     <string name="action_accept_solution">Terima Solusi</string>
     <string name="action_accept_product">Komplain Selesai</string>
-    <string name="action_see_more_history">Lihat Riwayat Selengkapnya</string>
+    <string name="action_see_more_history">Riwayat Selengkapnya</string>
     <string name="action_see_more_product_complaint">Lihat Semua Produk Yang Dikomplain</string>
     <string name="action_discuss_with_buyer">Diskusi Dengan Pembeli</string>
     <string name="action_discuss_with_seller">Diskusi Dengan Penjual</string>
