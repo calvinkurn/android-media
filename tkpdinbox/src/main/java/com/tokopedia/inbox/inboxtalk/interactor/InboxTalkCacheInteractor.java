@@ -20,4 +20,6 @@ public interface InboxTalkCacheInteractor {
 
         void onSuccess(JSONObject result);
     }
+
+    void unsubscribe();
 }

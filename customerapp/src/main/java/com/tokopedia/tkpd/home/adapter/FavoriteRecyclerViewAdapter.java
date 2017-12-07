@@ -204,7 +204,7 @@ public class FavoriteRecyclerViewAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventFavoriteShop(shop.name);
+                UnifyTracking.eventFavoriteShop();
                 favorite.moveToOtherActivity(new RecyclerViewItem(), ShopInfoActivity.class, new Object[]{"shop_id", shop.id});
             }
         };

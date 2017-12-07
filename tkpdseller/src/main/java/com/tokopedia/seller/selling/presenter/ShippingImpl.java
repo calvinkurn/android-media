@@ -131,7 +131,9 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void updateListDataChecked(int position, boolean selected) {
-        (modelList.get(position)).Checked = selected;
+        if (position >= 0 && position < modelList.size()) {
+            (modelList.get(position)).Checked = selected;
+        }
         view.notifyDataSetChanged(modelList);
     }
 

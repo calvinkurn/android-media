@@ -4,6 +4,7 @@ apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
+apply plugin: 'com.apollographql.android'
 
 
 def getDpiId(String density) {
@@ -12,6 +13,18 @@ def getDpiId(String density) {
     if (density != null)
         return DPI_ID.get(density);
     return 0;
+}
+
+def getAbiId(String abi) {
+
+    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
+    if (abi != null)
+        return ABI_ID.get(abi);
+    return 0;
+}
+
+def generateBuildId(String density, String abi) {
+    return getAbiId(abi) + getDpiId(density);
 }
 
 def getAPKArchiveFolder(variant) {
@@ -63,9 +76,11 @@ def archiveAPK(variant, output) {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        jcenter()
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
     }
 }
 
@@ -73,8 +88,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 212001301;
-        defaultVersionName = "2.13";
+        defaultVersionCode = 216001101;
+        defaultVersionName = "2.16";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -130,7 +145,8 @@ android {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                        String abi = output.getFilter(com.android.build.OutputFile.ABI);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -160,8 +176,8 @@ android {
         abi {
             enable allowSplit()
             reset()
-            include "armeabi-v7a"
-            universalApk true
+            include "armeabi-v7a", "x86"
+            universalApk false
         }
 
     }
@@ -184,7 +200,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
     }
 
     compileOptions {
@@ -206,14 +222,12 @@ android {
         }
     }
 
-//    variantFilter { variant ->
-//        def names = variant.flavors*.name
-//        // To check for a certain build type, use variant.buildType.name == "<buildType>"
-//        if (names.contains("staging") && names.contains("demo")) {
-//            // Gradle ignores any variants that satisfy the conditions above.
-//            setIgnore(true)
-//        }
-//    }
+    variantFilter { variant ->
+
+        if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
+            variant.setIgnore(true);
+        }
+    }
 }
 
 dependencies {
@@ -254,7 +268,6 @@ dependencies {
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
-    compile project(':tkpdtopads')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpdride')
@@ -290,4 +303,8 @@ dependencies {
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
+
+    compile rootProject.ext.apolloDependencies.apolloRxSupport
+    compile rootProject.ext.apolloDependencies.apolloRuntime
+    compile rootProject.ext.apolloDependencies.apolloAndroidSupport
 }

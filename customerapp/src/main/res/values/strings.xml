@@ -38,5 +38,12 @@
 
     <string name="react_native_banner_official_title">Official Store</string>
     <string name="official_store_term_conditions_title"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="deeplink_receiver_applink_update_button_title">Update</string>
+    <string name="deeplink_receiver_applink_update_button_cancel_title">Batal</string>
+
+    <!--tokocash history-->
+    <string name="toko_cash_title_page_date_range">Rentang Tanggal</string>
+    <string name="toko_cash_tab_choose_date">Pilih Tanggal</string>
+    <string name="toko_cash_tab_choose_date_range">Pilih Rentang Waktu</string>
 
 </resources>
