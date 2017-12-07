@@ -47,21 +47,6 @@ public class HomeBannerDataSource {
     }
 
     @NonNull
-    private Func1<HomeBannerResponseModel, Boolean> getPredicate() {
-        return new Func1<HomeBannerResponseModel, Boolean>() {
-            @Override
-            public Boolean call(HomeBannerResponseModel homeBannerResponseModel) {
-                return homeBannerResponseModel.isSuccess()
-                        && !isExpired(homeBannerResponseModel.getExpiredTime());
-            }
-        };
-    }
-
-    private boolean isExpired(long expiredTime) {
-        return expiredTime < System.currentTimeMillis();
-    }
-
-    @NonNull
     private Observable<HomeBannerResponseModel> getCloud(RequestParams requestParams) {
         return categoryApi.getBanners(SessionHandler.getLoginID(context), requestParams.getParameters())
                 .map(homeBannerMapper)

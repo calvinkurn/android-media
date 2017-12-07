@@ -43,7 +43,7 @@ public class HomeCategoryDataSource {
     }
 
     public Observable<HomeCategoryResponseModel> getHomeCategory() {
-        return getCloud().onErrorResumeNext(getCache());
+        return getCache().onErrorResumeNext(getCloud());
     }
 
     @NonNull
@@ -59,6 +59,7 @@ public class HomeCategoryDataSource {
             @Override
             public void call(HomeCategoryResponseModel homeCategoryResponseModel) {
                 cacheManager.setKey(TkpdCache.Key.HOME_CATEGORY_CACHE);
+                cacheManager.setCacheDuration(3600);
                 cacheManager.setValue(gson.toJson(homeCategoryResponseModel));
                 cacheManager.store();
             }

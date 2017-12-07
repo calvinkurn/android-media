@@ -42,16 +42,6 @@ public class TickerDataSource {
     }
 
     @NonNull
-    private Func1<Ticker, Boolean> getPredicate() {
-        return new Func1<Ticker, Boolean>() {
-            @Override
-            public Boolean call(Ticker ticker) {
-                return ticker != null;
-            }
-        };
-    }
-
-    @NonNull
     private Observable<Ticker> getCloud() {
         return categoryApi.getTickers(SessionHandler.getLoginID(context),
                 CategoryApi.size,

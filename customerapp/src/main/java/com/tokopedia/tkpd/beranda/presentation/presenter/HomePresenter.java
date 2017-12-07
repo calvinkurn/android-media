@@ -21,11 +21,8 @@ import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
-import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
@@ -44,25 +41,9 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
-import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
-import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
-import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutSectionsModel;
-import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseModel;
-import com.tokopedia.tkpd.beranda.domain.model.saldo.HomeSaldoModel;
-import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksGroupsModel;
-import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksModel;
-import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksResponseModel;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
@@ -143,7 +124,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         compositeSubscription.add(subscription);
     }
 
-    private void getSaldoData(DefaultSubscriber<HomeSaldoModel> subscriber) {
+    private void getSaldoData(DefaultSubscriber<SaldoViewModel> subscriber) {
         if (SessionHandler.isV4Login(context)) {
             subscription = Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                     topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
@@ -157,7 +138,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getHomeData() {
-        getSaldoData(new DefaultSubscriber<HomeSaldoModel>() {
+        getSaldoData(new DefaultSubscriber<SaldoViewModel>() {
             @Override
             public void onStart() {
                 if (isViewAttached()) {
@@ -167,7 +148,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
 
             @Override
-            public void onNext(final HomeSaldoModel saldoModel) {
+            public void onNext(final SaldoViewModel saldoModel) {
                 if (isViewAttached()) {
                     final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
                     if (config != null) {
@@ -181,9 +162,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                             }
                         });
                     }
-                    Visitable visitable = mappingSaldoData(saldoModel);
-                    getView().setItem(0, visitable);
-                    getHomeDataItem(visitable);
+                    getView().setItem(0, saldoModel);
+                    getHomeDataItem(saldoModel);
                 }
             }
 
@@ -314,28 +294,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
         });
         getShopInfoRetrofit.getShopInfo();
-    }
-
-    private Visitable mappingSaldoData(HomeSaldoModel saldoModel) {
-        SaldoViewModel cashViewModel = new SaldoViewModel();
-        if (saldoModel.hasTokoCash()) {
-            SaldoViewModel.ItemModel tokoCash = new SaldoViewModel.ItemModel();
-            tokoCash.setIcon(R.drawable.ic_tokocash_icon);
-            tokoCash.setType(saldoModel.getTokoCashData().getLink() ==
-                    TokoCashTypeDef.TOKOCASH_ACTIVE ? DrawerWalletAction.TYPE_ACTION_BALANCE
-                    : DrawerWalletAction.TYPE_ACTION_ACTIVATION);
-            tokoCash.setTitle(saldoModel.getTokoCashData().getText());
-            tokoCash.setSubtitle(saldoModel.getTokoCashData().getBalance());
-            this.tokoCashData = saldoModel.getTokoCashData();
-            cashViewModel.addItem(tokoCash);
-        }
-        if (saldoModel.hasTopPoint()) {
-            SaldoViewModel.ItemModel topPoint = new SaldoViewModel.ItemModel();
-            topPoint.setIcon(R.drawable.ic_logo_toppoint);
-            topPoint.setSubtitle(saldoModel.getTopPointsData().getLoyaltyPoint().getAmount());
-            cashViewModel.addItem(topPoint);
-        }
-        return cashViewModel;
     }
 
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {

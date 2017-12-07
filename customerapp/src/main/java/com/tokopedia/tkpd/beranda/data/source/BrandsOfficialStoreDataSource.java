@@ -38,21 +38,6 @@ public class BrandsOfficialStoreDataSource {
     }
 
     @NonNull
-    private Func1<BrandsOfficialStoreResponseModel, Boolean> getPredicate() {
-        return new Func1<BrandsOfficialStoreResponseModel, Boolean>() {
-            @Override
-            public Boolean call(BrandsOfficialStoreResponseModel model) {
-                return model.isSuccess()
-                        && !isExpired(model.getExpiredTime());
-            }
-        };
-    }
-
-    private boolean isExpired(long expiredTime) {
-        return expiredTime < System.currentTimeMillis();
-    }
-
-    @NonNull
     private Observable<BrandsOfficialStoreResponseModel> getCloud() {
         return mojitoApi.getBrandsOfficialStore().map(brandsOfficialStoreMapper)
                 .doOnNext(saveToCache());

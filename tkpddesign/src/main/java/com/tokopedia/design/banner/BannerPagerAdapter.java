@@ -74,15 +74,16 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
             holder.relativeLayout.requestLayout();
             holder.relativeLayout.setGravity(Gravity.CENTER);
         }
-        Activity activity = getActivity(holder.itemView);
-        if (activity != null && !activity.isFinishing()) {
-            Glide.with(activity)
+        try {
+            Glide.with(holder.itemView.getContext())
                     .load(bannerImageUrls.get(position))
                     .fitCenter()
                     .dontAnimate()
                     .placeholder(R.drawable.ic_loading_image)
                     .error(R.drawable.ic_loading_image)
                     .into(holder.bannerImage);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

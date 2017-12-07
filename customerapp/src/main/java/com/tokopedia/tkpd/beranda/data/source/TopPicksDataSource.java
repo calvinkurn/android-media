@@ -39,21 +39,6 @@ public class TopPicksDataSource {
     }
 
     @NonNull
-    private Func1<TopPicksResponseModel, Boolean> getPredicate() {
-        return new Func1<TopPicksResponseModel, Boolean>() {
-            @Override
-            public Boolean call(TopPicksResponseModel topPicksResponseModel) {
-                return topPicksResponseModel.isSuccess()
-                        && !isExpired(topPicksResponseModel.getExpiredTime());
-            }
-        };
-    }
-
-    private boolean isExpired(long expiredTime) {
-        return expiredTime < System.currentTimeMillis();
-    }
-
-    @NonNull
     private Observable<TopPicksResponseModel> getCloud(RequestParams requestParams) {
         return searchApi.getTopPicks(requestParams.getParamsAllValueInString(),
                 GlobalConfig.VERSION_NAME, "android").map(topPicksMapper)

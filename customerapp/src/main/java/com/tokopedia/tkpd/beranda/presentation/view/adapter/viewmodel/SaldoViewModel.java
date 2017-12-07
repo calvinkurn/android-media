@@ -36,17 +36,26 @@ public class SaldoViewModel implements Visitable<HomeTypeFactory> {
     }
 
     public static class ItemModel {
-        int type;
         int icon;
-        String title;
-        String subtitle;
+        String title = "";
+        String subtitle = "";
+        String applinks = "";
+        String redirectUrl = "";
 
-        public int getType() {
-            return type;
+        public String getRedirectUrl() {
+            return redirectUrl;
         }
 
-        public void setType(int type) {
-            this.type = type;
+        public void setRedirectUrl(String redirectUrl) {
+            this.redirectUrl = redirectUrl;
+        }
+
+        public String getApplinks() {
+            return applinks;
+        }
+
+        public void setApplinks(String applinks) {
+            this.applinks = applinks;
         }
 
         public int getIcon() {
