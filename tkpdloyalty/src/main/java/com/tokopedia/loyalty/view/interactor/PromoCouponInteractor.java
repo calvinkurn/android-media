@@ -5,6 +5,8 @@ import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
 
@@ -35,6 +37,20 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     public void getCouponList(TKPDMapParam<String, String> param, Subscriber<List<CouponData>> subscriber) {
         compositeSubscription.add(
                 tokoplusRepository.getCouponList(param)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void submitVoucher(String voucherCode,
+                              String couponCode,
+                              TKPDMapParam<String, String> param,
+                              Subscriber<CouponViewModel> subscriber) {
+        compositeSubscription.add(
+                tokoplusRepository.checkCouponValidity(param, voucherCode, couponCode)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

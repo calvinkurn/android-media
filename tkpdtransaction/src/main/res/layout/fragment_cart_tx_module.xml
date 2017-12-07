@@ -33,12 +33,18 @@
             tools:text="vhashkjalsla asbhdkashahs askjdhasjdhas asdbaksdlasd"
             tools:visibility="visible" />
 
+        <include
+            android:id="@+id/promo_activation"
+            layout="@layout/promo_activation_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_ticker_gtm" />
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nsv_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_ticker_gtm"
+            android:layout_below="@id/promo_activation"
             android:visibility="gone"
             tools:ignore="ObsoleteLayoutParam"
             tools:visibility="visible">
@@ -294,7 +300,11 @@
                             android:textSize="@dimen/font_small"
                             android:textStyle="bold" />
 
-                        <CheckBox
+                        <include
+                            android:id="@+id/promo_result"
+                            layout="@layout/promo_result_layout"/>
+
+                        <!--<CheckBox
                             android:id="@+id/cb_use_voucher"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/btn_height"
@@ -352,7 +362,7 @@
                                 android:layout_below="@id/til_et_voucher_code"
                                 tools:text="Total bolo bolo" />
 
-                        </RelativeLayout>
+                        </RelativeLayout>-->
 
                     </LinearLayout>
 

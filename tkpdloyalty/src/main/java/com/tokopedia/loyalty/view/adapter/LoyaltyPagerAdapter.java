@@ -40,8 +40,10 @@ public class LoyaltyPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public void addAllItem(List<LoyaltyPagerItem> loyaltyPagerItemList) {
-        if (!loyaltyPagerItemList.isEmpty()) loyaltyPagerItemList.clear();
-        loyaltyPagerItemList.addAll(loyaltyPagerItemList);
+        //if (!loyaltyPagerItemList.isEmpty()) loyaltyPagerItemList.clear();
+        if(this.loyaltyPagerItemList.isEmpty()) {
+            this.loyaltyPagerItemList.addAll(loyaltyPagerItemList);
+        }
         notifyDataSetChanged();
     }
 }

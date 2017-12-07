@@ -5,6 +5,7 @@ import com.tokopedia.loyalty.domain.entity.response.Coupon;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
+import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
 import com.tokopedia.loyalty.view.data.CouponData;
 
 import java.util.ArrayList;
@@ -89,5 +90,10 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
             tokoPointDrawerData.setPopUpNotif(null);
         }
         return tokoPointDrawerData;
+    }
+
+    @Override
+    public String getSuccessValidateRedeemMessage(ValidateRedeemCouponResponse response) {
+        return response.getMessageSuccess();
     }
 }

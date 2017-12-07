@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -16,6 +20,7 @@ import com.tokopedia.loyalty.di.component.DaggerPromoCodeComponent;
 import com.tokopedia.loyalty.di.component.PromoCodeComponent;
 import com.tokopedia.loyalty.di.module.PromoCodeViewModule;
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
 
@@ -31,6 +36,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     @Inject
     IPromoCodePresenter dPresenter;
+
+    private ManualInsertCodeListener listener;
 
     @Override
     protected boolean isRetainInstance() {
@@ -79,7 +86,15 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     @Override
     protected void initView(View view) {
-
+        final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
+        TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
+        submitVoucherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dPresenter.processCheckPromoCode(getActivity(),
+                        voucherCodeField.getText().toString());
+            }
+        });
     }
 
     @Override
@@ -115,6 +130,11 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     @Override
     public void renderPromoCodeResult(List<CouponData> couponDataList) {
 
+    }
+
+    @Override
+    public void checkVoucherSuccessfull(VoucherViewModel voucher) {
+        listener.onCodeSuccess(voucher.getCode(), voucher.getMessage(), voucher.getAmount());
     }
 
     @Override
@@ -184,6 +204,24 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     @Override
     public void closeView() {
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        listener = (ManualInsertCodeListener) activity;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (ManualInsertCodeListener) context;
+    }
+
+    public interface ManualInsertCodeListener {
+
+        void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount);
 
     }
 }

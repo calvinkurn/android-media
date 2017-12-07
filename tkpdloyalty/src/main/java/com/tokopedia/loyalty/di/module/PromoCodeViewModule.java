@@ -1,6 +1,10 @@
 package com.tokopedia.loyalty.di.module;
 
 import com.tokopedia.loyalty.di.LoyaltyScope;
+import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
+import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
+import com.tokopedia.loyalty.view.interactor.IPromoCodeInteractor;
+import com.tokopedia.loyalty.view.interactor.PromoCodeInteractor;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.presenter.PromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
@@ -30,7 +34,14 @@ public class PromoCodeViewModule {
 
     @Provides
     @LoyaltyScope
-    IPromoCodePresenter provideIPromoCodePresenter() {
-        return new PromoCodePresenter(view);
+    IPromoCodeInteractor providePromoCodeInteractor(CompositeSubscription compositeSubscription,
+                                                    TokoPointRepository loyaltyRepository) {
+        return new PromoCodeInteractor(compositeSubscription, loyaltyRepository);
+    }
+
+    @Provides
+    @LoyaltyScope
+    IPromoCodePresenter provideIPromoCodePresenter(IPromoCodeInteractor promoCodeInteractor) {
+        return new PromoCodePresenter(view, promoCodeInteractor);
     }
 }

@@ -1,10 +1,14 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.tokopedia.loyalty.view.data.CouponData;
+
 /**
  * @author anggaprasetiyo on 29/11/17.
  */
 
 public interface IPromoCouponPresenter {
+
+    String VOUCHER_CODE = "voucher_code";
 
     void processGetCouponList();
 
@@ -20,5 +24,5 @@ public interface IPromoCouponPresenter {
 
     void processGetCatalogFilterCategory();
 
-
+    void submitVoucher(CouponData couponData);
 }

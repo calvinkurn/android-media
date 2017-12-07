@@ -6,6 +6,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
 
@@ -35,5 +37,13 @@ public interface ITokoPointRepository {
     Observable<String> getCatalogDetail(TKPDMapParam<String, String> param);
 
     Observable<String> getCatalogFilterCategory(TKPDMapParam<String, String> param);
+
+    Observable<VoucherViewModel> checkVoucherValidity(
+            TKPDMapParam<String, String> param, String voucherCode
+    );
+
+    Observable<CouponViewModel> checkCouponValidity(
+            TKPDMapParam<String, String> param, String voucherCode, String couponTitle
+    );
 
 }

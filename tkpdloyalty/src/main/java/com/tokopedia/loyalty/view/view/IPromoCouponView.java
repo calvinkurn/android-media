@@ -1,6 +1,10 @@
 package com.tokopedia.loyalty.view.view;
 
+import android.content.Context;
+
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
 
@@ -10,4 +14,10 @@ import java.util.List;
 
 public interface IPromoCouponView extends IBaseView {
     void renderCouponListDataResult(List<CouponData> couponData);
+
+    void receiveResult(CouponViewModel couponViewModel);
+
+    void couponError();
+
+    Context getContext();
 }

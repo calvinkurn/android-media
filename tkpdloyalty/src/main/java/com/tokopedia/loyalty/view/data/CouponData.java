@@ -18,6 +18,7 @@ public class CouponData implements Parcelable {
     private String icon;
     private String imageUrl;
     private String imageUrlMobile;
+    private String errorMessage;
 
     private CouponData(Builder builder) {
         setId(builder.id);
@@ -112,6 +113,13 @@ public class CouponData implements Parcelable {
         this.imageUrlMobile = imageUrlMobile;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     @Override
     public int describeContents() {
@@ -130,6 +138,7 @@ public class CouponData implements Parcelable {
         dest.writeString(this.icon);
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageUrlMobile);
+        dest.writeString(this.errorMessage);
     }
 
     public CouponData() {
@@ -146,6 +155,7 @@ public class CouponData implements Parcelable {
         this.icon = in.readString();
         this.imageUrl = in.readString();
         this.imageUrlMobile = in.readString();
+        this.errorMessage = in.readString();
     }
 
     public static final Creator<CouponData> CREATOR = new Creator<CouponData>() {
@@ -172,6 +182,7 @@ public class CouponData implements Parcelable {
         private String icon;
         private String imageUrl;
         private String imageUrlMobile;
+        private String errorMessage;
 
         public Builder() {
         }
@@ -223,6 +234,11 @@ public class CouponData implements Parcelable {
 
         public Builder imageUrlMobile(String val) {
             imageUrlMobile = val;
+            return this;
+        }
+
+        public Builder errorMessage(String val) {
+            errorMessage = val;
             return this;
         }
 

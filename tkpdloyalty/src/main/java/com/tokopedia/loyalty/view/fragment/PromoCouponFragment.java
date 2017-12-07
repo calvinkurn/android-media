@@ -3,8 +3,11 @@ package com.tokopedia.loyalty.view.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -14,7 +17,10 @@ import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCouponComponent;
 import com.tokopedia.loyalty.di.component.PromoCouponComponent;
 import com.tokopedia.loyalty.di.module.PromoCouponViewModule;
+import com.tokopedia.loyalty.view.adapter.CouponListAdapter;
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCouponPresenter;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
 
@@ -26,10 +32,17 @@ import javax.inject.Inject;
  * @author anggaprasetiyo on 29/11/17.
  */
 
-public class PromoCouponFragment extends BasePresenterFragment implements IPromoCouponView {
+public class PromoCouponFragment extends BasePresenterFragment
+        implements IPromoCouponView, CouponListAdapter.CouponListAdapterListener {
 
     @Inject
     IPromoCouponPresenter dPresenter;
+
+    private RecyclerView couponListRecyclerView;
+
+    private CouponListAdapter adapter;
+
+    private ChooseCouponListener listener;
 
     @Override
     protected boolean isRetainInstance() {
@@ -78,7 +91,8 @@ public class PromoCouponFragment extends BasePresenterFragment implements IPromo
 
     @Override
     protected void initView(View view) {
-
+        couponListRecyclerView = view.findViewById(R.id.coupon_recycler_view);
+        couponListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
@@ -108,7 +122,21 @@ public class PromoCouponFragment extends BasePresenterFragment implements IPromo
 
     @Override
     public void renderCouponListDataResult(List<CouponData> couponData) {
+        adapter = new CouponListAdapter(couponData, this);
+        couponListRecyclerView.setAdapter(adapter);
+    }
 
+    @Override
+    public void receiveResult(CouponViewModel couponViewModel) {
+        listener.onCouponSuccess(couponViewModel.getCode(),
+                couponViewModel.getMessage(),
+                couponViewModel.getAmount(),
+                couponViewModel.getTitle());
+    }
+
+    @Override
+    public void couponError() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -181,7 +209,42 @@ public class PromoCouponFragment extends BasePresenterFragment implements IPromo
 
     }
 
+    @Override
+    public Context getContext() {
+        return getActivity();
+    }
+
     public static PromoCouponFragment newInstance() {
         return new PromoCouponFragment();
     }
+
+    @Override
+    public void onVoucherChosen(CouponData data) {
+        dPresenter.submitVoucher(data);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        listener = (ChooseCouponListener) activity;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (ChooseCouponListener) context;
+    }
+
+    public interface ChooseCouponListener {
+
+        void onCouponSuccess(
+                String promoCode,
+                String promoMessage,
+                String amount,
+                String couponTitle);
+
+    }
+
+
+    
 }

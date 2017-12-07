@@ -1,7 +1,11 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
 
@@ -29,10 +33,9 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     @Override
     public void processGetCouponList() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("param1", "value1");
-        param.put("param2", "value2");
+        param.put("user_id", SessionHandler.getLoginID(view.getContext()));
         promoCouponInteractor.getCouponList(
-                param,
+                AuthUtil.generateParamsNetwork(view.getContext(), param),
                 new Subscriber<List<CouponData>>() {
                     @Override
                     public void onCompleted() {
@@ -78,6 +81,34 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
     @Override
     public void processGetCatalogFilterCategory() {
+
+    }
+
+    @Override
+    public void submitVoucher(final CouponData couponData) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put(VOUCHER_CODE, couponData.getCode());
+        promoCouponInteractor.submitVoucher(
+                couponData.getTitle(),
+                couponData.getCode(),
+                AuthUtil.generateParamsNetwork(view.getContext(), param
+                ),
+                new Subscriber<CouponViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                couponData.setErrorMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(CouponViewModel couponViewModel) {
+                view.receiveResult(couponViewModel);
+            }
+        });
 
     }
 }

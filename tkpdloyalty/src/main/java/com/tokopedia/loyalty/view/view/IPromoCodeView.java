@@ -1,6 +1,7 @@
 package com.tokopedia.loyalty.view.view;
 
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ import java.util.List;
 public interface IPromoCodeView extends IBaseView {
 
     void renderPromoCodeResult(List<CouponData> couponDataList);
+
+    void checkVoucherSuccessfull(VoucherViewModel voucherModel);
 }

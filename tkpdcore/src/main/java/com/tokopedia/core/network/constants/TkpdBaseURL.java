@@ -536,6 +536,8 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_VOUCHER_CODE = "check_voucher_code.pl";
 
         public static final String PATH_TX_PAYMENT_EMONEY = "tx-payment-emoney.pl";
+
+        public static final String GET_COUPON_LIST = "coupon/list/";
     }
 
     public static class Shipment {

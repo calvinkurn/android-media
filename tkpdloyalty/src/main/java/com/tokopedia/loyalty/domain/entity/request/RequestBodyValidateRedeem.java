@@ -64,6 +64,10 @@ public class RequestBodyValidateRedeem {
         public Builder() {
         }
 
+        public static Builder buildRequest() {
+            return new Builder();
+        }
+
         public Builder catalogId(int val) {
             catalogId = val;
             return this;

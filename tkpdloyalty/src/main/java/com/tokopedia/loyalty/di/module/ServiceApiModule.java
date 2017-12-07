@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.di.module;
 
+import com.tokopedia.core.network.apiservices.transaction.TXService;
+import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
@@ -24,6 +26,18 @@ public class ServiceApiModule {
 
     @Provides
     @LoyaltyScope
+    TXVoucherService provideVoucherService() {
+        return new TXVoucherService();
+    }
+
+    @Provides
+    @LoyaltyScope
+    TXService provideTxService() {
+        return new TXService();
+    }
+
+    @Provides
+    @LoyaltyScope
     ITokoPointResponseMapper provideITokoPointResponseMapper() {
         return new TokoPointResponseMapper();
     }
@@ -31,7 +45,14 @@ public class ServiceApiModule {
     @Provides
     @LoyaltyScope
     ITokoPointRepository provideITokoPointRepository(TokoPointService tokoPointService,
+                                                     TXVoucherService voucherService,
+                                                     TXService txService,
                                                      TokoPointResponseMapper tokoPointResponseMapper) {
-        return new TokoPointRepository(tokoPointService, tokoPointResponseMapper);
+        return new TokoPointRepository(
+                tokoPointService,
+                voucherService,
+                txService,
+                tokoPointResponseMapper
+        );
     }
 }

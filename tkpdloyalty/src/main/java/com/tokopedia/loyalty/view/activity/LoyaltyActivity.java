@@ -20,6 +20,8 @@ import com.tokopedia.loyalty.di.component.LoyaltyViewComponent;
 import com.tokopedia.loyalty.di.module.LoyaltyViewModule;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
+import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
+import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
 
 import java.util.List;
 
@@ -32,8 +34,22 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 27/11/17.
  */
 
-public class LoyaltyActivity extends BasePresenterActivity implements HasComponent<AppComponent> {
+public class LoyaltyActivity extends BasePresenterActivity
+        implements HasComponent<AppComponent>,
+        PromoCodeFragment.ManualInsertCodeListener,
+        PromoCouponFragment.ChooseCouponListener
+{
     public static final String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";
+    public static final String VOUCHER_CODE = "voucher_code";
+    public static final String VOUCHER_MESSAGE = "voucher_message";
+    public static final String VOUCHER_AMOUNT = "voucher_amount";
+    public static final int LOYALTY_REQUEST_CODE = 77;
+    public static final int VOUCHER_RESULT_CODE = 12;
+    public static final int COUPON_RESULT_CODE = 15;
+    public static final String COUPON_CODE = "coupon_code";
+    public static final String COUPON_MESSAGE = "coupon_message";
+    public static final String COUPON_AMOUNT = "coupon_amount";
+    public static final String COUPON_TITLE = "coupon_title";
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -121,6 +137,36 @@ public class LoyaltyActivity extends BasePresenterActivity implements HasCompone
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    public void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString(VOUCHER_CODE, voucherCode);
+        bundle.putString(VOUCHER_MESSAGE, voucherMessage);
+        bundle.putString(VOUCHER_AMOUNT, voucherAmount);
+        intent.putExtras(bundle);
+        setResult(VOUCHER_RESULT_CODE, intent);
+        finish();
+    }
+
+    @Override
+    public void onCouponSuccess(
+            String promoCode,
+            String promoMessage,
+            String amount,
+            String couponTitle
+    ) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString(COUPON_CODE, promoCode);
+        bundle.putString(COUPON_MESSAGE, promoMessage);
+        bundle.putString(COUPON_AMOUNT, amount);
+        bundle.putString(COUPON_TITLE, couponTitle);
+        intent.putExtras(bundle);
+        setResult(COUPON_RESULT_CODE, intent);
+        finish();
     }
 
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
