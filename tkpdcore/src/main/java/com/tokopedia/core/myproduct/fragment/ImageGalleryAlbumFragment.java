@@ -23,6 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import permissions.dispatcher.PermissionUtils;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 
@@ -38,6 +39,8 @@ public class ImageGalleryAlbumFragment extends Fragment {
     private ImageGalleryView imageGalleryView;
     private ImageAlbumAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    private static final String[] PERMISSION_INITCONTENT = new String[] {"android.permission.CAMERA","android.permission.READ_EXTERNAL_STORAGE"};
 
     @Deprecated
     public static Fragment newInstance() {
@@ -85,10 +88,15 @@ public class ImageGalleryAlbumFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        imageGalleryView.fetchImageFromDb();
-
-
         return parentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (imageGalleryView.isNeedPermission() )
+            imageGalleryView.fetchImageFromDb();
+
     }
 
     public void addDatas(List<ImageModel> datas) {

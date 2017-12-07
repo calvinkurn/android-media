@@ -192,6 +192,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     }
 
+    @Override
+    public void onGetNotif(Bundle data) {
+
+    }
+
     public void setDrawerEnabled(boolean isEnabled) {
         drawerHelper.setEnabled(isEnabled);
     }
@@ -222,7 +227,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onGetNotificationDrawer(DrawerNotification notification) {
-        int notificationCount = drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF);
+
+onSuccessGetTopChatNotification(notification.getInboxMessage());        int notificationCount = drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF);
 
         TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
         if (notifRed != null) {
@@ -243,6 +249,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         }
 
         setDataDrawer();
+
+    }
+
+    @Override
+    public void onErrorGetNotificationTopchat(String errorMessage) {
 
     }
 
@@ -350,4 +361,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.getTokoCash();
     }
 
+    @Override
+    public void onSuccessGetTopChatNotification(int notifUnreads) {
+
+    }
 }

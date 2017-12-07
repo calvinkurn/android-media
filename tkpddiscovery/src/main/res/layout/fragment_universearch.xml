@@ -13,6 +13,7 @@
         app:tabBackground="@color/white"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/tkpd_green_header"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/tkpd_green_header">
 

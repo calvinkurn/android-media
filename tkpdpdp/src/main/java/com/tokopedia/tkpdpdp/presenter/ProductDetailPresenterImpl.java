@@ -186,7 +186,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
         intent.putExtras(bundle);
         viewListener.navigateToActivity(intent);
     }
@@ -245,6 +245,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
         UnifyTracking.eventPDPSendMessage();
+        UnifyTracking.eventPDPSendChat();
     }
 
     @Override

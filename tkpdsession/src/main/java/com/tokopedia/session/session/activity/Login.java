@@ -345,7 +345,7 @@ public class Login extends BaseActivity implements SessionView
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override

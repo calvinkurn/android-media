@@ -104,10 +104,12 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
 
-        indicator.addTab(indicator.newTab().setText(getString(R.string
-                .title_tab_waiting_review)));
-        indicator.addTab(indicator.newTab().setText(getString(R.string
-                .title_tab_my_review)));
+        if (!GlobalConfig.isSellerApp()) {
+            indicator.addTab(indicator.newTab().setText(getString(R.string
+                    .title_tab_waiting_review)));
+            indicator.addTab(indicator.newTab().setText(getString(R.string
+                    .title_tab_my_review)));
+        }
 
         if (!sessionHandler.getShopID(this).equals("0")
                 && !sessionHandler.getShopID(this).equals("")) {
@@ -133,8 +135,6 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     protected List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
-            fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
-            fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
             if (!sessionHandler.getShopID(this).equals("0")
                     && !sessionHandler.getShopID(this).equals("")) {
                 fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));

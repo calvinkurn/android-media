@@ -14,7 +14,10 @@ import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.GTMContainer;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
@@ -24,6 +27,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -97,9 +101,12 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 context.finish();
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                intent = InboxRouter.getInboxMessageActivityIntent(context);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                if (context.getApplication() instanceof TkpdInboxRouter) {
+                    intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
+                            (context);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
                 intent = InboxRouter.getInboxTalkActivityIntent(context);
