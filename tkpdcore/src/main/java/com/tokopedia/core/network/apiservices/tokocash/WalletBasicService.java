@@ -34,13 +34,12 @@ public class WalletBasicService extends AuthService<WalletApi> {
 
     @Override
     public WalletApi getApi() {
+        String clientId = "G6T6CVTS8bMY";
+        String clientSecret = "pJSSX43c4v8ftY86RfeLUXdThXX2BQPt";
         initApiService(RetrofitFactory.createRetrofitDefaultConfig(getBaseUrl())
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
-                        .buildClientAccountsAuth("",
-                                false,
-                                false,
-                                true))
+                        .buildBasicAuth(clientId, clientSecret))
                 .build());
         return api;
     }

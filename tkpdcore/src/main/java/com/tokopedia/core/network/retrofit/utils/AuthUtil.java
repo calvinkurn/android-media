@@ -141,7 +141,6 @@ public class AuthUtil {
     }
 
 
-
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
@@ -245,6 +244,22 @@ public class AuthUtil {
         } else {
             finalHeader.put(HEADER_AUTHORIZATION, authKey);
         }
+        finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        finalHeader.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        return finalHeader;
+    }
+
+    public static Map<String, String> generateHeadersBasic(String clientID, String clientSecret) {
+        String encodeString = clientID + ":" + clientSecret;
+
+        String asB64 = Base64.encodeToString(encodeString.getBytes(), Base64.NO_WRAP);
+
+        Map<String, String> finalHeader = new HashMap<>();
+        finalHeader.put(HEADER_CONTENT_TYPE, CONTENT_TYPE);
+        finalHeader.put(HEADER_CACHE_CONTROL, "no-cache");
+        finalHeader.put(HEADER_AUTHORIZATION, "Basic " + asB64);
         finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
