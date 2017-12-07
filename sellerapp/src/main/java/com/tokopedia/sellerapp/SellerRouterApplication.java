@@ -34,6 +34,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.TkpdInboxRouter;
+import com.tokopedia.core.router.TkpdSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -120,7 +121,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, RemoteConfigRouter {
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, RemoteConfigRouter, TkpdSessionRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -140,6 +141,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onCreate() {
         super.onCreate();
         initializeDagger();
+    }
+
+    @Override
+    public Intent getPhoneVerification() {
+        return null;
     }
 
     private void initializeDagger() {
