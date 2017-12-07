@@ -2690,4 +2690,31 @@ public class UnifyTracking extends TrackingUtils {
                 ""
         ).getEvent());
     }
+
+    public static void eventKolContentFollowClick(String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_NAME_FEED_KOL,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_FOLLOW_CONTENT,
+                generateKolEventLabel(false, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentUnfollowClick(String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_NAME_FEED_KOL,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_UNFOLLOW_CONTENT,
+                generateKolEventLabel(true, type)
+        ).getEvent());
+    }
+
+    private static String generateKolEventLabel(boolean isFollowed, String type) {
+        String contentType = isFollowed ?
+                AppEventTracking.EventLabel.FEED_CONTENT_TYPE_FOLLOWED
+                : AppEventTracking.EventLabel.FEED_CONTENT_TYPE_RECOMMENDED;
+
+        String campaignType = type + AppEventTracking.EventLabel.FEED_CAMPAIGN_TYPE_SUFFIX;
+        return contentType + " - " + campaignType;
+    }
 }

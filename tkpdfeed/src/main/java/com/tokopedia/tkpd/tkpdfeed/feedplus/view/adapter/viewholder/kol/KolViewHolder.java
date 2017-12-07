@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
@@ -154,9 +155,11 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 if (element.isFollowed()) {
+                    UnifyTracking.eventKolContentUnfollowClick(element.getTagsType());
                     viewListener.onUnfollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 } else {
+                    UnifyTracking.eventKolContentFollowClick(element.getTagsType());
                     viewListener.onFollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 }
