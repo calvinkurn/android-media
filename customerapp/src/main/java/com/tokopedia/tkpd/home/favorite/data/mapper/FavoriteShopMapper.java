@@ -100,7 +100,7 @@ public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, 
                 && !shopBadge.get(0).getImageUrl().isEmpty()) {
             return shopBadge.get(0).getImageUrl();
         }
-        return null;
+        return "";
     }
 
 
