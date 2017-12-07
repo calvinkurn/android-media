@@ -165,4 +165,10 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
+    }
 }

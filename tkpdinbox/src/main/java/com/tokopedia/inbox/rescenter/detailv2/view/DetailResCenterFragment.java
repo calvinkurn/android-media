@@ -761,6 +761,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         resCenterDialog.show();
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

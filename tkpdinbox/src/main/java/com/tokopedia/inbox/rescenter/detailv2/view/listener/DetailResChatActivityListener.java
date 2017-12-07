@@ -13,10 +13,10 @@ import com.tokopedia.core.base.presentation.CustomerView;
 public interface DetailResChatActivityListener {
 
     interface View extends CustomerView {
-        void inflateFragment(Fragment fragment, String TAG);
+        void inflateFragment(Fragment fragment, String TAG, boolean isReload);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void initFragment(boolean isSeller);
+        void initFragment(boolean isSeller, String resolutionId, boolean isReload);
     }
 }

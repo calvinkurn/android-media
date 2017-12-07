@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -52,8 +53,8 @@ public class DetailResChatActivity
     }
 
     @Override
-    public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) != null) {
+    public void inflateFragment(Fragment fragment, String TAG, boolean isReload) {
+        if (getFragmentManager().findFragmentByTag(TAG) != null && !isReload) {
             getFragmentManager().beginTransaction()
                     .replace(com.tokopedia.core.R.id.container,
                             getFragmentManager().findFragmentByTag(TAG))
@@ -103,7 +104,7 @@ public class DetailResChatActivity
         } else {
             toolbar.setTitle(getString(R.string.complaint_to) +" "+ shopName);
         }
-        presenter.initFragment(isSeller);
+        presenter.initFragment(isSeller, resolutionId, false);
     }
 
     @Override
@@ -157,5 +158,36 @@ public class DetailResChatActivity
         return getApplicationComponent();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_GO_DETAIL) {
+            if (resultCode == Activity.RESULT_OK) {
+                presenter.initFragment(isSeller, resolutionId, true);
+            }
+        }
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(PARAM_RESOLUTION_ID, resolutionId);
+        outState.putBoolean(PARAM_IS_SELLER, isSeller);
+        outState.putString(PARAM_USER_NAME, userName);
+        outState.putString(PARAM_SHOP_NAME, shopName);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        resolutionId = savedInstanceState.getString(PARAM_RESOLUTION_ID);
+        isSeller = savedInstanceState.getBoolean(PARAM_IS_SELLER);
+        if (isSeller) {
+            userName = savedInstanceState.getString(PARAM_USER_NAME);
+        } else {
+            shopName = savedInstanceState.getString(PARAM_SHOP_NAME);
+        }
+        initView();
+    }
 }
