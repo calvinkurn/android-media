@@ -20,7 +20,6 @@ import rx.Subscriber;
  */
 
 public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListener<SellerInfoModel>> {
-    public static final int NO_HAS_NEXT_VALUE = 1;
     SellerInfoUseCase sellerInfoUseCase;
 
     @Inject
@@ -50,7 +49,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListene
             public void onNext(ResponseSellerInfoModel response ) {
                 if(isViewAttached()){
                     List<SellerInfoModel> result = conv(response);
-                    int totalItem = response.getData().getPaging().isHasNext() ? result.size() + 1 : NO_HAS_NEXT_VALUE;
+                    int totalItem = response.getData().getPaging().isHasNext() ? result.size() : 0;
                     getView().onSearchLoaded(result, totalItem);
                 }
             }
