@@ -167,9 +167,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         opportunityList.setAdapter(adapter);
 
         refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
-        initHeaderText();
+        headerInfo.setVisibility(View.VISIBLE);
     }
 
+    // TODO need confirm to put this logic when initView
     private void initHeaderText() {
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_SEEN_OPPORTUNITY);
         if (cacheHandler.getBoolean(HAS_SEEN_OPPORTUNITY, false)) {
