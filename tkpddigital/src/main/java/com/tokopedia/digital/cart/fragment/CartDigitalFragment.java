@@ -696,10 +696,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
                 String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
                 voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
-
-//                //TODO check state
-//                voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
-//                instantPromoPlaceHolder.setVisibility(View.GONE);
             }
         }
     }
