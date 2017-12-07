@@ -37,5 +37,6 @@
         android:id="@+id/arrow_left"
         android:layout_width="@dimen/image_width_xxxs"
         android:layout_height="@dimen/image_width_xxs"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_arrow_right" />
 </LinearLayout>
