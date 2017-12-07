@@ -2690,13 +2690,4 @@ public class UnifyTracking extends TrackingUtils {
                 ""
         ).getEvent());
     }
-
-    public static void eventSomething() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
-                AppEventTracking.Action.CLICK_SALDO,
-                ""
-        ).getEvent());
-    }
 }
