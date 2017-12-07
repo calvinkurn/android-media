@@ -12,6 +12,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -259,6 +260,10 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         lottieAnimationView.setVisibility(View.INVISIBLE);
         titleView.setVisibility(View.INVISIBLE);
         descView.setVisibility(View.INVISIBLE);
+        if(viewType == VIEW_ENDING){
+            startNow.setVisibility(View.GONE);
+            startNow.setWidth(0);
+        }
     }
 
     public void playLottie() {
