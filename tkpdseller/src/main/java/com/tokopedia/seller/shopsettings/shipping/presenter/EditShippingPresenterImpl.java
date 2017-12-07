@@ -3,6 +3,7 @@ package com.tokopedia.seller.shopsettings.shipping.presenter;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -209,8 +210,8 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     , selectedAddress.getCityName()
                     , selectedAddress.getDistrictName());
         } else if (openShopModel.getShopShipping().provinceName == null || openShopModel.getShopShipping().provinceName.isEmpty()) {
-            setShopInfoFromOpenShopData(model);
             view.setLocationProvinceCityDistrict();
+            setShopInfoFromOpenShopData(model);
         } else {
             view.setLocationProvinceCityDistrict(openShopModel.getShopShipping().provinceName
                     , openShopModel.getShopShipping().cityName
@@ -224,20 +225,32 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private void setShopInfoFromOpenShopData(OpenShopData model) {
         if (model.getOpenShopHashMap() != null) {
-            if (model.getOpenShopHashMap().get(EditShippingPresenter.ADDR_STREET) != null) {
-                shopInformation.addrStreet = model.getOpenShopHashMap().get(EditShippingPresenter.ADDR_STREET);
+            String addressStreet = model.getOpenShopHashMap().get(EditShippingPresenter.ADDR_STREET);
+            if (addressStreet != null) {
+                shopInformation.addrStreet = addressStreet;
             }
-            if (model.getOpenShopHashMap().get(EditShippingPresenter.LATITUDE) != null) {
-                shopInformation.latitude = model.getOpenShopHashMap().get(EditShippingPresenter.LATITUDE);
+
+            String latitude = model.getOpenShopHashMap().get(EditShippingPresenter.LATITUDE);
+            if (latitude != null) {
+                shopInformation.latitude = latitude;
             }
-            if (model.getOpenShopHashMap().get(EditShippingPresenter.LONGITUDE) != null) {
-                shopInformation.longitude = model.getOpenShopHashMap().get(EditShippingPresenter.LONGITUDE);
+
+            String longitude = model.getOpenShopHashMap().get(EditShippingPresenter.LONGITUDE);
+            if (longitude != null) {
+                shopInformation.longitude = longitude;
             }
-            if (model.getOpenShopHashMap().get(EditShippingPresenter.POSTAL) != null) {
-                shopInformation.postalCode = model.getOpenShopHashMap().get(EditShippingPresenter.POSTAL);
+
+            String postalCode = model.getOpenShopHashMap().get(EditShippingPresenter.SHOP_POSTAL);
+            if (postalCode != null) {
+                shopInformation.postalCode = postalCode;
             }
-            if (model.getOpenShopHashMap().get(EditShippingPresenter.DISTRICT_AND_CITY) != null) {
-                shopInformation.districtName = model.getOpenShopHashMap().get(EditShippingPresenter.DISTRICT_AND_CITY);
+
+            String selectedAddressStr = model.getOpenShopHashMap().get(EditShippingPresenter.SELECTED_ADDRESS);
+            if (selectedAddressStr != null && selectedAddressStr.length() > 0) {
+                selectedAddress = new Gson().fromJson(selectedAddressStr, Address.class);
+
+                view.setLocationProvinceCityDistrict(selectedAddress.getProvinceName(),
+                        selectedAddress.getCityName(), selectedAddress.getDistrictName());
             }
         }
     }
@@ -400,6 +413,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
         if (selectedAddress != null) {
+            shippingParams.put(SELECTED_ADDRESS, new Gson().toJson(selectedAddress));
             shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
             shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
         } else {

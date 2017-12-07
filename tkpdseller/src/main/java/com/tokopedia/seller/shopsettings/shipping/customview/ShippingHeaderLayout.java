@@ -100,8 +100,11 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     public void initializeZipCodes() {
         zipCode.setText("");
+        String header = getResources().getString(R.string.hint_type_postal_code);
         ArrayList<String> zipCodes = presenter.getselectedAddress().getZipCodes();
-        zipCodes.add(0, getResources().getString(R.string.hint_type_postal_code));
+        if (!zipCodes.contains(header)) {
+            zipCodes.add(0, header);
+        }
         zipCodeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text_double_row,
                 R.id.item, presenter.getselectedAddress().getZipCodes());
         zipCode.setAdapter(zipCodeAdapter);
@@ -115,6 +118,9 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
     @Override
     public void renderData(@NonNull ShopShipping shopData) {
         zipCode.setText(shopData.postalCode);
+        if (shopData.districtName != null && shopData.districtName.length() > 0) {
+            shopCity.setText(shopData.districtName);
+        }
     }
 
     @Override
