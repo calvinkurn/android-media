@@ -29,7 +29,6 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.opportunity.domain.interactor.CancelReplacementUseCase;
 import com.tokopedia.transaction.opportunity.view.subsriber.CancelReplacementSubscriber;
-import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
@@ -55,6 +54,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     private final CancelReplacementUseCase cancelReplacementUseCase;
     private final SessionHandler sessionHandler;
     private static final int FREE_RETURN = 1;
+
     public TxListPresenterImpl(TxListViewListener viewListener,
                                CancelReplacementUseCase cancelReplacementUseCase,
                                SessionHandler sessionHandler) {
@@ -242,8 +242,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
         LayoutInflater li = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        final View promptsView = li.inflate(R.layout.dialog_package_not_rcv,
+        @SuppressLint("InflateParams") final View promptsView = li.inflate(R.layout.dialog_package_not_rcv,
                 null);
         alertDialogBuilder.setView(promptsView);
         TextView dShopName = (TextView) promptsView
@@ -385,7 +384,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         netInteractor.unSubscribeObservable();
     }
 
-    
+
     @Override
     public void cancelReplacement(Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -449,14 +448,15 @@ public class TxListPresenterImpl implements TxListPresenter {
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_complain);
-        Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
-        Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
-        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
-        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(R.id.llFreeReturn);
-        TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
-        TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
-        TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        dialog.setContentView(com.tokopedia.transaction.R.layout.dialog_complaint);
+        Button btnBack = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.cancel_button);
+        Button btnNotReceive = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.not_receive_btn);
+        Button btnReceive = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.receive_btn);
+        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(com.tokopedia.transaction.R.id.layout_free_return);
+        TextView tvFreeReturn = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.tv_free_return);
+        TextView tvComplainTitle = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.complaint_title);
+        TextView tvComplainBody = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.complaint_body);
+
         tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
         tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsgV2() != null ?
                 Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsgV2()) :
@@ -471,7 +471,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 //            llFreeReturn.setVisibility(View.VISIBLE);
 //            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
 //        }
-  
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

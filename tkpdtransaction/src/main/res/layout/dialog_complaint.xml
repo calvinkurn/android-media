@@ -6,7 +6,7 @@
     android:padding="25dp">
 
     <TextView
-        android:id="@+id/tvComplainTitle"
+        android:id="@+id/complaint_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/color_complain_header"
@@ -14,7 +14,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tvComplainBody"
+        android:id="@+id/complaint_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_med"
@@ -23,19 +23,21 @@
         android:textSize="@dimen/text_size_medium" />
 
     <LinearLayout
-        android:id="@+id/llFreeReturn"
+        android:id="@+id/layout_free_return"
         android:layout_marginTop="@dimen/margin_med"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_free_return"
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
+
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/icon_frs"/>
+
         <TextView
-            android:id="@+id/tvFreeReturn"
+            android:id="@+id/tv_free_return"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -51,7 +53,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnBack"
+            android:id="@+id/cancel_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -63,7 +65,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btnNotReceive"
+            android:id="@+id/not_receive_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -75,7 +77,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btnReceive"
+            android:id="@+id/receive_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -85,5 +87,7 @@
             android:textStyle="bold"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/text_size_medium" />
+
     </LinearLayout>
+
 </LinearLayout>
