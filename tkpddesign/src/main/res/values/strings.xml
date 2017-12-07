@@ -20,5 +20,6 @@
     <string name="use_voucher">Gunakan</string>
     <string name="empty_voucher">Masukkan kode promo terlebih dahulu</string>
     <string name="button_copy_voucher_code">Salin Kode</string>
+    <string name="success_copy_voucher_code">Kode Tersalin!</string>
 
 </resources>
