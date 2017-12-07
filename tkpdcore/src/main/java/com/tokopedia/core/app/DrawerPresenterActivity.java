@@ -1,7 +1,10 @@
 package com.tokopedia.core.app;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -16,6 +19,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
@@ -43,6 +47,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected SessionHandler sessionHandler;
     protected DrawerDataManager drawerDataManager;
     protected LocalCacheHandler drawerCache;
+    private TokoPointDataBroadcastReceiver tokoPointDataBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
+        tokoPointDataBroadcastReceiver = new TokoPointDataBroadcastReceiver();
+        registerReceiver(tokoPointDataBroadcastReceiver, new IntentFilter(TokoPointDataBroadcastReceiver.ACTION));
     }
 
     @Override
@@ -364,10 +371,35 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected void onDestroy() {
         super.onDestroy();
         drawerDataManager.unsubscribe();
+        unregisterReceiver(tokoPointDataBroadcastReceiver);
     }
 
     @Override
     public void onRetryTokoCash() {
         drawerDataManager.getTokoCash();
+    }
+
+
+    public class TokoPointDataBroadcastReceiver extends BroadcastReceiver {
+        public static final String EXTRA_TOKOPOINT_DRAWER_DATA = "EXTRA_TOKOPOINT_DRAWER_DATA";
+        public static final String ACTION = "com.tokopedia.core.app.DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION.equalsIgnoreCase(intent.getAction())) {
+                TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
+                        EXTRA_TOKOPOINT_DRAWER_DATA
+                );
+                if (tokoPointDrawerData == null) return;
+                if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+                    ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                            .getData().setTokoPointDrawerData(tokoPointDrawerData);
+                else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+                    ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                            .getData().setTokoPointDrawerData(tokoPointDrawerData);
+                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+            }
+
+        }
     }
 }

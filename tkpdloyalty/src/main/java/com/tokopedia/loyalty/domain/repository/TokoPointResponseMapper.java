@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.domain.repository;
 
-import com.tokopedia.core.drawer2.data.viewmodel.TopPointDrawerData;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.entity.response.Coupon;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
@@ -50,11 +50,11 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
     }
 
     @Override
-    public TopPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData) {
-        TopPointDrawerData.Catalog catalog = new TopPointDrawerData.Catalog();
-        TopPointDrawerData.PopUpNotif popUpNotif = new TopPointDrawerData.PopUpNotif();
-        TopPointDrawerData.UserTier userTier = new TopPointDrawerData.UserTier();
-        TopPointDrawerData tokoPointDrawerData = new TopPointDrawerData();
+    public TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData) {
+        TokoPointDrawerData.Catalog catalog = new TokoPointDrawerData.Catalog();
+        TokoPointDrawerData.PopUpNotif popUpNotif = new TokoPointDrawerData.PopUpNotif();
+        TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
+        TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
         tokoPointDrawerData.setHasNotif(tokoplusPointDrawerData.getHasNotif());
         tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag());
         if (tokoplusPointDrawerData.getUserTier() != null) {

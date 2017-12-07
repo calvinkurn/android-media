@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.domain.repository;
 
 
-import com.tokopedia.core.drawer2.data.viewmodel.TopPointDrawerData;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
@@ -28,7 +28,7 @@ public interface ITokoPointRepository {
 
     Observable<String> getPointMain(TKPDMapParam<String, String> param);
 
-    Observable<TopPointDrawerData> getPointDrawer(TKPDMapParam<String, String> param);
+    Observable<TokoPointDrawerData> getPointDrawer(TKPDMapParam<String, String> param);
 
     Observable<String> getPointStatus(TKPDMapParam<String, String> param);
 

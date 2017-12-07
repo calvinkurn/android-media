@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.core.drawer2.data.viewmodel.TopPointDrawerData;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -39,14 +39,19 @@ public class TokoPointRepository implements ITokoPointRepository {
     private final TXVoucherService txVoucherService;
     private final TXService txService;
     private final TokoPointResponseMapper tokoPointResponseMapper;
+    private final ITokoPointDBService tokoPointDBService;
 
     @Inject
     public TokoPointRepository(TokoPointService tokoPointService,
+                               ITokoPointDBService tokoPointDBService,
+                               TokoPointResponseMapper tokoPointResponseMapper,
                                TXVoucherService txVoucherService,
-                               TXService txService,
-                               TokoPointResponseMapper tokoPointResponseMapper) {
+                               TXService txService
+
+    ) {
         this.tokoPointService = tokoPointService;
         this.tokoPointResponseMapper = tokoPointResponseMapper;
+        this.tokoPointDBService = tokoPointDBService;
         this.txService = txService;
         this.txVoucherService = txVoucherService;
     }
@@ -112,18 +117,32 @@ public class TokoPointRepository implements ITokoPointRepository {
     }
 
     @Override
-    public Observable<TopPointDrawerData> getPointDrawer(TKPDMapParam<String, String> param) {
-        return tokoPointService.getApi().getPointDrawer(param).map(
-                new Func1<Response<TokoPointResponse>, TopPointDrawerData>() {
-                    @Override
-                    public TopPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
-                        return tokoPointResponseMapper.convertTokoplusPointDrawer(
-                                tokoplusResponseResponse.body().convertDataObj(
-                                        TokoPointDrawerDataResponse.class
-                                )
-                        );
-                    }
-                });
+    public Observable<TokoPointDrawerData> getPointDrawer(final TKPDMapParam<String, String> param) {
+        return tokoPointDBService.getPointDrawer().map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerData>() {
+            @Override
+            public TokoPointDrawerData call(TokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
+                return tokoPointResponseMapper.convertTokoplusPointDrawer(
+                        tokoPointDrawerDataResponse
+                );
+            }
+        }).onErrorResumeNext(new Func1<Throwable, Observable<? extends TokoPointDrawerData>>() {
+            @Override
+            public Observable<? extends TokoPointDrawerData> call(Throwable throwable) {
+                throwable.printStackTrace();
+                return tokoPointService.getApi().getPointDrawer(param).map(
+                        new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
+                            @Override
+                            public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
+                                return tokoPointResponseMapper.convertTokoplusPointDrawer(
+                                        tokoplusResponseResponse.body().convertDataObj(
+                                                TokoPointDrawerDataResponse.class
+                                        )
+                                );
+                            }
+                        });
+            }
+        });
+
     }
 
     @Override

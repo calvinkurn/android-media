@@ -109,7 +109,6 @@ public class LoyaltyActivity extends BasePresenterActivity
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
-        indicator.setVisibility(View.GONE);
     }
 
     private void renderViewWithCouponTab() {
@@ -120,7 +119,6 @@ public class LoyaltyActivity extends BasePresenterActivity
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
-        indicator.setVisibility(View.VISIBLE);
     }
 
     @Override

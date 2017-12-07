@@ -1,5 +1,6 @@
 package com.tokopedia.core.drawer2.view.databinder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +47,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance);
 
         void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
+
+        void onTokoPointActionClicked(String url);
     }
 
     public interface RetryTokoCashListener {
@@ -112,6 +115,16 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         @BindView(R2.id.drawer_header)
         View drawerHeader;
+
+
+        @BindView(R2.id.tokopoint_container)
+        View tokoPointContainer;
+        @BindView(R2.id.iv_tokopoint_badge)
+        ImageView ivTokoPointBadge;
+        @BindView(R2.id.tv_tokopoint_action)
+        TextView tvTokoPointAction;
+        @BindView(R2.id.tv_tokopoint_count)
+        TextView tvTokoPointCount;
 
 
         public ViewHolder(View itemView) {
@@ -225,8 +238,20 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         setDeposit(holder);
         setTopPoints(holder);
         setTopCash(holder);
-
+        setTokoPoint(holder);
         setListener(holder);
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setTokoPoint(ViewHolder holder) {
+        if (data.getTokoPointDrawerData() != null && data.getTokoPointDrawerData().getOffFlag() == 0) {
+            holder.tokoPointContainer.setVisibility(View.VISIBLE);
+            holder.tvTokoPointAction.setText("Tukar Poin");
+            ImageHandler.loadImageThumbs(context,
+                    holder.ivTokoPointBadge,
+                    data.getTokoPointDrawerData().getUserTier().getTierImageUrl());
+            holder.tvTokoPointCount.setText(data.getTokoPointDrawerData().getUserTier().getRewardPoints() + " Poin");
+        }
     }
 
 

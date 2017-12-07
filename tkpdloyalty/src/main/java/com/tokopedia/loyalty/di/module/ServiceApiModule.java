@@ -4,6 +4,7 @@ import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
+import com.tokopedia.loyalty.domain.repository.ITokoPointDBService;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.domain.repository.ITokoPointResponseMapper;
 import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
@@ -15,7 +16,7 @@ import dagger.Provides;
 /**
  * @author anggaprasetiyo on 27/11/17.
  */
-@Module
+@Module(includes = CacheDBModule.class)
 public class ServiceApiModule {
 
     @Provides
@@ -45,14 +46,11 @@ public class ServiceApiModule {
     @Provides
     @LoyaltyScope
     ITokoPointRepository provideITokoPointRepository(TokoPointService tokoPointService,
-                                                     TXVoucherService voucherService,
-                                                     TXService txService,
-                                                     TokoPointResponseMapper tokoPointResponseMapper) {
-        return new TokoPointRepository(
-                tokoPointService,
-                voucherService,
-                txService,
-                tokoPointResponseMapper
-        );
+                                                     ITokoPointDBService tokoPointDBService,
+                                                     TokoPointResponseMapper tokoPointResponseMapper,
+                                                     TXVoucherService txVoucherService,
+                                                     TXService txService
+    ) {
+        return new TokoPointRepository(tokoPointService, tokoPointDBService, tokoPointResponseMapper);
     }
 }
