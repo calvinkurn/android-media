@@ -94,8 +94,9 @@ public class ImageGalleryAlbumFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (imageGalleryView.isNeedPermission() && adapter.getItemCount() <= 0 )
+        if (imageGalleryView.isNeedPermission() )
             imageGalleryView.fetchImageFromDb();
+
     }
 
     public void addDatas(List<ImageModel> datas) {

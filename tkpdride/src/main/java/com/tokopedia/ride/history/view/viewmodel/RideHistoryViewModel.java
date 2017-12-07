@@ -6,15 +6,9 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.common.ride.domain.model.Rating;
-import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by alvarisi on 4/11/17.
@@ -44,8 +38,10 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String helpUrl;
     private String cashbackDisplayFormat;
     private String discountDisplayFormat;
-    private String pendingAmount;
+    private String pendingAmountDisplayFormat;
     private String tokoCashCharged;
+    private int pendingAmount;
+    private String paymentMethod;
 
     public RideHistoryViewModel() {
     }
@@ -74,8 +70,10 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         helpUrl = in.readString();
         cashbackDisplayFormat = in.readString();
         discountDisplayFormat = in.readString();
-        pendingAmount = in.readString();
+        pendingAmountDisplayFormat = in.readString();
         tokoCashCharged = in.readString();
+        pendingAmount = in.readInt();
+        paymentMethod = in.readString();
     }
 
     public static final Creator<RideHistoryViewModel> CREATOR = new Creator<RideHistoryViewModel>() {
@@ -271,12 +269,12 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.discountDisplayFormat = discountDisplayFormat;
     }
 
-    public String getPendingAmount() {
-        return pendingAmount;
+    public String getPendingAmountDisplayFormat() {
+        return pendingAmountDisplayFormat;
     }
 
-    public void setPendingAmount(String pendingAmount) {
-        this.pendingAmount = pendingAmount;
+    public void setPendingAmountDisplayFormat(String pendingAmount) {
+        this.pendingAmountDisplayFormat = pendingAmount;
     }
 
     public String getTokoCashCharged() {
@@ -285,6 +283,22 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
     public void setTokoCashCharged(String tokoCashCharged) {
         this.tokoCashCharged = tokoCashCharged;
+    }
+
+    public int getPendingAmount() {
+        return pendingAmount;
+    }
+
+    public void setPendingAmount(int pendingAmount) {
+        this.pendingAmount = pendingAmount;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     public static String transformToDisplayStatus(String status) {
@@ -362,7 +376,9 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         parcel.writeString(helpUrl);
         parcel.writeString(cashbackDisplayFormat);
         parcel.writeString(discountDisplayFormat);
-        parcel.writeString(pendingAmount);
+        parcel.writeString(pendingAmountDisplayFormat);
         parcel.writeString(tokoCashCharged);
+        parcel.writeInt(pendingAmount);
+        parcel.writeString(paymentMethod);
     }
 }
