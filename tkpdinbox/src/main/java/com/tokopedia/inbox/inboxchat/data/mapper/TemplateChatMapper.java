@@ -54,7 +54,7 @@ public class TemplateChatMapper implements Func1<Response<TkpdResponse>, GetTemp
 
     private GetTemplateViewModel convertToDomain(TemplateData data) {
         GetTemplateViewModel model = new GetTemplateViewModel();
-//        if(data.isIsEnable()){
+        if(data.isIsEnable()){
             List<Visitable> list = new ArrayList<>();
             for (int i = 0; i < data.getTemplates().size(); i++) {
                 TemplateChatModel templateChatModel = new TemplateChatModel();
@@ -62,7 +62,7 @@ public class TemplateChatMapper implements Func1<Response<TkpdResponse>, GetTemp
                 list.add(templateChatModel);
             }
             model.setListTemplate(list);
-//        }
+        }
         return model;
     }
 
