@@ -124,9 +124,8 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSuccessLogin() {
-//        getActivity().setResult(Activity.RESULT_OK);
-//        getActivity().finish();
-        NetworkErrorHelper.showSnackbar(getActivity(), "SUKSES LOGIN");
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     @Override

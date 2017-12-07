@@ -861,6 +861,12 @@ LoginFragment extends Fragment implements LoginView {
                     showProgress(false);
                 }
                 break;
+            case REQUEST_PHONE_NUMBER: {
+                if (resultCode == Activity.RESULT_OK) {
+                    destroyActivity();
+                }
+                break;
+            }
             default:
                 break;
         }
