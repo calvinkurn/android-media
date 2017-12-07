@@ -99,7 +99,10 @@
             android:src="@drawable/next_ic"
             tools:src="@drawable/circle"
             android:layout_alignParentRight="true"
-            android:layout_alignBottom="@id/footer"/>
+            android:layout_alignBottom="@id/footer"
+            android:layout_marginLeft="@dimen/margin_side_button_nob"
+            android:layout_marginRight="@dimen/margin_side_button_nob"
+            android:layout_marginBottom="@dimen/margin_side_button_nob"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
