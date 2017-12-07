@@ -10,6 +10,7 @@ import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -350,7 +351,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     private void needToVerifyOTP() {
         view.showProgressLoading();
-        NOTPExotelVerification.getmInstance().verifyNo(view.getClientNumber(), view.getApplicationContext(), new NOTPExotelVerification.NOTPVerificationListener() {
+        NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getApplicationContext(), new NOTPExotelVerification.NOTPVerificationListener() {
             @Override
             public void onVerificationSuccess() {
                 view.hideProgressLoading();
