@@ -44,22 +44,50 @@
                 android:layout_height="wrap_content"
                 app:spinner_hint="Pilih Titel" />
 
-
-            <com.tokopedia.design.text.TkpdHintTextInputLayout
-                android:id="@+id/til_name"
-                style="@style/HintTextInputLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/flight_booking_passenger_name_hint">
+                android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/et_name"
-                    android:layout_width="match_parent"
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
+                    android:id="@+id/til_first_name"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/flight_booking_passenger_name_secondary_hint"
-                    android:singleLine="true"
-                    android:textColor="@color/font_black_primary_70" />
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_weight="1"
+                    android:hint="@string/flight_booking_passenger_first_name_hint">
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/et_first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/flight_booking_passenger_firstname_secondary_hint"
+                        android:singleLine="true"
+                        android:textColor="@color/font_black_primary_70" />
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
+                    android:id="@+id/til_last_name"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_marginStart="@dimen/margin_vs"
+                    android:layout_weight="1"
+                    android:hint="@string/flight_booking_passenger_last_name_hint">
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/et_last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/flight_booking_passenger_last_name_secondary_hint"
+                        android:singleLine="true"
+                        android:textColor="@color/font_black_primary_70" />
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            </LinearLayout>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_birth_date"

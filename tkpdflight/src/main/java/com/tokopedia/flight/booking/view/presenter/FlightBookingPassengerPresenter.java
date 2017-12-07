@@ -1,5 +1,7 @@
 package com.tokopedia.flight.booking.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -52,8 +56,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                 getView().renderPassengerMeals(getView().getMealViewModels(), getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels());
         }
 
-        if (getView().getCurrentPassengerViewModel().getPassengerName() != null) {
-            getView().renderPassengerName(getView().getCurrentPassengerViewModel().getPassengerName());
+        if (getView().getCurrentPassengerViewModel().getPassengerFirstName() != null) {
+            getView().renderPassengerName(getView().getCurrentPassengerViewModel().getPassengerFirstName(),
+                    getView().getCurrentPassengerViewModel().getPassengerLastName());
         }
 
         if (getView().getCurrentPassengerViewModel().getPassengerTitle() != null) {
@@ -69,10 +74,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     public void onSaveButtonClicked() {
         if (validateFields()) {
             getView().getCurrentPassengerViewModel().setPassengerTitle(getView().getPassengerTitle());
-            getView().getCurrentPassengerViewModel().setPassengerName(getView().getPassengerName());
+            getView().getCurrentPassengerViewModel().setPassengerFirstName(getView().getPassengerFirstName());
             getView().getCurrentPassengerViewModel().setPassengerBirthdate(
                     FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getView().getPassengerBirthDate())
             );
+            getView().getCurrentPassengerViewModel().setPassengerLastName(getView().getPassengerLastName());
             // TODO : set passenger luggage and meals
             getView().navigateResultUpdatePassengerData(getView().getCurrentPassengerViewModel());
         }
@@ -187,9 +193,24 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     private boolean validateFields() {
         boolean isValid = true;
         Date twoYearsAgo = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
-        if (getView().getPassengerName().isEmpty() || getView().getPassengerName().length() == 0) {
+        if (getView().getPassengerFirstName().isEmpty() || getView().getPassengerFirstName().length() == 0) {
             isValid = false;
-            getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_name_empty_error);
+            getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_first_name_empty_error);
+        } else if (getView().getPassengerFirstName().length() > 48) {
+            isValid = false;
+            getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_name_max_error);
+        } else if (getView().getPassengerFirstName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getPassengerFirstName())) {
+            isValid = false;
+            getView().showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(R.string.flight_booking_passenger_first_name_alpha_space_error);
+        } else if (getView().getPassengerLastName().length() > 48) {
+            isValid = false;
+            getView().showPassengerLastNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_last_name_max_error);
+        } else if (getView().getPassengerLastName().length() > 0 && !isSingleWord(getView().getPassengerLastName())) {
+            isValid = false;
+            getView().showPassengerLastNameShouldOneWordError(R.string.flight_booking_passenger_last_name_single_word_error);
+        } else if (getView().getPassengerLastName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getPassengerLastName())) {
+            isValid = false;
+            getView().showPassengerLastNameShouldAlphabetAndSpaceOnlyError(R.string.flight_booking_passenger_last_name_alpha_space_error);
         } else if (getView().getPassengerTitle().isEmpty() || getView().getPassengerTitle().length() == 0) {
             isValid = false;
             getView().showPassengerTitleEmptyError(R.string.flight_bookingpassenger_title_error);
@@ -207,6 +228,16 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
         }
         return isValid;
+    }
+
+    private boolean isAlphabetAndSpaceOnly(String expression) {
+        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]*$"));
+        Matcher matcher = pattern.matcher(expression);
+        return matcher.matches();
+    }
+
+    private boolean isSingleWord(String passengerLastName) {
+        return TextUtils.split(passengerLastName, " ").length == 1;
     }
 
     private boolean isRoundTrip() {

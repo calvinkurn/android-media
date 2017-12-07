@@ -42,7 +42,10 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
+import com.tokopedia.flight.common.constant.FlightFlowConstant;
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
@@ -67,6 +70,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
+    private static final int REQUEST_CODE_REVIEW = 4;
 
     private ProgressBar fullPageProgressBar;
     private NestedScrollView fullPageLayout;
@@ -247,8 +251,21 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 }
                 break;
             case REQUEST_CODE_NEW_PRICE_DIALOG:
-                if (resultCode != Activity.RESULT_OK)
-                    getActivity().finish();
+                if (resultCode != Activity.RESULT_OK) {
+                    FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                            getActivity().getIntent(),
+                            FlightFlowConstant.PRICE_CHANGE
+                    );
+                }
+
+                break;
+            case REQUEST_CODE_REVIEW:
+                if (data != null) {
+                    FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                            getActivity().getIntent(),
+                            data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)
+                    );
+                }
                 break;
         }
     }
@@ -494,7 +511,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void navigateToReview(FlightBookingReviewModel flightBookingReviewModel) {
-        startActivity(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel));
+        startActivityForResult(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel), REQUEST_CODE_REVIEW);
     }
 
     @Override

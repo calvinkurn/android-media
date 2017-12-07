@@ -8,6 +8,7 @@ import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.search.data.cloud.model.request.FlightSearchSingleRequestData;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
@@ -23,6 +24,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -53,4 +55,10 @@ public interface FlightApi {
 
     @GET(FlightUrl.FLIGHT_CHECK_VOUCHER_CODE)
     Observable<Response<DataResponse<AttributesVoucher>>> checkVoucherCode(@QueryMap HashMap<String, String> paramsAllValueInString);
+
+    @GET(FlightUrl.FLIGHT_ORDERS)
+    Observable<Response<DataResponse<List<OrderEntity>>>> getOrders(@QueryMap Map<String, Object> paramsAllValueInString);
+
+    @GET(FlightUrl.FLIGHT_ORDER)
+    Observable<Response<DataResponse<OrderEntity>>> getOrder(@Query("id") String id);
 }

@@ -6,27 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
@@ -59,6 +52,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
+    private static final int REQUEST_CODE_SEARCH = 5;
+    private static final int REQUEST_CODE_LOGIN = 6;
 
     private FlightDashboardViewModel viewModel;
 
@@ -80,12 +75,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     public static FlightDashboardFragment getInstance() {
         return new FlightDashboardFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -204,15 +193,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.initialize();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_flight_dashboard, menu);
-        if (getActivity() instanceof BaseSimpleActivity) {
-            ((BaseSimpleActivity) getActivity()).updateOptionMenuColorWhite(menu);
-        }
     }
 
     @Override
@@ -356,6 +336,19 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void navigateToLoginPage() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+        }
+    }
+
+    @Override
+    public void closePage() {
+        getActivity().finish();
+    }
+
+    @Override
     public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
         FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
@@ -366,7 +359,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setIsOneWay(currentDashboardViewModel.isOneWay())
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
-        startActivity(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel));
+        startActivityForResult(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
     }
 
     @Override
@@ -395,13 +388,20 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     FlightAirportDB arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onArrivalAirportChange(arrivalAirport);
                     break;
+                case REQUEST_CODE_SEARCH:
+
+                    break;
+
+                case REQUEST_CODE_LOGIN:
+                    presenter.onLoginResultReceived();
+                    break;
             }
         }
     }
 
     @SuppressWarnings("Range")
     private void showMessageErrorInSnackBar(int resId) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),getString(resId));
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override

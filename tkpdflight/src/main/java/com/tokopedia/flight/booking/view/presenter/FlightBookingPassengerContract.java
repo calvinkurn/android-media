@@ -45,7 +45,7 @@ public interface FlightBookingPassengerContract {
 
         void renderHeaderSubtitle(@StringRes int resId);
 
-        String getPassengerName();
+        String getPassengerFirstName();
 
         void showPassengerNameEmptyError(@StringRes int resId);
 
@@ -67,13 +67,25 @@ public interface FlightBookingPassengerContract {
 
         void renderBirthdate(String birthdateStr);
 
-        void renderPassengerName(String passengerName);
+        void renderPassengerName(String passengerName, String passengerLastName);
 
         void renderPassengerTitle(String passengerTitle);
 
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
 
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
+
+        void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
+
+        void showPassengerLastNameShouldNoMoreThanMaxError(@StringRes int resId);
+
+        String getPassengerLastName();
+
+        void showPassengerLastNameShouldOneWordError(@StringRes int resId);
+
+        void showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(@StringRes int resId);
+
+        void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(@StringRes int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
