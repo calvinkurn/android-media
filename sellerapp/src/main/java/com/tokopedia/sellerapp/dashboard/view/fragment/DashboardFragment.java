@@ -26,11 +26,11 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
@@ -214,7 +214,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
-                startActivity(new Intent(getContext(), InboxReputationActivity.class));
+                if(MainApplication.getAppContext() instanceof ReputationRouter){
+                    startActivity(((ReputationRouter)MainApplication.getAppContext()).getInboxReputationIntent
+                            (getActivity()));
+                }
+
             }
         });
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
