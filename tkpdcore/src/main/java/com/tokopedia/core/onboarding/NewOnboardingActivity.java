@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -25,7 +24,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import static android.view.View.GONE;
-import static android.view.View.SCREEN_STATE_OFF;
 import static android.view.View.VISIBLE;
 
 /**
@@ -142,7 +140,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
             setButtonVisibility(skipButton, VISIBLE);
             setButtonVisibility(indicator, VISIBLE);
         }
-        int pageNumber = pager.getCurrentItem()+1;
+        int pageNumber = pager.getCurrentItem() + 1;
         ScreenTracking.screen(SCREEN_NAME + pageNumber);
     }
 
