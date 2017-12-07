@@ -53,6 +53,7 @@ import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -729,6 +730,26 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             }
         } else if (requestCode == InstantCheckoutActivity.REQUEST_CODE) {
             closeView();
+        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
+            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                setVoucherResultLayout(
+                        bundle.getString(LoyaltyActivity.VOUCHER_CODE, ""),
+                        bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
+                        bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
+                );
+            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                promoResultLayout.setVisibility(View.VISIBLE);
+                labelPromoType.setText("Kode Kupon: ");
+                promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
+                voucherAmount.setText(bundle.getString(LoyaltyActivity.COUPON_AMOUNT, ""));
+                voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
+
+                //TODO check state
+                voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
+                instantPromoPlaceHolder.setVisibility(View.GONE);
+            }
         }
     }
 
