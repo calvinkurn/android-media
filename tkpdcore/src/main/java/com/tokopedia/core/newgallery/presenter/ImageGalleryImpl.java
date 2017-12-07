@@ -65,7 +65,7 @@ public class ImageGalleryImpl implements ImageGallery {
     public String getFolderPath(int position) {
         String folderPath = "";
         if (dataAlbum != null && position >= 0 && position < dataAlbum.size()) {
-            dataAlbum.get(position).getName();
+            folderPath = dataAlbum.get(position).getName();
         }
         return folderPath;
     }
