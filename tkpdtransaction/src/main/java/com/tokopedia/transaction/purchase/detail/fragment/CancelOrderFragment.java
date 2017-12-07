@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
 
@@ -17,7 +18,7 @@ import com.tokopedia.transaction.R;
  * Created by kris on 11/29/17. Tokopedia
  */
 
-public class CancelOrderFragment extends TkpdFragment{
+public class CancelOrderFragment extends TkpdFragment {
 
     private CancelOrderListener listener;
 
@@ -28,14 +29,10 @@ public class CancelOrderFragment extends TkpdFragment{
         return null;
     }
 
-    public CancelOrderFragment() {
-
-    }
-
     public static CancelOrderFragment createFragment(String orderId) {
         CancelOrderFragment fragment = new CancelOrderFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(orderId, ORDER_ID_ARGUMENT);
+        bundle.putString(ORDER_ID_ARGUMENT, orderId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -73,16 +70,15 @@ public class CancelOrderFragment extends TkpdFragment{
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(notesField.getText().toString().isEmpty()) {
+                if (notesField.getText().toString().isEmpty()) {
                     notesTextInputLayout.setError(
                             getActivity()
                                     .getString(com.tokopedia.core.R.string.error_note_empty)
                     );
-                }else {
-                    listener.cancelOrder(
-                            getArguments().getString(ORDER_ID_ARGUMENT),
-                            notesField.getText().toString()
-                    );
+                } else {
+                    if (getArguments() != null) {
+                        listener.cancelOrder(getArguments().getString(ORDER_ID_ARGUMENT), notesField.getText().toString());
+                    }
                 }
             }
         };

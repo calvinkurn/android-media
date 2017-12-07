@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -112,12 +114,19 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setStatusView(OrderDetailData data) {
-        ViewGroup statusLayout = findViewById(R.id.order_detail_status_layout);
+        ViewGroup statusLayout = findViewById(R.id.header_view);
         TextView statusTextView = findViewById(R.id.text_view_status);
         ImageView imageView = findViewById(R.id.order_detail_status_image);
+
         statusLayout.setOnClickListener(onStatusLayoutClickedListener(data.getOrderId()));
-        statusTextView.setText(data.getOrderStatus());
-        ImageHandler.LoadImage(imageView, data.getOrderImage());
+
+        if (null != data.getOrderImage() && !data.getOrderImage().equals("")) {
+            statusLayout.setVisibility(View.VISIBLE);
+            statusTextView.setText(data.getOrderStatus());
+            ImageHandler.LoadImage(imageView, data.getOrderImage());
+        } else {
+            statusLayout.setVisibility(View.GONE);
+        }
     }
 
     private void setPriceView(OrderDetailData data) {
@@ -201,10 +210,9 @@ public class OrderDetailActivity extends TActivity
             timeLimitLayout.setVisibility(View.GONE);
         } else {
             responseTime.setText(data.getResponseTimeLimit());
-            responseTime.getBackground()
-                    .setColorFilter(
-                            Color.parseColor(data.getDeadlineColorString()), PorterDuff.Mode.DST
-                    );
+            responseTime.setBackgroundResource(R.drawable.dark_blue_rounded_label);
+            GradientDrawable drawableBorder = (GradientDrawable) responseTime.getBackground().getCurrent().mutate();
+            drawableBorder.setColor(Color.parseColor(data.getDeadlineColorString()));
         }
     }
 
@@ -306,15 +314,14 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onOrderCancelled(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.success_request_cancel_order), Toast.LENGTH_LONG).show();
         finish();
     }
 
     @Override
     public void onRequestCancelOrder(OrderDetailData data) {
         if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
-            CancelOrderFragment cancelOrderFragment = CancelOrderFragment
-                    .createFragment(data.getOrderId());
+            CancelOrderFragment cancelOrderFragment = CancelOrderFragment.createFragment(data.getOrderId());
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, cancelOrderFragment, VALIDATION_FRAGMENT_TAG)
@@ -454,13 +461,11 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void cancelOrder(String orderId, String notes) {
-        //Toast.makeText(this, "Order Id: " + orderId + "Notes: " + notes, Toast.LENGTH_LONG).show();
         presenter.cancelOrder(this, orderId, notes);
     }
 
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
-        //Toast.makeText(this, "Order Id: " + orderId + "Reason Id: " + String.valueOf(reasonId) + "Notes: " + notes, Toast.LENGTH_LONG).show();
         presenter.cancelReplacement(this, orderId, reasonId, notes);
     }
 

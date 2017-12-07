@@ -33,7 +33,11 @@ public class OrderDetailMapper {
         viewData.setOrderImage(responseData.getStatus().getImage());
 
         viewData.setBuyerName(responseData.getDetail().getReceiver().getName());
-        viewData.setPurchaseDate(responseData.getDetail().getPaymentVerifiedDate());
+        if (responseData.getDetail().getPaymentVerifiedDate() != null) {
+            viewData.setPurchaseDate(responseData.getDetail().getPaymentVerifiedDate());
+        } else {
+            viewData.setPurchaseDate(responseData.getDetail().getCheckoutDate());
+        }
         if(responseData.getDetail().getDeadline() != null) {
             viewData.setResponseTimeLimit(responseData.getDetail().getDeadline().getText());
             viewData.setDeadlineColorString(responseData.getDetail().getDeadline().getColor());

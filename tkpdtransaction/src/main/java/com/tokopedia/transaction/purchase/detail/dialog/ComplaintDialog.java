@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
@@ -17,7 +19,7 @@ import com.tokopedia.transaction.R;
  * Created by kris on 11/16/17. Tokopedia
  */
 
-public class ComplaintDialog extends DialogFragment{
+public class ComplaintDialog extends DialogFragment {
 
     private static final String ORDER_ID_EXTRA = "ORDER_ID_EXTRA";
     private static final String SHOP_NAME_EXTRA = "SHOP_NAME_EXTRA";
@@ -53,16 +55,26 @@ public class ComplaintDialog extends DialogFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        View view = inflater.inflate(R.layout.complaint_dialog, container, false);
+        View view = inflater.inflate(R.layout.dialog_complaint, container, false);
+
         TextView complaintTitle = (TextView) view.findViewById(R.id.complaint_title);
-        TextView complaintText = (TextView) view.findViewById(R.id.complaint_text);
-        TextView complaintButton = (TextView) view.findViewById(R.id.complaint_button);
-        TextView cancelButton = (TextView) view.findViewById(R.id.cancel_button);
-        complaintTitle.setText(complaintTitle
-                .getText().toString().replace("YYY", getArguments().getString(SHOP_NAME_EXTRA)));
-        complaintText.setText(getString(R.string.text_complaint_dialog));
+        TextView complaintText = (TextView) view.findViewById(R.id.complaint_body);
+        TextView complaintButton = (TextView) view.findViewById(R.id.receive_btn);
+        Button cancelButton = (Button) view.findViewById(R.id.cancel_button);
+        Button notReceiveButton = (Button) view.findViewById(R.id.not_receive_btn);
+        LinearLayout llFreeReturn = (LinearLayout) view.findViewById(R.id.layout_free_return);
+        TextView tvFreeReturn = (TextView) view.findViewById(R.id.tv_free_return);
+
+        complaintTitle.setText(getString(R.string.button_order_detail_complaint));
+        complaintText.setText(String.format(getString(R.string.text_complaint_dialog),
+                getArguments().getString(SHOP_NAME_EXTRA)));
         complaintButton.setOnClickListener(onComplaintButtonListener());
         cancelButton.setOnClickListener(onCancelButtonListener());
+
+        llFreeReturn.setVisibility(View.GONE);
+        cancelButton.setVisibility(View.VISIBLE);
+        notReceiveButton.setVisibility(View.GONE);
+
         return view;
     }
 
@@ -84,7 +96,7 @@ public class ComplaintDialog extends DialogFragment{
         };
     }
 
-    public interface ComplaintDialogListener{
+    public interface ComplaintDialogListener {
         void onComplaintClicked(String orderId);
     }
 

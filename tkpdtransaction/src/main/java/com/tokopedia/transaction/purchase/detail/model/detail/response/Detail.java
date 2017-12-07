@@ -30,6 +30,9 @@ public class Detail {
     @SerializedName("drop_shipper")
     @Expose
     private DropShipper dropShipper;
+    @SerializedName("checkout_date")
+    @Expose
+    private String checkoutDate;
 
     public String getPaymentVerifiedDate() {
         return paymentVerifiedDate;
@@ -91,4 +94,11 @@ public class Detail {
         this.dropShipper = dropShipper;
     }
 
+    public String getCheckoutDate() {
+        return checkoutDate;
+    }
+
+    public void setCheckoutDate(String checkoutDate) {
+        this.checkoutDate = checkoutDate;
+    }
 }
