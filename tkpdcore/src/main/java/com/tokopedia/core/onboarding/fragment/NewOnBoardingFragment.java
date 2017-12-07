@@ -195,6 +195,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
                 getActivity().finish();
             }
         });
+        startNow.setVisibility(View.GONE);
         startNow.setWidth(0);
 
         footer = v.findViewById(R.id.footer);
@@ -310,6 +311,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         layoutParams.width = 0;
         startNow.setLayoutParams(layoutParams);
         startNow.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
+        startNow.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
     }
 
