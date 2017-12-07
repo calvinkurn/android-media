@@ -23,7 +23,6 @@ import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
-import com.tokopedia.seller.opportunity.customview.OpportunityDetailButtonView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailProductView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailStatusView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailSummaryView;
@@ -44,7 +43,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     private static final int REQUEST_OPEN_SNAPSHOT = 1919;
     private static final int REQUEST_OPEN_TNC = 1920;
 
-    OpportunityDetailButtonView buttonView;
+    View buttonView;
     OpportunityDetailStatusView statusView;
     OpportunityDetailProductView productView;
     OpportunityDetailSummaryView summaryView;
@@ -65,7 +64,6 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         getActivity().finish();
     }
 
-    @Override
     public void onActionConfirmClicked() {
         UnifyTracking.eventOpportunity(
                 OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE,
@@ -186,8 +184,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     protected void initView(View view) {
-        buttonView = (OpportunityDetailButtonView)
-                view.findViewById(R.id.button_take_opportunity);
+        buttonView = view.findViewById(R.id.button_take_opportunity);
         statusView = (OpportunityDetailStatusView)
                 view.findViewById(R.id.customview_opportunity_detail_status_view);
         productView = (OpportunityDetailProductView)
@@ -200,14 +197,18 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
             statusView.renderData(oppItemViewModel);
             productView.renderData(oppItemViewModel);
             summaryView.renderData(oppItemViewModel);
-            buttonView.renderData(oppItemViewModel);
+            buttonView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onActionConfirmClicked();
+                }
+            });
         }
     }
 
 
     @Override
     protected void setViewListener() {
-        buttonView.setListener(this);
         statusView.setListener(this);
         productView.setListener(this);
         summaryView.setListener(this);

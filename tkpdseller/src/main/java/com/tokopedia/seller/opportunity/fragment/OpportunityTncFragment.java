@@ -92,7 +92,6 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
         // no delete here
     }
 
-    @Override
     public void onActionConfirmClicked() {
         UnifyTracking.eventOpportunity(
                 OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_YES,
