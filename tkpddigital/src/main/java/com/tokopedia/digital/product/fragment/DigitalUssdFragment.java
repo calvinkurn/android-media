@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
@@ -84,6 +86,8 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     CheckBox cbInstantCheckout;
     @BindView(R2.id.tv_unknown_number)
     TextView tvUnknownNumber;
+    @BindView(R2.id.tooltip_instant_checkout)
+    ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
     private static final String ARG_PARAM_EXTRA_PULSA_BALANCE_DATA = "ARG_PARAM_EXTRA_PULSA_BALANCE_DATA";
@@ -235,6 +239,13 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                 showVerifyUssdOperatorDialogFragment(true);
                 UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_EDIT_NUMBER, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
 
+            }
+        });
+
+        tooltipInstantCheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setBottomSheetDialog();
             }
         });
     }
@@ -519,5 +530,17 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
 
     public interface ActionListener {
         void updateTitleToolbar(String title);
+    }
+
+    private void setBottomSheetDialog() {
+        BottomSheetView bottomSheetView;
+        bottomSheetView = new BottomSheetView(context);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(context.getString(R.string.title_tooltip_instan_payment))
+                .setBody(context.getString(R.string.body_tooltip_instan_payment))
+                .setImg(R.drawable.ic_digital_instant_payment)
+                .build());
+        bottomSheetView.show();
     }
 }

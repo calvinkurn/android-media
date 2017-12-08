@@ -17,11 +17,19 @@ public class Preorder {
     @Expose
     private int processTime;
 
+    @SerializedName("process_time_text")
+    @Expose
+    private String processTimeText;
+
     public int getIsPreorder() {
         return isPreorder;
     }
 
     public int getProcessTime() {
         return processTime;
+    }
+
+    public String getProcessTimeText() {
+        return processTimeText;
     }
 }

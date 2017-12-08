@@ -71,7 +71,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processConfirmDeliver(Context context, OrderDetailData data) {
-        mainView.showConfirmDialog(data.getOrderId());
+        mainView.showConfirmDialog(data.getOrderId(), data.getOrderStatus());
     }
 
     @Override
@@ -161,11 +161,17 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void processFinish(Context context, String orderId) {
+    public void processFinish(Context context, String orderId, String orderStatus) {
         TKPDMapParam<String, String> orderDetailParams = new TKPDMapParam<>();
         orderDetailParams.put("order_id", orderId);
-        orderDetailInteractor.confirmFinishConfirm(confirmShipmentSubscriber(),
-                AuthUtil.generateParamsNetwork(context, orderDetailParams));
+        if (orderStatus.equals(context.getString(com.tokopedia.core.R.string.ORDER_DELIVERED))
+                || orderStatus.equals(context.getString(com.tokopedia.core.R.string.ORDER_DELIVERY_FAILURE))) {
+            orderDetailInteractor.confirmDeliveryConfirm(confirmShipmentSubscriber(),
+                    AuthUtil.generateParamsNetwork(context, orderDetailParams));
+        } else {
+            orderDetailInteractor.confirmFinishConfirm(confirmShipmentSubscriber(),
+                    AuthUtil.generateParamsNetwork(context, orderDetailParams));
+        }
     }
 
     @Override

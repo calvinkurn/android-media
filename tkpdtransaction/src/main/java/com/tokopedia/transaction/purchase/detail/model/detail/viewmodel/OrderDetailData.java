@@ -38,6 +38,8 @@ public class OrderDetailData {
 
     private String preorderPeriod;
 
+    private String preorderPeriodText;
+
     private boolean isPreorder;
 
     private String dropshipperName;
@@ -190,6 +192,14 @@ public class OrderDetailData {
 
     public void setPreorderPeriod(String preorderPeriod) {
         this.preorderPeriod = preorderPeriod;
+    }
+
+    public String getPreorderPeriodText() {
+        return preorderPeriodText;
+    }
+
+    public void setPreorderPeriodText(String preorderPeriodText) {
+        this.preorderPeriodText = preorderPeriodText;
     }
 
     public String getDropshipperName() {

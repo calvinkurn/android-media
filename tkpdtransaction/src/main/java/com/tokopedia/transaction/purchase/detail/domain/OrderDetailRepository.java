@@ -84,6 +84,17 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         });
     }
 
+    @Override
+    public Observable<String> confirmDelivery(TKPDMapParam<String, String> params) {
+        return orderActService.getApi().deliveryConfirm(params)
+                .map(new Func1<Response<TkpdResponse>, String>() {
+            @Override
+            public String call(Response<TkpdResponse> response) {
+                return mapper.getConfirmDeliverMessage(response);
+            }
+        });
+    }
+
     private void validateData(TkpdResponse response) {
         if (response == null)
             throw new ResponseRuntimeException("Terjadi Kesalahan");

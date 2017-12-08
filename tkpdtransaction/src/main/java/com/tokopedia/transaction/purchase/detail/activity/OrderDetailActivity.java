@@ -3,10 +3,8 @@ package com.tokopedia.transaction.purchase.detail.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -199,7 +197,7 @@ public class OrderDetailActivity extends TActivity
     private void setPreorderView(OrderDetailData data) {
         LinearLayout preorderLayout = findViewById(R.id.preorder_layout);
         TextView preorderTime = findViewById(R.id.preorder_time);
-        if (data.isPreorder()) preorderTime.setText(data.getPreorderPeriod());
+        if (data.isPreorder()) preorderTime.setText(data.getPreorderPeriodText());
         else preorderLayout.setVisibility(View.GONE);
     }
 
@@ -261,8 +259,8 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void showConfirmDialog(String orderId) {
-        FinishOrderDialog dialog = FinishOrderDialog.createDialog(orderId);
+    public void showConfirmDialog(String orderId, String orderStatus) {
+        FinishOrderDialog dialog = FinishOrderDialog.createDialog(orderId, orderStatus);
         dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
     }
 
@@ -307,7 +305,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onOrderFinished(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.success_finish_order_message), Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -374,6 +372,8 @@ public class OrderDetailActivity extends TActivity
     public void onSearchCancelled(String message) {
         getFragmentManager().beginTransaction().remove(getFragmentManager()
                 .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+        showErrorSnackbar("Pesanan berhasil dibatalkan");
+        presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
     }
 
     @Override
@@ -443,8 +443,8 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onConfirmFinish(String orderId) {
-        presenter.processFinish(this, orderId);
+    public void onConfirmFinish(String orderId, String orderStatus) {
+        presenter.processFinish(this, orderId, orderStatus);
     }
 
     @Override
