@@ -148,7 +148,7 @@ public class PromoCouponFragment extends BasePresenterFragment
         NetworkErrorHelper.showEmptyState(context, mainView,
                 "Anda Tidak Memiliki Kupon",
                 "Tukar poin Anda dengan kupon di halaman TopPoins.",
-                null,
+                "",
                 R.drawable.ic_coupon_image, null);
     }
 
