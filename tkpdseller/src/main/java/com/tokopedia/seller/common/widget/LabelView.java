@@ -35,7 +35,6 @@ public class LabelView extends BaseCustomView {
     private int contentColorValue;
     private int titleTextStyleValue;
 
-    private boolean showArrow;
     private int maxLines;
     private float textSize;
     private int minTitleWidth;
@@ -66,7 +65,6 @@ public class LabelView extends BaseCustomView {
             contentColorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_content_textStyle, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
-            showArrow = styledAttributes.getBoolean(R.styleable.LabelView_label_show_arrow, false);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
             textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
                     getResources().getDimension(com.tokopedia.design.R.dimen.font_subheading));
