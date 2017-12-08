@@ -37,7 +37,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Co
 
     @Override
     public void onBindViewHolder(CouponListViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.promoIcon, listCouponModel.get(position).getImageUrl());
+        ImageHandler.LoadImage(holder.promoIcon, listCouponModel.get(position).getIcon());
         holder.promoTitle.setText(listCouponModel.get(position).getTitle());
         holder.promoBenefit.setText(listCouponModel.get(position).getSubTitle());
         holder.promoDescription.setText(listCouponModel.get(position).getDescription());

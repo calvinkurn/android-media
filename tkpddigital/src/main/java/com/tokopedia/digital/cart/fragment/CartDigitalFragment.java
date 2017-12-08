@@ -629,9 +629,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void onClickUseVoucher() {
         Intent intent;
         if (cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
-            intent = LoyaltyActivity.newInstanceCouponActive(context);
+            intent = LoyaltyActivity.newInstanceCouponActive(
+                    context, "digital", passData.getCategoryId()
+            );
         } else {
-            intent = LoyaltyActivity.newInstanceCouponNotActive(context);
+            intent = LoyaltyActivity.newInstanceCouponNotActive(
+                    context, "digital", passData.getCategoryId()
+            );
         }
         navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }

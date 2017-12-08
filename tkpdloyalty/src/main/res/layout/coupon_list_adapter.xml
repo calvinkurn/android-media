@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/promo_icon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         tools:src="@drawable/ic_market_place" />

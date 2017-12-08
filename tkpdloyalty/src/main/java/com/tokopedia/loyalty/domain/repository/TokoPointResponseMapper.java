@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.domain.repository;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.entity.response.Coupon;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.DigitalVoucherData;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
@@ -109,6 +110,27 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
         CouponViewModel viewModel = new CouponViewModel();
         viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
         viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
+        viewModel.setCode(voucherCode);
+        viewModel.setTitle(couponTitle);
+        return viewModel;
+    }
+
+    @Override
+    public VoucherViewModel digtialVoucherViewModel(DigitalVoucherData voucherResponse,
+                                                    String voucherCode) {
+        VoucherViewModel viewModel = new VoucherViewModel();
+        viewModel.setAmount(voucherResponse.getAttributes().getDiscountAmount());
+        viewModel.setMessage(voucherResponse.getAttributes().getMessage());
+        viewModel.setCode(voucherCode);
+        return viewModel;
+    }
+
+    @Override
+    public CouponViewModel digitalCouponViewModel(DigitalVoucherData voucherResponse,
+                                                  String voucherCode, String couponTitle) {
+        CouponViewModel viewModel = new CouponViewModel();
+        viewModel.setAmount(voucherResponse.getAttributes().getDiscountAmount());
+        viewModel.setMessage(voucherResponse.getAttributes().getMessage());
         viewModel.setCode(voucherCode);
         viewModel.setTitle(couponTitle);
         return viewModel;

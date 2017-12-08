@@ -26,6 +26,8 @@ import com.tokopedia.loyalty.view.view.IPromoCodeView;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
+
 /**
  * @author anggaprasetiyo on 24/11/17.
  */
@@ -38,6 +40,10 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     private ManualInsertCodeListener listener;
 
     private TkpdProgressDialog progressDialog;
+
+    private static final String PLATFORM_KEY = "PLATFORM_KEY";
+
+    private static final String CATEGORY_KEY = "CATEGORY_KEY";
 
     @Override
     protected boolean isRetainInstance() {
@@ -89,13 +95,34 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
-        submitVoucherButton.setOnClickListener(new View.OnClickListener() {
+
+        if(getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING))
+            submitVoucherButton.setOnClickListener(onSubmitDigitalVoucher(voucherCodeField));
+        else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(voucherCodeField));
+
+    }
+
+    private View.OnClickListener onSubmitMarketplaceVoucher(final EditText voucherCodeField) {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dPresenter.processCheckPromoCode(getActivity(),
+                dPresenter.processCheckPromoCode(
+                        getActivity(),
                         voucherCodeField.getText().toString());
             }
-        });
+        };
+    }
+
+    private View.OnClickListener onSubmitDigitalVoucher(final EditText voucherCodeField) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dPresenter.processCheckDigitalPromoCode(
+                        getActivity(),
+                        voucherCodeField.getText().toString(),
+                        getArguments().getString(CATEGORY_KEY));
+            }
+        };
     }
 
     @Override
@@ -124,8 +151,13 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         promoCodeComponent.inject(this);
     }
 
-    public static Fragment newInstance() {
-        return new PromoCodeFragment();
+    public static Fragment newInstance(String platform, String categoryKey) {
+        PromoCodeFragment fragment = new PromoCodeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override

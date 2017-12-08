@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -40,6 +40,10 @@ public class LoyaltyActivity extends BasePresenterActivity
         PromoCouponFragment.ChooseCouponListener
 {
     public static final String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";
+    public static final String EXTRA_PLATFORM = "EXTRA_PLATFORM";
+    public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
+    public static final String MARKETPLACE_STRING = "marketplace";
+    public static final String DIGITAL_STRING = "digital";
     public static final String VOUCHER_CODE = "voucher_code";
     public static final String VOUCHER_MESSAGE = "voucher_message";
     public static final String VOUCHER_AMOUNT = "voucher_amount";
@@ -65,6 +69,7 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Named("coupon_not_active")
     List<LoyaltyPagerItem> loyaltyPagerItemListCouponNotActive;
 
+
     private boolean isCouponActive;
 
     @Override
@@ -74,7 +79,7 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        this.isCouponActive = true;
+        this.isCouponActive = extras.getBoolean(EXTRA_COUPON_ACTIVE);
     }
 
     @Override
@@ -104,6 +109,7 @@ public class LoyaltyActivity extends BasePresenterActivity
     private void renderViewSingleTabPromoCode() {
         for (LoyaltyPagerItem loyaltyPagerItem : loyaltyPagerItemListCouponNotActive)
             indicator.addTab(indicator.newTab().setText(loyaltyPagerItem.getTabTitle()));
+        setTabProperties();
         viewPager.setOffscreenPageLimit(loyaltyPagerItemListCouponNotActive.size());
         loyaltyPagerAdapter.addAllItem(loyaltyPagerItemListCouponNotActive);
         viewPager.setAdapter(loyaltyPagerAdapter);
@@ -114,11 +120,22 @@ public class LoyaltyActivity extends BasePresenterActivity
     private void renderViewWithCouponTab() {
         for (LoyaltyPagerItem loyaltyPagerItem : loyaltyPagerItemListCouponActive)
             indicator.addTab(indicator.newTab().setText(loyaltyPagerItem.getTabTitle()));
+        setTabProperties();
+        indicator.setTabMode(TabLayout.MODE_FIXED);
         viewPager.setOffscreenPageLimit(loyaltyPagerItemListCouponActive.size());
         loyaltyPagerAdapter.addAllItem(loyaltyPagerItemListCouponActive);
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+    }
+
+    private void setTabProperties() {
+        indicator.setTabMode(TabLayout.MODE_FIXED);
+        indicator.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
+        indicator.setTabTextColors(
+                ContextCompat.getColor(this, R.color.black_38),
+                ContextCompat.getColor(this, R.color.tkpd_main_green));
+        indicator.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
     }
 
     @Override
@@ -185,15 +202,28 @@ public class LoyaltyActivity extends BasePresenterActivity
         }
     }
 
-    public static Intent newInstanceCouponActive(Context context) {
+    public static Intent newInstanceCouponActive(Context context, String platform, String category) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
-        intent.putExtra(EXTRA_COUPON_ACTIVE, true);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
+        intent.putExtras(bundle);
         return intent;
     }
 
-    public static Intent newInstanceCouponNotActive(Context context) {
+    public static Intent newInstanceCouponNotActive(Context context, String platform, String category) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
-        intent.putExtra(EXTRA_COUPON_ACTIVE, false);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
+        bundle.putString(EXTRA_PLATFORM, platform);
+        bundle.putString(EXTRA_CATEGORY, category);
+        intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

@@ -53,4 +53,12 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         });
     }
 
+    @Override
+    public void processCheckDigitalPromoCode(
+            Context context,
+            String voucherId,
+            String categoryId) {
+
+    }
+
 }

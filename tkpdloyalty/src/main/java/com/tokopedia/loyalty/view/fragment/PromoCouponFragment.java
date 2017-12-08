@@ -52,6 +52,10 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     private ChooseCouponListener listener;
 
+    private static final String PLATFORM_KEY = "PLATFORM_KEY";
+
+    private static final String CATEGORY_KEY = "CATEGORY_KEY";
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -117,7 +121,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     protected void setActionVar() {
-        dPresenter.processGetCouponList();
+        dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
     }
 
     @Override
@@ -234,8 +238,13 @@ public class PromoCouponFragment extends BasePresenterFragment
         return getActivity();
     }
 
-    public static PromoCouponFragment newInstance() {
-        return new PromoCouponFragment();
+    public static PromoCouponFragment newInstance(String platform, String categoryKey) {
+        PromoCouponFragment fragment = new PromoCouponFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override

@@ -17,6 +17,9 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CATEGORY;
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_PLATFORM;
+
 /**
  * @author anggaprasetiyo on 30/11/17.
  */
@@ -47,14 +50,26 @@ public class LoyaltyViewModule {
         List<LoyaltyPagerItem> loyaltyPagerItemList = new ArrayList<>();
         loyaltyPagerItemList.add(
                 new LoyaltyPagerItem.Builder()
-                        .fragment(PromoCodeFragment.newInstance())
+                        .fragment(PromoCodeFragment.newInstance(
+                                activity.getIntent()
+                                    .getExtras()
+                                    .getString(EXTRA_PLATFORM, ""),
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_CATEGORY, "")))
                         .position(0)
                         .tabTitle("Kode Promo")
                         .build()
         );
         loyaltyPagerItemList.add(
                 new LoyaltyPagerItem.Builder()
-                        .fragment(PromoCouponFragment.newInstance())
+                        .fragment(PromoCouponFragment.newInstance(
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_PLATFORM, ""),
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_CATEGORY, "")))
                         .position(0)
                         .tabTitle("Kupon Promo")
                         .build()
@@ -69,7 +84,13 @@ public class LoyaltyViewModule {
         List<LoyaltyPagerItem> loyaltyPagerItemList = new ArrayList<>();
         loyaltyPagerItemList.add(
                 new LoyaltyPagerItem.Builder()
-                        .fragment(PromoCodeFragment.newInstance())
+                        .fragment(PromoCodeFragment.newInstance(
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_PLATFORM, ""),
+                                activity.getIntent()
+                                        .getExtras()
+                                        .getString(EXTRA_CATEGORY, "")))
                         .position(0)
                         .tabTitle("Kode Promo")
                         .build()
