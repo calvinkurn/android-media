@@ -33,12 +33,15 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     @Override
     public void processGetCouponList() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("user_id", SessionHandler.getLoginID(view.getContext()));
+        //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
         param.put("type", "marketplace");
         param.put("page", "1");
         param.put("page_size", "10");
+
+        //TODO Revert Later
         promoCouponInteractor.getCouponList(
-                AuthUtil.generateParamsNetwork(view.getContext(), param),
+                //AuthUtil.generateParamsNetwork(view.getContext(), param),
+                AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
                 new Subscriber<List<CouponData>>() {
                     @Override
                     public void onCompleted() {
@@ -93,6 +96,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
     @Override
     public void submitVoucher(final CouponData couponData) {
+        view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(VOUCHER_CODE, couponData.getCode());
         promoCouponInteractor.submitVoucher(
@@ -109,11 +113,14 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onError(Throwable e) {
                 couponData.setErrorMessage(e.getMessage());
+                view.hideProgressLoading();
+                view.couponError();
             }
 
             @Override
             public void onNext(CouponViewModel couponViewModel) {
                 view.receiveResult(couponViewModel);
+                view.hideProgressLoading();
             }
         });
 

@@ -174,11 +174,10 @@ public class TokoPointRepository implements ITokoPointRepository {
                 VoucherResponse voucherResponse = new Gson().fromJson(
                     networkResponse.body().getStringData(), VoucherResponse.class
                 );
-                VoucherViewModel viewModel = new VoucherViewModel();
-                viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
-                viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
-                viewModel.setCode(voucherCode);
-                return viewModel;
+                if(networkResponse.body().isError()) {
+                    throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
+                }
+                return tokoPointResponseMapper.voucherViewModel(voucherResponse, voucherCode);
             }
         });
     }
@@ -195,12 +194,12 @@ public class TokoPointRepository implements ITokoPointRepository {
                 VoucherResponse voucherResponse = new Gson().fromJson(
                         networkResponse.body().getStringData(), VoucherResponse.class
                 );
-                CouponViewModel viewModel = new CouponViewModel();
-                viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
-                viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
-                viewModel.setCode(voucherCode);
-                viewModel.setTitle(couponTitle);
-                return viewModel;
+                if(networkResponse.body().isError()) {
+                    throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
+                }
+                return tokoPointResponseMapper.couponViewModel(
+                        voucherResponse, voucherCode, couponTitle
+                );
             }
         });
     }

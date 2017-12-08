@@ -6,12 +6,16 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCouponComponent;
@@ -38,7 +42,11 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Inject
     IPromoCouponPresenter dPresenter;
 
+    private TkpdProgressDialog progressDialog;
+
     private RecyclerView couponListRecyclerView;
+
+    private ViewGroup mainView;
 
     private CouponListAdapter adapter;
 
@@ -91,6 +99,8 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        mainView = view.findViewById(R.id.main_view_coupon);
         couponListRecyclerView = view.findViewById(R.id.coupon_recycler_view);
         couponListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -124,11 +134,16 @@ public class PromoCouponFragment extends BasePresenterFragment
     public void renderCouponListDataResult(List<CouponData> couponData) {
         adapter = new CouponListAdapter(couponData, this);
         couponListRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void couponDataNoResult() {
-        
+        NetworkErrorHelper.showEmptyState(context, mainView,
+                "Anda Tidak Memiliki Kupon",
+                "Tukar poin Anda dengan kupon di halaman TopPoins.",
+                null,
+                R.drawable.ic_coupon_image, null);
     }
 
     @Override
@@ -171,12 +186,12 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void showProgressLoading() {
-
+        progressDialog.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-
+        progressDialog.dismiss();
     }
 
     @Override

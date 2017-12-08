@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface IPromoCodeView extends IBaseView {
 
-    void renderPromoCodeResult(List<CouponData> couponDataList);
-
     void checkVoucherSuccessfull(VoucherViewModel voucherModel);
+
+    void promoCodeError(String errorMessage);
 }

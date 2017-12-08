@@ -10,21 +10,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCodeComponent;
 import com.tokopedia.loyalty.di.component.PromoCodeComponent;
 import com.tokopedia.loyalty.di.module.PromoCodeViewModule;
-import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,6 +36,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     IPromoCodePresenter dPresenter;
 
     private ManualInsertCodeListener listener;
+
+    private TkpdProgressDialog progressDialog;
 
     @Override
     protected boolean isRetainInstance() {
@@ -86,6 +86,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     @Override
     protected void initView(View view) {
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
         submitVoucherButton.setOnClickListener(new View.OnClickListener() {
@@ -128,13 +129,13 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     }
 
     @Override
-    public void renderPromoCodeResult(List<CouponData> couponDataList) {
-
+    public void checkVoucherSuccessfull(VoucherViewModel voucher) {
+        listener.onCodeSuccess(voucher.getCode(), voucher.getMessage(), voucher.getAmount());
     }
 
     @Override
-    public void checkVoucherSuccessfull(VoucherViewModel voucher) {
-        listener.onCodeSuccess(voucher.getCode(), voucher.getMessage(), voucher.getAmount());
+    public void promoCodeError(String errorMessage) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -164,12 +165,12 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     @Override
     public void showProgressLoading() {
-
+        progressDialog.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-
+        progressDialog.dismiss();
     }
 
     @Override

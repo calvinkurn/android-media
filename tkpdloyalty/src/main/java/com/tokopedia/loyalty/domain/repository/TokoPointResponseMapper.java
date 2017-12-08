@@ -6,7 +6,10 @@ import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
+import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +93,25 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
             tokoPointDrawerData.setPopUpNotif(null);
         }
         return tokoPointDrawerData;
+    }
+
+    @Override
+    public VoucherViewModel voucherViewModel(VoucherResponse voucherResponse, String voucherCode) {
+        VoucherViewModel viewModel = new VoucherViewModel();
+        viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
+        viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
+        viewModel.setCode(voucherCode);
+        return viewModel;
+    }
+
+    @Override
+    public CouponViewModel couponViewModel(VoucherResponse voucherResponse, String voucherCode, String couponTitle) {
+        CouponViewModel viewModel = new CouponViewModel();
+        viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
+        viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
+        viewModel.setCode(voucherCode);
+        viewModel.setTitle(couponTitle);
+        return viewModel;
     }
 
     @Override

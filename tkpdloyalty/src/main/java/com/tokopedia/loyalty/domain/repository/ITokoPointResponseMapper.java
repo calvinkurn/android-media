@@ -5,7 +5,10 @@ import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
+import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
 import com.tokopedia.loyalty.view.data.CouponData;
+import com.tokopedia.loyalty.view.data.CouponViewModel;
+import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
 
@@ -22,4 +25,10 @@ public interface ITokoPointResponseMapper {
     String getSuccessValidateRedeemMessage(ValidateRedeemCouponResponse response);
 
     TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData);
+
+    VoucherViewModel voucherViewModel(VoucherResponse voucherResponse, String voucherCode);
+
+    CouponViewModel couponViewModel(VoucherResponse voucherResponse,
+                                    String voucherCode,
+                                    String couponTitle);
 }
