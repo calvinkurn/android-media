@@ -1,9 +1,9 @@
 package com.tokopedia.topads.keyword.di.module;
 
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsGroupAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;

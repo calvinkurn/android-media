@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/add_comment_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:background="@drawable/cards_ui"
+        android:paddingBottom="@dimen/padding_vs"
+        android:paddingTop="@dimen/padding_vs"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/add_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:padding="@dimen/padding_small"
+            android:src="@drawable/ic_attach"/>
+
+
+        <EditText
+            android:id="@+id/new_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/send_but"
+            android:layout_toRightOf="@+id/add_url"
+            android:background="@color/white"
+            android:hint="@string/chat_edit_text"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:padding="@dimen/padding_vs"
+            android:textSize="@dimen/font_medium"/>
+
+        <ImageView
+            android:id="@+id/send_but"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:padding="@dimen/padding_small"
+            android:src="@drawable/ic_send_24dp_green"/>
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/temp_message"
+        layout="@layout/message_item_mine"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/add_comment_area"
+        />
+
+</RelativeLayout>

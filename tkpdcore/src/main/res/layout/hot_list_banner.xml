@@ -6,6 +6,11 @@
     android:orientation="vertical"
     android:padding="@dimen/padding_small" >
 
+    <!-- HAPUS -->
+    <!-- pake di module tkpddiscovery -->
+    <!-- R.layout.reyclerview_hotlist_banner -->
+    <!-- HAPUS JUGA KELAS YANG PAKE-->
+
     <View
         android:id="@+id/blank"
         android:layout_width="match_parent"

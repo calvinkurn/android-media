@@ -199,7 +199,8 @@ public class GCMHandler {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(context);
         if (result != ConnectionResult.SUCCESS) {
-            if (googleAPI.isUserResolvableError(result)) {
+            Activity activity = (Activity) context;
+            if (!activity.isFinishing() && googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog((Activity) context, result,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             }

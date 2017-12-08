@@ -32,6 +32,8 @@ public class TkpdBaseURL {
     public static String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
     public static String ACCOUNTS_ALPHA_DOMAIN = "https://accounts-alpha.tokopedia.com/";
     public static String INBOX_DOMAIN = "https://inbox.tokopedia.com";
+    public static String CHAT_DOMAIN = "https://chat.tokopedia.com";
+    public static String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
     public static String JS_DOMAIN = "https://js.tokopedia.com/";
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
@@ -266,6 +268,8 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
+        public static final String URL_INBOX_MESSAGE_TIME_MACHINE = MOBILE_DOMAIN +
+                "inbox-message-old.pl?flag_app=1";
     }
 
     public static class Shop {
@@ -441,7 +445,7 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_HOTLIST = "get_hotlist.pl";
         public static final String PATH_GET_HOTLIST_PRODUCT = "get_hotlist_product.pl";
-        public static final String PATH_GET_HOTLIST_BANNER = "get_hotlist_banner.pl";
+        public static final String PATH_GET_HOTLIST_BANNER = "v4/hotlist/get_hotlist_banner.pl";
 
         public static final String PATH_SEARCH_CATALOG = "search_catalog.pl";
         public static final String PATH_SEARCH_PRODUCT = "search_product.pl";
@@ -578,6 +582,11 @@ public class TkpdBaseURL {
         public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
+        public static final String PATH_SEARCH_PRODUCT = "search/product/v3";
+        public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
+        public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
+        public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
+        public static final String PATH_BROWSE_SHOP = "search/v1/shop";
     }
 
     public static class Merlin {
@@ -874,6 +883,19 @@ public class TkpdBaseURL {
     public class TkpdCart {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";
+    }
+
+    public static class Chat {
+        public static final String CHAT_WEBSOCKET = "/connect";
+        public static final String GET_MESSAGE = "/tc/v1/list_message";
+        public static final String GET_REPLY = "/tc/v1/list_reply/{msgId}";
+        public static final String GET_USER_CONTACT = "/tc/v1/message_contact/";
+        public static final String REPLY = "/tc/v1/reply";
+        public static final String LISTEN_WEBSOCKET = "/connect";
+        public static final String SEARCH = "/tc/v1/search";
+        public static final String DELETE = "/tc/v1/delete";
+        public static final String SEND_MESSAGE = "/tc/v1/send";
+        public static final String GET_TOPCHAT_NOTIFICATION = "tc/v1/notif_unreads";
     }
 
     public class Maps {
