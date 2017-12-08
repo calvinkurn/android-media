@@ -958,6 +958,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 //TODO check state
                 voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
                 instantPromoPlaceHolder.setVisibility(View.GONE);
+                promoCodeLayout.setVisibility(View.GONE);
                 cancelPromoLayout.setOnClickListener(onCouponClickedListener());
             }
         }
@@ -973,6 +974,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
         //TODO check state
         this.voucherCode = voucherCode;
+        promoCodeLayout.setVisibility(View.GONE);
         instantPromoPlaceHolder.setVisibility(View.GONE);
     }
 
@@ -982,6 +984,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             public void onClick(View view) {
                 promoResultLayout.setVisibility(View.GONE);
                 if(hasPromotion) instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+
+                promoCodeLayout.setVisibility(View.VISIBLE);
             }
         };
     }
