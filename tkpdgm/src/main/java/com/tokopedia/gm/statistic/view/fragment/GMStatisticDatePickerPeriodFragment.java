@@ -53,7 +53,10 @@ public class GMStatisticDatePickerPeriodFragment extends DatePickerPeriodFragmen
             comparedDate = bundle.getBoolean(DatePickerConstant.EXTRA_COMPARE_DATE);
         }
         expandableOptionSwitch.setExpand(comparedDate);
-        updateComparedDateView(adapter.getSelectedDate());
+        PeriodRangeModel periodRangeModel = adapter.getSelectedDate();
+        if (periodRangeModel != null) {
+            updateComparedDateView(periodRangeModel);
+        }
     }
 
     @Override

@@ -5,12 +5,14 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.ace.apis.SearchApi;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.discovery.intermediary.data.mapper.IntermediaryCategoryMapper;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Response;
 import rx.Observable;
 
 import static com.tokopedia.core.network.apiservices.hades.apis.HadesApi.CATEGORIES_PARAM;
@@ -41,7 +43,7 @@ public class IntermediaryDataSource {
         this.mapper = mapper;
     }
 
-    public Observable<IntermediaryCategoryDomainModel> getintermediaryCategory(String categoryId) {
+    public Observable<IntermediaryCategoryDomainModel> getintermediaryCategory(String categoryId, CategoryHadesModel categoryHadesModel) {
 
         Map<String, String> param = new HashMap<>();
         param.put(CATEGORIES_PARAM,categoryId);
@@ -50,8 +52,16 @@ public class IntermediaryDataSource {
         Map<String, String> paramCat = new HashMap<>();
         paramCat.put(CURATED_PARAM,NUM_CURATED);
 
-        return Observable.zip(hadesApi.getCategories(HadesApi.ANDROID_DEVICE,categoryId,paramCat),
-                aceApi.getHotlistCategory(param), mojitoApi.getBrandsCategory(categoryId), mapper);
+        return Observable.zip(Observable.just(categoryHadesModel), aceApi.getHotlistCategory(param), mojitoApi.getBrandsCategory(categoryId), mapper);
+
+    }
+
+    public Observable<Response<CategoryHadesModel>> getCategoryHeader(String categoryId) {
+
+        Map<String, String> paramCat = new HashMap<>();
+        paramCat.put(CURATED_PARAM,NUM_CURATED);
+
+        return hadesApi.getCategories(HadesApi.ANDROID_DEVICE,categoryId,paramCat);
 
     }
 

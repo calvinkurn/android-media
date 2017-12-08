@@ -9,4 +9,6 @@ public interface CustomerPresenter<V extends CustomerView> {
     void attachView(V view);
 
     void detachView();
+
+
 }

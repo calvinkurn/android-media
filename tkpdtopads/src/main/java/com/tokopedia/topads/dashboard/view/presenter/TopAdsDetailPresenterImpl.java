@@ -11,7 +11,7 @@ import com.tokopedia.topads.dashboard.view.model.Ad;
  */
 public abstract class TopAdsDetailPresenterImpl<V extends Ad> implements TopAdsDetailPresenter {
 
-    protected final TopAdsDetailListener<V> topAdsDetailListener;
+    protected TopAdsDetailListener<V> topAdsDetailListener;
 
     private Context context;
 
@@ -23,5 +23,9 @@ public abstract class TopAdsDetailPresenterImpl<V extends Ad> implements TopAdsD
     protected String getShopId() {
         SessionHandler session = new SessionHandler(context);
         return session.getShopID();
+    }
+
+    protected void unsubscribe(){
+        topAdsDetailListener = null;
     }
 }
