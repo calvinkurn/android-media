@@ -123,7 +123,8 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
             ffBubble2.setVisibility(View.VISIBLE);
             layoutDate2.setVisibility(View.VISIBLE);
             rvProduct.setLayoutManager(new GridLayoutManager(context, COUNT_MAX_PRODUCT));
-            productAdapter = new ChatProductAdapter(context,
+            productAdapter = new ChatProductAdapter(mainView,
+                    context,
                     element.getConversationDomain().getProduct(),
                     COUNT_MAX_PRODUCT);
             rvProduct.setAdapter(productAdapter);

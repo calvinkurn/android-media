@@ -60,6 +60,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Conve
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationListDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
@@ -67,6 +68,7 @@ import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 import com.tokopedia.inbox.rescenter.product.ListProductActivity;
+import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
 import java.text.SimpleDateFormat;
@@ -1175,6 +1177,23 @@ public class DetailResChatFragment
 
     public void getBottomSheetActivityTransition() {
         getActivity().overridePendingTransition(R.anim.pull_up, R.anim.push_down);
+    }
+
+    @Override
+    public void goToProductDetail(ConversationProductDomain product) {
+        startActivity(
+                ProductDetailActivity.newInstance(context,
+                        resolutionId,
+                        String.valueOf(product.getResId()),
+                        product.getName())
+        );
+    }
+
+    @Override
+    public void goToProductList(ConversationProductDomain product) {
+        startActivity(
+                ListProductActivity.newInstance(context, String.valueOf(product.getResId()))
+        );
     }
 
     @Override

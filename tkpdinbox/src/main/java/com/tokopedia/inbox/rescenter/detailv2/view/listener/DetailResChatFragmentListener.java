@@ -9,6 +9,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationListDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
@@ -98,6 +99,10 @@ public interface DetailResChatFragmentListener {
 
         void doEditAwb(String conversationId,
                        String shippingId, String shippingRefNum);
+
+        void goToProductDetail(ConversationProductDomain product);
+
+        void goToProductList(ConversationProductDomain product);
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {
