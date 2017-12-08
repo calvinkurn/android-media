@@ -32,12 +32,10 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
 
     @Override
     public void onMoengageNotificationReceived(RemoteMessage message) {
-        CommonUtils.dumper("moengage push "+message);
         PushManager.getInstance().getPushHandler().handlePushPayload(ConsumerMainApplication.getAppContext(), message.getData());
     }
 
     public void onNotificationReceived(String from, Bundle bundle) {
-        CommonUtils.dumper("moengage push "+from +" "+bundle);
         if (bundle.containsKey(Constants.ARG_NOTIFICATION_ISPROMO)) {
             bundle.putString(Constants.KEY_ORIGIN, Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL);
         }
