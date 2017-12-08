@@ -167,7 +167,7 @@
     <string name="booking_ride_menu_payment">Payment</string>
     <string name="payment_toolbar_title">Payment</string>
     <string name="add_credit_card_toolbar_title">Add Credit Card</string>
-    <string name="change_payment_method">Change Payment Method</string>
+    <string name="change_payment_method">Change</string>
     <string name="receipt_pending">Receipt Pending</string>
     <string name="message_uber_waiting_receipt">Your trip is now completed and receipt is being generated.</string>
     <string name="ride_push_title_template_accepted">Your %s is booked</string>

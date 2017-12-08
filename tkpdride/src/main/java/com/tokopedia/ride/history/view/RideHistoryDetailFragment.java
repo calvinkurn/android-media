@@ -3,6 +3,7 @@ package com.tokopedia.ride.history.view;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import com.tokopedia.ride.history.di.DaggerRideHistoryComponent;
 import com.tokopedia.ride.history.di.RideHistoryComponent;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
+import com.tokopedia.ride.scrooge.ScroogePGUtil;
 
 import javax.inject.Inject;
 
@@ -48,6 +50,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
+import static com.tokopedia.ride.scrooge.ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE;
 
 public class RideHistoryDetailFragment extends BaseFragment implements RideHistoryDetailContract.View {
     private OnFragmentInteractionListener mListener;
@@ -116,6 +119,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     TextView tripIdTextView;
     @BindView(R2.id.label_total_charged)
     TextView amountChargedLabel;
+    @BindView(R2.id.btn_pay_pending_fare)
+    TextView btnPendingFare;
 
     ProgressDialog mProgressDialog;
 
@@ -276,10 +281,12 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
             pendingFareValueTextView.setVisibility(View.VISIBLE);
             pendingFareLabelTextView.setVisibility(View.VISIBLE);
             seperator.setVisibility(View.VISIBLE);
+            btnPendingFare.setVisibility(View.VISIBLE);
         } else {
             pendingFareValueTextView.setVisibility(View.GONE);
             pendingFareLabelTextView.setVisibility(View.GONE);
             seperator.setVisibility(View.GONE);
+            btnPendingFare.setVisibility(View.GONE);
         }
 
 
@@ -460,6 +467,11 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         mPresenter.actionSendRating();
     }
 
+    @OnClick(R2.id.btn_pay_pending_fare)
+    public void actionPayPendingFareClicked() {
+        mPresenter.payPendingFare();
+    }
+
     @Override
     public void setHistoryViewModelData(RideHistoryViewModel viewModel) {
         this.rideHistory = viewModel;
@@ -477,5 +489,24 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     public void hideProgressLoading() {
         if (mProgressDialog == null) return;
         mProgressDialog.hide();
+    }
+
+    @Override
+    public void openScroogePage(String url, String postData) {
+        if (getActivity() != null) {
+            ScroogePGUtil.openScroogePage(this, url, true, postData, getString(R.string.title_pay_pending_fare));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (getActivity() != null && requestCode == REQUEST_CODE_OPEN_SCROOGE_PAGE) {
+            if (resultCode == ScroogePGUtil.RESULT_CODE_SUCCESS) {
+                btnPendingFare.setVisibility(View.GONE);
+            } else {
+                NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.error_fail_pay_pending));
+            }
+        }
     }
 }
