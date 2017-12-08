@@ -38,8 +38,8 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
         //TODO Revert Later
         promoCouponInteractor.getCouponList(
-                //AuthUtil.generateParamsNetwork(view.getContext(), param),
-                AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
+                AuthUtil.generateParamsNetwork(view.getContext(), param),
+                //AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
                 new Subscriber<List<CouponData>>() {
                     @Override
                     public void onCompleted() {
