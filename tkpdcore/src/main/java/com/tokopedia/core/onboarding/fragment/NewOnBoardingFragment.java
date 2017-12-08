@@ -59,6 +59,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     private ImageView i;
     private TextView titleView;
     private int position;
+    private boolean isAnimationPlayed = false;
     private String lottieAsset;
 
 
@@ -224,10 +225,13 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
     @Override
     public void onPageSelected() {
-        playLottie();
-        clearAnimation();
-        lottieAnimationView.setVisibility(View.VISIBLE);
-        playAnimation();
+        if (!isAnimationPlayed) {
+            isAnimationPlayed = true;
+            playLottie();
+            clearAnimation();
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            playAnimation();
+        }
     }
 
     @Override
@@ -260,10 +264,11 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         lottieAnimationView.setVisibility(View.INVISIBLE);
         titleView.setVisibility(View.INVISIBLE);
         descView.setVisibility(View.INVISIBLE);
-        if(viewType == VIEW_ENDING){
+        if (viewType == VIEW_ENDING) {
             startNow.setVisibility(View.GONE);
             startNow.setWidth(0);
         }
+        isAnimationPlayed = false;
     }
 
     public void playLottie() {
@@ -343,7 +348,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
     @Override
     protected String getScreenName() {
-        int pageNumber = position+1;
+        int pageNumber = position + 1;
         return SCREEN_NAME + pageNumber;
     }
 }
