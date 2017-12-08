@@ -131,6 +131,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     private DrawerData data;
     private DrawerHeaderListener listener;
     private RetryTokoCashListener tokoCashListener;
+    private String oldUserAvatar = "";
 
     public DrawerHeaderDataBinder(DataBindAdapter dataBindAdapter,
                                   Context context,
@@ -199,9 +200,15 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.percentText.setVisibility(View.VISIBLE);
 
 
-        if (data.getDrawerProfile().getUserAvatar() != null)
-            ImageHandler.loadImage(context,holder.avatar, data.getDrawerProfile().getUserAvatar(),R.drawable.ic_image_avatar_boy,R.drawable.ic_image_avatar_boy);
-
+        if (data.getDrawerProfile().getUserAvatar() != null &&
+                !oldUserAvatar.equals(data.getDrawerProfile().getUserAvatar())) {
+            ImageHandler.loadImage(context,
+                    holder.avatar,
+                    data.getDrawerProfile().getUserAvatar(),
+                    R.drawable.ic_image_avatar_boy,
+                    R.drawable.ic_image_avatar_boy);
+            oldUserAvatar = data.getDrawerProfile().getUserAvatar();
+        }
         holder.name.setText(data.getDrawerProfile().getUserName());
         holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
         if (data.getProfileCompletion() == 100) {

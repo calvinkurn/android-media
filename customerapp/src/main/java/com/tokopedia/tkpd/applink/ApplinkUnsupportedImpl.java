@@ -13,6 +13,7 @@ import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.design.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 /**
  * @author  by alvarisi on 11/13/17.
@@ -31,7 +32,7 @@ public class ApplinkUnsupportedImpl implements ApplinkUnsupported {
 
     public ApplinkUnsupportedImpl(Activity activity) {
         this.activity = activity;
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        firebaseRemoteConfig = RemoteConfigFetcher.initRemoteConfig(activity);
     }
 
     @Override

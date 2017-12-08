@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 
@@ -37,6 +38,8 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
     TextView locationTextview;
     @BindView(R.id.fav_button)
     ImageView favoriteImageView;
+    @BindView(R.id.image_badge)
+    ImageView badgeIcon;
 
     public FavoriteShopViewHolder(View itemView) {
         super(itemView);
@@ -57,6 +60,12 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
         if(favoriteShop.getShopAvatarImageUrl() !=null) {
             ImageHandler.loadImageFit2(
                     itemView.getContext(), avatarImageView, favoriteShop.getShopAvatarImageUrl());
+        }
+        if(favoriteShop.getBadgeUrl() != null && !favoriteShop.getBadgeUrl().isEmpty()) {
+            badgeIcon.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageFit2(itemView.getContext(), badgeIcon, favoriteShop.getBadgeUrl());
+        } else {
+            badgeIcon.setVisibility(View.GONE);
         }
     }
 

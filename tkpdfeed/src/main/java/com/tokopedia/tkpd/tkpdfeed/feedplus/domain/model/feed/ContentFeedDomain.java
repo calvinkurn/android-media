@@ -39,11 +39,27 @@ public class ContentFeedDomain {
     @Nullable
     private final List<TopPicksDomain> topPicksDomains;
 
+    @Nullable
+    private final List<InspirationDomain> inspirationDomains;
+
+    @Nullable
+    private final KolPostDomain kolPostDomain;
+
+    @Nullable
+    private final KolRecommendationDomain kolRecommendations;
+
+    @Nullable
+    private final FavoriteCtaDomain favoriteCtaDomain;
+
     public ContentFeedDomain(@Nullable String type, @Nullable int total_product,
                              @Nullable List<ProductFeedDomain> products,
                              @Nullable List<PromotionFeedDomain> promotions,
                              @Nullable List<OfficialStoreDomain> officialStores,
                              @Nullable List<TopPicksDomain> topPicksDomains,
+                             @Nullable List<InspirationDomain> inspirationDomains,
+                             @Nullable KolPostDomain kolPostDomain,
+                             @Nullable KolRecommendationDomain kolRecommendations,
+                             @Nullable FavoriteCtaDomain favoriteCtaDomain,
                              @Nullable String status_activity) {
         this.type = type;
         this.totalProduct = total_product;
@@ -52,6 +68,10 @@ public class ContentFeedDomain {
         this.statusActivity = status_activity;
         this.topPicksDomains = topPicksDomains;
         this.officialStores = officialStores;
+        this.inspirationDomains = inspirationDomains;
+        this.kolPostDomain = kolPostDomain;
+        this.kolRecommendations = kolRecommendations;
+        this.favoriteCtaDomain = favoriteCtaDomain;
     }
 
     @Nullable
@@ -87,5 +107,25 @@ public class ContentFeedDomain {
     @Nullable
     public List<TopPicksDomain> getTopPicksDomains() {
         return topPicksDomains;
+    }
+
+    @Nullable
+    public List<InspirationDomain> getInspirationDomains() {
+        return inspirationDomains;
+    }
+
+    @Nullable
+    public KolPostDomain getKolPostDomain() {
+        return kolPostDomain;
+    }
+
+    @Nullable
+    public KolRecommendationDomain getKolRecommendations() {
+        return kolRecommendations;
+    }
+
+    @Nullable
+    public FavoriteCtaDomain getFavoriteCtaDomain() {
+        return favoriteCtaDomain;
     }
 }

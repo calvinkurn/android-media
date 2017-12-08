@@ -25,23 +25,24 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.tokocash.adapter.FilterTokoCashAdapter;
 import com.tokopedia.digital.tokocash.adapter.HistoryTokoCashAdapter;
 import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.domain.IHistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.interactor.TokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.listener.TokoCashHistoryListener;
+import com.tokopedia.digital.tokocash.mapper.FilterHistoryTokoCashMapper;
 import com.tokopedia.digital.tokocash.model.HeaderHistory;
 import com.tokopedia.digital.tokocash.model.ItemHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
-import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.digital.tokocash.presenter.ITokoCashHistoryPresenter;
 import com.tokopedia.digital.tokocash.presenter.TokoCashHistoryPresenter;
 
@@ -69,6 +70,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private static final String EXTRA_END_DATE = "EXTRA_END_DATE";
     private static final String EXTRA_SELECTION_PERIOD = "EXTRA_SELECTION_PERIOD";
     private static final String EXTRA_SELECTION_TYPE = "EXTRA_SELECTION_TYPE";
+    private static final String STATE_DATA_UPDATED = "state_data_updated";
+    private static final String STATE_SAVED = "saved";
 
     @BindView(R2.id.date_label_view)
     LinearLayout layoutDate;
@@ -101,12 +104,14 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private boolean isLoadMore;
     private long startDate;
     private long endDate;
-    private FilterTokoCashAdapter adapterFilter;
+    private QuickFilterAdapter adapterFilter;
     private HistoryTokoCashAdapter adapterHistory;
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
     private CompositeSubscription compositeSubscription;
     private SnackbarRetry messageSnackbar;
     private RefreshHandler refreshHandler;
+    private String stateDataAfterFilter = "";
+    private FilterHistoryTokoCashMapper headerMapper;
 
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_TRANSACTION_HISTORY)
@@ -116,6 +121,26 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     public static Intent newInstance(Context context) {
         return new Intent(context, HistoryTokocashActivity.class);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_DATA_UPDATED, stateDataAfterFilter);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        this.stateDataAfterFilter = savedInstanceState.getString(STATE_DATA_UPDATED);
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (stateDataAfterFilter.equals("")) {
+            refreshHandler.startRefresh();
+        }
     }
 
     @Override
@@ -159,7 +184,6 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         initialHistoryRecyclerView();
         refreshHandler = new RefreshHandler(this, getWindow().getDecorView().getRootView(),
                 getRefreshHandlerListener());
-        refreshHandler.startRefresh();
     }
 
     private RefreshHandler.OnRefreshHandlerListener getRefreshHandlerListener() {
@@ -214,7 +238,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         filterHistoryRecyclerView.setHasFixedSize(true);
         filterHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
-        adapterFilter = new FilterTokoCashAdapter();
+        adapterFilter = new QuickFilterAdapter();
         filterHistoryRecyclerView.setAdapter(adapterFilter);
     }
 
@@ -230,8 +254,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     }
 
     @NonNull
-    private FilterTokoCashAdapter.FilterTokoCashListener getFilterTokoCashListener() {
-        return new FilterTokoCashAdapter.FilterTokoCashListener() {
+    private QuickFilterAdapter.ActionListener getFilterTokoCashListener() {
+        return new QuickFilterAdapter.ActionListener() {
             @Override
             public void clearFilter() {
                 typeFilterSelected = "";
@@ -254,7 +278,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     @Override
     protected void initVar() {
-
+        headerMapper = new FilterHistoryTokoCashMapper();
     }
 
     @Override
@@ -268,6 +292,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
                             .goToDatePicker(HistoryTokocashActivity.this, getPeriodRangeModel(),
                                     startDate, endDate, datePickerSelection, datePickerType);
                     startActivityForResult(intent, EXTRA_INTENT_DATE_PICKER);
+                    stateDataAfterFilter = STATE_SAVED;
                 }
             }
         });
@@ -342,13 +367,24 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         refreshHandler.finishRefresh();
         mainContent.setVisibility(View.VISIBLE);
         adapterFilter.setListener(getFilterTokoCashListener());
-        adapterFilter.addFilterTokoCashList(tokoCashHistoryData.getHeaderHistory());
+        adapterFilter.addFilterTokoCashList(headerMapper.transform(
+                removeTypeAllOnHeader(tokoCashHistoryData.getHeaderHistory())));
         adapterHistory.setListener(getItemHistoryListener());
         if (firstTimeLoad) {
             adapterHistory.addItemHistoryList(tokoCashHistoryData.getItemHistoryList());
         } else if (isLoadMore) {
             adapterHistory.addItemHistoryListLoadMore(tokoCashHistoryData.getItemHistoryList());
         }
+    }
+
+    @NonNull
+    private List<HeaderHistory> removeTypeAllOnHeader(List<HeaderHistory> filterList) {
+        for (int i = filterList.size() - 1; i > -1; i--) {
+            if (filterList.get(i).getType().equals(ALL_TRANSACTION_TYPE)) {
+                filterList.remove(filterList.get(i));
+            }
+        }
+        return filterList;
     }
 
     @Override

@@ -23,7 +23,7 @@
             app:subtitleTextAppearance="@style/ToolbarSubtitleText"
             app:titleTextAppearance="@style/ToolbarText" />
 
-        <include layout="@layout/partial_base_tab_indicator" />
+        <include layout="@layout/partial_base_tab_layout" />
 
         <RelativeLayout
             android:layout_width="match_parent"

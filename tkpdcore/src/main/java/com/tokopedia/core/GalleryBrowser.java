@@ -210,13 +210,18 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView {
     }
 
     @Override
-    public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList) {
+    public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum) {
         /* DO NOTHING */
     }
 
     @Override
-    public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList) {
+    public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum) {
 		/* DO NOTHING */
+    }
+
+    @Override
+    public boolean isNeedPermission() {
+        return true;
     }
 
     @Override
