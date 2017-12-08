@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
 import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
@@ -23,11 +24,15 @@ import java.util.List;
 
 public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.Holder> {
 
+    private DetailResChatFragmentListener.View mainView;
     private Context context;
     private List<ConversationProductDomain> productList = new ArrayList<>();
     private int maxShowCount = 0;
 
-    public ChatProductAdapter(Context context, List<ConversationProductDomain> productList, int maxShowCount) {
+    public ChatProductAdapter(DetailResChatFragmentListener.View mainView,
+                              Context context,
+                              List<ConversationProductDomain> productList,
+                              int maxShowCount) {
         this.context = context;
         this.productList = productList;
         this.maxShowCount = maxShowCount;
@@ -61,12 +66,12 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                context.startActivity(
-//                        ProductDetailActivity.newInstance(context,
-//                                String.valueOf(product.getResId()),
-//                                product.getMessage(),
-//                                product.getName())
-//                );
+                context.startActivity(
+                        ProductDetailActivity.newInstance(context,
+                                String.valueOf(product.getResId()),
+                                product.getMessage(),
+                                product.getName())
+                );
             }
         });
     }
