@@ -255,6 +255,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
+    public void initializeZipCodes() {
+        fragmentShippingHeader.initializeZipCodes();
+    }
+
+    @Override
     public void refreshLocationViewListener(ShopShipping updatedShopShipping) {
         refreshView();
         fragmentShippingHeader.updateLocationData(updatedShopShipping.provinceName,

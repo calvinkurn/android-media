@@ -47,7 +47,7 @@
             android:id="@+id/postal_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="3"
+            android:completionThreshold="1"
             android:digits="1234567890"
             android:hint="@string/title_post_code"
             android:inputType="phone"

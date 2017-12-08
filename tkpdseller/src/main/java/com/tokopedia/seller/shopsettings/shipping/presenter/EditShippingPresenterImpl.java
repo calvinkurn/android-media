@@ -240,17 +240,19 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                 shopInformation.longitude = longitude;
             }
 
-            String postalCode = model.getOpenShopHashMap().get(EditShippingPresenter.SHOP_POSTAL);
-            if (postalCode != null) {
-                shopInformation.postalCode = postalCode;
-            }
-
             String selectedAddressStr = model.getOpenShopHashMap().get(EditShippingPresenter.SELECTED_ADDRESS);
             if (selectedAddressStr != null && selectedAddressStr.length() > 0) {
                 selectedAddress = new Gson().fromJson(selectedAddressStr, Address.class);
 
                 view.setLocationProvinceCityDistrict(selectedAddress.getProvinceName(),
                         selectedAddress.getCityName(), selectedAddress.getDistrictName());
+
+                view.initializeZipCodes();
+            }
+
+            String postalCode = model.getOpenShopHashMap().get(EditShippingPresenter.SHOP_POSTAL);
+            if (postalCode != null) {
+                shopInformation.postalCode = postalCode;
             }
         }
     }

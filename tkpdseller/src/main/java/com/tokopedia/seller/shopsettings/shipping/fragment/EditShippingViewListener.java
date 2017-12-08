@@ -68,6 +68,8 @@ public interface EditShippingViewListener {
 
     void setLocationProvinceCityDistrict();
 
+    void initializeZipCodes();
+
     void refreshLocationViewListener(ShopShipping updatedShopInfo);
 
     void refreshLocationViewListener(Address address);
