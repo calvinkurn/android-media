@@ -367,7 +367,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         refreshHandler.finishRefresh();
         mainContent.setVisibility(View.VISIBLE);
         adapterFilter.setListener(getFilterTokoCashListener());
-        adapterFilter.addFilterTokoCashList(headerMapper.transform(
+        adapterFilter.addQuickFilterItems(headerMapper.transform(
                 removeTypeAllOnHeader(tokoCashHistoryData.getHeaderHistory())));
         adapterHistory.setListener(getItemHistoryListener());
         if (firstTimeLoad) {

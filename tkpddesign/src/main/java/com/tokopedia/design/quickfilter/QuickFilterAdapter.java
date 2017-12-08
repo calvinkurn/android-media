@@ -116,10 +116,17 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
         return filterList.size();
     }
 
-    public void addFilterTokoCashList(List<QuickFilterItem> filterList) {
+    public void addQuickFilterItems(List<QuickFilterItem> filterList) {
         this.filterList.clear();
         this.filterList.addAll(filterList);
         notifyDataSetChanged();
+    }
+
+    public interface ActionListener {
+
+        void clearFilter();
+
+        void selectFilter(String typeFilter);
     }
 
     static class ItemViewFilter extends RecyclerView.ViewHolder {
@@ -134,12 +141,5 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
             layoutInside = (LinearLayout) itemView.findViewById(R.id.layout_inside);
             filterName = (TextView) itemView.findViewById(R.id.filter_name);
         }
-    }
-
-    public interface ActionListener {
-
-        void clearFilter();
-
-        void selectFilter(String typeFilter);
     }
 }
