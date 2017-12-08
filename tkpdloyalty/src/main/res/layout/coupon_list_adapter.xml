@@ -3,15 +3,16 @@
     android:id="@+id/item_main_view"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
+    android:background="@color/white"
     android:padding="@dimen/padding_small">
 
     <ImageView
         android:id="@+id/promo_icon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         tools:src="@drawable/ic_market_place" />
@@ -23,8 +24,8 @@
 
         <TextView
             android:id="@+id/promo_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginBottom="@dimen/margin_vs"
             android:textSize="@dimen/text_size_large"
             android:textStyle="bold"

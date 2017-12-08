@@ -11,13 +11,13 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -53,6 +53,7 @@ import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
@@ -80,12 +81,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA =
             "EXTRA_STATE_CHECKOUT_PASS_DATA";
 
+    private final int COUPON_ACTIVE = 1;
+
     @BindView(R2.id.checkout_cart_holder_view)
     CheckoutHolderView checkoutHolderView;
     @BindView(R2.id.item_cart_holder_view)
     ItemCartHolderView itemCartHolderView;
     @BindView(R2.id.voucher_cart_holder_view)
-    VoucherCartView voucherCartHolderView;
+    VoucherCartView voucherCartView;
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
     @BindView(R2.id.nsv_container)
@@ -195,7 +198,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     protected void initialVar() {
         checkoutDataBuilder = new CheckoutDataParameter.Builder();
         inputPriceHolderView.setActionListener(this);
-        voucherCartHolderView.setActionListener(this);
+        voucherCartView.setActionListener(this);
         sessionHandler = new SessionHandler(getActivity());
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialogNormal.setCancelable(false);
@@ -205,7 +208,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     protected void setActionVar() {
 
     }
-
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
@@ -284,7 +286,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @OnClick(R2.id.btn_next)
     void actionNext() {
-        presenter.processGetCartData();
+        presenter.processGetCartData(passData.getCategoryId());
     }
 
     @Override
@@ -297,14 +299,20 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         buildCheckoutData(cartDigitalInfoData);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
         if (GlobalConfig.isSellerApp()) {
-            voucherCartHolderView.setVisibility(View.GONE);
+            voucherCartView.setVisibility(View.GONE);
         } else {
-            voucherCartHolderView.setVisibility(
+            voucherCartView.setVisibility(
                     cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
             );
-            voucherCartHolderView.renderVoucherAutoCode(
-                    cartDigitalInfoData.getAttributes().getVoucherAutoCode()
-            );
+
+            UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),
+                    cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
+                    cartDigitalInfoDataState.getAttributes().getOperatorName());
+
+            if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
+                    !TextUtils.isEmpty(cartDigitalInfoData.getAttributes().getVoucherAutoCode())) {
+                presenter.processCheckVoucher(cartDigitalInfoData.getAttributes().getVoucherAutoCode(), passData.getCategoryId());
+            }
         }
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
@@ -320,7 +328,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPricePlain()
         );
         if (voucherDigitalState != null) {
-            voucherCartHolderView.setUsedVoucher(
+            voucherCartView.setVoucher(
                     voucherDigitalState.getAttributeVoucher().getVoucherCode(),
                     voucherDigitalState.getAttributeVoucher().getMessage()
             );
@@ -444,7 +452,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderVoucherInfoData(VoucherDigital voucherDigital) {
         this.voucherDigitalState = voucherDigital;
-        voucherCartHolderView.setUsedVoucher(
+        voucherCartView.setVoucher(
                 voucherDigital.getAttributeVoucher().getVoucherCode(),
                 voucherDigital.getAttributeVoucher().getMessage());
         checkoutHolderView.enableVoucherDiscount(
@@ -477,35 +485,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         return sessionHandler.getWalletRefreshToken(getActivity());
     }
 
-    @Override
-    public void renderErrorCheckVoucher(String message) {
-        voucherDigitalState = null;
-        voucherCartHolderView.setErrorVoucher(message);
-    }
-
-    @Override
-    public void renderErrorHttpCheckVoucher(String message) {
-        voucherDigitalState = null;
-        showToastMessage(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionCheckVoucher(String message) {
-        voucherDigitalState = null;
-        showSnackBarAlert(message);
-    }
-
     private void showSnackBarAlert(String message) {
         View view = getView();
         if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionCheckVoucher(String message) {
-        voucherDigitalState = null;
-        showToastMessage(message);
     }
 
     @Override
@@ -548,7 +531,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderErrorInstantCheckout(String message) {
         showToastMessage(message);
-        presenter.processGetCartDataAfterCheckout();
+        presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
     }
 
     @Override
@@ -567,18 +550,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public String getDigitalCategoryId() {
-        return passData.getCategoryId();
-    }
-
-    @Override
-    public String getVoucherCode() {
-        return voucherCartHolderView.getVoucherCode();
-    }
-
-    @Override
     public CheckoutDataParameter getCheckoutData() {
-        checkoutDataBuilder.voucherCode(voucherCartHolderView.getVoucherCode());
+        checkoutDataBuilder.voucherCode(voucherCartView.getVoucherCode());
         return checkoutDataBuilder.build();
     }
 
@@ -655,31 +628,18 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void onVoucherCheckButtonClicked() {
-        UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(), getVoucherCode(), cartDigitalInfoDataState.getAttributes().getOperatorName());
-        presenter.processCheckVoucher();
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void forceHideSoftKeyboardVoucherInput() {
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void forceShowSoftKeyboardVoucherInput() {
-        KeyboardHandler.showSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void disableVoucherDiscount() {
-        this.voucherDigitalState = null;
-        checkoutHolderView.disableVoucherDiscount();
-    }
-
-    @Override
-    public void trackingErrorVoucher(String errorMsg) {
-        UnifyTracking.eventVoucherError(errorMsg, "");
+    public void onClickUseVoucher() {
+        if (cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
+            Intent intent;
+            if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
+            } else {
+                intent = LoyaltyActivity.newInstanceCouponNotActive(context, "digital", passData.getCategoryId());
+            }
+            navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+        } else {
+            voucherCartView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -699,7 +659,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             String message = data.getStringExtra(OtpVerificationActivity.EXTRA_MESSAGE);
             switch (resultCode) {
                 case OtpVerificationActivity.RESULT_OTP_VERIFIED:
-                    presenter.processPatchOtpCart();
+                    presenter.processPatchOtpCart(passData.getCategoryId());
                     if (message != null) showToastMessage(message);
                     break;
                 default:
@@ -717,18 +677,35 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    presenter.processGetCartDataAfterCheckout();
+                    presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
                     break;
                 case TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    presenter.processGetCartDataAfterCheckout();
+                    presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
                     break;
                 default:
-                    presenter.processGetCartData();
+                    presenter.processGetCartData(passData.getCategoryId());
                     break;
             }
         } else if (requestCode == InstantCheckoutActivity.REQUEST_CODE) {
             closeView();
+        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
+            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
+                    String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
+                    voucherCartView.setVoucher(voucherCode, voucherMessage);
+                }
+            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
+                    String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
+                    String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
+                    voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
+                }
+            }
         }
     }
 

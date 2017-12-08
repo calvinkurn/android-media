@@ -7,5 +7,8 @@ import android.content.Context;
  */
 
 public interface IPromoCodePresenter {
+
     void processCheckPromoCode(Context context, String voucherId);
+
+    void processCheckDigitalPromoCode(Context context, String voucherId, String categoryId);
 }

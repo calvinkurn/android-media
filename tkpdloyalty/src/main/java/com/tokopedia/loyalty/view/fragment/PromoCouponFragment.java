@@ -6,12 +6,16 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCouponComponent;
@@ -28,6 +32,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
+
 /**
  * @author anggaprasetiyo on 29/11/17.
  */
@@ -38,11 +44,19 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Inject
     IPromoCouponPresenter dPresenter;
 
+    private TkpdProgressDialog progressDialog;
+
     private RecyclerView couponListRecyclerView;
+
+    private ViewGroup mainView;
 
     private CouponListAdapter adapter;
 
     private ChooseCouponListener listener;
+
+    private static final String PLATFORM_KEY = "PLATFORM_KEY";
+
+    private static final String CATEGORY_KEY = "CATEGORY_KEY";
 
     @Override
     protected boolean isRetainInstance() {
@@ -91,6 +105,8 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        mainView = view.findViewById(R.id.main_view_coupon);
         couponListRecyclerView = view.findViewById(R.id.coupon_recycler_view);
         couponListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -107,7 +123,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     protected void setActionVar() {
-        dPresenter.processGetCouponList();
+        dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
     }
 
     @Override
@@ -124,6 +140,16 @@ public class PromoCouponFragment extends BasePresenterFragment
     public void renderCouponListDataResult(List<CouponData> couponData) {
         adapter = new CouponListAdapter(couponData, this);
         couponListRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void couponDataNoResult() {
+        NetworkErrorHelper.showEmptyState(context, mainView,
+                "Anda Tidak Memiliki Kupon",
+                "Tukar poin Anda dengan kupon di halaman TopPoins.",
+                "",
+                R.drawable.ic_coupon_image, null);
     }
 
     @Override
@@ -166,12 +192,12 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void showProgressLoading() {
-
+        progressDialog.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-
+        progressDialog.dismiss();
     }
 
     @Override
@@ -214,13 +240,23 @@ public class PromoCouponFragment extends BasePresenterFragment
         return getActivity();
     }
 
-    public static PromoCouponFragment newInstance() {
-        return new PromoCouponFragment();
+    public static PromoCouponFragment newInstance(String platform, String categoryKey) {
+        PromoCouponFragment fragment = new PromoCouponFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
     public void onVoucherChosen(CouponData data) {
-        dPresenter.submitVoucher(data);
+        adapter.clearError();
+        if(getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
+            dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
+        } else {
+            dPresenter.submitVoucher(data);
+        }
     }
 
     @Override

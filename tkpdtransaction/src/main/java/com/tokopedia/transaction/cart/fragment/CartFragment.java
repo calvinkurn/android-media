@@ -177,8 +177,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView promoVoucherCode;
     @BindView(R2.id.voucher_description)
     TextView voucherDescription;
-    @BindView(R2.id.voucher_amount)
-    TextView voucherAmount;
     @BindView(R2.id.cancel_promo_layout)
     ViewGroup cancelPromoLayout;
 
@@ -420,7 +418,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorFromInstantVoucher(int instantVoucher) {
-
+        if(instantVoucher == 1) instantPromoPlaceHolder.setVisibility(View.GONE);
     }
 
     @Override
@@ -728,8 +726,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
                 Intent intent;
                 if (isCouponActive) {
-                    intent = LoyaltyActivity.newInstanceCouponActive(getActivity());
-                } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity());
+                    intent = LoyaltyActivity.newInstanceCouponActive(
+                            getActivity(), "marketplace", "marketplace"
+                    );
+                } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
+                        "marketplace", "marketplace");
                 startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
             }
         });
@@ -939,23 +940,25 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     break;
             }
         } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
-            Bundle bundle = data.getExtras();
             if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
                 setVoucherResultLayout(
                         bundle.getString(LoyaltyActivity.VOUCHER_CODE, ""),
                         bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
                         bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
                 );
+                cancelPromoLayout.setOnClickListener(onCouponClickedListener());
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
                 promoResultLayout.setVisibility(View.VISIBLE);
                 labelPromoType.setText("Kode Kupon: ");
                 promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
-                voucherAmount.setText(bundle.getString(LoyaltyActivity.COUPON_AMOUNT, ""));
                 voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
 
                 //TODO check state
                 voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
                 instantPromoPlaceHolder.setVisibility(View.GONE);
+                cancelPromoLayout.setOnClickListener(onCouponClickedListener());
             }
         }
     }
@@ -966,12 +969,21 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         promoResultLayout.setVisibility(View.VISIBLE);
         labelPromoType.setText("Kode Voucher: ");
         promoVoucherCode.setText(voucherCode);
-        voucherAmount.setText(amount);
         voucherDescription.setText(description);
 
         //TODO check state
         this.voucherCode = voucherCode;
         instantPromoPlaceHolder.setVisibility(View.GONE);
+    }
+
+    private View.OnClickListener onCouponClickedListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                promoResultLayout.setVisibility(View.GONE);
+                if(hasPromotion) instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+            }
+        };
     }
 
     @NonNull

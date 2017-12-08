@@ -8,13 +8,13 @@
         android:supportsRtl="true">
         <activity
             android:name=".view.activity.LoyaltyActivity"
-            android:label="LOYALTY"
+            android:label="Keranjang"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <receiver

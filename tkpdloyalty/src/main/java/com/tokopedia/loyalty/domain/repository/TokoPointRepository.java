@@ -7,13 +7,16 @@ import com.google.gson.JsonParser;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
+import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.loyalty.domain.apiservice.DigitalEndpointService;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
 import com.tokopedia.loyalty.domain.dummyresponse.DummyTokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.DigitalVoucherData;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
@@ -41,13 +44,15 @@ public class TokoPointRepository implements ITokoPointRepository {
     private final TXService txService;
     private final TokoPointResponseMapper tokoPointResponseMapper;
     private final ITokoPointDBService tokoPointDBService;
+    private final DigitalEndpointService digitalService;
 
     @Inject
     public TokoPointRepository(TokoPointService tokoPointService,
                                ITokoPointDBService tokoPointDBService,
                                TokoPointResponseMapper tokoPointResponseMapper,
                                TXVoucherService txVoucherService,
-                               TXService txService
+                               TXService txService,
+                               DigitalEndpointService digitalService
 
     ) {
         this.tokoPointService = tokoPointService;
@@ -55,6 +60,7 @@ public class TokoPointRepository implements ITokoPointRepository {
         this.tokoPointDBService = tokoPointDBService;
         this.txService = txService;
         this.txVoucherService = txVoucherService;
+        this.digitalService = digitalService;
     }
 
     @Override
@@ -179,11 +185,10 @@ public class TokoPointRepository implements ITokoPointRepository {
                 VoucherResponse voucherResponse = new Gson().fromJson(
                         networkResponse.body().getStringData(), VoucherResponse.class
                 );
-                VoucherViewModel viewModel = new VoucherViewModel();
-                viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
-                viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
-                viewModel.setCode(voucherCode);
-                return viewModel;
+                if(networkResponse.body().isError()) {
+                    throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
+                }
+                return tokoPointResponseMapper.voucherViewModel(voucherResponse, voucherCode);
             }
         });
     }
@@ -193,20 +198,48 @@ public class TokoPointRepository implements ITokoPointRepository {
             TKPDMapParam<String, String> param,
             final String voucherCode, final String couponTitle
     ) {
-        return txVoucherService.getApi().checkVoucherCode(param).map(
-                new Func1<Response<TkpdResponse>, CouponViewModel>() {
+        return txVoucherService.getApi().checkVoucherCode(param)
+                .map(new Func1<Response<TkpdResponse>, CouponViewModel>() {
+            @Override
+            public CouponViewModel call(Response<TkpdResponse> networkResponse) {
+                VoucherResponse voucherResponse = new Gson().fromJson(
+                        networkResponse.body().getStringData(), VoucherResponse.class
+                );
+                if(networkResponse.body().isError()) {
+                    throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
+                }
+                return tokoPointResponseMapper.couponViewModel(voucherResponse, voucherCode, couponTitle
+                );
+            }
+        });
+    }
+
+    @Override
+    public Observable<VoucherViewModel> checkDigitalVoucherValidity(TKPDMapParam<String, String> param, final StringvoucherCode){
+                return digitalService.getApi().checkVoucher(param)
+                .map(new Func1<Response<TkpdDigitalResponse>, VoucherViewModel>() {
+            @Override
+            public VoucherViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                return tokoPointResponseMapper.digtialVoucherViewModel(
+                        tkpdDigitalResponseResponse.body().convertDataObj(DigitalVoucherData.class),
+                        voucherCode
+                );
+            }
+        });
+    }
+
+    @Override
+    public Observable<CouponViewModel> checkDigitalCouponValidity(TKPDMapParam<String, String> param, final String voucherCode, final StringcouponTitle){
+                return digitalService.getApi().checkVoucher(param).
+                map(new Func1<Response<TkpdDigitalResponse>, CouponViewModel>() {
                     @Override
-                    public CouponViewModel call(Response<TkpdResponse> networkResponse) {
-                        VoucherResponse voucherResponse = new Gson().fromJson(
-                                networkResponse.body().getStringData(), VoucherResponse.class
+                    public CouponViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                        return tokoPointResponseMapper.digitalCouponViewModel(
+                                tkpdDigitalResponseResponse.body().convertDataObj(DigitalVoucherData.class),
+                                voucherCode,
+                                couponTitle
                         );
-                        CouponViewModel viewModel = new CouponViewModel();
-                        viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
-                        viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
-                        viewModel.setCode(voucherCode);
-                        viewModel.setTitle(couponTitle);
-                        return viewModel;
-                    }
-                });
+            }
+        });
     }
 }
