@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
+import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
 
     @Override
     public void onBindViewHolder(Holder holder, final int position) {
-        ConversationProductDomain product = productList.get(position);
+        final ConversationProductDomain product = productList.get(position);
         ImageHandler.LoadImage(holder.ivImage, product.getImage().get(0).getThumb());
         holder.tvMore.setVisibility(View.GONE);
         if (maxShowCount - 1 == position && maxShowCount - 1 < productList.size()) {
@@ -51,7 +52,12 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+//                context.startActivity(
+//                        ProductDetailActivity.newInstance(context,
+//                                String.valueOf(product.getResId()),
+//                                product.getMessage(),
+//                                product.getName())
+//                );
             }
         });
     }
