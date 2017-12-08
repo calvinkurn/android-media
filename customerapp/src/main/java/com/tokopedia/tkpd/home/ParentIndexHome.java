@@ -764,7 +764,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 //((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         Intent intent = new Intent(this, ParentIndexHome.class);
-        intent.setData(Uri.parse(applinks));
+        intent.setData(Uri.parse(applink));
         deepLinkDelegate.dispatchFrom(this, intent); 
                     }
         }
