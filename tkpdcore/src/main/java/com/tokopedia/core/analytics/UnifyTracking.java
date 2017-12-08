@@ -2691,6 +2691,46 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventKolRecommendationViewAllClick() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_VIEW_ALL_KOL_RECOMMENDATION,
+                AppEventTracking.EventLabel.FEED_KOL_RECOMMENDATION_VIEW_ALL
+        ).getEvent());
+    }
+
+    public static void eventKolRecommendationGoToProfileClick(String kolCategory, String kolName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_CLICK_KOL_RECOMMENDATION_PROFILE,
+                generateKolRecommendationEventLabel(kolCategory, kolName)
+        ).getEvent());
+    }
+
+    public static void eventKolRecommendationUnfollowClick(String kolCategory, String kolName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_UNFOLLOW_KOL_RECOMMENDATION,
+                generateKolRecommendationEventLabel(kolCategory, kolName)
+        ).getEvent());
+    }
+
+    public static void eventKolRecommendationFollowClick(String kolCategory, String kolName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_FOLLOW_KOL_RECOMMENDATION,
+                generateKolRecommendationEventLabel(kolCategory, kolName)
+        ).getEvent());
+    }
+
+    private static String generateKolRecommendationEventLabel(String kolCategory, String kolName) {
+        return kolCategory + " - " + kolName;
+    }
+
     public static void eventKolCommentDetailLoadMore() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
