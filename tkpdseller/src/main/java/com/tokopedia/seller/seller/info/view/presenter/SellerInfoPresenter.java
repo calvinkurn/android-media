@@ -6,6 +6,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
 import com.tokopedia.seller.seller.info.domain.interactor.SellerInfoUseCase;
+import com.tokopedia.seller.seller.info.view.SellerInfoView;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import rx.Subscriber;
  * Created by normansyahputa on 12/5/17.
  */
 
-public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListener<SellerInfoModel>> {
+public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
     SellerInfoUseCase sellerInfoUseCase;
 
     @Inject
@@ -49,7 +50,8 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListene
             public void onNext(ResponseSellerInfoModel response ) {
                 if(isViewAttached()){
                     List<SellerInfoModel> result = conv(response);
-                    getView().onSearchLoaded(result, result.size());
+
+                    getView().onSearchLoaded(result, result.size(), response.getData().getPaging().isHasNext());
                 }
             }
         });

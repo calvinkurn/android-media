@@ -1,6 +1,7 @@
 package com.tokopedia.seller.seller.info.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
@@ -35,7 +36,9 @@ import rx.schedulers.Schedulers;
  * Created by normansyahputa on 11/30/17.
  */
 
-public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerInfoModel>{
+public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerInfoModel>
+    implements SellerInfoView
+{
 
     private SellerInfoDateUtil sellerInfoDateUtil;
 
@@ -44,7 +47,8 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
     @Inject
     SellerInfoPresenter sellerInfoPresenter;
 
-    String[] monthNamesAbrev;
+    private String[] monthNamesAbrev;
+    private boolean hasNextPage;
 
     public static SellerInfoFragment newInstance(){
         return new SellerInfoFragment();
@@ -73,6 +77,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
     @Override
     protected void searchForPage(int page) {
         sellerInfoPresenter.getSellerInfoList(page);
+        hasNextPage = false;
     }
 
     @Override
@@ -84,5 +89,25 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
     @Override
     public void onItemClicked(SellerInfoModel sellerInfoModel) {
         startActivity(SellerInfoWebViewActivity.getCallingIntent(this, sellerInfoModel.getExternalLink()));
+    }
+
+
+    @Override
+    public void onSearchLoaded(@NonNull List<SellerInfoModel> list, int totalItem, boolean hasNext) {
+        onSearchLoaded(list, totalItem);
+        hasNextPage = hasNext;
+    }
+
+    @Override
+    protected boolean hasNextPage() {
+        return hasNextPage;
+    }
+
+    @Override
+    protected void onPullToRefresh() {
+        if(adapter != null && adapter instanceof SellerInfoAdapter) {
+            ((SellerInfoAdapter)adapter).clearRawAdapter();
+        }
+        super.onPullToRefresh();
     }
 }

@@ -38,6 +38,10 @@ public final class SellerInfoDateUtil {
         return sdfHourEtc.format(new Date(date*1000));
     }
 
+    public static Date fromUnixTimeDate(long date){
+        return new Date(date*1000);
+    }
+
     public static String yesterday(String[] monthNames){
         long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 1) / 1000;
         return fromUnixTime(unixTime, monthNames);

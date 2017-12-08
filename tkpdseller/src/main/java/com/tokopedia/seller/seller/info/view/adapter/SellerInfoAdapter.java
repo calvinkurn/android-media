@@ -22,6 +22,8 @@ import java.util.List;
 
 public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
 
+    private List<SellerInfoModel> rawModels = new ArrayList<>();
+
     private String[] monthNames;
 
     public SellerInfoAdapter(String[] monthNames) {
@@ -67,21 +69,25 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
         }
     }
 
+    public void clearRawAdapter(){
+        this.rawModels.clear();
+    }
+
     @Override
     public void addData(List<SellerInfoModel> data) {
+        this.data.clear();
+        rawModels.addAll(data);
+
+        data = rawModels;
+
         Collections.sort(data, new Comparator<SellerInfoModel>() {
             public int compare(SellerInfoModel o1, SellerInfoModel o2) {
-                return SellerInfoDateUtil.fromUnixTime(o2.getCreateTimeUnix(), monthNames)
+                return SellerInfoDateUtil.fromUnixTimeDate(o2.getCreateTimeUnix())
                         .compareTo(
-                                SellerInfoDateUtil.fromUnixTime(o1.getCreateTimeUnix(), monthNames)
+                                SellerInfoDateUtil.fromUnixTimeDate(o1.getCreateTimeUnix())
                         );
             }
         });
-
-        Calendar todayDate = Calendar.getInstance();
-
-        Calendar yesterdayDate = Calendar.getInstance();
-        yesterdayDate.add(Calendar.DATE, -1);
 
         // for today
         if(data.size() > 1){
@@ -120,7 +126,8 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
                 continue;
             }
 
-            boolean isSectionDiff = sectionTmp.getCreateTimeUnix() == sellerInfoModel.getCreateTimeUnix();
+            boolean isSectionDiff = SellerInfoDateUtil.fromUnixTime(sectionTmp.getCreateTimeUnix(),monthNames)
+                    .equals(SellerInfoDateUtil.fromUnixTime(sellerInfoModel.getCreateTimeUnix(), monthNames));
             if (!isSectionDiff) {
                 sectionTmp = null;
                 continue;
