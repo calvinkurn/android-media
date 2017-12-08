@@ -122,24 +122,28 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
     public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
         return new Intent(context, ParentIndexHome.class)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     @DeepLink({Constants.Applinks.FAVORITE})
     public static Intent getFavoriteApplinkCallingIntent(Context context, Bundle extras) {
         return new Intent(context, ParentIndexHome.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
     }
 
     @DeepLink(Constants.Applinks.HOME_CATEGORY)
     public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
         return new Intent(context, ParentIndexHome.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
     }
 
     @DeepLink(Constants.Applinks.HOME_HOTLIST)
     public static Intent getHotlistApplinkCallingIntent(Context context, Bundle extras) {
         return new Intent(context, ParentIndexHome.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
     }
 
