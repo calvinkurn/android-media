@@ -167,5 +167,69 @@ public class SellerInfoModel implements ItemType {
             this.iconUrl = iconUrl;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Section section = (Section) o;
+
+            if (sectionId != section.sectionId) return false;
+            if (name != null ? !name.equals(section.name) : section.name != null) return false;
+            return iconUrl != null ? iconUrl.equals(section.iconUrl) : section.iconUrl == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) (sectionId ^ (sectionId >>> 32));
+            result = 31 * result + (name != null ? name.hashCode() : 0);
+            result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
+            return result;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SellerInfoModel that = (SellerInfoModel) o;
+
+        if (infoId != that.infoId) return false;
+        if (status != that.status) return false;
+        if (isRead != that.isRead) return false;
+        if (createTimeUnix != that.createTimeUnix) return false;
+        if (expireTimeUnix != that.expireTimeUnix) return false;
+        if (isToday != that.isToday) return false;
+        if (isYesterday != that.isYesterday) return false;
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        if (shortDescription != null ? !shortDescription.equals(that.shortDescription) : that.shortDescription != null)
+            return false;
+        if (externalLink != null ? !externalLink.equals(that.externalLink) : that.externalLink != null)
+            return false;
+        if (infoThumbnailUrl != null ? !infoThumbnailUrl.equals(that.infoThumbnailUrl) : that.infoThumbnailUrl != null)
+            return false;
+        return section != null ? section.equals(that.section) : that.section == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (infoId ^ (infoId >>> 32));
+        result = 31 * result + (int) (status ^ (status >>> 32));
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
+        result = 31 * result + (externalLink != null ? externalLink.hashCode() : 0);
+        result = 31 * result + (infoThumbnailUrl != null ? infoThumbnailUrl.hashCode() : 0);
+        result = 31 * result + (isRead ? 1 : 0);
+        result = 31 * result + (int) (createTimeUnix ^ (createTimeUnix >>> 32));
+        result = 31 * result + (int) (expireTimeUnix ^ (expireTimeUnix >>> 32));
+        result = 31 * result + (isToday ? 1 : 0);
+        result = 31 * result + (isYesterday ? 1 : 0);
+        result = 31 * result + (section != null ? section.hashCode() : 0);
+        return result;
     }
 }

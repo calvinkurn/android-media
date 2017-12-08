@@ -1,5 +1,6 @@
 package com.tokopedia.seller.seller.info.view.adapter;
 
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by normansyahputa on 11/30/17.
@@ -29,6 +32,8 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
     public SellerInfoAdapter(String[] monthNames) {
         this.monthNames = monthNames;
     }
+
+    private Map<SellerInfoModel, Integer> positions = new HashMap<>();
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,11 +54,20 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
     }
 
     @Override
-    protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
+    protected void bindData(final int position, RecyclerView.ViewHolder viewHolder) {
         final SellerInfoModel t = data.get(position);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // change rawModels read status
+                Integer pos = positions.get(t);
+                if(pos != null){
+                    rawModels.get(pos).setRead(true);
+                }
+                // change data status
+                SellerInfoAdapter.this.data.get(position).setRead(true);
+                notifyItemChanged(position);
+
                 if (callback != null) {
                     callback.onItemClicked(t);
                 }
@@ -133,6 +147,7 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
                 continue;
             }
 
+            positions.put(sellerInfoModel, i);
             result.add(sellerInfoModel);
 
             i++;
@@ -141,6 +156,4 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
 
         super.addData(result);
     }
-
-
 }
