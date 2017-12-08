@@ -366,10 +366,13 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     @Override
     public void renderDataTokoCashHistory(TokoCashHistoryData tokoCashHistoryData, boolean firstTimeLoad) {
+        mainContent.setVisibility(View.VISIBLE);
+        layoutDate.setVisibility(View.VISIBLE);
+        filterHistoryRecyclerView.setVisibility(View.VISIBLE);
         historyListRecyclerView.setVisibility(View.VISIBLE);
         viewEmptyNoHistory.setVisibility(View.GONE);
+
         refreshHandler.finishRefresh();
-        mainContent.setVisibility(View.VISIBLE);
         adapterFilter.setListener(getFilterTokoCashListener());
         adapterFilter.addFilterTokoCashList(tokoCashHistoryData.getHeaderHistory());
         adapterHistory.setListener(getItemHistoryListener());
@@ -382,8 +385,12 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     @Override
     public void renderEmptyTokoCashHistory(List<HeaderHistory> headerHistoryList) {
+        layoutDate.setVisibility(View.VISIBLE);
+        filterHistoryRecyclerView.setVisibility(View.VISIBLE);
         historyListRecyclerView.setVisibility(View.GONE);
         viewEmptyNoHistory.setVisibility(View.VISIBLE);
+        bottomActionView.setVisibility(View.GONE);
+
         refreshHandler.finishRefresh();
         for (HeaderHistory header : headerHistoryList) {
             if (header.isSelected()) {

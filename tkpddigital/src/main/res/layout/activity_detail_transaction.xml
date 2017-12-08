@@ -102,7 +102,7 @@
             android:background="@color/grey_300" />
 
         <TextView
-            android:id="@+id/transaction_id_history"
+            android:id="@+id/transaction_info_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/title_item_history"
@@ -110,19 +110,7 @@
             android:layout_marginBottom="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vs"
-            tools:text="TokoCash TxID #9930517"
-            android:textColor="@color/black_36"
-            android:textSize="@dimen/fontvs" />
-
-        <TextView
-            android:id="@+id/date_item_history"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/separator2"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vs"
-            android:layout_toRightOf="@+id/transaction_id_history"
-            tools:text="20 Agustus 2017"
+            tools:text="TokoCash TxID #99305dsadadasdadadadad17"
             android:textColor="@color/black_36"
             android:textSize="@dimen/fontvs" />
 

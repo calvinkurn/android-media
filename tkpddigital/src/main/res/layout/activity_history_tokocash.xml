@@ -27,12 +27,12 @@
                     layout="@layout/view_tokocash_waiting_transaction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_ms" />
+                    android:layout_marginBottom="@dimen/margin_ms"/>
 
                 <include
                     layout="@layout/view_tokocash_date_label"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/filter_history_tokocash"
@@ -84,6 +84,7 @@
         app:bav_icon_2="@drawable/ic_arrow_up_grey"
         app:bav_label_2="@string/back_to_top"
         app:layout_anchor="@+id/history_tokocash"
-        app:layout_anchorGravity="bottom|center_horizontal" />
+        app:layout_anchorGravity="bottom|center_horizontal"
+        android:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>
