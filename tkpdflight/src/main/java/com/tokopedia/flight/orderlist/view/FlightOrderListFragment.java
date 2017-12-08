@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 public class FlightOrderListFragment extends BaseDaggerFragment implements FlightOrderListContract.View {
     private RecyclerView ordersRecyclerView;
+
     @Inject
     FlightOrderListPresenter presenter;
 

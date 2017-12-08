@@ -225,7 +225,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingMealRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingAmenityMetaViewModel.getDescription(),
-                        "Pilih"
+                        getString(R.string.flight_booking_passenger_choose_label)
                 );
                 for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingAmenityMetaViewModel.getKey())) {
@@ -268,7 +268,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingLuggageMetaViewModel.getDescription(),
-                        "Pilih"
+                        getString(R.string.flight_booking_passenger_choose_label)
                 );
                 for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
