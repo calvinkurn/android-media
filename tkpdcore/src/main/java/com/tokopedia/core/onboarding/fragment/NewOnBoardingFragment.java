@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +35,7 @@ import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.fadeTe
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.setVisibilityGone;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideReverseX;
 import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToX;
+import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToXFromCurrentHeight;
 
 public class NewOnBoardingFragment extends OnBoardingFragment implements CustomAnimationPageTransformerDelegate {
 
@@ -293,7 +293,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         set.start();
 
         if (viewType == VIEW_ENDING) {
-            slideAnimatorX = slideToX(next, -1, 0, mScreenWidth / 2);
+            slideAnimatorX = slideToXFromCurrentHeight(next, -1, mScreenWidth / 2);
             goneAnimation = setVisibilityGone(next);
             expandAnimator = expandTextView(startNow, mScreenWidth);
             fadeAnimator = fadeText(startNow, getActivity(), R.color.transparent, R.color.blue_nob);

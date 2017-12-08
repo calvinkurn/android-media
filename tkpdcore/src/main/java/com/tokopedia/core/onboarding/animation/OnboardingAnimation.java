@@ -78,10 +78,20 @@ public class OnboardingAnimation {
         return null;
     }
 
+    public static ValueAnimator slideToXFromCurrentHeight(final View view, int direction, int delta) {
+        if (view != null) {
+            ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationX",
+                    view.getLayoutParams().height, (direction * delta) + view.getWidth() / 2);
+            anim.setRepeatMode(ValueAnimator.REVERSE);
+            return anim;
+        }
+        return null;
+    }
+
     public static ValueAnimator slideToX(final View view, int direction, int from, int delta) {
         if (view != null) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationX",
-                    from, (direction * delta) + view.getWidth()/2);
+                    view.getLayoutParams().height, (direction * delta) + view.getWidth()/2);
             anim.setRepeatMode(ValueAnimator.REVERSE);
             return anim;
         }
