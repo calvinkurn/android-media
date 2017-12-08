@@ -169,6 +169,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
 
+     checkIsHaveApplinkComeFromDeeplink(intent) 
     }
 
     @Override
