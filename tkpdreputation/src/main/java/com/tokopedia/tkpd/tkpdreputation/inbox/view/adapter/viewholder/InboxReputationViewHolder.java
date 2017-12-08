@@ -15,6 +15,8 @@ import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.design.reputation.ReputationView;
+import com.tokopedia.design.reputation.ShopReputationView;
+import com.tokopedia.design.reputation.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
@@ -39,7 +41,8 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private TextView invoice;
     private ImageView avatar;
     private TextView name;
-    private ReputationView reputation;
+    private UserReputationView userReputationView;
+    private ShopReputationView shopReputationView;
     private TextView date;
     private TextView action;
     private ImageView unreadNotification;
@@ -47,15 +50,16 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
         super(itemView);
         mainView = itemView.findViewById(R.id.main_view);
-        textDeadline = (TextView) itemView.findViewById(R.id.deadline_text);
-        deadline = (TextView) itemView.findViewById(R.id.label_deadline);
-        invoice = (TextView) itemView.findViewById(R.id.invoice);
-        avatar = (ImageView) itemView.findViewById(R.id.avatar);
-        name = (TextView) itemView.findViewById(R.id.name);
-        reputation = (ReputationView) itemView.findViewById(R.id.reputation);
-        date = (TextView) itemView.findViewById(R.id.date);
-        action = (TextView) itemView.findViewById(R.id.action);
-        unreadNotification = (ImageView) itemView.findViewById(R.id.unread_notif);
+        textDeadline = itemView.findViewById(R.id.deadline_text);
+        deadline = itemView.findViewById(R.id.label_deadline);
+        invoice = itemView.findViewById(R.id.invoice);
+        avatar = itemView.findViewById(R.id.avatar);
+        name = itemView.findViewById(R.id.name);
+        userReputationView =  itemView.findViewById(R.id.user_reputation);
+        shopReputationView = itemView.findViewById(R.id.shop_reputation);
+        date = itemView.findViewById(R.id.date);
+        action = itemView.findViewById(R.id.action);
+        unreadNotification = itemView.findViewById(R.id.unread_notif);
         this.viewListener = viewListener;
 
 
@@ -110,19 +114,23 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
     private void setReputation(InboxReputationItemViewModel element) {
         if (element.getRole() == InboxReputationItemViewModel.ROLE_BUYER) {
-            reputation.setBuyer(
+            userReputationView.setVisibility(View.VISIBLE);
+            shopReputationView.setVisibility(View.GONE);
+            userReputationView.setValue(
                     element.getRevieweeBadgeCustomerViewModel().getPositivePercentage(),
+                    element.getRevieweeBadgeCustomerViewModel().getNoReputation() == 1,
                     element.getRevieweeBadgeCustomerViewModel().getPositive(),
                     element.getRevieweeBadgeCustomerViewModel().getNeutral(),
-                    element.getRevieweeBadgeCustomerViewModel().getNegative(),
-                    element.getRevieweeBadgeCustomerViewModel().getNoReputation(),
-                    false);
+                    element.getRevieweeBadgeCustomerViewModel().getNegative()
+            );
         } else {
-            reputation.setSeller(
+            userReputationView.setVisibility(View.GONE);
+            shopReputationView.setVisibility(View.VISIBLE);
+            shopReputationView.setValue(
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getSet(),
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
-                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()),
-                    false);
+                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
+
         }
     }
 

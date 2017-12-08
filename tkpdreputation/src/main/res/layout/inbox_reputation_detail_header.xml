@@ -3,6 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:background="@color/white"
               android:orientation="vertical">
 
@@ -40,9 +41,18 @@
                 tools:text="Pretty Sugar Shop"
                 />
 
-            <com.tokopedia.design.reputation.ReputationView
-                android:id="@+id/reputation"
+            <com.tokopedia.design.reputation.UserReputationView
+                android:id="@+id/user_reputation"
                 android:layout_width="match_parent"
+                android:visibility="gone"
+                app:usv_show_tooltip="true"
+                android:layout_height="wrap_content"/>
+
+            <com.tokopedia.design.reputation.ShopReputationView
+                android:id="@+id/shop_reputation"
+                android:layout_width="match_parent"
+                app:srv_show_tooltip="true"
+                android:visibility="gone"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 

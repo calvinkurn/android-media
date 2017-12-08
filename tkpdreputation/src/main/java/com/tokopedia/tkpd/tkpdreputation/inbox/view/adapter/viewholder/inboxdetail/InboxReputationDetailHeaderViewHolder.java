@@ -13,7 +13,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.reputation.ReputationView;
+import com.tokopedia.design.reputation.ShopReputationView;
+import com.tokopedia.design.reputation.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
@@ -35,7 +36,8 @@ public class InboxReputationDetailHeaderViewHolder extends
 
     ImageView userAvatar;
     TextView name;
-    ReputationView reputationView;
+    UserReputationView userReputationView;
+    ShopReputationView shopReputationView;
     View deadlineLayout;
     TextView deadline;
     View lockedLayout;
@@ -59,9 +61,10 @@ public class InboxReputationDetailHeaderViewHolder extends
                                                  final ReputationAdapter.ReputationListener reputationListener) {
         super(itemView);
         this.reputationListener = reputationListener;
-        userAvatar = (ImageView) itemView.findViewById(R.id.user_avatar);
+        userAvatar = itemView.findViewById(R.id.user_avatar);
         name = (TextView) itemView.findViewById(R.id.name);
-        reputationView = (ReputationView) itemView.findViewById(R.id.reputation);
+        userReputationView =  itemView.findViewById(R.id.user_reputation);
+        shopReputationView = itemView.findViewById(R.id.shop_reputation);
         deadline = (TextView) itemView.findViewById(R.id.deadline_text);
         deadlineLayout = itemView.findViewById(R.id.deadline);
         lockedLayout = itemView.findViewById(R.id.locked);
@@ -269,18 +272,22 @@ public class InboxReputationDetailHeaderViewHolder extends
 
     public void setReputation(InboxReputationDetailHeaderViewModel element) {
         if (element.getRole() == InboxReputationItemViewModel.ROLE_BUYER) {
-            reputationView.setBuyer(
+            userReputationView.setVisibility(View.VISIBLE);
+            shopReputationView.setVisibility(View.GONE);
+            userReputationView.setValue(
                     element.getRevieweeBadgeCustomerViewModel().getPositivePercentage(),
+                    element.getRevieweeBadgeCustomerViewModel().getNoReputation() == 1,
                     element.getRevieweeBadgeCustomerViewModel().getPositive(),
                     element.getRevieweeBadgeCustomerViewModel().getNeutral(),
-                    element.getRevieweeBadgeCustomerViewModel().getNegative(),
-                    element.getRevieweeBadgeCustomerViewModel().getNoReputation(), true);
+                    element.getRevieweeBadgeCustomerViewModel().getNegative()
+            );
         } else {
-            reputationView.setSeller(
+            userReputationView.setVisibility(View.GONE);
+            shopReputationView.setVisibility(View.VISIBLE);
+            shopReputationView.setValue(
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getSet(),
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
-                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()),
-                    true);
+                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
 
         }
     }

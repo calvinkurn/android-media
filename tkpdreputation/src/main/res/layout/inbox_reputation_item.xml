@@ -123,9 +123,17 @@
             tools:text="Pretty Sugar Shop"
             />
 
-        <com.tokopedia.design.reputation.ReputationView
-            android:id="@+id/reputation"
+        <com.tokopedia.design.reputation.UserReputationView
+            android:id="@+id/user_reputation"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:layout_toRightOf="@id/avatar"/>
 
+        <com.tokopedia.design.reputation.ShopReputationView
+            android:id="@+id/shop_reputation"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name"
