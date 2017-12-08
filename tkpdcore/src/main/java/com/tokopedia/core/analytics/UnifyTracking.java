@@ -2691,6 +2691,60 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventKolContentCommentClick(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_CLICK_CONTENT_COMMENT,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentUnlike(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_UNLIKE_CONTENT,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentLike(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_LIKE_CONTENT,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentGoToProfilePage(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_CLICK_CONTENT_WRITER_NAME,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentCtaClick(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_CLICK_CONTENT_CTA,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentReadMoreClick(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_EXPAND_CONTENT,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
     public static void eventKolContentFollowClick(String type) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
