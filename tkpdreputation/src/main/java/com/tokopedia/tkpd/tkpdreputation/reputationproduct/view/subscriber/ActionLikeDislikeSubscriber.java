@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.subscriber;
 
-import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.ActResultDomain;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductModel;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.listener.ReputationProductFragmentView;
 

@@ -6,8 +6,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.inboxreputation.model.actresult.ProductOwner;
-import com.tokopedia.core.inboxreputation.model.actresult.ReviewResponse;
 
 public class ActResult implements Parcelable{
 

@@ -4,10 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
-import com.tokopedia.core.reputationproduct.data.pojo.ActResult;
-import com.tokopedia.core.reputationproduct.domain.ActReputationRetrofitInteractor;
-import com.tokopedia.core.reputationproduct.domain.ActReputationRetrofitInteractorImpl;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.pojo.ActResult;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReputationRetrofitInteractor;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReputationRetrofitInteractorImpl;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.facade.FacadeProductReview;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.facade.FacadeProductReviewImpl;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.helpful_review.HelpfulReviewList;

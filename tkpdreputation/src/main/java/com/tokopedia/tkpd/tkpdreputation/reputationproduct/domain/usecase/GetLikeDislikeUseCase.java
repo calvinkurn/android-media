@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.reputationproduct.data.repository.GetLikeDislikeRepository;
-import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.repository.GetLikeDislikeRepository;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.LikeDislikeDomain;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 
 import org.json.JSONException;

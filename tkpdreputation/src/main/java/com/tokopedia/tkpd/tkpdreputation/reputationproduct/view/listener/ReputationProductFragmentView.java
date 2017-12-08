@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.listener;
 
-import com.tokopedia.core.reputationproduct.domain.model.ActResultDomain;
-import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.ActResultDomain;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductModel;
 
 /**

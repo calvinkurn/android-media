@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
-import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.ReviewImageList;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewImageList;
 
 import java.util.ArrayList;
 import java.util.List;

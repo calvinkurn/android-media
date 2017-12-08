@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.subscriber;
 
-import com.tokopedia.core.reputationproduct.domain.model.LikeDislikeDomain;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.listener.ReputationProductFragmentView;
 
 import rx.Subscriber;

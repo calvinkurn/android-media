@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.AdvanceReview;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.util.RatingStatsUtils;
 import com.tokopedia.core.var.RecyclerViewItem;
