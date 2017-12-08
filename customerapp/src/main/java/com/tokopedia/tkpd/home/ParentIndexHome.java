@@ -125,27 +125,27 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
         return new Intent(context, ParentIndexHome.class)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     @DeepLink({Constants.Applinks.FAVORITE})
     public static Intent getFavoriteApplinkCallingIntent(Context context, Bundle extras) {
         return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
     }
 
     @DeepLink(Constants.Applinks.HOME_CATEGORY)
     public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
         return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
     }
 
     @DeepLink(Constants.Applinks.HOME_HOTLIST)
     public static Intent getHotlistApplinkCallingIntent(Context context, Bundle extras) {
         return new Intent(context, ParentIndexHome.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
     }
 
@@ -169,7 +169,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
 
-     checkIsHaveApplinkComeFromDeeplink(intent) ;
+        checkIsHaveApplinkComeFromDeeplink(intent);
     }
 
     @Override
@@ -761,13 +761,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
         if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
-            if (!isPausing()){
-                //((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
-                   DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        Intent intent2 = new Intent(this, ParentIndexHome.class);
-        intent2.setData(Uri.parse(applink));
-        deepLinkDelegate.dispatchFrom(this, intent2); 
-                    }
+            if (!isPausing()) {
+                DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+                Intent intent2 = new Intent(this, ParentIndexHome.class);
+                intent2.setData(Uri.parse(applink));
+                deepLinkDelegate.dispatchFrom(this, intent2);
+            }
         }
     }
 
