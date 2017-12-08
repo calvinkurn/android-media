@@ -369,8 +369,10 @@ public class DetailResChatFragment
             params.addRule(RelativeLayout.ABOVE, R.id.rv_attachment);
         } else if (actionButtonLayout.getVisibility() == View.VISIBLE) {
             params.addRule(RelativeLayout.ABOVE, R.id.layout_action);
-        } else {
+        } else if (ffChat.getVisibility() == View.VISIBLE) {
             params.addRule(RelativeLayout.ABOVE, R.id.ff_chat);
+        } else {
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         }
         fabChat.setLayoutParams(params);
     }
