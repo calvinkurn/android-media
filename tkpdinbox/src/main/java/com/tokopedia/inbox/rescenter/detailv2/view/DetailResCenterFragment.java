@@ -250,7 +250,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
-                getBottomBackSheetActivityTransition();
             }
         });
     }
@@ -550,6 +549,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 InputShippingActivity.createNewPageIntent(getActivity(), getResolutionID()),
                 REQUEST_INPUT_SHIPPING
         );
+        getBottomSheetActivityTransition();
     }
 
     @Override

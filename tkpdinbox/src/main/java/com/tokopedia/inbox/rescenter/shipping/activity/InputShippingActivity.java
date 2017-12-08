@@ -127,4 +127,14 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    public void getBottomBackSheetActivityTransition() {
+        overridePendingTransition(R.anim.push_down, R.anim.pull_up);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getBottomBackSheetActivityTransition();
+    }
 }

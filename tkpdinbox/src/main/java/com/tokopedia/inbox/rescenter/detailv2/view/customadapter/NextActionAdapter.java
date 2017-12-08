@@ -94,6 +94,7 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
                         context.getResources().getDrawable(R.drawable.ic_arrow_dotted) :
                         context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
                 holder.glowingView.renderData(new Object());
+                holder.ivIndicatorArrow.setVisibility(nextStep == null ? View.GONE : View.VISIBLE);
             } else if (currentStepStatus == STEP_AFTER_CURRENT) {
                 holder.ivIndicatorCircle.setVisibility(View.VISIBLE);
                 setTextStyle(holder.tvAction, false);
