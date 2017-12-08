@@ -21,13 +21,8 @@ import java.util.List;
 public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.ViewHolder> {
 
     private static final int VIEW_UPLOAD_BUTTON = 100;
-    private int maxImage = 5;
+    private static final int MAX_IMAGE = 5;
     private int canUpload = 0;
-
-    public int getMaxImage() {
-        return maxImage;
-    }
-
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -122,7 +117,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     @Override
     public int getItemViewType(int position) {
-        if (position == data.size() && data.size() < maxImage) {
+        if (position == data.size() && data.size() < MAX_IMAGE) {
             return VIEW_UPLOAD_BUTTON;
         } else {
             return super.getItemViewType(position);
@@ -142,19 +137,6 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     public void addImage(ImageUpload image) {
         data.add(image);
-        notifyDataSetChanged();
-    }
-
-    public void removeImage(int currentPosition) {
-        data.remove(currentPosition);
-        for (int i = currentPosition; i < data.size(); i++) {
-            data.get(i).setPosition(i);
-        }
-        notifyDataSetChanged();
-    }
-
-    public void setMaxImage(int max) {
-        this.maxImage = max;
         notifyDataSetChanged();
     }
 
