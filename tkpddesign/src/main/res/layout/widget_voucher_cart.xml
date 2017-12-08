@@ -17,8 +17,8 @@
         <TextView
             android:id="@+id/textview_voucher"
             android:drawablePadding="@dimen/padding_ms"
-            android:drawableLeft="@drawable/ic_arrow_down"
-            android:drawableStart="@drawable/ic_arrow_down"
+            android:drawableLeft="@drawable/ic_kupon"
+            android:drawableStart="@drawable/ic_kupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        tools:visibility="visible"
+        tools:visibility="gone"
         style="@style/CardViewWidget.UsedVoucher"
         android:padding="16dp"
         android:gravity="start">
