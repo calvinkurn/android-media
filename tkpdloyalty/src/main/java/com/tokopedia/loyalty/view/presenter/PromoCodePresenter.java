@@ -33,7 +33,25 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         param.put("voucher_code", voucherCode);
         promoCodeInteractor.submitVoucher(voucherCode,
                 AuthUtil.generateParamsNetwork(context, param),
-                new Subscriber<VoucherViewModel>() {
+                makeVoucherViewModel());
+    }
+
+    @Override
+    public void processCheckDigitalPromoCode(
+            Context context,
+            String voucherCode,
+            String categoryId) {
+        view.showProgressLoading();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("voucher_code", voucherCode);
+        param.put("category_id", categoryId);
+        promoCodeInteractor.submitDigitalVoucher(voucherCode,
+                AuthUtil.generateParamsNetwork(context, param),
+                makeVoucherViewModel());
+    }
+
+    private Subscriber<VoucherViewModel> makeVoucherViewModel() {
+        return new Subscriber<VoucherViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -48,17 +66,8 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onNext(VoucherViewModel voucherViewModel) {
                 view.hideProgressLoading();
-                view.checkVoucherSuccessfull(voucherViewModel);
-            }
-        });
-    }
-
-    @Override
-    public void processCheckDigitalPromoCode(
-            Context context,
-            String voucherId,
-            String categoryId) {
-
+                view.checkVoucherSuccessfull(voucherViewModel);            }
+        };
     }
 
 }

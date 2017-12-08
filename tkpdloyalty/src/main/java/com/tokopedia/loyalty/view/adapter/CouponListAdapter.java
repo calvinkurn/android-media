@@ -95,6 +95,12 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Co
         };
     }
 
+    public void clearError() {
+        for(int i = 0; i < listCouponModel.size(); i++) {
+            listCouponModel.get(i).setErrorMessage("");
+        }
+    }
+
     public interface CouponListAdapterListener {
 
         void onVoucherChosen(CouponData data);

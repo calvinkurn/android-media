@@ -32,6 +32,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
+
 /**
  * @author anggaprasetiyo on 29/11/17.
  */
@@ -249,7 +251,12 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void onVoucherChosen(CouponData data) {
-        dPresenter.submitVoucher(data);
+        adapter.clearError();
+        if(getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
+            dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
+        } else {
+            dPresenter.submitVoucher(data);
+        }
     }
 
     @Override

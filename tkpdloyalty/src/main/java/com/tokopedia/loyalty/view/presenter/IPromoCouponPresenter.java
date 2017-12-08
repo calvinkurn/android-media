@@ -10,6 +10,8 @@ public interface IPromoCouponPresenter {
 
     String VOUCHER_CODE = "voucher_code";
 
+    String CATEGORY_ID = "category_id";
+
     void processGetCouponList(String platform);
 
     void processPostCouponValidateRedeem();
@@ -25,4 +27,6 @@ public interface IPromoCouponPresenter {
     void processGetCatalogFilterCategory();
 
     void submitVoucher(CouponData couponData);
+
+    void submitDigitalVoucher(CouponData couponData, String categoryId);
 }

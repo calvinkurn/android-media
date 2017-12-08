@@ -101,8 +101,25 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 couponData.getTitle(),
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param
-                ),
-                new Subscriber<CouponViewModel>() {
+                ), makeCouponSubscriber(couponData));
+
+    }
+
+    @Override
+    public void submitDigitalVoucher(CouponData couponData, String categoryId) {
+        view.showProgressLoading();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put(VOUCHER_CODE, couponData.getCode());
+        param.put(CATEGORY_ID, categoryId);
+        promoCouponInteractor.submitDigitalVoucher(
+                couponData.getTitle(),
+                couponData.getCode(),
+                AuthUtil.generateParamsNetwork(view.getContext(), param
+                ), makeCouponSubscriber(couponData));
+    }
+
+    private Subscriber<CouponViewModel> makeCouponSubscriber(final CouponData couponData) {
+        return new Subscriber<CouponViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -120,7 +137,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 view.receiveResult(couponViewModel);
                 view.hideProgressLoading();
             }
-        });
-
+        };
     }
 }

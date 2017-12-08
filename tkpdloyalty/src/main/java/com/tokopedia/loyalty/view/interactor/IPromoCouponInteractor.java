@@ -23,6 +23,10 @@ public interface IPromoCouponInteractor {
                        TKPDMapParam<String, String> param,
                        Subscriber<CouponViewModel> subscriber);
 
+    void submitDigitalVoucher(String couponTitle,
+                       String voucherCode,
+                       TKPDMapParam<String, String> param,
+                       Subscriber<CouponViewModel> subscriber);
     void postCouponValidateRedeem(RequestBodyValidateRedeem requestBodyValidateRedeem,
                                   Subscriber<String> subscriber);
 
