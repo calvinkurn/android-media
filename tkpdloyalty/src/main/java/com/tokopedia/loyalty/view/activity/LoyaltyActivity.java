@@ -22,6 +22,8 @@ import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseDialog;
 
 import java.util.List;
 
@@ -127,6 +129,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        //ShowCaseDialog showCaseDialog = ShowCaseDialogFactory.cre
     }
 
     private void setTabProperties() {
@@ -226,4 +229,26 @@ public class LoyaltyActivity extends BasePresenterActivity
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    /*private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.item_top_ads_show_case)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .prevStringRes(R.string.label_back)
+                .nextStringRes(R.string.next)
+                .finishStringRes(R.string.title_done)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(true)
+                .skipStringRes(R.string.title_skip_2)
+                .build();
+    }*/
 }
