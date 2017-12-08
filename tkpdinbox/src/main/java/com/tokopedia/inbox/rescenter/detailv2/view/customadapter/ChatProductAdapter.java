@@ -1,23 +1,19 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
-import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
+import com.tokopedia.inbox.rescenter.product.ListProductActivity;
+import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +24,16 @@ import java.util.List;
 
 public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.Holder> {
 
-    private Context context;
+    private final DetailResChatFragmentListener.View mainView;
+    private final Context context;
     private List<ConversationProductDomain> productList = new ArrayList<>();
     private int maxShowCount = 0;
 
-    public ChatProductAdapter(Context context, List<ConversationProductDomain> productList, int maxShowCount) {
+    public ChatProductAdapter(DetailResChatFragmentListener.View mainView,
+                              Context context,
+                              List<ConversationProductDomain> productList,
+                              int maxShowCount) {
+        this.mainView = mainView;
         this.context = context;
         this.productList = productList;
         this.maxShowCount = maxShowCount;
@@ -45,19 +46,26 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
 
     @Override
     public void onBindViewHolder(Holder holder, final int position) {
-        ConversationProductDomain product = productList.get(position);
+        final ConversationProductDomain product = productList.get(position);
         ImageHandler.LoadImage(holder.ivImage, product.getImage().get(0).getThumb());
         holder.tvMore.setVisibility(View.GONE);
-        Log.d("milhamj", "maxShowCount " + maxShowCount + " position " + position);
         if (maxShowCount - 1 == position && maxShowCount - 1 < productList.size()) {
             holder.tvMore.setVisibility(View.VISIBLE);
-            holder.tvMore.setText("+" + (productList.size() - position));
+            int plusNumber = productList.size() - position;
+            String plusString = "+" + plusNumber;
+            holder.tvMore.setText(plusString);
+            holder.tvMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mainView.goToProductList(product);
+                }
+            });
         }
 
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mainView.goToProductDetail(product);
             }
         });
     }
