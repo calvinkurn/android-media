@@ -65,6 +65,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
@@ -758,8 +760,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
         if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
-            if (!isPausing())
-                ((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
+            if (!isPausing()){
+                //((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
+                   DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = new Intent(this, ParentIndexHome.class);
+        intent.setData(Uri.parse(applinks));
+        deepLinkDelegate.dispatchFrom(this, intent); 
+                    }
         }
     }
 
