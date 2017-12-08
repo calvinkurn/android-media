@@ -99,9 +99,9 @@ ext {
 
     analyticsDependencies = [
             appsflyer : "com.appsflyer:af-android-sdk:4.7.4@aar",
-            moengage   : "com.moengage:moe-android-sdk:7.7.10",
-            moengageFCM: "com.moengage:moe-push-firebase:1.1.01",
-            moengageMSG: "com.moengage:addon-messaging:1.1.01",
+            moengage   : "com.moengage:moe-android-sdk:8.1.00",
+            moengageFCM: "com.moengage:moe-push-firebase:2.0.01",
+            moengageMSG: "com.moengage:addon-messaging:2.0.02",
             branch:"io.branch.sdk.android:library:2.+"
     ]
 
