@@ -1,4 +1,4 @@
-package com.tokopedia.core.review.var;
+package com.tokopedia.tkpd.tkpdreputation.reputationproduct;
 
 /**
  * Created by stevenfredian on 2/17/16.

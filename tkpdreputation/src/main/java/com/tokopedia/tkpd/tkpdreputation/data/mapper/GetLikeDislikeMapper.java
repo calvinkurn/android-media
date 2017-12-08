@@ -39,8 +39,7 @@ public class GetLikeDislikeMapper implements Func1<Response<TkpdResponse>,
                         && !response.body().getErrorMessages().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
+                    throw new ErrorMessageException("");
                 }
             }
         } else {

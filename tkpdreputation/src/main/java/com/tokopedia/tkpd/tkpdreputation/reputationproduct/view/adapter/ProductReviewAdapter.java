@@ -29,7 +29,7 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.review.var.Const;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.Const;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;

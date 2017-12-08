@@ -12,7 +12,7 @@ import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.facade.FacadeP
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.facade.FacadeProductReviewImpl;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.helpful_review.HelpfulReviewList;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.AdvanceReview;
-import com.tokopedia.core.review.var.Const;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.Const;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.util.RatingStatsUtils;
 import com.tokopedia.core.var.RecyclerViewItem;

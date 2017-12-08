@@ -21,8 +21,7 @@ public class ShopFavoritedMapper implements Func1<Response<FavoriteCheckResult>,
             if (response.body().getShopIds() != null) {
                 return mappingToDomain(!response.body().getShopIds().isEmpty());
             } else {
-                throw new ErrorMessageException(MainApplication.getAppContext().getString
-                        (R.string.default_request_error_unknown));
+                throw new ErrorMessageException("");
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
