@@ -111,6 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
@@ -125,7 +126,7 @@
             <ImageView
                 android:id="@id/info_topads"
                 android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_height="14dp"
                 android:src="@drawable/ic_toa" />
 
         </LinearLayout>
