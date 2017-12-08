@@ -58,6 +58,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
@@ -111,9 +112,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private void getLocalHomeDataItem(final Visitable visitable) {
         subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
-                .doOnCompleted(new Action0() {
+                .doOnNext(new Action1<List<Visitable>>() {
                     @Override
-                    public void call() {
+                    public void call(List<Visitable> visitables) {
                         getCloudHomeDataItem(visitable);
                     }
                 })
@@ -123,14 +124,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     private void getCloudHomeDataItem(final Visitable visitable) {
-        subscription = getCloudDataObservable()
-                .doOnTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        getLocalHomeDataItem(visitable);
-                    }
-                })
-                .subscribe(new HomeDataSubscriber(visitable));
+        subscription = getCloudDataObservable().subscribe(new HomeDataSubscriber(visitable));
         compositeSubscription.add(subscription);
     }
 
