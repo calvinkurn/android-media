@@ -17,11 +17,21 @@ public interface HomeRepository {
 
     Observable<HomeCategoryResponseModel> getHomeCategorys();
 
+    Observable<HomeCategoryResponseModel> getHomeCategorysCache();
+
     Observable<TopPicksResponseModel> getTopPicks(RequestParams requestParams);
+
+    Observable<TopPicksResponseModel> getTopPicksCache();
 
     Observable<HomeBannerResponseModel> getBanners(RequestParams requestParams);
 
+    Observable<HomeBannerResponseModel> getBannersCache();
+
     Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStore();
 
+    Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStoreCache();
+
     Observable<Ticker> getTickers();
+
+    Observable<Ticker> getTickersCache();
 }

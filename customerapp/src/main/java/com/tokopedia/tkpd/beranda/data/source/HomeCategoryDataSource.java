@@ -43,7 +43,7 @@ public class HomeCategoryDataSource {
     }
 
     public Observable<HomeCategoryResponseModel> getHomeCategory() {
-        return getCache().onErrorResumeNext(getCloud());
+        return getCloud();
     }
 
     @NonNull
@@ -59,14 +59,13 @@ public class HomeCategoryDataSource {
             @Override
             public void call(HomeCategoryResponseModel homeCategoryResponseModel) {
                 cacheManager.setKey(TkpdCache.Key.HOME_CATEGORY_CACHE);
-                cacheManager.setCacheDuration(3600);
                 cacheManager.setValue(gson.toJson(homeCategoryResponseModel));
                 cacheManager.store();
             }
         };
     }
 
-    private Observable<HomeCategoryResponseModel> getCache() {
+    public Observable<HomeCategoryResponseModel> getCache() {
         return Observable.just(true).map(new Func1<Boolean, HomeCategoryResponseModel>() {
             @Override
             public HomeCategoryResponseModel call(Boolean aBoolean) {

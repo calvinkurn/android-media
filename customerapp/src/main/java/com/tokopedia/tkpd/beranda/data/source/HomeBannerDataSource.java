@@ -14,6 +14,7 @@ import com.tokopedia.tkpd.beranda.data.mapper.HomeBannerMapper;
 import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -43,7 +44,7 @@ public class HomeBannerDataSource {
     }
 
     public Observable<HomeBannerResponseModel> getHomeBanner(final RequestParams requestParams) {
-        return getCloud(requestParams).onErrorResumeNext(getCache(requestParams));
+        return getCloud(requestParams);
     }
 
     @NonNull
@@ -64,7 +65,7 @@ public class HomeBannerDataSource {
         };
     }
 
-    private Observable<HomeBannerResponseModel> getCache(RequestParams requestParams) {
+    public Observable<HomeBannerResponseModel> getCache() {
         return Observable.just(true).map(new Func1<Boolean, HomeBannerResponseModel>() {
             @Override
             public HomeBannerResponseModel call(Boolean aBoolean) {
@@ -73,6 +74,6 @@ public class HomeBannerDataSource {
                     return gson.fromJson(cache, HomeBannerResponseModel.class);
                 throw new RuntimeException("Cache is empty!!");
             }
-        }).onErrorResumeNext(getCloud(requestParams));
+        });
     }
 }

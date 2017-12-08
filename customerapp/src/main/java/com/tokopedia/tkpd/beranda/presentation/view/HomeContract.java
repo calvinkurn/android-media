@@ -29,7 +29,7 @@ public interface HomeContract {
 
         void refreshAdapter();
 
-        void showNetworkError();
+        void showNetworkError(String message);
 
         void removeNetworkError();
 

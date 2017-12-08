@@ -3,11 +3,9 @@ package com.tokopedia.tkpd.beranda.presentation.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +21,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
@@ -39,6 +38,7 @@ import com.tokopedia.tkpd.beranda.data.mapper.SaldoDataMapper;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
+import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
@@ -84,6 +84,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     TokoCashUseCase tokoCashUseCase;
     @Inject
     TopPointsUseCase topPointsUseCase;
+    @Inject
+    GetLocalHomeDataUseCase localHomeDataUseCase;
+    @Inject
+    HomeDataMapper homeDataMapper;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
@@ -105,23 +109,38 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    private void getHomeDataItem(Visitable visitable) {
-        subscription = Observable.zip(getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
-                getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                getTopPicksUseCase.getExecuteObservableAsync(getTopPicksUseCase.getRequestParam()),
-                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), new HomeDataMapper(context))
+    private void getLocalHomeDataItem(final Visitable visitable) {
+        subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        getCloudHomeDataItem(visitable);
+                    }
+                })
+                .onErrorResumeNext(getCloudDataObservable())
+                .subscribe(new HomeDataSubscriber(visitable));
+        compositeSubscription.add(subscription);
+    }
+
+    private void getCloudHomeDataItem(final Visitable visitable) {
+        subscription = getCloudDataObservable()
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
-                        Log.w(TAG, "On Terminated");
-                        if (isViewAttached()) {
-                            getView().hideLoading();
-                        }
+                        getLocalHomeDataItem(visitable);
                     }
                 })
                 .subscribe(new HomeDataSubscriber(visitable));
         compositeSubscription.add(subscription);
+    }
+
+    @NonNull
+    private Observable<List<Visitable>> getCloudDataObservable() {
+        return Observable.zip(getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
+                getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                getTopPicksUseCase.getExecuteObservableAsync(getTopPicksUseCase.getRequestParam()),
+                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), homeDataMapper);
     }
 
     private void getSaldoData(DefaultSubscriber<SaldoViewModel> subscriber) {
@@ -132,7 +151,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     .subscribe(subscriber);
             compositeSubscription.add(subscription);
         } else if (isViewAttached()) {
-            getHomeDataItem(null);
+            getLocalHomeDataItem(null);
         }
     }
 
@@ -163,13 +182,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                         });
                     }
                     getView().setItem(0, saldoModel);
-                    getHomeDataItem(saldoModel);
+                    getLocalHomeDataItem(saldoModel);
                 }
             }
 
             @Override
             public void onError(Throwable e) {
-                getHomeDataItem(null);
+                getLocalHomeDataItem(null);
             }
         });
     }
@@ -324,7 +343,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onError(Throwable e) {
             if (isViewAttached()) {
-                getView().showNetworkError();
+                getView().showNetworkError(ErrorHandler.getErrorMessage(e));
                 onCompleted();
             }
         }

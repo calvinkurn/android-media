@@ -35,7 +35,7 @@ public class TopPicksDataSource {
     }
 
     public Observable<TopPicksResponseModel> getTopPicks(final RequestParams requestParams) {
-        return getCloud(requestParams).onErrorResumeNext(getCache(requestParams));
+        return getCloud(requestParams);
     }
 
     @NonNull
@@ -56,7 +56,7 @@ public class TopPicksDataSource {
         };
     }
 
-    private Observable<TopPicksResponseModel> getCache(RequestParams requestParams) {
+    public Observable<TopPicksResponseModel> getCache() {
         return Observable.just(true).map(new Func1<Boolean, TopPicksResponseModel>() {
             @Override
             public TopPicksResponseModel call(Boolean aBoolean) {
@@ -65,6 +65,6 @@ public class TopPicksDataSource {
                     return gson.fromJson(cache, TopPicksResponseModel.class);
                 throw new RuntimeException("Cache is empty!!");
             }
-        }).onErrorResumeNext(getCloud(requestParams));
+        });
     }
 }

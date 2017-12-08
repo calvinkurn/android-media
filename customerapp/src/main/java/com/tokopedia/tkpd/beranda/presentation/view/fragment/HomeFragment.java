@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -86,6 +87,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
+    private CoordinatorLayout root;
     private SectionContainer tabContainer;
     private SwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
@@ -145,6 +147,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.sw_refresh_layout);
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         tabContainer = (SectionContainer) view.findViewById(R.id.tab_container);
+        root = (CoordinatorLayout) view.findViewById(R.id.root);
         presenter.attachView(this);
         return view;
     }
@@ -540,21 +543,31 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void showNetworkError() {
-        if (messageSnackbar == null) {
-            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    presenter.getHomeData();
-                }
-            });
+    public void showNetworkError(String message) {
+        if(adapter.getItemCount()>0) {
+            if (messageSnackbar == null) {
+                messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getHomeData();
+                    }
+                });
+            }
+            messageSnackbar.showRetrySnackbar();
+        } else {
+            NetworkErrorHelper.showEmptyState(getActivity(), root, message,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.getHomeData();
+                        }
+                    });
         }
-        messageSnackbar.showRetrySnackbar();
     }
 
     @Override
     public void removeNetworkError() {
-
+        NetworkErrorHelper.removeEmptyState(root);
     }
 
 

@@ -63,5 +63,28 @@ public class HomeRepositoryImpl implements HomeRepository {
         return tickerDataSource.getTicker();
     }
 
+    @Override
+    public Observable<HomeCategoryResponseModel> getHomeCategorysCache() {
+        return categoryDataSource.getCache();
+    }
 
+    @Override
+    public Observable<TopPicksResponseModel> getTopPicksCache() {
+        return topPicksDataSource.getCache();
+    }
+
+    @Override
+    public Observable<HomeBannerResponseModel> getBannersCache() {
+        return homeBannerDataSource.getCache();
+    }
+
+    @Override
+    public Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStoreCache() {
+        return brandsOfficialStoreDataSource.getCache();
+    }
+
+    @Override
+    public Observable<Ticker> getTickersCache() {
+        return tickerDataSource.getCache();
+    }
 }

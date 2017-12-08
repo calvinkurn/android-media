@@ -12,7 +12,10 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.beranda.data.mapper.TickerMapper;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -38,7 +41,7 @@ public class TickerDataSource {
     }
 
     public Observable<Ticker> getTicker() {
-        return getCloud().onErrorResumeNext(getCache());
+        return getCloud();
     }
 
     @NonNull
@@ -59,7 +62,7 @@ public class TickerDataSource {
         };
     }
 
-    private Observable<Ticker> getCache() {
+    public Observable<Ticker> getCache() {
         return Observable.just(true).map(new Func1<Boolean, Ticker>() {
             @Override
             public Ticker call(Boolean aBoolean) {

@@ -30,6 +30,7 @@ import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.model.mapper.StatusMapper;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeCategoryMapper;
+import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
 import com.tokopedia.tkpd.beranda.data.repository.HomeRepository;
 import com.tokopedia.tkpd.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.tkpd.beranda.data.source.BrandsOfficialStoreDataSource;
@@ -39,6 +40,7 @@ import com.tokopedia.tkpd.beranda.data.source.TickerDataSource;
 import com.tokopedia.tkpd.beranda.data.source.TopPicksDataSource;
 import com.tokopedia.tkpd.beranda.di.HomeScope;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
+import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
@@ -56,6 +58,12 @@ public class HomeModule {
 
     @HomeScope
     @Provides
+    HomeDataMapper homeDataMapper(@ApplicationContext Context context){
+        return new HomeDataMapper(context);
+    }
+
+    @HomeScope
+    @Provides
     GlobalCacheManager globalCacheManager() {
         return new GlobalCacheManager();
     }
@@ -64,6 +72,15 @@ public class HomeModule {
     @Provides
     HomePresenter homePresenter(@ApplicationContext Context context) {
         return new HomePresenter(context);
+    }
+
+    @HomeScope
+    @Provides
+    GetLocalHomeDataUseCase getLocalHomeDataUseCase(ThreadExecutor threadExecutor,
+                                                    PostExecutionThread postExecutionThread,
+                                                    HomeRepository repository,
+                                                    HomeDataMapper dataMapper){
+        return new GetLocalHomeDataUseCase(threadExecutor, postExecutionThread, repository, dataMapper);
     }
 
     @HomeScope

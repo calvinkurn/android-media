@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 
 import rx.Observable;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -34,7 +35,7 @@ public class BrandsOfficialStoreDataSource {
     }
 
     public Observable<BrandsOfficialStoreResponseModel> getBrandsOfficialStore() {
-        return getCloud().onErrorResumeNext(getCache());
+        return getCloud();
     }
 
     @NonNull
@@ -54,7 +55,7 @@ public class BrandsOfficialStoreDataSource {
         };
     }
 
-    private Observable<BrandsOfficialStoreResponseModel> getCache() {
+    public Observable<BrandsOfficialStoreResponseModel> getCache() {
         return Observable.just(true).map(new Func1<Boolean, BrandsOfficialStoreResponseModel>() {
             @Override
             public BrandsOfficialStoreResponseModel call(Boolean aBoolean) {
