@@ -1,7 +1,5 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.util.Log;
-
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -74,7 +72,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
 
         String bodyResponse = response.body().string();
-        Log.e("Response_body", bodyResponse);
         checkResponse(bodyResponse, response);
 
         return createNewResponse(response, bodyResponse);
