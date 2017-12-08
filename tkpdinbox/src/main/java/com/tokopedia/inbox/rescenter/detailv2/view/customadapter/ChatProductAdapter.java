@@ -1,23 +1,16 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
-import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +41,11 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
         ConversationProductDomain product = productList.get(position);
         ImageHandler.LoadImage(holder.ivImage, product.getImage().get(0).getThumb());
         holder.tvMore.setVisibility(View.GONE);
-        Log.d("milhamj", "maxShowCount " + maxShowCount + " position " + position);
         if (maxShowCount - 1 == position && maxShowCount - 1 < productList.size()) {
             holder.tvMore.setVisibility(View.VISIBLE);
-            holder.tvMore.setText("+" + (productList.size() - position));
+            int plusNumber = productList.size() - position;
+            String plusString = "+" + plusNumber;
+            holder.tvMore.setText(plusString);
         }
 
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
