@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
+import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 
 import java.util.ArrayList;
@@ -47,6 +48,14 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
             int plusNumber = productList.size() - position;
             String plusString = "+" + plusNumber;
             holder.tvMore.setText(plusString);
+            holder.tvMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.startActivity(
+                            ListProductActivity.newInstance(context, String.valueOf(product.getResId()))
+                    );
+                }
+            });
         }
 
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
