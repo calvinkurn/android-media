@@ -22,10 +22,10 @@ import java.util.List;
 
 public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
 
-    SellerInfoDateUtil sellerInfoDateUtil;
+    private String[] monthNames;
 
-    public SellerInfoAdapter(SellerInfoDateUtil sellerInfoDateUtil) {
-        this.sellerInfoDateUtil = sellerInfoDateUtil;
+    public SellerInfoAdapter(String[] monthNames) {
+        this.monthNames = monthNames;
     }
 
     @Override
@@ -35,13 +35,11 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
                 SellerInfoViewHolder sellerInfoViewHolder = new SellerInfoViewHolder(
                         getLayoutView(parent, R.layout.item_seller_info)
                 );
-                sellerInfoViewHolder.setSellerInfoDateUtil(sellerInfoDateUtil);
                 return sellerInfoViewHolder;
             case SellerInfoSectionModel.TYPE_:
                 SellerInfoSectionViewHolder viewHolder = new SellerInfoSectionViewHolder(
                         getLayoutView(parent, R.layout.item_seller_info_section)
                 );
-                viewHolder.setSellerInfoDateUtil(sellerInfoDateUtil);
                 return viewHolder;
             default:
                 return super.onCreateViewHolder(parent, viewType);
@@ -73,9 +71,9 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
     public void addData(List<SellerInfoModel> data) {
         Collections.sort(data, new Comparator<SellerInfoModel>() {
             public int compare(SellerInfoModel o1, SellerInfoModel o2) {
-                return sellerInfoDateUtil.fromUnixTime(o2.getCreateTimeUnix())
+                return SellerInfoDateUtil.fromUnixTime(o2.getCreateTimeUnix(), monthNames)
                         .compareTo(
-                                sellerInfoDateUtil.fromUnixTime(o1.getCreateTimeUnix())
+                                SellerInfoDateUtil.fromUnixTime(o1.getCreateTimeUnix(), monthNames)
                         );
             }
         });
@@ -88,14 +86,14 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
         // for today
         if(data.size() > 1){
             if(data.get(0) != null){
-                data.get(0).setToday(sellerInfoDateUtil.isToday(data.get(0).getCreateTimeUnix()));
+                data.get(0).setToday(SellerInfoDateUtil.isToday(data.get(0).getCreateTimeUnix(), monthNames));
             }
         }
 
         // for yesterday
         if(data.size() > 2){
             if(data.get(1) != null){
-                data.get(1).setYesterday(sellerInfoDateUtil.isYesterday(data.get(1).getCreateTimeUnix()));
+                data.get(1).setYesterday(SellerInfoDateUtil.isYesterday(data.get(1).getCreateTimeUnix(), monthNames));
             }
         }
 

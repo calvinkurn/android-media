@@ -26,8 +26,6 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
 
     private int lightGreenColor, whiteColor;
 
-    private SellerInfoDateUtil sellerInfoDateUtil;
-
     public SellerInfoViewHolder(View itemView) {
         super(itemView);
         imageSellerInfo = itemView.findViewById(R.id.image_seller_info);
@@ -45,7 +43,7 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
         if(sellerInfoModel instanceof SellerInfoSectionModel)
             return;
 
-        String s = sellerInfoDateUtil.fromUnixTime(sellerInfoModel.getCreateTimeUnix());
+        String s = SellerInfoDateUtil.fromUnixTimeGetHourEtc(sellerInfoModel.getCreateTimeUnix());
         textDateDescription.setText(s);
 
         textDateDesctionSection.setText(itemView
@@ -63,9 +61,5 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
         }else{
             sellerInfoContainer.setBackgroundColor(whiteColor);
         }
-    }
-
-    public void setSellerInfoDateUtil(SellerInfoDateUtil sellerInfoDateUtil) {
-        this.sellerInfoDateUtil = sellerInfoDateUtil;
     }
 }

@@ -49,8 +49,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<BaseListViewListene
             public void onNext(ResponseSellerInfoModel response ) {
                 if(isViewAttached()){
                     List<SellerInfoModel> result = conv(response);
-                    int totalItem = response.getData().getPaging().isHasNext() ? result.size() : 0;
-                    getView().onSearchLoaded(result, totalItem);
+                    getView().onSearchLoaded(result, result.size());
                 }
             }
         });

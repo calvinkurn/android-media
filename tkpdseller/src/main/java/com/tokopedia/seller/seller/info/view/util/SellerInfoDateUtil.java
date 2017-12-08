@@ -6,68 +6,53 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by normansyahputa on 11/30/17.
  */
 
-public class SellerInfoDateUtil {
+public final class SellerInfoDateUtil {
 
+    private static final Locale locale = new Locale("in", "ID");
+    private static final String KK_MM_Z = "kk:mm z";
     static final SimpleDateFormat sdf =
-            new SimpleDateFormat(GoldMerchantDateUtils.YYYY_M_MDD, new Locale("in", "ID"));
-    private String[] monthNames;
+            new SimpleDateFormat(GoldMerchantDateUtils.YYYY_M_MDD, locale);
+    static final SimpleDateFormat sdfHourEtc =
+            new SimpleDateFormat(KK_MM_Z, locale);
 
-    public SellerInfoDateUtil(String[] monthNames){
-        this.monthNames = monthNames;
+    static{
+        sdfHourEtc.setTimeZone(TimeZone.getDefault());
     }
 
-    public String fromUnixTimeNumberFormat(long date){
-        int conv = Integer.valueOf(sdf.format(new Date(date*1000)));
-        return GoldMerchantDateUtils.getDate(conv);
+    private SellerInfoDateUtil(){
+
     }
 
-    public String fromUnixTime(long date){
+    public static String fromUnixTime(long date, String[] monthNames){
         int conv = Integer.valueOf(sdf.format(new Date(date*1000)));
         return GoldMerchantDateUtils.getDateWithoutYear(conv, monthNames);
     }
 
-    public Date fromUnixTimeDate(long date){
-        return new Date(date*1000);
+    public static String fromUnixTimeGetHourEtc(long date){
+        return sdfHourEtc.format(new Date(date*1000));
     }
 
-    public Date yesterdayDate(){
-        return GoldMerchantDateUtils.getPreviousDateInDate(Calendar.getInstance().getTimeInMillis(), 1);
-    }
-
-    public Date todayDate(){
-        return GoldMerchantDateUtils.getPreviousDateInDate(Calendar.getInstance().getTimeInMillis(), 0);
-    }
-
-    public String yesterdayNumberFormat(){
+    public static String yesterday(String[] monthNames){
         long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 1) / 1000;
-        return fromUnixTimeNumberFormat(unixTime);
+        return fromUnixTime(unixTime, monthNames);
     }
 
-    public String todayNumberFormat(){
+    public static String today(String[] monthNames){
         long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 0) / 1000;
-        return fromUnixTimeNumberFormat(unixTime);
+        return fromUnixTime(unixTime, monthNames);
     }
 
-    public String yesterday(){
-        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 1) / 1000;
-        return fromUnixTime(unixTime);
+    public static boolean isToday(long date, String[] monthNames){
+        return today(monthNames).equals(fromUnixTime(date,monthNames));
     }
 
-    public String today(){
-        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 0) / 1000;
-        return fromUnixTime(unixTime);
-    }
-
-    public boolean isToday(long date){
-        return today().equals(fromUnixTime(date));
-    }
-
-    public boolean isYesterday(long date){
-        return yesterday().equals(fromUnixTime(date));
+    public static boolean isYesterday(long date, String[] monthNames){
+        return yesterday(monthNames).equals(fromUnixTime(date, monthNames));
     }
 }

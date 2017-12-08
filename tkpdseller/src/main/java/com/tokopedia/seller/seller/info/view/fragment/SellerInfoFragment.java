@@ -44,6 +44,8 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
     @Inject
     SellerInfoPresenter sellerInfoPresenter;
 
+    String[] monthNamesAbrev;
+
     public static SellerInfoFragment newInstance(){
         return new SellerInfoFragment();
     }
@@ -58,15 +60,14 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        String[] monthNamesAbrev = getResources().getStringArray(R.array.lib_date_picker_month_entries);
-        sellerInfoDateUtil = new SellerInfoDateUtil(monthNamesAbrev);
+        monthNamesAbrev = getResources().getStringArray(R.array.lib_date_picker_month_entries);
         super.onViewCreated(view, savedInstanceState);
         sellerInfoPresenter.attachView(this);
     }
 
     @Override
     protected BaseListAdapter<SellerInfoModel> getNewAdapter() {
-        return new SellerInfoAdapter(sellerInfoDateUtil);
+        return new SellerInfoAdapter(monthNamesAbrev);
     }
 
     @Override
