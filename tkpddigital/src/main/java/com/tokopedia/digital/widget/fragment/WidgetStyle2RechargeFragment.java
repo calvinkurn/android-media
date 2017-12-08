@@ -98,7 +98,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
         renderView();
 
-        presenter.fetchOperatorByCategory(category.getId(), true);
+        presenter.getOperatorsByCategoryId(category.getId(), true);
     }
 
     private void renderView() {
@@ -187,29 +187,28 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (before == 1 && count == 0) {
-                    widgetClientNumberView.setImgOperatorInvisible();
-                    clearHolder(holderWidgetSpinnerProduct);
-                    clearHolder(holderWidgetWrapperBuy);
-                } else if (s.length() >= minLengthDefaultOperator) {
-                    if (s.length() >= minLengthDefaultOperator) {
-                        if (selectedOperator != null) {
-                            widgetClientNumberView.setImgOperator(selectedOperator.getAttributes().getImage());
-                            widgetClientNumberView.setImgOperatorVisible();
+//                if (before == 1 && count == 0) {
+//                    widgetClientNumberView.setImgOperatorInvisible();
+//                    clearHolder(holderWidgetSpinnerProduct);
+//                    clearHolder(holderWidgetWrapperBuy);
+//                } else
+                if (s.length() >= minLengthDefaultOperator) {
+                    if (selectedOperator != null) {
+                        widgetClientNumberView.setImgOperator(selectedOperator.getAttributes().getImage());
+                        widgetClientNumberView.setImgOperatorVisible();
 
-                            if (selectedOperator.getAttributes().getRule().isShowProduct()) {
-                                presenter.validateOperatorWithProducts(category.getId(),
-                                        selectedOperatorId);
-                            } else {
-                                clearHolder(holderWidgetWrapperBuy);
-                                holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
-                            }
+                        if (selectedOperator.getAttributes().getRule().isShowProduct()) {
+                            presenter.validateOperatorWithProducts(category.getId(),
+                                    selectedOperatorId);
                         } else {
-                            widgetClientNumberView.setEmptyString();
+                            clearHolder(holderWidgetWrapperBuy);
+                            holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
                         }
                     } else {
-                        selectedOperatorId = category.getAttributes().getDefaultOperatorId();
+                        widgetClientNumberView.setEmptyString();
                     }
+                } else {
+                    selectedOperatorId = category.getAttributes().getDefaultOperatorId();
                 }
             }
 
@@ -322,7 +321,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void onCheckChange(Operator rechargeOperatorModel) {
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
-
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.getId());
                 minLengthDefaultOperator = rechargeOperatorModel.getAttributes().getMinimumLength();
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
@@ -467,7 +465,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             widgetClientNumberView.setText(savedState.getString(STATE_CLIENT_NUMBER));
         }
         renderView();
-        presenter.fetchOperatorByCategory(category.getId(), false);
+        presenter.getOperatorsByCategoryId(category.getId(), false);
     }
 
     @Override

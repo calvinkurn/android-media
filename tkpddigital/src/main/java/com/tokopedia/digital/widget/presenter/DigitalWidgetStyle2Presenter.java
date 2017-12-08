@@ -168,7 +168,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void fetchOperatorByCategory(int categoryId, boolean showLastOrder) {
+    public void getOperatorsByCategoryId(int categoryId, boolean showLastOrder) {
         widgetInteractor.getOperatorsByCategoryId(getOperatorByCategorySubscriber(showLastOrder), categoryId);
     }
 
