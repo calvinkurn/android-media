@@ -55,7 +55,6 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     public void searchAddress(String query) {
         addresses.clear();
         getView().notifyUpdateAdapter();
-        getView().updateRecommendation();
         lastPage = 0;
         getView().setInitialLoading();
         query(query);
