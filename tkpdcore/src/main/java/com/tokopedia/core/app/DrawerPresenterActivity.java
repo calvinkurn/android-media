@@ -27,6 +27,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -398,6 +399,18 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                     ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
                             .getData().setTokoPointDrawerData(tokoPointDrawerData);
                 drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+
+                if (tokoPointDrawerData.getHasNotif() == 1) {
+                    if (getApplication() instanceof ILoyaltyRouter) {
+                        ((ILoyaltyRouter) getApplication())
+                                .getLoyaltyTokoPointNotificationDialogFragment(
+                                        tokoPointDrawerData.getPopUpNotif()
+                                ).show(
+                                getFragmentManager(),
+                                ILoyaltyRouter.LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG
+                        );
+                    }
+                }
             }
 
         }

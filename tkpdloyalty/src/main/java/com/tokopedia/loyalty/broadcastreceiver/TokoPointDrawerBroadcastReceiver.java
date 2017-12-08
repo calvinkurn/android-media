@@ -72,6 +72,7 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
                         topPointDrawerData
                 );
                 context.sendBroadcast(intentTokoPointData);
+
             }
         };
     }

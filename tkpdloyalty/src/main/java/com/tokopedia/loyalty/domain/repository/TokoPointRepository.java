@@ -10,6 +10,7 @@ import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
+import com.tokopedia.loyalty.domain.dummyresponse.DummyTokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
@@ -96,7 +97,7 @@ public class TokoPointRepository implements ITokoPointRepository {
             public String call(Response<TokoPointResponse> tokoPointResponseResponse) {
                 return tokoPointResponseMapper
                         .getSuccessValidateRedeemMessage(tokoPointResponseResponse
-                        .body().convertDataObj(ValidateRedeemCouponResponse.class));
+                                .body().convertDataObj(ValidateRedeemCouponResponse.class));
             }
         });
     }
@@ -133,10 +134,14 @@ public class TokoPointRepository implements ITokoPointRepository {
                         new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
                             @Override
                             public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
+//                                return tokoPointResponseMapper.convertTokoplusPointDrawer(
+//                                        tokoplusResponseResponse.body().convertDataObj(
+//                                                TokoPointDrawerDataResponse.class
+//                                        )
+//                                );
                                 return tokoPointResponseMapper.convertTokoplusPointDrawer(
-                                        tokoplusResponseResponse.body().convertDataObj(
-                                                TokoPointDrawerDataResponse.class
-                                        )
+                                        new Gson().fromJson(DummyTokoPointResponse.RESPONSE_DRAWER_DATA,
+                                                TokoPointDrawerDataResponse.class)
                                 );
                             }
                         });
@@ -172,7 +177,7 @@ public class TokoPointRepository implements ITokoPointRepository {
             @Override
             public VoucherViewModel call(Response<TkpdResponse> networkResponse) {
                 VoucherResponse voucherResponse = new Gson().fromJson(
-                    networkResponse.body().getStringData(), VoucherResponse.class
+                        networkResponse.body().getStringData(), VoucherResponse.class
                 );
                 VoucherViewModel viewModel = new VoucherViewModel();
                 viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
@@ -190,18 +195,18 @@ public class TokoPointRepository implements ITokoPointRepository {
     ) {
         return txVoucherService.getApi().checkVoucherCode(param).map(
                 new Func1<Response<TkpdResponse>, CouponViewModel>() {
-            @Override
-            public CouponViewModel call(Response<TkpdResponse> networkResponse) {
-                VoucherResponse voucherResponse = new Gson().fromJson(
-                        networkResponse.body().getStringData(), VoucherResponse.class
-                );
-                CouponViewModel viewModel = new CouponViewModel();
-                viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
-                viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
-                viewModel.setCode(voucherCode);
-                viewModel.setTitle(couponTitle);
-                return viewModel;
-            }
-        });
+                    @Override
+                    public CouponViewModel call(Response<TkpdResponse> networkResponse) {
+                        VoucherResponse voucherResponse = new Gson().fromJson(
+                                networkResponse.body().getStringData(), VoucherResponse.class
+                        );
+                        CouponViewModel viewModel = new CouponViewModel();
+                        viewModel.setAmount(voucherResponse.getVoucher().getVoucherAmountIdr());
+                        viewModel.setMessage(voucherResponse.getVoucher().getVoucherPromoDesc());
+                        viewModel.setCode(voucherCode);
+                        viewModel.setTitle(couponTitle);
+                        return viewModel;
+                    }
+                });
     }
 }
