@@ -184,6 +184,7 @@ yang ditemukan</string>
     <string name="string_change">Ubah</string>
     <string name="string_get_help">Minta Bantuan</string>
     <string name="string_title_create_recomplaint">Komplain Ulang</string>
+    <string name="string_back_to_complaint_list">Kembali ke Daftar Komplain</string>
 
     <!--chat bubble-->
     <string name="string_buyer_problem2">Kendala dari Pembeli:</string>

@@ -102,7 +102,7 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
             } else if (view.getId() == R.id.action_awb_more) {
                 listener.setOnActionAwbHistoryClick();
             } else if (view.getId() == R.id.action_add) {
-
+                listener.setOnActionInputAwbNumberClick();
             }
         }
     }

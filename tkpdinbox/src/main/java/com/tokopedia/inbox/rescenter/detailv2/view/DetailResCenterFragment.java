@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +32,8 @@ import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
@@ -454,7 +455,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                     @Override
                     public void onClick(View v) {
                         presenter.cancelResolution();
-                        if(resCenterDialog!= null)
+                        if (resCenterDialog != null)
                             resCenterDialog.dismiss();
                     }
                 });
@@ -468,7 +469,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                     @Override
                     public void onClick(View v) {
                         presenter.finishReturProduct();
-                        if(resCenterDialog!= null)
+                        if (resCenterDialog != null)
                             resCenterDialog.dismiss();
                     }
                 });
@@ -492,7 +493,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                     @Override
                     public void onClick(View v) {
                         presenter.acceptSolution();
-                        if(resCenterDialog!= null)
+                        if (resCenterDialog != null)
                             resCenterDialog.dismiss();
                     }
                 });
@@ -530,7 +531,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                     @Override
                     public void onClick(View v) {
                         presenter.askHelpResolution();
-                        if(resCenterDialog!= null)
+                        if (resCenterDialog != null)
                             resCenterDialog.dismiss();
                     }
                 });
@@ -647,8 +648,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     private RelativeLayout.LayoutParams getButtonInitParams() {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,130, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,60, getResources().getDisplayMetrics()));
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics()));
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params.setMargins(
                 0,
@@ -667,6 +668,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         }
         cvDiscussion.setLayoutParams(params);
+    }
+
+    @Override
+    public void actionReturnToList() {
+        getActivity().setResult(DetailResChatActivity.ACTION_GO_TO_LIST);
+        getActivity().finish();
     }
 
     @Override

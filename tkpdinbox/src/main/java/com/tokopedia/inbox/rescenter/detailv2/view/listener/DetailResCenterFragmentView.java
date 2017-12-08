@@ -75,6 +75,8 @@ public interface DetailResCenterFragmentView {
 
     void setOnDiscussionButtonPosition(boolean isButtonAvailable);
 
+    void actionReturnToList();
+
     void doOnInitTimeOut();
 
     void doOnInitSuccess();

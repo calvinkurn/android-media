@@ -121,7 +121,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         viewModel.setAwbData(detailResponseData.getLast().getUserAwb() != null ?
                 mappingAwbData(detailResponseData.getLast().getUserAwb()) :
                 null);
-        viewModel.setButtonData(mappingButtonData(detailResponseData.getButton()));
+        viewModel.setButtonData(mappingButtonData(detailResponseData.getButton(), detailResponseData.getResolution().getStatus().getId()));
         viewModel.setDetailData(mappingDetailData(detailResponseData));
         viewModel.setHistoryData(detailResponseData.getLogs() != null ?
                 mappingHistoryData(detailResponseData.getLogs()) :
@@ -160,7 +160,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         return attachmentDataList;
     }
 
-    private ButtonData mappingButtonData(ButtonDomain domainModel) {
+    private ButtonData mappingButtonData(ButtonDomain domainModel, int resolutionStatusId) {
         ButtonData data = new ButtonData();
         data.setShowAskHelp(domainModel.getReport() == 1);
         data.setAskHelpDialogText(domainModel.getReportText());
@@ -185,6 +185,8 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setAppealLabel(domainModel.getAppealLabel());
         data.setInputAwbLabel(domainModel.getInputAWBLabel());
         data.setButtonViewItemList(mappingButtonViewItem(domainModel));
+        data.setResolutionStatus(resolutionStatusId);
+
         return data;
     }
 

@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonViewItem;
 
 import java.util.List;
@@ -32,16 +31,21 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     public static final String BUTTON_RECOMPLAINT = "button_recomplaint";
     public static final String BUTTON_REPORT = "button_report";
     public static final String BUTTON_CANCEL = "button_cancel";
+    public static final String STATUS_FINISH_RESO = "finish";
+    public static final int STATUS_FINISHED = 500;
+    public static final int STATUS_CANCEL = 0;
 
     public static final int ADAPTER_SPAN_COUNT = 2;
 
     private Context context;
     private List<ButtonViewItem> buttonViewItemList;
     private DetailResCenterFragmentView listener;
+    private int resolutionStatus;
 
-    public ButtonViewAdapter(Context context, DetailResCenterFragmentView listener) {
+    public ButtonViewAdapter(Context context, DetailResCenterFragmentView listener, int resolutionStatus) {
         this.context = context;
         this.listener = listener;
+        this.resolutionStatus = resolutionStatus;
     }
 
     public List<ButtonViewItem> getButtonViewItemList() {
@@ -60,13 +64,19 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        ButtonViewItem buttonViewItem = buttonViewItemList.get(position);
-        if (position == buttonViewItemList.size() - 1) {
-            setGreenButton(holder.btnAction, buttonViewItem.getLabel());
+        if (resolutionStatus == STATUS_CANCEL || resolutionStatus == STATUS_FINISHED) {
+            setWhiteButton(holder.btnAction, context.getResources().getString(R.string.string_back_to_complaint_list));
+            holder.btnAction.setOnClickListener(onActionButtonListener(STATUS_FINISH_RESO));
         } else {
-            setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
+            ButtonViewItem buttonViewItem = buttonViewItemList.get(position);
+            if (position == buttonViewItemList.size() - 1) {
+                setGreenButton(holder.btnAction, buttonViewItem.getLabel());
+            } else {
+                setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
+            }
+            holder.btnAction.setOnClickListener(onActionButtonListener(buttonViewItem.getType()));
         }
-        holder.btnAction.setOnClickListener(onActionButtonListener(buttonViewItem.getType()));
+
     }
 
     private Button.OnClickListener onActionButtonListener(final String buttonType) {
@@ -82,6 +92,7 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
                 else if (buttonType.equals(BUTTON_REPORT)) listener.setOnActionHelpClick();
                 else if (buttonType.equals(BUTTON_CANCEL)) listener.setOnActionCancelResolutionClick();
                 else if (buttonType.equals(BUTTON_RECOMPLAINT)) listener.setOnActionRecomplaintClick();
+                else if (buttonType.equals(STATUS_FINISH_RESO)) listener.actionReturnToList();
             }
         };
     }
@@ -95,26 +106,33 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     private void setWhiteButton(TextView button, String text) {
         button.setText(text);
         button.setBackgroundColor(MethodChecker.getColor(context, R.color.white));
-        button.setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+        button.setTextColor(MethodChecker.getColor(context, R.color.black_70));
 
     }
 
     @Override
     public int getItemCount() {
-        return buttonViewItemList.size();
+        if (resolutionStatus == STATUS_CANCEL || resolutionStatus == STATUS_FINISHED)
+            return 1;
+        else
+            return buttonViewItemList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        // pos 0 always green and bottom
-        if (buttonViewItemList.size() == 1) return 2;
-        else if (buttonViewItemList.size() == 2) return 1;
-        else if (buttonViewItemList.size() == 3) {
-            if (position == 2) return 2;
-            else return 1;
-        } else if (buttonViewItemList.size() == 4) {
-            if (position == 0 || position == 3) return 2;
-            else return 1;
+        if (resolutionStatus == STATUS_CANCEL || resolutionStatus == STATUS_FINISHED) {
+            return 2;
+        } else {
+            // pos 0 always green and bottom
+            if (buttonViewItemList.size() == 1) return 2;
+            else if (buttonViewItemList.size() == 2) return 1;
+            else if (buttonViewItemList.size() == 3) {
+                if (position == 2) return 2;
+                else return 1;
+            } else if (buttonViewItemList.size() == 4) {
+                if (position == 0 || position == 3) return 2;
+                else return 1;
+            }
         }
         return super.getItemViewType(position);
     }
