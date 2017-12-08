@@ -24,8 +24,8 @@ import java.util.List;
 
 public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.Holder> {
 
-    private DetailResChatFragmentListener.View mainView;
-    private Context context;
+    private final DetailResChatFragmentListener.View mainView;
+    private final Context context;
     private List<ConversationProductDomain> productList = new ArrayList<>();
     private int maxShowCount = 0;
 
@@ -33,6 +33,7 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
                               Context context,
                               List<ConversationProductDomain> productList,
                               int maxShowCount) {
+        this.mainView = mainView;
         this.context = context;
         this.productList = productList;
         this.maxShowCount = maxShowCount;
@@ -56,9 +57,7 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
             holder.tvMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    context.startActivity(
-                            ListProductActivity.newInstance(context, String.valueOf(product.getResId()))
-                    );
+                    mainView.goToProductList(product);
                 }
             });
         }
@@ -66,12 +65,7 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(
-                        ProductDetailActivity.newInstance(context,
-                                String.valueOf(product.getResId()),
-                                product.getMessage(),
-                                product.getName())
-                );
+                mainView.goToProductDetail(product);
             }
         });
     }
