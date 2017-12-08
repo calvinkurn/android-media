@@ -635,6 +635,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateAppBarCollapsed(Bundle outState, String key, boolean isAppBarCollapsed) {
+        outState.putBoolean(key, isAppBarCollapsed);
+    }
+
+    @Override
     public void processStateData(Bundle savedInstanceState) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
@@ -643,6 +648,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
         ProductCampaign productCampaign = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_CAMPAIGN);
         PromoAttributes promoAttributes = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PROMO_WIDGET);
+        boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
         if (productData != null & productOthers != null) {
             viewListener.onProductDetailLoaded(productData);
@@ -659,6 +665,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         if (promoAttributes != null) {
             viewListener.showPromoWidget(promoAttributes);
         }
+
+        viewListener.restoreIsAppBarCollapsed(isAppBarCollapsed);
     }
 
     @Override
