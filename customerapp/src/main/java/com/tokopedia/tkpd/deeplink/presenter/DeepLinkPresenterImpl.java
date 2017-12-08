@@ -45,6 +45,7 @@ import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -149,6 +150,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     sendCampaignGTM(uriData.toString(), screenName);
                     openHotProduct(linkSegment, uriData);
                     break;
+                case DeepLinkChecker.HOT_LIST:
+                    screenName = AppScreen.SCREEN_HOME_HOTLIST;
+                    sendCampaignGTM(uriData.toString(), screenName);
+                    openHomepageHot();
+                    break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
@@ -204,6 +210,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             sendCampaignGTM(uriData.toString(), screenName);
         }
     }
+
 
     private void openPeluangPage() {
         Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
@@ -391,9 +398,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
+    private void openHomepageHot() {
+        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
+        context.startActivity(intent);
+        context.finish();
+    }
+
     private void openCategory(String uriData) {
         URLParser urlParser = new URLParser(uriData);
-        if (urlParser.getParamKeyValueMap().size()>0) {
+        if (urlParser.getParamKeyValueMap().size() > 0) {
             CategoryActivity.moveTo(
                     context,
                     uriData
@@ -430,11 +447,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             context.startActivity(intent);
             context.finish();
         } else {
-            IntermediaryActivity.moveToClear(context,departmentId);
+            IntermediaryActivity.moveToClear(context, departmentId);
         }
     }
-
-
 
 
     private boolean isHotLink(List<String> linkSegment) {

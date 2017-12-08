@@ -115,49 +115,32 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     @DeepLink(Constants.Applinks.HOME)
-    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class)
-                .setData(uri.build())
-                .putExtras(extras));
-        return taskStackBuilder;
+    public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
+        return new Intent(context, ParentIndexHome.class);
     }
 
     @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
     public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED)
-                .setData(uri.build())
-                .putExtras(extras);
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FEED);
     }
 
     @DeepLink({Constants.Applinks.FAVORITE})
     public static Intent getFavoriteApplinkCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE)
-                .setData(uri.build())
-                .putExtras(extras);
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
     }
 
     @DeepLink(Constants.Applinks.HOME_CATEGORY)
     public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME)
-                .setData(uri.build())
-                .putExtras(extras);
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
     }
 
     @DeepLink(Constants.Applinks.HOME_HOTLIST)
     public static Intent getHotlistApplinkCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
-                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST)
-                .setData(uri.build())
-                .putExtras(extras);
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
     }
 
     public ViewPager getViewPager() {
@@ -741,7 +724,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
-                if (!isPausing()){
+                if (!isPausing()) {
                     new AppUpdateDialogBuilder(ParentIndexHome.this, detail)
                             .getAlertDialog().show();
                     UnifyTracking.eventImpressionAppUpdate(detail.isForceUpdate());
@@ -772,7 +755,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
             if (!isPausing())
-            ((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
+                ((TkpdCoreRouter) getApplication()).actionNavigateByApplinksUrl(this, applink, new Bundle());
         }
     }
 
