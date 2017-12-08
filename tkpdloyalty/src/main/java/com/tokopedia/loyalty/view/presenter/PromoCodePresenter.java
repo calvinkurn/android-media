@@ -66,7 +66,8 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onNext(VoucherViewModel voucherViewModel) {
                 view.hideProgressLoading();
-                view.checkVoucherSuccessfull(voucherViewModel);            }
+                view.checkVoucherSuccessfull(voucherViewModel);
+            }
         };
     }
 

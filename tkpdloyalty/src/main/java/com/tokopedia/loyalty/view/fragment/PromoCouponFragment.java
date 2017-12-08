@@ -6,7 +6,6 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -24,7 +23,6 @@ import com.tokopedia.loyalty.di.module.PromoCouponViewModule;
 import com.tokopedia.loyalty.view.adapter.CouponListAdapter;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
-import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCouponPresenter;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
 
@@ -252,7 +250,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     @Override
     public void onVoucherChosen(CouponData data) {
         adapter.clearError();
-        if(getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
+        if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
         } else {
             dPresenter.submitVoucher(data);

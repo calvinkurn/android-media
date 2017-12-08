@@ -12,6 +12,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.apiservice.DigitalEndpointService;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
+import com.tokopedia.loyalty.domain.dummyresponse.DummyTokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
@@ -102,7 +103,7 @@ public class TokoPointRepository implements ITokoPointRepository {
             public String call(Response<TokoPointResponse> tokoPointResponseResponse) {
                 return tokoPointResponseMapper
                         .getSuccessValidateRedeemMessage(tokoPointResponseResponse
-                        .body().convertDataObj(ValidateRedeemCouponResponse.class));
+                                .body().convertDataObj(ValidateRedeemCouponResponse.class));
             }
         });
     }
@@ -139,10 +140,14 @@ public class TokoPointRepository implements ITokoPointRepository {
                         new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
                             @Override
                             public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
+//                                return tokoPointResponseMapper.convertTokoplusPointDrawer(
+//                                        tokoplusResponseResponse.body().convertDataObj(
+//                                                TokoPointDrawerDataResponse.class
+//                                        )
+//                                );
                                 return tokoPointResponseMapper.convertTokoplusPointDrawer(
-                                        tokoplusResponseResponse.body().convertDataObj(
-                                                TokoPointDrawerDataResponse.class
-                                        )
+                                        new Gson().fromJson(DummyTokoPointResponse.RESPONSE_DRAWER_DATA,
+                                                TokoPointDrawerDataResponse.class)
                                 );
                             }
                         });
@@ -178,9 +183,9 @@ public class TokoPointRepository implements ITokoPointRepository {
             @Override
             public VoucherViewModel call(Response<TkpdResponse> networkResponse) {
                 VoucherResponse voucherResponse = new Gson().fromJson(
-                    networkResponse.body().getStringData(), VoucherResponse.class
+                        networkResponse.body().getStringData(), VoucherResponse.class
                 );
-                if(networkResponse.body().isError()) {
+                if (networkResponse.body().isError()) {
                     throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
                 }
                 return tokoPointResponseMapper.voucherViewModel(voucherResponse, voucherCode);
@@ -195,37 +200,40 @@ public class TokoPointRepository implements ITokoPointRepository {
     ) {
         return txVoucherService.getApi().checkVoucherCode(param)
                 .map(new Func1<Response<TkpdResponse>, CouponViewModel>() {
-            @Override
-            public CouponViewModel call(Response<TkpdResponse> networkResponse) {
-                VoucherResponse voucherResponse = new Gson().fromJson(
-                        networkResponse.body().getStringData(), VoucherResponse.class
-                );
-                if(networkResponse.body().isError()) {
-                    throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
-                }
-                return tokoPointResponseMapper.couponViewModel(
-                        voucherResponse, voucherCode, couponTitle
-                );
-            }
-        });
+                    @Override
+                    public CouponViewModel call(Response<TkpdResponse> networkResponse) {
+                        VoucherResponse voucherResponse = new Gson().fromJson(
+                                networkResponse.body().getStringData(), VoucherResponse.class
+                        );
+                        if (networkResponse.body().isError()) {
+                            throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
+                        }
+                        return tokoPointResponseMapper.couponViewModel(voucherResponse, voucherCode, couponTitle
+                        );
+                    }
+                });
     }
 
     @Override
-    public Observable<VoucherViewModel> checkDigitalVoucherValidity(TKPDMapParam<String, String> param, final String voucherCode) {
+    public Observable<VoucherViewModel> checkDigitalVoucherValidity(
+            TKPDMapParam<String, String> param, final String voucherCode
+    ) {
         return digitalService.getApi().checkVoucher(param)
                 .map(new Func1<Response<TkpdDigitalResponse>, VoucherViewModel>() {
-            @Override
-            public VoucherViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
-                return tokoPointResponseMapper.digtialVoucherViewModel(
-                        tkpdDigitalResponseResponse.body().convertDataObj(DigitalVoucherData.class),
-                        voucherCode
-                );
-            }
-        });
+                    @Override
+                    public VoucherViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                        return tokoPointResponseMapper.digtialVoucherViewModel(
+                                tkpdDigitalResponseResponse.body().convertDataObj(DigitalVoucherData.class),
+                                voucherCode
+                        );
+                    }
+                });
     }
 
     @Override
-    public Observable<CouponViewModel> checkDigitalCouponValidity(TKPDMapParam<String, String> param, final String voucherCode, final String couponTitle) {
+    public Observable<CouponViewModel> checkDigitalCouponValidity(
+            TKPDMapParam<String, String> param, final String voucherCode, final String couponTitle
+    ) {
         return digitalService.getApi().checkVoucher(param).
                 map(new Func1<Response<TkpdDigitalResponse>, CouponViewModel>() {
                     @Override

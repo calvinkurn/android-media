@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_cart_fragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/layout_cart_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                         layout="@layout/promo_activation_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_ticker_gtm" />
+                        android:layout_below="@id/tv_ticker_gtm"/>
 
                 </android.support.v7.widget.CardView>
 
@@ -120,7 +120,7 @@
                                 android:text="@string/label_transaction_total_payment"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/font_large"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/tv_total_payment"
@@ -309,7 +309,7 @@
 
                         <include
                             android:id="@+id/promo_result"
-                            layout="@layout/promo_result_layout" />
+                            layout="@layout/promo_result_layout"/>
 
                         <!--<CheckBox
                             android:id="@+id/cb_use_voucher"
@@ -396,13 +396,13 @@
                             android:id="@+id/instant_insert_voucher_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            tools:text="Ini tes kode Promo instant" />
+                            tools:text="Ini tes kode Promo instant"/>
 
                         <TextView
                             android:id="@+id/instant_insert_voucher_button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            tools:text="Gunakan Sekarang" />
+                            tools:text="Gunakan Sekarang"/>
 
                     </LinearLayout>
 

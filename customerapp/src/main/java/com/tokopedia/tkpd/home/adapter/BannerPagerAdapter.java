@@ -29,7 +29,6 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.customview.BannerView;
-import com.tokopedia.tkpd.home.facade.FacadePromo;
 
 import org.json.JSONObject;
 

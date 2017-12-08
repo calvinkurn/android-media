@@ -39,7 +39,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -418,7 +417,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorFromInstantVoucher(int instantVoucher) {
-        if(instantVoucher == 1) instantPromoPlaceHolder.setVisibility(View.GONE);
+        if (instantVoucher == 1) instantPromoPlaceHolder.setVisibility(View.GONE);
     }
 
     @Override
@@ -983,7 +982,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             @Override
             public void onClick(View view) {
                 promoResultLayout.setVisibility(View.GONE);
-                if(hasPromotion) instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+                if (hasPromotion) instantPromoPlaceHolder.setVisibility(View.VISIBLE);
 
                 promoCodeLayout.setVisibility(View.VISIBLE);
             }

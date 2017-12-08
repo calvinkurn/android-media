@@ -42,7 +42,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Co
         holder.promoBenefit.setText(listCouponModel.get(position).getSubTitle());
         holder.promoDescription.setText(listCouponModel.get(position).getDescription());
         holder.promoExpiry.setText(listCouponModel.get(position).getExpired());
-        if(listCouponModel.get(position).getErrorMessage() != null
+        if (listCouponModel.get(position).getErrorMessage() != null
                 && !listCouponModel.get(position).getErrorMessage().isEmpty()) {
             holder.promoError.setText(listCouponModel.get(position).getErrorMessage());
             holder.promoError.setVisibility(View.VISIBLE);
@@ -96,7 +96,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Co
     }
 
     public void clearError() {
-        for(int i = 0; i < listCouponModel.size(); i++) {
+        for (int i = 0; i < listCouponModel.size(); i++) {
             listCouponModel.get(i).setErrorMessage("");
         }
     }

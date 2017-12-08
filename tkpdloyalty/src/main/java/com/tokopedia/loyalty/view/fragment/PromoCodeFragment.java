@@ -96,7 +96,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
 
-        if(getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING))
+        if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING))
             submitVoucherButton.setOnClickListener(onSubmitDigitalVoucher(voucherCodeField));
         else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(voucherCodeField));
 
