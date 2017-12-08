@@ -21,5 +21,6 @@ public interface IOrderDetailRepository {
 
     Observable<String> confirmFinishDeliver(TKPDMapParam<String, String> params);
 
+    Observable<String> confirmDelivery(TKPDMapParam<String, String> params);
 
 }

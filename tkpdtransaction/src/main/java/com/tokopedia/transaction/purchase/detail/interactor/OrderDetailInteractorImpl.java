@@ -4,7 +4,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.domain.OrderDetailRepository;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -14,7 +13,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by kris on 11/13/17. Tokopedia
  */
 
-public class OrderDetailInteractorImpl implements OrderDetailInteractor{
+public class OrderDetailInteractorImpl implements OrderDetailInteractor {
 
     private CompositeSubscription compositeSubscription;
 
@@ -39,7 +38,17 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor{
     @Override
     public void confirmFinishConfirm(Subscriber<String> subscriber,
                                      TKPDMapParam<String, String> params) {
-        compositeSubscription.add(orderDetailRepository.confirmFinishDeliver(params)
+        compositeSubscription.add(orderDetailRepository.
+                confirmFinishDeliver(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void confirmDeliveryConfirm(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
+        compositeSubscription.add(orderDetailRepository.confirmDelivery(params)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

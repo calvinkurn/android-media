@@ -49,7 +49,7 @@ public interface OrderDetailPresenter {
 
     void processCancelSearch(Context context, OrderDetailData data);
 
-    void processFinish(Context context, String orderId);
+    void processFinish(Context context, String orderId, String orderStatus);
 
     void cancelOrder(Context context, String orderId, String notes);
 

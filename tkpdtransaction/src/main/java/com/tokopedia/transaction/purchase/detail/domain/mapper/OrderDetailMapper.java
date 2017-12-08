@@ -56,8 +56,8 @@ public class OrderDetailMapper {
         } else {
             viewData.setPreorder(true);
             viewData.setPreorderPeriod(String.valueOf(
-                    responseData.getDetail().getPreorder().getProcessTime())
-            );
+                    responseData.getDetail().getPreorder().getProcessTime()));
+            viewData.setPreorderPeriodText(responseData.getDetail().getPreorder().getProcessTimeText());
         }
         if(responseData.getDetail().getDropShipper() != null) {
             viewData.setDropshipperName(responseData.getDetail().getDropShipper().getName());

@@ -17,7 +17,7 @@ public interface OrderDetailView {
 
     void trackShipment(String orderId);
 
-    void showConfirmDialog(String orderId);
+    void showConfirmDialog(String orderId, String orderStatus);
 
     void showComplaintDialog(String shopName, String orderId);
 

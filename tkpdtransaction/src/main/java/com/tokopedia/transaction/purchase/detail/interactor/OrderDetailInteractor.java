@@ -16,6 +16,8 @@ public interface OrderDetailInteractor {
 
     void confirmFinishConfirm(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
 
+    void confirmDeliveryConfirm(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
+
     void cancelOrder(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
 
     void cancelReplacement(Subscriber<String> subscriber, TKPDMapParam<String, Object> params);

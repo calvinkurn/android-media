@@ -147,7 +147,7 @@
     <string name="button_order_detail_reject_order">Tolak Pesanan</string>
     <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
     <string name="button_order_detail_complaint">Komplain</string>
-    <string name="button_order_detail_cancel_chance">Batalkan Peluang</string>
+    <string name="button_order_detail_cancel_chance">Batalkan Pencarian</string>
     <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
     <string name="label_explanation">Keterangan</string>
     <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
@@ -157,4 +157,7 @@
     <string name="title_replacement_other_reason">Lainnya</string>
     <string name="error_replacement_reason">Mohon Pilih Alasan Pembatalan</string>
     <string name="success_request_cancel_order">Sukses mengajukan pembatalan</string>
+    <string name="success_finish_order_message">Pesanan Anda sudah selesai. Beri Rating dan Review di halaman ulasan.</string>
+    <string name="title_dialog_finish_order">Selesaikan Pesanan</string>
+    <string name="body_dialog_finish_order">Pilih selesai apabila barang sudah diterima dan tidak bermasalah</string>
 </resources>
