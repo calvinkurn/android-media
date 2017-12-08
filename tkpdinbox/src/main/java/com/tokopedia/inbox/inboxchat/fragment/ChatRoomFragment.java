@@ -498,14 +498,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void setViewEnabled(boolean isEnabled) {
-//        replyColumn.setEnabled(isEnabled);
-//        attachButton.setEnabled(isEnabled);
-//        sendButton.setEnabled(isEnabled);
-//        recyclerView.setEnabled(isEnabled);
-//        if (isEnabled) {a
-////            header.setVisibility(View.VISIBLE);
-//            replyView.setVisibility(View.VISIBLE);
-//        }
 
     }
 
