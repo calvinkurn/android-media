@@ -7,6 +7,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.Attributes;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalRequestPayload;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerApi;
@@ -23,17 +24,20 @@ import rx.functions.Func1;
 public class DigitalTrackerCloudSource extends ThanksTrackerCloudSource {
     private static final String KEY_TRACK_THANKYOU = "track_thankyou";
     private DigitalTrackerApi digitalTrackerApi;
+    private DigitalTrackerMapper digitalTrackerMapper;
     private Gson gson;
     private SessionHandler sessionHandler;
     private GCMHandler gcmHandler;
 
     public DigitalTrackerCloudSource(RequestParams requestParams,
                                      DigitalTrackerApi digitalTrackerApi,
+                                     DigitalTrackerMapper digitalTrackerMapper,
                                      Gson gson,
                                      SessionHandler sessionHandler,
                                      GCMHandler gcmHandler) {
         super(requestParams);
         this.digitalTrackerApi = digitalTrackerApi;
+        this.digitalTrackerMapper = digitalTrackerMapper;
         this.gson = gson;
         this.sessionHandler = sessionHandler;
         this.gcmHandler = gcmHandler;
@@ -43,12 +47,7 @@ public class DigitalTrackerCloudSource extends ThanksTrackerCloudSource {
     public Observable<String> sendAnalytics() {
         JsonObject payload = new JsonParser().parse(gson.toJson(getPayload())).getAsJsonObject();
 
-        return digitalTrackerApi.getTrackingData(payload).map(new Func1<Response<String>, String>() {
-            @Override
-            public String call(Response<String> response) {
-                return "";
-            }
-        });
+        return digitalTrackerApi.getTrackingData(payload).map(digitalTrackerMapper);
     }
 
     private DigitalRequestPayload getPayload() {

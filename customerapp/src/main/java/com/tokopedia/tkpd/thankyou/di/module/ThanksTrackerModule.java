@@ -7,10 +7,14 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.factory.ThanksTrackerFactory;
+import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
+import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepository;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepositoryImpl;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerApi;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerService;
+import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
+import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerService;
 import com.tokopedia.tkpd.thankyou.di.scope.ThanksTrackerScope;
 import com.tokopedia.tkpd.thankyou.domain.usecase.ThankYouPageTrackerUseCase;
 import com.tokopedia.tkpd.thankyou.view.ThanksTracker;
@@ -19,6 +23,7 @@ import com.tokopedia.tkpd.thankyou.view.presenter.ThanksTrackerPresenter;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 /**
  * Created by okasurya on 12/4/17.
@@ -40,21 +45,46 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
-        return ApolloClient.builder()
-                .okHttpClient(okHttpClient)
-                .serverUrl(TkpdBaseURL.PAYMENT_DOMAIN + "graphql")
-                .build();
+    DigitalTrackerMapper digitalTrackerMapper() {
+        return new DigitalTrackerMapper();
+    }
+
+    @Provides
+    @ThanksTrackerScope
+    MarketplaceTrackerService provideMarketplaceTrackerService() {
+        return new MarketplaceTrackerService();
+    }
+
+    @Provides
+    @ThanksTrackerScope
+    MarketplaceTrackerApi provideMarketplaceTrackerApi(MarketplaceTrackerService service) {
+        return service.getApi();
+    }
+
+    @Provides
+    @ThanksTrackerScope
+    MarketplaceTrackerMapper provideMarketplaceTrackerMapper() {
+        return new MarketplaceTrackerMapper();
     }
 
     @Provides
     @ThanksTrackerScope
     ThanksTrackerFactory provideThanksAnalyticsFactory(DigitalTrackerApi digitalTrackerApi,
-                                                       ApolloClient apolloClient,
+                                                       DigitalTrackerMapper digitalTrackerMapper,
+                                                       MarketplaceTrackerApi marketplaceTrackerApi,
+                                                       MarketplaceTrackerMapper marketplaceTrackerMapper,
                                                        Gson gson,
                                                        SessionHandler sessionHandler,
                                                        GCMHandler gcmHandler) {
-        return new ThanksTrackerFactory(digitalTrackerApi, apolloClient, gson, sessionHandler, gcmHandler);
+        return new ThanksTrackerFactory(
+                digitalTrackerApi,
+                digitalTrackerMapper,
+                marketplaceTrackerApi,
+                marketplaceTrackerMapper,
+                gson,
+                sessionHandler,
+                gcmHandler
+        );
     }
 
     @Provides
