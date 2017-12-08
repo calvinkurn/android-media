@@ -3,7 +3,7 @@ package com.tokopedia.loyalty.broadcastreceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
@@ -45,26 +45,34 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(new Subscriber<TokoPointDrawerData>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(TokoPointDrawerData topPointDrawerData) {
-                                Log.d("TokoPointDrawerBR", topPointDrawerData.toString());
-                                Intent intent1 = new Intent(DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION);
-                                intent1.putExtra(DrawerPresenterActivity.TokoPointDataBroadcastReceiver.EXTRA_TOKOPOINT_DRAWER_DATA,
-                                        topPointDrawerData);
-                                context.sendBroadcast(intent1);
-                            }
-                        })
+                        .subscribe(getSubscriberTokoPointDrawerData(context))
         );
+    }
+
+    @NonNull
+    private Subscriber<TokoPointDrawerData> getSubscriberTokoPointDrawerData(final Context context) {
+        return new Subscriber<TokoPointDrawerData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(TokoPointDrawerData topPointDrawerData) {
+                Intent intentTokoPointData = new Intent(
+                        DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION
+                );
+                intentTokoPointData.putExtra(
+                        DrawerPresenterActivity.TokoPointDataBroadcastReceiver.EXTRA_TOKOPOINT_DRAWER_DATA,
+                        topPointDrawerData
+                );
+                context.sendBroadcast(intentTokoPointData);
+            }
+        };
     }
 }
