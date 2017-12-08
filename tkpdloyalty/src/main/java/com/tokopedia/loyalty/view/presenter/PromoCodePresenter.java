@@ -28,6 +28,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
     @Override
     public void processCheckPromoCode(Context context, String voucherCode) {
+        view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("voucher_code", voucherCode);
         promoCodeInteractor.submitVoucher(voucherCode,
@@ -40,14 +41,24 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                view.hideProgressLoading();
+                view.promoCodeError(e.getMessage());
             }
 
             @Override
             public void onNext(VoucherViewModel voucherViewModel) {
-
+                view.hideProgressLoading();
+                view.checkVoucherSuccessfull(voucherViewModel);
             }
         });
+    }
+
+    @Override
+    public void processCheckDigitalPromoCode(
+            Context context,
+            String voucherId,
+            String categoryId) {
+
     }
 
 }

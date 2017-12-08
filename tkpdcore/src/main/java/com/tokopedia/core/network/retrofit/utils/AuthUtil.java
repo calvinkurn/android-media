@@ -388,6 +388,21 @@ public class AuthUtil {
         return params;
     }
 
+    //TODO Delete Later
+    public static TKPDMapParam<String, String> generateDummyParamsNetwork(Context context, TKPDMapParam<String, String> params) {
+        String deviceId = GCMHandler.getRegistrationId(context);
+        String userId = SessionHandler.getLoginID(context);
+        String hash = md5(userId + "~" + deviceId);
+
+        params.put(PARAM_USER_ID, "12345");
+        params.put(PARAM_DEVICE_ID, deviceId);
+        params.put(PARAM_HASH, hash);
+        params.put(PARAM_OS_TYPE, "1");
+        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+//        params.put(PARAM_X_TKPD_USER_ID, userId);
+        return params;
+    }
+
     public static TKPDMapParam<String, String> generateParamsNetwork(Context context) {
         String deviceId = GCMHandler.getRegistrationId(context);
         String userId = SessionHandler.getLoginID(context);

@@ -10,23 +10,23 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCodeComponent;
 import com.tokopedia.loyalty.di.component.PromoCodeComponent;
 import com.tokopedia.loyalty.di.module.PromoCodeViewModule;
-import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
 
-import java.util.List;
-
 import javax.inject.Inject;
+
+import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING;
 
 /**
  * @author anggaprasetiyo on 24/11/17.
@@ -38,6 +38,12 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     IPromoCodePresenter dPresenter;
 
     private ManualInsertCodeListener listener;
+
+    private TkpdProgressDialog progressDialog;
+
+    private static final String PLATFORM_KEY = "PLATFORM_KEY";
+
+    private static final String CATEGORY_KEY = "CATEGORY_KEY";
 
     @Override
     protected boolean isRetainInstance() {
@@ -86,15 +92,37 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     @Override
     protected void initView(View view) {
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
-        submitVoucherButton.setOnClickListener(new View.OnClickListener() {
+
+        if(getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING))
+            submitVoucherButton.setOnClickListener(onSubmitDigitalVoucher(voucherCodeField));
+        else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(voucherCodeField));
+
+    }
+
+    private View.OnClickListener onSubmitMarketplaceVoucher(final EditText voucherCodeField) {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dPresenter.processCheckPromoCode(getActivity(),
+                dPresenter.processCheckPromoCode(
+                        getActivity(),
                         voucherCodeField.getText().toString());
             }
-        });
+        };
+    }
+
+    private View.OnClickListener onSubmitDigitalVoucher(final EditText voucherCodeField) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dPresenter.processCheckDigitalPromoCode(
+                        getActivity(),
+                        voucherCodeField.getText().toString(),
+                        getArguments().getString(CATEGORY_KEY));
+            }
+        };
     }
 
     @Override
@@ -123,18 +151,23 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         promoCodeComponent.inject(this);
     }
 
-    public static Fragment newInstance() {
-        return new PromoCodeFragment();
-    }
-
-    @Override
-    public void renderPromoCodeResult(List<CouponData> couponDataList) {
-
+    public static Fragment newInstance(String platform, String categoryKey) {
+        PromoCodeFragment fragment = new PromoCodeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
     public void checkVoucherSuccessfull(VoucherViewModel voucher) {
         listener.onCodeSuccess(voucher.getCode(), voucher.getMessage(), voucher.getAmount());
+    }
+
+    @Override
+    public void promoCodeError(String errorMessage) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -164,12 +197,12 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     @Override
     public void showProgressLoading() {
-
+        progressDialog.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-
+        progressDialog.dismiss();
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface IPromoCouponPresenter {
 
     String VOUCHER_CODE = "voucher_code";
 
-    void processGetCouponList();
+    void processGetCouponList(String platform);
 
     void processPostCouponValidateRedeem();
 
