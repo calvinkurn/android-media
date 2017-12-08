@@ -38,6 +38,7 @@ import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModelMapper;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
@@ -61,7 +62,11 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
-
+    @Inject
+    FlightDetailRouteViewModelMapper flightDetailRouteViewModelMapper;
+    @Inject
+    FlightBookingReviewPresenter flightBookingReviewPresenter;
+    FlightBookingReviewModel flightBookingReviewModel;
     private CountdownTimeView reviewTime;
     private TextView reviewDetailDepartureFlight;
     private RecyclerView recyclerViewDepartureFlight;
@@ -74,10 +79,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private VoucherCartView voucherCartView;
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
-
-    @Inject
-    FlightBookingReviewPresenter flightBookingReviewPresenter;
-    FlightBookingReviewModel flightBookingReviewModel;
     private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
