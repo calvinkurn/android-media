@@ -27,7 +27,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.voucher.VoucherCartView;
+import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
@@ -67,7 +67,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
-        InputPriceHolderView.ActionListener, VoucherCartView.ActionListener {
+        InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener {
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
@@ -88,7 +88,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @BindView(R2.id.item_cart_holder_view)
     ItemCartHolderView itemCartHolderView;
     @BindView(R2.id.voucher_cart_holder_view)
-    VoucherCartView voucherCartView;
+    VoucherCartHachikoView voucherCartHachikoView;
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
     @BindView(R2.id.nsv_container)
@@ -198,7 +198,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     protected void initialVar() {
         checkoutDataBuilder = new CheckoutDataParameter.Builder();
         inputPriceHolderView.setActionListener(this);
-        voucherCartView.setActionListener(this);
+        voucherCartHachikoView.setActionListener(this);
         sessionHandler = new SessionHandler(getActivity());
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialogNormal.setCancelable(false);
@@ -299,9 +299,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         buildCheckoutData(cartDigitalInfoData);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
         if (GlobalConfig.isSellerApp()) {
-            voucherCartView.setVisibility(View.GONE);
+            voucherCartHachikoView.setVisibility(View.GONE);
         } else {
-            voucherCartView.setVisibility(
+            voucherCartHachikoView.setVisibility(
                     cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
             );
 
@@ -328,7 +328,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPricePlain()
         );
         if (voucherDigitalState != null) {
-            voucherCartView.setVoucher(
+            voucherCartHachikoView.setVoucher(
                     voucherDigitalState.getAttributeVoucher().getVoucherCode(),
                     voucherDigitalState.getAttributeVoucher().getMessage()
             );
@@ -452,7 +452,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderVoucherInfoData(VoucherDigital voucherDigital) {
         this.voucherDigitalState = voucherDigital;
-        voucherCartView.setVoucher(
+        voucherCartHachikoView.setVoucher(
                 voucherDigital.getAttributeVoucher().getVoucherCode(),
                 voucherDigital.getAttributeVoucher().getMessage());
         checkoutHolderView.enableVoucherDiscount(
@@ -551,7 +551,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public CheckoutDataParameter getCheckoutData() {
-        checkoutDataBuilder.voucherCode(voucherCartView.getVoucherCode());
+        checkoutDataBuilder.voucherCode(voucherCartHachikoView.getVoucherCode());
         return checkoutDataBuilder.build();
     }
 
@@ -638,7 +638,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             }
             navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
         } else {
-            voucherCartView.setVisibility(View.GONE);
+            voucherCartHachikoView.setVisibility(View.GONE);
         }
     }
 
@@ -695,7 +695,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 if (bundle != null) {
                     String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
                     String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
-                    voucherCartView.setVoucher(voucherCode, voucherMessage);
+                    voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
                 }
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
@@ -703,7 +703,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
                     String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
                     String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
-                    voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
+                    voucherCartHachikoView.setCoupon(couponTitle, couponMessage, couponCode);
                 }
             }
         }
