@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.tkpd.ConsumerMainApplication;
