@@ -5,12 +5,14 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author alvarisi
  */
 public abstract class BaseListAdapterV2<T extends Visitable> extends BaseAdapter {
     private static int DEFAULT_ROW_PER_PAGE = 10;
+
 
     public interface OnAdapterInteractionListener<T> {
         void onItemClicked(T t);
@@ -48,4 +50,8 @@ public abstract class BaseListAdapterV2<T extends Visitable> extends BaseAdapter
         });
     }
 
+    public void addData(List<T> visitables) {
+        this.visitables.addAll(visitables);
+        notifyDataSetChanged();
+    }
 }
