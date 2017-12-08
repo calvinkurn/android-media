@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
-import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
 

@@ -5,7 +5,6 @@ import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
-import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 import java.util.List;
 
@@ -24,9 +23,9 @@ public interface IPromoCouponInteractor {
                        Subscriber<CouponViewModel> subscriber);
 
     void submitDigitalVoucher(String couponTitle,
-                       String voucherCode,
-                       TKPDMapParam<String, String> param,
-                       Subscriber<CouponViewModel> subscriber);
+                              String voucherCode,
+                              TKPDMapParam<String, String> param,
+                              Subscriber<CouponViewModel> subscriber);
     void postCouponValidateRedeem(RequestBodyValidateRedeem requestBodyValidateRedeem,
                                   Subscriber<String> subscriber);
 

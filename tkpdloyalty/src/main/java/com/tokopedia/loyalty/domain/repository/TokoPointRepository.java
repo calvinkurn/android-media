@@ -185,7 +185,7 @@ public class TokoPointRepository implements ITokoPointRepository {
                 VoucherResponse voucherResponse = new Gson().fromJson(
                         networkResponse.body().getStringData(), VoucherResponse.class
                 );
-                if(networkResponse.body().isError()) {
+                if (networkResponse.body().isError()) {
                     throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
                 }
                 return tokoPointResponseMapper.voucherViewModel(voucherResponse, voucherCode);
@@ -200,37 +200,41 @@ public class TokoPointRepository implements ITokoPointRepository {
     ) {
         return txVoucherService.getApi().checkVoucherCode(param)
                 .map(new Func1<Response<TkpdResponse>, CouponViewModel>() {
-            @Override
-            public CouponViewModel call(Response<TkpdResponse> networkResponse) {
-                VoucherResponse voucherResponse = new Gson().fromJson(
-                        networkResponse.body().getStringData(), VoucherResponse.class
-                );
-                if(networkResponse.body().isError()) {
-                    throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
-                }
-                return tokoPointResponseMapper.couponViewModel(voucherResponse, voucherCode, couponTitle
-                );
-            }
-        });
+                    @Override
+                    public CouponViewModel call(Response<TkpdResponse> networkResponse) {
+                        VoucherResponse voucherResponse = new Gson().fromJson(
+                                networkResponse.body().getStringData(), VoucherResponse.class
+                        );
+                        if (networkResponse.body().isError()) {
+                            throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
+                        }
+                        return tokoPointResponseMapper.couponViewModel(voucherResponse, voucherCode, couponTitle
+                        );
+                    }
+                });
     }
 
     @Override
-    public Observable<VoucherViewModel> checkDigitalVoucherValidity(TKPDMapParam<String, String> param, final StringvoucherCode){
-                return digitalService.getApi().checkVoucher(param)
+    public Observable<VoucherViewModel> checkDigitalVoucherValidity(
+            TKPDMapParam<String, String> param, final String voucherCode
+    ) {
+        return digitalService.getApi().checkVoucher(param)
                 .map(new Func1<Response<TkpdDigitalResponse>, VoucherViewModel>() {
-            @Override
-            public VoucherViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
-                return tokoPointResponseMapper.digtialVoucherViewModel(
-                        tkpdDigitalResponseResponse.body().convertDataObj(DigitalVoucherData.class),
-                        voucherCode
-                );
-            }
-        });
+                    @Override
+                    public VoucherViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                        return tokoPointResponseMapper.digtialVoucherViewModel(
+                                tkpdDigitalResponseResponse.body().convertDataObj(DigitalVoucherData.class),
+                                voucherCode
+                        );
+                    }
+                });
     }
 
     @Override
-    public Observable<CouponViewModel> checkDigitalCouponValidity(TKPDMapParam<String, String> param, final String voucherCode, final StringcouponTitle){
-                return digitalService.getApi().checkVoucher(param).
+    public Observable<CouponViewModel> checkDigitalCouponValidity(
+            TKPDMapParam<String, String> param, final String voucherCode, final String couponTitle
+    ) {
+        return digitalService.getApi().checkVoucher(param).
                 map(new Func1<Response<TkpdDigitalResponse>, CouponViewModel>() {
                     @Override
                     public CouponViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
@@ -239,7 +243,7 @@ public class TokoPointRepository implements ITokoPointRepository {
                                 voucherCode,
                                 couponTitle
                         );
-            }
-        });
+                    }
+                });
     }
 }

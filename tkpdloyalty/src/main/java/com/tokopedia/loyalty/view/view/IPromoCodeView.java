@@ -1,9 +1,6 @@
 package com.tokopedia.loyalty.view.view;
 
-import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-
-import java.util.List;
 
 /**
  * @author anggaprasetiyo on 27/11/17.

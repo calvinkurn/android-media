@@ -52,8 +52,8 @@ public class LoyaltyViewModule {
                 new LoyaltyPagerItem.Builder()
                         .fragment(PromoCodeFragment.newInstance(
                                 activity.getIntent()
-                                    .getExtras()
-                                    .getString(EXTRA_PLATFORM, ""),
+                                        .getExtras()
+                                        .getString(EXTRA_PLATFORM, ""),
                                 activity.getIntent()
                                         .getExtras()
                                         .getString(EXTRA_CATEGORY, "")))
