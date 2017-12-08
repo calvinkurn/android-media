@@ -1,14 +1,17 @@
 package com.tokopedia.transaction.bcaoneklik.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.adapter.autentication.AuthenticationListAdapter;
@@ -26,9 +29,26 @@ import javax.inject.Inject;
  */
 
 public class CreditCardAuthenticationActivity extends TActivity
-        implements CreditCardAuthenticationView{
+        implements CreditCardAuthenticationView {
+
+    private static final String EXTRA_AUTHENTICATION_STATE = "EXTRA_AUTHENTICATION_STATE";
+    private static final String EXTRA_AUTHENTICATION_USER_EMAIL = "EXTRA_AUTHENTICATION_USER_EMAIL";
+    private static final String EXTRA_BUNDLE_AUTHENTICATION = "EXTRA_BUNDLE_AUTHENTICATION";
 
     private TkpdProgressDialog dialog;
+
+    @SuppressWarnings("unused")
+    @DeepLink(Constants.Applinks.CREDIT_CARD_AUTH_SETTING)
+    public static Intent getCallingIntentCreditCardAuthentication(Context context, Bundle extras) {
+        Intent intent = new Intent(context, CreditCardAuthenticationActivity.class);
+        AuthenticatorPageModel authenticatorPageModel = new AuthenticatorPageModel();
+        authenticatorPageModel.setState(extras.getInt(EXTRA_AUTHENTICATION_STATE));
+        authenticatorPageModel.setUserEmail(extras.getString(EXTRA_AUTHENTICATION_USER_EMAIL));
+        Bundle extrasIntent = new Bundle();
+        extrasIntent.putParcelable(EXTRA_BUNDLE_AUTHENTICATION, authenticatorPageModel);
+        intent.putExtras(extras);
+        return intent;
+    }
 
     @Inject
     CreditCardAuthenticationPresenterImpl presenter;
