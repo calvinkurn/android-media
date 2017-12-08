@@ -81,6 +81,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA =
             "EXTRA_STATE_CHECKOUT_PASS_DATA";
 
+    private final int COUPON_ACTIVE = 1;
+
     @BindView(R2.id.checkout_cart_holder_view)
     CheckoutHolderView checkoutHolderView;
     @BindView(R2.id.item_cart_holder_view)
@@ -627,17 +629,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickUseVoucher() {
-        Intent intent;
         if (cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
-            intent = LoyaltyActivity.newInstanceCouponActive(
-                    context, "digital", passData.getCategoryId()
-            );
+            Intent intent;
+            if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                intent = LoyaltyActivity.newInstanceCouponActive(context, "digital", passData.getCategoryId());
+            } else {
+                intent = LoyaltyActivity.newInstanceCouponNotActive(context, "digital", passData.getCategoryId());
+            }
+            navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
         } else {
-            intent = LoyaltyActivity.newInstanceCouponNotActive(
-                    context, "digital", passData.getCategoryId()
-            );
+            voucherCartView.setVisibility(View.GONE);
         }
-        navigateToActivityRequest(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
     }
 
     @Override
@@ -690,16 +692,19 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
             if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
-                String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
-                String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
-                voucherCartView.setVoucher(voucherCode, voucherMessage);
+                if (bundle != null) {
+                    String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
+                    String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
+                    voucherCartView.setVoucher(voucherCode, voucherMessage);
+                }
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
-                String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
-                String couponAmount = bundle.getString(LoyaltyActivity.COUPON_AMOUNT, "");
-                String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
-                String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
-                voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
+                if (bundle != null) {
+                    String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
+                    String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
+                    String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
+                    voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
+                }
             }
         }
     }

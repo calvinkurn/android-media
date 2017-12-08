@@ -33,6 +33,8 @@ public class AttributesDigital implements Parcelable {
 
     private String voucherAutoCode;
 
+    private int isCouponActive;
+
     private UserInputPriceDigital userInputPrice;
 
     public String getUserId() {
@@ -133,6 +135,14 @@ public class AttributesDigital implements Parcelable {
 
     public String getVoucherAutoCode() {
         return voucherAutoCode;
+    }
+
+    public int isCouponActive() {
+        return isCouponActive;
+    }
+
+    public void setIsCouponActive(int isCouponActive) {
+        this.isCouponActive = isCouponActive;
     }
 
     public void setVoucherAutoCode(String voucherAutoCode) {
