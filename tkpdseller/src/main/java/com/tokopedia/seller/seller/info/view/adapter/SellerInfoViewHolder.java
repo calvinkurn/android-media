@@ -57,9 +57,9 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
         ImageHandler.LoadImage(imageSellerInfo, sellerInfoModel.getInfoThumbnailUrl());
 
         if(sellerInfoModel.isRead()){
-            sellerInfoContainer.setBackgroundColor(lightGreenColor);
-        }else{
             sellerInfoContainer.setBackgroundColor(whiteColor);
+        }else{
+            sellerInfoContainer.setBackgroundColor(lightGreenColor);
         }
     }
 }
