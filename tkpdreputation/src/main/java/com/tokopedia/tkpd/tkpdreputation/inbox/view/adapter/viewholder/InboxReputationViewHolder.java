@@ -11,19 +11,13 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TimeConverter;
-import com.tokopedia.design.reputation.ReputationView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.reputation.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 /**
  * @author by nisie on 8/19/17.
