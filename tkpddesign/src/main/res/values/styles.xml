@@ -117,9 +117,12 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="CardViewWidget.Voucher" >
+    <style name="CardViewWidget.InputVoucher">
         <item name="cardBackgroundColor">@color/white</item>
-        <item name="cardElevation">0dp</item>
+    </style>
+
+    <style name="CardViewWidget.UsedVoucher">
+        <item name="android:background">@drawable/bg_used_voucher</item>
     </style>
 
 </resources>

@@ -96,7 +96,6 @@ public class FragmentBannerWebView extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
 
-
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);

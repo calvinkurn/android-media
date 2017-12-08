@@ -133,7 +133,6 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                     ((IDigitalModuleRouter) view.getContext().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(view), item.getPromoApplink(), new Bundle());
                 } else {
-
                     String url = item.getPromoUrl();
                     try {
                         UnifyTracking.eventSlideBannerClicked(url);
@@ -151,12 +150,10 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                         } else {
                             openWebViewURL(url, view.getContext());
                         }
-
                     } catch (Exception e) {
                         openWebViewURL(url, view.getContext());
                         e.printStackTrace();
                     }
-
                 }
             }
         };
