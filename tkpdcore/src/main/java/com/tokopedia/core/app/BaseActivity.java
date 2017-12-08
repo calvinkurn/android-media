@@ -120,7 +120,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         initGTM();
         sendScreenAnalytics();
-        //verifyFetchDepartment();// this code couldn't be mocked.
 
 
         registerForceLogoutReceiver();
