@@ -422,7 +422,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
             shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
         }
-        shippingParams.put(DISTRICT_AND_CITY, view.getDistrictAndCity());
         addAdditionalOptionsConfigurations(shippingParams);
     }
 
