@@ -34,7 +34,7 @@ public class ThanksTrackerPresenter implements ThanksTracker.Presenter {
 
             thankYouPageTrackerUseCase.createObservable(requestParams)
                     .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Subscriber<String>() {
+                    .subscribe(new Subscriber<Boolean>() {
                         @Override
                         public void onCompleted() {
 
@@ -46,7 +46,7 @@ public class ThanksTrackerPresenter implements ThanksTracker.Presenter {
                         }
 
                         @Override
-                        public void onNext(String s) {
+                        public void onNext(Boolean s) {
                         }
                     });
         }

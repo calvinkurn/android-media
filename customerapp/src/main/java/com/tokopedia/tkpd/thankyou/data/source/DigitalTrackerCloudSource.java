@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.thankyou.data.source;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -9,6 +10,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.Attributes;
+import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalRequestPayload;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
@@ -44,23 +46,25 @@ public class DigitalTrackerCloudSource extends ThanksTrackerCloudSource {
     }
 
     @Override
-    public Observable<String> sendAnalytics() {
-        JsonObject payload = new JsonParser().parse(gson.toJson(getPayload())).getAsJsonObject();
+    public Observable<Boolean> sendAnalytics() {
+        JsonObject requestBody = new JsonParser().parse(gson.toJson(getPayload())).getAsJsonObject();
 
-        return digitalTrackerApi.getTrackingData(payload).map(digitalTrackerMapper);
+        return digitalTrackerApi.getTrackingData(requestBody).map(digitalTrackerMapper);
     }
 
-    private DigitalRequestPayload getPayload() {
-        DigitalRequestPayload digitalRequestPayload = new DigitalRequestPayload();
-        digitalRequestPayload.setAttributes(getAttributes());
-        digitalRequestPayload.setType(KEY_TRACK_THANKYOU);
+    private DigitalDataWrapper<DigitalRequestPayload> getPayload() {
+        DigitalDataWrapper<DigitalRequestPayload> data = new DigitalDataWrapper<>();
+        DigitalRequestPayload payload = new DigitalRequestPayload();
+        payload.setAttributes(getAttributes());
+        payload.setType(KEY_TRACK_THANKYOU);
+        data.setData(payload);
 
-        return digitalRequestPayload;
+        return data;
     }
 
     private Attributes getAttributes() {
         Attributes attributes = new Attributes();
-        attributes.setOrderId(requestParams.getString(ThanksTrackerConst.Key.ID, ""));
+        attributes.setOrderId(Integer.parseInt(requestParams.getString(ThanksTrackerConst.Key.ID, "0")));
         attributes.setIdentifier(getIdentifier());
         return attributes;
     }

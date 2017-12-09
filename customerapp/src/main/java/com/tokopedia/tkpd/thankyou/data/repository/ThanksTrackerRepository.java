@@ -9,5 +9,5 @@ import rx.Observable;
  */
 
 public interface ThanksTrackerRepository {
-    Observable<String> sendTracker(RequestParams requestParams);
+    Observable<Boolean> sendTracker(RequestParams requestParams);
 }

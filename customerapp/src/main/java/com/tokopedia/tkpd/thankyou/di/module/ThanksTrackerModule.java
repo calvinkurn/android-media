@@ -45,8 +45,8 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    DigitalTrackerMapper digitalTrackerMapper() {
-        return new DigitalTrackerMapper();
+    DigitalTrackerMapper digitalTrackerMapper(Gson gson) {
+        return new DigitalTrackerMapper(gson);
     }
 
     @Provides

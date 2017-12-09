@@ -16,20 +16,17 @@ import rx.Observable;
 public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private MarketplaceTrackerApi marketplaceTrackerApi;
     private MarketplaceTrackerMapper mapper;
-    private Gson gson;
 
     public MarketplaceTrackerCloudSource(RequestParams requestParams,
                                          MarketplaceTrackerApi marketplaceTrackerApi,
-                                         MarketplaceTrackerMapper mapper,
-                                         Gson gson) {
+                                         MarketplaceTrackerMapper mapper) {
         super(requestParams);
         this.marketplaceTrackerApi = marketplaceTrackerApi;
         this.mapper = mapper;
-        this.gson = gson;
     }
 
     @Override
-    public Observable<String> sendAnalytics() {
+    public Observable<Boolean> sendAnalytics() {
         return marketplaceTrackerApi.getTrackingData(getRequestPayload()).map(mapper);
     }
 
@@ -80,10 +77,5 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
                 "    }\n" +
                 "  }\n" +
                 "}";
-//        return "{payment(payment_id:"
-//                + requestParams.getString(ThanksTrackerConst.Key.ID, "0")
-//                + "){"
-//                + gson.toJsonTree(new PaymentData()).toString()
-//                + "}}";
     }
 }

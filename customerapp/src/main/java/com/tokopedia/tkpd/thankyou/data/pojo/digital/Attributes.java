@@ -11,16 +11,16 @@ import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 public class Attributes {
     @SerializedName("order_id")
     @Expose
-    private String orderId;
+    private int orderId;
     @SerializedName("identifier")
     @Expose
     private RequestBodyIdentifier identifier;
 
-    public String getOrderId() {
+    public int getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
 

@@ -17,7 +17,7 @@ public class ThanksTrackerRepositoryImpl implements ThanksTrackerRepository {
     }
 
     @Override
-    public Observable<String> sendTracker(RequestParams requestParams) {
+    public Observable<Boolean> sendTracker(RequestParams requestParams) {
         try {
             return thanksTrackerFactory.cloudSource(requestParams).sendAnalytics();
         } catch (Exception e) {

@@ -10,9 +10,9 @@ import rx.functions.Func1;
  * Created by okasurya on 12/7/17.
  */
 
-public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, String> {
+public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
     @Override
-    public String call(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
+    public Boolean call(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
         return null;
     }
 }

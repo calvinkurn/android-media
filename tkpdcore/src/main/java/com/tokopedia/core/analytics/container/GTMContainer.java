@@ -17,6 +17,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.data.purchase.PurchaseTrackingData;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.ButtonClickEvent;
@@ -35,6 +36,7 @@ import com.tokopedia.core.var.TkpdCache;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -457,13 +459,16 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(context,
                 DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
                         "ecommerce", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf(
-                                        "list", "hotlist"),
+                                "actionField", DataLayer.mapOf("list", "hotlist"),
                                 "impressions",
                                 DataLayer.listOf(
                                         hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
                         )
                 )
         );
+    }
+
+    public void event(String name, Map<String, Object> data) {
+        GTMDataLayer.pushEvent(context, name, data);
     }
 }
