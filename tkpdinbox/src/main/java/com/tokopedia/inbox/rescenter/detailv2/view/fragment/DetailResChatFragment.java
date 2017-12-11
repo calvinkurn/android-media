@@ -1192,7 +1192,7 @@ public class DetailResChatFragment
     @Override
     public void goToProductList(ConversationProductDomain product) {
         startActivity(
-                ListProductActivity.newInstance(context, String.valueOf(product.getResId()))
+                ListProductActivity.newInstance(context, String.valueOf(resolutionId))
         );
     }
 
