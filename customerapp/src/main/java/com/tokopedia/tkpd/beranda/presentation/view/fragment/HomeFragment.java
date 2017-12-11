@@ -354,6 +354,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onTopPicksItemClicked(TopPicksItemModel data, int parentPosition, int childPosition) {
         String url = data.getUrl();
+        url = "http://www.tokopedia.com/discovery/must-have-coat";
         UnifyTracking.eventHomeTopPicksItem(data.getName(), data.getName());
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
@@ -364,6 +365,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 break;
             case DeepLinkChecker.CATALOG:
                 DeepLinkChecker.openCatalog(url, getActivity());
+                break;
+            case DeepLinkChecker.DISCOVERY_PAGE:
+                openDiscoveryPage(data.getName(),DeepLinkChecker.getDiscoveryPageId(url));
                 break;
             default:
                 openWebViewTopPicksURL(url);
@@ -483,6 +487,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 || link.equals("p")
                 || link.equals("catalog")
                 || link.equals("toppicks")
+                || link.equals("discovery")
+                || link.equals("b")
                 || link.equals("promo")
                 || link.startsWith("invoice.pl");
     }
@@ -610,5 +616,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             intent.putExtra("url", url);
             context.startActivity(intent);
         }
+    }
+
+    private void openDiscoveryPage(String title, String pageId) {
+        getActivity().startActivity(
+                ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+                        getActivity(), ReactConst.Screen.DISCOVERY_PAGE,
+                        title, pageId
+                ));
     }
 }
