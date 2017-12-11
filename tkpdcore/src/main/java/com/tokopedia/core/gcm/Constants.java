@@ -93,6 +93,7 @@ public interface Constants {
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL_CART = "tokopedia://digital/cart";
         String DIGITAL_CATEGORY = "tokopedia://digital/category";
+        String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
         String PROMO = "tokopedia://promo";
         String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
         String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";

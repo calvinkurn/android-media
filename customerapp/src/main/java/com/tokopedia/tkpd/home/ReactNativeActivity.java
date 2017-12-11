@@ -65,6 +65,15 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         );
     }
 
+    @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
+    public static Intent getDiscoveryPaageIntent(Context context, Bundle bundle) {
+        return ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+                context, ReactConst.Screen.DISCOVERY_PAGE,
+                "",
+                bundle.getString("page_id")
+        ).putExtras(bundle);
+    }
+
     public static Intent createOfficialStoresReactNativeActivity(Context context,
                                                                  String reactScreenName,
                                                                  String pageTitle) {
