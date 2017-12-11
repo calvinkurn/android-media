@@ -44,6 +44,7 @@ import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -76,6 +77,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private boolean mRenderProductListBasedOnLocationUpdates;
     private boolean mSourceIsCurrentLocation;
     private MapConfiguration mapConfiguration;
+    private boolean isDestinationPrefilledOnce;
 
     @Inject
     public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase, GetUserAddressUseCase getUserAddressUseCase) {
@@ -138,10 +140,12 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                                     } else {
                                         mRenderProductListBasedOnLocationUpdates = false;
                                     }
+                                }
 
-                                    startLocationUpdates();
-                                } else {
+                                if (!RideUtils.isLocationEnabled(getView().getActivity())) {
                                     checkLocationSettings();
+                                } else {
+                                    startLocationUpdates();
                                 }
                             }
                         }
@@ -278,7 +282,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                             placeVm.setTitle(sourceAddress);
                             getView().setSourceLocation(placeVm);
 
-                            prefillDestinationFromRecentAddressList();
+                            if (!isDestinationPrefilledOnce) {
+                                prefillDestinationFromRecentAddressList();
+                            }
                         }
                     }
                 });
@@ -386,7 +392,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         if (!getView().isAlreadySelectDestination()) {
 
             //if current location is null, ask permission to enable location
-            if (mCurrentLocation == null) {
+            if (mCurrentLocation == null || !RideUtils.isLocationEnabled(getView().getActivity())) {
                 checkLocationSettings();
                 return;
             }
@@ -600,6 +606,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                                     destination.setAndFormatLatitude(Double.parseDouble(address.getLatitude()));
 
                                     getView().setDestinationAndProcessList(destination);
+                                    isDestinationPrefilledOnce = true;
                                 }
                             }
                         }

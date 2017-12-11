@@ -504,8 +504,6 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         if (getActivity() != null && requestCode == REQUEST_CODE_OPEN_SCROOGE_PAGE) {
             if (resultCode == ScroogePGUtil.RESULT_CODE_SUCCESS) {
                 btnPendingFare.setVisibility(View.GONE);
-            } else {
-                NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.error_fail_pay_pending));
             }
         }
     }
