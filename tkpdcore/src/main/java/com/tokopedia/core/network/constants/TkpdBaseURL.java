@@ -896,6 +896,7 @@ public class TkpdBaseURL {
         public static final String DELETE = "/tc/v1/delete";
         public static final String SEND_MESSAGE = "/tc/v1/send";
         public static final String GET_TOPCHAT_NOTIFICATION = "tc/v1/notif_unreads";
+        public static final String GET_TEMPLATE = "tc/v1/chat_templates";
     }
 
     public class Maps {

@@ -14,17 +14,9 @@ import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
  * Created by stevenfredian on 9/27/17.
  */
 
-public interface ChatRoomTypeFactory {
+public interface TemplateChatTypeFactory {
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 
-    int type(OppositeChatViewModel oppositeChatViewModel);
-
-    int type(MyChatViewModel myChatViewModel);
-
-    int type(TimeMachineChatModel timeMachineChatModel);
-
-    int type(TypingChatModel typingChatModel);
-
-    int type(AttachImageModel attachImageModel);
+    int type(TemplateChatModel templateChatModel);
 }
