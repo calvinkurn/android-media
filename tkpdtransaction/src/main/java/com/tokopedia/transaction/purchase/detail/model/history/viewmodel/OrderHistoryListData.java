@@ -14,6 +14,8 @@ public class OrderHistoryListData {
 
     private String orderHistoryDate;
 
+    private String orderHistoryComment;
+
     private String actionBy;
 
     private String color;
@@ -66,4 +68,11 @@ public class OrderHistoryListData {
         this.color = color;
     }
 
+    public String getOrderHistoryComment() {
+        return orderHistoryComment;
+    }
+
+    public void setOrderHistoryComment(String orderHistoryComment) {
+        this.orderHistoryComment = orderHistoryComment;
+    }
 }

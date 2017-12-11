@@ -69,15 +69,32 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/history_description"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:paddingTop="@dimen/padding_vs"
-                android:paddingBottom="@dimen/padding_vs"
-                tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/history_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:paddingBottom="@dimen/padding_vs"
+                    android:paddingTop="@dimen/padding_vs"
+                    tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
+
+                <TextView
+                    android:id="@+id/history_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:paddingBottom="@dimen/padding_vs"
+                    android:paddingTop="@dimen/padding_vs"
+                    tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

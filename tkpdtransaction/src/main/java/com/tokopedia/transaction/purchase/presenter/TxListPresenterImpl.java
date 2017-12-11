@@ -686,8 +686,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                                       OrderData orderData) {
         if (orderData.getOrderDetail().getDetailOrderStatus()
                 .equals(context.getString(R.string.ORDER_DELIVERED))
-                || orderData.getOrderDetail()
-                .getDetailOrderStatus()
+                || orderData.getOrderDetail().getDetailOrderStatus()
                 .equals(context.getString(R.string.ORDER_DELIVERY_FAILURE))) {
             Map<String, String> params = new HashMap<>();
             params.put("order_id", orderData.getOrderDetail().getDetailOrderId());
@@ -699,7 +698,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            viewListener.showToastMessage(context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
+                            viewListener.showToastSuccessFinishMessage(context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
                             dialog.dismiss();
                         }
 
@@ -719,7 +718,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                         @Override
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
-                            viewListener.showToastMessage(message);
+                            viewListener.showToastSuccessFinishMessage(message);
                             dialog.dismiss();
                         }
 

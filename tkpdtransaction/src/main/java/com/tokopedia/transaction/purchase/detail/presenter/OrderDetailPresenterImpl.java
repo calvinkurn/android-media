@@ -71,7 +71,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processConfirmDeliver(Context context, OrderDetailData data) {
-        mainView.showConfirmDialog(data.getOrderId(), data.getOrderStatus());
+        mainView.showConfirmDialog(data.getOrderId(), data.getOrderCode());
     }
 
     @Override
