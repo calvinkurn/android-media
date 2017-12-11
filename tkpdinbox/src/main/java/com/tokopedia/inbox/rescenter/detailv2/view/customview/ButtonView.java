@@ -69,7 +69,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     public void renderData(@NonNull ButtonData data) {
         setVisibility(VISIBLE);
         setButtonData(data);
-        adapter = new ButtonViewAdapter(context, listener);
+        adapter = new ButtonViewAdapter(context, listener, data.getResolutionStatus());
         rvButton.setAdapter(adapter);
         mLayoutManager = new GridLayoutManager(
                 context,
@@ -79,7 +79,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         mLayoutManager.setSpanSizeLookup(adapter.getSpanItem());
         rvButton.setLayoutManager(mLayoutManager);
         adapter.setButtonViewItemList(data.getButtonViewItemList());
-        listener.setOnDiscussionButtonPosition(data.getButtonViewItemList().size() != 0);
+        listener.setOnDiscussionButtonPosition(adapter.getItemCount() != 0 );
     }
 
     public ButtonData getButtonData() {

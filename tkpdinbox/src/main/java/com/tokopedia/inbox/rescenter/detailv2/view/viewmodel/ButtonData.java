@@ -35,6 +35,7 @@ public class ButtonData implements Parcelable{
     private String finishComplaintDialogText;
 
     private List<ButtonViewItem> buttonViewItemList;
+    private int resolutionStatus;
 
 
     public boolean isShowEdit() {
@@ -230,6 +231,14 @@ public class ButtonData implements Parcelable{
         this.buttonViewItemList = buttonViewItemList;
     }
 
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -237,8 +246,8 @@ public class ButtonData implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.showEdit ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showAcceptSolution ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showEdit ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showAcceptProduct ? (byte) 1 : (byte) 0);
         dest.writeByte(this.acceptReturSolution ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showAppealSolution ? (byte) 1 : (byte) 0);
@@ -260,11 +269,12 @@ public class ButtonData implements Parcelable{
         dest.writeString(this.finishComplaintLabel);
         dest.writeString(this.finishComplaintDialogText);
         dest.writeTypedList(this.buttonViewItemList);
+        dest.writeInt(this.resolutionStatus);
     }
 
     protected ButtonData(Parcel in) {
-        this.showEdit = in.readByte() != 0;
         this.showAcceptSolution = in.readByte() != 0;
+        this.showEdit = in.readByte() != 0;
         this.showAcceptProduct = in.readByte() != 0;
         this.acceptReturSolution = in.readByte() != 0;
         this.showAppealSolution = in.readByte() != 0;
@@ -286,6 +296,7 @@ public class ButtonData implements Parcelable{
         this.finishComplaintLabel = in.readString();
         this.finishComplaintDialogText = in.readString();
         this.buttonViewItemList = in.createTypedArrayList(ButtonViewItem.CREATOR);
+        this.resolutionStatus = in.readInt();
     }
 
     public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {

@@ -18,10 +18,12 @@
     <string name="title_section_last_solution_v2">Masalah &amp; Solusi</string>
     <string name="title_section_last_solution_problem">Masalah</string>
     <string name="title_section_last_solution_user_solution">Solusi dari Pembeli</string>
+    <string name="title_section_last_solution_user_solution_title">Solusi dari $who</string>
+    <string name="title_section_last_solution_user_solution_identifier">$who</string>
     <string name="title_section_product_resolution">Produk Yang Dikomplain</string>
     <string name="title_section_history_resolution">Riwayat Komplain</string>
     <string name="title_section_prove">Lampiran Bukti</string>
-    <string name="title_section_prove_status">Keterangan</string>
+    <string name="title_section_prove_status">Keterangan Bukti:</string>
 
     <string name="action_track">Lacak</string>
     <string name="action_add">Tambah</string>
@@ -184,6 +186,8 @@ yang ditemukan</string>
     <string name="string_change">Ubah</string>
     <string name="string_get_help">Minta Bantuan</string>
     <string name="string_title_create_recomplaint">Komplain Ulang</string>
+    <string name="string_back_to_complaint_list">Kembali ke Daftar Komplain</string>
+    <string name="action_input_awb_number">Masukan No. Resi</string>
 
     <!--chat bubble-->
     <string name="string_buyer_problem2">Kendala dari Pembeli:</string>

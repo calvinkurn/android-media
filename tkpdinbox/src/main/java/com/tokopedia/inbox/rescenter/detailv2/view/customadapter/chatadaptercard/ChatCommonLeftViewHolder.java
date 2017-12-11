@@ -41,7 +41,7 @@ public class ChatCommonLeftViewHolder extends AbstractViewHolder<ChatCommonLeftV
     @Override
     public void bind(ChatCommonLeftViewModel element) {
         final Context context = itemView.getContext();
-        tvContent.setText(element.getConversation().getMessage());
+        tvContent.setText(element.getConversation().getAction().getTitle());
 
         tvUserTitle.setText(context.getResources().getString(R.string.string_tokopedia_system));
         tvUsername.setText(context.getResources().getString(R.string.string_tokopedia));

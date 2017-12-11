@@ -58,11 +58,12 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_attachment"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"/>
 
         <TextView
-            android:layout_marginTop="@dimen/margin_sm"
+            android:id="@+id/tv_remark_title"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_section_prove_status"
@@ -74,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             context:text="keluhan pelanggan"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/text_size_s_medium"
             android:textColor="@color/black_87" />
     </LinearLayout>
 </LinearLayout>

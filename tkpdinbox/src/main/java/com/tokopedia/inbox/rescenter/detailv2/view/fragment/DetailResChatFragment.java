@@ -752,22 +752,19 @@ public class DetailResChatFragment
                     }
                 });
             }
-
-            if (buttonDomain.getAccept() == 1) {
-                Button button = getChatActionButton(buttonDomain.getAcceptLabel());
+            if (buttonDomain.getFinish() == 1) {
+                final Button button = getChatActionButton(buttonDomain.getFinishLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
                 isAcceptShown = true;
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showAcceptActionDialog(buttonDomain.getAcceptLabel(),
-                                buttonDomain.getAcceptText(),
-                                detailResChatDomain.getLast().getSolution().getName(),
-                                new View.OnClickListener() {
+                        showActionDialog(buttonDomain.getFinishLabel(), buttonDomain
+                                .getFinishText(), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                presenter.actionAcceptSolution();
+                                presenter.actionFinish();
                                 if (resCenterDialog != null)
                                     resCenterDialog.dismiss();
                             }
@@ -775,23 +772,26 @@ public class DetailResChatFragment
                     }
                 });
             }
+
             if (!isAcceptShown) {
-                if (buttonDomain.getFinish() == 1) {
-                    final Button button = getChatActionButton(buttonDomain.getFinishLabel());
+                if (buttonDomain.getAccept() == 1) {
+                    Button button = getChatActionButton(buttonDomain.getAcceptLabel());
                     llActionButton.addView(button);
                     llActionButton.addView(addButtonSeparator());
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            showActionDialog(buttonDomain.getFinishLabel(), buttonDomain
-                                    .getFinishText(), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    presenter.actionFinish();
-                                    if (resCenterDialog != null)
-                                        resCenterDialog.dismiss();
-                                }
-                            });
+                            showAcceptActionDialog(buttonDomain.getAcceptLabel(),
+                                    buttonDomain.getAcceptText(),
+                                    detailResChatDomain.getLast().getSolution().getName(),
+                                    new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            presenter.actionAcceptSolution();
+                                            if (resCenterDialog != null)
+                                                resCenterDialog.dismiss();
+                                        }
+                                    });
                         }
                     });
                 }

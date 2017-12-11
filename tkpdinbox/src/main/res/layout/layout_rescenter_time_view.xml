@@ -32,6 +32,7 @@
         android:background="@drawable/bg_button_green"
         android:textColor="@color/white"
         android:text="@string/string_get_help"
+        android:textSize="@dimen/fontvs"
         android:textAllCaps="false"
         android:visibility="gone"
         context:visibility="visible"/>

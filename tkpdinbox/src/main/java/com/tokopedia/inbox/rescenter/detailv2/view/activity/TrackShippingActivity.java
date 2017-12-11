@@ -101,4 +101,14 @@ public class TrackShippingActivity extends BasePresenterActivity<TrackShippingAc
         super.setupToolbar();
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
     }
+
+    @Override
+    public void onBackPressed() {
+        getBottomBackSheetActivityTransition();
+        finish();
+    }
+
+    public void getBottomBackSheetActivityTransition() {
+        overridePendingTransition(R.anim.push_down, R.anim.pull_up);
+    }
 }

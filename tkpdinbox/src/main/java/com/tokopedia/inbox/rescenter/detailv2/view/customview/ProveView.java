@@ -23,7 +23,7 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
 
     ProveAdapter adapter;
     private RecyclerView rvAttachment;
-    private TextView tvRemark;
+    private TextView tvRemark, tvRemarkTitle;
     private Context context;
 
     public ProveView(Context context) {
@@ -43,6 +43,7 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
         View view = inflater.inflate(getLayoutView(), this, true);
         rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
         tvRemark = (TextView) view.findViewById(R.id.tv_remark);
+        tvRemarkTitle = (TextView) view.findViewById(R.id.tv_remark_title);
         adapter = new ProveAdapter(context);
     }
 
@@ -69,8 +70,18 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
     @Override
     public void renderData(@NonNull ProveData proveData) {
         setVisibility(VISIBLE);
-        tvRemark.setText(proveData.getRemark());
-        initRecyclerView(proveData);
+        tvRemark.setVisibility(GONE);
+        tvRemarkTitle.setVisibility(GONE);
+        rvAttachment.setVisibility(GONE);
+        if (proveData.getRemark() != null) {
+            tvRemark.setText(proveData.getRemark());
+            tvRemarkTitle.setVisibility(VISIBLE);
+            tvRemark.setVisibility(VISIBLE);
+        }
+        if (proveData.getAttachment().size() != 0) {
+            rvAttachment.setVisibility(VISIBLE);
+            initRecyclerView(proveData);
+        }
     }
 
     private void initRecyclerView(ProveData data) {

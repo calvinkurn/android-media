@@ -44,12 +44,15 @@ public class HistoryAddressMapper implements Func1<Response<TkpdResponse>, Histo
             data.setActionBy(item.getDetail().getAction().getBy());
             data.setActionByText(item.getDetail().getAction().getByStr());
             data.setDate(item.getDetail().getAction().getCreateTimeStr());
+            data.setCreateTimestamp(item.getDetail().getAction().getCreateTimestamp());
             data.setCity(item.getAddress().getCity().getName());
             data.setDistrict(item.getAddress().getDistrict().getName());
             data.setProvince(item.getAddress().getProvince().getName());
             data.setStreet(item.getAddress().getStreet());
             data.setPostalCode(item.getAddress().getPostalCode());
             data.setConversationID(item.getDetail().getId());
+            data.setReceiver(item.getReceiver().getName());
+            data.setPhoneNumber(item.getReceiver().getPhone());
             list.add(data);
         }
         return list;

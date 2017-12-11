@@ -25,6 +25,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
     private TextView solutionText;
     private TextView problemText;
     private TextView tvChange;
+    private TextView tvSolutionTitle;
 
     public SolutionView(Context context) {
         super(context);
@@ -59,6 +60,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
         solutionText = (TextView) view.findViewById(R.id.tv_last_solution);
         problemText = (TextView) view.findViewById(R.id.tv_last_problem);
         tvChange = (TextView) view.findViewById(R.id.tv_change);
+        tvSolutionTitle = (TextView) view.findViewById(R.id.tv_last_solution_title);
     }
 
     @Override
@@ -73,6 +75,10 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
         solutionText.setText(data.getSolutionText());
         actionEdit.setVisibility(GONE);
         problemText.setText(data.getSolutionProblem());
+        tvSolutionTitle.setText(getResources().getString(
+                R.string.title_section_last_solution_user_solution_title).
+                replace(getResources().getString(R.string.title_section_last_solution_user_solution_identifier),
+                        data.getSolutionProviderName()));
         tvChange.setVisibility(data.isEditAble() ? VISIBLE : GONE);
         tvChange.setOnClickListener(new OnClickListener() {
             @Override

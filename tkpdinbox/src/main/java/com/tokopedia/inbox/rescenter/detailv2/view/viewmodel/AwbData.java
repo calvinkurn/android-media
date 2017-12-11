@@ -12,6 +12,7 @@ import java.util.List;
 public class AwbData implements Parcelable {
 
     private String shipmentRef;
+    private String shipmentName;
     private String awbDate;
     private String awbDateTimestamp;
     private String shipmentID;
@@ -60,6 +61,14 @@ public class AwbData implements Parcelable {
         this.awbDateTimestamp = awbDateTimestamp;
     }
 
+    public String getShipmentName() {
+        return shipmentName;
+    }
+
+    public void setShipmentName(String shipmentName) {
+        this.shipmentName = shipmentName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -68,6 +77,7 @@ public class AwbData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.shipmentRef);
+        dest.writeString(this.shipmentName);
         dest.writeString(this.awbDate);
         dest.writeString(this.awbDateTimestamp);
         dest.writeString(this.shipmentID);
@@ -76,6 +86,7 @@ public class AwbData implements Parcelable {
 
     protected AwbData(Parcel in) {
         this.shipmentRef = in.readString();
+        this.shipmentName = in.readString();
         this.awbDate = in.readString();
         this.awbDateTimestamp = in.readString();
         this.shipmentID = in.readString();

@@ -66,6 +66,7 @@ public class HistoryAwbSubsriber extends Subscriber<HistoryAwbData> {
             data.setDate(item.getDate());
             data.setRemark(item.getRemark());
             data.setShipmentID(item.getShipmentID());
+            data.setCreateTimestamp(item.getCreateTimestamp());
             data.setShippingRefNumber(item.getShippingRefNumber());
             data.setLatest(i == 0);
             data.setShowEdit(item.isButtonEdit());

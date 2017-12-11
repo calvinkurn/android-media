@@ -31,6 +31,7 @@ public class DetailResChatActivity
     public static final String PARAM_IS_SELLER = "is_seller";
 
     public static final int REQUEST_GO_DETAIL = 8888;
+    public static final int ACTION_GO_TO_LIST = 6123;
     private String resolutionId;
     private String shopName;
     private String userName;
@@ -164,6 +165,8 @@ public class DetailResChatActivity
         if (requestCode == REQUEST_GO_DETAIL) {
             if (resultCode == Activity.RESULT_OK) {
                 presenter.initFragment(isSeller, resolutionId, true);
+            } else if (resultCode == ACTION_GO_TO_LIST) {
+                finish();
             }
         }
     }

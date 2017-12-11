@@ -33,6 +33,7 @@
             android:text="@string/action_add"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fontvs"
+            android:visibility="gone"
             />
 
         <LinearLayout
@@ -74,12 +75,13 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_small">
 
-
         <TextView
             android:id="@+id/tv_awb_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CGK1234567890"
+            android:textSize="@dimen/text_size_s_medium"
+            android:textColor="@color/black_87"
             android:layout_marginBottom="@dimen/margin_vs"
             android:textStyle="bold"
             />
@@ -90,9 +92,15 @@
             android:layout_height="wrap_content"
             android:text="@string/template_awb_additional_text"
             android:textColor="@color/label_text_color"
+            android:textSize="@dimen/text_size_s_medium"
             android:textStyle="italic"
             />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_12"/>
 
     <TextView
         android:id="@+id/action_awb_more"

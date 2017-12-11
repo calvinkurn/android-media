@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.historyaddress.view.model.HistoryAddressViewItem;
 import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentView;
@@ -93,23 +95,15 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void renderData(AddressViewHolder holder, HistoryAddressViewItem item) {
         holder.date.setText(
-                context.getString(R.string.template_history_additional_information, item.getActionByText(), item.getDate())
+                context.getString(R.string.template_history_additional_information, item.getActionByText(),
+                        DateFormatUtils.formatDateForResoChatV2(item.getCreateTimestamp()))
         );
-        holder.history.setText(item.getAddress());
+        holder.history.setText(MethodChecker.fromHtml(item.getAddress()));
     }
 
     private void renderView(AddressViewHolder holder, HistoryAddressViewItem item) {
         setPadding(holder);
         setIndicator(holder, item);
-        if (item.isLatest()) {
-            holder.date.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.history.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.history.setTextColor(ContextCompat.getColor(context, R.color.black));
-        } else {
-            holder.date.setTypeface(null, Typeface.NORMAL);
-            holder.history.setTypeface(null, Typeface.NORMAL);
-            holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
-        }
     }
 
 
@@ -120,7 +114,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         );
 
         holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
+                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
         );
     }
 
