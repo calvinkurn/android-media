@@ -195,21 +195,9 @@ public class ProductDetailFragment extends BaseDaggerFragment
         productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> imageUrls = new ArrayList<>();
-                imageUrls.add(viewData.getProductThumbUrl());
-                openProductPreview(imageUrls,0);
+
             }
         });
-    }
-
-    private void openProductPreview(ArrayList<String> imageUrls, int position) {
-
-        Intent intent = new Intent(context, PreviewProductImage.class);
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("fileloc", imageUrls);
-        bundle.putInt("img_pos", position);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
     }
 
     private String getTroubleText() {

@@ -24,20 +24,20 @@ public class ConversationProductDomain implements Parcelable {
     };
     private List<ConversationAttachmentDomain> image;
     private String message;
-    private int resId;
+    private int resProdId;
     private String name;
 
-    public ConversationProductDomain(List<ConversationAttachmentDomain> image, String message, int resId, String name) {
+    public ConversationProductDomain(List<ConversationAttachmentDomain> image, String message, int resProdId, String name) {
         this.image = image;
         this.message = message;
-        this.resId = resId;
+        this.resProdId = resProdId;
         this.name = name;
     }
 
     protected ConversationProductDomain(Parcel in) {
         this.image = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
         this.message = in.readString();
-        this.resId = in.readInt();
+        this.resProdId = in.readInt();
         this.name = in.readString();
     }
 
@@ -57,12 +57,12 @@ public class ConversationProductDomain implements Parcelable {
         this.message = message;
     }
 
-    public int getResId() {
-        return resId;
+    public int getResProdId() {
+        return resProdId;
     }
 
-    public void setResId(int resId) {
-        this.resId = resId;
+    public void setResProdId(int resProdId) {
+        this.resProdId = resProdId;
     }
 
     public String getName() {
@@ -82,7 +82,7 @@ public class ConversationProductDomain implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.image);
         dest.writeString(this.message);
-        dest.writeInt(this.resId);
+        dest.writeInt(this.resProdId);
         dest.writeString(this.name);
     }
 }
