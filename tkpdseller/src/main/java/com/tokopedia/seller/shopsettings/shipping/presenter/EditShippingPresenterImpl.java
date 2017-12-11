@@ -114,6 +114,13 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                         , shopInformation.cityName
                         , shopInformation.districtName);
             }
+        } else {
+            shopInformation.provinceName = selectedAddress.getProvinceName();
+            shopInformation.provinceId = selectedAddress.getProvinceId();
+            shopInformation.cityName = selectedAddress.getCityName();
+            shopInformation.cityId = selectedAddress.getCityId();
+            shopInformation.districtName = selectedAddress.getDistrictName();
+            shopInformation.districtId = selectedAddress.getDistrictId();
         }
         view.onShowViewAfterLoading();
         displayCourierList(model);
@@ -398,6 +405,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
         if (selectedAddress != null) {
+            shippingParams.put(SELECTED_ADDRESS, new Gson().toJson(selectedAddress));
             shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
             shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
         } else {
