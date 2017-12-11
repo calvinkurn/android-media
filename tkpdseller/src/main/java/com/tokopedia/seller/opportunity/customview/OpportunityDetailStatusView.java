@@ -77,8 +77,14 @@ public class OpportunityDetailStatusView extends BaseView<OpportunityItemViewMod
     @Override
     public void renderData(@NonNull OpportunityItemViewModel data) {
         String color = data.getOrderDeadline().getDeadlineColor();
-        if (color != null && !color.equals("")) {
-            deadline.setBackgroundColor(Color.parseColor(color));
+        if (!TextUtils.isEmpty(color)) {
+            Drawable deadlineDrawable = deadline.getBackground();
+            deadlineDrawable.clearColorFilter();
+            int colorInt = Color.parseColor(color);
+            ColorFilter cf = new
+                    PorterDuffColorFilter(colorInt, PorterDuff.Mode
+                    .MULTIPLY);
+            deadlineDrawable.setColorFilter(cf);
         }
         String cashbackIDR = data.getOrderCashbackIdr();
         cashback.setText(TextUtils.isEmpty(cashbackIDR)?"-":cashbackIDR);
