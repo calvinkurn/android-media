@@ -29,4 +29,6 @@ public interface FlightComponent {
     FlightRepository flightRepository();
 
     Gson gson();
+
+    UserSession userSession();
 }

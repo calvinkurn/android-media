@@ -11,24 +11,29 @@ import com.tokopedia.core.util.SessionHandler;
 
 public class UserSessionImpl implements UserSession {
 
-    private final Context context;
+    private SessionHandler sessionHandler;
 
     public UserSessionImpl(Context context) {
-        this.context = context;
+        this.sessionHandler = new SessionHandler(context);
     }
 
     @Override
     public String getAccessToken() {
-        return SessionHandler.getAccessToken();
+        return sessionHandler.getAuthAccessToken();
     }
 
     @Override
     public String getFreshToken() {
-        return SessionHandler.getRefreshToken(context);
+        return sessionHandler.getAuthRefreshToken();
     }
 
     @Override
     public String getUserId() {
-        return SessionHandler.getLoginID(context);
+        return sessionHandler.getLoginID();
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return sessionHandler.isV4Login();
     }
 }

@@ -11,4 +11,6 @@ public interface UserSession {
     String getFreshToken();
 
     String getUserId();
+
+    boolean isLoggedIn();
 }

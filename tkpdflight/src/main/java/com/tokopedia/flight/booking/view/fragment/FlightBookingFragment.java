@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -31,7 +32,9 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
@@ -42,7 +45,10 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
+import com.tokopedia.flight.common.constant.FlightFlowConstant;
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
@@ -50,6 +56,7 @@ import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,7 +65,7 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightBookingFragment extends BaseDaggerFragment implements FlightBookingContract.View, FlightBookingPassengerAdapter.OnClickListener {
+public class FlightBookingFragment extends BaseDaggerFragment implements FlightBookingContract.View, FlightBookingPassengerActionListener {
     private static final String EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA";
     private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
     private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
@@ -67,6 +74,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
+    private static final int REQUEST_CODE_REVIEW = 4;
 
     private ProgressBar fullPageProgressBar;
     private NestedScrollView fullPageLayout;
@@ -161,9 +169,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onButtonSubmitClicked();
             }
         });
-
-        adapter = new FlightBookingPassengerAdapter(getActivity());
-        adapter.setListener(this);
+        FlightBookingPassengerAdapterTypeFactory adapterTypeFactory = new FlightBookingPassengerAdapterTypeFactory(this);
+        adapter = new FlightBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         passengerRecyclerView.setLayoutManager(layoutManager);
@@ -247,8 +254,21 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 }
                 break;
             case REQUEST_CODE_NEW_PRICE_DIALOG:
-                if (resultCode != Activity.RESULT_OK)
-                    getActivity().finish();
+                if (resultCode != Activity.RESULT_OK) {
+                    FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                            getActivity().getIntent(),
+                            FlightFlowConstant.PRICE_CHANGE
+                    );
+                }
+
+                break;
+            case REQUEST_CODE_REVIEW:
+                if (data != null) {
+                    FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                            getActivity().getIntent(),
+                            data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)
+                    );
+                }
                 break;
         }
     }
@@ -350,7 +370,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderPassengersList(List<FlightBookingPassengerViewModel> passengerViewModels) {
-        adapter.addPassengers(passengerViewModels);
+        List<Visitable> visitables = new ArrayList<>();
+        visitables.addAll(passengerViewModels);
+        adapter.clearData();
+        adapter.addElement(visitables);
     }
 
     @Override
@@ -494,7 +517,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void navigateToReview(FlightBookingReviewModel flightBookingReviewModel) {
-        startActivity(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel));
+        startActivityForResult(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel), REQUEST_CODE_REVIEW);
     }
 
     @Override

@@ -4,19 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
+import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 /**
  * Created by alvarisi on 11/6/17.
  */
 
-public class FlightBookingActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
+public class FlightBookingActivity extends BaseFlightActivity implements HasComponent<FlightBookingComponent> {
     private static final String EXTRA_PASS_SEARCH_DATA = "EXTRA_PASS_SEARCH_DATA";
     private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
     private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";

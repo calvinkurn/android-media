@@ -2,10 +2,10 @@ package com.tokopedia.flight.common.data.repository;
 
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
-import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
@@ -13,6 +13,8 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
+import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
+import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
@@ -28,6 +30,7 @@ import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -49,6 +52,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
     private FlightBookingDataSource flightBookingDataSource;
     private FlightAirportVersionDBSource flightAirportVersionDBSource;
+    private FlightOrderDataSource flightOrderDataSource;
 
     public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource,
                                 FlightAirlineDataListSource flightAirlineDataListSource,
@@ -60,7 +64,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                 FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                 FlightBookingDataSource flightBookingDataSource,
-                                FlightAirportVersionDBSource flightAirportVersionDBSource) {
+                                FlightAirportVersionDBSource flightAirportVersionDBSource,
+                                FlightOrderDataSource flightOrderDataSource) {
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
         this.flightSearchSingleDataListSource = flightSearchSingleDataListSource;
@@ -72,6 +77,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
         this.flightBookingDataSource = flightBookingDataSource;
         this.flightAirportVersionDBSource = flightAirportVersionDBSource;
+        this.flightOrderDataSource = flightOrderDataSource;
     }
 
     @Override
@@ -88,11 +94,11 @@ public class FlightRepositoryImpl implements FlightRepository {
      * will compare between the list and the cache (if not expired)
      * If the cache already has ALL the airline in the list, then it will return as is.
      * Otherwise, it will hit the cloud.
-     *
-     * VerifyRequest:
+     * <p>
+     * Example:
      * List: CA, JT. Cache: AB, AC, CB, JT
      * it will hit the cloud, because it does not have CA in cache
-     *
+     * <p>
      * List: AB, JT. Cache: AB, AC, CB, JT
      * All in list is in the cache, so, it will not hit cloud
      */
@@ -224,5 +230,15 @@ public class FlightRepositoryImpl implements FlightRepository {
         }else{
             return Observable.just(false);
         }
+    }
+
+    @Override
+    public Observable<List<OrderEntity>> getOrders(Map<String, Object> maps) {
+        return flightOrderDataSource.getOrders(maps);
+    }
+
+    @Override
+    public Observable<OrderEntity> getOrder(String id) {
+        return flightOrderDataSource.getOrder(id);
     }
 }

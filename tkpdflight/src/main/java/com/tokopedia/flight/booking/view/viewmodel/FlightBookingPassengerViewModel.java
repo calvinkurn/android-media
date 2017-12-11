@@ -3,19 +3,23 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerTypeFactory;
+
 import java.util.List;
 
 /**
  * @author by alvarisi on 11/7/17.
  */
 
-public class FlightBookingPassengerViewModel implements Parcelable {
+public class FlightBookingPassengerViewModel implements Parcelable, Visitable<FlightBookingPassengerTypeFactory> {
     private int passengerId; //passengerLocalNumber
     private boolean singleRoute;
     private int type;
     private String passengerTitle;
     private String headerTitle;
-    private String passengerName;
+    private String passengerFirstName;
+    private String passengerLastName;
     private String passengerBirthdate;
     private List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels;
     private List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels;
@@ -44,12 +48,12 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.headerTitle = headerTitle;
     }
 
-    public String getPassengerName() {
-        return passengerName;
+    public String getPassengerFirstName() {
+        return passengerFirstName;
     }
 
-    public void setPassengerName(String passengerName) {
-        this.passengerName = passengerName;
+    public void setPassengerFirstName(String passengerFirstName) {
+        this.passengerFirstName = passengerFirstName;
     }
 
     public String getPassengerBirthdate() {
@@ -115,6 +119,14 @@ public class FlightBookingPassengerViewModel implements Parcelable {
 
     public int getPassengerTitleId() {
         return passengerTitleId;
+    }
+
+    public String getPassengerLastName() {
+        return passengerLastName;
+    }
+
+    public void setPassengerLastName(String passengerLastName) {
+        this.passengerLastName = passengerLastName;
     }
 
     @Override

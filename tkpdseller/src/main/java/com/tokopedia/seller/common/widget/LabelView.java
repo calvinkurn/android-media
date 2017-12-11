@@ -78,7 +78,7 @@ public class LabelView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.seller_widget_label_view, this);
+        View view = inflate(getContext(), R.layout.widget_label_view_seller, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
         arrow = (ImageView) view.findViewById(R.id.arrow_left);

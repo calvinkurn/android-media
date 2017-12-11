@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.KeyboardHandler;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartView;
 import com.tokopedia.flight.R;
@@ -35,7 +34,9 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
+import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
@@ -132,7 +133,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
             @Override
             public void onFinished() {
-                if (!(getActivity()).isFinishing()) {
+                if (getActivity() != null && !(getActivity()).isFinishing()) {
                     progressDialog.show();
                     flightBookingReviewPresenter.onUpdateCart();
                 }
@@ -203,8 +204,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
         switch (requestCode) {
             case REQUEST_CODE_NEW_PRICE_DIALOG:
-                if (resultCode != Activity.RESULT_OK)
-                    getActivity().finish();
+                if (resultCode != Activity.RESULT_OK) {
+                    FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                            getActivity().getIntent(),
+                            FlightFlowConstant.PRICE_CHANGE
+                    );
+                }
                 break;
         }
     }
@@ -297,8 +302,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            getActivity().setResult(Activity.RESULT_CANCELED);
-                            getActivity().finish();
+                            FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                    getActivity().getIntent(),
+                                    FlightFlowConstant.EXPIRED_JOURNEY
+                            );
                         }
                     });
             dialog.setCancelable(false);

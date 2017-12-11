@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
@@ -38,18 +39,21 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private GetFlightClassesUseCase getFlightClassesUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
+    private UserSession userSession;
 
     @Inject
     public FlightDashboardPresenter(FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightClassesUseCase getFlightClassesUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
-                                    FlightDashboardCache flightDashboardCache) {
+                                    FlightDashboardCache flightDashboardCache,
+                                    UserSession userSession) {
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightClassesUseCase = getFlightClassesUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
         this.flightDashboardCache = flightDashboardCache;
+        this.userSession = userSession;
     }
 
     @Override
@@ -66,6 +70,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void initialize() {
+        if (userSession.isLoggedIn()) {
+            onInitialize();
+        } else {
+            getView().navigateToLoginPage();
+        }
+    }
+
+    private void onInitialize() {
         setupViewModel();
         actionLoadFromCache();
         actionGetClassesAndSetDefaultClass();
@@ -316,6 +328,15 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onDestroyView() {
         detachView();
+    }
+
+    @Override
+    public void onLoginResultReceived() {
+        if (userSession.isLoggedIn()) {
+            onInitialize();
+        } else {
+            getView().closePage();
+        }
     }
 
     private boolean validateSearchParam(FlightDashboardViewModel currentDashboardViewModel) {
