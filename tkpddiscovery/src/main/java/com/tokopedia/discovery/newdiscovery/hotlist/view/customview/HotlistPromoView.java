@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.customview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,16 +10,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.CopyPromoVoucher;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
-
-import java.util.List;
 
 /**
  * Created by nakama on 12/5/17.
@@ -95,10 +91,14 @@ public class HotlistPromoView extends BaseCustomView {
     }
 
     private String generateMinTransaction(String minimunTransaction) {
-        return getContext().getString(R.string.template_widget_promo_min_transaction, minimunTransaction);
+        return MethodChecker.fromHtml(
+                getContext().getString(R.string.template_widget_promo_min_transaction, minimunTransaction)
+        ).toString();
     }
 
     private String generatePromoPeriod(String promoPeriod) {
-        return getContext().getString(R.string.template_widget_promo_period, promoPeriod);
+        return MethodChecker.fromHtml(
+                getContext().getString(R.string.template_widget_promo_period, promoPeriod)
+        ).toString();
     }
 }

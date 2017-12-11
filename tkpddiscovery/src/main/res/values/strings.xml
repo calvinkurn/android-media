@@ -39,6 +39,6 @@
     <string name="result_count_template_text">%s Produk</string>
     <string name="title_promo_code">Kode Promo</string>
     <string name="button_term_and_condition"><![CDATA[Syarat & Ketentuan]]></string>
-    <string name="template_widget_promo_period">Berlaku s/d: %1$s</string>
-    <string name="template_widget_promo_min_transaction">Min Transaksi: %1$s</string>
+    <string name="template_widget_promo_period"><![CDATA[Periode: <font color=\"#B3000000\">%1$s</font>]]></string>
+    <string name="template_widget_promo_min_transaction"><![CDATA[Min Transaksi: <font color=\"#B3000000\">%1$s</font>]]></string>
 </resources>
