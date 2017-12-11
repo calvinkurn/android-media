@@ -45,6 +45,8 @@ import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
+import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -87,6 +89,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             case DeepLinkChecker.HOT_LIST:
                 return false;
             case DeepLinkChecker.CATALOG:
+                return false;
+            case DeepLinkChecker.DISCOVERY_PAGE:
                 return false;
             case DeepLinkChecker.PRODUCT:
                 return false;
@@ -152,6 +156,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.CATALOG:
                     openCatalogProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
+                    break;
+                case DeepLinkChecker.DISCOVERY_PAGE:
+                    openDiscoveryPage(uriData.toString());
+                    screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
                 case DeepLinkChecker.PRODUCT:
                     openDetailProduct(linkSegment, uriData);
@@ -391,6 +399,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
+    private void openDiscoveryPage(String url) {
+      context.startActivity(ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+              context,
+              ReactConst.Screen.DISCOVERY_PAGE,
+              "",
+              DeepLinkChecker.getDiscoveryPageId(url)));
+    }
+
     private void openCategory(String uriData) {
         URLParser urlParser = new URLParser(uriData);
         if (urlParser.getParamKeyValueMap().size()>0) {
@@ -468,6 +484,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !linkSegment.get(0).equals("iklan")
                 && !linkSegment.get(0).equals("newemail.pl")
                 && !linkSegment.get(0).equals("search")
+                && !linkSegment.get(0).equals("discovery")
                 && !linkSegment.get(0).equals("hot")
                 && !linkSegment.get(0).equals("blog")
                 && !linkSegment.get(0).equals("about")

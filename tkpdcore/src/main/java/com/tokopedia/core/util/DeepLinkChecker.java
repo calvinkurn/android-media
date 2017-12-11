@@ -147,8 +147,8 @@ public class DeepLinkChecker {
     }
 
     private static boolean isDiscoveryPage(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("b") && linkSegment.size() == 1 ||
-                linkSegment.get(0).equals("discovery") && linkSegment.size() == 1);
+        return (linkSegment.get(0).equals("b") && linkSegment.size() == 2 ||
+                linkSegment.get(0).equals("discovery") && linkSegment.size() == 2);
     }
 
     public static String getDiscoveryPageId(String url) {
