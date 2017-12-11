@@ -25,6 +25,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.onboarding.ISlideBackgroundColorHolder;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -105,47 +106,42 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBack
     }
 
     protected View inflateFreeReturnView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_onboarding_free_return, container, false);
-        TextView d = (TextView) v.findViewById(R.id.description);
-        ImageView i = (ImageView) v.findViewById(R.id.image);
-//        RelativeLayout main = (RelativeLayout) v.findViewById(R.id.main);
-        main = v.findViewById(R.id.main);
+        View freeReturnView = inflater.inflate(R.layout.fragment_onboarding_free_return, container, false);
+        TextView description = (TextView) freeReturnView.findViewById(R.id.description);
+        ImageView image = (ImageView) freeReturnView.findViewById(R.id.image);
+        main = freeReturnView.findViewById(R.id.main);
 
 
-        d.setText(description);
+        description.setText(this.description);
 
-        i.setBackgroundResource(drawable);
-        if (i.getBackground() instanceof AnimationDrawable) {
-            AnimationDrawable notifAnimation = (AnimationDrawable) i.getBackground();
+        image.setBackgroundResource(drawable);
+        if (image.getBackground() instanceof AnimationDrawable) {
+            AnimationDrawable notifAnimation = (AnimationDrawable) image.getBackground();
             notifAnimation.start();
         }
         main.setBackgroundColor(bgColor);
 
-        return v;
+        return freeReturnView;
     }
 
     protected View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = getEndingView(inflater, container);
-        TextView t = (TextView) v.findViewById(R.id.title);
-        ImageView i = (ImageView) v.findViewById(R.id.image);
-        TextView d = (TextView) v.findViewById(R.id.description);
-//        ImageView logo = (ImageView) v.findViewById(R.id.logo);
-//        RelativeLayout main = (RelativeLayout) v.findViewById(R.id.main);
-        main = v.findViewById(R.id.main);
+        View endingView = getEndingView(inflater, container);
+        TextView title = (TextView) endingView.findViewById(R.id.title);
+        ImageView image = (ImageView) endingView.findViewById(R.id.image);
+        TextView description = (TextView) endingView.findViewById(R.id.description);
+        main = endingView.findViewById(R.id.main);
 
-//        ImageHandler.loadImageWithId(logo, R.drawable.ic_tokopedia_logo_02);
-
-        t.setText(title);
+        title.setText(this.title);
         if (titleColor != 0) {
-            t.setTextColor(titleColor);
+            title.setTextColor(titleColor);
         }
 
-        d.setText(description);
+        description.setText(this.description);
 
-        i.setImageDrawable(ContextCompat.getDrawable(getActivity(), drawable));
+        image.setImageDrawable(ContextCompat.getDrawable(getActivity(), drawable));
         main.setBackgroundColor(bgColor);
 
-        Button login = (Button) v.findViewById(R.id.button_start_now);
+        Button login = (Button) endingView.findViewById(R.id.button_start_now);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +155,7 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBack
             }
         });
 
-        Button register = (Button) v.findViewById(R.id.button_register);
+        Button register = (Button) endingView.findViewById(R.id.button_register);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,7 +170,7 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBack
             }
         });
 
-        TextView search = (TextView) v.findViewById(R.id.button_search);
+        TextView search = (TextView) endingView.findViewById(R.id.button_search);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,7 +180,7 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBack
                 getActivity().finish();
             }
         });
-        return v;
+        return endingView;
     }
 
     protected View getEndingView(LayoutInflater inflater, ViewGroup container) {
@@ -192,31 +188,27 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBack
     }
 
     protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = getDefaultView(inflater,container);
-        TextView t = (TextView) v.findViewById(R.id.title);
-        TextView d = (TextView) v.findViewById(R.id.description);
-        ImageView i = (ImageView) v.findViewById(R.id.image);
-//        ImageView logo = (ImageView) v.findViewById(R.id.logo);
-//        LinearLayout main = (LinearLayout) v.findViewById(R.id.main);
-        main = v.findViewById(R.id.main);
-
-//        ImageHandler.loadImageWithId(logo, R.drawable.ic_tokopedia_logo_02);
+        View defaultView = getDefaultView(inflater,container);
+        TextView title = (TextView) defaultView.findViewById(R.id.title);
+        TextView description = (TextView) defaultView.findViewById(R.id.description);
+        ImageView image = (ImageView) defaultView.findViewById(R.id.image);
+        main = defaultView.findViewById(R.id.main);
 
 
-        t.setText(title);
+        title.setText(this.title);
         if (titleColor != 0) {
-            t.setTextColor(titleColor);
+            title.setTextColor(titleColor);
         }
 
-        d.setText(description);
+        description.setText(this.description);
 
-        i.setBackgroundResource(drawable);
-        if (i.getBackground() instanceof AnimationDrawable) {
-            AnimationDrawable notifAnimation = (AnimationDrawable) i.getBackground();
+        image.setBackgroundResource(drawable);
+        if (image.getBackground() instanceof AnimationDrawable) {
+            AnimationDrawable notifAnimation = (AnimationDrawable) image.getBackground();
             notifAnimation.start();
         }
         main.setBackgroundColor(bgColor);
-        return v;
+        return defaultView;
     }
 
     protected View getDefaultView(LayoutInflater inflater, ViewGroup container) {
@@ -226,7 +218,7 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBack
     @Override
     public int getDefaultBackgroundColor() {
         // Return the default background color of the slide.
-        return Color.parseColor("#000000");
+        return MethodChecker.getColor(getActivity(),R.color.black);
     }
 
     @Override
