@@ -31,6 +31,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
@@ -194,10 +195,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
-                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PESAN);
-                Intent intent = InboxRouter.getInboxMessageActivityIntent(getActivity());
-                startActivity(intent);
+                if (getActivity().getApplication() instanceof TkpdInboxRouter) {
+                    UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                            AppEventTracking.EventLabel.DASHBOARD_ITEM_PESAN);
+                    Intent intent = ((TkpdInboxRouter) getActivity().getApplication())
+                            .getInboxMessageIntent(getActivity());
+                    startActivity(intent);
+                }
             }
         });
         discussionLabelView.setOnClickListener(new View.OnClickListener() {
@@ -457,15 +461,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         int shippingConfirmation = drawerNotification.getSellingShippingConfirmation();
         int shippingStatus = drawerNotification.getSellingShippingStatus();
 
-        int inboxCount = drawerNotification.getInboxMessage();
         int discussCount = drawerNotification.getInboxTalk();
         int reviewCount = drawerNotification.getInboxReview();
+        int messageCount = drawerNotification.getInboxMessage();
 
         setCounterIfNotEmpty(newOrderLabelView, newOrderCount);
         setCounterIfNotEmpty(deliveryConfirmationLabelView, shippingConfirmation);
         setCounterIfNotEmpty(deliveryStatusLabelView, shippingStatus);
+        setCounterIfNotEmpty(messageLabelView, messageCount);
 
-        setCounterIfNotEmpty(messageLabelView, inboxCount);
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
 

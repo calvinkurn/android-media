@@ -14,6 +14,8 @@ import java.util.List;
  * @author kulomady on 12/22/16.
  */
 public class Filter implements Parcelable {
+
+    public static final String TEMPLATE_NAME_LOCATION = "template_location";
     
     private static final String TEMPLATE_NAME_SEPARATOR = "template_separator";
     private static final String TEMPLATE_NAME_RATING = "template_rating";
@@ -61,6 +63,10 @@ public class Filter implements Parcelable {
 
     public boolean isSizeFilter() {
         return TEMPLATE_NAME_SIZE.equals(templateName);
+    }
+
+    public boolean isLocationFilter() {
+        return TEMPLATE_NAME_LOCATION.equals(templateName);
     }
 
     public boolean isBrandFilter() {

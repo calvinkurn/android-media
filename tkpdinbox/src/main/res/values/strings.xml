@@ -62,6 +62,29 @@
     <string name="is_it_helpful">Apakah jawaban ini membantu?</string>
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
+    <string name="time_machine">Untuk melihat percakapan sebelumnya,\nkunjungi Riwayat
+        Pesan</string>
+    <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
+        Pesan</string>
+
+    <string name="no_existing_chat"> Tidak Ada Chat</string>
+    <string name="no_existing_chat_user"> Tidak ada pengguna atau chat
+yang ditemukan</string>
+    <string name="please_try_chat"> Silakan mengirim chat untuk\nmemulai percakapan</string>
+    <string name="old_message_warn"> Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: </string>
+    <string name="delete_message_warn"> Jumlah pesan yang bisa dihapus hanya </string>
+    <string name="delete_confirmation">Apakah anda yakin menghapus %1$d pesan?</string>
+    <string name="delete_choose">"Pilih chat yang dihapus"</string>
+    <string name="connected_websocket">"Terhubung!"</string>
+    <string name="is_typing">"sedang mengetik"</string>
+    <string name="just_now">"baru saja"</string>
+    <string name="delete_error">"Gagal mengirim pesan."</string>
+    <string name="delete_chat">"Hapus chat?"</string>
+    <string name="forever_deleted_chat">"Chat akan terhapus selamanya"</string>
+    <string name="search_chat_user">"Cari chat atau pengguna"</string>
+    <string name="delete">"Hapus"</string>
+    <string name="cancel">"Batal"</string>
+
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
 
     <!--new create reso-->
@@ -133,4 +156,7 @@
     <string name="string_edit_message">Tekan \"Ubah\" untuk mengubah solusi menjadi:</string>
     <string name="string_appeal_message">Solusi akan diubah menjadi </string>
     <string name="string_edit_button">Ubah</string>
+    <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
+        menghubungkan...</string>
+    <string name="title_time_machine_message">Riwayat</string>
 </resources>

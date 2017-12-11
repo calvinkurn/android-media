@@ -91,8 +91,7 @@
         <activity
             android:name=".product.edit.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -133,26 +132,22 @@
         <activity
             android:name=".product.edit.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductScoringDetailActivity"

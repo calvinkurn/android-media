@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -74,8 +73,7 @@ public abstract class TActivity extends BaseActivity {
     }
 
     protected boolean onSearchOptionSelected() {
-        Intent intent = BrowseProductRouter
-                .getBrowseProductIntent(this, "0", TopAdsApi.SRC_BROWSE_PRODUCT);
+        Intent intent = BrowseProductRouter.getSearchProductIntent(this);
         startActivity(intent);
         return true;
     }
