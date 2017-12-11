@@ -24,10 +24,8 @@ public class TkpdBaseURL {
     public static String MOJITO_STAGING_DOMAIN = "https://mojito-staging.tokopedia.com/";
     public static String HADES_DOMAIN = "https://hades.tokopedia.com";
     public static String HADES_STAGING_DOMAIN = "https://hades-staging.tokopedia.com";
-    public static String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String MERLIN_DOMAIN = "https://merlin.tokopedia.com/";
     public static String GOOGLE_APIS = "https://www.googleapis.com";
-    public static String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
     public static String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
     public static String ACCOUNTS_ALPHA_DOMAIN = "https://accounts-alpha.tokopedia.com/";
