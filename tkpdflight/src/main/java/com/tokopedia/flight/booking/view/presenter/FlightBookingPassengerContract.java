@@ -74,6 +74,8 @@ public interface FlightBookingPassengerContract {
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
 
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
+
+        int getPassengerTitleId();
     }
 
     interface Presenter extends CustomerPresenter<View> {

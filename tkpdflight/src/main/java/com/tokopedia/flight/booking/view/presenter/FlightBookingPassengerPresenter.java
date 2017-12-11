@@ -69,6 +69,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     public void onSaveButtonClicked() {
         if (validateFields()) {
             getView().getCurrentPassengerViewModel().setPassengerTitle(getView().getPassengerTitle());
+            getView().getCurrentPassengerViewModel().setPassengerTitleId(getView().getPassengerTitleId());
             getView().getCurrentPassengerViewModel().setPassengerName(getView().getPassengerName());
             getView().getCurrentPassengerViewModel().setPassengerBirthdate(
                     FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getView().getPassengerBirthDate())
