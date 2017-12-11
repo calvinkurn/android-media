@@ -95,9 +95,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         String bodyResponse = string;
         if (isMaintenance(bodyResponse)) {
             ServerErrorHandler.showMaintenancePage();
-        } else if (isRequestDenied(bodyResponse)) {
-            ServerErrorHandler.showForceLogoutDialog();
-            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             ServerErrorHandler.showServerErrorSnackbar();
             ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
