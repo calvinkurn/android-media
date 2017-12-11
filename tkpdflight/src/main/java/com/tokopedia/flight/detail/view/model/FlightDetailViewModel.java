@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -18,7 +17,17 @@ import java.util.List;
 public class FlightDetailViewModel implements ItemType, Parcelable {
 
     public static final int TYPE = 834;
+    public static final Creator<FlightDetailViewModel> CREATOR = new Creator<FlightDetailViewModel>() {
+        @Override
+        public FlightDetailViewModel createFromParcel(Parcel in) {
+            return new FlightDetailViewModel(in);
+        }
 
+        @Override
+        public FlightDetailViewModel[] newArray(int size) {
+            return new FlightDetailViewModel[size];
+        }
+    };
     private String id;
     private String departureAirport;
     private String departureAirportCity; // merge result
@@ -27,21 +36,17 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
     private String arrivalAirportCity; // merge result
     private String arrivalTime; // merge result
     private int totalTransit;
-
     private String total; // 693000
     private int totalNumeric; // Fare "Rp 693.000"
     private String beforeTotal;
-
     private RefundableEnum isRefundable;
-
     private int adultNumericPrice;
     private int childNumericPrice;
     private int infantNumericPrice;
     private int countAdult;
     private int countChild;
     private int countInfant;
-
-    private List<Route> routeList;
+    private List<FlightDetailRouteViewModel> routeList;
 
     protected FlightDetailViewModel(Parcel in) {
         id = in.readString();
@@ -61,20 +66,11 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
         countAdult = in.readInt();
         countChild = in.readInt();
         countInfant = in.readInt();
-        routeList = in.createTypedArrayList(Route.CREATOR);
+        routeList = in.createTypedArrayList(FlightDetailRouteViewModel.CREATOR);
     }
 
-    public static final Creator<FlightDetailViewModel> CREATOR = new Creator<FlightDetailViewModel>() {
-        @Override
-        public FlightDetailViewModel createFromParcel(Parcel in) {
-            return new FlightDetailViewModel(in);
-        }
-
-        @Override
-        public FlightDetailViewModel[] newArray(int size) {
-            return new FlightDetailViewModel[size];
-        }
-    };
+    public FlightDetailViewModel() {
+    }
 
     @Override
     public int getType() {
@@ -96,7 +92,9 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
             setAdultNumericPrice(flightSearchViewModel.getFare().getAdultNumeric());
             setChildNumericPrice(flightSearchViewModel.getFare().getChildNumeric());
             setInfantNumericPrice(flightSearchViewModel.getFare().getInfantNumeric());
-            setRouteList(flightSearchViewModel.getRouteList());
+            FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
+            FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
+            setRouteList(mapper.transform(flightSearchViewModel.getRouteList()));
             setDepartureTime(flightSearchViewModel.getDepartureTime());
             setArrivalTime(flightSearchViewModel.getArrivalTime());
             return this;
@@ -240,15 +238,12 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
         this.countInfant = countInfant;
     }
 
-    public List<Route> getRouteList() {
+    public List<FlightDetailRouteViewModel> getRouteList() {
         return routeList;
     }
 
-    public void setRouteList(List<Route> routeList) {
+    public void setRouteList(List<FlightDetailRouteViewModel> routeList) {
         this.routeList = routeList;
-    }
-
-    public FlightDetailViewModel() {
     }
 
     public String getDepartureTime() {

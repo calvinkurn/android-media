@@ -5,6 +5,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 
 /**
  * Created by alvarisi on 12/5/17.
@@ -26,7 +27,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
 
             return true;
         } else if (item.getItemId() == R.id.menu_transaction_list) {
-
+            startActivity(FlightOrderListActivity.getCallingIntent(this));
             return true;
         } else if (item.getItemId() == R.id.menu_help) {
 

@@ -41,6 +41,7 @@ import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModelMapper;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
@@ -79,11 +80,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private VoucherCartView voucherCartView;
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
-
+    private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
+    @Inject
+    FlightDetailRouteViewModelMapper flightDetailRouteViewModelMapper;
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     FlightBookingReviewModel flightBookingReviewModel;
-    private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();

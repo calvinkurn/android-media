@@ -46,6 +46,11 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
     }
 
     @Override
+    public long getLongConfig(String flightAirport) {
+        return 100;
+    }
+
+    @Override
     public void goToForceUpdate(Activity activity) {
 
     }

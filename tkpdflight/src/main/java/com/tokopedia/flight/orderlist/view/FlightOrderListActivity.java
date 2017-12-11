@@ -1,5 +1,7 @@
 package com.tokopedia.flight.orderlist.view;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -14,6 +16,11 @@ import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 
 public class FlightOrderListActivity extends BaseSimpleActivity implements HasComponent<FlightOrderComponent> {
     FlightOrderComponent component;
+
+
+    public static Intent getCallingIntent(Activity activity) {
+        return new Intent(activity, FlightOrderListActivity.class);
+    }
 
     @Override
     protected Fragment getNewFragment() {
