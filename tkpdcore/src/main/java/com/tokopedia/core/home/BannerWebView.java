@@ -43,13 +43,14 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
             result += promoId;
         }
         result += FLAG_APP;
+        bundle.putString(BannerWebView.EXTRA_URL, result);
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, BannerWebView.class)
                 .setData(uri.build())
                 .putExtra(BannerWebView.EXTRA_URL, result);
     }
 
-    public static Intent getCallingIntent(Activity activity, String url){
+    public static Intent getCallingIntent(Activity activity, String url) {
         Intent intent = new Intent(activity, BannerWebView.class);
         intent.putExtra(EXTRA_URL, url);
         return intent;
@@ -64,7 +65,6 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_webview_container);
-
         String url = getIntent().getExtras().getString(EXTRA_URL);
         fragment = FragmentBannerWebView.createInstance(url);
         if (savedInstanceState == null) {

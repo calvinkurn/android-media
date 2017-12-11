@@ -47,6 +47,9 @@ public class Address implements Parcelable {
     @Expose
     private ArrayList<String> zipCodes;
 
+    public Address() {
+    }
+
     protected Address(Parcel in) {
         districtId = in.readInt();
         districtName = in.readString();

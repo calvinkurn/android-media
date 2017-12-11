@@ -288,7 +288,7 @@ public class FCMCacheManager {
                 public Boolean call(Boolean aBoolean) {
                     try {
                         FirebaseInstanceId.getInstance().deleteInstanceId();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
                         FirebaseInstanceId.getInstance().getToken();
@@ -298,7 +298,22 @@ public class FCMCacheManager {
             }).subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe();
+                    .subscribe(new Subscriber<Boolean>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            // no operation, handled in FCMInstanceIDService
+                        }
+
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            // no operation, handled in FCMInstanceIDService
+                        }
+                    });
         }
     }
 
