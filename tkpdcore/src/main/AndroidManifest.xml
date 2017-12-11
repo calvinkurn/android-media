@@ -440,9 +440,6 @@
             android:name=".talkview.intentservice.TalkViewIntentService"
             android:exported="false" />
         <service
-            android:name=".service.HadesService"
-            android:exported="false" />
-        <service
             android:name=".manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
         <service
