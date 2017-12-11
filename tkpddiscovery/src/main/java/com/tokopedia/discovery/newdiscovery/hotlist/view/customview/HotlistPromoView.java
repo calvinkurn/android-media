@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.CopyPromoVoucher;
 import com.tokopedia.discovery.R;
@@ -90,15 +93,51 @@ public class HotlistPromoView extends BaseCustomView {
         }
     }
 
-    private String generateMinTransaction(String minimunTransaction) {
-        return MethodChecker.fromHtml(
-                getContext().getString(R.string.template_widget_promo_min_transaction, minimunTransaction)
-        ).toString();
+    private SpannableString generateMinTransaction(String minimunTransaction) {
+        SpannableString spannableString = new SpannableString(getContext().getString(R.string.template_widget_promo_min_transaction, minimunTransaction));
+
+        spannableString.setSpan(
+                new ClickableSpan() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        ds.setUnderlineText(false);
+                        ds.setColor(ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+                    }
+                },
+                spannableString.toString().indexOf(minimunTransaction),
+                spannableString.toString().indexOf(minimunTransaction) + minimunTransaction.length(),
+                0
+        );
+
+        return spannableString;
     }
 
-    private String generatePromoPeriod(String promoPeriod) {
-        return MethodChecker.fromHtml(
-                getContext().getString(R.string.template_widget_promo_period, promoPeriod)
-        ).toString();
+    private SpannableString generatePromoPeriod(String promoPeriod) {
+        SpannableString spannableString = new SpannableString(getContext().getString(R.string.template_widget_promo_period, promoPeriod));
+
+        spannableString.setSpan(
+                new ClickableSpan() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        ds.setUnderlineText(false);
+                        ds.setColor(ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+                    }
+                },
+                spannableString.toString().indexOf(promoPeriod),
+                spannableString.toString().indexOf(promoPeriod) + promoPeriod.length(),
+                0
+        );
+
+        return spannableString;
     }
 }
