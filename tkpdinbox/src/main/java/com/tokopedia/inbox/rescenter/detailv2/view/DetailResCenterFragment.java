@@ -243,6 +243,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                         resolutionID,
                         getViewData().getNextActionDomain(),
                         getViewData().getDetailData().getResolutionStatus()));
+                getBottomSheetActivityTransition();
             }
         });
 
