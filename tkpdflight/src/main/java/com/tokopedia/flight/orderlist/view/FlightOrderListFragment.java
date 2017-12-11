@@ -9,11 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,6 +30,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     FlightOrderListPresenter presenter;
     private RecyclerView ordersRecyclerView;
     private RecyclerView filtersRecyclerView;
+    private SwipeToRefresh swipeToRefresh;
     private QuickFilterAdapter filterAdapter;
 
     public static FlightOrderListFragment createInstance() {
@@ -47,6 +52,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_order_list, container, false);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         filtersRecyclerView = view.findViewById(R.id.rv_filters);
         ordersRecyclerView = view.findViewById(R.id.rv_orders);
         filtersRecyclerView.setHasFixedSize(true);
@@ -67,12 +73,17 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showGetInitialOrderDataLoading() {
-
+        swipeToRefresh.setRefreshing(true);
     }
 
     @Override
     public void hideGetInitialOrderDataLoading() {
+        swipeToRefresh.setRefreshing(false);
+    }
 
+    @Override
+    public void renderOrderStatus(List<QuickFilterItem> filterItems) {
+        filterAdapter.addQuickFilterItems(filterItems);
     }
 
     @Override

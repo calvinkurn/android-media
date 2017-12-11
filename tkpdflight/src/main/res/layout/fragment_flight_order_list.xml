@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -32,6 +32,6 @@
 
         </LinearLayout>
 
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 </android.support.design.widget.CoordinatorLayout>
