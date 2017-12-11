@@ -30,6 +30,7 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
     @Override
     public void detachView() {
         super.detachView();
+        loginTokoCashUseCase.unsubscribe();
     }
 
     @Override

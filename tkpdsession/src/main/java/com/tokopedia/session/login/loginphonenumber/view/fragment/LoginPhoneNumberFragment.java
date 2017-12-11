@@ -226,4 +226,10 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
         return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }

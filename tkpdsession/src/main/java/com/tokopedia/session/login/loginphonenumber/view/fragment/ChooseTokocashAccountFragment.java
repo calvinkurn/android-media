@@ -179,4 +179,10 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }

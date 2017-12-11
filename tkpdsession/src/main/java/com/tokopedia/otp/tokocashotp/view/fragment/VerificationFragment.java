@@ -411,6 +411,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             countDownTimer = null;
         }
         progressDialog = null;
+
+        presenter.detachView();
     }
 
     public void setData(Bundle bundle) {
