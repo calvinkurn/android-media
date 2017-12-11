@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.historyawb.view.model.HistoryAwbViewItem;
 import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentView;
@@ -131,9 +132,10 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void renderData(ShippingViewHolder holder, HistoryAwbViewItem item) {
         holder.date.setText(
-                context.getString(R.string.template_history_additional_information, item.getActionByText(), item.getDate())
+                context.getString(R.string.template_history_additional_information, item.getActionByText(),
+                        DateFormatUtils.formatDateForResoChatV2(item.getCreateTimestamp()))
         );
-        holder.history.setText(item.getRemark().concat(": ").concat(item.getShippingRefNumber()));
+        holder.history.setText(item.getRemark().concat(" - ").concat(item.getShippingRefNumber()));
     }
 
     private void renderView(ShippingViewHolder holder, HistoryAwbViewItem item) {
@@ -157,7 +159,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         );
 
         holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
+                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
         );
     }
 

@@ -58,7 +58,9 @@ public class CreateSubmitUseCase extends UseCase<CreateSubmitDomain> {
             }
             submitObject.put(PARAM_PICTURES, imageArrayList);
             submitObject.put(PARAM_VIDEOS, videoArrayList);
-            submitObject.put(RESOLUTION_ID, Integer.valueOf(createResoRequestDomain.getResolutionId()));
+            if (createResoRequestDomain.getResolutionId() != null) {
+                submitObject.put(RESOLUTION_ID, Integer.valueOf(createResoRequestDomain.getResolutionId()));
+            }
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, createResoRequestDomain.getOrderId());
             params.putString(PARAM_JSON, submitObject.toString());

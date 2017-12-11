@@ -65,7 +65,7 @@ public class DateFormatUtils {
                 DateFormatUtils.FORMAT_T_Z,
                 DateFormatUtils.FORMAT_MMM,
                 dateString);
-        return date;
+        return capitalizeFirstChar(date);
     }
 
     public static String getDayNumber(String dateString) {
@@ -82,5 +82,9 @@ public class DateFormatUtils {
                 DateFormatUtils.FORMAT_HH_MM,
                 dateString) + " WIB";
         return date;
+    }
+
+    private static String capitalizeFirstChar(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 }

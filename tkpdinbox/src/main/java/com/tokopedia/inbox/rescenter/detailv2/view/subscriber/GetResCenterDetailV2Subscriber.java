@@ -42,7 +42,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created by hangnadi on 3/16/17.
+ * Created by yfsx
  */
 
 public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponseData> {
@@ -285,6 +285,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         AwbData awbData = new AwbData();
         awbData.setShipmentID(String.valueOf(userAwbData.getShipping().getId()));
         awbData.setShipmentRef(userAwbData.getAwb());
+        awbData.setShipmentName(userAwbData.getShipping().getName());
         awbData.setAwbDateTimestamp(userAwbData.getCreateTime());
         awbData.setAwbDate(userAwbData.getCreateTimeStr());
         awbData.setAttachments(mappingAwbAttachments(userAwbData.getAttachments()));
@@ -309,27 +310,23 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         addressReturData.setAddressID(String.valueOf(addressData.getAddressId()));
         addressReturData.setAddressReturDate(sellerAddressData.getCreateTimeStr());
         addressReturData.setAddressReturDateTimestamp(sellerAddressData.getCreateTime());
-        String addressTextBuilder = "<b>" + addressData.getReceiver() + "</b>" + "<br>" +
-                addressData.getAddress() + "<br>" +
-                addressData.getDistrict() + ", " + addressData.getCity() + "<br>" +
-                addressData.getProvince() + "<br>" +
-                addressData.getPostalCode() + "<br>" +
-                addressData.getPhone();
-        addressReturData.setAddressText(addressTextBuilder);
+        addressReturData.setAddressText(getAddressFormat(sellerAddressData.getAddress()));
         addressReturData.setConversationID(String.valueOf(sellerAddressData.getConversationId()));
         return addressReturData;
     }
 
     private List<ButtonViewItem> mappingButtonViewItem(ButtonDomain domainModel) {
         List<ButtonViewItem> itemList = new ArrayList<>();
+        boolean isFinishInserted = false;
         if (domainModel.getFinish() != 0) {
             ButtonViewItem data = new ButtonViewItem(
                     domainModel.getFinishLabel(),
                     BUTTON_FINISH_COMPLAINT,
                     domainModel.getFinishOrder());
+            isFinishInserted = true;
             itemList.add(data);
         }
-        if (domainModel.getAccept() != 0) {
+        if (domainModel.getAccept() != 0 && !isFinishInserted) {
             ButtonViewItem data = new ButtonViewItem(
                     domainModel.getAcceptLabel(),
                     BUTTON_ACCEPT_SOLUTION,
@@ -395,5 +392,14 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         public int compare(ButtonViewItem button1, ButtonViewItem button2) {
             return button2.getOrder() - button1.getOrder();
         }
+    }
+
+    private String getAddressFormat(AddressData domainModel) {
+        return "<b>" + domainModel.getReceiver() + "</b>" + "<br>" + "<br>" +
+                domainModel.getAddress() + "<br>" +
+                domainModel.getDistrict() + ", " + domainModel.getCity()  + " - " +
+                domainModel.getPostalCode() + "<br>" +
+                domainModel.getProvince() + "<br>" +
+                "Telp: " + domainModel.getPhone();
     }
 }

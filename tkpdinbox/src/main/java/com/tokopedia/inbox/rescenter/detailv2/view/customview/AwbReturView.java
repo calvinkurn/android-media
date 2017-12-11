@@ -70,8 +70,9 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     @Override
     public void renderData(@NonNull AwbData data) {
         setVisibility(VISIBLE);
+        actionAdd.setVisibility(GONE);
         informationText.setText(generateInformationText(data));
-        awbText.setText(data.getShipmentRef());
+        awbText.setText(generateShippingName(data));
         actionTrack.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));
         actionMoreAwb.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));
         actionAdd.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));
@@ -80,6 +81,10 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     private String generateInformationText(AwbData data) {
         return getContext().getString(R.string.template_awb_additional_text,
                 formatDate(data.getAwbDateTimestamp()));
+    }
+
+    private String generateShippingName(AwbData data) {
+        return data.getShipmentName() + " - " + data.getShipmentRef();
     }
 
     private String formatDate(String awbDate) {

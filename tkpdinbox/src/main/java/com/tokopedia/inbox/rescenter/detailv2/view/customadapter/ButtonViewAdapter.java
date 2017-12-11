@@ -65,7 +65,7 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         if (resolutionStatus == STATUS_CANCEL || resolutionStatus == STATUS_FINISHED) {
-            setWhiteButton(holder.btnAction, context.getResources().getString(R.string.string_back_to_complaint_list));
+            setGreenButton(holder.btnAction, context.getResources().getString(R.string.string_back_to_complaint_list));
             holder.btnAction.setOnClickListener(onActionButtonListener(STATUS_FINISH_RESO));
         } else {
             ButtonViewItem buttonViewItem = buttonViewItemList.get(position);

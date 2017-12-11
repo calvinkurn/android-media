@@ -355,15 +355,18 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 glowingView.renderData(new Object());
             }
         }
-        if (getViewData().getProductData() != null) {
+        if (getViewData().getProductData() != null
+                && getViewData().getProductData().getProductList().size() != 0) {
             listProductView.renderData(getViewData().getProductData());
         }
         if (getViewData().getSolutionData() != null) {
             solutionView.renderData(getViewData().getSolutionData());
         }
         if (getViewData().getProveData() != null) {
-            proveView.renderData(getViewData().getProveData());
-            proveView.invalidate();
+            if (getViewData().getProveData().getAttachment().size() != 0
+                    || getViewData().getProveData().getRemark() != null) {
+                proveView.renderData(getViewData().getProveData());
+            }
         }
         if (getViewData().getHistoryData() != null) {
             historyView.renderData(getViewData().getHistoryData());
@@ -597,6 +600,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 shipmentID,
                 shipmentRef)
         );
+        getBottomSheetActivityTransition();
     }
 
     @Override
