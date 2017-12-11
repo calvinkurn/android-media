@@ -1131,6 +1131,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="msg_no_connection">Tidak ada koneksi internet</string>
     <string name="error_bank_not_found">Nama Bank tidak ditemukan.</string>
     <string name="action_search">Cari</string>
+    <string name="action_search_with_suffix">Cari %1$s</string>
     <string name="hint_fill_ref">Isi nomor resi</string>
     <string name="title_extra_cost">Biaya Tambahan</string>
     <string name="title_dashboard_purchase">PEMBELIAN</string>
