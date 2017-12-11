@@ -3,7 +3,6 @@ package com.tokopedia.flight.review.domain;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.AmenityPassenger;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.AttributesData;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.CartItem;
@@ -13,7 +12,6 @@ import com.tokopedia.flight.review.domain.verifybooking.model.request.MetaData;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.Passenger;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
-import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -83,8 +81,8 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         for(FlightBookingPassengerViewModel flightPassengerViewModel : flightPassengerViewModels){
             Passenger passenger = new Passenger();
             passenger.setDob(flightPassengerViewModel.getPassengerBirthdate());
-            passenger.setFirstName(flightPassengerViewModel.getPassengerName());
-            passenger.setLastName(flightPassengerViewModel.getPassengerName());
+            passenger.setFirstName(flightPassengerViewModel.getPassengerFirstName());
+            passenger.setLastName(flightPassengerViewModel.getPassengerLastName());
             passenger.setTitle(flightPassengerViewModel.getPassengerTitleId());
             passenger.setType(flightPassengerViewModel.getType());
             passenger.setAmenities(generateAmenities(flightPassengerViewModel.getFlightBookingLuggageMetaViewModels(), flightPassengerViewModel.getFlightBookingMealMetaViewModels()));
