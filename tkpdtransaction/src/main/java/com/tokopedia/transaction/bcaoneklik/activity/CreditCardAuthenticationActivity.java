@@ -31,9 +31,8 @@ import javax.inject.Inject;
 public class CreditCardAuthenticationActivity extends TActivity
         implements CreditCardAuthenticationView {
 
-    private static final String state = "state";
-    private static final String email = "email";
-    private static final String EXTRA_BUNDLE_AUTHENTICATION = "EXTRA_BUNDLE_AUTHENTICATION";
+    private static final String STATE = "state";
+    private static final String EMAIL = "email";
 
     private TkpdProgressDialog dialog;
 
@@ -42,10 +41,9 @@ public class CreditCardAuthenticationActivity extends TActivity
     public static Intent getCallingIntentCreditCardAuthentication(Context context, Bundle extras) {
         Intent intent = new Intent(context, CreditCardAuthenticationActivity.class);
         AuthenticatorPageModel authenticatorPageModel = new AuthenticatorPageModel();
-        authenticatorPageModel.setState(extras.getInt(state));
-        authenticatorPageModel.setUserEmail(extras.getString(email));
-        Bundle extrasIntent = new Bundle();
-        extrasIntent.putParcelable(EXTRA_BUNDLE_AUTHENTICATION, authenticatorPageModel);
+        authenticatorPageModel.setState(Integer.parseInt(extras.getString(STATE)));
+        authenticatorPageModel.setUserEmail(extras.getString(EMAIL));
+        intent.putExtra(CREDIT_CARD_STATUS_KEY, authenticatorPageModel);
         intent.putExtras(extras);
         return intent;
     }
