@@ -36,6 +36,7 @@ public class ButtonDomain implements Parcelable {
     private int accept;
     private String acceptLabel;
     private String acceptText;
+    private String acceptTextLite;
     private int acceptOrder;
     private int acceptReturn;
     private String acceptReturnLabel;
@@ -85,6 +86,7 @@ public class ButtonDomain implements Parcelable {
                         int accept,
                         String acceptLabel,
                         String acceptText,
+                        String acceptTextLite,
                         int acceptOrder,
                         int acceptReturn,
                         String acceptReturnLabel,
@@ -133,6 +135,7 @@ public class ButtonDomain implements Parcelable {
         this.accept = accept;
         this.acceptLabel = acceptLabel;
         this.acceptText = acceptText;
+        this.acceptTextLite = acceptTextLite;
         this.acceptOrder = acceptOrder;
         this.acceptReturn = acceptReturn;
         this.acceptReturnLabel = acceptReturnLabel;
@@ -282,6 +285,14 @@ public class ButtonDomain implements Parcelable {
 
     public void setInputAddressOrder(int inputAddressOrder) {
         this.inputAddressOrder = inputAddressOrder;
+    }
+
+    public String getAcceptTextLite() {
+        return acceptTextLite;
+    }
+
+    public void setAcceptTextLite(String acceptTextLite) {
+        this.acceptTextLite = acceptTextLite;
     }
 
     public int getAppeal() {

@@ -87,7 +87,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDateTimestamp()));
         holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDateTimestamp()));
         holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
+                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
         );
         holder.lineIndicator.setVisibility(position == getHistoryItems().size() - 1 ? View.GONE : View.VISIBLE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {

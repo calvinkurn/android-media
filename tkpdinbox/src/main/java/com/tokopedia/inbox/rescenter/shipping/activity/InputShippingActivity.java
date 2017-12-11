@@ -134,7 +134,7 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         getBottomBackSheetActivityTransition();
-        finish();
     }
 }

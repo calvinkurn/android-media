@@ -191,6 +191,7 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                 response.getAccept(),
                 response.getAcceptLabel(),
                 response.getAcceptText(),
+                response.getAcceptTextLite(),
                 response.getAcceptOrder(),
                 response.getAcceptReturn(),
                 response.getAcceptReturnLabel(),

@@ -89,6 +89,9 @@ public class ButtonResponse {
     @SerializedName("acceptSolutionText")
     private String acceptText;
 
+    @SerializedName("acceptSolutionTextLite")
+    private String acceptTextLite;
+
     @SerializedName("acceptSolutionOrder")
     private int acceptOrder;
 
@@ -406,6 +409,14 @@ public class ButtonResponse {
 
     public void setAcceptReturnOrder(int acceptReturnOrder) {
         this.acceptReturnOrder = acceptReturnOrder;
+    }
+
+    public String getAcceptTextLite() {
+        return acceptTextLite;
+    }
+
+    public void setAcceptTextLite(String acceptTextLite) {
+        this.acceptTextLite = acceptTextLite;
     }
 
     public int getFinish() {

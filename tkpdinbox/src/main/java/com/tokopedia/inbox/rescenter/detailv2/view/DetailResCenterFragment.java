@@ -491,7 +491,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void setOnActionAcceptSolutionClick() {
         showAcceptActionDialog(getViewData().getButtonData().getAcceptLabel(),
-                getViewData().getButtonData().getAcceptDialogText(),
+                getViewData().getButtonData().getAcceptTextLite(),
                 getViewData().getSolutionData().getSolutionText(),
                 new View.OnClickListener() {
                     @Override

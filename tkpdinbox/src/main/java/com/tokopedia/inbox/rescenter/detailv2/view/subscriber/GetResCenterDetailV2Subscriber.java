@@ -165,6 +165,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setShowAskHelp(domainModel.getReport() == 1);
         data.setAskHelpDialogText(domainModel.getReportText());
         data.setShowCancel(domainModel.getCancel() == 1);
+        data.setAcceptTextLite(domainModel.getAcceptTextLite());
         data.setCancelDialogText(domainModel.getCancelText());
         data.setShowEdit(domainModel.getEdit() == 1);
         data.setShowInputAddress(domainModel.getInputAddress() == 1);

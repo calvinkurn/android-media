@@ -104,8 +104,8 @@ public class TrackShippingActivity extends BasePresenterActivity<TrackShippingAc
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         getBottomBackSheetActivityTransition();
-        finish();
     }
 
     public void getBottomBackSheetActivityTransition() {

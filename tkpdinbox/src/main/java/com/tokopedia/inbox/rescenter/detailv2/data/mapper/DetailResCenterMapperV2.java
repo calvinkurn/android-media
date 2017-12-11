@@ -283,6 +283,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getAccept(),
                 response.getAcceptLabel(),
                 response.getAcceptText(),
+                response.getAcceptTextLite(),
                 response.getAcceptOrder(),
                 response.getAcceptReturn(),
                 response.getAcceptReturnLabel(),

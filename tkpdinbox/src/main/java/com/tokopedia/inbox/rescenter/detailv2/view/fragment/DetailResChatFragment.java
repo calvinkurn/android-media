@@ -784,7 +784,7 @@ public class DetailResChatFragment
                         @Override
                         public void onClick(View view) {
                             showAcceptActionDialog(buttonDomain.getAcceptLabel(),
-                                    buttonDomain.getAcceptText(),
+                                    buttonDomain.getAcceptTextLite(),
                                     detailResChatDomain.getLast().getSolution().getName(),
                                     new View.OnClickListener() {
                                         @Override
@@ -1161,6 +1161,7 @@ public class DetailResChatFragment
                 shipmentID,
                 shipmentRef)
         );
+        getBottomSheetActivityTransition();
     }
 
     @Override
@@ -1173,6 +1174,7 @@ public class DetailResChatFragment
                 shippingId,
                 shippingRefNum),
                 REQUEST_EDIT_SHIPPING);
+        getBottomSheetActivityTransition();
     }
 
     public void getBottomSheetActivityTransition() {

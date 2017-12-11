@@ -13,6 +13,7 @@ public class ButtonData implements Parcelable{
     private boolean showEdit;
     private boolean showAcceptSolution;
     private boolean showAcceptProduct;
+    private String acceptTextLite;
     private boolean acceptReturSolution;
     private boolean showAppealSolution;
     private boolean showAskHelp;
@@ -203,6 +204,14 @@ public class ButtonData implements Parcelable{
         this.inputAwbLabel = inputAwbLabel;
     }
 
+    public String getAcceptTextLite() {
+        return acceptTextLite;
+    }
+
+    public void setAcceptTextLite(String acceptTextLite) {
+        this.acceptTextLite = acceptTextLite;
+    }
+
     public ButtonData() {
     }
 
@@ -246,9 +255,10 @@ public class ButtonData implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.showAcceptSolution ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showEdit ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showAcceptSolution ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showAcceptProduct ? (byte) 1 : (byte) 0);
+        dest.writeString(this.acceptTextLite);
         dest.writeByte(this.acceptReturSolution ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showAppealSolution ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showAskHelp ? (byte) 1 : (byte) 0);
@@ -273,9 +283,10 @@ public class ButtonData implements Parcelable{
     }
 
     protected ButtonData(Parcel in) {
-        this.showAcceptSolution = in.readByte() != 0;
         this.showEdit = in.readByte() != 0;
+        this.showAcceptSolution = in.readByte() != 0;
         this.showAcceptProduct = in.readByte() != 0;
+        this.acceptTextLite = in.readString();
         this.acceptReturSolution = in.readByte() != 0;
         this.showAppealSolution = in.readByte() != 0;
         this.showAskHelp = in.readByte() != 0;
