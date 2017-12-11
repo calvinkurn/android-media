@@ -401,7 +401,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onDestroy();
     }
 
-    public static Intent getHotlistIntent(Context context) {
+    public static Intent getHomeHotlistIntent(Context context) {
         Intent intent = new Intent(context, ParentIndexHome.class);
         intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOTLIST);
         return intent;

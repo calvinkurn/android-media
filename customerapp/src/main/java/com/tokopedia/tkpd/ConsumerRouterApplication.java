@@ -427,7 +427,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHomeHotlistIntent(Context context) {
-        return ParentIndexHome.getHotlistIntent(context);
+        return ParentIndexHome.getHomeHotlistIntent(context);
     }
 
     @Override
