@@ -19,11 +19,12 @@ import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistIni
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.AddWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistInitializeSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistLoadMoreSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RefreshHotlistSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RemoveWishlistActionSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.discovery.newdiscovery.util.WishlistActionListener;
 
@@ -33,8 +34,7 @@ import javax.inject.Inject;
  * Created by hangnadi on 10/6/17.
  */
 
-@SuppressWarnings("WeakerAccess")
-public class HotlistFragmentPresenter extends BaseDaggerPresenter<HotlistFragmentContract.View>
+public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl<HotlistFragmentContract.View>
         implements HotlistFragmentContract.Presenter, WishlistActionListener {
 
     @Inject
@@ -59,10 +59,10 @@ public class HotlistFragmentPresenter extends BaseDaggerPresenter<HotlistFragmen
 
     public HotlistFragmentPresenter(Context context) {
         this.context = context;
-        HotlistComponent hotlistComponent = DaggerHotlistComponent.builder()
-                .appComponent(getComponent(context))
-                .build();
-        hotlistComponent.inject(this);
+//        HotlistComponent hotlistComponent = DaggerHotlistComponent.builder()
+//                .appComponent(getComponent(context))
+//                .build();
+//        hotlistComponent.inject(this);
     }
 
     @Override
@@ -105,23 +105,19 @@ public class HotlistFragmentPresenter extends BaseDaggerPresenter<HotlistFragmen
             requestParams.putString(BrowseApi.USER_ID, uniqueID);
         }
 
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
+        enrichWithFilterAndSortParams(requestParams);
+        removeDefaultCategoryParam(requestParams);
 
         return requestParams;
     }
 
     @Override
-    public void requestDynamicFilter() {
-        getDynamicFilterUseCase.execute(getParamDynamicFilter(), new GetDynamicFilterSubscriber(getView()));
+    protected void getFilterFromNetwork(RequestParams requestParams) {
+        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
     }
 
-    private RequestParams getParamDynamicFilter() {
+    @Override
+    protected RequestParams getDynamicFilterParam() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_HOTLIST);
@@ -190,13 +186,8 @@ public class HotlistFragmentPresenter extends BaseDaggerPresenter<HotlistFragmen
             requestParams.putString(BrowseApi.USER_ID, uniqueID);
         }
 
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
+        enrichWithFilterAndSortParams(requestParams);
+        removeDefaultCategoryParam(requestParams);
 
         return requestParams;
     }

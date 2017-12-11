@@ -30,6 +30,7 @@
     <string name="error_filter_data_not_ready">Data Filter belum tersedia</string>
     <string name="msg_error_add_wishlist">Gagal menambahkan wishlist</string>
     <string name="msg_error_remove_wishlist">Gagal menghapus wishlist</string>
+    <string name="error_get_local_dynamic_filter">Gagal memproses data Filter</string>
     <string name="error_get_dynamic_filter">Gagal memperoleh data Filter dan Sort</string>
     <string name="msg_empty_search_2">Silakan melakukan pencarian kembali dengan menggunakan kata kunci lain.</string>
     <string name="msg_empty_search_1">Oops... hasil pencarian Anda tidak dapat ditemukan.</string>

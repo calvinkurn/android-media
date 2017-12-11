@@ -23,10 +23,12 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
 
     private final SearchParameter searchParameter;
 
+    private boolean forceSearch;
     private D2 discoveryView;
 
-    public DefaultSearchSubscriber(SearchParameter searchParameter, D2 discoveryView) {
+    public DefaultSearchSubscriber(SearchParameter searchParameter, boolean forceSearch, D2 discoveryView) {
         this.searchParameter = searchParameter;
+        this.forceSearch = forceSearch;
         this.discoveryView = discoveryView;
     }
 
@@ -53,6 +55,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
             case DISCOVERY_URL_SEARCH:
                 ProductViewModel model = ProductViewModelHelper.convertToProductViewModel(searchResult);
                 model.setSearchParameter(searchParameter);
+                model.setForceSearch(forceSearch);
                 discoveryView.onHandleResponseSearch(model);
                 break;
             case DISCOVERY_URL_CATALOG:

@@ -23,6 +23,7 @@ public class BaseDiscoveryActivity
         implements BaseDiscoveryContract.View, HasComponent {
 
     private static final String KEY_FORCE_SWIPE_TO_SHOP = "KEY_FORCE_SWIPE_TO_SHOP";
+    private static final String KEY_TAB_POSITION = "KEY_TAB_POSITION";
     private static final String KEY_FORCE_SEARCH = "KEY_FORCE_SEARCH";
     private static final String KEY_REQUEST_OS = "KEY_REQUEST_OS";
 
@@ -30,6 +31,26 @@ public class BaseDiscoveryActivity
     private boolean forceSwipeToShop;
     private boolean forceSearch;
     private boolean requestOfficialStoreBanner;
+    private int activeTabPosition;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION, 0));
+            setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP, false));
+            setForceSearch(savedInstanceState.getBoolean(KEY_FORCE_SEARCH, false));
+            setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS, false));
+        }
+    }
+
+    public int getActiveTabPosition() {
+        return activeTabPosition;
+    }
+
+    public void setActiveTabPosition(int activeTabPosition) {
+        this.activeTabPosition = activeTabPosition;
+    }
 
     public boolean isForceSwipeToShop() {
         return forceSwipeToShop;
@@ -86,7 +107,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseIntermediary(String departmentId) {
-        IntermediaryActivity.moveTo(this,departmentId);
+        IntermediaryActivity.moveTo(this, departmentId);
         overridePendingTransition(0, 0);
         finish();
     }
@@ -120,6 +141,7 @@ public class BaseDiscoveryActivity
         outState.putBoolean(KEY_FORCE_SEARCH, isForceSearch());
         outState.putBoolean(KEY_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
         outState.putBoolean(KEY_REQUEST_OS, isRequestOfficialStoreBanner());
+        outState.putInt(KEY_TAB_POSITION, getActiveTabPosition());
     }
 
     @Override
@@ -128,6 +150,7 @@ public class BaseDiscoveryActivity
         setForceSearch(savedInstanceState.getBoolean(KEY_FORCE_SEARCH));
         setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP));
         setRequestOfficialStoreBanner(savedInstanceState.getBoolean(KEY_REQUEST_OS));
+        setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 
 }

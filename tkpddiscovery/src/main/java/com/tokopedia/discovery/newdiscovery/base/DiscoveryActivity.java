@@ -32,7 +32,6 @@ import java.util.List;
  * Created by hangnadi on 10/3/17.
  */
 
-@SuppressWarnings({"FieldCanBeLocal", "unused", "SimplifiableIfStatement"})
 public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
         DiscoverySearchView.OnQueryTextListener,
@@ -249,6 +248,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         );
         parameter.setDepartmentId(categoryID);
         onSearchingStart(keyword);
+        setForceSearch(false);
         getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
     }
 
