@@ -216,7 +216,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                         // Location settings are not satisfied. However, we have no way
                         // to fix the settings so we won't show the dialog.
 
-                        getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
+                        if (getView().getSource() == null) {
+                            getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
+                        }
                         break;
                 }
             }
@@ -418,7 +420,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                     startLocationUpdates();
                 }
             } else {
-                getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
+                if (getView().getSource() == null) {
+                    getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
+                }
             }
         }
     }
