@@ -49,7 +49,7 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
         final ConversationProductDomain product = productList.get(position);
         ImageHandler.LoadImage(holder.ivImage, product.getImage().get(0).getThumb());
         holder.tvMore.setVisibility(View.GONE);
-        if (maxShowCount - 1 == position && maxShowCount - 1 < productList.size()) {
+        if (maxShowCount - 1 == position && maxShowCount < productList.size()) {
             holder.tvMore.setVisibility(View.VISIBLE);
             int plusNumber = productList.size() - position;
             String plusString = "+" + plusNumber;
