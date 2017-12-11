@@ -159,8 +159,26 @@ public class PromoCouponFragment extends BasePresenterFragment
     }
 
     @Override
+    public void onErrorFetchCouponList(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                mainView,
+                errorMessage,
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+            }
+        });
+    }
+
+    @Override
     public void couponError() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showSnackbarError(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override

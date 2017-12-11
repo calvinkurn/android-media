@@ -15,6 +15,9 @@
     <string name="notes_voucher">* Hanya berlaku untuk satu kali pembayaran.\n** Sisa nilai promo
         tidak dapat dikembalikan (hangus) apabila
         melewati masa kadaluarsa."</string>
+    <string name="kode_voucher">Kode Promo</string>
+    <string name="error_voucher">Kode promo tidak ditemukan</string>
+    <string name="use_voucher">Gunakan</string>
     <string name="empty_voucher">Masukkan kode promo terlebih dahulu</string>
 
     <string name="use_promo_code_or_coupon">Gunakan Kode Promo atau Kupon</string>

@@ -9,6 +9,7 @@ import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.apiservice.DigitalEndpointService;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
@@ -21,6 +22,7 @@ import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
 import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
+import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -69,6 +71,15 @@ public class TokoPointRepository implements ITokoPointRepository {
                 .map(new Func1<Response<TokoPointResponse>, List<CouponData>>() {
                     @Override
                     public List<CouponData> call(Response<TokoPointResponse> tokoplusResponseResponse) {
+                        if (tokoplusResponseResponse.body() == null) {
+                            throw new LoyaltyErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        } else if(tokoplusResponseResponse
+                                .body()
+                                .getTokoPointHeaderResponse()
+                                .getErrorCode() != null) {
+                            throw new LoyaltyErrorException(tokoplusResponseResponse
+                                    .body().getTokoPointHeaderResponse().getMessageFormatted());
+                        }
                         return tokoPointResponseMapper.convertCouponListData(
                                 tokoplusResponseResponse.body().convertDataObj(
                                         CouponListDataResponse.class
@@ -186,7 +197,7 @@ public class TokoPointRepository implements ITokoPointRepository {
                         networkResponse.body().getStringData(), VoucherResponse.class
                 );
                 if (networkResponse.body().isError()) {
-                    throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
+                    throw new LoyaltyErrorException(networkResponse.body().getErrorMessageJoined());
                 }
                 return tokoPointResponseMapper.voucherViewModel(voucherResponse, voucherCode);
             }
@@ -206,7 +217,7 @@ public class TokoPointRepository implements ITokoPointRepository {
                                 networkResponse.body().getStringData(), VoucherResponse.class
                         );
                         if (networkResponse.body().isError()) {
-                            throw new RuntimeException(networkResponse.body().getErrorMessageJoined());
+                            throw new LoyaltyErrorException(networkResponse.body().getErrorMessageJoined());
                         }
                         return tokoPointResponseMapper.couponViewModel(voucherResponse, voucherCode, couponTitle
                         );
