@@ -4,6 +4,7 @@ import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
+import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
@@ -11,10 +12,13 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
+import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
@@ -46,6 +50,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightMetaDataDBSource flightMetaDataDBSource;
     private FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource;
     private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
+    private FlightBookingDataSource flightBookingDataSource;
+    private FlightAirportVersionDBSource flightAirportVersionDBSource;
     private FlightOrderDataSource flightOrderDataSource;
 
     public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource,
@@ -57,6 +63,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightMetaDataDBSource flightMetaDataDBSource,
                                 FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                 FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
+                                FlightBookingDataSource flightBookingDataSource,
+                                FlightAirportVersionDBSource flightAirportVersionDBSource,
                                 FlightOrderDataSource flightOrderDataSource) {
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
@@ -67,6 +75,8 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightMetaDataDBSource = flightMetaDataDBSource;
         this.flightAirportDataListBackgroundSource = flightAirportDataListBackgroundSource;
         this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
+        this.flightBookingDataSource = flightBookingDataSource;
+        this.flightAirportVersionDBSource = flightAirportVersionDBSource;
         this.flightOrderDataSource = flightOrderDataSource;
     }
 
@@ -199,13 +209,27 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<Boolean> getAirportListBackground() {
-        return flightAirportDataListBackgroundSource.getAirportList();
+    public Observable<Boolean> getAirportListBackground(long versionAirport) {
+        return flightAirportDataListBackgroundSource.getAirportList(versionAirport);
     }
 
     @Override
     public Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString) {
         return flightCheckVoucheCodeDataSource.checkVoucherCode(paramsAllValueInString);
+    }
+
+    @Override
+    public Observable<DataResponseVerify> verifyBooking(VerifyRequest verifyRequest) {
+        return flightBookingDataSource.verifyBooking(verifyRequest);
+    }
+
+    @Override
+    public Observable<Boolean> checkVersionAirport(long versionOnCloud) {
+        if(flightAirportVersionDBSource.getVersion() <  versionOnCloud) {
+            return Observable.just(true);
+        }else{
+            return Observable.just(false);
+        }
     }
 
     @Override

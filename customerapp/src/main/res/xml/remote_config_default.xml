@@ -77,4 +77,8 @@
         <key>enable_topchat</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>flight_airport</key>
+        <value>1</value>
+    </entry>
 </defaultsMap>

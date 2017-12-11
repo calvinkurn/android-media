@@ -8,5 +8,7 @@ public interface FlightModuleRouter {
 
     FlightComponent getFlightComponent();
 
+    long getLongConfig(String flightAirport);
+
     Intent getLoginIntent();
 }

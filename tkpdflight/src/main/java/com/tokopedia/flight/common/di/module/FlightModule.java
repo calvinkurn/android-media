@@ -3,6 +3,7 @@ package com.tokopedia.flight.common.di.module;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
+import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -14,6 +15,7 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
+import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
@@ -72,10 +74,13 @@ public class FlightModule {
                                                     FlightMetaDataDBSource flightMetaDataDBSource,
                                                     FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
+                                                    FlightBookingDataSource flightBookingDataSource,
+                                                    FlightAirportVersionDBSource flightAirportVersionDBSource,
                                                     FlightOrderDataSource flightOrderDataSource) {
         return new FlightRepositoryImpl(flightAirportDataListSource,flightAirlineDataListSource,
                 flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource,
-                flightMetaDataDBSource, flightAirportDataListBackgroundSource, flightCheckVoucheCodeDataSource, flightOrderDataSource);
+                flightMetaDataDBSource, flightAirportDataListBackgroundSource, flightCheckVoucheCodeDataSource, flightBookingDataSource,
+                flightAirportVersionDBSource, flightOrderDataSource);
     }
 
     @FlightScope

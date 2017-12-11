@@ -7,6 +7,8 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
+import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.usecase.RequestParams;
@@ -46,9 +48,13 @@ public interface FlightRepository {
 
     Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey);
 
-    Observable<Boolean> getAirportListBackground();
+    Observable<Boolean> getAirportListBackground(long versionAirport);
 
     Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString);
+
+    Observable<DataResponseVerify> verifyBooking(VerifyRequest verifyRequest);
+
+    Observable<Boolean> checkVersionAirport(long current_version);
 
     Observable<List<OrderEntity>> getOrders(Map<String, Object> maps);
 

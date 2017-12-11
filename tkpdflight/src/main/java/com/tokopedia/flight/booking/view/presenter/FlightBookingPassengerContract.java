@@ -75,6 +75,8 @@ public interface FlightBookingPassengerContract {
 
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
 
+        int getPassengerTitleId();
+
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
 
         void showPassengerLastNameShouldNoMoreThanMaxError(@StringRes int resId);
