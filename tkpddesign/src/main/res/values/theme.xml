@@ -10,20 +10,18 @@
         <item name="android:itemTextAppearance">@style/TextAppearance</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="titleTextAppearance">@style/WhiteToolbarText</item>
-        <item name="subtitleTextAppearance">@style/WhiteToolbarSubtitleText</item>
+        <item name="subtitleTextAppearance">@style/SubTitleTextAppearance</item>
     </style>
 
     <style name="TextAppearance">
         <item name="android:textColor">@android:color/black</item>
     </style>
 
-    <style name="WhiteToolbarText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <style name="TitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">@dimen/font_subheading</item>
-        <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
-    <style name="WhiteToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+    <style name="SubTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">@dimen/font_caption</item>
     </style>
 

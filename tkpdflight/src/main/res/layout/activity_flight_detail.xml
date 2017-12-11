@@ -47,8 +47,8 @@
                     app:contentInsetStartWithNavigation="0dp"
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    app:subtitleTextAppearance="@style/WhiteToolbarSubtitleText"
-                    app:titleTextAppearance="@style/WhiteToolbarText" />
+                    app:subtitleTextAppearance="@style/TitleTextAppearance.White"
+                    app:titleTextAppearance="@style/SubTitleTextAppearance" />
 
             </android.support.design.widget.CollapsingToolbarLayout>
 
