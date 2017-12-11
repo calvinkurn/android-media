@@ -31,7 +31,6 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
@@ -40,6 +39,7 @@ import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
@@ -218,8 +218,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
-                if(MainApplication.getAppContext() instanceof ReputationRouter){
-                    startActivity(((ReputationRouter)MainApplication.getAppContext()).getInboxReputationIntent
+                if(MainApplication.getAppContext() instanceof SellerModuleRouter){
+                    startActivity(((SellerModuleRouter)MainApplication.getAppContext()).getInboxReputationIntent
                             (getActivity()));
                 }
 

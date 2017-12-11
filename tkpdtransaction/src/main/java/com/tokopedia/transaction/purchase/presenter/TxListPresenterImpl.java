@@ -23,6 +23,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.reputation.ReputationRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -566,8 +567,8 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (MainApplication.getAppContext() instanceof ReputationRouter) {
-                            Intent intent = ((ReputationRouter) MainApplication.getAppContext())
+                        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+                            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
                                     .getInboxReputationIntent(MainApplication.getAppContext());
                             intent.putExtra("unread", true);
                             dialog.dismiss();

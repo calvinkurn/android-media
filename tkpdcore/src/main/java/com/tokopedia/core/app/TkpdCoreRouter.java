@@ -14,6 +14,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -98,4 +99,12 @@ public interface TkpdCoreRouter {
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
     Intent getHomeHotlistIntent(Context context);
+
+    NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
+                                         Bundle data, String notifTitle);
+
+    android.app.Fragment getShopReputationFragment();
+
+    Intent getInboxReputationIntent(Context context);
+
 }

@@ -51,8 +51,8 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
@@ -161,8 +161,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToReputation(@NonNull Context context, @NonNull Bundle bundle) {
         UnifyTracking.eventPDPReputation();
-        if(context.getApplicationContext() instanceof ReputationRouter){
-            Intent intent = ((ReputationRouter)context.getApplicationContext())
+        if (context.getApplicationContext() instanceof PdpRouter) {
+            Intent intent = ((PdpRouter) context.getApplicationContext())
                     .getProductReputationIntent(context);
             intent.putExtras(bundle);
             viewListener.navigateToActivity(intent);
