@@ -208,6 +208,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
+    public String getDistrictAndCity() {
+        return fragmentShippingHeader.getDistrictAndCity();
+    }
+
+    @Override
     public String getZipCode() {
         return fragmentShippingHeader.getZipCodeData();
     }
@@ -411,9 +416,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
-        MenuItem item = menu.findItem(R.id.action_send);
-        item.setTitle(getString(R.string.title_action_save_shipping));
+        if (isAdded() && getActivity() != null) {
+            getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
+            MenuItem item = menu.findItem(R.id.action_send);
+            item.setTitle(getString(R.string.title_action_save_shipping));
+        }
     }
 
     @Override

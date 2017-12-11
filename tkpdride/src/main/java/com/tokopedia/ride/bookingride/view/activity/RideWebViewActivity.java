@@ -21,7 +21,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.ride.R;
 
-public class TokoCashWebViewActivity extends BasePresenterActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
+public class RideWebViewActivity extends BasePresenterActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
     private static final String EXTRA_TOKO_CASH_URL = "EXTRA_TOKO_CASH_URL";
     private String url;
 
@@ -29,7 +29,7 @@ public class TokoCashWebViewActivity extends BasePresenterActivity implements Ba
     private ProgressBar progressBar;
 
     public static Intent getCallingIntent(Activity activity, String url) {
-        Intent intent = new Intent(activity, TokoCashWebViewActivity.class);
+        Intent intent = new Intent(activity, RideWebViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TOKO_CASH_URL, url);
         intent.putExtras(bundle);
