@@ -541,4 +541,9 @@ public class ActivitySellingTransaction extends TkpdActivity
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+    }
 }
