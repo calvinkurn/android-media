@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.flight.FlightComponentInstance;
+import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
 
@@ -50,7 +52,7 @@ public class GetAirportListService extends IntentService implements FlightAirpor
     public void onCreate() {
         DaggerFlightAirportComponent
                 .builder()
-                .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
+                .flightComponent(FlightComponentInstance.getFlightComponent(getApplication()))
                 .flightAirportModule(new FlightAirportModule())
                 .build().inject(this);
         flightAirportPickerBackgroundPresenter.attachView(this);
