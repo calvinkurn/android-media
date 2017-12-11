@@ -116,7 +116,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
                 .BottomSheetFieldBuilder()
                 .setTitle(getActivity().getString(R.string.title_tooltip_reputation_multiplier))
                 .setBody(getActivity().getString(R.string.body_tooltip_reputation_multiplier))
-                .setImg(R.drawable.ic_empty_product_list)
+                .setImg(R.drawable.ic_reputation_value)
                 .build());
         bottomSheetView.show();
     }

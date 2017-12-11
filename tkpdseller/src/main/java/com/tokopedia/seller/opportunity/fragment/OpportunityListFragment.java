@@ -233,13 +233,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                     opportunityParam.getQuery(),
                                     opportunityParam.getListFilter());
                         }
-                        // TODO modify this unifytracking, do not send every scroll!
-//                        UnifyTracking.eventOpportunity(
-//                                OpportunityTrackingEventLabel.EventName.SCROLL_OPPORTUNITY,
-//                                OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-//                                AppEventTracking.Action.SCROLL,
-//                                OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
-//                        );
                     }
                 });
 

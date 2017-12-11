@@ -130,8 +130,8 @@
                 android:background="@drawable/label_deadline"
                 android:paddingTop="@dimen/padding_vvs"
                 android:paddingBottom="@dimen/padding_vvs"
-                android:paddingLeft="@dimen/padding_vs"
-                android:paddingRight="@dimen/padding_vs"
+                android:paddingLeft="@dimen/padding_ms"
+                android:paddingRight="@dimen/padding_ms"
                 android:textColor="@color/white"
                 android:textSize="@dimen/fontvs"
                 tools:text="24 Jam Lagi" />
