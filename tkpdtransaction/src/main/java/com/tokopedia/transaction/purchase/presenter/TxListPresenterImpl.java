@@ -698,7 +698,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            viewListener.showToastMessage(context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
+                            viewListener.showToastSuccessFinishMessage(context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
                             dialog.dismiss();
                         }
 
@@ -718,7 +718,7 @@ public class TxListPresenterImpl implements TxListPresenter {
                         @Override
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
-                            viewListener.showToastMessage(message);
+                            viewListener.showToastSuccessFinishMessage(message);
                             dialog.dismiss();
                         }
 

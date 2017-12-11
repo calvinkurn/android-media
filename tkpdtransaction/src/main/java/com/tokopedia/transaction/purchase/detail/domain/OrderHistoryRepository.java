@@ -56,6 +56,7 @@ public class OrderHistoryRepository implements IOrderHistoryRepository{
             listData.setOrderHistoryTitle(orderHistories.get(i).getStatus());
             listData.setColor(orderHistories.get(i).getOrderStatusColor());
             listData.setOrderHistoryTime(orderHistories.get(i).getHour());
+            listData.setOrderHistoryComment(orderHistories.get(i).getComment());
             historyListData.add(listData);
         }
         viewData.setOrderListData(historyListData);

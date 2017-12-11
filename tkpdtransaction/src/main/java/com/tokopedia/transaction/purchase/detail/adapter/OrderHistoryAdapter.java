@@ -41,6 +41,7 @@ public class OrderHistoryAdapter extends RecyclerView
                         + " - "
                         + historyListDatas.get(position).getOrderHistoryDate()
         );
+        holder.orderHistoryComment.setText(historyListDatas.get(position).getOrderHistoryComment());
         holder.orderHistoryDescription
                 .setText(Html.fromHtml(historyListDatas.get(position).getOrderHistoryTitle()));
         holder.orderHistoryTime.setText(historyListDatas.get(position).getOrderHistoryTime());
@@ -66,6 +67,8 @@ public class OrderHistoryAdapter extends RecyclerView
 
         private View dotTrail;
 
+        private TextView orderHistoryComment;
+
         OrderHistoryViewHolder(View itemView) {
             super(itemView);
 
@@ -78,6 +81,8 @@ public class OrderHistoryAdapter extends RecyclerView
             dot = (ImageView) itemView.findViewById(R.id.dot_image);
 
             dotTrail = itemView.findViewById(R.id.dot_trail);
+
+            orderHistoryComment = itemView.findViewById(R.id.history_comment);
 
         }
     }
