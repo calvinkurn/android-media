@@ -56,7 +56,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     private View next;
     private LottieAnimationView lottieAnimationView;
     private TextView descView;
-    private ImageView i;
+    private ImageView imageView;
     private TextView titleView;
     private int position;
     private boolean isAnimationPlayed = false;
@@ -138,16 +138,16 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
     @Override
     protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = getDefaultView(inflater, container);
-        main = v.findViewById(R.id.main);
-        lottieAnimationView = (LottieAnimationView) v.findViewById(R.id.animation_view);
+        View defaultView = getDefaultView(inflater, container);
+        main = defaultView.findViewById(R.id.main);
+        lottieAnimationView = (LottieAnimationView) defaultView.findViewById(R.id.animation_view);
         lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong);
 
 
-        titleView = (TextView) v.findViewById(R.id.title);
-        descView = (TextView) v.findViewById(R.id.description);
-        i = (ImageView) v.findViewById(R.id.image);
-        main = v.findViewById(R.id.main);
+        titleView = (TextView) defaultView.findViewById(R.id.title);
+        descView = (TextView) defaultView.findViewById(R.id.description);
+        imageView = (ImageView) defaultView.findViewById(R.id.image);
+        main = defaultView.findViewById(R.id.main);
 
 
         titleView.setText(title);
@@ -156,24 +156,24 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         }
         descView.setText(Html.fromHtml(description.toString()));
 
-        i.setBackgroundResource(drawable);
-        if (i.getBackground() instanceof AnimationDrawable) {
-            AnimationDrawable notifAnimation = (AnimationDrawable) i.getBackground();
+        imageView.setBackgroundResource(drawable);
+        if (imageView.getBackground() instanceof AnimationDrawable) {
+            AnimationDrawable notifAnimation = (AnimationDrawable) imageView.getBackground();
             notifAnimation.start();
         }
         main.setBackgroundColor(bgColor);
 
-        return v;
+        return defaultView;
     }
 
     @Override
     protected View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = getEndingView(inflater, container);
-        titleView = (TextView) v.findViewById(R.id.title);
-        i = (ImageView) v.findViewById(R.id.image);
-        descView = (TextView) v.findViewById(R.id.description);
-        main = v.findViewById(R.id.main);
-        lottieAnimationView = (LottieAnimationView) v.findViewById(R.id.animation_view);
+        View endingView = getEndingView(inflater, container);
+        titleView = (TextView) endingView.findViewById(R.id.title);
+        imageView = (ImageView) endingView.findViewById(R.id.image);
+        descView = (TextView) endingView.findViewById(R.id.description);
+        main = endingView.findViewById(R.id.main);
+        lottieAnimationView = (LottieAnimationView) endingView.findViewById(R.id.animation_view);
         lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong);
         lottieAnimationView.playAnimation();
 
@@ -186,7 +186,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
         main.setBackgroundColor(bgColor);
 
-        startNow = (TextView) v.findViewById(R.id.button_start_now);
+        startNow = (TextView) endingView.findViewById(R.id.button_start_now);
         startNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,8 +200,8 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         startNow.setVisibility(View.GONE);
         startNow.setWidth(0);
 
-        footer = v.findViewById(R.id.footer);
-        return v;
+        footer = endingView.findViewById(R.id.footer);
+        return endingView;
     }
 
     @Override
@@ -239,15 +239,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         if (position < -1) {
             main.setAlpha(0);
 
-        } else if (position <= 1) {
-            // Counteract the default slide transition
-//            page.setTranslationX(page.getWidth() * -position);
-
-            // set Y position to swipe in from top
-//            float yPosition = position * page.getHeight();
-//            page.setTranslationY(yPosition);
-
-        } else {
+        } else if (position > 1){
             main.setAlpha(0);
 
             titleView.setTranslationX(titleView.getWidth() * -position);
