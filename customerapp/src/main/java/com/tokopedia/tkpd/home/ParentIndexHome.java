@@ -64,6 +64,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
@@ -413,7 +414,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             if (SessionHandler.isV4Login(ParentIndexHome.this)) {
 
                 if (getPageTitle(position).equals(content.get(0))) {
-                    Fragment fragment = FragmentIndexCategory.newInstance();
+                    Fragment fragment = HomeFragment.newInstance();
                     registeredFragments.put(position, fragment);
                     return fragment;
                 }
@@ -438,7 +439,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             } else {
                 switch (position) {
                     case 0:
-                        Fragment fragment = FragmentIndexCategory.newInstance();
+                        Fragment fragment = HomeFragment.newInstance();
                         registeredFragments.put(position, fragment);
                         return fragment;
                     case 1:
