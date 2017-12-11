@@ -353,24 +353,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onTopPicksItemClicked(TopPicksItemModel data, int parentPosition, int childPosition) {
-        String url = data.getUrl();
-        url = "http://www.tokopedia.com/discovery/must-have-coat";
-        UnifyTracking.eventHomeTopPicksItem(data.getName(), data.getName());
-        switch ((DeepLinkChecker.getDeepLinkType(url))) {
-            case DeepLinkChecker.BROWSE:
-                DeepLinkChecker.openBrowse(url, getActivity());
-                break;
-            case DeepLinkChecker.HOT:
-                DeepLinkChecker.openHot(url, getActivity());
-                break;
-            case DeepLinkChecker.CATALOG:
-                DeepLinkChecker.openCatalog(url, getActivity());
-                break;
-            case DeepLinkChecker.DISCOVERY_PAGE:
-                openDiscoveryPage(data.getName(),DeepLinkChecker.getDiscoveryPageId(url));
-                break;
-            default:
-                openWebViewTopPicksURL(url);
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
+                && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(data.getApplinks())) {
+            ((IDigitalModuleRouter) getActivity().getApplicationContext())
+                    .actionNavigateByApplinksUrl(getActivity(),data.getApplinks(), new Bundle());
+        } else {
+            openWebViewURL(data.getUrl(),getContext());
         }
     }
 
@@ -432,65 +421,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
                 && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
             ((IDigitalModuleRouter) getActivity().getApplicationContext())
-                    .actionNavigateByApplinksUrl(getActivity(), slidesModel.getApplink(), new Bundle());
+                    .actionNavigateByApplinksUrl(getActivity(),slidesModel.getApplink(), new Bundle());
         } else {
-
-            String url = slidesModel.getRedirectUrl();
-            try {
-                UnifyTracking.eventSlideBannerClicked(url);
-                Uri uri = Uri.parse(url);
-                String host = uri.getHost();
-                List<String> linkSegment = uri.getPathSegments();
-                if (isBaseHost(host) && isShop(linkSegment)) {
-                    String shopDomain = linkSegment.get(0);
-                    presenter.getShopInfo(url, shopDomain);
-                } else if (isBaseHost(host) && isProduct(linkSegment)) {
-                    String shopDomain = linkSegment.get(0);
-                    presenter.openProductPageIfValid(url, shopDomain);
-                } else if (DeepLinkChecker.getDeepLinkType(url) == DeepLinkChecker.CATEGORY) {
-                    DeepLinkChecker.openCategory(url, getActivity());
-                } else {
-                    openWebViewURL(url, getActivity());
-                }
-            } catch (Exception e) {
-                openWebViewURL(url, getActivity());
-                e.printStackTrace();
-            }
+            openWebViewURL(slidesModel.getRedirectUrl(),getContext());
         }
-    }
-
-    private boolean isBaseHost(String host) {
-        return (host.contains(TkpdBaseURL.BASE_DOMAIN) || host.contains(TkpdBaseURL.MOBILE_DOMAIN));
-    }
-
-    private boolean isShop(List<String> linkSegment) {
-        return linkSegment.size() == 1
-                && !isReservedLink(linkSegment.get(0));
-    }
-
-    private boolean isProduct(List<String> linkSegment) {
-        return linkSegment.size() == 2
-                && !isReservedLink(linkSegment.get(0));
-    }
-
-    private boolean isReservedLink(String link) {
-        return link.equals("pulsa")
-                || link.equals("iklan")
-                || link.equals("newemail.pl")
-                || link.equals("search")
-                || link.equals("hot")
-                || link.equals("about")
-                || link.equals("reset.pl")
-                || link.equals("activation.pl")
-                || link.equals("privacy.pl")
-                || link.equals("terms.pl")
-                || link.equals("p")
-                || link.equals("catalog")
-                || link.equals("toppicks")
-                || link.equals("discovery")
-                || link.equals("b")
-                || link.equals("promo")
-                || link.startsWith("invoice.pl");
     }
 
     @Override
@@ -618,11 +552,4 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private void openDiscoveryPage(String title, String pageId) {
-        getActivity().startActivity(
-                ReactNativeActivity.createDiscoveryPageReactNativeActivity(
-                        getActivity(), ReactConst.Screen.DISCOVERY_PAGE,
-                        title, pageId
-                ));
-    }
 }
