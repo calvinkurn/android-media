@@ -145,7 +145,6 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onErrorLoginTokoCash(String errorMessage) {
-        presenter.clearUserData();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 

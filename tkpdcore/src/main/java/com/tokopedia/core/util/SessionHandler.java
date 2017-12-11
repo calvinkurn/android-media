@@ -158,7 +158,6 @@ public class SessionHandler {
         MethodChecker.removeAllCookies(context);
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
-        TrackingUtils.eventMoEngageLogoutUser();
 
         clearFeedCache();
         AppWidgetUtil.sendBroadcastToAppWidget(context);
@@ -543,6 +542,7 @@ public class SessionHandler {
                 "User Id: " + getLoginID(context) +
                         " Device Id: " + GCMHandler.getRegistrationId(context));
         PasswordGenerator.clearTokenStorage(context);
+        TrackingUtils.eventMoEngageLogoutUser();
         clearUserData();
     }
 
