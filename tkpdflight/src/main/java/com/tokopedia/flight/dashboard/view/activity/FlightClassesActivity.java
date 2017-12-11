@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.di.component.HasComponent;
+import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.FlightClassesfragment;
@@ -41,12 +44,9 @@ public class FlightClassesActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     public FlightDashboardComponent getComponent() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            return DaggerFlightDashboardComponent.builder()
-                    .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
-                    .build();
-        }
-        throw new RuntimeException("Application must implement FlightModuleRouter");
+        return DaggerFlightDashboardComponent.builder()
+                .flightComponent(FlightComponentInstance.getFlightComponent(getApplication()))
+                .build();
     }
 
     @Override
