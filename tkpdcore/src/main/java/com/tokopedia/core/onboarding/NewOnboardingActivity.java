@@ -105,9 +105,9 @@ public class NewOnboardingActivity extends OnboardingActivity {
         skipView.setGravity(Gravity.LEFT | Gravity.CENTER);
         skipView.setAllCaps(false);
 
-        float d = getResources().getDisplayMetrics().density;
+        float density = getResources().getDisplayMetrics().density;
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) skipView.getLayoutParams();
-        params.leftMargin = (int) (20 * d);
+        params.leftMargin = (int) (20 * density);
         setSeparatorColor(MethodChecker.getColor(this, R.color.transparent));
     }
 
@@ -162,8 +162,8 @@ public class NewOnboardingActivity extends OnboardingActivity {
             nextView.setImageResource(R.drawable.next_ic);
             nextView.setMinimumWidth(0);
             FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
-            float d = getResources().getDisplayMetrics().density;
-            params1.rightMargin = (int) (20*d);
+            float density = getResources().getDisplayMetrics().density;
+            params1.rightMargin = (int) (20*density);
 
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
