@@ -18,7 +18,11 @@ public interface IPromoCouponView extends IBaseView {
 
     void receiveResult(CouponViewModel couponViewModel);
 
+    void onErrorFetchCouponList(String errorMessage);
+
     void couponError();
+
+    void showSnackbarError(String message);
 
     Context getContext();
 }

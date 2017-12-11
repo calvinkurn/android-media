@@ -1,7 +1,10 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
@@ -33,13 +36,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
         param.put("type", platform);
-        param.put("page", "1");
-        param.put("page_size", "10");
 
         //TODO Revert Later
         promoCouponInteractor.getCouponList(
-                //AuthUtil.generateParamsNetwork(view.getContext(), param),
-                AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
+                AuthUtil.generateParamsNetwork(view.getContext(), param),
+                //AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
                 new Subscriber<List<CouponData>>() {
                     @Override
                     public void onCompleted() {
@@ -48,7 +49,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        if(e instanceof LoyaltyErrorException) {
+                            view.onErrorFetchCouponList(e.getMessage());
+                        } else {
+                            view.onErrorFetchCouponList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
                     }
 
                     @Override
@@ -127,9 +132,13 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
             @Override
             public void onError(Throwable e) {
-                couponData.setErrorMessage(e.getMessage());
-                view.hideProgressLoading();
-                view.couponError();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    couponData.setErrorMessage(e.getMessage());
+                    view.hideProgressLoading();
+                    view.couponError();
+                } else {
+                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override

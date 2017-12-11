@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -22,7 +23,13 @@ import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -127,6 +134,32 @@ public class LoyaltyActivity extends BasePresenterActivity
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        setShowCase();
+
+    }
+
+    private void setShowCase() {
+        ShowCaseObject showCase = new ShowCaseObject(
+                ((ViewGroup)indicator.getChildAt(0)).getChildAt(1),
+                getString(R.string.show_case_title),
+                getString(R.string.show_case_text),
+                ShowCaseContentPosition.UNDEFINED);
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+
+        showCaseObjectList.add(showCase);
+
+        ShowCaseDialog showCaseDialog = createShowCaseDialog();
+
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
+        if(!ShowCasePreference.hasShown(this, LoyaltyActivity.class.getName())) 
+            showCaseDialog.show(this, LoyaltyActivity.class.getName(), showCaseObjectList);
+
     }
 
     private void setTabProperties() {
@@ -226,4 +259,23 @@ public class LoyaltyActivity extends BasePresenterActivity
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.show_case_hachiko)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.show_case_finish)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
+    }
+
 }

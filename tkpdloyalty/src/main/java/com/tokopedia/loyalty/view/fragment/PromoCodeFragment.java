@@ -7,6 +7,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -93,19 +94,31 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     @Override
     protected void initView(View view) {
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        final TextInputLayout voucherCodeFieldHolder = view.findViewById(R.id.til_et_voucher_code);
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
 
         if (getArguments().getString(PLATFORM_KEY).equals(DIGITAL_STRING))
-            submitVoucherButton.setOnClickListener(onSubmitDigitalVoucher(voucherCodeField));
-        else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(voucherCodeField));
+            submitVoucherButton.setOnClickListener(onSubmitDigitalVoucher(
+                    voucherCodeField,
+                    voucherCodeFieldHolder)
+            );
+        else submitVoucherButton.setOnClickListener(onSubmitMarketplaceVoucher(
+                voucherCodeField,
+                voucherCodeFieldHolder)
+        );
 
     }
 
-    private View.OnClickListener onSubmitMarketplaceVoucher(final EditText voucherCodeField) {
+    private View.OnClickListener onSubmitMarketplaceVoucher(
+            final EditText voucherCodeField,
+            final TextInputLayout textHolder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else
                 dPresenter.processCheckPromoCode(
                         getActivity(),
                         voucherCodeField.getText().toString());
@@ -113,14 +126,20 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         };
     }
 
-    private View.OnClickListener onSubmitDigitalVoucher(final EditText voucherCodeField) {
+    private View.OnClickListener onSubmitDigitalVoucher(
+            final EditText voucherCodeField,
+            final TextInputLayout textHolder) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dPresenter.processCheckDigitalPromoCode(
-                        getActivity(),
-                        voucherCodeField.getText().toString(),
-                        getArguments().getString(CATEGORY_KEY));
+                if(voucherCodeField.getText().toString().isEmpty()) {
+                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
+                } else {
+                    dPresenter.processCheckDigitalPromoCode(
+                            getActivity(),
+                            voucherCodeField.getText().toString(),
+                            getArguments().getString(CATEGORY_KEY));
+                }
             }
         };
     }

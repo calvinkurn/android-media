@@ -612,6 +612,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
                 CartFragment.this.voucherCode = voucherCode;
                 presenter.processCheckVoucherCode(voucherCode, 1);
+                cancelPromoLayout.setOnClickListener(onInstantPromoCancelled());
             }
         };
     }
@@ -947,7 +948,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                         bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
                         bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
                 );
-                cancelPromoLayout.setOnClickListener(onCouponClickedListener());
+                cancelPromoLayout.setOnClickListener(onPromoCancelled());
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 promoResultLayout.setVisibility(View.VISIBLE);
@@ -958,7 +959,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 //TODO check state
                 voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
                 instantPromoPlaceHolder.setVisibility(View.GONE);
-                cancelPromoLayout.setOnClickListener(onCouponClickedListener());
+                promoCodeLayout.setVisibility(View.GONE);
+                cancelPromoLayout.setOnClickListener(onPromoCancelled());
             }
         }
     }
@@ -973,15 +975,27 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
         //TODO check state
         this.voucherCode = voucherCode;
+        promoCodeLayout.setVisibility(View.GONE);
         instantPromoPlaceHolder.setVisibility(View.GONE);
     }
 
-    private View.OnClickListener onCouponClickedListener() {
+    private View.OnClickListener onPromoCancelled() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 promoResultLayout.setVisibility(View.GONE);
-                if (hasPromotion) instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+                promoCodeLayout.setVisibility(View.VISIBLE);
+            }
+        };
+    }
+
+    private View.OnClickListener onInstantPromoCancelled() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                promoResultLayout.setVisibility(View.GONE);
+                instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+                promoCodeLayout.setVisibility(View.VISIBLE);
             }
         };
     }
