@@ -251,7 +251,6 @@ public class WidgetClientNumberView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 setEmptyString();
-                setImgOperatorInvisible();
                 rechargeEditTextListener.onRechargeTextClear();
             }
         };

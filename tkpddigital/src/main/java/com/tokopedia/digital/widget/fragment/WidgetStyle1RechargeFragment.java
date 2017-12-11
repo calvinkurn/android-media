@@ -190,7 +190,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
                 if (category.getAttributes().isValidatePrefix()) {
                     // handle style 1
-                    if (temp.length() >= 3) {
+                    if (temp.length() >= 4) {
                         if (selectedOperator == null) {
                             presenter.getOperatorAndProductsByPrefix(temp, category.getId(),
                                     category.getAttributes().isValidatePrefix());

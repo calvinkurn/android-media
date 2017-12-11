@@ -201,6 +201,12 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
                     } else {
                         selectedOperatorId = category.getAttributes().getDefaultOperatorId();
                     }
+                } else {
+                    if (selectedProduct != null) {
+                        selectedProduct = null;
+                        clearHolder(holderWidgetSpinnerProduct);
+                        clearHolder(holderWidgetWrapperBuy);
+                    }
                 }
             }
 
@@ -334,7 +340,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 if (resetClientNumber) {
                     clearHolder(holderWidgetWrapperBuy);
                     widgetClientNumberView.setEmptyString();
-                    widgetClientNumberView.setImgOperatorInvisible();
                 }
             }
 
