@@ -95,6 +95,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     private TextView changeNumber;
     private TextView verifyTrueCaller;
     private View progressFull;
+    private View viewSecurity;
 
     private CountDownTimer countDownTimer;
     private IncomingSmsReceiver smsReceiver;
@@ -284,6 +285,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
+        vSecurity.setVisibility(View.GONE);
         verifyTrueCaller.setVisibility(View.GONE);
         vOtp.setVisibility(View.VISIBLE);
 
@@ -374,7 +376,6 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
         changeNumber.setVisibility(View.VISIBLE);
         vSendOtpCall.setVisibility(View.VISIBLE);
-        presenter.checkTrueCaller(getActivity());
         if (isAutoRequestOTP()) {
             presenter.requestOTPWithSMS();
         }
@@ -519,7 +520,6 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingFull() {
-        vSecurity.setVisibility(View.GONE);
         vOtp.setVisibility(View.GONE);
         vSaveBut.setVisibility(View.GONE);
         progressFull.setVisibility(View.VISIBLE);
@@ -528,7 +528,6 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void dismissLoadingFull() {
-        vSecurity.setVisibility(View.VISIBLE);
         vOtp.setVisibility(View.VISIBLE);
         vSaveBut.setVisibility(View.VISIBLE);
         progressFull.setVisibility(View.GONE);

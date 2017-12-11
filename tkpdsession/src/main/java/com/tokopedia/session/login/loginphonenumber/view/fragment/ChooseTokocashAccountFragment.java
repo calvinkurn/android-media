@@ -149,11 +149,11 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void goToSecurityQuestion(MakeLoginDomain makeLoginDomain) {
+    public void goToSecurityQuestion(AccountTokocash accountTokocash, MakeLoginDomain makeLoginDomain) {
         Intent intent = SecurityQuestionActivity.getCallingIntent(getActivity(),
                 makeLoginDomain.getSecurityDomain(),
                 makeLoginDomain.getFullName(),
-                "",
+                accountTokocash.getEmail(),
                 viewModel.getPhoneNumber());
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
     }

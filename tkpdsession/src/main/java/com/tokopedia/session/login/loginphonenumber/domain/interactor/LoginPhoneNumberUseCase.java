@@ -5,8 +5,10 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
@@ -30,6 +32,7 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
     private GetAccessTokenTokoCashUseCase getAccessTokenTokoCashUseCase;
     private GetTokenUseCase getTokenUseCase;
     private MakeLoginUseCase makeLoginUseCase;
+    private GetUserInfoUseCase getUserInfoUseCase;
     private SessionHandler sessionHandler;
 
     @Inject
@@ -38,12 +41,14 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
                                    GetCodeTokoCashUseCase getCodeTokoCashUseCase,
                                    GetAccessTokenTokoCashUseCase getAccessTokenTokoCashUseCase,
                                    GetTokenUseCase getTokenUseCase,
+                                   GetUserInfoUseCase getUserInfoUseCase,
                                    MakeLoginUseCase makeLoginUseCase,
                                    SessionHandler sessionHandler) {
         super(threadExecutor, postExecutionThread);
         this.getCodeTokoCashUseCase = getCodeTokoCashUseCase;
         this.getAccessTokenTokoCashUseCase = getAccessTokenTokoCashUseCase;
         this.getTokenUseCase = getTokenUseCase;
+        this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
         this.sessionHandler = sessionHandler;
     }
@@ -54,14 +59,31 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
         return Observable.just(loginTokoCashViewModel)
                 .flatMap(getCodeTokoCash(requestParams))
                 .flatMap(getAccessTokenTokoCash())
-                .flatMap(getTokenAccounts(loginTokoCashViewModel, requestParams))
-                .flatMap(makeLogin(loginTokoCashViewModel, requestParams))
+                .flatMap(getTokenAccounts())
+                .flatMap(getUserInfo())
+                .flatMap(makeLogin())
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         sessionHandler.clearUserData(MainApplication.getAppContext());
                     }
                 });
+    }
+
+    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getUserInfo() {
+        return new Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>>() {
+            @Override
+            public Observable<LoginTokoCashViewModel> call(final LoginTokoCashViewModel loginTokoCashViewModel) {
+                return getUserInfoUseCase.createObservable(GetUserInfoUseCase.generateParam())
+                        .flatMap(new Func1<GetUserInfoDomainModel, Observable<LoginTokoCashViewModel>>() {
+                            @Override
+                            public Observable<LoginTokoCashViewModel> call(GetUserInfoDomainModel getUserInfoDomainModel) {
+                                loginTokoCashViewModel.setUserInfoDomain(getUserInfoDomainModel);
+                                return Observable.just(loginTokoCashViewModel);
+                            }
+                        });
+            }
+        };
     }
 
     private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getAccessTokenTokoCash() {
@@ -87,11 +109,11 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
                 .getTokoCashCode().getCode());
     }
 
-    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> makeLogin(final LoginTokoCashViewModel loginTokoCashViewModel, final RequestParams requestParams) {
+    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> makeLogin() {
         return new Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>>() {
             @Override
             public Observable<LoginTokoCashViewModel> call(final LoginTokoCashViewModel loginTokoCashViewModel) {
-                return makeLoginUseCase.createObservable(getMakeLoginParam(requestParams))
+                return makeLoginUseCase.createObservable(getMakeLoginParam(loginTokoCashViewModel))
                         .flatMap(new Func1<MakeLoginDomain, Observable<LoginTokoCashViewModel>>() {
                             @Override
                             public Observable<LoginTokoCashViewModel> call(MakeLoginDomain makeLoginDomain) {
@@ -103,11 +125,12 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
         };
     }
 
-    private RequestParams getMakeLoginParam(RequestParams requestParams) {
-        return MakeLoginUseCase.getParam(requestParams.getString(MakeLoginUseCase.PARAM_USER_ID, ""));
+    private RequestParams getMakeLoginParam(LoginTokoCashViewModel loginTokoCashViewModel) {
+        return MakeLoginUseCase.getParam(String.valueOf(loginTokoCashViewModel.getUserInfoDomain()
+                .getGetUserInfoDomainData().getUserId()));
     }
 
-    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getTokenAccounts(LoginTokoCashViewModel loginTokoCashViewModel, final RequestParams requestParams) {
+    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getTokenAccounts() {
         return new Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>>() {
             @Override
             public Observable<LoginTokoCashViewModel> call(final LoginTokoCashViewModel loginTokoCashViewModel) {

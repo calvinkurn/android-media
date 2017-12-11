@@ -41,7 +41,7 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
                 accountTokocash.getEmail(),
                 accountTokocash.getUserId()
         ), new LoginTokoCashSubscriber
-                (getView()));
+                (getView(), accountTokocash));
     }
 
     @Override

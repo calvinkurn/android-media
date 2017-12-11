@@ -22,7 +22,7 @@ public interface ChooseTokocashAccount {
 
         void onErrorLoginTokoCash(String errorMessage);
 
-        void goToSecurityQuestion(MakeLoginDomain makeLoginDomain);
+        void goToSecurityQuestion(AccountTokocash email, MakeLoginDomain makeLoginDomain);
     }
 
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {

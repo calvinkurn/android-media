@@ -18,10 +18,12 @@ public class SecurityQuestionViewModel implements Parcelable {
     private QuestionViewModel questionViewModel;
     private String phone;
 
-    public SecurityQuestionViewModel(SecurityDomain securityDomain, String name, String email, String string) {
+    public SecurityQuestionViewModel(SecurityDomain securityDomain, String name, String email,
+                                     String phone) {
         this.securityDomain = securityDomain;
         this.name = name;
         this.email = email;
+        this.phone = phone;
     }
 
     protected SecurityQuestionViewModel(Parcel in) {

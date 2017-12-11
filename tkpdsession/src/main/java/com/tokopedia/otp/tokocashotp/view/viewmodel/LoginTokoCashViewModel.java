@@ -1,5 +1,6 @@
 package com.tokopedia.otp.tokocashotp.view.viewmodel;
 
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.login.loginphonenumber.domain.model.AccessTokenTokoCashDomain;
@@ -14,6 +15,7 @@ public class LoginTokoCashViewModel {
     private TokenViewModel accountsToken;
     private MakeLoginDomain makeLoginDomain;
     private AccessTokenTokoCashDomain accessTokenTokoCash;
+    private GetUserInfoDomainModel userInfoDomain;
 
     public void setTokoCashCode(CodeTokoCashDomain tokoCashCode) {
         this.tokoCashCode = tokoCashCode;
@@ -45,5 +47,13 @@ public class LoginTokoCashViewModel {
 
     public AccessTokenTokoCashDomain getAccessTokenTokoCash() {
         return accessTokenTokoCash;
+    }
+
+    public void setUserInfoDomain(GetUserInfoDomainModel userInfoDomain) {
+        this.userInfoDomain = userInfoDomain;
+    }
+
+    public GetUserInfoDomainModel getUserInfoDomain() {
+        return userInfoDomain;
     }
 }
