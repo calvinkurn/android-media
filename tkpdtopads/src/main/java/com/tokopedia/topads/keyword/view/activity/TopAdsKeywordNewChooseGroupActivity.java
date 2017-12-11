@@ -2,15 +2,18 @@ package com.tokopedia.topads.keyword.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
@@ -105,6 +108,35 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity imp
     public void finishPage() {
         setResultAdSaved();
         super.finishPage();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!exitConfirmation())
+            super.onBackPressed();
+    }
+
+    private boolean exitConfirmation(){
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
+        if(fragment != null && fragment instanceof TopAdsKeywordAddFragment){
+            if(((TopAdsKeywordAddFragment)fragment).isButtonSaveEnabled()){
+                AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                        .setMessage(getString(R.string.topads_keyword_add_cancel_dialog))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                TopAdsKeywordNewChooseGroupActivity.super.onBackPressed();
+                            }
+                        }).setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+
+                            }
+                        }).create();
+                dialog.show();
+                return true;
+            }
+        }
+        return false;
     }
 
 

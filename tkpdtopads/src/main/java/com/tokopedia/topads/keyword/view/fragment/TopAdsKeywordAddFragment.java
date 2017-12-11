@@ -103,7 +103,8 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
 
     @Override
     protected void initiateStepperModel() {
-        stepperModel = new TopAdsKeywordStepperModel();
+        if(stepperModel == null)
+            stepperModel = new TopAdsKeywordStepperModel();
     }
 
     @Override
@@ -121,7 +122,7 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        initiateStepperModel();
         groupId = stepperModel.getGroupId();
         keywordType = stepperModel.getKeywordType();
         serverCount = stepperModel.getServerCount();

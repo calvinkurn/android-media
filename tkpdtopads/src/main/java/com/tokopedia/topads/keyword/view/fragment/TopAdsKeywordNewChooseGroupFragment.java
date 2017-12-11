@@ -93,7 +93,8 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
 
     @Override
     protected void initiateStepperModel() {
-        stepperModel = new TopAdsKeywordStepperModel();
+        if(stepperModel == null)
+            stepperModel = new TopAdsKeywordStepperModel();
     }
 
     @Override
@@ -118,6 +119,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initiateStepperModel();
         isPositive = stepperModel.isPositive();
         groupId = stepperModel.getGroupId();
         adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_autocomplete_text);
