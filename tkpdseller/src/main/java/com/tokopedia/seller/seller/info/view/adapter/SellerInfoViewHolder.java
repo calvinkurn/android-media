@@ -44,13 +44,13 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
             return;
 
         String s = SellerInfoDateUtil.fromUnixTimeGetHourEtc(sellerInfoModel.getCreateTimeUnix());
-        textDateDescription.setText(s);
-
-        textDateDesctionSection.setText(itemView
+        textDateDescription.setText(itemView
                 .getResources()
                 .getString(
                         R.string.seller_info_title_description_format,
-                        sellerInfoModel.getSection().getName()));
+                        s));
+
+        textDateDesctionSection.setText(sellerInfoModel.getSection().getName());
 
         textTitle.setText(sellerInfoModel.getTitle());
 
