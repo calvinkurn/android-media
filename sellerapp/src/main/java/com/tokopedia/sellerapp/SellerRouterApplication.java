@@ -317,13 +317,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getInboxReputationHistoryIntent() {
-        Intent intent = new Intent(this, InboxReputationActivity.class);
-        intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
-        return intent;
-    }
-
-    @Override
     public Fragment getReputationHistoryFragment() {
         return SellerReputationFragment.createInstance();
     }
