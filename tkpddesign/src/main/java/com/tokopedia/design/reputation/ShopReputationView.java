@@ -82,13 +82,15 @@ public class ShopReputationView extends BaseCustomView {
             level = 1;
             point = "0";
         }
-        updateMedalView(imageResource, level);
+        updateMedalView(reputationLayout, imageResource, level);
         if (showTooltip) {
             setToolTip(point, medalType, level);
         }
     }
 
-    private void updateMedalView(@DrawableRes int imageResource, int levelMedal) {
+    private void updateMedalView(LinearLayout reputationLayout,
+                                 @DrawableRes int imageResource,
+                                 int levelMedal) {
         int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.margin_vvs);
         for (int i = 0; i < levelMedal; i++) {
             View medal = getGeneratedMedalImage(imageResource);
@@ -122,9 +124,9 @@ public class ShopReputationView extends BaseCustomView {
 
                 LinearLayout sellerReputation = dialog.findViewById(R.id
                         .seller_reputation);
-                ReputationBadgeUtils.setReputationMedals(getContext(),
-                        sellerReputation, medalType, level,
-                        null);
+
+                updateMedalView(sellerReputation, getIconResource(medalType), level);
+
                 Button closeButton = dialog.findViewById(R.id.close_button);
 
                 if (closeButton != null)
