@@ -54,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:maxHeight="100dp"
+            android:maxHeight="@dimen/image_width_xxl"
             android:padding="@dimen/padding_small"
             android:adjustViewBounds="true"
             tools:src="@drawable/ic_badge_gold"/>
