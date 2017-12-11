@@ -85,8 +85,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain.TYPE_IMAGE;
-
 /**
  * Created by yoasfs on 10/6/17.
  */
@@ -1184,7 +1182,7 @@ public class DetailResChatFragment
         startActivity(
                 ProductDetailActivity.newInstance(context,
                         resolutionId,
-                        String.valueOf(product.getResId()),
+                        String.valueOf(product.getResProdId()),
                         product.getName())
         );
     }
