@@ -887,7 +887,7 @@ public class CartPresenter implements ICartPresenter {
                     cartItems.add(editable.getCartItem());
                 }
                 String data = new Gson().toJson(cartItems, new TypeToken<List<CartItem>>(){}.getType());
-                cacheManager.setKey("CART_CACHE_TRACKER");
+                cacheManager.setKey(TkpdCache.Key.CART_CACHE_TRACKER);
                 cacheManager.setValue(data);
                 cacheManager.store();
                 return true;

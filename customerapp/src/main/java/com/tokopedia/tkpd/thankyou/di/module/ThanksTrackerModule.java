@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.thankyou.di.module;
 
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
@@ -63,8 +64,8 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    MarketplaceTrackerMapper provideMarketplaceTrackerMapper() {
-        return new MarketplaceTrackerMapper();
+    MarketplaceTrackerMapper provideMarketplaceTrackerMapper(Gson gson) {
+        return new MarketplaceTrackerMapper(gson);
     }
 
     @Provides
