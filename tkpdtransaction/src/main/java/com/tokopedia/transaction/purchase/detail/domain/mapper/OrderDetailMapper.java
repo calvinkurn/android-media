@@ -28,6 +28,7 @@ public class OrderDetailMapper {
     public OrderDetailData generateOrderDetailModel(OrderDetailResponse responseData) {
         OrderDetailData viewData = new OrderDetailData();
         viewData.setOrderId(String.valueOf(responseData.getOrderId()));
+        viewData.setOrderCode(String.valueOf(responseData.getOrderStatus()));
         viewData.setOrderStatus(responseData.getStatus().getDetail());
         viewData.setResoId(String.valueOf(responseData.getResoId()));
         viewData.setOrderImage(responseData.getStatus().getImage());

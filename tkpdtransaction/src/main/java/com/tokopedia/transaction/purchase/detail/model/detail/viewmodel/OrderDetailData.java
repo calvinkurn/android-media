@@ -10,6 +10,8 @@ public class OrderDetailData {
 
     private String orderId;
 
+    private String orderCode;
+
     private String orderStatus;
 
     private String resoId;
@@ -296,5 +298,13 @@ public class OrderDetailData {
 
     public void setButtonData(ButtonData buttonData) {
         this.buttonData = buttonData;
+    }
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
     }
 }
