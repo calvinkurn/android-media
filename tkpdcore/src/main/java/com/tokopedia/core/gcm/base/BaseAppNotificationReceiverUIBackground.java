@@ -36,7 +36,6 @@ import com.tokopedia.core.gcm.notification.dedicated.SellingOrderFinishedNotific
 import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.core.gcm.utils.GCMUtils;
-import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.var.TkpdState;
 
 import org.json.JSONException;

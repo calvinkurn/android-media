@@ -7,7 +7,6 @@ import android.support.v13.app.FragmentPagerAdapter;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.shopinfo.fragment.NotesList;
 import com.tokopedia.core.shopinfo.fragment.OfficialShopHomeFragment;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
