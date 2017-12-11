@@ -7,9 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -19,6 +16,9 @@ import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
+import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -32,7 +32,6 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
 import com.tokopedia.tkpd.beranda.data.mapper.SaldoDataMapper;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
@@ -43,9 +42,9 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 import org.json.JSONObject;
 
@@ -57,9 +56,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 
@@ -95,6 +92,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
     private TokoCashData tokoCashData;
+
+    private HeaderViewModel headerViewModel;
 
     public HomePresenter(Context context) {
         this.context = context;
@@ -144,6 +143,21 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     new SaldoDataMapper())
                     .subscribe(subscriber);
             compositeSubscription.add(subscription);
+
+        } else if (isViewAttached()) {
+            getLocalHomeDataItem(null);
+        }
+    }
+
+
+    private void getHeaderHomeData() {
+        if (SessionHandler.isV4Login(context)) {
+            if (headerViewModel == null) {
+                headerViewModel = new HeaderViewModel();
+                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
+            }
+            getView().setItem(0, headerViewModel);
+            getLocalHomeDataItem(headerViewModel);
         } else if (isViewAttached()) {
             getLocalHomeDataItem(null);
         }
@@ -151,40 +165,75 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getHomeData() {
-        getSaldoData(new DefaultSubscriber<SaldoViewModel>() {
-            @Override
-            public void onStart() {
-                if (isViewAttached()) {
-                    getView().removeNetworkError();
-                    getView().showLoading();
-                }
-            }
+        getHeaderHomeData();
 
-            @Override
-            public void onNext(final SaldoViewModel saldoModel) {
-                if (isViewAttached()) {
-                    final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
-                    if (config != null) {
-                        config.setDefaults(R.xml.remote_config_default);
-                        config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    config.activateFetched();
-                                }
-                            }
-                        });
-                    }
-                    getView().setItem(0, saldoModel);
-                    getLocalHomeDataItem(saldoModel);
-                }
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                getLocalHomeDataItem(null);
+//        getSaldoData(new DefaultSubscriber<SaldoViewModel>() {
+//            @Override
+//            public void onStart() {
+//                if (isViewAttached()) {
+//                    getView().removeNetworkError();
+//                    getView().showLoading();
+//                }
+//            }
+//
+//            @Override
+//            public void onNext(final SaldoViewModel saldoModel) {
+//                if (isViewAttached()) {
+//                    final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
+//                    if (config != null) {
+//                        config.setDefaults(R.xml.remote_config_default);
+//                        config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                if (task.isSuccessful()) {
+//                                    config.activateFetched();
+//                                }
+//                            }
+//                        });
+//                    }
+//                    getView().setItem(0, saldoModel);
+//                    getLocalHomeDataItem(saldoModel);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                getLocalHomeDataItem(null);
+//            }
+//        });
+    }
+
+    @Override
+    public void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletAction) {
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+            headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
+        } else {
+            if (headerViewModel.getTokoPointDrawerData() != null) {
+                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
+            } else {
+                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
             }
-        });
+            headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
+        }
+        getView().updateHeaderItem(0, headerViewModel);
+    }
+
+    @Override
+    public void updateHeaderTokoCashPendingData() {
+
+    }
+
+    @Override
+    public void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData) {
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+            headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
+        } else {
+            headerViewModel.setTokoPointDrawerData(tokoPointDrawerData);
+        }
+        getView().updateHeaderItem(0, headerViewModel);
     }
 
 
@@ -322,7 +371,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
         @Override
         public void onStart() {
-            if(isViewAttached()){
+            if (isViewAttached()) {
                 getView().showLoading();
             }
         }

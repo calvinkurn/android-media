@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.beranda.presentation.view.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,11 +23,16 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
@@ -35,6 +42,8 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -47,19 +56,19 @@ import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
+import com.tokopedia.tkpd.beranda.listener.HomeRecycleScrollListener;
 import com.tokopedia.tkpd.beranda.listener.OnSectionChangeListener;
 import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
 import com.tokopedia.tkpd.beranda.presentation.view.SectionContainer;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.HomeRecycleAdapter;
-import com.tokopedia.tkpd.beranda.listener.HomeRecycleScrollListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
@@ -78,7 +87,7 @@ import javax.inject.Inject;
  */
 
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
-        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener, TabLayout.OnTabSelectedListener {
+        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener, TabLayout.OnTabSelectedListener, TokoCashUpdateListener {
 
     @Inject
     HomePresenter presenter;
@@ -97,6 +106,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomeAdapterFactory adapterFactory;
     private String[] tabSectionTitle;
 
+    private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
+    private TokoPointDataBroadcastReceiver tokoPointDataBroadcastReceiver;
+
     public static HomeFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -110,6 +122,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         trace = TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
+
+        tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
+        IntentFilter intentFilerTokoCash = new IntentFilter(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
+        getActivity().registerReceiver(tokoCashBroadcastReceiver, intentFilerTokoCash);
+        tokoPointDataBroadcastReceiver = new TokoPointDataBroadcastReceiver();
+        getActivity().registerReceiver(
+                tokoPointDataBroadcastReceiver,
+                new IntentFilter(
+                        DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION
+                )
+        );
+
     }
 
     @Override
@@ -192,6 +216,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
+        getActivity().unregisterReceiver(tokoPointDataBroadcastReceiver);
         presenter.detachView();
     }
 
@@ -295,14 +321,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         Intent intent = SellerRouter.getAcitivityShopCreateEdit(getContext());
         intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                 SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
 
     private void onGoToShop(String shopId) {
         Intent intent = new Intent(getContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
 
@@ -423,6 +449,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance) {
+        WalletRouterUtil.navigateWallet(
+                getActivity().getApplication(),
+                this,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkBalance,
+                redirectUrlBalance,
+                new Bundle()
+        );
+    }
+
+    @Override
+    public void onRequestPendingCashBack() {
+
+    }
+
+    @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
@@ -538,13 +581,25 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void updateHeaderItem(int pos, HeaderViewModel headerViewModel) {
+        if (adapter.getItemCount() > 0) {
+            if (adapter.getItem(pos) instanceof HeaderViewModel) {
+                ((HeaderViewModel) adapter.getItem(pos)).setTokoPointDrawerData(headerViewModel.getTokoPointDrawerData());
+                ((HeaderViewModel) adapter.getItem(pos)).setHomeHeaderWalletActionData(headerViewModel.getHomeHeaderWalletActionData());
+                ((HeaderViewModel) adapter.getItem(pos)).setType(headerViewModel.getType());
+                adapter.notifyItemChanged(pos);
+            }
+        }
+    }
+
+    @Override
     public void refreshAdapter() {
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void showNetworkError(String message) {
-        if(adapter.getItemCount()>0) {
+        if (adapter.getItemCount() > 0) {
             if (messageSnackbar == null) {
                 messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -609,6 +664,34 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra("url", url);
             context.startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onReceivedTokoCashData(DrawerTokoCash tokoCashData) {
+        presenter.updateHeaderTokoCashData(tokoCashData.getHomeHeaderWalletAction());
+    }
+
+    @Override
+    public void onTokoCashDataError(String errorMessage) {
+
+    }
+
+
+    public class TokoPointDataBroadcastReceiver extends BroadcastReceiver {
+        public static final String EXTRA_TOKOPOINT_DRAWER_DATA = "EXTRA_TOKOPOINT_DRAWER_DATA";
+        public static final String ACTION = "com.tokopedia.core.app.DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION.equalsIgnoreCase(intent.getAction())) {
+                TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
+                        EXTRA_TOKOPOINT_DRAWER_DATA
+                );
+                if (tokoPointDrawerData == null) return;
+                presenter.updateHeaderTokoPointData(tokoPointDrawerData);
+            }
+
         }
     }
 }

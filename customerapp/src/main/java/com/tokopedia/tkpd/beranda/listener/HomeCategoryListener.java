@@ -37,4 +37,8 @@ public interface HomeCategoryListener {
     void onPromoClick(BannerSlidesModel slidesModel);
 
     void openShop();
+
+    void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance);
+
+    void onRequestPendingCashBack();
 }
