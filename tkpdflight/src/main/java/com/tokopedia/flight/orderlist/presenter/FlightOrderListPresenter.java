@@ -1,11 +1,13 @@
 package com.tokopedia.flight.orderlist.presenter;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
-import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
+import com.tokopedia.flight.orderlist.presenter.model.FlightOrder;
+import com.tokopedia.flight.orderlist.presenter.model.FlightOrderJourney;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +34,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     @Override
     public void getInitialOrderData() {
         getView().showGetInitialOrderDataLoading();
-        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0), new Subscriber<List<OrderEntity>>() {
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0), new Subscriber<List<FlightOrder>>() {
             @Override
             public void onCompleted() {
 
@@ -48,12 +50,24 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             }
 
             @Override
-            public void onNext(List<OrderEntity> orderEntities) {
+            public void onNext(List<FlightOrder> orderEntities) {
                 buildAndRenderFilterList();
                 getView().hideGetInitialOrderDataLoading();
-
+                renderUi(orderEntities);
             }
         });
+    }
+
+    private void renderUi(List<FlightOrder> flightOrders) {
+        List<Visitable> visitables = new ArrayList<>();
+        for (FlightOrder flightOrder : flightOrders) {
+
+            for (FlightOrderJourney journey : flightOrder.getJourneys()) {
+                switch (journey.getStatus()) {
+
+                }
+            }
+        }
     }
 
     private void buildAndRenderFilterList() {
