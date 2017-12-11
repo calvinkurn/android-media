@@ -1,6 +1,6 @@
 package com.tokopedia.seller.seller.info.di.module;
 
-import com.tokopedia.core.network.di.qualifier.SellerInfoQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.seller.seller.info.data.repository.SellerInfoRepositoryImpl;
 import com.tokopedia.seller.seller.info.data.source.SellerInfoApi;
 import com.tokopedia.seller.seller.info.data.source.cloud.SellerInfoDataSource;
@@ -20,7 +20,7 @@ public class SellerInfoModule {
 
     @SellerInfoScope
     @Provides
-    public SellerInfoApi provideSellerInfoApi(@SellerInfoQualifier Retrofit retrofit){
+    public SellerInfoApi provideSellerInfoApi(@WsV4Qualifier Retrofit retrofit) {
         return retrofit.create(SellerInfoApi.class);
     }
 
