@@ -83,7 +83,7 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
-import com.tokopedia.transaction.cart.activity.InsuranceTacActivity;
+import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -281,8 +281,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         tosAgreementText.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                getActivity().startActivity(InsuranceTacActivity.createInstance(getActivity(),
-                        "https://www.google.co.id/"));
+                getActivity().startActivity(InsuranceTnCActivity.createInstance(getActivity(),
+                        "https://ws-staging.tokopedia.com/v4/web-view/get_insurance_info.pl"));
             }
         }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvInsuranceTerms.setMovementMethod(LinkMovementMethod.getInstance());

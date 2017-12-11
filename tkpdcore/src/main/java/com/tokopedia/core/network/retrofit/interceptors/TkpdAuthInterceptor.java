@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -72,6 +74,20 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
 
         String bodyResponse = response.body().string();
+        if (bodyResponse.length() > 4000) {
+            Log.v("RESPONSE", "sb.length = " + bodyResponse.length());
+            int chunkCount = bodyResponse.length() / 4000;
+            for (int i = 0; i <= chunkCount; i++) {
+                int max = 4000 * (i + 1);
+                if (max >= bodyResponse.length()) {
+                    Log.v("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(4000 * i));
+                } else {
+                    Log.v("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(4000 * i, max));
+                }
+            }
+        } else {
+            Log.v("RESPONSE", bodyResponse);
+        }
         checkResponse(bodyResponse, response);
 
         return createNewResponse(response, bodyResponse);

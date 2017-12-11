@@ -57,7 +57,7 @@
             android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
             android:label="@string/label_payment_setting" />
         <activity
-            android:name=".cart.activity.InsuranceTacActivity"
+            android:name=".insurance.view.InsuranceTnCActivity"
             android:label="@string/title_term_and_condition"/>
 
         <service

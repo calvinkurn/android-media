@@ -781,7 +781,7 @@ public class CartPresenter implements ICartPresenter {
         }
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
-        processCartRates(data.getTokenKero(), data.getUt(), data.getCartItemList());
+//        processCartRates(data.getTokenKero(), data.getUt(), data.getCartItemList());
     }
 
     @Override

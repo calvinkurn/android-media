@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.cart.activity;
+package com.tokopedia.transaction.insurance.view;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -10,13 +10,13 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.transaction.R;
 
-public class InsuranceTacActivity extends TActivity implements FragmentGeneralWebView.OnFragmentInteractionListener {
+public class InsuranceTnCActivity extends TActivity implements FragmentGeneralWebView.OnFragmentInteractionListener {
 
     private static final String EXTRA_URL = "url";
     private String url;
 
     public static Intent createInstance(Activity activity, String url) {
-        Intent intent = new Intent(activity, InsuranceTacActivity.class);
+        Intent intent = new Intent(activity, InsuranceTnCActivity.class);
         intent.putExtra(EXTRA_URL, url);
         return intent;
     }
