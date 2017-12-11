@@ -26,7 +26,6 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.InboxRouter;
@@ -40,6 +39,7 @@ import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
@@ -218,7 +218,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
-                startActivity(new Intent(getContext(), InboxReputationActivity.class));
+                if(MainApplication.getAppContext() instanceof SellerModuleRouter){
+                    startActivity(((SellerModuleRouter)MainApplication.getAppContext()).getInboxReputationIntent
+                            (getActivity()));
+                }
+
             }
         });
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
