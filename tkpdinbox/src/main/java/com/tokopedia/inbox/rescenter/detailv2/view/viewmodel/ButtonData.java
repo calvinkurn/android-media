@@ -37,7 +37,16 @@ public class ButtonData implements Parcelable{
 
     private List<ButtonViewItem> buttonViewItemList;
     private int resolutionStatus;
+    private boolean isCancelOn4thOrder;
 
+
+    public boolean isCancelOn4thOrder() {
+        return isCancelOn4thOrder;
+    }
+
+    public void setCancelOn4thOrder(boolean cancelOn4thOrder) {
+        isCancelOn4thOrder = cancelOn4thOrder;
+    }
 
     public boolean isShowEdit() {
         return showEdit;
@@ -280,6 +289,7 @@ public class ButtonData implements Parcelable{
         dest.writeString(this.finishComplaintDialogText);
         dest.writeTypedList(this.buttonViewItemList);
         dest.writeInt(this.resolutionStatus);
+        dest.writeByte(this.isCancelOn4thOrder ? (byte) 1 : (byte) 0);
     }
 
     protected ButtonData(Parcel in) {
@@ -308,6 +318,7 @@ public class ButtonData implements Parcelable{
         this.finishComplaintDialogText = in.readString();
         this.buttonViewItemList = in.createTypedArrayList(ButtonViewItem.CREATOR);
         this.resolutionStatus = in.readInt();
+        this.isCancelOn4thOrder = in.readByte() != 0;
     }
 
     public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {

@@ -41,6 +41,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDia
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.CancelComplaintView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView;
@@ -98,6 +99,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     SolutionView solutionView;
     ProveView proveView;
     HistoryView historyView;
+    CancelComplaintView cancelComplaintView;
     TextView tvNextStep;
 
     private TkpdProgressDialog normalLoading;
@@ -212,6 +214,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         solutionView = view.findViewById(R.id.solution_view);
         proveView = view.findViewById(R.id.prove_view);
         historyView = view.findViewById(R.id.history_view);
+        cancelComplaintView = view.findViewById(R.id.cancel_complaint_view);
         cvDiscussion = view.findViewById(R.id.cv_discussion);
         ivNextStepStatic = view.findViewById(R.id.iv_next_step_static);
         glowingView = view.findViewById(R.id.view_glowing);
@@ -234,6 +237,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         solutionView.setListener(this);
         proveView.setListener(this);
         historyView.setListener(this);
+        cancelComplaintView.setListener(this);
 
         cvNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,6 +336,9 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         }
         if (getViewData().getButtonData() != null) {
             buttonView.renderData(getViewData().getButtonData());
+            if (getViewData().getButtonData().isCancelOn4thOrder()) {
+                cancelComplaintView.renderData(getViewData().getButtonData());
+            }
         }
         if (getViewData().getAwbData() != null) {
             awbReturView.renderData(getViewData().getAwbData());
@@ -614,7 +621,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 ),
                 REQUEST_INPUT_SHIPPING
         );
-        getBottomSheetActivityTransition();
     }
 
     @Override

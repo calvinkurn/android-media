@@ -92,6 +92,14 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
+            <com.tokopedia.inbox.rescenter.detailv2.view.customview.CancelComplaintView
+                android:id="@+id/cancel_complaint_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                />
+
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

@@ -194,7 +194,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setInputAwbLabel(domainModel.getInputAWBLabel());
         data.setButtonViewItemList(mappingButtonViewItem(domainModel));
         data.setResolutionStatus(resolutionStatusId);
-
+        data.setCancelOn4thOrder(domainModel.getCancelOrder() == 4);
         return data;
     }
 
@@ -383,7 +383,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
                     domainModel.getReportOrder());
             itemList.add(data);
         }
-        if (domainModel.getCancel() != 0) {
+        if (domainModel.getCancel() != 0 && domainModel.getCancelOrder() != 4) {
             ButtonViewItem data = new ButtonViewItem(
                     domainModel.getCancelLabel(),
                     BUTTON_CANCEL,

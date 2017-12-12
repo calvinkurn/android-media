@@ -24,7 +24,7 @@ public class ListHistoryAwb {
     private String createTime;
     @SerializedName("createTimeStr")
     private String createTimeStr;
-    @SerializedName("timestampZ")
+    @SerializedName("createTimeStamp")
     private String createTimestamp;
     @SerializedName("remark")
     private String remark;
