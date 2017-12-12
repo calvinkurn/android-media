@@ -266,7 +266,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     }
 
     public void playAnimation() {
-        final int viewType = getArguments().getInt(ARG_VIEW_TYPE);
         if (viewType == VIEW_ENDING) {
             next = getView().findViewById(R.id.dummy_next);
             resetAnimation();
