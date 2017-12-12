@@ -1,11 +1,11 @@
 package com.tokopedia.seller.reputation.view.helper;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;

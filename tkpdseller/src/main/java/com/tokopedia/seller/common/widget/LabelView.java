@@ -88,6 +88,7 @@ public class LabelView extends BaseCustomView {
         setContent(contentText);
         contentTextView.setTextColor(contentColorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
+        setVisibleArrow(showArrow);
         contentTextView.setMaxLines(maxLines);
         titleTextView.setTypeface(null, titleTextStyleValue);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);

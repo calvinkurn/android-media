@@ -32,7 +32,6 @@ import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
@@ -248,24 +247,12 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             } else {
                 presenter.checkUriLogin(uriData);
                 if (presenter.isLandingPageWebView(uriData)) {
-                    CommonUtils.dumper("GAv4 Escape HADES webview");
                     presenter.processDeepLinkAction(uriData);
                 } else {
-                    if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                        CommonUtils.dumper("GAv4 Entering HADES");
-                        showProgressService();
-                    } else {
-                        CommonUtils.dumper("GAv4 Escape HADES non webview");
-                        presenter.processDeepLinkAction(uriData);
-                    }
+                    presenter.processDeepLinkAction(uriData);
                 }
             }
 
-        } else {
-            if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                CommonUtils.dumper("GAv4 Entering HADES null Uri");
-                showProgressService();
-            }
         }
     }
 

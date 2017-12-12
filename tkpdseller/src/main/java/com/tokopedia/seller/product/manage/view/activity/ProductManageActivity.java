@@ -68,11 +68,6 @@ public class ProductManageActivity extends DrawerPresenterActivity implements Ha
     }
 
     @Override
-    public void onHadesTimeout() {
-        // no op
-    }
-
-    @Override
     protected int setDrawerPosition() {
         return TkpdState.DrawerPosition.MANAGE_PRODUCT;
     }
