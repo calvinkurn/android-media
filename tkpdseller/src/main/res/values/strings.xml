@@ -61,7 +61,7 @@
     <!-- reputation history -->
     <string name="shop_reputation">Reputasi Toko</string>
     <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
-    <string name="perhitungan_poin_reputasi">Perhitungan Poin Reputasi</string>
+
     <string name="point"> poin</string>
     <string name="reputation_history_label_good_job">Tidak ada penalti pada periode ini</string>
     <string name="reputation_history_label_info_no_penalty">Ubah tanggal untuk melihat penalti pada periode sebelumnya.</string>
