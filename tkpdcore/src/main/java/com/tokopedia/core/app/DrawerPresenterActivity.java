@@ -13,7 +13,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
+import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
+import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
+import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
+import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -32,8 +35,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
-import static android.R.string.no;
-
 /**
  * Created on 3/23/16.
  */
@@ -50,7 +51,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected SessionHandler sessionHandler;
     protected DrawerDataManager drawerDataManager;
     protected LocalCacheHandler drawerCache;
-    private TokoPointDataBroadcastReceiver tokoPointDataBroadcastReceiver;
+    private DrawerActivityBroadcastReceiver drawerActivityBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +59,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
-        tokoPointDataBroadcastReceiver = new TokoPointDataBroadcastReceiver();
-        registerReceiver(tokoPointDataBroadcastReceiver, new IntentFilter(TokoPointDataBroadcastReceiver.ACTION));
+        drawerActivityBroadcastReceiver = new DrawerActivityBroadcastReceiver();
+        registerReceiver(
+                drawerActivityBroadcastReceiver,
+                new IntentFilter(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION)
+        );
     }
 
     @Override
@@ -182,11 +186,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     private void getTokoPointData() {
-        sendBroadcast(
-                new Intent(
-                        "com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver.ACTION_GET_DRAWER_TOKOPOINT"
-                )
-        );
+        sendBroadcast(new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION));
     }
 
     @Override
@@ -289,18 +289,23 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onGetTokoCash(DrawerTokoCash tokoCash) {
-        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
-            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
-                    .getData().setDrawerTokoCash(tokoCash);
-        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
-            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
-                    .getData().setDrawerTokoCash(tokoCash);
-        Intent intent = new Intent();
-        intent.setAction(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
-        intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA,
+        Intent intentDrawerActivity = new Intent(
+                DrawerActivityBroadcastReceiverConstant.INTENT_ACTION
+        );
+        intentDrawerActivity.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA);
+        intentDrawerActivity.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA,
                 tokoCash);
-        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
-        sendBroadcast(intent);
+        sendBroadcast(intentDrawerActivity);
+
+        Intent intentHomeFragment = new Intent(
+                HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+        );
+        intentHomeFragment.putExtra(HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA);
+        intentHomeFragment.putExtra(HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA,
+                tokoCash.getHomeHeaderWalletAction());
+        sendBroadcast(intentHomeFragment);
     }
 
     @Override
@@ -372,7 +377,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected void onDestroy() {
         super.onDestroy();
         drawerDataManager.unsubscribe();
-        unregisterReceiver(tokoPointDataBroadcastReceiver);
+        unregisterReceiver(drawerActivityBroadcastReceiver);
     }
 
     @Override
@@ -385,39 +390,68 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     }
 
+    public class DrawerActivityBroadcastReceiver extends BroadcastReceiver {
 
-    public class TokoPointDataBroadcastReceiver extends BroadcastReceiver {
-        public static final String EXTRA_TOKOPOINT_DRAWER_DATA = "EXTRA_TOKOPOINT_DRAWER_DATA";
-        public static final String ACTION = "com.tokopedia.core.app.DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION";
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (ACTION.equalsIgnoreCase(intent.getAction())) {
-                TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
-                        EXTRA_TOKOPOINT_DRAWER_DATA
-                );
-                if (tokoPointDrawerData == null) return;
-                if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
-                    ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
-                            .getData().setTokoPointDrawerData(tokoPointDrawerData);
-                else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
-                    ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
-                            .getData().setTokoPointDrawerData(tokoPointDrawerData);
-                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+            if (!DrawerActivityBroadcastReceiverConstant.INTENT_ACTION.equalsIgnoreCase(intent.getAction()))
+                return;
+            switch (intent.getIntExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER, 0)) {
+                case DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA:
+                    drawerDataManager.getTokoCash();
+                    break;
+                case DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_PENDING_DATA:
+                    sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION));
+                    break;
+                case DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOPOINT_DATA:
+                    getTokoPointData();
+                    break;
 
-                if (tokoPointDrawerData.getHasNotif() == 1) {
-                    if (getApplication() instanceof ILoyaltyRouter) {
-                        ((ILoyaltyRouter) getApplication())
-                                .getLoyaltyTokoPointNotificationDialogFragment(
-                                        tokoPointDrawerData.getPopUpNotif()
-                                ).show(
-                                getFragmentManager(),
-                                ILoyaltyRouter.LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG
-                        );
+                case DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA:
+                    DrawerTokoCash drawerTokoCash = intent.getParcelableExtra(
+                            DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA
+                    );
+                    if (drawerTokoCash != null) {
+                        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+                            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                                    .getData().setDrawerTokoCash(drawerTokoCash);
+                        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+                            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                                    .getData().setDrawerTokoCash(drawerTokoCash);
                     }
-                }
-            }
+                    break;
+                case DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
+                    // no
+                    break;
+                case DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:
+                    TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
+                            DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA
+                    );
+                    if (tokoPointDrawerData == null) return;
+                    if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+                        ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                                .getData().setTokoPointDrawerData(tokoPointDrawerData);
+                    else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+                        ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                                .getData().setTokoPointDrawerData(tokoPointDrawerData);
+                    drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
 
+                    if (tokoPointDrawerData.getHasNotif() == 1) {
+                        if (getApplication() instanceof ILoyaltyRouter) {
+                            ((ILoyaltyRouter) getApplication())
+                                    .getLoyaltyTokoPointNotificationDialogFragment(
+                                            tokoPointDrawerData.getPopUpNotif()
+                                    ).show(
+                                    getFragmentManager(),
+                                    ILoyaltyRouter.LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG
+                            );
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
