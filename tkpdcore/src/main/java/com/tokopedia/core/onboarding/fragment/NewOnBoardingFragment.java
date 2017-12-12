@@ -42,17 +42,12 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     private static final String ARG_LOTTIE = "lottie";
     private static final String SCREEN_NAME = "Screen OnBoarding - ";
     private int mScreenWidth;
-    private int mScreenHeight;
     private TextView startNow;
     private ValueAnimator expandAnimator;
     private ObjectAnimator fadeAnimator;
     private AnimatorSet animatorSet;
-    private ObjectAnimator slideAnimator;
-    private ValueAnimator slideAnimator2;
-    private ObjectAnimator fadeAnimator2;
     private ValueAnimator slideAnimatorX;
     private ObjectAnimator goneAnimation;
-    private View footer;
     private View next;
     private LottieAnimationView lottieAnimationView;
     private TextView descView;
@@ -130,7 +125,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         mScreenWidth = displaymetrics.widthPixels;
-        mScreenHeight = displaymetrics.heightPixels;
     }
 
     @Override
@@ -196,8 +190,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         });
         startNow.setVisibility(View.GONE);
         startNow.setWidth(0);
-
-        footer = endingView.findViewById(R.id.footer);
         return endingView;
     }
 
