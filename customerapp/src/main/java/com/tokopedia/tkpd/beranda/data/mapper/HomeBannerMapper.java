@@ -27,6 +27,7 @@ public class HomeBannerMapper implements Func1<Response<String>, HomeBannerRespo
             responseModel.setSuccess(true);
         } else {
             responseModel.setSuccess(false);
+            throw new RuntimeException("banner error");
         }
         return responseModel;
     }

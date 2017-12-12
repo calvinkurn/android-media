@@ -28,6 +28,7 @@ public class BrandsOfficialStoreMapper implements Func1<Response<String>, Brands
             responseModel.setSuccess(true);
         } else {
             responseModel.setSuccess(false);
+            throw new RuntimeException("brand os error");
         }
         return responseModel;
     }

@@ -27,6 +27,7 @@ public class TopPicksMapper implements Func1<Response<String>, TopPicksResponseM
             responseModel.setSuccess(true);
         } else {
             responseModel.setSuccess(false);
+            throw new RuntimeException("topick error");
         }
         return responseModel;
     }

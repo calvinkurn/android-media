@@ -29,6 +29,7 @@ public class HomeCategoryMapper implements Func1<Response<String>, HomeCategoryR
             responseModel.setSuccess(true);
         } else {
             responseModel.setSuccess(false);
+            throw new RuntimeException("category error");
         }
         return responseModel;
     }

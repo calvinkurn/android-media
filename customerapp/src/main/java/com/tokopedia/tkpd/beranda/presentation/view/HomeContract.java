@@ -27,8 +27,6 @@ public interface HomeContract {
 
         void setItem(int pos, Visitable item);
 
-        void refreshAdapter();
-
         void showNetworkError(String message);
 
         void removeNetworkError();

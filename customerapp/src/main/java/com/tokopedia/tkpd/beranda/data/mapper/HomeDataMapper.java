@@ -154,18 +154,4 @@ public class HomeDataMapper implements Func6<SaldoViewModel, HomeBannerResponseM
         return viewModel;
     }
 
-    private String getAppLinkBalance(TokoCashData tokoCashData) {
-        String appLinkBalance = tokoCashData.getmAppLinks();
-        if (appLinkBalance != null) {
-            if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
-                appLinkBalance = tokoCashData.getAction().getmVisibility() != null
-                        && tokoCashData.getAction().getmVisibility().equals("1")
-                        ? appLinkBalance + "?" +
-                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=true"
-                        : appLinkBalance + "?" +
-                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=false";
-            }
-        }
-        return appLinkBalance;
-    }
 }

@@ -295,14 +295,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         Intent intent = SellerRouter.getAcitivityShopCreateEdit(getContext());
         intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                 SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
 
     private void onGoToShop(String shopId) {
         Intent intent = new Intent(getContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
 
@@ -538,13 +538,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void refreshAdapter() {
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void showNetworkError(String message) {
-        if(adapter.getItemCount()>0) {
+        if (adapter.getItemCount() > 0) {
             if (messageSnackbar == null) {
                 messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -568,6 +563,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void removeNetworkError() {
         NetworkErrorHelper.removeEmptyState(root);
+        if (messageSnackbar != null && messageSnackbar.isShown()) {
+            messageSnackbar.hideRetrySnackbar();
+        }
     }
 
 

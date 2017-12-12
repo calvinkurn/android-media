@@ -30,6 +30,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
 import com.tokopedia.tkpd.beranda.data.mapper.SaldoDataMapper;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
@@ -40,7 +41,11 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
 import org.json.JSONObject;
@@ -282,7 +287,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
         @Override
         public void onStart() {
-            if(isViewAttached()){
+            if (isViewAttached()) {
                 getView().showLoading();
             }
         }
@@ -306,8 +311,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         public void onNext(List<Visitable> visitables) {
             if (isViewAttached()) {
                 getView().setItems(visitables);
+                getView().removeNetworkError();
             }
         }
+
     }
 
 }
