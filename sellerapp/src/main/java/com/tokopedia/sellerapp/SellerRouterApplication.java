@@ -71,6 +71,7 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
@@ -98,6 +99,7 @@ import com.tokopedia.sellerapp.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.topads.TkpdTopAds;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -596,6 +598,36 @@ public abstract class SellerRouterApplication extends MainApplication
     public Observable<DataDeposit> getDataDeposit(String shopId) {
         GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
         return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
+    }
+
+    @Override
+    public Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack){
+        return TkpdSeller.getIntentCreateEditShop(context, isCreate, logOutOnBack);
+    }
+
+    @Override
+    public Intent getIntentSellerSplashScreen(Context context) {
+        return new Intent(context, SplashScreenActivity.class);
+    }
+
+    @Override
+    public Intent getIntentManageShop(Context context){
+        return TkpdSeller.getIntentManageShop(context);
+    }
+
+    @Override
+    public android.app.Fragment getFragmentShopSettings() {
+        return TkpdSeller.getFragmentShopSettings();
+    }
+
+    @Override
+    public android.app.Fragment getFragmentSellingNewOrder() {
+        return TkpdSeller.getFragmentSellingNewOrder();
+    }
+
+    @Override
+    public Class getSellingActivityClass() {
+        return TkpdSeller.getSellingActivityClass();
     }
 
     @Override

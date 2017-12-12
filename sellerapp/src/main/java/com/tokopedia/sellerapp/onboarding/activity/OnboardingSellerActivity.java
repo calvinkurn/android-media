@@ -78,7 +78,8 @@ public class OnboardingSellerActivity extends OnboardingActivity {
             finish();
             SessionHandler.setFirstTimeUser(this, false);
         } else if (SessionHandler.isMsisdnVerified()) {
-            ((SellerRouterApplication)getApplication()).goToCreateShop();
+            Intent intent = SellerRouter.getActivityShopCreateEdit(this,true, true);
+            startActivity(intent);
             finish();
         } else {
             Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
@@ -110,11 +111,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
         } else if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER) {
-            Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                    SellerRouter.ShopSettingConstant.LOG_OUT);
+            Intent intent = SellerRouter.getActivityShopCreateEdit(this, true, true);
             startActivity(intent);
             finish();
         } else {

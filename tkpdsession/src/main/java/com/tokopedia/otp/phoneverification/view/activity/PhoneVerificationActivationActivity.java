@@ -118,11 +118,7 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     }
 
     private void goToSellerShopCreateEdit() {
-        Intent intent = SellerRouter.getAcitivityShopCreateEdit(PhoneVerificationActivationActivity.this);
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-        intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                SellerRouter.ShopSettingConstant.LOG_OUT);
+        Intent intent = SellerRouter.getActivityShopCreateEdit(PhoneVerificationActivationActivity.this, true, true);
         startActivity(intent);
         finish();
     }

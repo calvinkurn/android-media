@@ -68,6 +68,7 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
@@ -82,6 +83,7 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
+import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
@@ -191,9 +193,61 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack){
+        return TkpdSeller.getIntentCreateEditShop(context, isCreate, logOutOnBack);
+    }
+
+    @Override
+    public Intent getIntentSellerSplashScreen(Context context){
+        return null;
+    }
+
+    @Override
+    public Intent getIntentManageShop(Context context){
+        return TkpdSeller.getIntentManageShop(context);
+    }
+
+    @Override
+    public android.app.Fragment getFragmentShopSettings() {
+        return TkpdSeller.getFragmentShopSettings();
+    }
+
+    @Override
+    public android.app.Fragment getFragmentSellingNewOrder() {
+        return TkpdSeller.getFragmentSellingNewOrder();
+    }
+
+    @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
     }
+
+    @Override
+    public Class getSellingActivityClass() {
+        return TkpdSeller.getSellingActivityClass();
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionNewOrder(Context context) {
+        return TkpdSeller.getActivitySellingTransactionNewOrder(context);
+    }
+
+    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
+        return TkpdSeller.getActivitySellingTransactionConfirmShipping(context);
+    }
+
+    public Intent getActivitySellingTransactionShippingStatus(Context context) {
+        return TkpdSeller.getActivitySellingTransactionShippingStatus(context);
+    }
+
+    public Intent getActivitySellingTransactionList(Context context) {
+        return TkpdSeller.getActivitySellingTransactionList(context);
+    }
+
+    public Intent getActivitySellingTransactionOpportunity(Context context) {
+        return TkpdSeller.getActivitySellingTransactionOpportunity(context);
+    }
+
 
     @Override
     public void goToProductDetail(Context context, ProductPass productPass) {

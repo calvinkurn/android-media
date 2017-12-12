@@ -97,4 +97,25 @@ public interface TkpdCoreRouter {
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
+    Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack);
+
+    Intent getIntentSellerSplashScreen(Context context);
+
+    Intent getIntentManageShop(Context context);
+
+    android.app.Fragment getFragmentShopSettings();
+
+    android.app.Fragment getFragmentSellingNewOrder();
+
+    Class getSellingActivityClass();
+
+    Intent getActivitySellingTransactionNewOrder(Context context);
+
+    Intent getActivitySellingTransactionConfirmShipping(Context context);
+
+    Intent getActivitySellingTransactionShippingStatus(Context context);
+
+    Intent getActivitySellingTransactionList(Context context);
+
+    Intent getActivitySellingTransactionOpportunity(Context context);
 }

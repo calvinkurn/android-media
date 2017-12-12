@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -168,9 +167,7 @@ public class Login extends BaseActivity implements SessionView
 
         if (SessionHandler.isMsisdnVerified()) {
             Intent intent;
-            intent = SellerRouter.getAcitivityShopCreateEdit(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            intent = SellerRouter.getActivityShopCreateEdit(context, true, false);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         } else {
@@ -946,6 +943,7 @@ public class Login extends BaseActivity implements SessionView
         super.onNewIntent(intent);
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void showError(String text) {
         if (text != null) {
@@ -976,6 +974,7 @@ public class Login extends BaseActivity implements SessionView
 
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
@@ -994,6 +993,7 @@ public class Login extends BaseActivity implements SessionView
         }, 10000);
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onTimezoneError() {
         final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
