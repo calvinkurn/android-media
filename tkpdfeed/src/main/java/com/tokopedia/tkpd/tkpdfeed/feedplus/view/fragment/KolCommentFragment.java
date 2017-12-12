@@ -18,6 +18,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -249,6 +250,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void loadMoreComments() {
+        UnifyTracking.eventKolCommentDetailLoadMore();
         if (adapter.getHeader() != null) {
             adapter.getHeader().setLoading(true);
             adapter.notifyItemChanged(0);
@@ -284,6 +286,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void onSuccessSendComment(SendKolCommentDomain sendKolCommentDomain) {
+        UnifyTracking.eventKolCommentDetailSubmitComment();
         adapter.addItem(new KolCommentViewModel(
                 sendKolCommentDomain.getId(),
                 sendKolCommentDomain.getDomainUser().getPhoto(),

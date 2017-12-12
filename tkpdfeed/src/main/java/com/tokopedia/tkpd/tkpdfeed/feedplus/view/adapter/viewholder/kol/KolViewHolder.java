@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
@@ -137,6 +138,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventKolContentGoToProfilePage(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolProfile(element.getPage(), getAdapterPosition(), element
                         .getKolProfileUrl());
             }
@@ -145,6 +147,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventKolContentGoToProfilePage(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolProfile(element.getPage(), getAdapterPosition(), element
                         .getKolProfileUrl());
             }
@@ -154,9 +157,11 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 if (element.isFollowed()) {
+                    UnifyTracking.eventKolContentUnfollowClick(element.getTagsType());
                     viewListener.onUnfollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 } else {
+                    UnifyTracking.eventKolContentFollowClick(element.getTagsType());
                     viewListener.onFollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 }
@@ -168,6 +173,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             public void onClick(View v) {
                 if (kolText.getText().toString().endsWith(MainApplication.getAppContext().getString(R
                         .string.read_more_english))) {
+                    UnifyTracking.eventKolContentReadMoreClick(element.isFollowed(), element.getTagsType());
                     kolText.setText(element.getReview());
                     element.setReviewExpanded(true);
                 }
@@ -178,9 +184,11 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 if (element.isLiked()) {
+                    UnifyTracking.eventKolContentUnlike(element.isFollowed(), element.getTagsType());
                     viewListener.onUnlikeKolClicked(element.getPage(), getAdapterPosition(),
                             element.getId());
                 } else {
+                    UnifyTracking.eventKolContentLike(element.isFollowed(), element.getTagsType());
                     viewListener.onLikeKolClicked(element.getPage(), getAdapterPosition(), element.getId());
                 }
             }
@@ -189,6 +197,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventKolContentCommentClick(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element);
             }
         });
@@ -196,6 +205,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         tooltipClickArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
                 viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
                         element.getContentLink());
             }
