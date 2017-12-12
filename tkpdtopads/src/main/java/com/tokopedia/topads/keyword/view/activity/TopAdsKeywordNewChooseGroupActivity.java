@@ -26,7 +26,9 @@ import java.util.List;
  * Created by nathan on 5/17/17.
  */
 
-public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity implements HasComponent<AppComponent>, TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
+public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
+        implements HasComponent<AppComponent>,
+        TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
     public static final String RESULT_WORDS = "rslt_wrds";
     public static final String TAG = TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
@@ -142,7 +144,6 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity imp
 
     private void setResultAdSaved() {
         Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         setResult(Activity.RESULT_OK, intent);
     }
 
@@ -150,6 +151,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity imp
     public void onSuccessSave(ArrayList<String> keyWordsList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(RESULT_WORDS, keyWordsList);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
