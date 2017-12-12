@@ -246,11 +246,19 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     private void setTokoPoint(ViewHolder holder) {
         if (data.getTokoPointDrawerData() != null && data.getTokoPointDrawerData().getOffFlag() == 0) {
             holder.tokoPointContainer.setVisibility(View.VISIBLE);
-            holder.tvTokoPointAction.setText("Tukar Poin");
+            holder.tvTokoPointAction.setText("TokoPoints");
             ImageHandler.loadImageThumbs(context,
                     holder.ivTokoPointBadge,
                     data.getTokoPointDrawerData().getUserTier().getTierImageUrl());
             holder.tvTokoPointCount.setText(data.getTokoPointDrawerData().getUserTier().getRewardPoints() + " Poin");
+            holder.tvTokoPointAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onTokoPointActionClicked(data.getTokoPointDrawerData().getMainPageUrl());
+                }
+            });
+        }else {
+            holder.tokoPointContainer.setVisibility(View.GONE);
         }
     }
 

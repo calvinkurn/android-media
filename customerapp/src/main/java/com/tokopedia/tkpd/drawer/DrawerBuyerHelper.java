@@ -590,7 +590,10 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onTokoPointActionClicked(String url) {
-
+        if (context.getApplication() instanceof TkpdCoreRouter) {
+            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
+            tkpdCoreRouter.actionOpenGeneralWebView(context, url);
+        }
     }
 
     private void onGoToCreateShop() {

@@ -12,18 +12,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class TokoPointDrawerData implements Parcelable {
 
-    @SerializedName("off_flag")
-    @Expose
     private int offFlag;
-    @SerializedName("has_notif")
-    @Expose
     private int hasNotif;
-    @SerializedName("user_tier")
-    @Expose
     private UserTier userTier;
-    @SerializedName("pop_up_notif")
-    @Expose
     private PopUpNotif popUpNotif;
+    private String mainPageUrl;
 
     public int getOffFlag() {
         return offFlag;
@@ -57,22 +50,20 @@ public class TokoPointDrawerData implements Parcelable {
         this.popUpNotif = popUpNotif;
     }
 
+    public String getMainPageUrl() {
+        return mainPageUrl;
+    }
+
+    public void setMainPageUrl(String mainPageUrl) {
+        this.mainPageUrl = mainPageUrl;
+    }
 
     public static class Catalog implements Parcelable {
-        @SerializedName("title")
-        @Expose
+
         private String title;
-        @SerializedName("sub_title")
-        @Expose
         private String subTitle;
-        @SerializedName("points")
-        @Expose
         private int points;
-        @SerializedName("thumbnail_url")
-        @Expose
         private String thumbnailUrl;
-        @SerializedName("thumbnail_url_mobile")
-        @Expose
         private String thumbnailUrlMobile;
 
         public String getTitle() {
@@ -155,29 +146,13 @@ public class TokoPointDrawerData implements Parcelable {
 
     public static class PopUpNotif implements Parcelable {
 
-        @SerializedName("title")
-        @Expose
         private String title;
-        @SerializedName("text")
-        @Expose
         private String text;
-        @SerializedName("image_url")
-        @Expose
         private String imageUrl;
-        @SerializedName("button_text")
-        @Expose
         private String buttonText;
-        @SerializedName("button_url")
-        @Expose
         private String buttonUrl;
-        @SerializedName("app_link")
-        @Expose
         private String appLink;
-        @SerializedName("notes")
-        @Expose
         private String notes;
-        @SerializedName("catalog")
-        @Expose
         private Catalog catalog;
 
         public String getTitle() {
@@ -290,17 +265,9 @@ public class TokoPointDrawerData implements Parcelable {
 
     public static class UserTier implements Parcelable {
 
-        @SerializedName("tier_id")
-        @Expose
         private int tierId;
-        @SerializedName("tier_name")
-        @Expose
         private String tierName;
-        @SerializedName("tier_image_url")
-        @Expose
         private String tierImageUrl;
-        @SerializedName("reward_points")
-        @Expose
         private int rewardPoints;
 
         public int getTierId() {
@@ -372,6 +339,10 @@ public class TokoPointDrawerData implements Parcelable {
         };
     }
 
+    public TokoPointDrawerData() {
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -383,9 +354,7 @@ public class TokoPointDrawerData implements Parcelable {
         dest.writeInt(this.hasNotif);
         dest.writeParcelable(this.userTier, flags);
         dest.writeParcelable(this.popUpNotif, flags);
-    }
-
-    public TokoPointDrawerData() {
+        dest.writeString(this.mainPageUrl);
     }
 
     protected TokoPointDrawerData(Parcel in) {
@@ -393,9 +362,10 @@ public class TokoPointDrawerData implements Parcelable {
         this.hasNotif = in.readInt();
         this.userTier = in.readParcelable(UserTier.class.getClassLoader());
         this.popUpNotif = in.readParcelable(PopUpNotif.class.getClassLoader());
+        this.mainPageUrl = in.readString();
     }
 
-    public static final Parcelable.Creator<TokoPointDrawerData> CREATOR = new Parcelable.Creator<TokoPointDrawerData>() {
+    public static final Creator<TokoPointDrawerData> CREATOR = new Creator<TokoPointDrawerData>() {
         @Override
         public TokoPointDrawerData createFromParcel(Parcel source) {
             return new TokoPointDrawerData(source);

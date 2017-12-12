@@ -34,7 +34,7 @@ public class HeaderHomeView extends BaseCustomView {
     private TextView tvBalanceTokoPoint;
     private ImageView ivLogoTokoPoint;
 
-    private HomeHeaderWalletAction homeHeaderWalletAction;
+    //  private HomeHeaderWalletAction homeHeaderWalletAction;
 
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
@@ -62,7 +62,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
         ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
 
-        if (homeHeaderWalletAction != null) renderTokocashLayoutListener();
+        if (headerViewModel.getHomeHeaderWalletActionData() != null) renderTokocashLayoutListener();
         renderTokoPointLayoutListener();
     }
 
@@ -75,8 +75,9 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private void renderTokocashLayoutListener() {
+        final HomeHeaderWalletAction homeHeaderWalletAction =
+                headerViewModel.getHomeHeaderWalletActionData();
 
-        homeHeaderWalletAction = headerViewModel.getHomeHeaderWalletActionData();
         tvTitleTokocash.setVisibility(VISIBLE);
         tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
         tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
