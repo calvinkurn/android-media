@@ -22,7 +22,6 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -65,7 +64,7 @@ public interface FlightApi {
     @GET(FlightUrl.FLIGHT_ORDER)
     Observable<Response<DataResponse<OrderEntity>>> getOrder(@Query("id") String id);
 
-    @FormUrlEncoded
+    @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)
     Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body VerifyRequest verifyRequest);
 }
