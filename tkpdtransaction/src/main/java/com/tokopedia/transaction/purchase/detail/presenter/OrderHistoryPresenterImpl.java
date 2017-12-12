@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryView;
@@ -38,7 +39,8 @@ public class OrderHistoryPresenterImpl implements OrderHistoryPresenter {
         TKPDMapParam<String, Object> params = new TKPDMapParam<>();
         params.putAll(temporaryParams);
         params.put("request_by", userMode);
-        orderHistoryInteractor.requestOrderHistoryData(getOrderHistorySubscriber(), params);
+        orderHistoryInteractor.requestOrderHistoryData(getOrderHistorySubscriber(),
+                AuthUtil.generateParamsNetwork2(context, params);
     }
 
     @Override
