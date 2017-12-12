@@ -11,17 +11,6 @@ import java.io.Serializable;
 
 public class RecyclerViewItem implements Serializable, Parcelable {
     int type = 0;
-    public static final Creator<RecyclerViewItem> CREATOR = new Creator<RecyclerViewItem>() {
-        @Override
-        public RecyclerViewItem createFromParcel(Parcel in) {
-            return new RecyclerViewItem(in);
-        }
-
-        @Override
-        public RecyclerViewItem[] newArray(int size) {
-            return new RecyclerViewItem[size];
-        }
-    };
 
     public void setType(int type){
         this.type = type;

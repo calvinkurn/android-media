@@ -19,7 +19,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
@@ -64,13 +63,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isTaskRoot()) {
-            final Intent intent = getIntent();
-            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(intent.getAction())) {
-                finish();
-                return;
-            }
-        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_splash_screen);
         mReceiver = new DownloadResultReceiver(new Handler());
@@ -200,8 +192,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private void resetAllDatabaseFlag() {
         LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
         if (!flagDB.getBoolean("reset_db_flag", false)) {
-            Log.i("DATABASE DATABSE UWOOO", "clearing the database flag");
-            LocalCacheHandler.clearCache(this, CategoryDatabaseManager.KEY_STORAGE_NAME);
             LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
             if (getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) getApplication()).resetAddProductCache(this);
