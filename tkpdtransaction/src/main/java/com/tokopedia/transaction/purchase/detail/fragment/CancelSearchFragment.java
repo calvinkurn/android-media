@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
 
@@ -126,6 +127,7 @@ public class CancelSearchFragment extends TkpdFragment {
                 if (checked) {
                     textChoice.setTypeface(null, Typeface.BOLD);
                     setButtonCancelSearch(true);
+                    KeyboardHandler.hideSoftKeyboard(getActivity());
                     otherReasonRadioButton.setChecked(false);
                     otherReasonField.setVisibility(View.GONE);
                     otherRadioButton1.setChecked(false);
@@ -144,6 +146,7 @@ public class CancelSearchFragment extends TkpdFragment {
                 if (checked) {
                     textChoice.setTypeface(null, Typeface.BOLD);
                     setButtonCancelSearch(true);
+                    KeyboardHandler.showSoftKeyboard(getActivity());
                     reasonRadioButton1.setChecked(false);
                     reasonRadioButton2.setChecked(false);
                     reasonRadioButton3.setChecked(false);
@@ -167,6 +170,7 @@ public class CancelSearchFragment extends TkpdFragment {
             public void onClick(View view) {
                 if (!selectedRadioButton.isChecked()) {
                     selectedRadioButton.setChecked(true);
+                    KeyboardHandler.hideSoftKeyboard(getActivity());
                     setButtonCancelSearch(true);
                     otherRadioButton1.setChecked(false);
                     otherRadioButton2.setChecked(false);
@@ -183,6 +187,7 @@ public class CancelSearchFragment extends TkpdFragment {
             public void onClick(View view) {
                 if (!otherReasonRadioButton.isChecked()) {
                     otherReasonRadioButton.setChecked(true);
+                    KeyboardHandler.showSoftKeyboard(getActivity());
                     setButtonCancelSearch(true);
                     otherReasonField.setVisibility(View.VISIBLE);
                     reasonRadioButton1.setChecked(false);
