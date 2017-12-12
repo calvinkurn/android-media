@@ -11,13 +11,13 @@ import java.util.ArrayList;
 
 public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
-    private String inspired;
+    private String title;
     protected ArrayList<InspirationProductViewModel> listProduct;
     private int rowNumber;
 
 
     public InspirationViewModel(String title, ArrayList<InspirationProductViewModel> listProduct) {
-        this.inspired = title;
+        this.title = title;
         this.listProduct = listProduct;
     }
 
@@ -34,12 +34,12 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
         this.listProduct = listProduct;
     }
 
-    public String getInspired() {
-        return inspired;
+    public String getTitle() {
+        return title;
     }
 
-    public void setInspired(String inspired) {
-        this.inspired = inspired;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setRowNumber(int rowNumber) {

@@ -4,12 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
+import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 
 import java.util.ArrayList;
@@ -22,8 +22,11 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
 
     private TopAdsDetailViewListener<GroupAd> topAdsDetailViewListener;
 
-    public TopAdsDetailGroupViewPresenterImpl(Context context, TopAdsDetailViewListener<GroupAd> topAdsDetailViewListener, TopAdsGroupAdInteractor groupAdInteractor) {
-        super(context, topAdsDetailViewListener, groupAdInteractor);
+
+    public TopAdsDetailGroupViewPresenterImpl(Context context,
+                                              TopAdsDetailViewListener<GroupAd> topAdsDetailViewListener,
+                                              TopAdsGroupAdInteractor groupAdInteractor) {
+        super(context, topAdsDetailViewListener, groupAdInteractor, null, null);
         this.topAdsDetailViewListener = topAdsDetailViewListener;
     }
 
@@ -33,7 +36,7 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
         groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
             public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onTurnOnAdSuccess();
+                topAdsDetailViewListener.onTurnOnAdSuccess(dataResponseActionAds);
             }
 
             @Override
@@ -49,7 +52,7 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
         groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
             public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onTurnOffAdSuccess();
+                topAdsDetailViewListener.onTurnOffAdSuccess(dataResponseActionAds);
             }
 
             @Override
@@ -89,4 +92,6 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
         dataRequest.setData(dataRequestGroupAd);
         return dataRequest;
     }
+
+
 }

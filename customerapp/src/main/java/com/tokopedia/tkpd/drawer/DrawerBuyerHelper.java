@@ -31,14 +31,15 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -129,7 +130,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
             }
         });
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        firebaseRemoteConfig = RemoteConfigFetcher.initRemoteConfig(context);
     }
 
     private void createDataGuest(ArrayList<DrawerItem> data) {
@@ -197,18 +198,18 @@ public class DrawerBuyerHelper extends DrawerHelper
                 true));
     }
 
-    private DrawerItem getGoldMerchantMenu(){
+    private DrawerItem getGoldMerchantMenu() {
         DrawerItem menu;
         boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
-        if(isGoldMerchant) {
+        if (isGoldMerchant) {
             menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
                     drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                     0);
-            ((DrawerGroup)menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+            ((DrawerGroup) menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
                     TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
-        }else {
+        } else {
             menu = (new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
@@ -559,26 +560,33 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     @Override
-    public void onGoToTopCash(String topCashUrl) {
-        if (context.getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
-            context.startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
-        }
-
-    }
-
-    @Override
-    public void onGoToTopCashWithOtp(String topCashUrl) {
-        if (context.getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, topCashUrl);
-        }
-    }
-
-    @Override
     public void onGoToProfileCompletion() {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance) {
+        WalletRouterUtil.navigateWallet(
+                context.getApplication(),
+                context,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkBalance,
+                redirectUrlBalance,
+                new Bundle()
+        );
+    }
+
+    @Override
+    public void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton) {
+        WalletRouterUtil.navigateWallet(
+                context.getApplication(),
+                context,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkActionButton,
+                redirectUrlActionButton,
+                new Bundle()
+        );
     }
 
     private void onGoToCreateShop() {
@@ -597,7 +605,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void showAppShareButton(ArrayList<DrawerItem> data) {
-        if(firebaseRemoteConfig.getBoolean(TkpdCache.Key.CONFIG_SHOW_HIDE_APP_SHARE_BUTTON)) {
+        if(firebaseRemoteConfig != null && firebaseRemoteConfig.getBoolean(TkpdCache.Key.CONFIG_SHOW_HIDE_APP_SHARE_BUTTON)) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
                     R.drawable.share_ke_teman,
                     TkpdState.DrawerPosition.APPSHARE,

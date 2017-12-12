@@ -4,6 +4,10 @@
     package="com.tokopedia.sellerapp">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:node="remove"
+        tools:selector="com.google.firebase"/>
 
     <application
         android:name=".SellerMainApplication"
@@ -41,6 +45,9 @@
 
                 <data android:scheme="tkpd" />
             </intent-filter>
+            <meta-data
+                android:name="APPS_HOME"
+                android:value="true" />
         </activity>
 
         <meta-data

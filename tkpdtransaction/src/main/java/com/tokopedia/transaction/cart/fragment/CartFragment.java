@@ -455,6 +455,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     .setUserId(SessionHandler.getLoginID(getActivity()))
                     .withPreferedCategory()
                     .setEndpoint(Endpoint.PRODUCT)
+                    .displayMode(DisplayMode.FEED)
                     .topAdsParams(params)
                     .build();
 
@@ -1042,7 +1043,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             @Override
             public void onClick(View view) {
                 navigateToActivity(
-                        BrowseProductRouter.getDefaultBrowseIntent(getActivity())
+                        BrowseProductRouter.getSearchProductIntent(getActivity())
                 );
                 getActivity().finish();
             }

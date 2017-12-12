@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.util.Log;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -38,11 +40,13 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -135,7 +139,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHomepage();
                     break;
                 case DeepLinkChecker.CATEGORY:
-                    openCategory(linkSegment);
+                    openCategory(uriData.toString());
                     screenName = AppScreen.SCREEN_BROWSE_PRODUCT;
                     break;
                 case DeepLinkChecker.BROWSE:
@@ -146,6 +150,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_BROWSE_HOT_LIST;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openHotProduct(linkSegment, uriData);
+                    break;
+                case DeepLinkChecker.HOT_LIST:
+                    screenName = AppScreen.SCREEN_HOME_HOTLIST;
+                    sendCampaignGTM(uriData.toString(), screenName);
+                    openHomepageHot();
                     break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogProduct(linkSegment, uriData);
@@ -202,6 +211,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             sendCampaignGTM(uriData.toString(), screenName);
         }
     }
+
 
     private void openPeluangPage() {
         Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
@@ -366,26 +376,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
-        Bundle bundle = new Bundle();
+
         if (isHotBrowse(linkSegment, uriData)) {
             return;
-        } else if (isHotAlias(uriData)) {
-            bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, uriData.getQueryParameter("alk"));
-        } else if (isHotLink(linkSegment)) {
-            bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, linkSegment.get(1));
-        } else return;
+        }
 
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, "0");
-        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+        Intent intent = BrowseProductRouter.getHotlistIntent(context, uriData.toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
+
         context.startActivity(intent);
         context.finish();
     }
@@ -399,52 +399,56 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openCategory(List<String> linkSegment) {
-        String departmentId = "0";
-        StringBuilder iden = new StringBuilder(linkSegment.get(1));
-        for (int i = 2; i < linkSegment.size(); i++) {
-            iden.append("_").append(linkSegment.get(i));
-        }
-        CategoryDB dep =
-                DbManagerImpl.getInstance().getCategoryDb(iden.toString());
-        if (dep != null) {
-            departmentId = dep.getDepartmentId() + "";
-        }
+    private void openHomepageHot() {
+        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
+        context.startActivity(intent);
+        context.finish();
+    }
 
-        String headerTitle = linkSegment.get(linkSegment.size() - 1);
-        IntermediaryActivity.moveTo(
-                context,
-                departmentId,
-                headerTitle
-        );
+    private void openCategory(String uriData) {
+        URLParser urlParser = new URLParser(uriData);
+        if (urlParser.getParamKeyValueMap().size() > 0) {
+            CategoryActivity.moveTo(
+                    context,
+                    uriData
+            );
+        } else {
+            context.startActivity(
+                    BrowseProductRouter.getIntermediaryIntent(context, urlParser.getDepIDfromURI(context))
+            );
+        }
         context.finish();
     }
 
 
     private void openBrowseProduct(List<String> linkSegment, Uri uriData) {
         Bundle bundle = new Bundle();
-        String departmentId = "0";
-        String searchQuery = "";
-        departmentId = uriData.getQueryParameter("sc");
-        searchQuery = uriData.getQueryParameter("q");
+        String departmentId = uriData.getQueryParameter("sc");
+        String searchQuery = uriData.getQueryParameter("q");
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+
         bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
         bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
         bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
         bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
-        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-        context.finish();
+
+        Intent intent;
+        if (TextUtils.isEmpty(departmentId)) {
+            intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+            context.finish();
+        } else {
+            IntermediaryActivity.moveToClear(context, departmentId);
+        }
     }
-
-
 
 
     private boolean isHotLink(List<String> linkSegment) {

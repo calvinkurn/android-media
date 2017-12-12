@@ -22,6 +22,8 @@ public class HomeRouter {
     public static final String TAG_FETCH_BANK = "FETCH_BANK";
 
     public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
+    public static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
+    public static final String EXTRA_APPLINK = "EXTRA_APPLINK";
     public static final String IDENTIFIER_HOME_ACTIVITY = "ParentIndexHome";
     public static final String IDENTIFIER_CATEGORY_FRAGMENT = "FragmentIndexCategory";
 

@@ -1,8 +1,8 @@
 package com.tokopedia.topads.dashboard.view.adapter;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.topads.R;
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by zulfikarrahman on 1/5/17.
  */
 
-public class TopAdsStatisticPagerAdapter extends FragmentPagerAdapter {
+public class TopAdsStatisticPagerAdapter extends FragmentStatePagerAdapter {
     private final List<Fragment> fragmentList;
 
     public TopAdsStatisticPagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {

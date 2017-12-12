@@ -25,6 +25,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
+    String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
@@ -82,6 +83,7 @@ public interface Constants {
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
         String SELLER_STATUS = "tokopedia://seller/status";
         String SELLER_HISTORY = "tokopedia://seller/history";
+        String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
@@ -107,9 +109,15 @@ public interface Constants {
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
+        String TOPCHAT = "tokopedia://topchat/{message_id}";
+        String TOPCHAT_IDLESS = "tokopedia://topchat";
         String REFERRAL = "tokopedia://referral";
         String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
+        String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
+        String WALLET_HOME = "tokopedia://wallet";
+        String WALLET_ACTIVATION = "tokopedia://wallet/activation";
+        String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
@@ -132,6 +140,7 @@ public interface Constants {
         String HTTP = "http";
         String HTTPS = HTTP + "s";
         String APPLINKS = "tokopedia";
+        String APPLINKS_SELLER = "sellerapp";
     }
 
     interface Settings {
@@ -145,5 +154,9 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
+    }
+
+    interface AppLinkQueryParameter {
+        String WALLET_TOP_UP_VISIBILITY = "top_up_visible";
     }
 }

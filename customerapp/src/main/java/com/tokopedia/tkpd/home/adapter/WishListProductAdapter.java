@@ -200,6 +200,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                     .setSessionId(GCMHandler.getRegistrationId(context))
                     .setUserId(SessionHandler.getLoginID(context))
                     .withPreferedCategory()
+                    .displayMode(DisplayMode.FEED)
                     .setEndpoint(Endpoint.PRODUCT)
                     .topAdsParams(params)
                     .build();

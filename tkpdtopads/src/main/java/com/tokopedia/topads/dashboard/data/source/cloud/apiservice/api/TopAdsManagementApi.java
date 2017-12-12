@@ -4,6 +4,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.EditGroupRequest;
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
@@ -17,6 +18,7 @@ import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
@@ -65,25 +68,36 @@ public interface TopAdsManagementApi {
     @GET(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> getDetailProduct(@QueryMap Map<String, String> params);
 
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_PRODUCT_AD)
     Observable<Response<DataResponse<ProductAdBulkAction>>> bulkActionProductAd(@Body DataRequest<ProductAdBulkAction> body);
 
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_GROUP_AD)
     Observable<Response<DataResponse<GroupAdBulkAction>>> bulkActionGroupAd(@Body DataRequest<GroupAdBulkAction> body);
 
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> editProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @POST(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> createProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @POST(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> createGroupAd(@Body DataRequest<CreateGroupRequest> body);
 
     @GET(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> getDetailGroup(@QueryMap Map<String, String> params);
 
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> editGroupAd(@Body DataRequest<EditGroupRequest> body);
+
+    // http://docs.topadssuggestion.apiary.io/#introduction/what-is-the-content-of-this-document?
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
+    @POST(TopAdsNetworkConstant.GET_SUGGESTION)
+    Observable<Response<GetSuggestionResponse>> getSuggestion(@Body DataRequest<GetSuggestionBody> body);
 
 }

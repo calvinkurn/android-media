@@ -6,8 +6,6 @@ package com.tokopedia.topads.keyword.view.listener;
 
 public interface AdListMenuListener {
 
-    void onSearch(String keyword);
-
     void goToFilter();
 
     void onCreateAd();

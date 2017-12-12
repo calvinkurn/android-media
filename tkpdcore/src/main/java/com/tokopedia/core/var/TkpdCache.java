@@ -201,6 +201,8 @@ public class TkpdCache {
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+        public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
+        public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
 
         public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
@@ -209,6 +211,7 @@ public class TkpdCache {
         public static final String APP_SHARE_DESCRIPTION_KEY = "APP_SHARE_DESCRIPTION_KEY";
         public static final String MAINAPP_ACTIVATE_BRANCH_LINKS_KEY = "MAINAPP_ACTIVATE_BRANCH_LINKS_KEY";
 
+        public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
 
         public static final String CONFIG_SHOW_HIDE_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
         public static final String CONFIG_APP_SHARE_DESCRIPTION = "app_share_description";

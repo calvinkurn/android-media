@@ -82,9 +82,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
             presenter.processUTM(applink);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
-                deepLinkDelegate.dispatchFrom(this, intent);
+                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, applink.toString());
+                startActivity(homeIntent);
             } else {
-                startActivity(HomeRouter.getHomeActivity(this));
+                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+                startActivity(homeIntent);
             }
 
             if (getIntent().getExtras() != null) {

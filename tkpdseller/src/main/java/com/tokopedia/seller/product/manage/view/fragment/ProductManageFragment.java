@@ -47,7 +47,9 @@ import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -261,18 +263,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
+        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
                 false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY);
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
-        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
+        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
                 true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
     }
 
     public void importFromInstagram() {
-        InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
+        InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
                 INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
         UnifyTracking.eventClickInstoped();
     }
@@ -645,17 +647,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {
-        if (GlobalConfig.isSellerApp()) {
-            if (goldMerchant) {
-                showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
-                        productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
-            } else {
-                showDialogActionGoToGMSubscribe();
-            }
+        if (goldMerchant == null) {
+            return;
+        }
+        if (!GlobalConfig.isSellerApp() && getActivity().getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
+            return;
+        }
+        if (goldMerchant) {
+            showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
+                    productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
         } else {
-            if (getActivity().getApplication() instanceof SellerModuleRouter) {
-                ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
-            }
+            showDialogActionGoToGMSubscribe();
         }
     }
 
@@ -735,6 +738,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {
+        if (!isAdded() || goldMerchant == null) {
+            return;
+        }
         ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment =
                 ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant);
         productManageEditPriceDialogFragment.setListenerDialogEditPrice(new ProductManageEditPriceDialogFragment.ListenerDialogEditPrice() {

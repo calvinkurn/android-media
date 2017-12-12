@@ -226,7 +226,16 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         parentView.canProceed(false);
 
         skipButton = (TextView) parentView.getView().findViewById(R.id.skip);
-        phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(data.getPhone()));
+
+        if(data.getPhone() != null) {
+            phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(data.getPhone()));
+        } else {
+            SnackbarManager.make(getActivity(),
+                    getString(R.string.please_fill_phone_number),
+                    Snackbar.LENGTH_LONG)
+                    .show();
+        }
+
 
         KeyboardHandler.DropKeyboard(getActivity(), getView());
 
