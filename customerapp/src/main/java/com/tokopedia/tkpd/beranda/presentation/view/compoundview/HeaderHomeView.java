@@ -79,6 +79,12 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokoPoint.setVisibility(VISIBLE);
         tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierName());
         tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPoints() + " Poin");
+        tvBalanceTokoPoint.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.actionTokoPointClicked(headerViewModel.getTokoPointDrawerData().getMainPageUrl());
+            }
+        });
     }
 
     private void renderTokocashLayoutListener() {
@@ -160,7 +166,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
         ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
 
-        renderTokocashLayoutListener();
+        if (headerViewModel.getHomeHeaderWalletActionData() != null) renderTokocashLayoutListener();
     }
 
     public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs) {

@@ -155,6 +155,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 headerViewModel = new HeaderViewModel();
                 headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
             }
+            headerViewModel.setPendingTokocashChecked(false);
             getLocalHomeDataItem(headerViewModel);
             sendBroadcastGetHeaderData();
         } else if (isViewAttached()) {

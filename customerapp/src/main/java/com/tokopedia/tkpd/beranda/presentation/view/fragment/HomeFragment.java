@@ -504,6 +504,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void actionTokoPointClicked(String tokoPointUrl) {
+        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
+            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), tokoPointUrl);
+        }
+    }
+
+    @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
@@ -621,6 +629,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
         if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
+            ((HeaderViewModel) adapter.getItem(0)).setTokoPointDrawerData(headerViewModel.getTokoPointDrawerData());
+            ((HeaderViewModel) adapter.getItem(0)).setHomeHeaderWalletActionData(headerViewModel.getHomeHeaderWalletActionData());
+            ((HeaderViewModel) adapter.getItem(0)).setType(headerViewModel.getType());
             adapter.notifyItemChanged(0);
         }
 //        if (adapter.getItemCount() > 0) {
