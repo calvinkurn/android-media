@@ -635,7 +635,7 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     @Override
-    public void showToastSuccessFinishMessage(String message) {
+    public void showToastSuccessMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 }

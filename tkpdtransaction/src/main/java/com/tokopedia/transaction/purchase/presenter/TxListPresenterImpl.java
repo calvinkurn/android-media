@@ -224,8 +224,8 @@ public class TxListPresenterImpl implements TxListPresenter {
 
     @Override
     public void processToDetailOrder(Context context, OrderData data, int typeInstance) {
-        viewListener.navigateToActivity(OrderDetailActivity.createInstance(context,
-                data.getOrderDetail().getDetailOrderId()));
+        viewListener.navigateToActivityRequest(OrderDetailActivity.createInstance(context,
+                data.getOrderDetail().getDetailOrderId()), OrderDetailActivity.REQUEST_CODE_ORDER_DETAIL);
         //viewListener.navigateToActivity(TxDetailActivity.createInstance(context, data));
     }
 
@@ -698,7 +698,8 @@ public class TxListPresenterImpl implements TxListPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            viewListener.showToastSuccessFinishMessage(context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
+                            viewListener.showToastSuccessMessage(
+                                    context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
                             dialog.dismiss();
                         }
 
@@ -718,7 +719,8 @@ public class TxListPresenterImpl implements TxListPresenter {
                         @Override
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
-                            viewListener.showToastSuccessFinishMessage(message);
+                            viewListener.showToastSuccessMessage(
+                                    context.getString(com.tokopedia.transaction.R.string.success_finish_order_message));
                             dialog.dismiss();
                         }
 
@@ -740,6 +742,11 @@ public class TxListPresenterImpl implements TxListPresenter {
                     processResolution(context, null);
                 }
                 break;
+            case OrderDetailActivity.REQUEST_CODE_ORDER_DETAIL:
+                if (resultCode == Activity.RESULT_OK) {
+                    viewListener.showToastSuccessMessage(
+                            context.getString(com.tokopedia.transaction.R.string.success_cancel_replacement));
+                }
             default:
                 break;
         }

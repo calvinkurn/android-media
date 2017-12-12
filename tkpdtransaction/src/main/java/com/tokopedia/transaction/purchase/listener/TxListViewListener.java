@@ -33,6 +33,6 @@ public interface TxListViewListener extends IBaseView {
 
     void onSuccessCancelReplacement();
 
-    void showToastSuccessFinishMessage(String message);
+    void showToastSuccessMessage(String message);
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -51,6 +52,7 @@ public class OrderDetailActivity extends TActivity
         CancelOrderFragment.CancelOrderListener,
         CancelSearchFragment.CancelSearchReplacementListener {
 
+    public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
@@ -372,8 +374,9 @@ public class OrderDetailActivity extends TActivity
     public void onSearchCancelled(String message) {
         getFragmentManager().beginTransaction().remove(getFragmentManager()
                 .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
-        showErrorSnackbar("Pesanan berhasil dibatalkan");
-        presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+        Intent backIntent = new Intent();
+        setResult(Activity.RESULT_OK, backIntent);
+        finish();
     }
 
     @Override
