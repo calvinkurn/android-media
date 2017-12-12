@@ -13,6 +13,9 @@ public class ProveData implements Parcelable {
 
     private String remark;
     private List<AttachmentData> attachment;
+    private List<AttachmentData> buyerAttachmentList;
+    private List<AttachmentData> sellerAttachmentList;
+    private List<AttachmentData> adminAttachmentList;
     private boolean canShowProveData;
 
     public ProveData() {
@@ -42,6 +45,30 @@ public class ProveData implements Parcelable {
         this.attachment = attachment;
     }
 
+    public List<AttachmentData> getBuyerAttachmentList() {
+        return buyerAttachmentList;
+    }
+
+    public void setBuyerAttachmentList(List<AttachmentData> buyerAttachmentList) {
+        this.buyerAttachmentList = buyerAttachmentList;
+    }
+
+    public List<AttachmentData> getSellerAttachmentList() {
+        return sellerAttachmentList;
+    }
+
+    public void setSellerAttachmentList(List<AttachmentData> sellerAttachmentList) {
+        this.sellerAttachmentList = sellerAttachmentList;
+    }
+
+    public List<AttachmentData> getAdminAttachmentList() {
+        return adminAttachmentList;
+    }
+
+    public void setAdminAttachmentList(List<AttachmentData> adminAttachmentList) {
+        this.adminAttachmentList = adminAttachmentList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -51,12 +78,18 @@ public class ProveData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.remark);
         dest.writeTypedList(this.attachment);
+        dest.writeTypedList(this.buyerAttachmentList);
+        dest.writeTypedList(this.sellerAttachmentList);
+        dest.writeTypedList(this.adminAttachmentList);
         dest.writeByte(this.canShowProveData ? (byte) 1 : (byte) 0);
     }
 
     protected ProveData(Parcel in) {
         this.remark = in.readString();
         this.attachment = in.createTypedArrayList(AttachmentData.CREATOR);
+        this.buyerAttachmentList = in.createTypedArrayList(AttachmentData.CREATOR);
+        this.sellerAttachmentList = in.createTypedArrayList(AttachmentData.CREATOR);
+        this.adminAttachmentList = in.createTypedArrayList(AttachmentData.CREATOR);
         this.canShowProveData = in.readByte() != 0;
     }
 

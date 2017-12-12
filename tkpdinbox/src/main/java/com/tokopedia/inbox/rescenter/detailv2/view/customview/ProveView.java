@@ -24,9 +24,9 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProveData;
 
 public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> {
 
-    ProveAdapter adapter;
-    private RecyclerView rvAttachment;
-    private TextView tvRemark, tvRemarkTitle;
+    ProveAdapter sellerAdapter, buyerAdapter, adminAdapter;
+    private RecyclerView rvAttachmentBuyer, rvAttachmentSeller, rvAttachmentAdmin;
+    private TextView tvRemark, tvRemarkTitle, tvFromBuyer, tvFromSeller, tvFromAdmin;
     private Context context;
     private static final int MAX_CHAR = 250;
 
@@ -45,10 +45,17 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
-        rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
+        rvAttachmentAdmin = (RecyclerView) view.findViewById(R.id.rv_attachment_admin);
+        rvAttachmentBuyer = (RecyclerView) view.findViewById(R.id.rv_attachment_buyer);
+        rvAttachmentSeller = (RecyclerView) view.findViewById(R.id.rv_attachment_seller);
+        tvFromAdmin = (TextView) view.findViewById(R.id.tv_from_admin);
+        tvFromSeller = (TextView) view.findViewById(R.id.tv_from_seller);
+        tvFromBuyer = (TextView) view.findViewById(R.id.tv_from_buyer);
         tvRemark = (TextView) view.findViewById(R.id.tv_remark);
         tvRemarkTitle = (TextView) view.findViewById(R.id.tv_remark_title);
-        adapter = new ProveAdapter(context);
+        sellerAdapter = new ProveAdapter(context);
+        buyerAdapter = new ProveAdapter(context);
+        adminAdapter = new ProveAdapter(context);
     }
 
     @Override
@@ -76,7 +83,12 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
         setVisibility(VISIBLE);
         tvRemark.setVisibility(GONE);
         tvRemarkTitle.setVisibility(GONE);
-        rvAttachment.setVisibility(GONE);
+        rvAttachmentAdmin.setVisibility(GONE);
+        rvAttachmentBuyer.setVisibility(GONE);
+        rvAttachmentSeller.setVisibility(GONE);
+        tvFromAdmin.setVisibility(GONE);
+        tvFromBuyer.setVisibility(GONE);
+        tvFromSeller.setVisibility(GONE);
         if (proveData.getRemark() != null && !proveData.getRemark().isEmpty()) {
             tvRemark.setText(getProveViewText(proveData.getRemark()));
             tvRemarkTitle.setVisibility(VISIBLE);
@@ -94,18 +106,30 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
                 }
             });
         }
-        if (proveData.getAttachment().size() != 0) {
-            rvAttachment.setVisibility(VISIBLE);
-            initRecyclerView(proveData);
+        if (proveData.getBuyerAttachmentList().size() != 0) {
+            rvAttachmentBuyer.setVisibility(VISIBLE);
+            rvAttachmentBuyer.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            rvAttachmentBuyer.setHasFixedSize(true);
+            rvAttachmentBuyer.setAdapter(buyerAdapter);
+            buyerAdapter.setAttachmentDataList(proveData.getBuyerAttachmentList());
+            buyerAdapter.notifyDataSetChanged();
         }
-    }
-
-    private void initRecyclerView(ProveData data) {
-        rvAttachment.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        rvAttachment.setHasFixedSize(true);
-        rvAttachment.setAdapter(adapter);
-        adapter.setAttachmentDataList(data.getAttachment());
-        adapter.notifyDataSetChanged();
+        if (proveData.getSellerAttachmentList().size() != 0) {
+            rvAttachmentSeller.setVisibility(VISIBLE);
+            rvAttachmentSeller.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            rvAttachmentSeller.setHasFixedSize(true);
+            rvAttachmentSeller.setAdapter(sellerAdapter);
+            sellerAdapter.setAttachmentDataList(proveData.getSellerAttachmentList());
+            sellerAdapter.notifyDataSetChanged();
+        }
+        if (proveData.getAdminAttachmentList().size() != 0) {
+            rvAttachmentAdmin.setVisibility(VISIBLE);
+            rvAttachmentAdmin.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            rvAttachmentAdmin.setHasFixedSize(true);
+            rvAttachmentAdmin.setAdapter(adminAdapter);
+            adminAdapter.setAttachmentDataList(proveData.getAdminAttachmentList());
+            adminAdapter.notifyDataSetChanged();
+        }
     }
 
     private Spanned getProveViewText(String text) {

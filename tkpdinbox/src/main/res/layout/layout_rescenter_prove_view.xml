@@ -55,8 +55,41 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_small">
 
+        <TextView
+            android:id="@+id/tv_from_buyer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/string_from_buyer"
+            android:layout_marginBottom="@dimen/margin_vvs"/>
+
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_attachment"
+            android:id="@+id/rv_attachment_buyer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"/>
+
+        <TextView
+            android:id="@+id/tv_from_seller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/string_from_seller"
+            android:layout_marginBottom="@dimen/margin_vvs"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_attachment_seller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"/>
+
+        <TextView
+            android:id="@+id/tv_from_admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/string_from_admin"
+            android:layout_marginBottom="@dimen/margin_vvs"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_attachment_admin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"/>

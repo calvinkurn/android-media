@@ -190,6 +190,9 @@ yang ditemukan</string>
     <string name="action_input_awb_number">Masukkan No. Resi</string>
     <string name="string_read_more">Selengkapnya</string>
     <string name="string_read_more_close">Tutup</string>
+    <string name="string_from_buyer">Dari pembeli:</string>
+    <string name="string_from_seller">Dari penjual:</string>
+    <string name="string_from_admin">Dari admin:</string>
 
     <!--chat bubble-->
     <string name="string_buyer_problem2">Kendala dari Pembeli:</string>
