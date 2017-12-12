@@ -47,8 +47,9 @@ public class HeaderHomeView extends BaseCustomView {
                 renderHeaderOnlyTokocash();
                 break;
             default:
-                if (headerViewModel.getTokoPointDrawerData() == null
-                        || headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
+                if (headerViewModel.getTokoPointDrawerData() != null
+                        || headerViewModel.getTokoPointDrawerData().getOffFlag() == 1
+                        || headerViewModel.getTokoPointDrawerData() == null) {
                     renderHeaderOnlyTokocash();
                 } else {
                     renderHeaderTokocashWithTokopoint();
@@ -93,6 +94,7 @@ public class HeaderHomeView extends BaseCustomView {
                 == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setTextColor(Color.parseColor("#ff5722"));
+            tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             if (homeHeaderWalletAction.isVisibleActionButton())
                 tvActionTokocash.setVisibility(VISIBLE);
             else tvActionTokocash.setVisibility(GONE);
@@ -119,6 +121,7 @@ public class HeaderHomeView extends BaseCustomView {
                 tvBalanceTokocash.setVisibility(VISIBLE);
                 tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
                 tvBalanceTokocash.setTextColor(Color.parseColor("#8a000000"));
+                tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_info, 0);
                 tvBalanceTokocash.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
