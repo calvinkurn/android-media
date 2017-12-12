@@ -63,7 +63,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
     @Override
     public void getOperatorAndProductsFromPrefix(Subscriber<Pair<Operator, List<Product>>> subscriber,
-                                                 final int categoryId, String prefix, Boolean validatePrefix) {
+                                                 final int categoryId, String prefix) {
         compositeSubscription.add(
                 Observable.zip(
                         getOperatorByPrefix(prefix),
