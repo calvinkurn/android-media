@@ -5,7 +5,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
-import com.tokopedia.flight.orderlist.presenter.model.FlightOrder;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;

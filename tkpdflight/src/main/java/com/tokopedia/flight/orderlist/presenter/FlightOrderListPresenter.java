@@ -6,8 +6,8 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
-import com.tokopedia.flight.orderlist.presenter.model.FlightOrder;
-import com.tokopedia.flight.orderlist.presenter.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +64,10 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
             for (FlightOrderJourney journey : flightOrder.getJourneys()) {
                 switch (journey.getStatus()) {
+                    case "100":
 
+                        break;
+                    default:
                 }
             }
         }

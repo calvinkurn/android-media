@@ -16,7 +16,7 @@ import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
-import com.tokopedia.flight.orderlist.presenter.model.FlightOrderMapper;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;

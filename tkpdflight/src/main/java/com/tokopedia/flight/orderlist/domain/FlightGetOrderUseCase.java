@@ -1,7 +1,7 @@
 package com.tokopedia.flight.orderlist.domain;
 
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.orderlist.presenter.model.FlightOrder;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

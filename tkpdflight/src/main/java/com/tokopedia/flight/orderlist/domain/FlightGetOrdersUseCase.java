@@ -4,8 +4,8 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
-import com.tokopedia.flight.orderlist.presenter.model.FlightOrder;
-import com.tokopedia.flight.orderlist.presenter.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

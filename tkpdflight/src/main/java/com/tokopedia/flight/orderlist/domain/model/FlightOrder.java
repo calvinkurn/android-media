@@ -1,4 +1,4 @@
-package com.tokopedia.flight.orderlist.presenter.model;
+package com.tokopedia.flight.orderlist.domain.model;
 
 import java.util.List;
 
@@ -111,11 +111,11 @@ public class FlightOrder {
         this.currency = currency;
     }
 
-    public List<com.tokopedia.flight.orderlist.presenter.model.FlightOrderJourney> getJourneys() {
+    public List<com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney> getJourneys() {
         return journeys;
     }
 
-    public void setJourneys(List<com.tokopedia.flight.orderlist.presenter.model.FlightOrderJourney> journeys) {
+    public void setJourneys(List<com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney> journeys) {
         this.journeys = journeys;
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.orderlist.presenter.model;
+package com.tokopedia.flight.orderlist.domain.model;
 
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModelMapper;
 import com.tokopedia.flight.orderlist.data.cloud.entity.JourneyEntity;
