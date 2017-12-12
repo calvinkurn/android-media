@@ -2,6 +2,8 @@ package com.tokopedia.seller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
@@ -35,4 +37,6 @@ public interface SellerModuleRouter {
     Observable<Boolean> setCashBack(String productId, int cashback);
 
     Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
+
+    Intent getInboxReputationIntent(Context context);
 }
