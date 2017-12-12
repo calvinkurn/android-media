@@ -8,7 +8,7 @@ import com.tokopedia.core.util.SessionHandler;
 
 public interface DrawerDataManager {
 
-   void getProfile();
+    void getProfile();
 
     void getDeposit();
 

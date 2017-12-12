@@ -9,6 +9,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
@@ -30,7 +31,7 @@ public interface HomeContract {
 
         void setItem(int pos, Visitable item);
 
-        void updateHeaderItem(int pos, HeaderViewModel headerViewModel);
+        void updateHeaderItem(HeaderViewModel headerViewModel);
 
         void refreshAdapter();
 
@@ -55,7 +56,7 @@ public interface HomeContract {
 
         void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletActionData);
 
-        void updateHeaderTokoCashPendingData();
+        void updateHeaderTokoCashPendingData(CashBackData cashBackData);
 
         void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData);
 

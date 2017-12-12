@@ -5,7 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
+import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.loyalty.di.component.DaggerTokoPointBroadcastComponent;
@@ -64,14 +65,32 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
 
             @Override
             public void onNext(TokoPointDrawerData topPointDrawerData) {
-                Intent intentTokoPointData = new Intent(
-                        DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION
+                Intent intentHomeFragment = new Intent(
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
                 );
-                intentTokoPointData.putExtra(
-                        DrawerPresenterActivity.TokoPointDataBroadcastReceiver.EXTRA_TOKOPOINT_DRAWER_DATA,
+                intentHomeFragment.putExtra(
+                        HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                        HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA
+                );
+                intentHomeFragment.putExtra(
+                        HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA,
                         topPointDrawerData
                 );
-                context.sendBroadcast(intentTokoPointData);
+                context.sendBroadcast(intentHomeFragment);
+
+
+                Intent intentDrawerActivity = new Intent(
+                        DrawerActivityBroadcastReceiverConstant.INTENT_ACTION
+                );
+                intentHomeFragment.putExtra(
+                        DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                        DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA
+                );
+                intentHomeFragment.putExtra(
+                        DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA,
+                        topPointDrawerData
+                );
+                context.sendBroadcast(intentDrawerActivity);
 
             }
         };

@@ -23,15 +23,15 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
-import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
@@ -47,6 +47,7 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.di.DaggerHomeComponent;
@@ -82,6 +83,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
+
 /**
  * @author by errysuprayogi on 11/27/17.
  */
@@ -106,8 +109,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private HomeAdapterFactory adapterFactory;
     private String[] tabSectionTitle;
 
-    private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
-    private TokoPointDataBroadcastReceiver tokoPointDataBroadcastReceiver;
+    private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
 
     public static HomeFragment newInstance() {
 
@@ -123,14 +125,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         trace = TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
 
-        tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
-        IntentFilter intentFilerTokoCash = new IntentFilter(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
-        getActivity().registerReceiver(tokoCashBroadcastReceiver, intentFilerTokoCash);
-        tokoPointDataBroadcastReceiver = new TokoPointDataBroadcastReceiver();
+
+        homeFragmentBroadcastReceiver = new HomeFragmentBroadcastReceiver();
         getActivity().registerReceiver(
-                tokoPointDataBroadcastReceiver,
+                homeFragmentBroadcastReceiver,
                 new IntentFilter(
-                        DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
                 )
         );
 
@@ -216,8 +216,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
-        getActivity().unregisterReceiver(tokoPointDataBroadcastReceiver);
+        getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
         presenter.detachView();
     }
 
@@ -581,14 +580,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void updateHeaderItem(int pos, HeaderViewModel headerViewModel) {
+    public void updateHeaderItem(HeaderViewModel headerViewModel) {
         if (adapter.getItemCount() > 0) {
-            if (adapter.getItem(pos) instanceof HeaderViewModel) {
-                ((HeaderViewModel) adapter.getItem(pos)).setTokoPointDrawerData(headerViewModel.getTokoPointDrawerData());
-                ((HeaderViewModel) adapter.getItem(pos)).setHomeHeaderWalletActionData(headerViewModel.getHomeHeaderWalletActionData());
-                ((HeaderViewModel) adapter.getItem(pos)).setType(headerViewModel.getType());
-                adapter.notifyItemChanged(pos);
+            if (adapter.getItem(0) instanceof HeaderViewModel) {
+                ((HeaderViewModel) adapter.getItem(0)).setTokoPointDrawerData(headerViewModel.getTokoPointDrawerData());
+                ((HeaderViewModel) adapter.getItem(0)).setHomeHeaderWalletActionData(headerViewModel.getHomeHeaderWalletActionData());
+                ((HeaderViewModel) adapter.getItem(0)).setType(headerViewModel.getType());
+                adapter.notifyItemChanged(0);
+            } else {
+                adapter.getItems().add(0, headerViewModel);
+                adapter.notifyDataSetChanged();
             }
+        } else {
+            adapter.getItems().add(0, headerViewModel);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -677,21 +682,37 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     }
 
-
-    public class TokoPointDataBroadcastReceiver extends BroadcastReceiver {
-        public static final String EXTRA_TOKOPOINT_DRAWER_DATA = "EXTRA_TOKOPOINT_DRAWER_DATA";
-        public static final String ACTION = "com.tokopedia.core.app.DrawerPresenterActivity.TokoPointDataBroadcastReceiver.ACTION";
+    public class HomeFragmentBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (ACTION.equalsIgnoreCase(intent.getAction())) {
-                TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
-                        EXTRA_TOKOPOINT_DRAWER_DATA
-                );
-                if (tokoPointDrawerData == null) return;
-                presenter.updateHeaderTokoPointData(tokoPointDrawerData);
+            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION.equalsIgnoreCase(intent.getAction()))
+                return;
+            switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
+                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:
+                    TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
+                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA
+                    );
+                    if (tokoPointDrawerData == null) return;
+                    presenter.updateHeaderTokoPointData(tokoPointDrawerData);
+                    break;
+                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA:
+                    HomeHeaderWalletAction homeHeaderWalletAction = intent.getParcelableExtra(
+                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA
+                    );
+                    if (homeHeaderWalletAction == null) return;
+                    presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
+                    break;
+                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
+                    CashBackData cashBackData = intent.getParcelableExtra(
+                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_DATA
+                    );
+                    if (cashBackData == null) return;
+                    presenter.updateHeaderTokoCashPendingData(cashBackData);
+                    break;
+                default:
+                    break;
             }
-
         }
     }
 }
