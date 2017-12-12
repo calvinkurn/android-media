@@ -657,7 +657,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             spInsurance.setSelection(1);
         } else {
             spInsurance.setEnabled(true);
-            spInsurance.setSelection(1);
         }
     }
 
