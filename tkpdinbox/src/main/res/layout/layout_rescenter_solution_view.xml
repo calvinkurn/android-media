@@ -134,7 +134,6 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_small"
         android:gravity="center_vertical"
-        android:drawableRight="@drawable/ic_chevron_right"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/font_small"
         android:textStyle="bold"

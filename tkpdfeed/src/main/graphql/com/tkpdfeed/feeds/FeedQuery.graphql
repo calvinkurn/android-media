@@ -91,6 +91,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                     shop {
                       name
                       url
+                      url_app
                       location
                     }
                   }
@@ -205,6 +206,12 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
              		        info
              		        url
              	 	   }
+              }
+              favorite_cta {
+                          title_en
+                          title_id
+                          subtitle_en
+                          subtitle_id
               }
             }
           }

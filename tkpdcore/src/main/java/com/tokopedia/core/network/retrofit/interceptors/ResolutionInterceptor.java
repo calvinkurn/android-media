@@ -20,42 +20,6 @@ public class ResolutionInterceptor extends TkpdAuthInterceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
-        final Request originRequest = chain.request();
-        Request.Builder newRequest = chain.request().newBuilder();
-
-        generateHmacAuthRequest(originRequest, newRequest);
-
-        final Request finalRequest = newRequest.build();
-        Response response = getResponse(chain, finalRequest);
-
-        if (isNeedRelogin(response)) {
-            doRelogin();
-            response = getResponse(chain, finalRequest);
-        }
-
-        if (!response.isSuccessful()) {
-            throwChainProcessCauseHttpError(response);
-        }
-
-        String bodyResponse = response.body().string();
-        if (isMaintenance(bodyResponse)) {
-            showMaintenancePage();
-        } else if (isRequestDenied(bodyResponse)) {
-            showForceLogoutDialog();
-            sendForceLogoutAnalytics(response);
-        } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
-            showServerErrorSnackbar();
-            sendErrorNetworkAnalytics(response);
-        } else if (isForbiddenRequest(bodyResponse, response.code())
-                && isTimezoneNotAutomatic()) {
-            showTimezoneErrorSnackbar();
-        }
-
-        return createNewResponse(response, bodyResponse);
-    }
-
-    @Override
     protected Response getResponse(Chain chain, Request request) throws IOException {
         Response response = chain.proceed(request);
         if (response.code() != 413) {

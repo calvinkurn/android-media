@@ -71,51 +71,68 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     @Override
     protected void initView(View view) {
         super.initView(view);
-        productAdd = (LabelView) view.findViewById(R.id.product_add);
-        name = (LabelView) view.findViewById(R.id.name);
-        keywordTotalAdd = (LabelView) view.findViewById(R.id.total_keyword_add);
+        productAdd = view.findViewById(R.id.product_add);
+        name = view.findViewById(R.id.name);
+        keywordTotalAdd = view.findViewById(R.id.total_keyword_add);
     }
 
     @Override
     protected void setViewListener() {
         super.setViewListener();
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(TopAdsEditGroupNameActivity.createIntent(getActivity(), ad.getName(), String.valueOf(ad.getId())), REQUEST_CODE_AD_EDIT);
-            }
-        });
-        productAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(TopAdsCreatePromoExistingGroupEditActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null), REQUEST_CODE_AD_EDIT);
-            }
-        });
-        keywordTotalAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TopAdsKeywordNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), REQUEST_CODE_AD_EDIT, true, ad.getName());
-            }
-        });
+        name.setEnabled(false);
+        productAdd.setEnabled(false);
+        keywordTotalAdd.setEnabled(false);
     }
 
     @Override
     protected void onScheduleClicked() {
         Intent intent;
-        if(ad!= null) {
+        if (ad != null) {
             intent = TopAdsEditScheduleExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()));
-        }else{
+        } else {
             intent = TopAdsEditScheduleExistingGroupActivity.createIntent(getActivity(), adId);
         }
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override
+    public void onAdLoaded(GroupAd groupAd) {
+        super.onAdLoaded(groupAd);
+        name.setEnabled(true);
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isAdded() && ad != null) {
+                    startActivityForResult(TopAdsEditGroupNameActivity.createIntent(getActivity(), ad.getName(), String.valueOf(ad.getId())), REQUEST_CODE_AD_EDIT);
+                }
+            }
+        });
+        productAdd.setEnabled(true);
+        productAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isAdded() && ad != null) {
+                    startActivityForResult(TopAdsCreatePromoExistingGroupEditActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null), REQUEST_CODE_AD_EDIT);
+                }
+            }
+        });
+        keywordTotalAdd.setEnabled(true);
+        keywordTotalAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isAdded() && ad != null) {
+                    TopAdsKeywordNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), REQUEST_CODE_AD_EDIT, true, ad.getName());
+                }
+            }
+        });
+    }
+
+    @Override
     protected void onCostClicked() {
         Intent intent;
-        if(ad!= null) {
+        if (ad != null) {
             intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()), ad);
-        }else{
+        } else {
             intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), adId, ad);
         }
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
@@ -123,9 +140,9 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
 
     @Override
     protected GroupAd fillFromPrevious(GroupAd current, GroupAd previous) {
-        if(ad != null && ad.getDatum() != null){
+        if (ad != null && ad.getDatum() != null) {
             current.setDatum(ad.getDatum());
-        }else if(previous != null && previous.getDatum() != null){
+        } else if (previous != null && previous.getDatum() != null) {
             current.setDatum(previous.getDatum());
         }
         return current;

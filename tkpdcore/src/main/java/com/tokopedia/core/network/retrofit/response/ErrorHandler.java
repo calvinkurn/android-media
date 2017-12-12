@@ -2,6 +2,7 @@ package com.tokopedia.core.network.retrofit.response;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
@@ -9,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
@@ -49,6 +51,7 @@ public class ErrorHandler {
             case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                 Log.d(TAG, getErrorInfo(code, SERVER_INFO);
                 listener.onServerError(;
+
                 break;
             case ResponseStatus.SC_FORBIDDEN:
                 Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO);
@@ -124,7 +127,7 @@ public class ErrorHandler {
                             context.getString(R.string.default_request_error_unknown);
             }
         } else if (e instanceof ErrorMessageException
-                && e.getLocalizedMessage() != null) {
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
             return e.getLocalizedMessage();
         } else {
             return context.getString(R.string.default_request_error_unknown);
@@ -175,7 +178,7 @@ public class ErrorHandler {
                             context.getString(R.string.default_request_error_unknown);
             }
         } else if (e instanceof ErrorMessageException
-                && e.getLocalizedMessage() != null) {
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
             return e.getLocalizedMessage();
         } else if (BuildConfig.DEBUG) {
             return e.getLocalizedMessage();

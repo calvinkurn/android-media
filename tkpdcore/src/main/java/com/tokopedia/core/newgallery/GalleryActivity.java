@@ -55,6 +55,7 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
@@ -107,6 +108,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     private TkpdProgressDialog progressDialog;
     private boolean compressToTkpd;
+    private boolean isFirstTime;
 
     /**
      * Call this to get image from image gallery
@@ -239,6 +241,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        isFirstTime = savedInstanceState == null;
+
         onRestoreSavedState(savedInstanceState);
 
         fetchExtras(getIntent());
@@ -297,7 +301,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     }
 
     @Override
-    public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList) {
+    public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryAlbumFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryAlbumFragment) {
             ImageGalleryAlbumFragment imageGalleryAlbumFragment = (ImageGalleryAlbumFragment) fragment;
@@ -307,11 +311,16 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     }
 
     @Override
-    public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> data, ArrayList<String> pathList) {
+    public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> data) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment) {
             ((ImageGalleryFragment) fragment).addItems(data);
         }
+    }
+
+    @Override
+    public boolean isNeedPermission() {
+        return PermissionUtils.hasSelfPermissions(this, new String[] {"android.permission.CAMERA","android.permission.READ_EXTERNAL_STORAGE"});
     }
 
     @Override
@@ -358,9 +367,14 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (SessionHandler.isFirstTimeAskedPermissionStorage(GalleryActivity.this)
                 || (Build.VERSION.SDK_INT >= 23
                 && shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)))
-            GalleryActivityPermissionsDispatcher.checkPermissionWithCheck(this);
+            GalleryActivityPermissionsDispatcher.initContentWithCheck(this);
         else
             RequestPermissionUtil.onFinishActivityIfNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void initContent() {
         if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
             initFragment(FRAGMENT);
 
@@ -506,11 +520,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         super.onSaveInstanceState(outState);
         outState.putString(IMAGE_PATH_CAMERA, imagePathCamera);
         outState.putBoolean(IS_CAMERA_OPEN, isCameraOpen);
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void checkPermission() {
-        CommonUtils.dumper("NISNISNIS GaleryActivity Storage");
     }
 
     public void WarningDialog() {
@@ -694,5 +703,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         super.onDestroy();
         if (unbinder != null)
             unbinder.unbind();
+        imageGalleryPresenter.detach();
     }
 }
