@@ -279,13 +279,13 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                     new KeroNetInteractor.OnCalculateKeroAddressShipping() {
                         @Override
                         public void onSuccess(List<Attribute> datas) {
-                            if (productInsurance == null) {
-                                Log.e("ProductInsurance", "Null");
-                                productInsurance = orderData.getInsurance();
-                            } else {
-                                Log.e("ProductInsurance", productInsurance);
-                                orderData.setInsurance(productInsurance);
-                            }
+//                            if (productInsurance == null) {
+//                                Log.e("ProductInsurance", "Null");
+//                                productInsurance = orderData.getInsurance();
+//                            } else {
+//                                Log.e("ProductInsurance", productInsurance);
+//                                orderData.setInsurance(productInsurance);
+//                            }
 
                             viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
                                     datas, orderData.getShipments())
