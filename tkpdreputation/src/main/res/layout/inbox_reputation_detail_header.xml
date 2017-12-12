@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:background="@color/white"
               android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
+        android:minHeight="72dp"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_activity">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/padding_activity"
+        android:paddingRight="@dimen/padding_activity"
+        android:paddingTop="@dimen/padding_activity">
 
         <com.tokopedia.core.customView.RoundedCornerImageView
             android:id="@+id/user_avatar"
@@ -44,34 +48,39 @@
             <com.tokopedia.design.reputation.UserReputationView
                 android:id="@+id/user_reputation"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
                 android:visibility="gone"
-                app:usv_show_tooltip="true"
-                android:layout_height="wrap_content"/>
+                app:usv_show_tooltip="true"/>
 
             <com.tokopedia.design.reputation.ShopReputationView
                 android:id="@+id/shop_reputation"
                 android:layout_width="match_parent"
-                app:srv_show_tooltip="true"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
                 android:visibility="gone"
-                android:layout_height="wrap_content"/>
+                app:srv_show_tooltip="true"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/favorite_button"
             android:layout_width="130dp"
             android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/green_button_rounded"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:visibility="gone"
             tools:visibility="visible">
 
             <ImageView
                 android:id="@+id/favorite_icon"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="@dimen/margin_small"
-                tools:src="@drawable/shop_list_favorite_check"/>
+                android:padding="@dimen/padding_vvs"
+                tools:src="@drawable/ic_done_24dp"/>
 
             <TextView
                 android:id="@+id/favorite_text"
@@ -79,8 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:fontFamily="sans-serif-medium"
-                android:gravity="end"
-                android:lineSpacingExtra="5sp"
+                android:gravity="center_vertical"
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 android:textStyle="normal"
@@ -101,6 +109,7 @@
         android:id="@+id/deadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
@@ -146,13 +155,15 @@
         android:id="@+id/locked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="@color/grey_200"
             android:gravity="center"
@@ -170,6 +181,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:gravity="center_vertical"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_toRightOf="@id/icon_locked"
                 android:fontFamily="sans-serif-medium"
@@ -218,6 +230,7 @@
             android:text="@string/change"
             android:textColor="@color/medium_green"
             android:textSize="14sp"
+
             android:textStyle="normal"
             />
     </RelativeLayout>
