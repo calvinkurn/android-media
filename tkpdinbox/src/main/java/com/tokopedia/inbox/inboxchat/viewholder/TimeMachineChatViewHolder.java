@@ -44,7 +44,7 @@ public class TimeMachineChatViewHolder extends AbstractViewHolder<TimeMachineCha
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
+                                  ds.setUnderlineText(false);
                                   ds.setColor(MethodChecker.getColor(MainApplication
                                           .getAppContext(), R.color.medium_green));
                               }

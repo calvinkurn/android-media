@@ -37,9 +37,11 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -72,6 +74,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
@@ -79,6 +83,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TokoCashUtil;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
@@ -103,7 +108,6 @@ import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
 import com.tokopedia.tkpd.home.adapter.TickerAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
-import com.tokopedia.tkpd.home.customview.BannerView;
 import com.tokopedia.tkpd.home.customview.DigitalWidgetView;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 import com.tokopedia.tkpd.home.presenter.BrandsPresenter;
@@ -124,6 +128,8 @@ import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -142,8 +148,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
         TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener,
-        TokoCashHeaderView.ActionListener,
-        SectionListCategoryAdapter.OnApplinkClickedListener {
+        TokoCashHeaderView.ActionListener, SectionListCategoryAdapter.OnApplinkClickedListener,
+        BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
+        BannerView.OnPromoAllClickListener
+    {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -161,6 +169,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private int currentTicker = 0;
     ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
     ArrayList<Ticker.Tickers> tickerShowed = new ArrayList<>();
+    List<FacadePromo.PromoItem> promoItemList = new ArrayList<>();
     public static final String BANNER_RECEIVER_INTENT = BuildConfig.APPLICATION_ID + ".BANNER_RECEIVER_INTENT";
     private HomeCatMenuPresenter homeCatMenuPresenter;
     private TopPicksPresenter topPicksPresenter;
@@ -176,6 +185,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private IntentFilter intentFilerTokoCash;
 
     private DrawerTokoCash tokoCashData;
+    private GetShopInfoRetrofit getShopInfoRetrofit;
 
     FirebaseRemoteConfig firebaseRemoteConfig;
 
@@ -266,9 +276,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void initData() {
 
-        loadDummyPromos();
+        setBanner(promoItemList);
         rechargeCategoryPresenter.fetchDataRechargeCategory();
-
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
@@ -277,11 +286,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         fetchRemoteConfig();
     }
 
-    private void loadDummyPromos() {
-        List<FacadePromo.PromoItem> dummyPromoList = new ArrayList<>();
-        dummyPromoList.add(new FacadePromo.PromoItem());
-        setBanner(dummyPromoList);
-    }
 
     private void fetchRemoteConfig() {
         RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
@@ -360,9 +364,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
+        this.promoItemList = promoList;
         if (!promoList.isEmpty()) {
             stopAutoScrollBanner();
-            holder.bannerView.setPromoList(mappingListBannerPromo(promoList));
+            holder.bannerView.setOnPromoClickListener(this);
+            holder.bannerView.setOnPromoScrolledListener(this);
+            holder.bannerView.setPromoList(mappingListBannerPromo(promoItemList));
             holder.bannerView.buildView();
         } else {
             if (holder.bannerView != null) {
@@ -371,16 +378,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
-    private List<BannerView.PromoItem> mappingListBannerPromo(List<FacadePromo.PromoItem> promoList) {
-        List<BannerView.PromoItem> list = new ArrayList<>();
+    private List<String> mappingListBannerPromo(List<FacadePromo.PromoItem> promoList) {
+        List<String> list = new ArrayList<>();
         for (FacadePromo.PromoItem item : promoList) {
-            BannerView.PromoItem toItem = new BannerView.PromoItem();
-            toItem.setImgUrl(item.imgUrl);
-            toItem.setPromoId(item.id);
-            toItem.setPromoTitle(item.title);
-            toItem.setPromoUrl(item.promoUrl);
-            toItem.setPromoApplink(item.appLink); // toItem.setPromoApplink(Uri.decode(item.appLink)); wait should be fix from ws or client cause ios already use it
-            list.add(toItem);
+            list.add(item.imgUrl);
         }
         return list;
     }
@@ -480,6 +481,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(tokoCashBroadcastReceiver, intentFilerTokoCash);
+    }
+
+    @Override
+    public void onPause() {
+        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
+        super.onPause();
     }
 
     @Override
@@ -926,7 +933,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         brandsPresenter.onDestroy();
         tokoCashPresenter.onDestroy();
         rechargeCategoryPresenter.onDestroy();
-        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 
     //region recharge
@@ -1088,6 +1094,186 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED,
                 position);
         localCacheHandler.applyEditor();
+    }
+
+    @Override
+    public void onPromoClick(int position) {
+        FacadePromo.PromoItem promoItem = promoItemList.get(position);
+
+        trackingBannerClick(getActivity(), promoItem, position);
+
+        if (getActivity()!= null
+                && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
+                && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(promoItem.appLink)) {
+            ((IDigitalModuleRouter) getActivity().getApplicationContext())
+                    .actionNavigateByApplinksUrl(getActivity(), promoItem.appLink, new Bundle());
+        } else {
+
+            String url = promoItem.promoUrl;
+            try {
+                UnifyTracking.eventSlideBannerClicked(url);
+                Uri uri = Uri.parse(url);
+                String host = uri.getHost();
+                List<String> linkSegment = uri.getPathSegments();
+                if (isBaseHost(host) && isShop(linkSegment)) {
+                    String shopDomain = linkSegment.get(0);
+                    getShopInfo(url, shopDomain, getActivity());
+                } else if (isBaseHost(host) && isProduct(linkSegment)) {
+                    String shopDomain = linkSegment.get(0);
+                    openProductPageIfValid(url, shopDomain, getActivity());
+                } else if (DeepLinkChecker.getDeepLinkType(url) == DeepLinkChecker.CATEGORY) {
+                    DeepLinkChecker.openCategory(url, getActivity());
+                } else {
+                    openWebViewURL(url, getActivity());
+                }
+
+            } catch (Exception e) {
+                openWebViewURL(url, getActivity());
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void trackingBannerClick(Context context, FacadePromo.PromoItem promoItem, int position) {
+
+        Promotion promotion = new Promotion();
+        promotion.setPromotionID(promoItem.id);
+        promotion.setPromotionName(promoItem.title);
+        promotion.setPromotionAlias(promoItem.title);
+        promotion.setPromotionPosition(position);
+        PaymentTracking.eventPromoClick(promotion);
+    }
+
+    private boolean isBaseHost(String host) {
+        return (host.contains(TkpdBaseURL.BASE_DOMAIN) || host.contains(TkpdBaseURL.MOBILE_DOMAIN));
+    }
+
+    private boolean isShop(List<String> linkSegment) {
+        return linkSegment.size() == 1
+                && !isReservedLink(linkSegment.get(0));
+    }
+
+    private boolean isProduct(List<String> linkSegment) {
+        return linkSegment.size() == 2
+                && !isReservedLink(linkSegment.get(0));
+    }
+
+    private boolean isReservedLink(String link) {
+        return link.equals("pulsa")
+                || link.equals("iklan")
+                || link.equals("newemail.pl")
+                || link.equals("search")
+                || link.equals("hot")
+                || link.equals("about")
+                || link.equals("reset.pl")
+                || link.equals("activation.pl")
+                || link.equals("privacy.pl")
+                || link.equals("terms.pl")
+                || link.equals("p")
+                || link.equals("catalog")
+                || link.equals("toppicks")
+                || link.equals("promo")
+                || link.startsWith("invoice.pl");
+    }
+
+    public void openProductPageIfValid(final String url, final String shopDomain, final Context context) {
+        getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", shopDomain);
+        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    ShopModel shopModel = new Gson().fromJson(result,
+                            ShopModel.class);
+                    if (shopModel.info != null) {
+                        DeepLinkChecker.openProduct(url, context);
+                    } else {
+                        openWebViewURL(url, context);
+                    }
+                } catch (Exception e) {
+                    openWebViewURL(url, context);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                openWebViewURL(url, context);
+            }
+
+            @Override
+            public void onFailure() {
+                openWebViewURL(url, context);
+            }
+        });
+        getShopInfoRetrofit.getShopInfo();
+    }
+
+    public void getShopInfo(final String url, final String shopDomain, final Context context) {
+        getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", shopDomain);
+        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    ShopModel shopModel = new Gson().fromJson(result,
+                            ShopModel.class);
+                    if (shopModel.info != null) {
+                        JSONObject shop = new JSONObject(result);
+                        JSONObject shopInfo = new JSONObject(shop.getString("info"));
+                        Bundle bundle = ShopInfoActivity.createBundle(
+                                shopInfo.getString("shop_id"), shopInfo.getString("shop_domain"));
+                        Intent intent = new Intent(context, ShopInfoActivity.class);
+                        intent.putExtras(bundle);
+                        context.startActivity(intent);
+                    } else {
+                        openWebViewURL(url, context);
+                    }
+                } catch (Exception e) {
+                    openWebViewURL(url, context);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                openWebViewURL(url, context);
+            }
+
+            @Override
+            public void onFailure() {
+                openWebViewURL(url, context);
+            }
+        });
+        getShopInfoRetrofit.getShopInfo();
+    }
+
+    public void openWebViewURL(String url, Context context) {
+        if (url != "" && context != null) {
+            Intent intent = new Intent(context, BannerWebView.class);
+            intent.putExtra("url", url);
+            context.startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onPromoScrolled(int position) {
+
+        FacadePromo.PromoItem promoItem = promoItemList.get(position);
+        Promotion promotion = new Promotion();
+        promotion.setPromotionID(promoItem.id);
+        promotion.setPromotionName(promoItem.title);
+        promotion.setPromotionAlias(promoItem.title);
+        promotion.setPromotionPosition(position);
+        PaymentTracking.eventPromoImpression(promotion);
+    }
+
+    @Override
+    public void onPromoAllClick() {
+        UnifyTracking.eventClickViewAllPromo();
+        Intent intent = new Intent(getContext(), BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
+        intent.putExtra(BannerWebView.EXTRA_URL,
+                TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
+        );
+        getContext().startActivity(intent);
     }
 
 }

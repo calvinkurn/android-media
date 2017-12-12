@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -62,6 +63,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     private WebSocket ws;
     private int attempt;
     boolean inActionMode;
+    private CountDownTimer countDownTimer;
 
     @Inject
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
@@ -89,17 +91,32 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         attempt = 0;
 
         client = new OkHttpClient();
-        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN+ TkpdBaseURL.Chat.CHAT_WEBSOCKET +
+        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN + TkpdBaseURL.Chat.CHAT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
         listener = new ChatWebSocketListenerImpl(getView().getInterface());
-        recreateWebSocket();
+
+        countDownTimer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                createWebSocket();
+            }
+        };
+
+        createWebSocket();
     }
 
     public void getMessage() {
         if (viewModel != null) viewModel.setKeyword("");
-        showLoading();
+        if (!getView().getAdapter().containLoading()) {
+            showLoading();
+        }
         getView().disableActions();
         getView().removeError();
         isRequesting = true;
@@ -156,19 +173,18 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             }
         }
 
-        if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
+        if (!result.isHasNext() && result.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
-
-        setCache(getView().getAdapter().getList());
     }
 
-    private void setCache(List<Visitable> list) {
+    public void setCache(List<Visitable> list) {
         this.listFetchCache = new ArrayList<>();
         this.listFetchCache.addAll(list);
     }
 
     public void resetSearch() {
+        viewModel.setMode(InboxChatViewModel.GET_CHAT_MODE);
         viewModel.setKeyword("");
         getView().getAdapter().setList(listFetchCache);
         chatSize = listFetchCache.size();
@@ -204,7 +220,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             }
         }
 
-        if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
+        if (!result.isHasNext() && result.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
 
@@ -218,6 +234,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         getMessageListUseCase.unsubscribe();
         searchMessageUseCase.unsubscribe();
         deleteMessageListUseCase.unsubscribe();
+        countDownTimer.cancel();
     }
 
 
@@ -354,7 +371,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void prepareNextPage(boolean hasNext) {
-        getView().getAdapter().removeLoading();
         if (hasNext) {
             getView().getAdapter().showLoading();
         }
@@ -384,20 +400,20 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
 
     @Override
-    public void recreateWebSocket() {
-//        if(attempt > 5) {
-//            getView().notifyConnectionWebSocket();
-//        }else {
+    public void createWebSocket() {
         try {
             Request request = new Request.Builder().url(magicString)
                     .header("Origin", TkpdBaseURL.WEB_DOMAIN)
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
-//        }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void recreateWebSocket() {
+        countDownTimer.start();
     }
 
     @Override

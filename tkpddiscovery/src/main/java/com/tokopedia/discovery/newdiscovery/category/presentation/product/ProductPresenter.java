@@ -13,7 +13,6 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
-import com.tokopedia.discovery.newdiscovery.category.presentation.base.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.subscriber.AddWishlistActionSubscriber;
@@ -26,6 +25,8 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseC
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
+import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import rx.Subscriber;
  * @author by alifa on 10/26/17.
  */
 
-public class ProductPresenter extends BaseDaggerPresenter<ProductContract.View> implements ProductContract.Presenter {
+public class ProductPresenter extends SearchSectionFragmentPresenterImpl<ProductContract.View> implements ProductContract.Presenter {
 
     @Inject
     GetProductUseCase getProductUseCase;
@@ -101,11 +102,12 @@ public class ProductPresenter extends BaseDaggerPresenter<ProductContract.View> 
     }
 
     @Override
-    public void requestDynamicFilter() {
-        getDynamicFilterUseCase.execute(getParamDynamicFilterParam(), new GetDynamicFilterSubscriber(getView()));
+    protected void getFilterFromNetwork(RequestParams requestParams) {
+        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
     }
 
-    private RequestParams getParamDynamicFilterParam() {
+    @Override
+    protected RequestParams getDynamicFilterParam() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
@@ -121,22 +123,12 @@ public class ProductPresenter extends BaseDaggerPresenter<ProductContract.View> 
         return requestParams;
     }
 
-    private RequestParams enrichWithFilterAndSortParam(RequestParams requestParams) {
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
-        }
-        if (getView().getExtraFilter() != null) {
-            requestParams.putAll(getView().getExtraFilter());
-        }
-        return requestParams;
-    }
-
     @Override
     public void loadDataProduct(SearchParameter searchParameter, final CategoryHeaderModel categoryHeaderModel) {
-        getProductUseCase.execute(enrichWithFilterAndSortParam(GetProductUseCase.createInitializeSearchParam(searchParameter)), new DefaultSubscriber<SearchResultModel>(){
+        RequestParams requestParams
+                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter));
+        removeDefaultCategoryParam(requestParams);
+        getProductUseCase.execute(requestParams, new DefaultSubscriber<SearchResultModel>(){
             @Override
             public void onStart() {
                 if(isViewAttached()){
@@ -182,7 +174,10 @@ public class ProductPresenter extends BaseDaggerPresenter<ProductContract.View> 
 
     @Override
     public void loadMore(SearchParameter searchParameter, ProductPresenter.LoadMoreListener loadMoreListener) {
-        getProductUseCase.execute(enrichWithFilterAndSortParam(GetProductUseCase.createInitializeSearchParam(searchParameter,false)), createLoadMoreSubscriber(loadMoreListener));
+        RequestParams requestParams
+                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter,false));
+        removeDefaultCategoryParam(requestParams);
+        getProductUseCase.execute(requestParams, createLoadMoreSubscriber(loadMoreListener));
     }
 
     private Subscriber<SearchResultModel> createLoadMoreSubscriber(final ProductPresenter.LoadMoreListener loadMoreListener) {
@@ -209,5 +204,14 @@ public class ProductPresenter extends BaseDaggerPresenter<ProductContract.View> 
     interface LoadMoreListener {
         void onSuccess(List<ProductItem> productItemList);
         void onFailed();
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getProductUseCase.unsubscribe();
+        addWishlistActionUseCase.unsubscribe();
+        removeWishlistActionUseCase.unsubscribe();
+        getDynamicFilterUseCase.unsubscribe();
     }
 }

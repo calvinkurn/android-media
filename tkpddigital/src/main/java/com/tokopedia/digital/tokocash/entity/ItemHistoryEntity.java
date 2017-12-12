@@ -1,5 +1,8 @@
 package com.tokopedia.digital.tokocash.entity;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -8,32 +11,47 @@ import java.util.List;
 
 public class ItemHistoryEntity {
 
+    @SerializedName("transaction_id")
+    @Expose
     private long transaction_id;
-
+    @SerializedName("transaction_detail_id")
+    @Expose
     private long transaction_detail_id;
-
+    @SerializedName("transaction_type")
+    @Expose
     private String transaction_type;
-
+    @SerializedName("title")
+    @Expose
     private String title;
-
+    @SerializedName("icon_uri")
+    @Expose
     private String icon_uri;
-
+    @SerializedName("description")
+    @Expose
     private String description;
-
+    @SerializedName("transaction_info_id")
+    @Expose
     private String transaction_info_id;
-
+    @SerializedName("transaction_info_date")
+    @Expose
     private String transaction_info_date;
-
+    @SerializedName("amount_changes")
+    @Expose
     private String amount_changes;
-
+    @SerializedName("amount_changes_symbol")
+    @Expose
     private String amount_changes_symbol;
-
+    @SerializedName("amount")
+    @Expose
     private long amount;
-
+    @SerializedName("notes")
+    @Expose
     private String notes;
-
+    @SerializedName("amount_pending")
+    @Expose
     private String amount_pending;
-
+    @SerializedName("actions")
+    @Expose
     private List<ActionHistoryEntity> actions;
 
     public long getTransaction_id() {
