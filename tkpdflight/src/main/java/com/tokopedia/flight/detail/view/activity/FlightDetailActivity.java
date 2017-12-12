@@ -2,6 +2,7 @@ package com.tokopedia.flight.detail.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.widget.Button;
@@ -144,7 +146,7 @@ public class FlightDetailActivity extends BaseTabActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(getString(R.string.flight_label_detail));
+                    setUpToolbarTitle();
                     isShow = true;
                 } else if (isShow) {
                     collapsingToolbarLayout.setTitle(" ");
@@ -152,6 +154,11 @@ public class FlightDetailActivity extends BaseTabActivity {
                 }
             }
         };
+    }
+
+    private void setUpToolbarTitle() {
+        String title = flightDetailViewModel.getDepartureAirportCity() + " ➝ " + flightDetailViewModel.getArrivalAirportCity();
+        collapsingToolbarLayout.setTitle(title);
     }
 
     @Override

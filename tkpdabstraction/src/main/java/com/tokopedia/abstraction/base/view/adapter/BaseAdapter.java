@@ -20,8 +20,8 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     protected List<Visitable> visitables;
     protected AdapterTypeFactory adapterTypeFactory;
-    private LoadingModel loadingModel = new LoadingModel();
-    private ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
+    private Visitable loadingModel = new LoadingModel();
+    private Visitable errorNetworkModel = new ErrorNetworkModel();
 
     public BaseAdapter(AdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;

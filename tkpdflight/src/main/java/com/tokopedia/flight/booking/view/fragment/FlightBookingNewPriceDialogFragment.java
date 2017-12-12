@@ -85,7 +85,7 @@ public class FlightBookingNewPriceDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvOldPrice.setText(String.valueOf(oldPrice));
+        tvOldPrice.setText(String.valueOf(getString(R.string.flight_booking_new_price_strike_label, oldPrice)));
         tvNewPrice.setText(String.valueOf(newPrice));
     }
 

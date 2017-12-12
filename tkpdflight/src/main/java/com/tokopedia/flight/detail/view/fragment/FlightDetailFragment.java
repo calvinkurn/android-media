@@ -24,7 +24,6 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
 
     public static final String EXTRA_FLIGHT_DETAIL_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
     private FlightDetailViewModel flightDetailViewModel;
-    private TextView savingPrice;
 
     public static FlightDetailFragment createInstance(FlightDetailViewModel flightDetailViewModel) {
         FlightDetailFragment flightDetailFragment = new FlightDetailFragment();
@@ -47,17 +46,7 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_detail, container, false);
-        TextView priceTotal = (TextView) view.findViewById(R.id.flight_price_total);
-        priceTotal.setText(flightDetailViewModel.getTotal());
-        savingPrice = (TextView) view.findViewById(R.id.saving_price);
-        if(!TextUtils.isEmpty(flightDetailViewModel.getBeforeTotal())){
-            savingPrice.setVisibility(View.VISIBLE);
-            savingPrice.setText(MethodChecker.fromHtml(getString(R.string.flight_label_saving_price_html, flightDetailViewModel.getBeforeTotal())));
-        }else{
-            savingPrice.setVisibility(View.GONE);
-        }
-        return view;
+        return inflater.inflate(R.layout.fragment_flight_detail, container, false);
     }
 
     @Override
