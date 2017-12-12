@@ -86,6 +86,7 @@ import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OperatorPassData;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.PulsaBalance;
@@ -729,9 +730,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
         UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
 
+        List<OperatorPassData> operatorPassData = new ArrayList<>();
+        for (Operator operator : operatorListData) {
+            operatorPassData.add(new OperatorPassData(operator.getOperatorId(), operator.getImage(),
+                    operator.getName()));
+        }
+
         startActivityForResult(
-                DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser,
+                DigitalChooserActivity.newInstanceOperatorChooser2(
+                        getActivity(), operatorPassData, titleChooser,
                         categoryDataState.getOperatorLabel(),
                         categoryDataState.getName()
                 ),
@@ -840,7 +847,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackOperatorChooser(
-                            (Operator) data.getParcelableExtra(
+                            (OperatorPassData) data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
                             )
                     );
@@ -1076,8 +1083,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         digitalProductView.renderUpdateProductSelected(product);
     }
 
-    private void handleCallBackOperatorChooser(Operator operator) {
-        digitalProductView.renderUpdateOperatorSelected(operator);
+    private void handleCallBackOperatorChooser(OperatorPassData operatorPassData) {
+        for (Operator operator : categoryDataState.getOperatorList()) {
+            if (operator.getOperatorId().equals(operatorPassData.getOperatorId())) {
+                digitalProductView.renderUpdateOperatorSelected(operator);
+            }
+        }
     }
 
     @Override

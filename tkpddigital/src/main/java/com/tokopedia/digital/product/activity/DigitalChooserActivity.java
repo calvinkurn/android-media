@@ -13,6 +13,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.fragment.DigitalChooserProductFragment;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OperatorPassData;
 import com.tokopedia.digital.product.model.Product;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
 
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
 
-    private List<Operator> operatorListData;
+    private List<OperatorPassData> operatorPassDataList;
     private List<Product> productListData;
 
     private String operatorStyleView;
@@ -74,6 +75,18 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         return intent;
     }
 
+    public static Intent newInstanceOperatorChooser2(
+            Activity activity, List<OperatorPassData> operatorPassDataList, String titleChooser, String operatorLabel, String categoryState
+    ) {
+        Intent intent = new Intent(activity, DigitalChooserActivity.class);
+        intent.putParcelableArrayListExtra(EXTRA_LIST_DATA_OPERATOR,
+                (ArrayList<? extends Parcelable>) operatorPassDataList);
+        intent.putExtra(EXTRA_TITLE_CHOOSER, titleChooser);
+        intent.putExtra(EXTRA_OPERATOR_LABEL, operatorLabel);
+        intent.putExtra(EXTRA_STATE_CATEGORY, categoryState);
+        return intent;
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -81,7 +94,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        this.operatorListData = extras.getParcelableArrayList(EXTRA_LIST_DATA_OPERATOR);
+        this.operatorPassDataList = extras.getParcelableArrayList(EXTRA_LIST_DATA_OPERATOR);
         this.productListData = extras.getParcelableArrayList(EXTRA_LIST_DATA_PRODUCT);
         this.productStyleView = extras.getString(EXTRA_PRODUCT_STYLE_VIEW);
         this.operatorStyleView = extras.getString(EXTRA_OPERATOR_STYLE_VIEW);
@@ -105,15 +118,15 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !((fragment instanceof DigitalChooserOperatorFragment)
                 || (fragment instanceof DigitalChooserProductFragment))) {
-            if (operatorListData == null && !productListData.isEmpty()) {
+            if (operatorPassDataList == null && !productListData.isEmpty()) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         DigitalChooserProductFragment.newInstance(
                                 productListData, productStyleView
                         )).commit();
-            } else if (productListData == null && !operatorListData.isEmpty()) {
+            } else if (productListData == null && !operatorPassDataList.isEmpty()) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
-                        DigitalChooserOperatorFragment.newInstance(
-                                operatorListData, operatorStyleView, operatorLabel, categoryState
+                        DigitalChooserOperatorFragment.newInstance2(
+                                operatorPassDataList, operatorStyleView, operatorLabel, categoryState
                         )).commit();
             }
         }
@@ -135,7 +148,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     }
 
     @Override
-    public void onOperatorItemSelected(Operator operator) {
+    public void onOperatorItemSelected(OperatorPassData operator) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_OPERATOR_DATA, operator));
         finish();
     }

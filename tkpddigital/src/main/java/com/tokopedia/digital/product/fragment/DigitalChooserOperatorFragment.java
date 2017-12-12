@@ -17,6 +17,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OperatorPassData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,8 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     @BindView(R2.id.field_search)
     EditText fieldSearch;
 
-    private List<Operator> operatorListData;
+    //    private List<Operator> operatorListData;
+    private List<OperatorPassData> operatorPassDataList;
     private String operatorStyleView;
     private String operatorLabel;
     private String categoryState;
@@ -57,6 +59,19 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA,
                 (ArrayList<? extends Parcelable>) operatorListData);
+        bundle.putString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW, operatorStyleView);
+        bundle.putString(EXTRA_OPERATOR_LABEL, operatorLabel);
+        bundle.putString(EXTRA_STATE_CATEGORY, categoryState);
+        Fragment fragment = new DigitalChooserOperatorFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static Fragment newInstance2(List<OperatorPassData> operatorPassDataList, String operatorStyleView,
+                                        String operatorLabel, String categoryState) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA,
+                (ArrayList<? extends Parcelable>) operatorPassDataList);
         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW, operatorStyleView);
         bundle.putString(EXTRA_OPERATOR_LABEL, operatorLabel);
         bundle.putString(EXTRA_STATE_CATEGORY, categoryState);
@@ -78,13 +93,13 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     @Override
     public void onSaveState(Bundle state) {
         state.putParcelableArrayList(EXTRA_STATE_OPERATOR_LIST_DATA,
-                (ArrayList<? extends Parcelable>) operatorListData);
+                (ArrayList<? extends Parcelable>) operatorPassDataList);
         state.putString(EXTRA_STATE_OPERATOR_STYLE_VIEW, operatorStyleView);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-        operatorListData = savedState.getParcelableArrayList(EXTRA_STATE_OPERATOR_LIST_DATA);
+        operatorPassDataList = savedState.getParcelableArrayList(EXTRA_STATE_OPERATOR_LIST_DATA);
         operatorStyleView = savedState.getString(EXTRA_STATE_OPERATOR_STYLE_VIEW);
     }
 
@@ -105,7 +120,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        this.operatorListData = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
+        this.operatorPassDataList = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
         this.operatorStyleView = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW);
         this.operatorLabel = arguments.getString(EXTRA_OPERATOR_LABEL);
         categoryState = arguments.getString(EXTRA_STATE_CATEGORY);
@@ -119,7 +134,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     @Override
     protected void initView(View view) {
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        if (operatorListData.size() > 10) {
+        if (operatorPassDataList.size() > 10) {
             fieldSearch.setHint(getResources().getString(R.string.action_search_with_suffix, operatorLabel));
             fieldSearch.setOnFocusChangeListener(onAnalyticsFocusChangedListener());
             fieldSearch.addTextChangedListener(onSearchTextChange());
@@ -136,7 +151,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @Override
     protected void initialVar() {
-        operatorChooserAdapter = new OperatorChooserAdapter(this, operatorListData,
+        operatorChooserAdapter = new OperatorChooserAdapter(this, operatorPassDataList,
                 actionListener);
     }
 
@@ -146,17 +161,17 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     }
 
     public interface ActionListener {
-        void onOperatorItemSelected(Operator operator);
+        void onOperatorItemSelected(OperatorPassData operator);
 
         void onOperatortItemChooserCanceled();
     }
 
     private void fiterData(String query) {
-        List<Operator> searchOperatorList = new ArrayList<>();
-        for (int i = 0; i < operatorListData.size(); i++) {
-            if (operatorListData.get(i).getName().toLowerCase()
+        List<OperatorPassData> searchOperatorList = new ArrayList<>();
+        for (int i = 0; i < operatorPassDataList.size(); i++) {
+            if (operatorPassDataList.get(i).getOperatorName().toLowerCase()
                     .contains(query.toLowerCase())) {
-                searchOperatorList.add(operatorListData.get(i));
+                searchOperatorList.add(operatorPassDataList.get(i));
             }
         }
         operatorChooserAdapter.setSearchResultData(searchOperatorList);
@@ -165,7 +180,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     private void checkEmptyQuery(String query) {
         if (query.isEmpty())
-            operatorChooserAdapter.setSearchResultData(operatorListData);
+            operatorChooserAdapter.setSearchResultData(operatorPassDataList);
     }
 
     private View.OnFocusChangeListener onAnalyticsFocusChangedListener(){
