@@ -1,7 +1,5 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tokopedia.digital.tokocash.entity.AccountTokoCashEntity;
-import com.tokopedia.digital.tokocash.entity.AccountTokoCashListEntity;
 import com.tokopedia.digital.tokocash.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.digital.tokocash.entity.OAuthInfoEntity;
 import com.tokopedia.digital.tokocash.entity.ResponseHelpHistoryEntity;

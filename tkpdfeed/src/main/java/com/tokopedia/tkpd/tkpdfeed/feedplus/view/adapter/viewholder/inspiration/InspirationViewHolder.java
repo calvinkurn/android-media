@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -59,7 +60,12 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
     public void bind(InspirationViewModel inspirationViewModel) {
         inspirationViewModel.setRowNumber(getAdapterPosition());
         adapter.setData(inspirationViewModel);
-        textView.setText(inspirationViewModel.getTitle());
+        if (!TextUtils.isEmpty(inspirationViewModel.getTitle())) {
+            textView.setText(inspirationViewModel.getTitle());
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            textView.setVisibility(View.GONE);
+        }
     }
 
 }
