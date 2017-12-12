@@ -19,6 +19,7 @@ public class FlightOrder {
     private int totalInfantNumeric;
     private String currency;
     private List<FlightOrderJourney> journeys;
+    private List<FlightOrderPassengerViewModel> passengerViewModels;
 
     public FlightOrder() {
     }
@@ -117,5 +118,13 @@ public class FlightOrder {
 
     public void setJourneys(List<com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney> journeys) {
         this.journeys = journeys;
+    }
+
+    public List<FlightOrderPassengerViewModel> getPassengerViewModels() {
+        return passengerViewModels;
+    }
+
+    public void setPassengerViewModels(List<FlightOrderPassengerViewModel> passengerViewModels) {
+        this.passengerViewModels = passengerViewModels;
     }
 }

@@ -13,10 +13,12 @@ import javax.inject.Inject;
 
 public class FlightOrderMapper {
     private FlightOrderJourneyMapper flightOrderJourneyMapper;
+    private FlightOrderPassengerViewModelMapper passengerViewModelMapper;
 
     @Inject
-    public FlightOrderMapper(FlightOrderJourneyMapper flightOrderJourneyMapper) {
+    public FlightOrderMapper(FlightOrderJourneyMapper flightOrderJourneyMapper, FlightOrderPassengerViewModelMapper passengerViewModelMapper) {
         this.flightOrderJourneyMapper = flightOrderJourneyMapper;
+        this.passengerViewModelMapper = passengerViewModelMapper;
     }
 
     public FlightOrder transform(OrderEntity orderEntity) {
@@ -35,6 +37,7 @@ public class FlightOrderMapper {
             flightOrder.setTotalInfant(orderEntity.getAttributes().getFlight().getTotalInfant());
             flightOrder.setTotalInfantNumeric(orderEntity.getAttributes().getFlight().getTotalInfantNumeric());
             flightOrder.setJourneys(flightOrderJourneyMapper.transform(orderEntity.getAttributes().getFlight().getJourneys()));
+            flightOrder.setPassengerViewModels(passengerViewModelMapper.transform(orderEntity.getAttributes().getFlight().getPassengers()));
         }
         return flightOrder;
     }

@@ -25,7 +25,6 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         }
     };
     private int passengerId; //passengerLocalNumber
-    private boolean singleRoute;
     private int type;
     private String passengerTitle;
     private String headerTitle;
@@ -41,7 +40,6 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
 
     protected FlightBookingPassengerViewModel(Parcel in) {
         passengerId = in.readInt();
-        singleRoute = in.readByte() != 0;
         type = in.readInt();
         passengerTitle = in.readString();
         headerTitle = in.readString();
@@ -83,14 +81,6 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
 
     public void setPassengerBirthdate(String passengerBirthdate) {
         this.passengerBirthdate = passengerBirthdate;
-    }
-
-    public boolean isSingleRoute() {
-        return singleRoute;
-    }
-
-    public void setSingleRoute(boolean singleRoute) {
-        this.singleRoute = singleRoute;
     }
 
     public List<FlightBookingAmenityMetaViewModel> getFlightBookingMealMetaViewModels() {
@@ -167,7 +157,6 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(passengerId);
-        parcel.writeByte((byte) (singleRoute ? 1 : 0));
         parcel.writeInt(type);
         parcel.writeString(passengerTitle);
         parcel.writeString(headerTitle);

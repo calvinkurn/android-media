@@ -26,6 +26,9 @@ public class PassengerAmentityEntity {
     @SerializedName("sequence")
     @Expose
     private int sequence;
+    @SerializedName("price_numeric")
+    @Expose
+    private int priceNumeric;
 
     public String getDepartureAirportId() {
         return departureAirportId;
@@ -49,5 +52,9 @@ public class PassengerAmentityEntity {
 
     public int getSequence() {
         return sequence;
+    }
+
+    public int getPriceNumeric() {
+        return priceNumeric;
     }
 }
