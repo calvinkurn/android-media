@@ -189,10 +189,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".NotificationCenter"
-            android:label="@string/title_notification"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".talk.talkproduct.activity.TalkAddNew"
             android:label="@string/title_activity_talk_add_new"
             android:screenOrientation="portrait" />
@@ -269,28 +265,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".inboxreputation.activity.InboxReputationActivity"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".inboxreputation.activity.InboxReputationDetailActivity"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".reputationproduct.ReputationProduct"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ShopStatisticDetail"
             android:label="@string/title_activity_shop_statistic_detail"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".reputationproduct.ReputationProductView"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".shopinfo.ReputationViewShop"
-            android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".shopinfo.activity.ShopFavoritedActivity"
@@ -465,9 +441,6 @@
             android:exported="false" />
         <service
             android:name=".talkview.intentservice.TalkViewIntentService"
-            android:exported="false" />
-        <service
-            android:name=".service.HadesService"
             android:exported="false" />
         <service
             android:name=".manage.people.address.service.ManagePeopleAddressService"

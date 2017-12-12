@@ -227,9 +227,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onGetNotificationDrawer(DrawerNotification notification) {
-        onSuccessGetTopChatNotification(notification.getInboxMessage());
 
-        int notificationCount = drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF);
+onSuccessGetTopChatNotification(notification.getInboxMessage());        int notificationCount = drawerCache.getInt(DrawerNotification.CACHE_TOTAL_NOTIF);
 
         TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
         if (notifRed != null) {

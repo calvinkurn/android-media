@@ -392,6 +392,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onDestroy();
     }
 
+    public static Intent getHomeHotlistIntent(Context context) {
+        Intent intent = new Intent(context, ParentIndexHome.class);
+        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOTLIST);
+        return intent;
+    }
+
     protected class PagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 

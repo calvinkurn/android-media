@@ -27,8 +27,6 @@ import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
-import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
 import com.tokopedia.core.prototype.InboxCache;
 import com.tokopedia.core.prototype.ManageProductCache;
@@ -112,6 +110,7 @@ public class SessionHandler {
     }
 
     public static void clearUserData(Context context) {
+
         logoutInstagram(context);
         InboxCache.ClearCache(context);
         PenjualanCache.ClearCache(context);
@@ -149,10 +148,6 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
-        CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
-        reputationCache.deleteCache();
-        InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
-        reputationDetailCache.deleteAll();
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);

@@ -63,9 +63,11 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".tokocash.activity.HelpHistoryDetailActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".product.activity.DigitalSearchNumberActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".tokocash.activity.WaitingTransactionActivity"
             android:screenOrientation="portrait"/>
     </application>
 
