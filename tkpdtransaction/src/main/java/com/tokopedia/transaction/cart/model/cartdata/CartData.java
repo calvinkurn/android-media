@@ -87,7 +87,7 @@ public class CartData implements Parcelable {
     @SerializedName("promo_suggestion")
     private CartPromo cartPromo;
     @SerializedName("is_coupon_active")
-    private boolean isCouponActive;
+    private boolean isCouponActive = false;
 
     public String getGrandTotalWithoutLP() {
         return grandTotalWithoutLP;

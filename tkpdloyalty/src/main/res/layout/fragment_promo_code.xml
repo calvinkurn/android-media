@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="@dimen/padding_small">
 
     <LinearLayout
@@ -22,8 +23,8 @@
             <EditText
                 android:id="@+id/et_voucher_code"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_vl"
-                android:textAllCaps="true"
+                android:layout_height="wrap_content"
+                android:inputType="textCapCharacters"
                 android:lines="1" />
 
 
