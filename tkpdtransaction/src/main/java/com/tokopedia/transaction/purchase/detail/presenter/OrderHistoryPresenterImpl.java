@@ -40,7 +40,7 @@ public class OrderHistoryPresenterImpl implements OrderHistoryPresenter {
         params.putAll(temporaryParams);
         params.put("request_by", userMode);
         orderHistoryInteractor.requestOrderHistoryData(getOrderHistorySubscriber(),
-                AuthUtil.generateParamsNetwork2(context, params);
+                AuthUtil.generateParamsNetwork2(context, params));
     }
 
     @Override
