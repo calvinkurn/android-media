@@ -25,7 +25,7 @@ import javax.inject.Inject;
  * @author by zulfikarrahman on 11/28/17.
  */
 
-public class FlightOrderListFragment extends BaseDaggerFragment implements FlightOrderListContract.View, QuickFilterAdapter.ActionListener {
+public class FlightOrderListFragment extends BaseDaggerFragment implements FlightOrderListContract.View , QuickFilterAdapter.ActionListener {
     @Inject
     FlightOrderListPresenter presenter;
     private RecyclerView ordersRecyclerView;

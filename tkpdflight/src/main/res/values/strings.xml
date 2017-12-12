@@ -11,7 +11,7 @@
     <string name="flight_search_date_arrival_title">Tanggal Pulang</string>
     <string name="flight_search_passenger_title">Penumpang</string>
     <string name="flight_search_passenger_class_title">Kelas</string>
-    <string name="flight_search_search_ticket">Cari ticket</string>
+    <string name="flight_search_search_ticket">Cari Tiket</string>
 
     <string name="flight_title_promo">Promo</string>
     <string name="flight_title_transaction_list">Daftar Transaksi</string>
@@ -226,6 +226,8 @@
     <string name="flight_booking_passenger_last_name_single_word_error">Nama belakang harus satu kata</string>
     <string name="flight_booking_passenger_first_name_alpha_space_error">Nama depan harus terdiri alfabet dan space</string>
     <string name="flight_booking_passenger_last_name_alpha_space_error">Nama belakang hanya alfabet dan spasi</string>
+    <string name="flight_booking_passenger_choose_label">Pilih</string>
+    <string name="flight_booking_new_price_strike_label"><![CDATA[<strike>%1$s</strike>]]></string>
     <string name="flight_label_detail_order">Detail Penerbangan</string>
     <string name="flight_label_invoice">INVOICE</string>
 </resources>
