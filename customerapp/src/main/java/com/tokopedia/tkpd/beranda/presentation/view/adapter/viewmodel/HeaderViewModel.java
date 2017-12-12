@@ -4,9 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
 /**
@@ -19,7 +19,13 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
 
     private HomeHeaderWalletAction homeHeaderWalletActionData;
     private TokoPointDrawerData tokoPointDrawerData;
+    private CashBackData cashBackData;
     private int type;
+    private boolean pendingTokocashChecked;
+
+    public void setPendingTokocashChecked(boolean pendingTokocashChecked) {
+        this.pendingTokocashChecked = pendingTokocashChecked;
+    }
 
     public HomeHeaderWalletAction getHomeHeaderWalletActionData() {
         return homeHeaderWalletActionData;
@@ -41,15 +47,29 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         return type;
     }
 
+    public CashBackData getCashBackData() {
+        return cashBackData;
+    }
+
+    public void setCashBackData(CashBackData cashBackData) {
+        this.cashBackData = cashBackData;
+    }
+
     public void setType(int type) {
         this.type = type;
     }
 
 
-
     @Override
     public int type(HomeTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public HeaderViewModel() {
+    }
+
+    public boolean isPendingTokocashChecked() {
+        return pendingTokocashChecked;
     }
 
     @Override
@@ -61,16 +81,17 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.homeHeaderWalletActionData, flags);
         dest.writeParcelable(this.tokoPointDrawerData, flags);
+        dest.writeParcelable(this.cashBackData, flags);
         dest.writeInt(this.type);
-    }
-
-    public HeaderViewModel() {
+        dest.writeByte(this.pendingTokocashChecked ? (byte) 1 : (byte) 0);
     }
 
     protected HeaderViewModel(Parcel in) {
         this.homeHeaderWalletActionData = in.readParcelable(HomeHeaderWalletAction.class.getClassLoader());
         this.tokoPointDrawerData = in.readParcelable(TokoPointDrawerData.class.getClassLoader());
+        this.cashBackData = in.readParcelable(CashBackData.class.getClassLoader());
         this.type = in.readInt();
+        this.pendingTokocashChecked = in.readByte() != 0;
     }
 
     public static final Creator<HeaderViewModel> CREATOR = new Creator<HeaderViewModel>() {
