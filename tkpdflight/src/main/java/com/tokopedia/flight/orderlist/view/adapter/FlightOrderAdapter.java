@@ -18,7 +18,7 @@ import java.util.List;
 public class FlightOrderAdapter extends BaseAdapter {
     private FlightOrderTypeFactory flightOrderTypeFactory;
 
-    public FlightOrderAdapter(FlightOrderAdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
+    public FlightOrderAdapter(FlightOrderTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
         flightOrderTypeFactory = (FlightOrderTypeFactory) adapterTypeFactory;
     }

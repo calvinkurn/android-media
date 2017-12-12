@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderlist.contract;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -19,6 +20,8 @@ public interface FlightOrderListContract {
         void hideGetInitialOrderDataLoading();
 
         void renderOrderStatus(List<QuickFilterItem> filterItems);
+
+        void renderOrders(List<Visitable> visitables);
     }
 
     interface Presenter extends CustomerPresenter<View> {

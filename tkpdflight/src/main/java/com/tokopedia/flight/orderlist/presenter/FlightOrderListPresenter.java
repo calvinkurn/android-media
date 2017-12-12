@@ -8,6 +8,8 @@ import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,16 +63,37 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     private void renderUi(List<FlightOrder> flightOrders) {
         List<Visitable> visitables = new ArrayList<>();
         for (FlightOrder flightOrder : flightOrders) {
+            switch (flightOrder.getStatus()) {
+                case 700:
+                    for (FlightOrderJourney journey : flightOrder.getJourneys()) {
+                        FlightOrderSuccessViewModel successViewModel = new FlightOrderSuccessViewModel();
+                        successViewModel.setCreateTime(flightOrder.getCreateTime());
+                        successViewModel.setId(flightOrder.getId());
+                        successViewModel.setOrderJourney(journey);
+                        successViewModel.setStatus(journey.getStatus());
+                        visitables.add(successViewModel);
+                    }
+                    break;
+                case 600:
+                    FlightOrderFailedViewModel failedViewModel = new FlightOrderFailedViewModel();
+                    failedViewModel.setCreateTime(flightOrder.getCreateTime());
+                    failedViewModel.setId(flightOrder.getId());
+                    failedViewModel.setOrderJourney(flightOrder.getJourneys());
+                    failedViewModel.setStatus(flightOrder.getStatus());
+                    visitables.add(failedViewModel);
+                    break;
+                case 0:
+                    FlightOrderFailedViewModel expired = new FlightOrderFailedViewModel();
+                    expired.setCreateTime(flightOrder.getCreateTime());
+                    expired.setId(flightOrder.getId());
+                    expired.setOrderJourney(flightOrder.getJourneys());
+                    expired.setStatus(flightOrder.getStatus());
+                    visitables.add(expired);
+                    break;
 
-            for (FlightOrderJourney journey : flightOrder.getJourneys()) {
-                switch (journey.getStatus()) {
-                    case "100":
-
-                        break;
-                    default:
-                }
             }
         }
+        getView().renderOrders(visitables);
     }
 
     private void buildAndRenderFilterList() {
