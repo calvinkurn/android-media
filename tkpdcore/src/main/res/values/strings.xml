@@ -1133,6 +1133,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="msg_no_connection">Tidak ada koneksi internet</string>
     <string name="error_bank_not_found">Nama Bank tidak ditemukan.</string>
     <string name="action_search">Cari</string>
+    <string name="action_search_with_suffix">Cari %1$s</string>
     <string name="hint_fill_ref">Isi nomor resi</string>
     <string name="title_extra_cost">Biaya Tambahan</string>
     <string name="title_dashboard_purchase">PEMBELIAN</string>
@@ -1605,12 +1606,6 @@ di Tokopedia Sekarang!</string>
     <string name="error_max_account_number">Nomor Rekening terlalu panjang, maksimum 30 karakter</string>
     <string name="hint_preorder_text">Waktu Proses : YYY hari</string>
 
-    <string name="rating_title_0">Belum ada nilai</string>
-    <string name="rating_title_1">Sangat buruk</string>
-    <string name="rating_title_2">Buruk</string>
-    <string name="rating_title_3">Normal</string>
-    <string name="rating_title_4">Bagus</string>
-    <string name="rating_title_5">Sangat bagus</string>
     <string name="subtitle_accuracy">* Nilai ketepatan produk dengan gambar</string>
     <string name="subtitle_quality">* Nilai kualitas produk</string>
     <string name="image_description">Keterangan gambar...</string>s

@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -25,14 +24,14 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
+import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.RemoteConfigRouter;
-import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -40,6 +39,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -93,6 +93,10 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
+import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
@@ -108,6 +112,7 @@ import java.util.Map;
 
 import rx.Observable;
 
+import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 
@@ -116,8 +121,9 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, RemoteConfigRouter {
+        implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
+        RemoteConfigRouter, ReputationRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -288,6 +294,44 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getHomeHotlistIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getInboxReputationIntent(Context context) {
+        return InboxReputationActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
+                ((ReputationRouter) MainApplication.getAppContext())
+                        .getInboxReputationIntent(MainApplication.getAppContext())
+        );
+        mNotificationPass.classParentStack = InboxReputationActivity.class;
+        mNotificationPass.title = notifTitle;
+        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        return mNotificationPass;
+    }
+
+    @Override
+    public Fragment getReputationHistoryFragment() {
+        return SellerReputationFragment.createInstance();
+    }
+
+    @Override
+    public android.app.Fragment getShopReputationFragment() {
+        return ShopReputationList.create();
+    }
+
+    @Override
+    public Intent getProductReputationIntent(Context context) {
+        return new Intent(context, ReputationProduct.class);
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
@@ -419,18 +463,18 @@ public abstract class SellerRouterApplication extends MainApplication
         fragment.startActivityForResult(intent, requestCode);
     }
 
+    @Override
+    public void openImagePreview(Context context, ArrayList<String> images,
+                                 ArrayList<String> imageDesc, int position) {
+        Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
+                position);
+        context.startActivity(intent);
+    }
+
     private void goToDefaultRoute(Context context) {
         Intent intent = DashboardActivity.createInstance((Activity) context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public TkpdFragmentWrapper getSellerReputationFragment(Context context) {
-        return new TkpdFragmentWrapper(
-                context.getString(R.string.header_review_reputation),
-                SellerReputationFragment.TAG,
-                SellerReputationFragment.createInstance());
     }
 
     @Override

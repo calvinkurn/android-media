@@ -1,6 +1,8 @@
 package com.tokopedia.core.router.transactionmodule;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 /**
@@ -10,4 +12,6 @@ import android.os.Bundle;
 public interface TransactionRouter {
 
     void goToUserPaymentList(Activity activity);
+
+    Intent getInboxReputationIntent(Context context);
 }

@@ -1,11 +1,11 @@
 package com.tokopedia.seller.reputation.view.helper;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;
@@ -42,7 +42,6 @@ public class GMStatHeaderViewHelper {
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final Locale locale = new Locale("in", "ID");
     protected TextView calendarRange;
-    protected ImageView calendarArrowIcon;
     protected ImageView calendarIcon;
     protected View itemView;
     private String[] monthNamesAbrev;
@@ -71,8 +70,6 @@ public class GMStatHeaderViewHelper {
         monthNamesAbrev = itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
 
         calendarRange = (TextView) itemView.findViewById(R.id.calendar_range);
-
-        calendarArrowIcon = (ImageView) itemView.findViewById(R.id.calendar_arrow_icon);
 
         calendarIcon = (ImageView) itemView.findViewById(R.id.calendar_icon);
 
@@ -110,17 +107,12 @@ public class GMStatHeaderViewHelper {
 
         if (!isGmStat) {
             calendarRange.setTextColor(gredyColor);
-            calendarArrowIcon.setVisibility(View.GONE);
         } else {
             calendarRange.setTextColor(greenColor);
-            calendarArrowIcon.setVisibility(View.VISIBLE);
         }
     }
 
     protected void setImageIcon() {
-        Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(itemView.getContext()
-                , R.drawable.ic_set_date_next);
-        calendarArrowIcon.setImageDrawable(setDateNext);
         calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
     }
 

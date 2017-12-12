@@ -24,10 +24,8 @@ public class TkpdBaseURL {
     public static String MOJITO_STAGING_DOMAIN = "https://mojito-staging.tokopedia.com/";
     public static String HADES_DOMAIN = "https://hades.tokopedia.com";
     public static String HADES_STAGING_DOMAIN = "https://hades-staging.tokopedia.com";
-    public static String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String MERLIN_DOMAIN = "https://merlin.tokopedia.com/";
     public static String GOOGLE_APIS = "https://www.googleapis.com";
-    public static String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
     public static String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
     public static String ACCOUNTS_ALPHA_DOMAIN = "https://accounts-alpha.tokopedia.com/";
@@ -898,10 +896,41 @@ public class TkpdBaseURL {
         public static final String DELETE = "/tc/v1/delete";
         public static final String SEND_MESSAGE = "/tc/v1/send";
         public static final String GET_TOPCHAT_NOTIFICATION = "tc/v1/notif_unreads";
+        public static final String GET_TEMPLATE = "tc/v1/chat_templates";
     }
 
     public class Maps {
         public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
+    }
+
+    public static class Reputation {
+        public static final String URL_REPUTATION = LIVE_DOMAIN + "reputationapp/";
+        private static final String REPUTATION_VERSION = "v1";
+
+        public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/"
+                + REPUTATION_VERSION + "/inbox";
+        public static final String PATH_GET_DETAIL_INBOX_REPUTATION = "review/api/"
+                + REPUTATION_VERSION + "/list";
+        public static final String PATH_SEND_REPUTATION_SMILEY = "reputation/api/v1/insert";
+        public static final String PATH_SEND_REVIEW_VALIDATE = "review/api/"
+                + REPUTATION_VERSION + "/insert/validate";
+        public static final String PATH_SEND_REVIEW_SUBMIT = "review/api/"
+                + REPUTATION_VERSION + "/insert/submit";
+        public static final String PATH_SKIP_REVIEW = "review/api/" + REPUTATION_VERSION + "/skip";
+        public static final String PATH_EDIT_REVIEW_VALIDATE = "review/api/"
+                + REPUTATION_VERSION + "/edit/validate";
+        public static final String PATH_EDIT_REVIEW_SUBMIT = "review/api/"
+                + REPUTATION_VERSION + "/edit/submit";
+        public static final String PATH_REPORT_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/report";
+        public static final String PATH_DELETE_REVIEW_RESPONSE = "review/api/"
+                + REPUTATION_VERSION + "/response/delete";
+        public static final String PATH_INSERT_REVIEW_RESPONSE = "review/api/"
+                + REPUTATION_VERSION + "/response/insert";
+        public static final String PATH_GET_LIKE_DISLIKE_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/likedislike";
+        public static final String PATH_LIKE_DISLIKE_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/likedislike";
     }
 }
