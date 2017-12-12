@@ -38,6 +38,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
     private TextView skipView;
     private ImageButton nextView;
     private int[] fragmentColor;
+    private boolean isNextPressed = false;
 
     @Override
     public void init(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
-        fragmentColor = new int[] {R.color.green_nob,
+        fragmentColor = new int[]{R.color.green_nob,
                 R.color.blue_nob,
                 R.color.orange_nob,
                 R.color.green_nob,
@@ -122,7 +123,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     @Override
     public void onDonePressed() {
-        UnifyTracking.eventOnboardingSkip(pager.getCurrentItem()+1);
+        UnifyTracking.eventOnboardingSkip(pager.getCurrentItem() + 1);
         SessionHandler.setFirstTimeUserNewOnboard(this, false);
         Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
         startActivity(intent);
@@ -158,7 +159,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
     }
 
     public void setNextResource() {
-        if(nextView!=null) {
+        if (nextView != null) {
             nextView.setImageResource(R.drawable.next_ic);
             nextView.setMinimumWidth(0);
             FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
@@ -168,42 +169,49 @@ public class NewOnboardingActivity extends OnboardingActivity {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(@NonNull View v) {
-                    if (isVibrateOn) {
-                        mVibrator.vibrate(vibrateIntensity);
-                    }
+                    if (!isNextPressed) {
+                        isNextPressed = true;
 
-                    boolean requestPermission = false;
-                    int position = 0;
+                        if (isVibrateOn) {
+                            mVibrator.vibrate(vibrateIntensity);
+                        }
 
-                    for (int i = 0; i < permissionsArray.size(); i++) {
-                        requestPermission = pager.getCurrentItem() + 1 == permissionsArray.get(i).getPosition();
-                        position = i;
-                        break;
-                    }
+                        boolean requestPermission = false;
+                        int position = 0;
 
-                    if (requestPermission) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(permissionsArray.get(position).getPermission(), 1);
-                            permissionsArray.remove(position);
+                        for (int i = 0; i < permissionsArray.size(); i++) {
+                            requestPermission = pager.getCurrentItem() + 1 == permissionsArray.get(i).getPosition();
+                            position = i;
+                            break;
+                        }
+
+                        if (requestPermission) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                requestPermissions(permissionsArray.get(position).getPermission(), 1);
+                                permissionsArray.remove(position);
+                                isNextPressed = false;
+                            } else {
+                                ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
+                                pager.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        pager.setCurrentItem(pager.getCurrentItem() + 1, true);
+                                        isNextPressed = false;
+                                    }
+                                }, 1250);
+                                onNextPressed();
+                            }
                         } else {
                             ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
                             pager.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     pager.setCurrentItem(pager.getCurrentItem() + 1, true);
+                                    isNextPressed = false;
                                 }
-                            },1250);
+                            }, 1250);
                             onNextPressed();
                         }
-                    } else {
-                        ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
-                        pager.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                pager.setCurrentItem(pager.getCurrentItem() + 1, true);
-                            }
-                        },1250);
-                        onNextPressed();
                     }
                 }
             });
