@@ -106,8 +106,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         switch (viewType) {
             case VIEW_ENDING:
                 return inflateEndingView(inflater, container, savedInstanceState);
-            case VIEW_FREE_RETURN:
-                return inflateFreeReturnView(inflater, container, savedInstanceState);
             default:
                 return inflateDefaultView(inflater, container, savedInstanceState);
         }
