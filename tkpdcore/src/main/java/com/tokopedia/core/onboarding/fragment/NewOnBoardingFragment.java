@@ -118,7 +118,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        position = getArguments().getInt(ARG_POSITION);
         view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         view.setTag(this);
@@ -237,7 +236,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         if (position < -1) {
             main.setAlpha(0);
 
-        } else if (position > 1){
+        } else if (position > 1) {
             main.setAlpha(0);
 
             titleView.setTranslationX(titleView.getWidth() * -position);
