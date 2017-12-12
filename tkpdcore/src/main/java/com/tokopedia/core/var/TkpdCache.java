@@ -221,7 +221,7 @@ public class TkpdCache {
         public static final String HOME_BANNER_CACHE = "HOME_BANNER_CACHE";
         public static final String HOME_TOP_PICK_CACHE = "HOME_TOP_PICK_CACHE";
         public static final String HOME_TICKER_CACHE = "HOME_TICKER_CACHE";
-
+        public static final String HOME_SALDO_CACHE = "HOME_SALDO_CACHE";
     }
 
 }

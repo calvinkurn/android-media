@@ -37,12 +37,13 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.functions.Func5;
+import rx.functions.Func6;
 import rx.functions.Func7;
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
-public class HomeDataMapper implements Func7<TokoCashModel, TopPointsModel, HomeBannerResponseModel, Ticker,
+public class HomeDataMapper implements Func6<SaldoViewModel, HomeBannerResponseModel, Ticker,
         BrandsOfficialStoreResponseModel, TopPicksResponseModel,
         HomeCategoryResponseModel, List<Visitable>> {
     private final Context context;
@@ -52,43 +53,16 @@ public class HomeDataMapper implements Func7<TokoCashModel, TopPointsModel, Home
     }
 
     @Override
-    public List<Visitable> call(TokoCashModel tokoCashModel, TopPointsModel topPointsModel,
-                                HomeBannerResponseModel homeBannerResponseModel, Ticker ticker,
+    public List<Visitable> call(SaldoViewModel saldoViewModel, HomeBannerResponseModel homeBannerResponseModel, Ticker ticker,
                                 BrandsOfficialStoreResponseModel brandsOfficialStoreResponseModel,
                                 TopPicksResponseModel topPicksResponseModel,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
-        SaldoViewModel cashViewModel = new SaldoViewModel();
-        if (tokoCashModel.isSuccess() && tokoCashModel.getTokoCashData() != null) {
-            TokoCashData tokoCashData = tokoCashModel.getTokoCashData();
-            SaldoViewModel.ItemModel tokoCash = new SaldoViewModel.ItemModel();
-            tokoCash.setIcon(R.drawable.ic_tokocash_icon);
-            tokoCash.setTitle(tokoCashData.getText());
-            if (tokoCashData.getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
-                tokoCash.setSubtitle(tokoCashData.getBalance());
-                tokoCash.setApplinks(getAppLinkBalance(tokoCashData));
-                tokoCash.setRedirectUrl(tokoCashData.getRedirectUrl());
-            } else {
-                tokoCash.setSubtitle(tokoCashData.getAction().getText());
-                tokoCash.setApplinks(tokoCashData.getAction().getmAppLinks());
-                tokoCash.setRedirectUrl(tokoCashData.getAction().getRedirectUrl());
-            }
-            cashViewModel.addItem(tokoCash);
-        }
-        //TODO replace with hachiko
-        if (topPointsModel.isSuccess() && topPointsModel.getTopPointsData() != null) {
-            TopPointsData pointsData = topPointsModel.getTopPointsData();
-            SaldoViewModel.ItemModel topPoint = new SaldoViewModel.ItemModel();
-            topPoint.setIcon(R.drawable.ic_logo_toppoint);
-            topPoint.setTitle("TopPoint");
-            topPoint.setSubtitle(pointsData.getLoyaltyPoint().getAmount());
-            cashViewModel.addItem(topPoint);
-        }
-        if (cashViewModel.getListItems().size() > 0) {
-            list.add(cashViewModel);
-        }
         if (ticker.getData().getTickers().size() > 0) {
             list.add(mappingTicker(ticker.getData().getTickers()));
+        }
+        if (saldoViewModel.getListItems().size() > 0) {
+            list.add(saldoViewModel);
         }
         if (homeBannerResponseModel.isSuccess()) {
             list.add(mappingBanner(homeBannerResponseModel));

@@ -7,17 +7,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
@@ -30,9 +27,9 @@ import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
 import com.tokopedia.tkpd.beranda.data.mapper.SaldoDataMapper;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
@@ -45,11 +42,9 @@ import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -57,9 +52,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 
@@ -89,6 +82,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetLocalHomeDataUseCase localHomeDataUseCase;
     @Inject
     HomeDataMapper homeDataMapper;
+    @Inject
+    GlobalCacheManager cacheManager;
+    @Inject
+    Gson gson;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
@@ -110,28 +107,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    private void getLocalHomeDataItem() {
-        subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
-                .doOnNext(new Action1<List<Visitable>>() {
-                    @Override
-                    public void call(List<Visitable> visitables) {
-                        getCloudHomeDataItem();
-                    }
-                })
-                .onErrorResumeNext(getCloudDataObservable())
-                .subscribe(new HomeDataSubscriber());
-        compositeSubscription.add(subscription);
-    }
-
-    private void getCloudHomeDataItem() {
-        subscription = getCloudDataObservable().subscribe(new HomeDataSubscriber());
-        compositeSubscription.add(subscription);
-    }
-
     @NonNull
-    private Observable<List<Visitable>> getCloudDataObservable() {
-        return Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+    private Observable<List<Visitable>> getDataFromNetwork() {
+        return Observable.zip(
+                getSaldoData(),
                 getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
                 getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
@@ -139,56 +118,44 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), homeDataMapper);
     }
 
-//    private void getSaldoData(DefaultSubscriber<SaldoViewModel> subscriber) {
-//        if (SessionHandler.isV4Login(context)) {
-//            subscription = Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-//                    topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-//                    new SaldoDataMapper())
-//                    .subscribe(subscriber);
-//            compositeSubscription.add(subscription);
-//        } else if (isViewAttached()) {
-//            getLocalHomeDataItem(null);
-//        }
-//    }
+    private Observable<SaldoViewModel> getSaldoData() {
+        if (SessionHandler.isV4Login(context)) {
+            return Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                    topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                    new SaldoDataMapper()).doOnNext(saveSaldoToCache());
+        } else {
+            return Observable.just(new SaldoViewModel());
+        }
+    }
+
+    private Action1<SaldoViewModel> saveSaldoToCache() {
+        return new Action1<SaldoViewModel>() {
+            @Override
+            public void call(SaldoViewModel saldoViewModel) {
+                cacheManager.setKey(TkpdCache.Key.HOME_SALDO_CACHE);
+                cacheManager.setValue(gson.toJson(saldoViewModel));
+                cacheManager.store();
+            }
+        };
+    }
 
     @Override
     public void getHomeData() {
-        getLocalHomeDataItem();
+        subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
+                .doOnNext(refreshData())
+                .onErrorResumeNext(getDataFromNetwork())
+                .subscribe(new HomeDataSubscriber());
+        compositeSubscription.add(subscription);
+    }
 
-//        getSaldoData(new DefaultSubscriber<SaldoViewModel>() {
-//            @Override
-//            public void onStart() {
-//                if (isViewAttached()) {
-//                    getView().removeNetworkError();
-//                    getView().showLoading();
-//                }
-//            }
-//
-//            @Override
-//            public void onNext(final SaldoViewModel saldoModel) {
-//                if (isViewAttached()) {
-//                    final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
-//                    if (config != null) {
-//                        config.setDefaults(R.xml.remote_config_default);
-//                        config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                if (task.isSuccessful()) {
-//                                    config.activateFetched();
-//                                }
-//                            }
-//                        });
-//                    }
-//                    getView().setItem(0, saldoModel);
-//                    getLocalHomeDataItem(saldoModel);
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                getLocalHomeDataItem(null);
-//            }
-//        });
+    @NonNull
+    private Action1<List<Visitable>> refreshData() {
+        return new Action1<List<Visitable>>() {
+            @Override
+            public void call(List<Visitable> visitables) {
+                compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
+            }
+        };
     }
 
 
@@ -202,10 +169,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     try {
                         ShopModel shopModel = new Gson().fromJson(result, ShopModel.class);
                         if (shopModel.info != null) {
-                            JSONObject shop = new JSONObject(result);
-                            JSONObject shopInfo = new JSONObject(shop.getString("info"));
                             Bundle bundle = ShopInfoActivity.createBundle(
-                                    shopInfo.getString("shop_id"), shopInfo.getString("shop_domain"));
+                                    shopModel.getInfo().getShopId(), shopModel.getInfo().getShopDomain());
                             Intent intent = new Intent(context, ShopInfoActivity.class);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
