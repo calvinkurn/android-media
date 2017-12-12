@@ -109,7 +109,7 @@
 
                 <ImageView
                     android:id="@id/info_topads"
-                    android:layout_width="18dp"
+                    android:layout_width="17dp"
                     android:layout_height="14dp"
                     android:src="@drawable/ic_toa"/>
 
