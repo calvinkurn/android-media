@@ -2,6 +2,8 @@ package com.tokopedia.seller.seller.info.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.text.TextUtilsCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -89,7 +91,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     public void onItemClicked(SellerInfoModel sellerInfoModel) {
-        if(sellerInfoModel.getExternalLink()==null||sellerInfoModel.getExternalLink().isEmpty())
+        if(TextUtils.isEmpty(sellerInfoModel.getExternalLink()))
             return;
 
         if(sellerInfoModel instanceof SellerInfoSectionModel)

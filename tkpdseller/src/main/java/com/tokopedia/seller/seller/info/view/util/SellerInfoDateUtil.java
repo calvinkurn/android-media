@@ -20,6 +20,9 @@ public final class SellerInfoDateUtil {
             new SimpleDateFormat(GoldMerchantDateUtils.YYYY_M_MDD, locale);
     static final SimpleDateFormat sdfHourEtc =
             new SimpleDateFormat(KK_MM_Z, locale);
+    public static final int UNIX_MULTIPLIER = 1000;
+    public static final int PREVIOUS_DAY_COUNT = 1;
+    public static final int TODAY_DAY_COUNT1 = 0;
 
     static{
         sdfHourEtc.setTimeZone(TimeZone.getDefault());
@@ -30,25 +33,25 @@ public final class SellerInfoDateUtil {
     }
 
     public static String fromUnixTime(long date, String[] monthNames){
-        int conv = Integer.valueOf(sdf.format(new Date(date*1000)));
+        int conv = Integer.valueOf(sdf.format(new Date(date* UNIX_MULTIPLIER)));
         return GoldMerchantDateUtils.getDateWithoutYear(conv, monthNames);
     }
 
     public static String fromUnixTimeGetHourEtc(long date){
-        return sdfHourEtc.format(new Date(date*1000));
+        return sdfHourEtc.format(new Date(date* UNIX_MULTIPLIER));
     }
 
     public static Date fromUnixTimeDate(long date){
-        return new Date(date*1000);
+        return new Date(date* UNIX_MULTIPLIER);
     }
 
     public static String yesterday(String[] monthNames){
-        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 1) / 1000;
+        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), PREVIOUS_DAY_COUNT) / UNIX_MULTIPLIER;
         return fromUnixTime(unixTime, monthNames);
     }
 
     public static String today(String[] monthNames){
-        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), 0) / 1000;
+        long unixTime = GoldMerchantDateUtils.getPreviousDate(Calendar.getInstance().getTimeInMillis(), TODAY_DAY_COUNT1) / UNIX_MULTIPLIER;
         return fromUnixTime(unixTime, monthNames);
     }
 
