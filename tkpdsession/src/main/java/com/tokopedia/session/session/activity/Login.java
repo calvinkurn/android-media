@@ -389,6 +389,7 @@ public class Login extends BaseActivity implements SessionView
                     if (!SessionHandler.isUserSeller(this)) {
                         UnifyTracking.eventLoginCreateShopSellerApp();
                     }
+                    //TODO, app intro is no longer needed, directly send (1) has shop
                     if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
                         //  Launch app intro
                         Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);

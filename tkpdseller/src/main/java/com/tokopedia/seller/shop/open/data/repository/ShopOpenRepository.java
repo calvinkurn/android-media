@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.open.domain;
+package com.tokopedia.seller.shop.open.data.repository;
 
 import rx.Observable;
 
