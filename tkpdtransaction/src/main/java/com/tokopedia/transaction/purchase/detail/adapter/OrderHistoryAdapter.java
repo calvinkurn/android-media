@@ -42,6 +42,8 @@ public class OrderHistoryAdapter extends RecyclerView
                         + historyListDatas.get(position).getOrderHistoryDate()
         );
         holder.orderHistoryComment.setText(historyListDatas.get(position).getOrderHistoryComment());
+        holder.orderHistoryComment.setVisibility(historyListDatas.get(position)
+                .getOrderHistoryComment().equals("") ? View.GONE : View.VISIBLE);
         holder.orderHistoryDescription
                 .setText(Html.fromHtml(historyListDatas.get(position).getOrderHistoryTitle()));
         holder.orderHistoryTime.setText(historyListDatas.get(position).getOrderHistoryTime());

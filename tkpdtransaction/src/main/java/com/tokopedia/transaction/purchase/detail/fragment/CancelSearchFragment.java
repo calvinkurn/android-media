@@ -2,8 +2,10 @@ package com.tokopedia.transaction.purchase.detail.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,7 @@ import com.tokopedia.transaction.R;
  * Created by kris on 11/29/17. Tokopedia
  */
 
-public class CancelSearchFragment extends TkpdFragment{
+public class CancelSearchFragment extends TkpdFragment {
 
     private CancelSearchReplacementListener listener;
 
@@ -34,8 +36,10 @@ public class CancelSearchFragment extends TkpdFragment{
     private TextView reason1;
     private TextView reason2;
     private TextView reason3;
+    private TextView otherReason;
     private EditText otherReasonField;
     private RelativeLayout layoutCancelSearch;
+    private TextView submitButton;
 
     @Override
     protected String getScreenName() {
@@ -66,6 +70,7 @@ public class CancelSearchFragment extends TkpdFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
+        listener.setToolbarCancelSearch(getString(R.string.cancel_search_replacement), R.drawable.ic_clear_24dp);
         View view = inflater.inflate(R.layout.cancel_search_replacement_fragment, container, false);
         reason1 = view.findViewById(R.id.reason_1);
         reasonRadioButton1 = view.findViewById(R.id.radio_button_1);
@@ -76,8 +81,9 @@ public class CancelSearchFragment extends TkpdFragment{
         otherReasonField = view.findViewById(R.id.other_reason_field);
         otherReasonRadioButton = view.findViewById(R.id.radio_button_4);
         layoutCancelSearch = view.findViewById(R.id.layout_cancel_search_replacement);
+        otherReason = view.findViewById(R.id.other_reason_text);
 
-        reasonRadioButton1.setOnCheckedChangeListener(onRadioButtonClickedListener(
+        reasonRadioButton1.setOnCheckedChangeListener(onRadioButtonClickedListener(reason1,
                 reasonRadioButton2,
                 reasonRadioButton3
         ));
@@ -85,7 +91,7 @@ public class CancelSearchFragment extends TkpdFragment{
                 reasonRadioButton1,
                 reasonRadioButton2,
                 reasonRadioButton3));
-        reasonRadioButton2.setOnCheckedChangeListener(onRadioButtonClickedListener(
+        reasonRadioButton2.setOnCheckedChangeListener(onRadioButtonClickedListener(reason2,
                 reasonRadioButton1,
                 reasonRadioButton3
         ));
@@ -93,22 +99,23 @@ public class CancelSearchFragment extends TkpdFragment{
                 reasonRadioButton2,
                 reasonRadioButton1,
                 reasonRadioButton3));
-        reasonRadioButton3.setOnCheckedChangeListener(onRadioButtonClickedListener(
+        reasonRadioButton3.setOnCheckedChangeListener(onRadioButtonClickedListener(reason3,
                 reasonRadioButton1,
                 reasonRadioButton2
         ));
         reason3.setOnClickListener(onReasonTextSelected(reasonRadioButton3,
                 reasonRadioButton1,
-                reasonRadioButton3));
-        otherReasonRadioButton.setOnCheckedChangeListener(onOtherReasonClickedListener());
-        otherReasonField.setOnClickListener(onOtherReasonTextSelected());
-        layoutCancelSearch.setOnClickListener(onEmptyAction());
-        TextView submitButton = view.findViewById(R.id.submit_button);
+                reasonRadioButton2));
+        otherReasonRadioButton.setOnCheckedChangeListener(onOtherReasonClickedListener(otherReason));
+        otherReason.setOnClickListener(onOtherReasonTextSelected());
+        layoutCancelSearch.setOnClickListener(onOtherClickTextListener());
+        submitButton = view.findViewById(R.id.submit_button);
         submitButton.setOnClickListener(onSubmitButtonClickedListener());
         return view;
     }
 
     private CompoundButton.OnCheckedChangeListener onRadioButtonClickedListener(
+            final TextView textChoice,
             final RadioButton otherRadioButton1,
             final RadioButton otherRadioButton2
     ) {
@@ -116,24 +123,32 @@ public class CancelSearchFragment extends TkpdFragment{
         ) {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if(checked) {
+                if (checked) {
+                    textChoice.setTypeface(null, Typeface.BOLD);
+                    setButtonCancelSearch(true);
                     otherReasonRadioButton.setChecked(false);
                     otherReasonField.setVisibility(View.GONE);
                     otherRadioButton1.setChecked(false);
                     otherRadioButton2.setChecked(false);
+                } else {
+                    textChoice.setTypeface(null, Typeface.NORMAL);
                 }
             }
         };
     }
 
-    private CompoundButton.OnCheckedChangeListener onOtherReasonClickedListener() {
+    private CompoundButton.OnCheckedChangeListener onOtherReasonClickedListener(final TextView textChoice) {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if(checked) {
+                if (checked) {
+                    textChoice.setTypeface(null, Typeface.BOLD);
+                    setButtonCancelSearch(true);
                     reasonRadioButton1.setChecked(false);
                     reasonRadioButton2.setChecked(false);
                     reasonRadioButton3.setChecked(false);
+                } else {
+                    textChoice.setTypeface(null, Typeface.NORMAL);
                 }
                 otherReasonField.setVisibility(View.VISIBLE);
                 otherReasonField.requestFocus();
@@ -150,8 +165,9 @@ public class CancelSearchFragment extends TkpdFragment{
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!selectedRadioButton.isChecked()) {
+                if (!selectedRadioButton.isChecked()) {
                     selectedRadioButton.setChecked(true);
+                    setButtonCancelSearch(true);
                     otherRadioButton1.setChecked(false);
                     otherRadioButton2.setChecked(false);
                     otherReasonRadioButton.setChecked(false);
@@ -165,8 +181,9 @@ public class CancelSearchFragment extends TkpdFragment{
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!otherReasonRadioButton.isChecked()) {
+                if (!otherReasonRadioButton.isChecked()) {
                     otherReasonRadioButton.setChecked(true);
+                    setButtonCancelSearch(true);
                     otherReasonField.setVisibility(View.VISIBLE);
                     reasonRadioButton1.setChecked(false);
                     reasonRadioButton2.setChecked(false);
@@ -182,26 +199,26 @@ public class CancelSearchFragment extends TkpdFragment{
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(reasonRadioButton1.isChecked()) {
+                if (reasonRadioButton1.isChecked()) {
                     listener.cancelSearch(
                             getArguments().getString(ORDER_ID_ARGUMENT),
                             11,
                             reason1.getText().toString()
                     );
-                } else if(reasonRadioButton2.isChecked()) {
+                } else if (reasonRadioButton2.isChecked()) {
                     listener.cancelSearch(
                             getArguments().getString(ORDER_ID_ARGUMENT),
                             12,
                             reason2.getText().toString()
                     );
-                } else if(reasonRadioButton3.isChecked()) {
+                } else if (reasonRadioButton3.isChecked()) {
                     listener.cancelSearch(
                             getArguments().getString(ORDER_ID_ARGUMENT),
                             13,
                             reason3.getText().toString()
                     );
-                } else if(otherReasonRadioButton.isChecked()){
-                    if(otherReasonField.getText().toString().isEmpty()) {
+                } else if (otherReasonRadioButton.isChecked()) {
+                    if (otherReasonField.getText().toString().isEmpty()) {
                         otherReasonField.setError(getActivity()
                                 .getString(com.tokopedia.core.R.string.error_note_empty));
                     } else {
@@ -212,6 +229,7 @@ public class CancelSearchFragment extends TkpdFragment{
                         );
                     }
                 } else {
+                    setButtonCancelSearch(false);
                     Toast.makeText(
                             getActivity(),
                             "Mohon Pilih Salah Satu",
@@ -221,15 +239,32 @@ public class CancelSearchFragment extends TkpdFragment{
         };
     }
 
-    private View.OnClickListener onEmptyAction() {
+    private void setButtonCancelSearch(boolean active) {
+        submitButton.setEnabled(active);
+        submitButton.setBackground(active ? ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_green) :
+                ContextCompat.getDrawable(getActivity(), R.drawable.bg_grey_button_rounded));
+        submitButton.setTextColor(active ? ContextCompat.getColor(getActivity(), R.color.white) :
+                ContextCompat.getColor(getActivity(), R.color.grey_700));
+    }
+
+    private View.OnClickListener onOtherClickTextListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!otherReasonRadioButton.isChecked()) {
+                    otherReasonRadioButton.setChecked(true);
+                    otherReasonField.setVisibility(View.VISIBLE);
+                    reasonRadioButton1.setChecked(false);
+                    reasonRadioButton2.setChecked(false);
+                    reasonRadioButton3.setChecked(false);
+                }
             }
         };
     }
 
     public interface CancelSearchReplacementListener {
-        void cancelSearch(String orderId, int reasonId,String notes);
+        void cancelSearch(String orderId, int reasonId, String notes);
+
+        void setToolbarCancelSearch(String titleToolbar, int drawable);
     }
 }

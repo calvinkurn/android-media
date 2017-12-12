@@ -160,4 +160,7 @@
     <string name="success_finish_order_message">Pesanan Anda sudah selesai. Beri Rating dan Review di halaman ulasan.</string>
     <string name="title_dialog_finish_order">Selesaikan Pesanan</string>
     <string name="body_dialog_finish_order">Pilih selesai apabila barang sudah diterima dan tidak bermasalah</string>
+    <string name="cancel_search_replacement">Batalkan Pencarian</string>
+    <string name="title_detail_transaction">Detil Transaksi</string>
+
 </resources>

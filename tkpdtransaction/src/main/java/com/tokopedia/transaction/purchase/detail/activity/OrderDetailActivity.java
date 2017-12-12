@@ -469,7 +469,14 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void setToolbarCancelSearch(String titleToolbar, int drawable) {
+        toolbar.setTitle(titleToolbar);
+        toolbar.setNavigationIcon(drawable);
+    }
+
+    @Override
     public void onBackPressed() {
+        setToolbarCancelSearch(getString(R.string.title_detail_transaction), R.drawable.ic_arrow_back_black);
         if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
             getFragmentManager().beginTransaction().remove(getFragmentManager()
                     .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
