@@ -2,6 +2,7 @@ package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,11 +20,15 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
+import com.tokopedia.profilecompletion.view.util.TextDrawable;
 import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
@@ -28,8 +36,8 @@ import com.tokopedia.session.login.loginphonenumber.view.adapter.TokocashAccount
 import com.tokopedia.session.login.loginphonenumber.view.presenter.ChooseTokocashAccountPresenter;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
-import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
+import com.tokopedia.session.session.activity.Login;
 
 import javax.inject.Inject;
 
@@ -101,11 +109,53 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_choose_tokocash_account, parent, false);
+        setHasOptionsMenu(true);
         message = view.findViewById(R.id.message);
         listAccount = view.findViewById(R.id.list_account);
         prepareView();
         presenter.attachView(this);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.add(Menu.NONE, R.id.action_logout, 0, "");
+        MenuItem menuItem = menu.findItem(R.id.action_logout); // OR THIS
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setIcon(getDraw());
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private Drawable getDraw() {
+        TextDrawable drawable = new TextDrawable(getActivity());
+        drawable.setText(getResources().getString(R.string.action_logout));
+        drawable.setTextColor(R.color.black_70b);
+        return drawable;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logout) {
+            goToLoginPage();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void goToLoginPage() {
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            Intent intentLogin = Login.getCallingIntent(getActivity());
+            Intent intentHome = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
+                    (getActivity());
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            getActivity().startActivities(new Intent[]
+                    {
+                            intentHome,
+                            intentLogin
+                    });
+            getActivity().finish();
+        }
     }
 
     private void prepareView() {
