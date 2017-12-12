@@ -25,6 +25,12 @@ public class FlightAirportPickerUseCase extends UseCase<List<FlightAirportDB>> {
         this.flightRepository = flightRepository;
     }
 
+    public static RequestParams createRequestParams(String text) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(KEYWORD, text);
+        return requestParams;
+    }
+
     @Override
     public Observable<List<FlightAirportDB>> createObservable(RequestParams requestParams) {
         return flightRepository.getAirportList(requestParams.getString(KEYWORD, ""))
@@ -43,7 +49,7 @@ public class FlightAirportPickerUseCase extends UseCase<List<FlightAirportDB>> {
                 });
     }
 
-    public static RequestParams createRequestParams(String text) {
+    public RequestParams createRequestParam(String text) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(KEYWORD, text);
         return requestParams;

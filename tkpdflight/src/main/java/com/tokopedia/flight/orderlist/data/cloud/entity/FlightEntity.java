@@ -19,12 +19,21 @@ public class FlightEntity {
     @SerializedName("total_adult")
     @Expose
     private String totalAdult;
+    @SerializedName("total_adult_numeric")
+    @Expose
+    private int totalAdultNumeric;
     @SerializedName("total_child")
     @Expose
     private String totalChild;
+    @SerializedName("total_child_numeric")
+    @Expose
+    private int totalChildNumeric;
     @SerializedName("total_infant")
     @Expose
     private String totalInfant;
+    @SerializedName("total_infant_numeric")
+    @Expose
+    private int totalInfantNumeric;
     @SerializedName("currency")
     @Expose
     private String currency;
@@ -68,5 +77,17 @@ public class FlightEntity {
 
     public List<PassengerEntity> getPassengers() {
         return passengers;
+    }
+
+    public int getTotalAdultNumeric() {
+        return totalAdultNumeric;
+    }
+
+    public int getTotalChildNumeric() {
+        return totalChildNumeric;
+    }
+
+    public int getTotalInfantNumeric() {
+        return totalInfantNumeric;
     }
 }

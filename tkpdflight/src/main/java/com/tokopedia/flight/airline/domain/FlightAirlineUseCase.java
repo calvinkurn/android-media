@@ -1,7 +1,6 @@
 package com.tokopedia.flight.airline.domain;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -25,12 +24,18 @@ public class FlightAirlineUseCase extends UseCase<List<FlightAirlineDB>> {
         this.flightRepository = flightRepository;
     }
 
+    public static RequestParams createRequestParams(String airlineID) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(AIRLINE_ID, airlineID);
+        return requestParams;
+    }
+
     @Override
     public Observable<List<FlightAirlineDB>> createObservable(RequestParams requestParams) {
         return flightRepository.getAirlineList(requestParams==null?null: requestParams.getString(AIRLINE_ID, null));
     }
 
-    public static RequestParams createRequestParams(String airlineID) {
+    public RequestParams createRequestParam(String airlineID) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(AIRLINE_ID, airlineID);
         return requestParams;
