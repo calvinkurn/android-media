@@ -45,10 +45,14 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     }
 
     @Inject
-    public DistrictRecommendationPresenter(GetDistrictRequestUseCase getDistrictRequestUseCase,
-                                           Token token) {
+    public DistrictRecommendationPresenter(GetDistrictRequestUseCase getDistrictRequestUseCase) {
         this.token = token;
         this.getDistrictRequestUseCase = getDistrictRequestUseCase;
+    }
+
+    @Override
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     @Override

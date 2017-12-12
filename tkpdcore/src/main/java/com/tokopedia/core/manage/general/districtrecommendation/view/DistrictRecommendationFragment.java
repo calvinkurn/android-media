@@ -104,12 +104,13 @@ public class DistrictRecommendationFragment
     protected void initialPresenter() {
         initializeInjector();
         presenter.attachView(this);
+        presenter.setToken((Token) getArguments().getParcelable(ARGUMENT_DATA_TOKEN));
     }
 
     private void initializeInjector() {
         AppComponent component = ((DistrictRecommendationActivity) getActivity()).getApplicationComponent();
         DistrictRecommendationModule module =
-                new DistrictRecommendationModule((Token) getArguments().getParcelable(ARGUMENT_DATA_TOKEN));
+                new DistrictRecommendationModule();
         DistrictRecommendationComponent districtRecommendationComponent =
                 DaggerDistrictRecommendationComponent.builder()
                         .appComponent(component)

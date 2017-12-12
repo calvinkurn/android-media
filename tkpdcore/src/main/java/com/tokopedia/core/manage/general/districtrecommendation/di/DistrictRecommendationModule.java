@@ -21,10 +21,9 @@ import dagger.Provides;
 public class DistrictRecommendationModule {
 
     private static final int RETRY_COUNT = 0;
-    private Token token;
 
-    public DistrictRecommendationModule(Token token) {
-        this.token = token;
+    public DistrictRecommendationModule() {
+
     }
 
     // Provide KeroAuthService
@@ -76,7 +75,7 @@ public class DistrictRecommendationModule {
     @DistrictRecommendationScope
     DistrictRecommendationContract.Presenter provideDistrictRecommendationPresenter(
             GetDistrictRequestUseCase getDistrictRequestUseCase) {
-        return new DistrictRecommendationPresenter(getDistrictRequestUseCase, token);
+        return new DistrictRecommendationPresenter(getDistrictRequestUseCase);
     }
 
 }

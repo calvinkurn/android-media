@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,8 @@ public interface DistrictRecommendationContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+        void setToken(Token token);
+
         void searchAddress(String keyword);
 
         void searchNextIfAvailable(String keyword);
