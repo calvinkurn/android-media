@@ -133,6 +133,11 @@ public class KeroppiParam {
         params.put(UT, ut);
         params.put(INSURANCE, "1");
 
+        Log.e("PARAMS__", "paramsKeroCart");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            Log.e(entry.getKey(), entry.getValue());
+        }
+
         return params;
     }
 

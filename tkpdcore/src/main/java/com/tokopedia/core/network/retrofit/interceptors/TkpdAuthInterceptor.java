@@ -74,19 +74,20 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
 
         String bodyResponse = response.body().string();
+        Log.e("RESPONSE_LENGTH", String.valueOf(bodyResponse.length()));
         if (bodyResponse.length() > 4000) {
-            Log.v("RESPONSE", "sb.length = " + bodyResponse.length());
+            Log.e("RESPONSE", "sb.length = " + bodyResponse.length());
             int chunkCount = bodyResponse.length() / 4000;
             for (int i = 0; i <= chunkCount; i++) {
                 int max = 4000 * (i + 1);
                 if (max >= bodyResponse.length()) {
-                    Log.v("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(4000 * i));
+                    Log.e("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(4000 * i));
                 } else {
-                    Log.v("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(4000 * i, max));
+                    Log.e("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(4000 * i, max));
                 }
             }
         } else {
-            Log.v("RESPONSE", bodyResponse);
+            Log.e("RESPONSE", bodyResponse);
         }
         checkResponse(bodyResponse, response);
 

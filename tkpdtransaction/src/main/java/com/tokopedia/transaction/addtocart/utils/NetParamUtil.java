@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.addtocart.utils;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 
@@ -43,6 +45,12 @@ public class NetParamUtil {
         params.put("receiver_phone", orderData.getAddress().getReceiverPhone());
         params.put("shipping_id", orderData.getShipment());
         params.put("shipping_product", orderData.getShipmentPackage());
+
+        Log.e("PARAMS__", "paramAddToCart");
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            Log.e(entry.getKey(), entry.getValue());
+        }
+
         return params;
     }
 }
