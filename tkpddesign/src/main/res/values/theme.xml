@@ -25,7 +25,7 @@
         <item name="android:textSize">@dimen/font_caption</item>
     </style>
 
-    <style name="BaseTabBar">
+    <style name="BaseTabBar" parent="Widget.Design.TabLayout">
         <item name="tabGravity">fill</item>
         <item name="tabIndicatorHeight">3dp</item>
         <item name="tabMode">fixed</item>

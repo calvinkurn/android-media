@@ -226,4 +226,6 @@
     <string name="flight_booking_passenger_last_name_single_word_error">Nama belakang harus satu kata</string>
     <string name="flight_booking_passenger_first_name_alpha_space_error">Nama depan harus terdiri alfabet dan space</string>
     <string name="flight_booking_passenger_last_name_alpha_space_error">Nama belakang hanya alfabet dan spasi</string>
+    <string name="flight_label_detail_order">Detail Penerbangan</string>
+    <string name="flight_label_invoice">INVOICE</string>
 </resources>
