@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.people.address.adapter;
+package com.tokopedia.core.manage.general.districtrecommendation.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
 
 import java.util.ArrayList;
 
