@@ -110,81 +110,85 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    private void getLocalHomeDataItem(final Visitable visitable) {
+    private void getLocalHomeDataItem() {
         subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
                 .doOnNext(new Action1<List<Visitable>>() {
                     @Override
                     public void call(List<Visitable> visitables) {
-                        getCloudHomeDataItem(visitable);
+                        getCloudHomeDataItem();
                     }
                 })
                 .onErrorResumeNext(getCloudDataObservable())
-                .subscribe(new HomeDataSubscriber(visitable));
+                .subscribe(new HomeDataSubscriber());
         compositeSubscription.add(subscription);
     }
 
-    private void getCloudHomeDataItem(final Visitable visitable) {
-        subscription = getCloudDataObservable().subscribe(new HomeDataSubscriber(visitable));
+    private void getCloudHomeDataItem() {
+        subscription = getCloudDataObservable().subscribe(new HomeDataSubscriber());
         compositeSubscription.add(subscription);
     }
 
     @NonNull
     private Observable<List<Visitable>> getCloudDataObservable() {
-        return Observable.zip(getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
+        return Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+                getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
                 getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getTopPicksUseCase.getExecuteObservableAsync(getTopPicksUseCase.getRequestParam()),
                 getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), homeDataMapper);
     }
 
-    private void getSaldoData(DefaultSubscriber<SaldoViewModel> subscriber) {
-        if (SessionHandler.isV4Login(context)) {
-            subscription = Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                    topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                    new SaldoDataMapper())
-                    .subscribe(subscriber);
-            compositeSubscription.add(subscription);
-        } else if (isViewAttached()) {
-            getLocalHomeDataItem(null);
-        }
-    }
+//    private void getSaldoData(DefaultSubscriber<SaldoViewModel> subscriber) {
+//        if (SessionHandler.isV4Login(context)) {
+//            subscription = Observable.zip(tokoCashUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+//                    topPointsUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
+//                    new SaldoDataMapper())
+//                    .subscribe(subscriber);
+//            compositeSubscription.add(subscription);
+//        } else if (isViewAttached()) {
+//            getLocalHomeDataItem(null);
+//        }
+//    }
 
     @Override
     public void getHomeData() {
-        getSaldoData(new DefaultSubscriber<SaldoViewModel>() {
-            @Override
-            public void onStart() {
-                if (isViewAttached()) {
-                    getView().removeNetworkError();
-                    getView().showLoading();
-                }
-            }
+        getLocalHomeDataItem();
 
-            @Override
-            public void onNext(final SaldoViewModel saldoModel) {
-                if (isViewAttached()) {
-                    final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
-                    if (config != null) {
-                        config.setDefaults(R.xml.remote_config_default);
-                        config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    config.activateFetched();
-                                }
-                            }
-                        });
-                    }
-                    getView().setItem(0, saldoModel);
-                    getLocalHomeDataItem(saldoModel);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getLocalHomeDataItem(null);
-            }
-        });
+//        getSaldoData(new DefaultSubscriber<SaldoViewModel>() {
+//            @Override
+//            public void onStart() {
+//                if (isViewAttached()) {
+//                    getView().removeNetworkError();
+//                    getView().showLoading();
+//                }
+//            }
+//
+//            @Override
+//            public void onNext(final SaldoViewModel saldoModel) {
+//                if (isViewAttached()) {
+//                    final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(context);
+//                    if (config != null) {
+//                        config.setDefaults(R.xml.remote_config_default);
+//                        config.fetch().addOnCompleteListener(getView().getActivity(), new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                if (task.isSuccessful()) {
+//                                    config.activateFetched();
+//                                }
+//                            }
+//                        });
+//                    }
+//                    getView().setItem(0, saldoModel);
+//                    getLocalHomeDataItem(saldoModel);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                getLocalHomeDataItem(null);
+//            }
+//        });
     }
 
 
@@ -311,15 +315,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
 
-        private List<Visitable> itemsList;
-
-        public HomeDataSubscriber(Visitable item) {
-            this.itemsList = new ArrayList<>();
-            if (item != null) {
-                this.itemsList.add(item);
-            }
-        }
-
         @Override
         public void onStart() {
             if(isViewAttached()){
@@ -345,8 +340,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onNext(List<Visitable> visitables) {
             if (isViewAttached()) {
-                itemsList.addAll(visitables);
-                getView().setItems(itemsList);
+                getView().setItems(visitables);
             }
         }
     }

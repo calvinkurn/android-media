@@ -4,8 +4,14 @@ import android.content.Context;
 import android.content.res.TypedArray;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
+import com.tokopedia.core.drawer2.data.pojo.toppoints.TopPointsData;
+import com.tokopedia.core.drawer2.data.pojo.toppoints.TopPointsModel;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
@@ -22,6 +28,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 
@@ -30,11 +37,12 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.functions.Func5;
+import rx.functions.Func7;
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
-public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
+public class HomeDataMapper implements Func7<TokoCashModel, TopPointsModel, HomeBannerResponseModel, Ticker,
         BrandsOfficialStoreResponseModel, TopPicksResponseModel,
         HomeCategoryResponseModel, List<Visitable>> {
     private final Context context;
@@ -44,11 +52,41 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
     }
 
     @Override
-    public List<Visitable> call(HomeBannerResponseModel homeBannerResponseModel, Ticker ticker,
+    public List<Visitable> call(TokoCashModel tokoCashModel, TopPointsModel topPointsModel,
+                                HomeBannerResponseModel homeBannerResponseModel, Ticker ticker,
                                 BrandsOfficialStoreResponseModel brandsOfficialStoreResponseModel,
                                 TopPicksResponseModel topPicksResponseModel,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
+        SaldoViewModel cashViewModel = new SaldoViewModel();
+        if (tokoCashModel.isSuccess() && tokoCashModel.getTokoCashData() != null) {
+            TokoCashData tokoCashData = tokoCashModel.getTokoCashData();
+            SaldoViewModel.ItemModel tokoCash = new SaldoViewModel.ItemModel();
+            tokoCash.setIcon(R.drawable.ic_tokocash_icon);
+            tokoCash.setTitle(tokoCashData.getText());
+            if (tokoCashData.getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                tokoCash.setSubtitle(tokoCashData.getBalance());
+                tokoCash.setApplinks(getAppLinkBalance(tokoCashData));
+                tokoCash.setRedirectUrl(tokoCashData.getRedirectUrl());
+            } else {
+                tokoCash.setSubtitle(tokoCashData.getAction().getText());
+                tokoCash.setApplinks(tokoCashData.getAction().getmAppLinks());
+                tokoCash.setRedirectUrl(tokoCashData.getAction().getRedirectUrl());
+            }
+            cashViewModel.addItem(tokoCash);
+        }
+        //TODO replace with hachiko
+        if (topPointsModel.isSuccess() && topPointsModel.getTopPointsData() != null) {
+            TopPointsData pointsData = topPointsModel.getTopPointsData();
+            SaldoViewModel.ItemModel topPoint = new SaldoViewModel.ItemModel();
+            topPoint.setIcon(R.drawable.ic_logo_toppoint);
+            topPoint.setTitle("TopPoint");
+            topPoint.setSubtitle(pointsData.getLoyaltyPoint().getAmount());
+            cashViewModel.addItem(topPoint);
+        }
+        if (cashViewModel.getListItems().size() > 0) {
+            list.add(cashViewModel);
+        }
         if (ticker.getData().getTickers().size() > 0) {
             list.add(mappingTicker(ticker.getData().getTickers()));
         }
@@ -71,7 +109,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
         }
-        if(!SessionHandler.isV4Login(context) || !SessionHandler.isUserSeller(context)){
+        if (!SessionHandler.isV4Login(context) || !SessionHandler.isUserSeller(context)) {
             list.add(new EmptyShopViewModel());
         }
         return rearrangeList(list);
@@ -140,5 +178,20 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         BannerViewModel viewModel = new BannerViewModel();
         viewModel.setSlides(homeBannerResponseModel.getData().getSlides());
         return viewModel;
+    }
+
+    private String getAppLinkBalance(TokoCashData tokoCashData) {
+        String appLinkBalance = tokoCashData.getmAppLinks();
+        if (appLinkBalance != null) {
+            if (!appLinkBalance.contains(Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY)) {
+                appLinkBalance = tokoCashData.getAction().getmVisibility() != null
+                        && tokoCashData.getAction().getmVisibility().equals("1")
+                        ? appLinkBalance + "?" +
+                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=true"
+                        : appLinkBalance + "?" +
+                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY + "=false";
+            }
+        }
+        return appLinkBalance;
     }
 }

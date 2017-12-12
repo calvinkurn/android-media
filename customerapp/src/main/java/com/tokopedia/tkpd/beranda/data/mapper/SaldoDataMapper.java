@@ -35,6 +35,7 @@ public class SaldoDataMapper implements Func2<TokoCashModel, TopPointsModel, Sal
             }
             cashViewModel.addItem(tokoCash);
         }
+        //TODO replace with hachiko
         if (topPointsModel.isSuccess() && topPointsModel.getTopPointsData() != null) {
             TopPointsData pointsData = topPointsModel.getTopPointsData();
             SaldoViewModel.ItemModel topPoint = new SaldoViewModel.ItemModel();
