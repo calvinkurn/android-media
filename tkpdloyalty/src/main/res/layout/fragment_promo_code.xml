@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="@dimen/padding_small">
 
     <LinearLayout
@@ -22,8 +23,7 @@
             <EditText
                 android:id="@+id/et_voucher_code"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_vl"
-                android:textAllCaps="true"
+                android:layout_height="wrap_content"
                 android:lines="1" />
 
 
@@ -38,7 +38,7 @@
         <TextView
             android:id="@+id/btn_check_voucher"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_vl"
+            android:layout_height="@dimen/btn_height"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
             android:background="@drawable/green_button_rounded"
