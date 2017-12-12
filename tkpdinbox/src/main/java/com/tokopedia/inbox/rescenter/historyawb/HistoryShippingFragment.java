@@ -239,6 +239,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
                 ),
                 REQUEST_EDIT_SHIPPING
         );
+        getBottomSheetActivityTransition();
     }
 
     @Override
@@ -248,6 +249,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
                 shipmentID,
                 shippingRefNumber)
         );
+        getBottomSheetActivityTransition();
     }
 
     @Override
@@ -309,5 +311,9 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.setOnDestroyView();
+    }
+
+    public void getBottomSheetActivityTransition() {
+        getActivity().overridePendingTransition(R.anim.pull_up, R.anim.push_down);
     }
 }

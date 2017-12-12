@@ -87,6 +87,9 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
                     if (tvRemark.getText().toString().endsWith(MainApplication.getAppContext()
                             .getString(R.string.string_read_more))) {
                         tvRemark.setText(proveData.getRemark());
+                    } else if (tvRemark.getText().toString().endsWith(MainApplication.getAppContext()
+                            .getString(R.string.string_read_more_close))) {
+                        tvRemark.setText(getProveCloseViewText(proveData.getRemark()));
                     }
                 }
             });
@@ -118,5 +121,13 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
         } else {
             return MethodChecker.fromHtml(text);
         }
+    }
+
+    private Spanned getProveCloseViewText(String text) {
+        return MethodChecker.fromHtml(
+                text.replaceAll("(\r\n|\n)", "<br />") + "... "
+                        + "<font color='#42b549'>"
+                        + MainApplication.getAppContext().getString(R.string.string_read_more_close)
+                        + "</font>");
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.historyaddress.view.model.HistoryAddressViewItem;
 import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentView;
 
@@ -52,6 +53,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         TextView history;
         ImageView indicator;
         View lineIndicator;
+        GlowingView glowingView;
 
         public AddressViewHolder(View itemView) {
             super(itemView);
@@ -59,6 +61,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
             history = (TextView) itemView.findViewById(R.id.tv_address_text);
             indicator = (ImageView) itemView.findViewById(R.id.indicator);
             lineIndicator = itemView.findViewById(R.id.line_indicator);
+            glowingView = (GlowingView) itemView.findViewById(R.id.view_glowing);
         }
     }
 
@@ -116,6 +119,11 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         holder.indicator.setImageResource(
                 item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
         );
+        holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
+        holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
+        if (holder.glowingView.getVisibility() == View.VISIBLE) {
+            holder.glowingView.renderData(new Object());
+        }
     }
 
     private void setPadding(AddressViewHolder holder) {

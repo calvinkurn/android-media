@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
 
@@ -86,6 +87,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.tvMonth.setText(DateFormatUtils.get3LettersMonth(item.getDateTimestamp()));
         holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDateTimestamp()));
         holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDateTimestamp()));
+        holder.lineSeparator.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
         holder.indicator.setImageResource(
                 item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
         );
@@ -99,9 +101,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         if (lastDay.equals(holder.tvDateNumber.getText().toString()) && lastMonth.equals(holder.tvMonth.getText().toString())) {
             holder.tvDateNumber.setVisibility(View.GONE);
             holder.tvMonth.setVisibility(View.GONE);
+            holder.lineSeparator.setVisibility(View.GONE);
         }
         lastDay = holder.tvDateNumber.getText().toString();
         lastMonth = holder.tvMonth.getText().toString();
+        holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
+        holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
+        if (holder.glowingView.getVisibility() == View.VISIBLE) {
+            holder.glowingView.renderData(new Object());
+        }
     }
 
     @Override
@@ -117,7 +125,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         TextView history, tvUsername, tvTime, tvDateNumber, tvMonth;
         ImageView indicator;
-        View lineIndicator;
+        View lineIndicator, lineSeparator;
+        GlowingView glowingView;
 
         public HistoryViewHolder(View itemView) {
             super(itemView);
@@ -128,6 +137,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             tvTime = (TextView) itemView.findViewById(R.id.tv_time);
             tvDateNumber = (TextView) itemView.findViewById(R.id.tv_date_number);
             tvMonth = (TextView) itemView.findViewById(R.id.tv_month);
+            glowingView = (GlowingView) itemView.findViewById(R.id.view_glowing);
+            lineSeparator = itemView.findViewById(R.id.view_separator);
         }
     }
 }

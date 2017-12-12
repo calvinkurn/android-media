@@ -837,6 +837,7 @@ public class DetailResChatFragment
 
     private void showActionDialog(String title, String solution, View.OnClickListener action) {
         resCenterDialog = new Dialog(getActivity());
+        resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         resCenterDialog.setContentView(R.layout.layout_rescenter_dialog);
         TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
         TextView tvSolution = resCenterDialog.findViewById(R.id.tv_solution);
@@ -864,6 +865,7 @@ public class DetailResChatFragment
 
     private void showAcceptActionDialog(String title, String solutionTitle, String solution, View.OnClickListener action) {
         resCenterDialog = new Dialog(getActivity());
+        resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         resCenterDialog.setContentView(R.layout.layout_rescenter_accept_dialog);
         TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
         TextView tvSolutionTitle = resCenterDialog.findViewById(R.id.tv_solution_title);

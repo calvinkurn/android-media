@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -32,7 +33,6 @@ import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
@@ -614,6 +614,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 ),
                 REQUEST_INPUT_SHIPPING
         );
+        getBottomSheetActivityTransition();
     }
 
     @Override
@@ -739,6 +740,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     private void showActionDialog(String title, String solution, View.OnClickListener action) {
         resCenterDialog = new Dialog(getActivity());
+        resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         resCenterDialog.setContentView(R.layout.layout_rescenter_dialog);
         TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
         TextView tvSolution = resCenterDialog.findViewById(R.id.tv_solution);
@@ -766,6 +768,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     private void showAcceptActionDialog(String title, String solutionTitle, String solution, View.OnClickListener action) {
         resCenterDialog = new Dialog(getActivity());
+        resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         resCenterDialog.setContentView(R.layout.layout_rescenter_accept_dialog);
         TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
         TextView tvSolutionTitle = resCenterDialog.findViewById(R.id.tv_solution_title);

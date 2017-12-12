@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.historyawb.view.model.HistoryAwbViewItem;
 import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentView;
 
@@ -55,6 +56,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         View actionTrack;
         View actionEdit;
         View lineIndicator;
+        GlowingView glowingView;
 
         public ShippingViewHolder(View itemView) {
             super(itemView);
@@ -65,6 +67,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
             actionTrack = itemView.findViewById(R.id.action_track);
             actionEdit = itemView.findViewById(R.id.action_edit);
             lineIndicator = itemView.findViewById(R.id.line_indicator);
+            glowingView = (GlowingView) itemView.findViewById(R.id.view_glowing);
         }
     }
 
@@ -149,6 +152,11 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
             holder.date.setTypeface(null, Typeface.NORMAL);
             holder.history.setTypeface(null, Typeface.NORMAL);
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
+        }
+        holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
+        holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
+        if (holder.glowingView.getVisibility() == View.VISIBLE) {
+            holder.glowingView.renderData(new Object());
         }
     }
 

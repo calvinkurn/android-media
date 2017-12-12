@@ -78,10 +78,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_bubble_button"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
                     <Button
                         android:id="@+id/btn_track"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="50dp"
                         android:background="@color/white"
                         android:textSize="@dimen/fontvs"
@@ -89,9 +90,15 @@
                         android:textColor="@color/tkpd_main_green"
                         android:text="@string/string_track_awb"/>
 
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/black_12"/>
+
                     <Button
                         android:id="@+id/btn_edit"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="50dp"
                         android:background="@color/transparent"
                         android:text="@string/string_edit_awb"

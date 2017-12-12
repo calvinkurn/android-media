@@ -134,4 +134,14 @@ public class HistoryShippingActivity extends BasePresenterActivity<HistoryShippi
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getBottomBackSheetActivityTransition();
+    }
+
+    public void getBottomBackSheetActivityTransition() {
+        overridePendingTransition(R.anim.push_down, R.anim.pull_up);
+    }
 }
