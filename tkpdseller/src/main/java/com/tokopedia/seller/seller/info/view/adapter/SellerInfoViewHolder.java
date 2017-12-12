@@ -1,16 +1,23 @@
 package com.tokopedia.seller.seller.info.view.adapter;
 
+import android.graphics.Bitmap;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
+
+import static com.tokopedia.seller.R.id.imageView;
 
 /**
  * Created by normansyahputa on 11/30/17.
@@ -54,7 +61,15 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
 
         textTitle.setText(sellerInfoModel.getTitle());
 
-        ImageHandler.LoadImage(imageSellerInfo, sellerInfoModel.getInfoThumbnailUrl());
+        ImageHandler.loadImageWithTarget(imageSellerInfo.getContext(), sellerInfoModel.getInfoThumbnailUrl(), new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(imageSellerInfo.getResources(), resource);
+                float radius = imageSellerInfo.getResources().getDimension(R.dimen.seller_info_radius_image_view);
+                dr.setCornerRadius(radius);
+                imageSellerInfo.setImageDrawable(dr);
+            }
+        });
 
         if(sellerInfoModel.isRead()){
             sellerInfoContainer.setBackgroundColor(whiteColor);
