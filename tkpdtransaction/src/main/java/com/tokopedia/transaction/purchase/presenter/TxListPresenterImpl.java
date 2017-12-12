@@ -430,6 +430,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TrackingUtils.sendMoEngageShippingReceivedEvent(false);
                 dialog.dismiss();
             }
         });
@@ -437,6 +438,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TrackingUtils.sendMoEngageShippingReceivedEvent(true);
                 confirmPurchaseOrder(context, dialog, orderData);
             }
         });
@@ -695,7 +697,6 @@ public class TxListPresenterImpl implements TxListPresenter {
 
                         @Override
                         public void onSuccess(String message, JSONObject lucky) {
-                            TrackingUtils.sendMoEngageShippingReceivedEvent(true);
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
                             processReview(context, message);
@@ -704,7 +705,6 @@ public class TxListPresenterImpl implements TxListPresenter {
 
                         @Override
                         public void onError(String message) {
-                            TrackingUtils.sendMoEngageShippingReceivedEvent(false);
                             viewListener.hideProgressLoading();
                             viewListener.showToastMessage(message);
                             dialog.dismiss();
