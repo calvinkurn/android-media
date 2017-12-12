@@ -234,7 +234,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void updateHeaderTokoCashPendingData(CashBackData cashBackData) {
-
+        if (headerViewModel == null) {
+            headerViewModel = new HeaderViewModel();
+            headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
+        }else {
+            headerViewModel.setCashBackData(cashBackData);
+        }
+        getView().updateHeaderItem(headerViewModel);
     }
 
     @Override

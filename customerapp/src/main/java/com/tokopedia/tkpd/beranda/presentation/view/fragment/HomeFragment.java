@@ -29,6 +29,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
+import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
@@ -47,6 +48,7 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.R;
@@ -90,7 +92,8 @@ import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant
  */
 
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
-        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener, TabLayout.OnTabSelectedListener, TokoCashUpdateListener {
+        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener,
+        TabLayout.OnTabSelectedListener, TokoCashUpdateListener {
 
     @Inject
     HomePresenter presenter;
@@ -461,7 +464,43 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
+        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION));
+    }
 
+    @Override
+    public void actionInfoPendingCashBackTokocash(CashBackData cashBackData,
+                                                  String redirectUrlActionButton,
+                                                  String appLinkActionButton) {
+        BottomSheetView bottomSheetDialogTokoCash = new BottomSheetView(getActivity());
+        bottomSheetDialogTokoCash.setListener(new BottomSheetView.ActionListener() {
+            @Override
+            public void clickOnTextLink(String url) {
+
+            }
+
+            @Override
+            public void clickOnButton(String url) {
+                String seamlessUrl;
+                seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
+                        getContext());
+                if (getActivity() != null) {
+                    if ((getActivity()).getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) (getActivity()).getApplication())
+                                .goToWallet(getActivity(), seamlessUrl);
+                    }
+                }
+            }
+        });
+        bottomSheetDialogTokoCash.renderBottomSheet(new BottomSheetView
+                .BottomSheetField.BottomSheetFieldBuilder()
+                .setTitle(getString(R.string.toko_cash_pending_title))
+                .setBody(String.format(getString(R.string.toko_cash_pending_body),
+                        cashBackData.getAmountText()))
+                .setImg(R.drawable.group_2)
+                .setUrlButton(redirectUrlActionButton,
+                        getString(R.string.toko_cash_pending_proceed_button))
+                .build());
+        bottomSheetDialogTokoCash.show();
     }
 
     @Override
@@ -581,7 +620,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if(adapter.getItemCount()>0 && adapter.getItem(0) instanceof HeaderViewModel){
+        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
             adapter.notifyItemChanged(0);
         }
 //        if (adapter.getItemCount() > 0) {

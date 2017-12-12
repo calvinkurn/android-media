@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.beranda.presentation.view.compoundview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -46,7 +47,12 @@ public class HeaderHomeView extends BaseCustomView {
                 renderHeaderOnlyTokocash();
                 break;
             default:
-                renderHeaderTokocashWithTokopoint();
+                if (headerViewModel.getTokoPointDrawerData() == null
+                        || headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
+                    renderHeaderOnlyTokocash();
+                } else {
+                    renderHeaderTokocashWithTokopoint();
+                }
                 break;
         }
     }
@@ -86,6 +92,7 @@ public class HeaderHomeView extends BaseCustomView {
         if (homeHeaderWalletAction.getTypeAction()
                 == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
             tvBalanceTokocash.setVisibility(VISIBLE);
+            tvBalanceTokocash.setTextColor(Color.parseColor("#ff5722"));
             if (homeHeaderWalletAction.isVisibleActionButton())
                 tvActionTokocash.setVisibility(VISIBLE);
             else tvActionTokocash.setVisibility(GONE);
@@ -105,7 +112,27 @@ public class HeaderHomeView extends BaseCustomView {
                 }
             });
         } else {
-            listener.onRequestPendingCashBack();
+            if (headerViewModel.isPendingTokocashChecked()
+                    && headerViewModel.getCashBackData() != null
+                    && headerViewModel.getCashBackData().getAmount() > 0) {
+                tvActionTokocash.setVisibility(GONE);
+                tvBalanceTokocash.setVisibility(VISIBLE);
+                tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
+                tvBalanceTokocash.setTextColor(Color.parseColor("#8a000000"));
+                tvBalanceTokocash.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        listener.actionInfoPendingCashBackTokocash(
+                                headerViewModel.getCashBackData(),
+                                homeHeaderWalletAction.getRedirectUrlActionButton(),
+                                homeHeaderWalletAction.getAppLinkActionButton()
+                        );
+                    }
+                });
+            } else {
+                listener.onRequestPendingCashBack();
+            }
+
         }
 
         tvActionTokocash.setOnClickListener(new OnClickListener() {
