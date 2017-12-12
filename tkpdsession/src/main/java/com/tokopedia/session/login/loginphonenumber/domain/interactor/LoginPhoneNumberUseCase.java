@@ -58,7 +58,6 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
         final LoginTokoCashViewModel loginTokoCashViewModel = new LoginTokoCashViewModel();
         return Observable.just(loginTokoCashViewModel)
                 .flatMap(getCodeTokoCash(requestParams))
-                .flatMap(getAccessTokenTokoCash())
                 .flatMap(getTokenAccounts())
                 .flatMap(getUserInfo())
                 .flatMap(makeLogin())
@@ -84,29 +83,6 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
                         });
             }
         };
-    }
-
-    private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getAccessTokenTokoCash() {
-        return new Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>>() {
-            @Override
-            public Observable<LoginTokoCashViewModel> call(final LoginTokoCashViewModel loginTokoCashViewModel) {
-                return getAccessTokenTokoCashUseCase.createObservable(getAccessTokenTokoCashParam
-                        (loginTokoCashViewModel))
-                        .flatMap(new Func1<AccessTokenTokoCashDomain, Observable<LoginTokoCashViewModel>>() {
-                            @Override
-                            public Observable<LoginTokoCashViewModel> call(AccessTokenTokoCashDomain accessTokenTokoCashDomain) {
-                                loginTokoCashViewModel.setAccessTokenTokoCash
-                                        (accessTokenTokoCashDomain);
-                                return Observable.just(loginTokoCashViewModel);
-                            }
-                        });
-            }
-        };
-    }
-
-    private RequestParams getAccessTokenTokoCashParam(LoginTokoCashViewModel loginTokoCashViewModel) {
-        return GetAccessTokenTokoCashUseCase.getParam(loginTokoCashViewModel
-                .getTokoCashCode().getCode());
     }
 
     private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> makeLogin() {
@@ -148,8 +124,7 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
 
     private RequestParams getTokenParam(LoginTokoCashViewModel loginTokoCashViewModel) {
         return GetTokenUseCase.getParamThirdParty(GetTokenUseCase.SOCIAL_TYPE_PHONE_NUMBER,
-                loginTokoCashViewModel.getAccessTokenTokoCash()
-                        .getAccessToken());
+                loginTokoCashViewModel.getTokoCashCode().getCode());
     }
 
     private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getCodeTokoCash

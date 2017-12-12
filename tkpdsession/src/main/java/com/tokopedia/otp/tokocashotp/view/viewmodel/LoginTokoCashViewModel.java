@@ -14,7 +14,6 @@ public class LoginTokoCashViewModel {
     private CodeTokoCashDomain tokoCashCode;
     private TokenViewModel accountsToken;
     private MakeLoginDomain makeLoginDomain;
-    private AccessTokenTokoCashDomain accessTokenTokoCash;
     private GetUserInfoDomainModel userInfoDomain;
 
     public void setTokoCashCode(CodeTokoCashDomain tokoCashCode) {
@@ -39,14 +38,6 @@ public class LoginTokoCashViewModel {
 
     public MakeLoginDomain getMakeLoginDomain() {
         return makeLoginDomain;
-    }
-
-    public void setAccessTokenTokoCash(AccessTokenTokoCashDomain accessTokenTokoCash) {
-        this.accessTokenTokoCash = accessTokenTokoCash;
-    }
-
-    public AccessTokenTokoCashDomain getAccessTokenTokoCash() {
-        return accessTokenTokoCash;
     }
 
     public void setUserInfoDomain(GetUserInfoDomainModel userInfoDomain) {
