@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
+import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +32,12 @@ public class FlightAirportDataListFileSource extends DataListCloudSource<FlightA
     public static final String FLIGHT_SEARCH_AIRPORT_JSON = "flight_search_airport.json";
 
     private Context context;
+    private FlightAirportVersionDBSource flightAirportVersionDataSource;
 
     @Inject
-    public FlightAirportDataListFileSource(@ApplicationContext Context context) {
+    public FlightAirportDataListFileSource(@ApplicationContext Context context, FlightAirportVersionDBSource flightAirportVersionDataSource) {
         this.context = context;
+        this.flightAirportVersionDataSource = flightAirportVersionDataSource;
     }
 
     @Override
@@ -42,6 +45,7 @@ public class FlightAirportDataListFileSource extends DataListCloudSource<FlightA
         Gson g = new Gson();
         Type dataResponseType = new TypeToken<DataResponse<List<FlightAirportCountry>>>() {}.getType();
         DataResponse<List<FlightAirportCountry>> dataResponse = g.fromJson(loadJSONFromAsset(), dataResponseType);
+        flightAirportVersionDataSource.setVersionDefault();
         return Observable.just(dataResponse.getData());
     }
 

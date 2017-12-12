@@ -16,7 +16,6 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdFlightGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
@@ -24,6 +23,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -105,9 +105,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdFlightGeneratedDatabaseHolder.class)
-                .build());
+        TkpdFlight.init(getApplicationContext());
     }
 
     @Override

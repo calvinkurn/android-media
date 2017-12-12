@@ -2,8 +2,8 @@ package com.tokopedia.flight.detail.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,14 +13,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailFacilityAdapter;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailFacilityFragment extends BaseListFragment<Route> implements BaseListAdapter.OnBaseListV2AdapterListener<Route> {
+public class FlightDetailFacilityFragment extends BaseListFragment<FlightDetailRouteViewModel> implements BaseListAdapter.OnBaseListV2AdapterListener<FlightDetailRouteViewModel> {
 
     public static final String EXTRA_FLIGHT_DETAIL_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
 
@@ -69,7 +69,7 @@ public class FlightDetailFacilityFragment extends BaseListFragment<Route> implem
     }
 
     @Override
-    protected BaseListAdapter<Route> getNewAdapter() {
+    protected BaseListAdapter<FlightDetailRouteViewModel> getNewAdapter() {
         return new FlightDetailFacilityAdapter(getContext(),this);
     }
 
@@ -79,7 +79,7 @@ public class FlightDetailFacilityFragment extends BaseListFragment<Route> implem
     }
 
     @Override
-    public void onItemClicked(Route flightSearchData) {
+    public void onItemClicked(FlightDetailRouteViewModel flightSearchData) {
 
     }
 

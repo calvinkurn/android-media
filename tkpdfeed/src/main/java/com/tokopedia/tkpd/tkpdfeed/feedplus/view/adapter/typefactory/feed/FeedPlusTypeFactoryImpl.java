@@ -10,6 +10,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.ImageBl
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsProductViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolViewHolder;
@@ -29,6 +30,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
@@ -153,6 +155,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
+    public int type(FavoriteCtaViewModel favoriteCtaViewModel) {
+        return FavoriteCtaViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(RetryModel retryModel) {
         return RetryViewHolder.LAYOUT;
     }
@@ -200,6 +207,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener);
         else if (type == FeedTopadsViewHolder.LAYOUT)
             viewHolder = new FeedTopadsViewHolder(view, topAdsItemClickListener);
+        else if (type == FavoriteCtaViewHolder.LAYOUT)
+            viewHolder = new FavoriteCtaViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

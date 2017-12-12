@@ -14,6 +14,7 @@ import rx.Observable;
 
 public class FlightAirportPickerBackgroundUseCase extends UseCase<Boolean> {
 
+    public static final String VERSION_AIRPORT = "version_airport";
     private final FlightRepository flightRepository;
 
     @Inject
@@ -23,6 +24,12 @@ public class FlightAirportPickerBackgroundUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirportListBackground();
+        return flightRepository.getAirportListBackground(requestParams.getLong(VERSION_AIRPORT, 0));
+    }
+
+    public RequestParams createRequestParams(long versionAirport) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putLong(VERSION_AIRPORT, versionAirport);
+        return requestParams;
     }
 }

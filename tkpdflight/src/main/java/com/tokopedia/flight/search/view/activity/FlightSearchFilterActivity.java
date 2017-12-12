@@ -12,9 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightFilterPresenter;
 import com.tokopedia.flight.search.view.FlightFilterCountView;
@@ -95,7 +98,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         });
 
         DaggerFlightSearchComponent.builder()
-                .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
+                .flightComponent(FlightComponentInstance.getFlightComponent(getApplication()))
                 .build()
                 .inject(this);
         flightFilterPresenter.attachView(this);

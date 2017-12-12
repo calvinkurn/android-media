@@ -380,14 +380,12 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     private List<FlightBookingPassengerViewModel> buildPassengerViewModel(FlightSearchPassDataViewModel passData) {
-        boolean isSingleRoute = !isRoundTrip();
         int passengerNumber = 1;
         List<FlightBookingPassengerViewModel> viewModels = new ArrayList<>();
         for (int i = 1, adultTotal = passData.getFlightPassengerViewModel().getAdult(); i <= adultTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
             viewModel.setPassengerId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.ADULT);
-            viewModel.setSingleRoute(isSingleRoute);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
                             getView().getString(R.string.flight_booking_prefix_passenger),
@@ -404,7 +402,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
             viewModel.setPassengerId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.CHILDREN);
-            viewModel.setSingleRoute(isSingleRoute);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
                             getView().getString(R.string.flight_booking_prefix_passenger),
@@ -421,7 +418,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
             viewModel.setPassengerId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.INFANT);
-            viewModel.setSingleRoute(isSingleRoute);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
                             getView().getString(R.string.flight_booking_prefix_passenger),

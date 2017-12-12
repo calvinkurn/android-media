@@ -1,6 +1,7 @@
 package com.tokopedia.flight.airport.di;
 
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase;
+import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
 
@@ -17,8 +18,9 @@ public class FlightAirportModule {
 
     @FlightAirportScope
     @Provides
-    public FlightAirportPickerPresenter provideFlightAirportPickerPresenter(FlightAirportPickerUseCase flightAirportPickerUseCase){
-        return new FlightAirportPickerPresenterImpl(flightAirportPickerUseCase);
+    public FlightAirportPickerPresenter provideFlightAirportPickerPresenter(FlightAirportPickerUseCase flightAirportPickerUseCase,
+                                                                            FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase){
+        return new FlightAirportPickerPresenterImpl(flightAirportPickerUseCase, flightAirportVersionCheckUseCase);
     }
 
 }

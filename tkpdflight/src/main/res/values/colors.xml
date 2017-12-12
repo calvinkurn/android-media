@@ -4,4 +4,10 @@
     <color name="widget_card_with_action_bg">#f3fef3</color>
     <color name="widget_card_with_action_text_color">#42b549</color>
     <color name="widget_card_with_action_separator">#cfcfcf</color>
+
+    <color name="filter_order_selected">#42b549</color>
+    <color name="filter_order_orange">#ed6b2e</color>
+    <color name="filter_order_blue">#29bbd1</color>
+    <color name="filter_order_green">#a2cf63</color>
+    <color name="filter_order_green_medium">#42b549</color>
 </resources>

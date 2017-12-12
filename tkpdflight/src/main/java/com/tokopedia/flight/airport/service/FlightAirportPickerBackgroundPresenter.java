@@ -23,8 +23,8 @@ public class FlightAirportPickerBackgroundPresenter extends BaseDaggerPresenter<
     }
 
     @Override
-    public void getAirportListCloud() {
-        flightAirportPickerBackgroundUseCase.execute(RequestParams.create(), new Subscriber<Boolean>() {
+    public void getAirportListCloud(long versionAirport) {
+        flightAirportPickerBackgroundUseCase.execute(flightAirportPickerBackgroundUseCase.createRequestParams(versionAirport), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 

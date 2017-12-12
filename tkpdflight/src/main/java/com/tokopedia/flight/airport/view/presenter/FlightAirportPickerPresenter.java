@@ -11,4 +11,6 @@ import java.util.List;
 
 public interface FlightAirportPickerPresenter extends CustomerPresenter<FlightAirportPickerView> {
     void getAirportList(String text);
+
+    void checkAirportVersion(long currentVersion);
 }

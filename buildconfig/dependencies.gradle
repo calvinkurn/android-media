@@ -192,6 +192,7 @@ ext {
             ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
+            flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
     ]
 
     tkpdLibDependencies = [

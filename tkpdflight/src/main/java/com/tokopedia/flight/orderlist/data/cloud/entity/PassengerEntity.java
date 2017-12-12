@@ -15,7 +15,7 @@ public class PassengerEntity {
     private int type;
     @SerializedName("title")
     @Expose
-    private String title;
+    private int title;
     @SerializedName("first_name")
     @Expose
     private String firstName;
@@ -45,7 +45,7 @@ public class PassengerEntity {
         return type;
     }
 
-    public String getTitle() {
+    public int getTitle() {
         return title;
     }
 

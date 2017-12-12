@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
 import java.util.List;
 
@@ -17,15 +17,16 @@ import java.util.List;
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailAdapter extends BaseListAdapter<Route> {
+public class FlightDetailAdapter extends BaseListAdapter<FlightDetailRouteViewModel> {
     public FlightDetailAdapter(Context context) {
         super(context, null);
     }
-    public FlightDetailAdapter(Context context, OnBaseListV2AdapterListener<Route> onBaseListV2AdapterListener) {
+
+    public FlightDetailAdapter(Context context, OnBaseListV2AdapterListener<FlightDetailRouteViewModel> onBaseListV2AdapterListener) {
         super(context, onBaseListV2AdapterListener);
     }
 
-    public FlightDetailAdapter(Context context, @Nullable List<Route> data, int rowPerPage, OnBaseListV2AdapterListener<Route> onBaseListV2AdapterListener) {
+    public FlightDetailAdapter(Context context, @Nullable List<FlightDetailRouteViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightDetailRouteViewModel> onBaseListV2AdapterListener) {
         super(context, data, rowPerPage, onBaseListV2AdapterListener);
     }
 

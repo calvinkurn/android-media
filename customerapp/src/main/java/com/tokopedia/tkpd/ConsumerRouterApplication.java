@@ -66,9 +66,7 @@ import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.common.di.component.DaggerFlightComponent;
-import com.tokopedia.flight.common.di.component.FlightComponent;
-import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
+import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
@@ -144,7 +142,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private ProductComponent productComponent;
     private ReactNativeComponent reactNativeComponent;
-    private FlightComponent flightComponent;
     @Inject
     ReactNativeHost reactNativeHost;
     @Inject
@@ -342,8 +339,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, FlightDashboardActivity.class);
-        context.startActivity(intent);
+        //TODO changed back to product, use goToFlightActivity(Context context) instead
+        TkpdFlight.goToFlightActivity(context);
+    }
+
+    @Override
+    public void goToFlightActivity(Context context) {
+        TkpdFlight.goToFlightActivity(context);
     }
 
     @Override
@@ -838,14 +840,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void invalidateCategoryMenuData() {
         HomeCategoryMenuDbManager dbManager = new HomeCategoryMenuDbManager();
         dbManager.deleteAll();
-    }
-
-    @Override
-    public FlightComponent getFlightComponent() {
-        if (flightComponent == null) {
-            flightComponent = DaggerFlightComponent.builder().baseAppComponent(getBaseAppComponent()).build();
-        }
-        return flightComponent;
     }
 
     @Override

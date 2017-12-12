@@ -302,6 +302,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public int getPassengerTitleId() {
+        return spTitle.getSpinnerPosition();
+    }
+
+    @Override
     public void hideBirthdayInputView() {
         tilBirthDate.setVisibility(View.GONE);
     }
