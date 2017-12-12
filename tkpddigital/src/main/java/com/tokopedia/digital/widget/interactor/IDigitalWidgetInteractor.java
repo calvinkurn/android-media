@@ -35,4 +35,6 @@ public interface IDigitalWidgetInteractor {
     void getNumberList(Subscriber<DigitalNumberList> subscriber,
                        TKPDMapParam<String, String> param);
 
+    void setUseCacheToTrue();
+
 }

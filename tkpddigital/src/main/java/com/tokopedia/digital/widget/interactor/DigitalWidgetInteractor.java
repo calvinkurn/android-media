@@ -331,6 +331,11 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
         }
     }
 
+    @Override
+    public void setUseCacheToTrue() {
+        useCache = true;
+    }
+
     private Func1<Product, Boolean> isProductValidToOperator(final int categoryId, final int operatorId) {
         return new Func1<Product, Boolean>() {
             @Override
