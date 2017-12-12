@@ -37,6 +37,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
             "EXTRA_STATE_OPERATOR_LIST_DATA";
     private static final String EXTRA_STATE_OPERATOR_STYLE_VIEW =
             "EXTRA_STATE_OPERATOR_STYLE_VIEW";
+    private static final String EXTRA_OPERATOR_LABEL = "EXTRA_OPERATOR_LABEL";
     private static final String EXTRA_STATE_CATEGORY = "EXTRA_STATE_CATEGORY";
 
     @BindView(R2.id.rv_list_chooser)
@@ -46,15 +47,18 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     private List<Operator> operatorListData;
     private String operatorStyleView;
+    private String operatorLabel;
     private String categoryState;
     private ActionListener actionListener;
     private OperatorChooserAdapter operatorChooserAdapter;
 
-    public static Fragment newInstance(List<Operator> operatorListData, String operatorStyleView, String categoryState) {
+    public static Fragment newInstance(List<Operator> operatorListData, String operatorStyleView,
+                                       String operatorLabel, String categoryState) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA,
                 (ArrayList<? extends Parcelable>) operatorListData);
         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW, operatorStyleView);
+        bundle.putString(EXTRA_OPERATOR_LABEL, operatorLabel);
         bundle.putString(EXTRA_STATE_CATEGORY, categoryState);
         Fragment fragment = new DigitalChooserOperatorFragment();
         fragment.setArguments(bundle);
@@ -103,6 +107,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     protected void setupArguments(Bundle arguments) {
         this.operatorListData = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
         this.operatorStyleView = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW);
+        this.operatorLabel = arguments.getString(EXTRA_OPERATOR_LABEL);
         categoryState = arguments.getString(EXTRA_STATE_CATEGORY);
     }
 
@@ -115,6 +120,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     protected void initView(View view) {
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (operatorListData.size() > 10) {
+            fieldSearch.setHint(getResources().getString(R.string.action_search_with_suffix, operatorLabel));
             fieldSearch.setOnFocusChangeListener(onAnalyticsFocusChangedListener());
             fieldSearch.addTextChangedListener(onSearchTextChange());
             fieldSearch.clearFocus();

@@ -46,7 +46,6 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
         withdrawSaldoMapper = new WithdrawSaldoMapper();
         this.threadExecutor = jobExecutor;
         this.postExecutionThread = postExecutionThread;
-
     }
 
     @Override

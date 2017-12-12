@@ -208,6 +208,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
+    public String getDistrictAndCity() {
+        return fragmentShippingHeader.getDistrictAndCity();
+    }
+
+    @Override
     public String getZipCode() {
         return fragmentShippingHeader.getZipCodeData();
     }
