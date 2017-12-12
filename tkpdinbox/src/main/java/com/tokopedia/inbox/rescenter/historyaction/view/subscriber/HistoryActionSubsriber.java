@@ -41,6 +41,7 @@ public class HistoryActionSubsriber extends Subscriber<HistoryActionData> {
         if (domainData.isSuccess()) {
             fragmentView.setLoadingView(false);
             fragmentView.setViewData(mappingDomainView(domainData));
+            fragmentView.setResolutionStatus(domainData.getResolutionStatus());
             fragmentView.renderData();
         } else {
             fragmentView.onGetHistoryAwbFailed(domainData.getMessageError());

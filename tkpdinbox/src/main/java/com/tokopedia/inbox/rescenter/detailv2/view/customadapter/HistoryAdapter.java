@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -27,6 +28,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private boolean limit;
     private DetailResCenterFragmentView listener;
     private String lastMonth, lastDay;
+    public static final int STATUS_FINISHED = 500;
+    public static final int STATUS_CANCEL = 0;
 
     public HistoryAdapter() {
         historyItems = new ArrayList<>();
@@ -88,9 +91,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDateTimestamp()));
         holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDateTimestamp()));
         holder.lineSeparator.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
-        holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
-        );
         holder.lineIndicator.setVisibility(position == getHistoryItems().size() - 1 ? View.GONE : View.VISIBLE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,10 +105,22 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
         lastDay = holder.tvDateNumber.getText().toString();
         lastMonth = holder.tvMonth.getText().toString();
-        holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
-        holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
-        if (holder.glowingView.getVisibility() == View.VISIBLE) {
-            holder.glowingView.renderData(new Object());
+        if (listener.getResolutionStatus() == STATUS_FINISHED || listener.getResolutionStatus() == STATUS_CANCEL) {
+            holder.indicator.setVisibility(View.VISIBLE);
+            holder.indicator.setImageResource(R.drawable.bg_circle_grey);
+            holder.tvUsername.setTextColor(MethodChecker.getColor(context, R.color.label_text_color));
+        } else {
+            holder.indicator.setImageResource(
+                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
+            );
+            holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
+            holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
+            if (holder.glowingView.getVisibility() == View.VISIBLE) {
+                holder.glowingView.renderData(new Object());
+            }
+            holder.tvUsername.setTextColor(MethodChecker.getColor(
+                    context,
+                    item.isLatest() ? R.color.tkpd_main_green : R.color.label_text_color));
         }
     }
 

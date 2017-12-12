@@ -7,6 +7,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.Actio
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.AddressResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.AmountResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.AttachmentResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.AttachmentUserResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.ByResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.ComplainedProductResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.CreateByResponse;
@@ -37,6 +38,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AddressData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AmountData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentDataDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentUserData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ByData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ComplainedProductData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.CreateByData;
@@ -129,6 +131,8 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getNextAction() != null ?
                         mappingNextActionDomain(response.getNextAction()) :
                         null,
+                response.getAttachments() != null ?
+                        mappingAttachmentUserDomain(response.getAttachments()) : null,
                 mappingLogDataList(response.getLogs()));
     }
 
@@ -198,7 +202,10 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
         List<AttachmentDataDomain> domainList = new ArrayList<>();
         if (responseList != null) {
             for (AttachmentResponse response : responseList) {
-                AttachmentDataDomain domain = new AttachmentDataDomain(response.getFullUrl(), response.getThumbnail());
+                AttachmentDataDomain domain = new AttachmentDataDomain(
+                        response.getFullUrl(),
+                        response.getThumbnail(),
+                        response.getIsVideo());
                 domainList.add(domain);
             }
         }
@@ -455,5 +462,15 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         null,
                 response.getCreateTime(),
                 response.getCreateTimeStr());
+    }
+
+    private List<AttachmentUserData> mappingAttachmentUserDomain(List<AttachmentUserResponse> responseList) {
+        List<AttachmentUserData> domainList = new ArrayList<>();
+        for (AttachmentUserResponse response : responseList) {
+            AttachmentUserData domain = new AttachmentUserData(response.getActionBy(),
+                    response.getAttachments() != null ? mappingAttachments(response.getAttachments()) : null);
+            domainList.add(domain);
+        }
+        return domainList;
     }
 }

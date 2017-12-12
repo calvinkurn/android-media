@@ -60,6 +60,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/string_from_buyer"
+            android:textSize="@dimen/text_size_xsmall"
+            android:textColor="@color/black_38"
             android:layout_marginBottom="@dimen/margin_vvs"/>
 
         <android.support.v7.widget.RecyclerView
@@ -73,6 +75,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/string_from_seller"
+            android:textSize="@dimen/text_size_xsmall"
+            android:textColor="@color/black_38"
             android:layout_marginBottom="@dimen/margin_vvs"/>
 
         <android.support.v7.widget.RecyclerView
@@ -86,6 +90,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/string_from_admin"
+            android:textSize="@dimen/text_size_xsmall"
+            android:textColor="@color/black_38"
             android:layout_marginBottom="@dimen/margin_vvs"/>
 
         <android.support.v7.widget.RecyclerView

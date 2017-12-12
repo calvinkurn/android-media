@@ -26,6 +26,7 @@ public class HistoryAwbMapper implements Func1<Response<TkpdResponse>, HistoryAw
             if (!response.body().isError()) {
                 HistoryAwbEntity entity = response.body().convertDataObj(HistoryAwbEntity.class);
                 domainData.setSuccess(true);
+                domainData.setResolutionStatus(entity.getResolutionStatus());
                 domainData.setListHistoryAwb(mappingEntityDomain(entity.getListHistoryAwb()));
             } else {
                 domainData.setSuccess(false);

@@ -41,6 +41,7 @@ public class HistoryAddressSubsriber extends Subscriber<HistoryAddressData> {
         if (domainData.isSuccess()) {
             fragmentView.setLoadingView(false);
             fragmentView.setViewData(mappingDomainView(domainData));
+            fragmentView.setResolutionStatus(domainData.getResolutionStatus());
             fragmentView.renderData();
         } else {
             fragmentView.onGetHistoryAwbFailed(domainData.getMessageError());

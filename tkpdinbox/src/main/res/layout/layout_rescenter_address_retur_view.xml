@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:text="@string/template_awb_additional_text"
             android:textStyle="italic"
-            android:textSize="@dimen/fontvvs"
+            android:textSize="@dimen/text_size_xsmall"
             android:textColor="@color/label_text_color"
             />
     </LinearLayout>

@@ -11,6 +11,8 @@ public class AttachmentResponse {
     private String fullUrl;
     @SerializedName("imageThumb")
     private String thumbnail;
+    @SerializedName("isVideo")
+    private int isVideo;
 
     public String getFullUrl() {
         return fullUrl;
@@ -26,5 +28,13 @@ public class AttachmentResponse {
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
+    }
+
+    public int getIsVideo() {
+        return isVideo;
+    }
+
+    public void setIsVideo(int isVideo) {
+        this.isVideo = isVideo;
     }
 }

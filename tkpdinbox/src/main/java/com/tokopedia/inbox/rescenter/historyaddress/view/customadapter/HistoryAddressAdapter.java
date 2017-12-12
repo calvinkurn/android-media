@@ -32,14 +32,18 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
     private final HistoryAddressFragmentView fragmentView;
     private List<HistoryAddressViewItem> arraylist;
     private Context context;
+    private boolean isFinished;
+    public static final int STATUS_FINISHED = 500;
+    public static final int STATUS_CANCEL = 0;
 
     public HistoryAddressAdapter(HistoryAddressFragmentView fragmentView) {
         this.fragmentView = fragmentView;
         this.arraylist = new ArrayList<>();
     }
 
-    public void setArraylist(List<HistoryAddressViewItem> arraylist) {
+    public void setArraylist(List<HistoryAddressViewItem> arraylist, int resolutionStatus) {
         this.arraylist = arraylist;
+        this.isFinished = resolutionStatus == STATUS_CANCEL || resolutionStatus == STATUS_FINISHED;
     }
 
     public List<HistoryAddressViewItem> getArraylist() {
@@ -115,14 +119,17 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
                 holder.getAdapterPosition() == getArraylist().size() - 1 ?
                         View.GONE : View.VISIBLE
         );
-
-        holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
-        );
-        holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
-        holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
-        if (holder.glowingView.getVisibility() == View.VISIBLE) {
-            holder.glowingView.renderData(new Object());
+        if (isFinished) {
+            holder.indicator.setImageResource(R.drawable.bg_circle_grey);
+        } else {
+            holder.indicator.setImageResource(
+                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
+            );
+            holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
+            holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
+            if (holder.glowingView.getVisibility() == View.VISIBLE) {
+                holder.glowingView.renderData(new Object());
+            }
         }
     }
 

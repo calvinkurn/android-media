@@ -11,6 +11,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewM
 public interface DetailResCenterFragmentView {
     String getResolutionID();
 
+    int getResolutionStatus();
+
     void setResolutionID(String resolutionID);
 
     DetailViewModel getViewData();

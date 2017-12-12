@@ -133,6 +133,11 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     @Override
+    public int getResolutionStatus() {
+        return getViewData().getDetailData().getResolutionStatus();
+    }
+
+    @Override
     public void setResolutionID(String resolutionID) {
         this.resolutionID = resolutionID;
     }

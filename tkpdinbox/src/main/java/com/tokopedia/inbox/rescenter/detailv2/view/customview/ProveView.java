@@ -106,7 +106,9 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
                 }
             });
         }
-        if (proveData.getBuyerAttachmentList().size() != 0) {
+        if (proveData.getBuyerAttachmentList() != null
+                && proveData.getBuyerAttachmentList().size() != 0) {
+            tvFromBuyer.setVisibility(VISIBLE);
             rvAttachmentBuyer.setVisibility(VISIBLE);
             rvAttachmentBuyer.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             rvAttachmentBuyer.setHasFixedSize(true);
@@ -114,7 +116,9 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
             buyerAdapter.setAttachmentDataList(proveData.getBuyerAttachmentList());
             buyerAdapter.notifyDataSetChanged();
         }
-        if (proveData.getSellerAttachmentList().size() != 0) {
+        if (proveData.getSellerAttachmentList() != null
+                && proveData.getSellerAttachmentList().size() != 0) {
+            tvFromSeller.setVisibility(VISIBLE);
             rvAttachmentSeller.setVisibility(VISIBLE);
             rvAttachmentSeller.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             rvAttachmentSeller.setHasFixedSize(true);
@@ -122,7 +126,9 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
             sellerAdapter.setAttachmentDataList(proveData.getSellerAttachmentList());
             sellerAdapter.notifyDataSetChanged();
         }
-        if (proveData.getAdminAttachmentList().size() != 0) {
+        if (proveData.getAdminAttachmentList() != null
+                && proveData.getAdminAttachmentList().size() != 0) {
+            tvFromAdmin.setVisibility(VISIBLE);
             rvAttachmentAdmin.setVisibility(VISIBLE);
             rvAttachmentAdmin.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             rvAttachmentAdmin.setHasFixedSize(true);

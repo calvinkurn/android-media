@@ -8,29 +8,23 @@ import android.os.Parcelable;
  */
 public class AttachmentDataDomain implements Parcelable {
 
-    public static final Creator<AttachmentDataDomain> CREATOR = new Creator<AttachmentDataDomain>() {
-        @Override
-        public AttachmentDataDomain createFromParcel(Parcel source) {
-            return new AttachmentDataDomain(source);
-        }
-
-        @Override
-        public AttachmentDataDomain[] newArray(int size) {
-            return new AttachmentDataDomain[size];
-        }
-    };
     private String fullUrl;
     private String thumbnail;
+    private int isVideo;
 
 
-    public AttachmentDataDomain(String fullUrl, String thumbnail) {
+    public AttachmentDataDomain(String fullUrl, String thumbnail, int isVideo) {
         this.fullUrl = fullUrl;
         this.thumbnail = thumbnail;
+        this.isVideo = isVideo;
     }
 
-    protected AttachmentDataDomain(Parcel in) {
-        this.fullUrl = in.readString();
-        this.thumbnail = in.readString();
+    public int getIsVideo() {
+        return isVideo;
+    }
+
+    public void setIsVideo(int isVideo) {
+        this.isVideo = isVideo;
     }
 
     public String getFullUrl() {
@@ -58,5 +52,24 @@ public class AttachmentDataDomain implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.fullUrl);
         dest.writeString(this.thumbnail);
+        dest.writeInt(this.isVideo);
     }
+
+    protected AttachmentDataDomain(Parcel in) {
+        this.fullUrl = in.readString();
+        this.thumbnail = in.readString();
+        this.isVideo = in.readInt();
+    }
+
+    public static final Creator<AttachmentDataDomain> CREATOR = new Creator<AttachmentDataDomain>() {
+        @Override
+        public AttachmentDataDomain createFromParcel(Parcel source) {
+            return new AttachmentDataDomain(source);
+        }
+
+        @Override
+        public AttachmentDataDomain[] newArray(int size) {
+            return new AttachmentDataDomain[size];
+        }
+    };
 }

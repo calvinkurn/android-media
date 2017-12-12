@@ -30,6 +30,8 @@ public class DetailResponse {
     private ActionByResponse actionBy;
     @SerializedName("nextAction")
     private NextActionResponse nextAction;
+    @SerializedName("attachments")
+    private List<AttachmentUserResponse> attachments;
     @SerializedName("logs")
     private List<LogResponse> logs;
 
@@ -113,4 +115,11 @@ public class DetailResponse {
         this.logs = logs;
     }
 
+    public List<AttachmentUserResponse> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AttachmentUserResponse> attachments) {
+        this.attachments = attachments;
+    }
 }

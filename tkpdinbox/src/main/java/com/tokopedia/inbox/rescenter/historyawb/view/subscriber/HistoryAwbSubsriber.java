@@ -45,6 +45,7 @@ public class HistoryAwbSubsriber extends Subscriber<HistoryAwbData> {
             fragmentView.setLoadingView(false);
             fragmentView.showInpuNewShippingAwb(true);
             fragmentView.setViewData(mappingDomainView(historyAwbData));
+            fragmentView.setResolutionStatus(historyAwbData.getResolutionStatus());
             fragmentView.renderData();
         } else {
             fragmentView.onGetHistoryAwbFailed(historyAwbData.getMessageError());

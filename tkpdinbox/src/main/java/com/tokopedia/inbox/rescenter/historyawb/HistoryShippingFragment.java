@@ -38,6 +38,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     implements HistoryShippingFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
+    private static final String EXTRA_PARAM_RESOLUTION_STATUS = "resolution_status";
     private static final String EXTRA_PARAM_VIEW_DATA = "extra_view_data";
     private static final String EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB = "extra_allow_input_shipping";
     private static final int REQUEST_EDIT_SHIPPING = 12345;
@@ -47,6 +48,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     private HistoryShippingAdapter adapter;
     private String resolutionID;
     private ArrayList<HistoryAwbViewItem> viewData;
+    private int resolutionStatus;
     private TkpdProgressDialog normalLoading;
     private boolean allowInputNewShippingAwb;
 
@@ -139,8 +141,18 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
+
+    @Override
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    @Override
     public void renderData() {
-        adapter.setArraylist(getViewData());
+        adapter.setArraylist(getViewData(), getResolutionStatus());
         adapter.notifyDataSetChanged();
     }
 
@@ -149,6 +161,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
         state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
         state.putBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB, isAllowInputNewShippingAwb());
         state.putParcelableArrayList(EXTRA_PARAM_VIEW_DATA, getViewData());
+        state.putInt(EXTRA_PARAM_RESOLUTION_STATUS, getResolutionStatus());
     }
 
     @Override
@@ -156,6 +169,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
         setAllowInputNewShippingAwb(savedState.getBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB));
         setViewData(savedState.<HistoryAwbViewItem>getParcelableArrayList(EXTRA_PARAM_VIEW_DATA));
+        setResolutionStatus(savedState.getInt(EXTRA_PARAM_RESOLUTION_STATUS));
     }
 
     @Override
@@ -200,6 +214,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
                         InputShippingActivity.createNewPageIntent(context, getResolutionID()),
                         REQUEST_INPUT_SHIPPING
                 );
+                getBottomSheetActivityTransition();
             }
         });
     }
@@ -303,7 +318,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
 
     @Override
     public void resetList() {
-        adapter.setArraylist(new ArrayList<HistoryAwbViewItem>());
+        adapter.setArraylist(new ArrayList<HistoryAwbViewItem>(), getResolutionStatus());
         adapter.notifyDataSetChanged();
     }
 

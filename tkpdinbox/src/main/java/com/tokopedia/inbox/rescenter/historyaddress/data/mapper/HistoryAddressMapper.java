@@ -26,6 +26,7 @@ public class HistoryAddressMapper implements Func1<Response<TkpdResponse>, Histo
                 HistoryAddressEntity entity = response.body().convertDataObj(HistoryAddressEntity.class);
                 domainData.setSuccess(true);
                 domainData.setListHistoryAddress(mappingEntityDomain(entity.getListHistoryAddress()));
+                domainData.setResolutionStatus(entity.getResolutionStatus());
             } else {
                 domainData.setSuccess(false);
                 domainData.setMessageError(generateMessageError(response));

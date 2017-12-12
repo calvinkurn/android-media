@@ -32,6 +32,9 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     private List<HistoryActionViewItem> arraylist;
     private Context context;
     private String lastMonth, lastDay;
+    private boolean isFinished;
+    public static final int STATUS_FINISHED = 500;
+    public static final int STATUS_CANCEL = 0;
 
     public HistoryActionAdapter(HistoryActionFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -40,8 +43,9 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         this.lastDay = "";
     }
 
-    public void setArraylist(List<HistoryActionViewItem> arraylist) {
+    public void setArraylist(List<HistoryActionViewItem> arraylist, int resolutionStatus) {
         this.arraylist = arraylist;
+        isFinished  = resolutionStatus == STATUS_FINISHED || resolutionStatus == STATUS_CANCEL;
     }
 
     public List<HistoryActionViewItem> getArraylist() {
@@ -121,13 +125,19 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void renderView(ActionViewHolder holder, HistoryActionViewItem item) {
         setIndicator(holder, item);
-        if (item.isLatest()) {
-            holder.tvUsername.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green));
-            holder.history.setTextColor(ContextCompat.getColor(context, R.color.black_70));
-        } else {
+        if (isFinished) {
             holder.tvUsername.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
+        } else {
+            if (item.isLatest()) {
+                holder.tvUsername.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green));
+                holder.history.setTextColor(ContextCompat.getColor(context, R.color.black_70));
+            } else {
+                holder.tvUsername.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
+                holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
+            }
         }
+
     }
 
     private void setIndicator(ActionViewHolder holder, HistoryActionViewItem item) {
@@ -136,14 +146,18 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
                         View.GONE : View.VISIBLE
         );
 
-        holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
-        );
+        if (isFinished) {
+            holder.indicator.setImageResource(R.drawable.bg_circle_grey);
+        } else {
+            holder.indicator.setImageResource(
+                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
+            );
 
-        holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
-        holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
-        if (holder.glowingView.getVisibility() == View.VISIBLE) {
-            holder.glowingView.renderData(new Object());
+            holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
+            holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
+            if (holder.glowingView.getVisibility() == View.VISIBLE) {
+                holder.glowingView.renderData(new Object());
+            }
         }
     }
 

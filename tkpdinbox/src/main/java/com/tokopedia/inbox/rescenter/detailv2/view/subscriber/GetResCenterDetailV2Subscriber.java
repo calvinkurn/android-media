@@ -21,6 +21,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.SolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.StatusData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AddressData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentDataDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentUserData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ComplainedProductData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.CustomerData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailResponseData;
@@ -136,19 +137,27 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
                         detailResponseData.getLast().getProblem()) :
                 null);
         viewModel.setProveData(detailResponseData.getFirst() != null ?
-                mappingProveData(detailResponseData.getFirst()) :
+                mappingProveData(detailResponseData.getFirst(), detailResponseData.getAttachments()) :
                 null);
         viewModel.setStatusData(mappingStatusData(detailResponseData.getLast()));
         return viewModel;
     }
 
-    private ProveData mappingProveData(FirstData data) {
+    private ProveData mappingProveData(FirstData firstData, List<AttachmentUserData> dataList) {
         ProveData proveData = new ProveData();
-        proveData.setRemark(data.getBuyerRemark());
-        proveData.setAttachment(mappingAttachmentData(data.getAttachments()));
-        if (data.getAttachments().size() != 0
-                || data.getBuyerRemark() != null
-                || !data.getBuyerRemark().isEmpty()) {
+        proveData.setRemark(firstData.getBuyerRemark());
+        for (AttachmentUserData data : dataList) {
+            if (data.getActionBy() == ACTION_BY_BUYER) {
+                proveData.setBuyerAttachmentList(mappingAttachmentData(data.getAttachments()));
+            } else if (data.getActionBy() == ACTION_BY_SELLER) {
+                proveData.setSellerAttachmentList(mappingAttachmentData(data.getAttachments()));
+            } else if (data.getActionBy() == ACTION_BY_ADMIN) {
+                proveData.setAdminAttachmentList(mappingAttachmentData(data.getAttachments()));
+            }
+        }
+        if (dataList.size() != 0
+                || firstData.getBuyerRemark() != null
+                || !firstData.getBuyerRemark().isEmpty()) {
             proveData.setCanShowProveData(true);
         } else {
             proveData.setCanShowProveData(false);
