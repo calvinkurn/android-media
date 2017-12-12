@@ -163,7 +163,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
             nextView.setMinimumWidth(0);
             FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
             float density = getResources().getDisplayMetrics().density;
-            params1.rightMargin = (int) (20*density);
+            params1.rightMargin = (int) (20 * density);
 
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
