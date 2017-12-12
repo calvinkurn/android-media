@@ -54,7 +54,8 @@
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/indicator"
-                style="?tabTheme"
+                app:tabTextAppearance="@style/TitlePageWhiteIndicator"
+                style="?tabThemeWhite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

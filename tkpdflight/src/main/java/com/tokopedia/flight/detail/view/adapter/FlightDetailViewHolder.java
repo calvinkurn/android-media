@@ -79,13 +79,9 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
     private void setRefundableInfo(FlightDetailRouteViewModel route) {
         if (route.isRefundable()) {
             refundableInfo.setText(R.string.flight_label_refundable_info);
-            refundableInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
-            refundableInfo.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_rect_stroke_flight_green));
             refundableInfo.setVisibility(View.VISIBLE);
         } else {
             refundableInfo.setText(R.string.flight_label_non_refundable_info);
-            refundableInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.grey_200));
-            refundableInfo.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_rect_stroke_flight_grey));
             refundableInfo.setVisibility(View.GONE);
         }
     }
