@@ -61,6 +61,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
         TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
         tokoPointDrawerData.setHasNotif(tokoplusPointDrawerData.getHasNotif());
         tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag());
+        tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getMainPageUrl());
         if (tokoplusPointDrawerData.getUserTier() != null) {
             userTier.setRewardPoints(tokoplusPointDrawerData.getUserTier().getRewardPoints());
             userTier.setTierId(tokoplusPointDrawerData.getUserTier().getTierId());

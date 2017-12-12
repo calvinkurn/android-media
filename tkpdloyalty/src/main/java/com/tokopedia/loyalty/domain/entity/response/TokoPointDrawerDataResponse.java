@@ -21,6 +21,9 @@ public class TokoPointDrawerDataResponse {
     @SerializedName("pop_up_notif")
     @Expose
     private PopUpNotif popUpNotif;
+    @SerializedName("mainpage_url")
+    @Expose
+    private String mainPageUrl;
 
     public int getOffFlag() {
         return offFlag;
@@ -36,5 +39,9 @@ public class TokoPointDrawerDataResponse {
 
     public PopUpNotif getPopUpNotif() {
         return popUpNotif;
+    }
+
+    public String getMainPageUrl() {
+        return mainPageUrl;
     }
 }

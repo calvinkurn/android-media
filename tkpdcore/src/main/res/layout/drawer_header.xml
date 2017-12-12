@@ -53,7 +53,9 @@
                 android:id="@+id/tokopoint_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/name_text">
+                android:layout_below="@id/name_text"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/iv_tokopoint_badge"
@@ -72,7 +74,6 @@
                     android:lineSpacingExtra="8sp"
                     android:paddingEnd="5sp"
                     android:paddingStart="5sp"
-                    android:text="@string/verified_account"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/text_size_medium"
                     tools:text="50000 Poin"/>

@@ -581,20 +581,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 0) {
-            if (adapter.getItem(0) instanceof HeaderViewModel) {
-                ((HeaderViewModel) adapter.getItem(0)).setTokoPointDrawerData(headerViewModel.getTokoPointDrawerData());
-                ((HeaderViewModel) adapter.getItem(0)).setHomeHeaderWalletActionData(headerViewModel.getHomeHeaderWalletActionData());
-                ((HeaderViewModel) adapter.getItem(0)).setType(headerViewModel.getType());
-                adapter.notifyItemChanged(0);
-            } else {
-                adapter.getItems().add(0, headerViewModel);
-                adapter.notifyDataSetChanged();
-            }
-        } else {
-            adapter.getItems().add(0, headerViewModel);
-            adapter.notifyDataSetChanged();
+        if(adapter.getItemCount()>0 && adapter.getItem(0) instanceof HeaderViewModel){
+            adapter.notifyItemChanged(0);
         }
+//        if (adapter.getItemCount() > 0) {
+//            if (adapter.getItem(0) instanceof HeaderViewModel) {
+//                ((HeaderViewModel) adapter.getItem(0)).setTokoPointDrawerData(headerViewModel.getTokoPointDrawerData());
+//                ((HeaderViewModel) adapter.getItem(0)).setHomeHeaderWalletActionData(headerViewModel.getHomeHeaderWalletActionData());
+//                ((HeaderViewModel) adapter.getItem(0)).setType(headerViewModel.getType());
+//                adapter.notifyItemChanged(0);
+//            } else {
+//                adapter.notifyDataSetChanged();
+//            }
+//        } else {
+//            adapter.notifyDataSetChanged();
+//        }
     }
 
     @Override
