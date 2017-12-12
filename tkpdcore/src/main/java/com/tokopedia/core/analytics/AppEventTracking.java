@@ -154,6 +154,8 @@ public interface AppEventTracking {
         String IMPRESSION_APP_RATING = "impressionAppRating";
         String CLICK_APP_RATING = "clickAppRating";
         String CANCEL_APP_RATING = "cancelAppRating";
+
+        String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
     }
 
     interface Category {
@@ -255,6 +257,8 @@ public interface AppEventTracking {
         String CATEGORY_HOTLIST = "hotlist";
 
         String APP_RATING = "Application Rating";
+
+        String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
     }
 
     interface Action {
@@ -369,6 +373,24 @@ public interface AppEventTracking {
         String SEARCH_PRODUCT_SUGGESTION = "search product - suggestion";
         String SEARCH_SHOP = "search shop";
         String SEARCH_AUTOCOMPLETE_SHOP = "search shop - autocomplete";
+
+        String FEED_CONTENT_IMPRESSION = "feed - content impression";
+        String FEED_FOLLOW_CONTENT = "feed - follow content";
+        String FEED_UNFOLLOW_CONTENT = "feed - unfollow content";
+        String FEED_EXPAND_CONTENT = "feed - expand content";
+        String FEED_CLICK_CONTENT_CTA = "feed - click content cta";
+        String FEED_CLICK_CONTENT_WRITER_NAME = "feed - click content writer name";
+        String FEED_LIKE_CONTENT = "feed - like content";
+        String FEED_UNLIKE_CONTENT = "feed - unlike content";
+        String FEED_CLICK_CONTENT_COMMENT = "feed - click content comment";
+        String FEED_SUBMIT_COMMENT = "submit comment";
+        String FEED_COMMENT_CLICK_BACK = "click back";
+        String FEED_LOAD_MORE_COMMENTS = "load more comments";
+        String FEED_KOL_RECOMMENDATION_IMPRESSION = "feed - kol recommendation impression";
+        String FEED_FOLLOW_KOL_RECOMMENDATION = "feed - follow kol recommendation";
+        String FEED_UNFOLLOW_KOL_RECOMMENDATION = "feed - unfollow kol recommendation";
+        String FEED_CLICK_KOL_RECOMMENDATION_PROFILE = "feed - click kol recommendation profile";
+        String FEED_VIEW_ALL_KOL_RECOMMENDATION = "feed - view all kol recommendation";
     }
 
     interface EventLabel {
@@ -689,6 +711,13 @@ public interface AppEventTracking {
 
         String SELECT_PRODUCT_FROM_WIDGET = "select Product - ";
         String CLICK_WIDGET_BAR = "click ";
+        String FEED_CONTENT_TYPE_RECOMMENDED = "recommended content";
+        String FEED_CONTENT_TYPE_FOLLOWED = "followed content";
+        String FEED_CAMPAIGN_TYPE_SUFFIX = " endorsement";
+        String FEED_CONTENT_COMMENT_DETAIL_COMMENT = "comment";
+        String FEED_CONTENT_COMMENT_DETAIL_BACK = "back";
+        String FEED_CONTENT_COMMENT_DETAIL_LOAD_MORE = "load more";
+        String FEED_KOL_RECOMMENDATION_VIEW_ALL = "kol discovery page";
     }
 
     interface SOCIAL_MEDIA {
