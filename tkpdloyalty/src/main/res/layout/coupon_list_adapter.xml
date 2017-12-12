@@ -61,7 +61,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Berlaku dalam: " />
+                android:text="@string/label_coupon_period_time" />
 
             <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
