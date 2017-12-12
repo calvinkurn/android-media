@@ -63,7 +63,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
     @Override
     public void getOperatorAndProductsFromPrefix(Subscriber<Pair<Operator, List<Product>>> subscriber,
-                                                 int categoryId, String prefix, Boolean validatePrefix) {
+                                                 final int categoryId, String prefix, Boolean validatePrefix) {
         compositeSubscription.add(
                 Observable.zip(
                         getOperatorByPrefix(prefix),
@@ -81,7 +81,13 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         new Func2<List<Operator>, List<Product>, Pair<Operator, List<Product>>>() {
                             @Override
                             public Pair<Operator, List<Product>> call(List<Operator> operators, List<Product> products) {
-                                return Pair.create(operators.get(0), products);
+                                List<Product> filteredProducts = Observable.from(products)
+                                        .filter(isProductValidToOperator(categoryId, operators.get(0).getId()))
+                                        .toList()
+                                        .toBlocking()
+                                        .single();
+
+                                return Pair.create(operators.get(0), filteredProducts);
                             }
                         })
                         .unsubscribeOn(Schedulers.from(threadExecutor))
@@ -92,7 +98,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
     @Override
     public void getOperatorAndProductsByOperatorId(Subscriber<Pair<Operator, List<Product>>> subscriber,
-                                                  int categoryId, String operatorId) {
+                                                   final int categoryId, String operatorId) {
         compositeSubscription.add(
                 Observable.zip(
                         getOperatorById(operatorId),
@@ -110,7 +116,13 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         new Func2<List<Operator>, List<Product>, Pair<Operator, List<Product>>>() {
                             @Override
                             public Pair<Operator, List<Product>> call(List<Operator> operators, List<Product> products) {
-                                return Pair.create(operators.get(0), products);
+                                List<Product> filteredProducts = Observable.from(products)
+                                        .filter(isProductValidToOperator(categoryId, operators.get(0).getId()))
+                                        .toList()
+                                        .toBlocking()
+                                        .single();
+
+                                return Pair.create(operators.get(0), filteredProducts);
                             }
                         })
                         .unsubscribeOn(Schedulers.from(threadExecutor))

@@ -73,7 +73,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     private LastOrder lastOrder;
 
-    private int minLengthDefaultOperator;
     private boolean showPrice = true;
 
     private CompositeSubscription compositeSubscription;
@@ -94,8 +93,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     protected void onFirstTimeLaunched() {
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
         lastProductSelected = presenter.getLastProductSelected(String.valueOf(category.getId()));
-
-        renderView();
 
         presenter.getOperatorsByCategoryId(category.getId(), true);
     }
@@ -186,7 +183,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() >= minLengthDefaultOperator) {
+                if (s.length() >= selectedOperator.getAttributes().getMinimumLength()) {
                     if (selectedOperator != null) {
                         if (selectedOperator.getAttributes().getRule().isShowProduct()) {
                             presenter.validateOperatorWithProducts(category.getId(),
@@ -318,14 +315,13 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void onCheckChange(Operator rechargeOperatorModel) {
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
-//                selectedOperatorId = String.valueOf(rechargeOperatorModel.getId());
-                minLengthDefaultOperator = rechargeOperatorModel.getAttributes().getMinimumLength();
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.getAttributes().getMaximumLength());
                 widgetClientNumberView.setImgOperator(selectedOperator.getAttributes().getImage());
                 widgetClientNumberView.setImgOperatorVisible();
                 widgetProductChooserView.setTitleProduct(rechargeOperatorModel.getAttributes().getRule().getProductText());
                 widgetProductChooserView.setVisibilityProduct(rechargeOperatorModel.getAttributes().getRule().isShowProduct());
+                renderView();
                 if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice())
                     showPrice = false;
             }
@@ -397,7 +393,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
-//        selectedOperatorId = String.valueOf(selectedOperator.getId());
     }
 
     @Override
@@ -462,7 +457,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         if (category.getAttributes().getClientNumber().isShown()) {
             widgetClientNumberView.setText(savedState.getString(STATE_CLIENT_NUMBER));
         }
-        renderView();
         presenter.getOperatorsByCategoryId(category.getId(), false);
     }
 

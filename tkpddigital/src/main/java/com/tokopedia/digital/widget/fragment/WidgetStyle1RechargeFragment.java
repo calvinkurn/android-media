@@ -222,6 +222,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
             @Override
             public void onRechargeTextClear() {
                 selectedOperator = null;
+                widgetClientNumberView.setImgOperatorInvisible();
                 clearHolder(holderWidgetSpinnerProduct);
                 clearHolder(holderWidgetWrapperBuy);
             }
