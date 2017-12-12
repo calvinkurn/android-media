@@ -147,10 +147,10 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         );
 
         if (isFinished) {
-            holder.indicator.setImageResource(R.drawable.bg_circle_grey);
+            holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
         } else {
             holder.indicator.setImageResource(
-                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
+                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
             );
 
             holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);

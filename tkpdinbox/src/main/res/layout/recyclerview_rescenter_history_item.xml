@@ -125,7 +125,7 @@
                 android:gravity="center_vertical"
                 android:maxLines="2"
                 android:paddingBottom="@dimen/padding_small"
-                android:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
+                context:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/text_size_s_medium"/>
 

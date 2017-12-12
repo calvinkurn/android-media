@@ -107,11 +107,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         lastMonth = holder.tvMonth.getText().toString();
         if (listener.getResolutionStatus() == STATUS_FINISHED || listener.getResolutionStatus() == STATUS_CANCEL) {
             holder.indicator.setVisibility(View.VISIBLE);
-            holder.indicator.setImageResource(R.drawable.bg_circle_grey);
+            holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
             holder.tvUsername.setTextColor(MethodChecker.getColor(context, R.color.label_text_color));
         } else {
             holder.indicator.setImageResource(
-                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
+                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
             );
             holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
             holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
