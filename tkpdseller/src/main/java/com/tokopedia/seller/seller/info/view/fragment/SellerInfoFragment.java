@@ -1,6 +1,9 @@
 package com.tokopedia.seller.seller.info.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.text.TextUtilsCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -18,6 +21,7 @@ import com.tokopedia.seller.seller.info.view.SellerInfoView;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoWebViewActivity;
 import com.tokopedia.seller.seller.info.view.adapter.SellerInfoAdapter;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
+import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
 import com.tokopedia.seller.seller.info.view.presenter.SellerInfoPresenter;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
 
@@ -35,7 +39,9 @@ import rx.schedulers.Schedulers;
  * Created by normansyahputa on 11/30/17.
  */
 
-public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerInfoModel>{
+public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerInfoModel>
+    implements SellerInfoView
+{
 
     private SellerInfoDateUtil sellerInfoDateUtil;
 
@@ -43,6 +49,9 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Inject
     SellerInfoPresenter sellerInfoPresenter;
+
+    private String[] monthNamesAbrev;
+    private boolean hasNextPage;
 
     public static SellerInfoFragment newInstance(){
         return new SellerInfoFragment();
@@ -58,20 +67,20 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        String[] monthNamesAbrev = getResources().getStringArray(R.array.lib_date_picker_month_entries);
-        sellerInfoDateUtil = new SellerInfoDateUtil(monthNamesAbrev);
+        monthNamesAbrev = getResources().getStringArray(R.array.lib_date_picker_month_entries);
         super.onViewCreated(view, savedInstanceState);
         sellerInfoPresenter.attachView(this);
     }
 
     @Override
     protected BaseListAdapter<SellerInfoModel> getNewAdapter() {
-        return new SellerInfoAdapter(sellerInfoDateUtil);
+        return new SellerInfoAdapter(monthNamesAbrev);
     }
 
     @Override
     protected void searchForPage(int page) {
         sellerInfoPresenter.getSellerInfoList(page);
+        hasNextPage = false;
     }
 
     @Override
@@ -82,6 +91,32 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     public void onItemClicked(SellerInfoModel sellerInfoModel) {
+        if(TextUtils.isEmpty(sellerInfoModel.getExternalLink()))
+            return;
+
+        if(sellerInfoModel instanceof SellerInfoSectionModel)
+            return;
+
         startActivity(SellerInfoWebViewActivity.getCallingIntent(this, sellerInfoModel.getExternalLink()));
+    }
+
+
+    @Override
+    public void onSearchLoaded(@NonNull List<SellerInfoModel> list, int totalItem, boolean hasNext) {
+        onSearchLoaded(list, totalItem);
+        hasNextPage = hasNext;
+    }
+
+    @Override
+    protected boolean hasNextPage() {
+        return hasNextPage;
+    }
+
+    @Override
+    protected void onPullToRefresh() {
+        if(adapter != null && adapter instanceof SellerInfoAdapter) {
+            ((SellerInfoAdapter)adapter).clearRawAdapter();
+        }
+        super.onPullToRefresh();
     }
 }

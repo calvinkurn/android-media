@@ -17,19 +17,17 @@ public class SellerInfoSectionViewHolder extends BaseViewHolder<SellerInfoSectio
     private final TextView dateText;
     private String today, yesterday;
 
-    private SellerInfoDateUtil sellerInfoDateUtil;
+    private String[] monthNamesAbrev;
 
     public SellerInfoSectionViewHolder(View itemView) {
         super(itemView);
 
         dateText = itemView.findViewById(R.id.text_date_section);
 
+        monthNamesAbrev = itemView.getResources().getStringArray(R.array.lib_date_picker_month_entries);
+
         today = itemView.getResources().getString(R.string.item_today);
         yesterday = itemView.getResources().getString(R.string.yesterday);
-    }
-
-    public void setSellerInfoDateUtil(SellerInfoDateUtil sellerInfoDateUtil) {
-        this.sellerInfoDateUtil = sellerInfoDateUtil;
     }
 
     @Override
@@ -39,7 +37,7 @@ public class SellerInfoSectionViewHolder extends BaseViewHolder<SellerInfoSectio
         }else if(sellerInfoSectionModel.isYesterday()){
             dateText.setText(yesterday);
         }else {
-            dateText.setText(sellerInfoDateUtil.fromUnixTime(sellerInfoSectionModel.getCreateTimeUnix()));
+            dateText.setText(SellerInfoDateUtil.fromUnixTime(sellerInfoSectionModel.getCreateTimeUnix(), monthNamesAbrev));
         }
     }
 }
