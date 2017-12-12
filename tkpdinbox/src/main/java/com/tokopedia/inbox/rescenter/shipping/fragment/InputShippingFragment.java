@@ -227,7 +227,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
                 EditText shippingRefNum = (EditText) view;
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if(motionEvent.getRawX() >= (shippingRefNum.getRight() - shippingRefNum.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        presenter.onScanBarcodeClick();
+                        presenter.onScanBarcodeClick(getActivity());
                         return true;
                     }
                 }

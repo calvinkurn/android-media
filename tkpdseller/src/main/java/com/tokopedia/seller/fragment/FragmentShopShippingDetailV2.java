@@ -482,7 +482,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        startActivityForResult(CommonUtils.requestBarcodeScanner(getContext()), REQUEST_CODE_BARCODE);
     }
 
     public void cancelDialog() {

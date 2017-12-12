@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.shipping.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,8 @@ import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
+
+import info.vividcode.android.zxing.CaptureActivity;
 
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_ATTACHMENT;
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_MODEL;
@@ -154,8 +157,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     @Override
-    public void onScanBarcodeClick() {
-        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+    public void onScanBarcodeClick(Context context) {
+        Intent intent = new Intent(context, CaptureActivity.class);
         viewListener.startActivityForResult(intent, REQUEST_CODE_SCAN_BARCODE);
     }
 
