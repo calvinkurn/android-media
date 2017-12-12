@@ -8,6 +8,6 @@
     android:gravity="center"
     context:text="@string/action_accept_solution"
     android:textColor="@color/white"
-    android:textSize="@dimen/font_medium"
+    android:textSize="@dimen/font_small"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:context="http://schemas.android.com/tools" />

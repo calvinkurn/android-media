@@ -341,7 +341,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         }
         if (getViewData().getDetailData() != null) {
             detailView.renderData(getViewData().getDetailData());
-            if (getViewData().getDetailData().isDeadlineVisibility() && getViewData().getDetailData().getResponseDeadline() != null) {
+            if (getViewData().getDetailData().isDeadlineVisibility()
+                    && getViewData().getDetailData().getResponseDeadline() != null) {
                 timeView.setVisibility(View.VISIBLE);
                 timeView.renderData(getViewData().getDetailData());
             } else {
@@ -364,8 +365,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
             solutionView.renderData(getViewData().getSolutionData());
         }
         if (getViewData().getProveData() != null) {
-            if (getViewData().getProveData().getAttachment().size() != 0
-                    || getViewData().getProveData().getRemark() != null) {
+            if (getViewData().getProveData().isCanShowProveData()) {
                 proveView.renderData(getViewData().getProveData());
             }
         }

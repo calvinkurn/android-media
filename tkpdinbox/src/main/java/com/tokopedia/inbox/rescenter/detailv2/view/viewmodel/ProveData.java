@@ -11,26 +11,19 @@ import java.util.List;
 
 public class ProveData implements Parcelable {
 
-    public static final Parcelable.Creator<ProveData> CREATOR = new Parcelable.Creator<ProveData>() {
-        @Override
-        public ProveData createFromParcel(Parcel source) {
-            return new ProveData(source);
-        }
-
-        @Override
-        public ProveData[] newArray(int size) {
-            return new ProveData[size];
-        }
-    };
     private String remark;
     private List<AttachmentData> attachment;
+    private boolean canShowProveData;
 
     public ProveData() {
     }
 
-    protected ProveData(Parcel in) {
-        this.remark = in.readString();
-        this.attachment = in.createTypedArrayList(AttachmentData.CREATOR);
+    public boolean isCanShowProveData() {
+        return canShowProveData;
+    }
+
+    public void setCanShowProveData(boolean canShowProveData) {
+        this.canShowProveData = canShowProveData;
     }
 
     public String getRemark() {
@@ -58,5 +51,24 @@ public class ProveData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.remark);
         dest.writeTypedList(this.attachment);
+        dest.writeByte(this.canShowProveData ? (byte) 1 : (byte) 0);
     }
+
+    protected ProveData(Parcel in) {
+        this.remark = in.readString();
+        this.attachment = in.createTypedArrayList(AttachmentData.CREATOR);
+        this.canShowProveData = in.readByte() != 0;
+    }
+
+    public static final Creator<ProveData> CREATOR = new Creator<ProveData>() {
+        @Override
+        public ProveData createFromParcel(Parcel source) {
+            return new ProveData(source);
+        }
+
+        @Override
+        public ProveData[] newArray(int size) {
+            return new ProveData[size];
+        }
+    };
 }

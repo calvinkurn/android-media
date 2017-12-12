@@ -146,6 +146,13 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         ProveData proveData = new ProveData();
         proveData.setRemark(data.getBuyerRemark());
         proveData.setAttachment(mappingAttachmentData(data.getAttachments()));
+        if (data.getAttachments().size() != 0
+                || data.getBuyerRemark() != null
+                || !data.getBuyerRemark().isEmpty()) {
+            proveData.setCanShowProveData(true);
+        } else {
+            proveData.setCanShowProveData(false);
+        }
         return proveData;
     }
 
@@ -199,7 +206,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
 
     private SolutionData mappingSolutionData(LastSolutionData lastSolutionData, ButtonDomain buttonDomain, String problem) {
         SolutionData solutionData = new SolutionData();
-        solutionData.setSolutionDate(lastSolutionData.getCreateTimeStr());
+        solutionData.setSolutionDate(lastSolutionData.getCreateTime());
         solutionData.setSolutionProvider(String.valueOf(lastSolutionData.getActionBy()));
         solutionData.setSolutionProviderName(mappingSolutionProvider(lastSolutionData.getActionBy()));
         solutionData.setSolutionText(lastSolutionData.getName());

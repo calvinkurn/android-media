@@ -187,7 +187,7 @@ yang ditemukan</string>
     <string name="string_get_help">Minta Bantuan</string>
     <string name="string_title_create_recomplaint">Komplain Ulang</string>
     <string name="string_back_to_complaint_list">Kembali ke Daftar Komplain</string>
-    <string name="action_input_awb_number">Masukan No. Resi</string>
+    <string name="action_input_awb_number">Masukkan No. Resi</string>
     <string name="string_read_more">Selengkapnya</string>
 
     <!--chat bubble-->

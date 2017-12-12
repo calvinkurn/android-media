@@ -114,7 +114,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         );
 
         holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
+                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
         );
     }
 
