@@ -22,6 +22,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.apprating.AppRatingDialog;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -515,6 +516,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
+            showRatingDialog(data.getExtras());
             NetworkErrorHelper.showSnackbar(getActivity(),
                     getString(R.string.review_for) + " " + data.getExtras().getString
                             (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
@@ -550,5 +552,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (presenter != null)
             presenter.detachView();
         callbackManager = null;
+    }
+
+    public void showRatingDialog(Bundle bundle) {
+        if(bundle != null && bundle.getFloat(InboxReputationFormActivity.ARGS_RATING) >= 3.0) {
+            AppRatingDialog.show(getActivity());
+        }
     }
 }
