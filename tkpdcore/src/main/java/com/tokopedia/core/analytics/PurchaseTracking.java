@@ -1,8 +1,5 @@
 package com.tokopedia.core.analytics;
 
-import com.tokopedia.core.analytics.data.purchase.PurchaseTrackingData;
-
-import java.util.List;
 import java.util.Map;
 
 /**
