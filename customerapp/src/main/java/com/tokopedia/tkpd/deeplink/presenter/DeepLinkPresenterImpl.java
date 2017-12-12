@@ -409,7 +409,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openCategory(String uriData) {
         URLParser urlParser = new URLParser(uriData);
-        if (urlParser.getParamKeyValueMap().size() > 0) {
+        if (!urlParser.getParamKeyValueMap().isEmpty()) {
             CategoryActivity.moveTo(
                     context,
                     uriData
