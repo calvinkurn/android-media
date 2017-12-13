@@ -208,41 +208,25 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
         Activity activity = getView().getActivity();
-        if (activity != null && !activity.isFinishing()) {
-            UnifyTracking.eventClickCategoriesIcon(data.getName());
-            if (String.valueOf(data.getCategoryId()).equalsIgnoreCase("103")
-                    && tokoCashData != null
-                    && tokoCashData.getLink()
-                    == TokoCashTypeDef.TOKOCASH_ACTIVE) {
-                WalletRouterUtil.navigateWallet(activity.getApplication(), this,
-                        IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                        tokoCashData.getAction().getmAppLinks() == null ? ""
-                                : tokoCashData.getAction().getmAppLinks(),
-                        tokoCashData.getAction().getRedirectUrl() == null ? ""
-                                : tokoCashData.getAction().getRedirectUrl(),
-                        new Bundle()
-                );
-            } else {
-                if (activity != null && ((TkpdCoreRouter) activity.getApplication())
-                        .isSupportedDelegateDeepLink(data.getApplinks())) {
-                    DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                            .appLinks(data.getApplinks())
-                            .categoryId(String.valueOf(data.getCategoryId()))
-                            .categoryName(data.getName())
-                            .url(data.getUrl())
-                            .build();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
-                    Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
-                    intent.putExtras(bundle);
-                    intent.setData(Uri.parse(data.getApplinks()));
-                    activity.startActivity(intent);
-                } else {
-                    getView().onGimickItemClicked(data, parentPosition, childPosition);
-                }
-            }
-            TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
+        UnifyTracking.eventClickCategoriesIcon(data.getName());
+        if (activity != null && ((TkpdCoreRouter) activity.getApplication())
+                .isSupportedDelegateDeepLink(data.getApplinks())) {
+            DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                    .appLinks(data.getApplinks())
+                    .categoryId(String.valueOf(data.getCategoryId()))
+                    .categoryName(data.getName())
+                    .url(data.getUrl())
+                    .build();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+            Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
+            intent.putExtras(bundle);
+            intent.setData(Uri.parse(data.getApplinks()));
+            activity.startActivity(intent);
+        } else {
+            getView().onGimickItemClicked(data, parentPosition, childPosition);
         }
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
     }
 
     @Override
@@ -311,8 +295,28 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         public void onNext(List<Visitable> visitables) {
             if (isViewAttached()) {
                 getView().setItems(visitables);
-                getView().removeNetworkError();
+                if (isDataValid(visitables)) {
+                    getView().removeNetworkError();
+                } else {
+                    getView().showNetworkError(context.getString(R.string.msg_network_error));
+                }
             }
+        }
+
+        private boolean isDataValid(List<Visitable> visitables) {
+            return containsInstance(visitables, BannerViewModel.class)
+                    && containsInstance(visitables, TopPicksViewModel.class)
+                    && containsInstance(visitables, BrandsViewModel.class)
+                    && containsInstance(visitables, CategoryItemViewModel.class);
+        }
+
+        public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
+            for (E e : list) {
+                if (clazz.isInstance(e)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
     }

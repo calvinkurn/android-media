@@ -58,7 +58,7 @@ public class HomeDataMapper implements Func6<SaldoViewModel, HomeBannerResponseM
                                 TopPicksResponseModel topPicksResponseModel,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
-        if (ticker.getData().getTickers().size() > 0) {
+        if (ticker.getData().getTickers() != null && ticker.getData().getTickers().size() > 0) {
             list.add(mappingTicker(ticker.getData().getTickers()));
         }
         if (saldoViewModel.getListItems().size() > 0) {
