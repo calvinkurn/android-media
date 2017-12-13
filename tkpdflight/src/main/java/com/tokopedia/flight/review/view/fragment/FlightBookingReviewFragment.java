@@ -82,8 +82,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private ProgressDialog progressDialog;
     private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
     @Inject
-    FlightDetailRouteViewModelMapper flightDetailRouteViewModelMapper;
-    @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     FlightBookingReviewModel flightBookingReviewModel;
 

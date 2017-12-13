@@ -16,23 +16,193 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/padding_med">
 
-            <TextView
-                style="@style/TextView.Title.Bold"
-                android:padding="@dimen/padding_med"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/review_detail_departure_flight"
-                android:text="@string/flight_label_detail_order" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_departure_flight"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small" />
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/icon_status"
+                    android:layout_width="@dimen/image_width_m"
+                    android:layout_height="@dimen/image_width_m"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:src="@drawable/ic_flight_round" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextView.Caption.BlackDisabled"
+                        android:layout_toRightOf="@id/icon_status"
+                        android:text="@string/flight_label_status" />
+
+                    <TextView
+                        android:id="@+id/status_ticket"
+                        style="@style/TextView.Caption"
+                        tools:text="Tiket dibatalkan" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <view
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:background="@drawable/bg_line_separator" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_vvvs"
+                android:paddingTop="@dimen/padding_vvvs"
+                android:weightSum="2">
+
+                <TextView
+                    style="@style/TextView.Body1.BlackSecondary"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/flight_label_transaction_date" />
+
+                <TextView
+                    android:id="@+id/transaction_date"
+                    style="@style/TextView.Body1.Bold"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    tools:text="1 Sep 2017, 05:00 WIB" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_vvvs"
+                android:paddingTop="@dimen/padding_vvvs"
+                android:weightSum="2">
+
+                <TextView
+                    style="@style/TextView.Body1.BlackSecondary"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/flight_label_refund_time" />
+
+                <TextView
+                    android:id="@+id/refund_date"
+                    style="@style/TextView.Body1.Bold"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    tools:text="1 Sep 2017, 05:00 WIB" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_vvvs"
+                android:paddingTop="@dimen/padding_vvvs"
+                android:weightSum="2">
+
+                <TextView
+                    style="@style/TextView.Body1.BlackSecondary"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/flight_label_refund_status" />
+
+                <TextView
+                    android:id="@+id/status_refund"
+                    style="@style/TextView.Body1.Bold"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    tools:text="1 Sep 2017, 05:00 WIB" />
+            </LinearLayout>
+
+            <view
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:background="@drawable/bg_line_separator" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/container_download_eticket"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextView.Body1.BlackSecondary"
+                        android:text="@string/flight_label_order_id_detail" />
+
+                    <TextView
+                        android:id="@+id/order_id_detail"
+                        style="@style/TextView.Body1.BlackPrimary"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        tools:text="323088926194" />
+
+                    <ImageView
+                        android:id="@+id/copy_order_id"
+                        android:layout_width="@dimen/image_width_xs"
+                        android:layout_height="@dimen/image_width_xs"
+                        android:src="@drawable/ic_copy_order" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/container_download_eticket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/image_width_xxs"
+                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:src="@drawable/ic_download_eticket" />
+
+                    <TextView
+                        style="@style/TextView.Body1.Green"
+                        android:text="@string/flight_label_eticket" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_flight"
+                android:paddingTop="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med"
+                android:paddingLeft="@dimen/padding_med"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+            <TextView
+                android:padding="@dimen/padding_med"
+                android:text="@string/flight_label_cek_t_and_c"
+                style="@style/TextView.Caption.BlackDisabled"/>
         </LinearLayout>
 
         <LinearLayout
@@ -48,6 +218,9 @@
                 android:text="@string/flight_label_passenger_data" />
 
             <android.support.v7.widget.RecyclerView
+                android:paddingRight="@dimen/padding_med"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingBottom="@dimen/padding_med"
                 android:id="@+id/recycler_view_data_passenger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,6 +228,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginBottom="@dimen/margin_med"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_med"
@@ -70,25 +244,39 @@
                     style="@style/TextView.Title.Bold"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/review_detail_departure_flight"
+                    android:layout_toLeftOf="@+id/container_download_invoice"
                     android:text="@string/flight_label_detail_price" />
 
-                <TextView
-                    android:id="@+id/invoice"
-                    style="@style/TextView.Body1.Green"
+                <LinearLayout
+                    android:id="@+id/container_download_invoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/flight_label_invoice"
-                    tools:text="INVOICE" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/image_width_xxs"
+                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:src="@drawable/ic_download_eticket" />
+
+                    <TextView
+                        style="@style/TextView.Body1.Green"
+                        android:text="@string/flight_label_invoice" />
+
+                </LinearLayout>
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
+                android:paddingRight="@dimen/padding_med"
+                android:paddingLeft="@dimen/padding_med"
                 android:id="@+id/recycler_view_detail_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med" />
+                android:nestedScrollingEnabled="false" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -110,6 +298,41 @@
                     tools:text="Rp. 500.0000" />
             </RelativeLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/padding_med"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="Untuk bantuan silakan klik"
+                    android:layout_marginRight="@dimen/margin_vvs"
+                    style="@style/TextView.Caption"/>
+
+                <TextView
+                    android:id="@+id/help"
+                    android:text="disini"
+                    style="@style/TextView.Caption.Green"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_cancel"
+                android:text="@string/flight_label_cancel_ticket"
+                style="@style/Button.Submit.White.Stroke"/>
+
+            <Button
+                android:id="@+id/button_reschedule"
+                android:text="@string/flight_label_reschedule_ticket"
+                style="@style/Button.Submit.White.Stroke"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

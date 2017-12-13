@@ -1,6 +1,7 @@
 package com.tokopedia.flight.orderlist.di;
 
 import com.tokopedia.flight.common.di.component.FlightComponent;
+import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
 import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 
 import dagger.Component;
@@ -13,4 +14,6 @@ import dagger.Component;
 public interface FlightOrderComponent {
 
     void inject(FlightOrderListFragment flightOrderListFragment);
+
+    void inject(FlightDetailOrderFragment flightDetailOrderFragment);
 }
