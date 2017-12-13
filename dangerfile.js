@@ -22,17 +22,17 @@ var totalDanger = 0
 const modifiedBuildGradle = danger.git.modified_files.filter(path => path.includes('build.gradle')).length > 0
 if (modifiedBuildGradle) {
   totalDanger++
-  warn(":exclamation: Changes were made in build.gradle! Need approval from EM") 
+  warn(":exclamation: Changes were made in build.gradle! Need approval from @ricoharisin")
 }
 const modifiedDependenciesGradle = danger.git.modified_files.filter(path => path.includes('dependencies.gradle')).length > 0
 if (modifiedDependenciesGradle) {
   totalDanger++
-  warn(":exclamation: Changes were made in dependencies.gradle! Need approval from EM") 
+  warn(":exclamation: Changes were made in dependencies.gradle! Need approval from @ricoharisin")
 }
 const addFilesToCore = danger.git.created_files.filter(path => path.startsWith('tkpdcore/')).length > 0
 if (addFilesToCore) {
   totalDanger++
-  warn(":exclamation: You are suppossed not to add any new files to TkpdCore! Pelase consult to your lead!") 
+  warn(":exclamation: You are not supposed to add any new files to TkpdCore! Pelase consult to your lead!")
 }
 const modifiedInterceptor = danger.git.modified_files.filter(path => path.includes('interceptor')).length > 0
 if (modifiedInterceptor) {
@@ -42,21 +42,17 @@ if (modifiedInterceptor) {
 const addInterceptor = danger.git.created_files.filter(path => path.includes('interceptor')).length > 0
 if (addInterceptor) {
   totalDanger++
-  warn(":exclamation: Added a new Interceptor here! Need approval from EM") 
+  warn(":exclamation: New Interceptor class detected! Please check carefuly!")
 }
 const modifiedApplication = danger.git.modified_files.filter(path => path.includes('application')).length > 0
 if (addInterceptor) {
   totalDanger++
-  warn(":exclamation: Changes were made in Application class! Need approval from EM") 
+  warn(":exclamation: Changes were made in Application class! Need approval from @ricoharisin")
 }
 
 if (totalDanger == 0) {
-  markdown("OK to merge")
+  markdown("Ok to merge, good job!")
 }
 
-// Check that someone has been assigned to this PR
-if (danger.github.pr.assignee === null) {
-   warn('Please assign someone to merge this PR, and optionally include people who should review.');
-}
 
   
