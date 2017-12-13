@@ -1,5 +1,6 @@
 package com.tokopedia.ride.history.view;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -504,6 +505,8 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         if (getActivity() != null && requestCode == REQUEST_CODE_OPEN_SCROOGE_PAGE) {
             if (resultCode == ScroogePGUtil.RESULT_CODE_SUCCESS) {
                 btnPendingFare.setVisibility(View.GONE);
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
             }
         }
     }

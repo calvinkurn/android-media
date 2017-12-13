@@ -78,7 +78,7 @@
     <string name="ride_push_toolbar_tap_view_detail">Tap to view trip details</string>
     <string name="ride_push_toolbar_driver_not_found">No Driver Found</string>
     <string name="ride_push_toolbar_driver_not_found_desc">Sorry no driver found immediately, you can try again</string>
-    <string name="ride_push_driver_cancel">Driver canceled your booking</string>
+    <string name="ride_push_driver_cancel">driver cancelled your ride</string>
     <string name="ride_push_book_request_again">Please Book another Uber</string>
     <string name="ride_home_driver_cancel_last_rid">Driver canceled your last ride.</string>
     <string name="complete_trip_amount_charged">Amount Charged</string>

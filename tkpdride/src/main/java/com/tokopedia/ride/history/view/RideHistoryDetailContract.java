@@ -72,6 +72,8 @@ public interface RideHistoryDetailContract {
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
+        void actionGetSingleHistory();
+
         void actionSendRating();
 
         void payPendingFare();

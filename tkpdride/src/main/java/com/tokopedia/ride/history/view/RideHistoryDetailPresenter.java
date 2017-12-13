@@ -54,7 +54,8 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
         }
     }
 
-    private void actionGetSingleHistory() {
+    @Override
+    public void actionGetSingleHistory() {
         getView().hideMainLayout();
         getView().showLoading();
         getSingleRideHistoryUseCase.execute(getView().getSingleHistoryParam(), new Subscriber<RideHistory>() {
