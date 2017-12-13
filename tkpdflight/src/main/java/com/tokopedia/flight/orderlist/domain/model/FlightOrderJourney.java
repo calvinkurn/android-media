@@ -10,9 +10,11 @@ import java.util.List;
 
 public class FlightOrderJourney {
     private String departureCity;
+    private String departureCityCode;
     private String departureAiportId;
     private String departureTime;
     private String arrivalCity;
+    private String arrivalCityCode;
     private String arrivalAirportId;
     private String arrivalTime;
     private String status;
@@ -83,5 +85,21 @@ public class FlightOrderJourney {
 
     public void setRouteViewModels(List<FlightDetailRouteViewModel> routeViewModels) {
         this.routeViewModels = routeViewModels;
+    }
+
+    public String getDepartureCityCode() {
+        return departureCityCode;
+    }
+
+    public void setDepartureCityCode(String departureCityCode) {
+        this.departureCityCode = departureCityCode;
+    }
+
+    public String getArrivalCityCode() {
+        return arrivalCityCode;
+    }
+
+    public void setArrivalCityCode(String arrivalCityCode) {
+        this.arrivalCityCode = arrivalCityCode;
     }
 }

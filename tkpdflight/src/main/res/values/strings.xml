@@ -197,7 +197,7 @@
     <string name="flight_label_hours">Jam</string>
     <string name="flight_label_minute">Menit</string>
     <string name="flight_label_second">Detik</string>
-    <string name="activity_label_flight_order_list">Order List</string>
+    <string name="activity_label_flight_order_list">Daftar Transaksi</string>
     <string name="flight_price_detail_prefixl_meal_label">Makanan </string>
     <string name="flight_price_detail_prefix_luggage_label">Bagasi </string>
     <string name="flight_booking_close_label">Tutup</string>
@@ -230,4 +230,8 @@
     <string name="flight_booking_new_price_strike_label"><![CDATA[<strike>%1$s</strike>]]></string>
     <string name="flight_label_detail_order">Detail Penerbangan</string>
     <string name="flight_label_invoice">INVOICE</string>
+    <string name="flight_order_failed_title">Transaksi Tidak Berhasil</string>
+    <string name="flight_order_expire_title">Transaksi kadaluarsa</string>
+    <string name="flight_order_order_id_prefix">Order ID :</string>
+    <string name="flight_order_success_title">Transaksi Berhasil</string>
 </resources>

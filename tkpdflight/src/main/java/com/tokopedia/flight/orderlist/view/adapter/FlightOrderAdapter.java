@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
 public class FlightOrderAdapter extends BaseAdapter {
     private FlightOrderTypeFactory flightOrderTypeFactory;
 
-    public FlightOrderAdapter(FlightOrderAdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
+    public FlightOrderAdapter(FlightOrderTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
         flightOrderTypeFactory = (FlightOrderTypeFactory) adapterTypeFactory;
     }
@@ -40,5 +42,15 @@ public class FlightOrderAdapter extends BaseAdapter {
     @Override
     public int getItemViewType(int position) {
         return visitables.get(position).type(flightOrderTypeFactory);
+    }
+
+    public interface OnAdapterInteractionListener {
+        void onSuccessOrderDetailClicked(FlightOrderSuccessViewModel viewModel);
+
+        void onFailedOrderDetailClicked(FlightOrderFailedViewModel viewModel);
+
+        void onHelpOptionClicked(String orderId);
+
+        void onReBookingClicked(FlightOrderFailedViewModel item);
     }
 }
