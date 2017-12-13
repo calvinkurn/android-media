@@ -479,16 +479,26 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
 
             @Override
-            public void clickOnButton(String url) {
-                String seamlessUrl;
-                seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
-                        getContext());
-                if (getActivity() != null) {
-                    if ((getActivity()).getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter) (getActivity()).getApplication())
-                                .goToWallet(getActivity(), seamlessUrl);
+            public void clickOnButton(String url, String appLink) {
+                if (TextUtils.isEmpty(appLink)) {
+                    String seamlessUrl;
+                    seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
+                            getContext());
+                    if (getActivity() != null) {
+                        if ((getActivity()).getApplication() instanceof TkpdCoreRouter) {
+                            ((TkpdCoreRouter) (getActivity()).getApplication())
+                                    .goToWallet(getActivity(), seamlessUrl);
+                        }
                     }
+                } else {
+                    WalletRouterUtil.navigateWallet(
+                            getActivity().getApplication(),
+                            HomeFragment.this,
+                            IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                            appLink, url, new Bundle()
+                    );
                 }
+
             }
         });
         bottomSheetDialogTokoCash.renderBottomSheet(new BottomSheetView
@@ -498,6 +508,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         cashBackData.getAmountText()))
                 .setImg(R.drawable.group_2)
                 .setUrlButton(redirectUrlActionButton,
+                        appLinkActionButton,
                         getString(R.string.toko_cash_pending_proceed_button))
                 .build());
         bottomSheetDialogTokoCash.show();
