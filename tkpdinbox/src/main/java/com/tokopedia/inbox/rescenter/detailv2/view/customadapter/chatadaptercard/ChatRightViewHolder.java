@@ -49,7 +49,7 @@ public class ChatRightViewHolder extends AbstractViewHolder<ChatRightViewModel> 
             rvAttachment.setVisibility(View.GONE);
         } else {
             rvAttachment.setVisibility(View.VISIBLE);
-            adapter = new ChatProductGeneralAdapter(itemView.getContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
+            adapter = new ChatProductGeneralAdapter(mainView, itemView.getContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
             rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvAttachment.setAdapter(adapter);
         }

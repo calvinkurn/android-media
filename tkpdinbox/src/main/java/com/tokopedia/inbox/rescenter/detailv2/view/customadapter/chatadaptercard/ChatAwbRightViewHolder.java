@@ -70,7 +70,7 @@ public class ChatAwbRightViewHolder extends AbstractViewHolder<ChatAwbRightViewM
         } else {
             rvAttachment.setVisibility(View.VISIBLE);
             tvTitleAttachment.setVisibility(View.VISIBLE);
-            adapter = new ChatProductGeneralAdapter(itemView.getContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
+            adapter = new ChatProductGeneralAdapter(mainView, itemView.getContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
             rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             rvAttachment.setAdapter(adapter);
         }
