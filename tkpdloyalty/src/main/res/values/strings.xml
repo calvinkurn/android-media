@@ -5,4 +5,5 @@
     <string name="show_case_title">Kode Promo dan Kode Kupon tidak dapat digabung</string>
     <string name="show_case_text">Penggunaan Kode Promo tidak dapat digabung dengan Kupon yang Anda miliki</string>
     <string name="error_empty_voucher_code">Kode Voucher Harus Diisi</string>
+    <string name="label_title_error_response">Terjadi Kesalahan</string>
 </resources>

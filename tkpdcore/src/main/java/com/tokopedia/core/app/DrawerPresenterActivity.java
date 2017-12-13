@@ -1,6 +1,7 @@
 package com.tokopedia.core.app;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -439,13 +440,13 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
                     if (tokoPointDrawerData.getHasNotif() == 1) {
                         if (getApplication() instanceof ILoyaltyRouter) {
-                            ((ILoyaltyRouter) getApplication())
+
+                            FragmentTransaction ft = getFragmentManager().beginTransaction();
+                            ft.add(((ILoyaltyRouter) getApplication())
                                     .getLoyaltyTokoPointNotificationDialogFragment(
                                             tokoPointDrawerData.getPopUpNotif()
-                                    ).show(
-                                    getFragmentManager(),
-                                    ILoyaltyRouter.LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG
-                            );
+                                    ), ILoyaltyRouter.LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG);
+                            ft.commitAllowingStateLoss();
                         }
                     }
                     break;
