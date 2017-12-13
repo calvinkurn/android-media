@@ -519,7 +519,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         super.onDestroyView();
         presenter.unsubscribeObservable();
         cacheHandler = null;
-        cacheManager.delete(CACHE_OPPORTUNITY_FILTER);
         cacheManager = null;
     }
 
