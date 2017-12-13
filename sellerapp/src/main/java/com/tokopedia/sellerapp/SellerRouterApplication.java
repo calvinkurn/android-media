@@ -631,6 +631,31 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getActivitySellingTransactionNewOrder(Context context) {
+        return TkpdSeller.getActivitySellingTransactionNewOrder(context);
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
+        return TkpdSeller.getActivitySellingTransactionConfirmShipping(context);
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionShippingStatus(Context context) {
+        return TkpdSeller.getActivitySellingTransactionShippingStatus(context);
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionList(Context context) {
+        return TkpdSeller.getActivitySellingTransactionList(context);
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionOpportunity(Context context) {
+        return TkpdSeller.getActivitySellingTransactionOpportunity(context);
+    }
+
+    @Override
     public void goToTopAdsDashboard(Activity activity) {
         Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
         activity.startActivity(intent);
