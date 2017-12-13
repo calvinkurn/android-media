@@ -3,7 +3,9 @@ package com.tokopedia.loyalty.view.fragment;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +57,9 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
         ivPic = view.findViewById(R.id.iv_tokopoint_notif_image);
         tvAction = view.findViewById(R.id.tv_tokopoint_notif_action);
         tvTitle.setText(popUpNotifData.getTitle());
-        tvDesc.setText(popUpNotifData.getText());
+
+        tvDesc.setMovementMethod(LinkMovementMethod.getInstance());
+        tvDesc.setText(Html.fromHtml(popUpNotifData.getText()));
         ImageHandler.loadImageThumbs(getActivity(), ivPic, popUpNotifData.getImageUrl());
         tvAction.setText(popUpNotifData.getButtonText());
         tvAction.setOnClickListener(new View.OnClickListener() {

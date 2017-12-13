@@ -1,9 +1,13 @@
-package com.tokopedia.core.network.retrofit.interceptors;
+package com.tokopedia.loyalty.domain.apiservice;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.network.exception.HttpErrorException;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.loyalty.domain.entity.response.TokoPointErrorResponse;
+import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -26,6 +30,16 @@ public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
         String responseError = response.body().string();
         if (responseError != null)
             Log.d("HCK RESPONSE ERROR: ", responseError);
+        if (responseError != null && !responseError.isEmpty() && responseError.contains("header")) {
+            TokoPointErrorResponse tokoPointErrorResponse = new Gson().fromJson(
+                    responseError, TokoPointErrorResponse.class
+            );
+            if (tokoPointErrorResponse.getHeaderResponse() != null) {
+                throw new TokoPointResponseErrorException(
+                        response.code(),
+                        tokoPointErrorResponse.getHeaderResponse());
+            }
+        }
         throw new HttpErrorException(response.code());
     }
 

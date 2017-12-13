@@ -7,7 +7,7 @@ package com.tokopedia.loyalty.domain.dummyresponse;
 public interface DummyTokoPointResponse {
     String RESPONSE_DRAWER_DATA = "{\n" +
             "  \"off_flag\": 0,\n" +
-            "  \"has_notif\": 0,\n" +
+            "  \"has_notif\": 1,\n" +
             "  \"mainpage_url\": \"https://gw-staging.tokopedia.com/tokopoints\",\n" +
             "  \"user_tier\": {\n" +
             "    \"tier_id\": 1,\n" +
