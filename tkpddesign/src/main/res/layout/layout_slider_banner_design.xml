@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root_banner"
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:focusable="true"
-        android:minHeight="180dp"
-        android:src="@drawable/ic_loading_image" />
-
-</RelativeLayout>
+    android:adjustViewBounds="true"
+    android:focusable="true"
+    android:minHeight="180dp"
+    android:maxHeight="200dp"
+    android:src="@drawable/ic_loading_image" />
