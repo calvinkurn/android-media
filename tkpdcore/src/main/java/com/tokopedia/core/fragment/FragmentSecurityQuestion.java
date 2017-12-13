@@ -213,7 +213,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             new android.support.v7.app.AlertDialog.Builder(getActivity())
                     .setMessage(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.READ_SMS)
                     )
-                    .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);

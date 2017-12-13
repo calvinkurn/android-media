@@ -143,7 +143,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                             RequestPermissionUtil
                                     .getNeedPermissionMessage(Manifest.permission.READ_SMS)
                     )
-                    .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(com.tokopedia.core.R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             PhoneVerificationFragmentPermissionsDispatcher
