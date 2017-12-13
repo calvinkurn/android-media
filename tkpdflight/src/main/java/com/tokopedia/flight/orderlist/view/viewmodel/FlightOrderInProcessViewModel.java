@@ -10,14 +10,9 @@ import java.util.List;
  * @author by alvarisi on 12/12/17.
  */
 
-public class FlightOrderFailedViewModel implements Visitable<FlightOrderTypeFactory> {
-    protected String title;
-    protected String id;
-    protected String createTime;
-    protected int status;
-    protected List<FlightOrderJourney> orderJourney;
+public class FlightOrderInProcessViewModel extends FlightOrderFailedViewModel implements Visitable<FlightOrderTypeFactory> {
 
-    public FlightOrderFailedViewModel() {
+    public FlightOrderInProcessViewModel() {
     }
 
     public String getId() {

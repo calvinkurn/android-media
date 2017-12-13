@@ -10,7 +10,10 @@ import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderInProcessViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderRefundViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderWaitingForPaymentViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,6 +131,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         for (FlightOrder flightOrder : flightOrders) {
             switch (flightOrder.getStatus()) {
                 case 700:
+                case 800:
                     for (FlightOrderJourney journey : flightOrder.getJourneys()) {
                         FlightOrderSuccessViewModel successViewModel = new FlightOrderSuccessViewModel();
                         successViewModel.setCreateTime(flightOrder.getCreateTime());
@@ -156,7 +160,44 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                     expired.setTitle(getView().getString(R.string.flight_order_expire_title));
                     visitables.add(expired);
                     break;
-
+                case 101:
+                case 200:
+                case 300:
+                    FlightOrderInProcessViewModel inProcessViewModel = new FlightOrderInProcessViewModel();
+                    inProcessViewModel.setCreateTime(flightOrder.getCreateTime());
+                    inProcessViewModel.setId(flightOrder.getId());
+                    inProcessViewModel.setOrderJourney(flightOrder.getJourneys());
+                    inProcessViewModel.setStatus(flightOrder.getStatus());
+                    switch (flightOrder.getStatus()) {
+                        case 101:
+                        case 201:
+                            inProcessViewModel.setTitle(getView().getString(R.string.flight_order_waiting_for_confirmation_title));
+                            break;
+                        case 300:
+                            inProcessViewModel.setTitle(getView().getString(R.string.flight_order_in_progress_title));
+                            break;
+                    }
+                    visitables.add(inProcessViewModel);
+                    break;
+                case 100:
+                case 102:
+                    FlightOrderWaitingForPaymentViewModel waitingForPaymentViewModel = new FlightOrderWaitingForPaymentViewModel();
+                    waitingForPaymentViewModel.setCreateTime(flightOrder.getCreateTime());
+                    waitingForPaymentViewModel.setId(flightOrder.getId());
+                    waitingForPaymentViewModel.setOrderJourney(flightOrder.getJourneys());
+                    waitingForPaymentViewModel.setStatus(flightOrder.getStatus());
+                    waitingForPaymentViewModel.setTitle(getView().getString(R.string.flight_order_waiting_for_payment_title));
+                    visitables.add(waitingForPaymentViewModel);
+                    break;
+                case 650:
+                    FlightOrderRefundViewModel refundViewModel = new FlightOrderRefundViewModel();
+                    refundViewModel.setCreateTime(flightOrder.getCreateTime());
+                    refundViewModel.setId(flightOrder.getId());
+                    refundViewModel.setOrderJourney(flightOrder.getJourneys());
+                    refundViewModel.setStatus(flightOrder.getStatus());
+                    refundViewModel.setTitle(getView().getString(R.string.flight_order_waiting_for_payment_title));
+                    visitables.add(refundViewModel);
+                    break;
             }
         }
         return visitables;
@@ -165,17 +206,18 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
     private void buildAndRenderFilterList() {
 
-        int[] colorBorder = new int[4];
+        int[] colorBorder = new int[5];
         colorBorder[0] = R.color.filter_order_green;
         colorBorder[1] = R.color.filter_order_red;
         colorBorder[2] = R.color.filter_order_orange;
-        colorBorder[3] = R.color.filter_order_yellow;
+        colorBorder[4] = R.color.filter_order_blue;
 
         Map<String, String> filtersMap = new HashMap<>();
-        filtersMap.put("100", "Berhasil");
-        filtersMap.put("700", "Tidak Berhasil");
-        filtersMap.put("650", "Menunggu Pembayaran");
-        filtersMap.put("300", "Dalam Proses");
+        filtersMap.put("700,800", getView().getString(R.string.flight_order_status_success_label));
+        filtersMap.put("0,600", getView().getString(R.string.flight_order_status_failed_label));
+        filtersMap.put("100,102", getView().getString(R.string.flight_order_status_waiting_for_payment_label));
+        filtersMap.put("101,200,300", getView().getString(R.string.flight_order_status_in_progress_label));
+        filtersMap.put("650", getView().getString(R.string.flight_order_status_refund_label));
 
         List<QuickFilterItem> filterItems = new ArrayList<>();
         int colorInd = 0;

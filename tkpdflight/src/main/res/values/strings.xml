@@ -234,4 +234,12 @@
     <string name="flight_order_expire_title">Transaksi kadaluarsa</string>
     <string name="flight_order_order_id_prefix">Order ID :</string>
     <string name="flight_order_success_title">Transaksi Berhasil</string>
+    <string name="flight_order_status_success_label">Berhasil</string>
+    <string name="flight_order_status_failed_label">Tidak Berhasil</string>
+    <string name="flight_order_status_waiting_for_payment_label">Menunggu Pembayaran</string>
+    <string name="flight_order_status_in_progress_label">Dalam Proses</string>
+    <string name="flight_order_status_refund_label">Pengembalian Dana</string>
+    <string name="flight_order_waiting_for_confirmation_title">Menunggu Konfirmasi Pemesanan</string>
+    <string name="flight_order_in_progress_title">Pemesanan Dalam Proses</string>
+    <string name="flight_order_waiting_for_payment_title">Menunggu Pembayaran</string>
 </resources>
