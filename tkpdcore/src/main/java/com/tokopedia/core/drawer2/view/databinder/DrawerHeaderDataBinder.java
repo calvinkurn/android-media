@@ -251,7 +251,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             ImageHandler.loadImageThumbs(context,
                     holder.ivTokoPointBadge,
                     data.getTokoPointDrawerData().getUserTier().getTierImageUrl());
-            holder.tvTokoPointCount.setText(data.getTokoPointDrawerData().getUserTier().getRewardPoints() + " Poin");
+            holder.tvTokoPointCount.setText(data.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
             holder.tvTokoPointAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

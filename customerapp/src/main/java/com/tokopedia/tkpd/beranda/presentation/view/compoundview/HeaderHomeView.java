@@ -79,7 +79,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvTitleTokoPoint.setVisibility(VISIBLE);
         tvBalanceTokoPoint.setVisibility(VISIBLE);
         tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierName());
-        tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPoints() + " Poin");
+        tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
         tvBalanceTokoPoint.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
