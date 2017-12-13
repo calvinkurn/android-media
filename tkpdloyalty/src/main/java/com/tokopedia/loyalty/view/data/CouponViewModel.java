@@ -16,6 +16,10 @@ public class CouponViewModel {
 
     private String title;
 
+    private long rawDiscount;
+
+    private long rawCashback;
+
     public boolean isSuccess() {
         return isSuccess;
     }
@@ -54,5 +58,21 @@ public class CouponViewModel {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public long getRawDiscount() {
+        return rawDiscount;
+    }
+
+    public void setRawDiscount(long rawDiscount) {
+        this.rawDiscount = rawDiscount;
+    }
+
+    public long getRawCashback() {
+        return rawCashback;
+    }
+
+    public void setRawCashback(long rawCashback) {
+        this.rawCashback = rawCashback;
     }
 }

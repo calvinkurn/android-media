@@ -61,6 +61,10 @@ public class LoyaltyActivity extends BasePresenterActivity
     public static final String COUPON_MESSAGE = "coupon_message";
     public static final String COUPON_AMOUNT = "coupon_amount";
     public static final String COUPON_TITLE = "coupon_title";
+    public static final String VOUCHER_CASHBACK_AMOUNT = "VOUCHER_CASHBACK_AMOUNT";
+    public static final String VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT";
+    public static final String COUPON_DISCOUNT_AMOUNT = "COUPON_DISCOUNT_AMOUNT";
+    public static final String COUPON_CASHBACK_AMOUNT = "COUPON_CASHBACK_AMOUNT";
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -200,6 +204,22 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     @Override
+    public void onDigitalCodeSuccess(String voucherCode,
+                                     String voucherMessage,
+                                     long discountAmount,
+                                     long cashBackAmount) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString(VOUCHER_CODE, voucherCode);
+        bundle.putString(VOUCHER_MESSAGE, voucherMessage);
+        bundle.putLong(VOUCHER_DISCOUNT_AMOUNT, discountAmount);
+        bundle.putLong(VOUCHER_CASHBACK_AMOUNT, cashBackAmount);
+        intent.putExtras(bundle);
+        setResult(VOUCHER_RESULT_CODE, intent);
+        finish();
+    }
+
+    @Override
     public void onCouponSuccess(
             String promoCode,
             String promoMessage,
@@ -211,6 +231,24 @@ public class LoyaltyActivity extends BasePresenterActivity
         bundle.putString(COUPON_CODE, promoCode);
         bundle.putString(COUPON_MESSAGE, promoMessage);
         bundle.putString(COUPON_AMOUNT, amount);
+        bundle.putString(COUPON_TITLE, couponTitle);
+        intent.putExtras(bundle);
+        setResult(COUPON_RESULT_CODE, intent);
+        finish();
+    }
+
+    @Override
+    public void onDigitalCouponSuccess(String promoCode,
+                                       String promoMessage,
+                                       String couponTitle,
+                                       long discountAmount,
+                                       long cashbackAmount) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString(COUPON_CODE, promoCode);
+        bundle.putString(COUPON_MESSAGE, promoMessage);
+        bundle.putLong(COUPON_DISCOUNT_AMOUNT, discountAmount);
+        bundle.putLong(COUPON_CASHBACK_AMOUNT, cashbackAmount);
         bundle.putString(COUPON_TITLE, couponTitle);
         intent.putExtras(bundle);
         setResult(COUPON_RESULT_CODE, intent);

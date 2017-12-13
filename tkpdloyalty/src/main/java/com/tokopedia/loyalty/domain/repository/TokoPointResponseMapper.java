@@ -125,6 +125,8 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
         viewModel.setAmount(voucherResponse.getAttributes().getDiscountAmount());
         viewModel.setMessage(voucherResponse.getAttributes().getMessage());
         viewModel.setCode(voucherCode);
+        viewModel.setRawCashback(voucherResponse.getAttributes().getCashbackAmountPlain());
+        viewModel.setRawDiscount(voucherResponse.getAttributes().getDiscountAmountPlain());
         return viewModel;
     }
 
@@ -136,6 +138,8 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
         viewModel.setMessage(voucherResponse.getAttributes().getMessage());
         viewModel.setCode(voucherCode);
         viewModel.setTitle(couponTitle);
+        viewModel.setRawCashback(voucherResponse.getAttributes().getCashbackAmountPlain());
+        viewModel.setRawDiscount(voucherResponse.getAttributes().getDiscountAmountPlain());
         return viewModel;
     }
 

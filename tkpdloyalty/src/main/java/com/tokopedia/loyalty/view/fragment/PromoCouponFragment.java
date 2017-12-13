@@ -159,6 +159,15 @@ public class PromoCouponFragment extends BasePresenterFragment
     }
 
     @Override
+    public void receiveDigitalResult(CouponViewModel couponViewModel) {
+        listener.onDigitalCouponSuccess(couponViewModel.getCode(),
+                couponViewModel.getMessage(),
+                couponViewModel.getTitle(),
+                couponViewModel.getRawDiscount(),
+                couponViewModel.getRawCashback());
+    }
+
+    @Override
     public void onErrorFetchCouponList(String errorMessage) {
         NetworkErrorHelper.showEmptyState(getActivity(),
                 mainView,
@@ -294,6 +303,13 @@ public class PromoCouponFragment extends BasePresenterFragment
                 String promoMessage,
                 String amount,
                 String couponTitle);
+
+        void onDigitalCouponSuccess(
+                String promoCode,
+                String promoMessage,
+                String CouponTitle,
+                long discountAmount,
+                long cashbackAmount);
 
     }
 
