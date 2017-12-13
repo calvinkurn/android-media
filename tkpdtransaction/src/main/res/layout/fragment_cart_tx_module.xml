@@ -55,7 +55,7 @@
 
                     <include
                         layout="@layout/promo_activation_layout"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_ticker_gtm"/>
 
