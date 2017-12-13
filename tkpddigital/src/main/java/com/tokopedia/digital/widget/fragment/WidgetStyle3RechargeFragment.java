@@ -211,11 +211,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
             }
 
             @Override
-            public void onRechargeTextChanged(String clientNumber) {
-
-            }
-
-            @Override
             public void onRechargeTextClear() {
                 clearHolder(holderWidgetSpinnerProduct);
                 clearHolder(holderWidgetWrapperBuy);

@@ -41,11 +41,14 @@ import com.tokopedia.digital.widget.presenter.IDigitalWidgetStyle1Presenter;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import butterknife.BindView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -154,22 +157,30 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                                 };
                             }
                         })
-                        .debounce(200, TimeUnit.MILLISECONDS)
+                        .filter(new Func1<String, Boolean>() {
+                            @Override
+                            public Boolean call(String text) {
+                                if (text.isEmpty()) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            }
+                        })
+                        .distinctUntilChanged()
+                        .debounce(300, TimeUnit.MILLISECONDS)
+                        .switchMap(new Func1<String, Observable<String>>() {
+                            @Override
+                            public Observable<String> call(String s) {
+                                return Observable.just(s);
+                            }
+                        })
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<String>() {
+                        .subscribe(new Action1<String>() {
                             @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                            }
-
-                            @Override
-                            public void onNext(String s) {
+                            public void call(String s) {
                                 if (s != null) {
                                     String temp = s;
                                     temp = validateTextPrefix(temp);
