@@ -47,6 +47,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
                             .expired(coupon.getExpired())
                             .imageUrl(coupon.getImageUrl())
                             .imageUrlMobile(coupon.getImageUrlMobile())
+                            .icon(coupon.getIcon())
                             .build()
             );
         }
