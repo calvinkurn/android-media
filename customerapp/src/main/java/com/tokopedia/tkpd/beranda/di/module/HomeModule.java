@@ -79,11 +79,8 @@ public class HomeModule {
     GetLocalHomeDataUseCase getLocalHomeDataUseCase(ThreadExecutor threadExecutor,
                                                     PostExecutionThread postExecutionThread,
                                                     HomeRepository repository,
-                                                    HomeDataMapper dataMapper,
-                                                    GlobalCacheManager cacheManager,
-                                                    Gson gson){
-        return new GetLocalHomeDataUseCase(threadExecutor, postExecutionThread, repository, dataMapper,
-                cacheManager, gson);
+                                                    HomeDataMapper dataMapper){
+        return new GetLocalHomeDataUseCase(threadExecutor, postExecutionThread, repository, dataMapper);
     }
 
     @HomeScope

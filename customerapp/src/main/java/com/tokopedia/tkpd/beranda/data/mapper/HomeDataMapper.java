@@ -1,9 +1,12 @@
 package com.tokopedia.tkpd.beranda.data.mapper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
+import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
@@ -21,6 +24,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryIt
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
@@ -30,32 +34,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import rx.functions.Func5;
 import rx.functions.Func6;
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
-public class HomeDataMapper implements Func6<SaldoViewModel, HomeBannerResponseModel, Ticker,
+public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         BrandsOfficialStoreResponseModel, TopPicksResponseModel,
         HomeCategoryResponseModel, List<Visitable>> {
     private final Context context;
-
     public HomeDataMapper(Context context) {
         this.context = context;
     }
 
     @Override
-    public List<Visitable> call(SaldoViewModel saldoViewModel, HomeBannerResponseModel homeBannerResponseModel, Ticker ticker,
+    public List<Visitable> call(HomeBannerResponseModel homeBannerResponseModel, Ticker ticker,
                                 BrandsOfficialStoreResponseModel brandsOfficialStoreResponseModel,
                                 TopPicksResponseModel topPicksResponseModel,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
+        boolean isLogin = SessionHandler.isV4Login(context);
+
         if (ticker.getData().getTickers() != null && ticker.getData().getTickers().size() > 0) {
             list.add(mappingTicker(ticker.getData().getTickers()));
         }
-        if (saldoViewModel.getListItems().size() > 0) {
-            list.add(saldoViewModel);
-        }
+
         if (homeBannerResponseModel.isSuccess()) {
             list.add(mappingBanner(homeBannerResponseModel));
         }
@@ -75,7 +79,7 @@ public class HomeDataMapper implements Func6<SaldoViewModel, HomeBannerResponseM
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
         }
-        if (!SessionHandler.isV4Login(context) || !SessionHandler.isUserSeller(context)) {
+        if (!isLogin || !SessionHandler.isUserSeller(context)) {
             list.add(new EmptyShopViewModel());
         }
         return swapList(list);
