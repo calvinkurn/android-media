@@ -9,20 +9,11 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.apiservices.tokocash.WalletBaseService;
-import com.tokopedia.core.network.apiservices.user.InterruptService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.source.OtpSource;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
-import com.tokopedia.otp.domain.mapper.RequestOTPMapper;
-import com.tokopedia.otp.domain.mapper.ValidateOTPMapper;
-import com.tokopedia.otp.tokocashotp.data.source.TokoCashOtpSource;
-import com.tokopedia.otp.tokocashotp.data.mapper.RequestOtpTokoCashMapper;
-import com.tokopedia.otp.tokocashotp.data.mapper.VerifyOtpTokoCashMapper;
-import com.tokopedia.otp.tokocashotp.domain.interactor.RequestOtpTokoCashUseCase;
-import com.tokopedia.otp.tokocashotp.domain.interactor.VerifyOtpTokoCashUseCase;
+import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
+import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -31,8 +22,6 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
-import com.tokopedia.session.domain.interactor.GetTokenUseCase;
-import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
 
@@ -186,8 +175,8 @@ public class SessionModule {
     @SessionScope
     @Provides
     OtpSource provideOtpSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                               RequestOTPMapper requestOTPMapper,
-                               ValidateOTPMapper validateOTPMapper,
+                               RequestOtpMapper requestOTPMapper,
+                               ValidateOtpMapper validateOTPMapper,
                                SessionHandler sessionHandler) {
         return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
     }

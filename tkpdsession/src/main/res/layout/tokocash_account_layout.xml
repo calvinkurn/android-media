@@ -7,7 +7,7 @@
                 android:background="@drawable/selectable_white_background"
                 android:orientation="vertical">
 
-    <com.tokopedia.core.customwidget.RoundedCornerImageView
+    <com.tokopedia.core.customView.RoundedCornerImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/verification_icon"
         android:layout_height="@dimen/verification_icon"

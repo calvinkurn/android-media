@@ -10,7 +10,7 @@ import rx.Observable;
 
 /**
  * Created by nisie on 3/7/17.
- * @deprecated  do not use.
+ * @deprecated  do not use. Use UseCase instead.
  */
 
 @Deprecated

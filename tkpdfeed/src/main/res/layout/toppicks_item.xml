@@ -6,7 +6,7 @@
               android:background="@drawable/bg_product_list"
               android:orientation="vertical">
 
-    <com.tokopedia.core.customwidget.RoundedCornerImageView
+    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -10,7 +10,7 @@ import rx.functions.Func1;
 
 /**
  * Created by nisie on 3/7/17.
- * @deprecated use RequestOTPMapper instead.
+ * @deprecated use RequestOtpMapper in tkpdsession instead.
  */
 
 @Deprecated

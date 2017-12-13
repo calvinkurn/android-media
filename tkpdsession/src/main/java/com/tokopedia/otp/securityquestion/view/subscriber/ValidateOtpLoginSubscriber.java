@@ -2,7 +2,7 @@ package com.tokopedia.otp.securityquestion.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.otp.data.model.ValidateOTPLoginDomain;
+import com.tokopedia.otp.data.model.ValidateOtpLoginDomain;
 import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
 
 import rx.Subscriber;
@@ -11,7 +11,7 @@ import rx.Subscriber;
  * @author by nisie on 10/21/17.
  */
 
-public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOTPLoginDomain> {
+public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOtpLoginDomain> {
     private final SecurityQuestion.View viewListener;
 
     public ValidateOtpLoginSubscriber(SecurityQuestion.View viewListener) {
@@ -29,12 +29,12 @@ public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOTPLoginDomai
     }
 
     @Override
-    public void onNext(ValidateOTPLoginDomain validateOTPLoginDomain) {
-        if (validateOTPLoginDomain.getValidateOTPDomain().isSuccess()
+    public void onNext(ValidateOtpLoginDomain validateOTPLoginDomain) {
+        if (validateOTPLoginDomain.getValidateOtpDomain().isSuccess()
                 && validateOTPLoginDomain.getMakeLoginDomain().isLogin()
                 && !validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified()) {
             viewListener.onGoToPhoneVerification();
-        } else if (validateOTPLoginDomain.getValidateOTPDomain().isSuccess()
+        } else if (validateOTPLoginDomain.getValidateOtpDomain().isSuccess()
                 && validateOTPLoginDomain.getMakeLoginDomain().isLogin()
                 && validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified())
             viewListener.onSuccessValidateOtp();

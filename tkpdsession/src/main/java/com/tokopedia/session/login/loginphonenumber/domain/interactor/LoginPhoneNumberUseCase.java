@@ -29,7 +29,6 @@ import rx.functions.Func1;
 public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
 
     private GetCodeTokoCashUseCase getCodeTokoCashUseCase;
-    private GetAccessTokenTokoCashUseCase getAccessTokenTokoCashUseCase;
     private GetTokenUseCase getTokenUseCase;
     private MakeLoginUseCase makeLoginUseCase;
     private GetUserInfoUseCase getUserInfoUseCase;
@@ -39,14 +38,12 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
     public LoginPhoneNumberUseCase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
                                    GetCodeTokoCashUseCase getCodeTokoCashUseCase,
-                                   GetAccessTokenTokoCashUseCase getAccessTokenTokoCashUseCase,
                                    GetTokenUseCase getTokenUseCase,
                                    GetUserInfoUseCase getUserInfoUseCase,
                                    MakeLoginUseCase makeLoginUseCase,
                                    SessionHandler sessionHandler) {
         super(threadExecutor, postExecutionThread);
         this.getCodeTokoCashUseCase = getCodeTokoCashUseCase;
-        this.getAccessTokenTokoCashUseCase = getAccessTokenTokoCashUseCase;
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;

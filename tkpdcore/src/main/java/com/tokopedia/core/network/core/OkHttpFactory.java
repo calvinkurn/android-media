@@ -4,7 +4,6 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.BasicInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
@@ -179,16 +178,6 @@ public class OkHttpFactory {
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new AccountsInterceptor(authKey, isUsingHMAC,
                         isUsingBothAuthorization, isBasic))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .addInterceptor(getHeaderHttpLoggingInterceptor())
-                .build();
-    }
-
-    public OkHttpClient buildBasicAuth(String clientId, String clientSecret) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new BasicInterceptor(clientId, clientSecret))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .addInterceptor(getHeaderHttpLoggingInterceptor())

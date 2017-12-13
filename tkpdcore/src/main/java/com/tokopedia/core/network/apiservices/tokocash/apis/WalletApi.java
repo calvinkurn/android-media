@@ -57,9 +57,4 @@ public interface WalletApi {
     @POST(TkpdBaseURL.Wallet.CHECK_MSISDN)
     Observable<Response<TkpdDigitalResponse>> checkMsisdn(@FieldMap Map<String,
             Object> parameters);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Wallet.GET_TOKEN)
-    Observable<Response<String>> getToken(@FieldMap Map<String,
-            Object> parameters);
 }

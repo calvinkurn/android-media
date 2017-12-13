@@ -6,8 +6,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.otp.data.model.RequestOtpViewModel;
-import com.tokopedia.otp.domain.pojo.RequestOtpPojo;
+import com.tokopedia.otp.data.model.ValidateOtpDomain;
+import com.tokopedia.otp.domain.pojo.ValidateOtpPojo;
 import com.tokopedia.session.R;
 
 import javax.inject.Inject;
@@ -19,28 +19,28 @@ import rx.functions.Func1;
  * @author by nisie on 10/21/17.
  */
 
-public class RequestOTPMapper implements Func1<Response<TkpdResponse>, RequestOtpViewModel> {
+public class ValidateOtpMapper implements Func1<Response<TkpdResponse>, ValidateOtpDomain> {
 
     @Inject
-    public RequestOTPMapper() {
+    public ValidateOtpMapper() {
     }
 
     @Override
-    public RequestOtpViewModel call(Response<TkpdResponse> response) {
+    public ValidateOtpDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
                     || (!response.body().isNullData()
                     && response.body().getErrorMessages() == null)) {
-                RequestOtpPojo pojo = response.body().convertDataObj(RequestOtpPojo.class);
-                return convertToDomain(pojo, response);
+                ValidateOtpPojo validateOtpData = response.body().convertDataObj(
+                        ValidateOtpPojo.class);
+                return convertToDomain(validateOtpData);
             } else {
                 if (response.body().getErrorMessages() != null
                         && !response.body().getErrorMessages().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
+                    throw new ErrorMessageException("");
                 }
             }
         } else {
@@ -53,7 +53,7 @@ public class RequestOTPMapper implements Func1<Response<TkpdResponse>, RequestOt
         }
     }
 
-    private RequestOtpViewModel convertToDomain(RequestOtpPojo pojo, Response<TkpdResponse> response) {
-        return new RequestOtpViewModel(pojo.isSuccess(), response.body().getStatusMessageJoined());
+    private ValidateOtpDomain convertToDomain(ValidateOtpPojo validateOtpData) {
+        return new ValidateOtpDomain(validateOtpData.isSuccess(), validateOtpData.getUuid());
     }
 }

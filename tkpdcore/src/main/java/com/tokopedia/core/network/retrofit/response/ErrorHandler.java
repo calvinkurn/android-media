@@ -192,17 +192,9 @@ public class ErrorHandler {
             else {
                 return e.getLocalizedMessage();
             }
-        }else if (e instanceof ResponseErrorException
-                && e.getLocalizedMessage() != null) {
-            if (!e.getLocalizedMessage().contains(context.getString(R.string.code_error)))
-                return e.getLocalizedMessage() + " " +
-                        context.getString(R.string.code_error) + ErrorCode.WS_ERROR;
-            else {
-                return e.getLocalizedMessage();
-            }
-        }  else if (BuildConfig.DEBUG) {
+        } else if (BuildConfig.DEBUG) {
             return e.getLocalizedMessage();
-        }else {
+        } else {
             return context.getString(R.string.default_request_error_unknown) + " " +
                     context.getString(R.string.code_error) + ErrorCode.UNKNOWN;
         }

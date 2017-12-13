@@ -8,7 +8,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.domain.interactor.ValidateOTPLoginUseCase;
+import com.tokopedia.otp.domain.interactor.ValidateOtpLoginUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
 import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
@@ -32,7 +32,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
 
     private final GetSecurityQuestionFormUseCase getSecurityQuestionFormUseCase;
     private final RequestOtpUseCase requestOtpUseCase;
-    private final ValidateOTPLoginUseCase validateOtpLoginUseCase;
+    private final ValidateOtpLoginUseCase validateOtpLoginUseCase;
     private final SessionHandler sessionHandler;
 
     private SecurityQuestion.View viewListener;
@@ -42,7 +42,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
                                      GetSecurityQuestionFormUseCase
                                              getSecurityQuestionFormUseCase,
                                      RequestOtpUseCase requestOtpUseCase,
-                                     ValidateOTPLoginUseCase validateOtpLoginUseCase) {
+                                     ValidateOtpLoginUseCase validateOtpLoginUseCase) {
         this.getSecurityQuestionFormUseCase = getSecurityQuestionFormUseCase;
         this.requestOtpUseCase = requestOtpUseCase;
         this.validateOtpLoginUseCase = validateOtpLoginUseCase;
@@ -69,7 +69,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
 
         if (isValid(otp)) {
             viewListener.showLoadingProgress();
-            validateOtpLoginUseCase.execute(ValidateOTPLoginUseCase.getParam(
+            validateOtpLoginUseCase.execute(ValidateOtpLoginUseCase.getParam(
                     ValidateOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                     otp,
                     sessionHandler.getTempLoginSession(MainApplication.getAppContext())),

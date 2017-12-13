@@ -6,17 +6,17 @@ import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
  * @author by nisie on 10/23/17.
  */
 
-public class ValidateOTPLoginDomain {
+public class ValidateOtpLoginDomain {
 
-    ValidateOTPDomain validateOTPDomain;
+    ValidateOtpDomain validateOtpDomain;
     MakeLoginDomain makeLoginDomain;
 
-    public ValidateOTPDomain getValidateOTPDomain() {
-        return validateOTPDomain;
+    public ValidateOtpDomain getValidateOtpDomain() {
+        return validateOtpDomain;
     }
 
-    public void setValidateOTPDomain(ValidateOTPDomain validateOTPDomain) {
-        this.validateOTPDomain = validateOTPDomain;
+    public void setValidateOtpDomain(ValidateOtpDomain validateOtpDomain) {
+        this.validateOtpDomain = validateOtpDomain;
     }
 
     public MakeLoginDomain getMakeLoginDomain() {

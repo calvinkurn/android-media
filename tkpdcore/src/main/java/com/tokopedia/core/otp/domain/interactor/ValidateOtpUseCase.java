@@ -11,7 +11,7 @@ import rx.Observable;
 
 /**
  * Created by nisie on 3/7/17.
- * @deprecated Don't use this.
+ * @deprecated Don't use this. Use ValidateOtpUseCase in tkpdsession instead.
  */
 
 @Deprecated

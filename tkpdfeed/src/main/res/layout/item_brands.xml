@@ -14,7 +14,7 @@
         android:background="?android:selectableItemBackground"
         android:padding="2dp">
 
-        <com.tokopedia.core.customwidget.RoundedCornerImageView
+        <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
             android:id="@id/iv_brands"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

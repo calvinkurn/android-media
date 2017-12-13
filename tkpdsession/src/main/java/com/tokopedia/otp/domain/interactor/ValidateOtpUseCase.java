@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.model.ValidateOTPDomain;
+import com.tokopedia.otp.data.model.ValidateOtpDomain;
 import com.tokopedia.otp.data.source.OtpSource;
 
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ import rx.Observable;
  * @author by nisie on 10/21/17.
  */
 
-public class ValidateOtpUseCase extends UseCase<ValidateOTPDomain> {
+public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
     public static final String PARAM_OTP_TYPE = "otp_type";
     public static final String PARAM_USER = "user";
     public static final String PARAM_CODE = "code";
@@ -39,7 +39,7 @@ public class ValidateOtpUseCase extends UseCase<ValidateOTPDomain> {
     }
 
     @Override
-    public Observable<ValidateOTPDomain> createObservable(RequestParams requestParams) {
+    public Observable<ValidateOtpDomain> createObservable(RequestParams requestParams) {
         return otpSource.validateOtp(requestParams.getParameters());
     }
 

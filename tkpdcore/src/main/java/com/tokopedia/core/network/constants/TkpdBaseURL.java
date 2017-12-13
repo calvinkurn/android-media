@@ -773,7 +773,6 @@ public class TkpdBaseURL {
         public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
         public static final String AUTHORIZE = "oauth/authorize_native";
         public static final String CHECK_MSISDN = "oauth/check/msisdn";
-        public static final String GET_TOKEN = "oauth/token";
     }
 
     public static class Truecaller {

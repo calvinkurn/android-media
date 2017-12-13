@@ -11,7 +11,7 @@ import rx.Observable;
 
 /**
  * Created by nisie on 3/7/17.
- * Don't use this, ever.
+ * Don't use this, use RequestOtpUseCase in tkpdsession instead.
  */
 @Deprecated
 public class RequestOtpUseCase extends UseCase<RequestOtpModel> {

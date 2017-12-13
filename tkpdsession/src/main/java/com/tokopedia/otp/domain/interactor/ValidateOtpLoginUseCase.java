@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.data.model.ValidateOTPDomain;
-import com.tokopedia.otp.data.model.ValidateOTPLoginDomain;
+import com.tokopedia.otp.data.model.ValidateOtpDomain;
+import com.tokopedia.otp.data.model.ValidateOtpLoginDomain;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 
@@ -18,55 +18,55 @@ import rx.functions.Func1;
  * @author by nisie on 10/23/17.
  */
 
-public class ValidateOTPLoginUseCase extends UseCase<ValidateOTPLoginDomain> {
+public class ValidateOtpLoginUseCase extends UseCase<ValidateOtpLoginDomain> {
 
-    ValidateOtpUseCase validateOTPUseCase;
+    ValidateOtpUseCase validateOtpUseCase;
     MakeLoginUseCase makeLoginUseCase;
 
     @Inject
-    public ValidateOTPLoginUseCase(ThreadExecutor threadExecutor,
+    public ValidateOtpLoginUseCase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
-                                   ValidateOtpUseCase validateOTPUseCase,
+                                   ValidateOtpUseCase validateOtpUseCase,
                                    MakeLoginUseCase makeLoginUseCase) {
         super(threadExecutor, postExecutionThread);
-        this.validateOTPUseCase = validateOTPUseCase;
+        this.validateOtpUseCase = validateOtpUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
     }
 
     @Override
-    public Observable<ValidateOTPLoginDomain> createObservable(RequestParams requestParams) {
-        ValidateOTPLoginDomain domain = new ValidateOTPLoginDomain();
+    public Observable<ValidateOtpLoginDomain> createObservable(RequestParams requestParams) {
+        ValidateOtpLoginDomain domain = new ValidateOtpLoginDomain();
         return validateOTP(requestParams, domain)
                 .flatMap(makeLogin(requestParams, domain));
     }
 
-    private Observable<ValidateOTPLoginDomain> validateOTP(RequestParams requestParams,
-                                                           final ValidateOTPLoginDomain domain) {
-        return validateOTPUseCase.createObservable(ValidateOtpUseCase.getParam(
+    private Observable<ValidateOtpLoginDomain> validateOTP(RequestParams requestParams,
+                                                           final ValidateOtpLoginDomain domain) {
+        return validateOtpUseCase.createObservable(ValidateOtpUseCase.getParam(
                 requestParams.getInt(ValidateOtpUseCase.PARAM_OTP_TYPE, -1),
                 requestParams.getString(ValidateOtpUseCase.PARAM_CODE, ""),
                 requestParams.getString(ValidateOtpUseCase.PARAM_USER, "")
-        )).flatMap(new Func1<ValidateOTPDomain, Observable<ValidateOTPLoginDomain>>() {
+        )).flatMap(new Func1<ValidateOtpDomain, Observable<ValidateOtpLoginDomain>>() {
             @Override
-            public Observable<ValidateOTPLoginDomain> call(ValidateOTPDomain validateOTPDomain) {
+            public Observable<ValidateOtpLoginDomain> call(ValidateOtpDomain validateOTPDomain) {
                 if (validateOTPDomain.isSuccess())
-                    domain.setValidateOTPDomain(validateOTPDomain);
+                    domain.setValidateOtpDomain(validateOTPDomain);
                 return Observable.just(domain);
             }
         });
     }
 
-    private Func1<ValidateOTPLoginDomain, Observable<ValidateOTPLoginDomain>> makeLogin(final RequestParams requestParams,
-                                                                                        final ValidateOTPLoginDomain domain) {
-        return new Func1<ValidateOTPLoginDomain, Observable<ValidateOTPLoginDomain>>() {
+    private Func1<ValidateOtpLoginDomain, Observable<ValidateOtpLoginDomain>> makeLogin(final RequestParams requestParams,
+                                                                                        final ValidateOtpLoginDomain domain) {
+        return new Func1<ValidateOtpLoginDomain, Observable<ValidateOtpLoginDomain>>() {
             @Override
-            public Observable<ValidateOTPLoginDomain> call(ValidateOTPLoginDomain validateOTPLoginDomain) {
+            public Observable<ValidateOtpLoginDomain> call(ValidateOtpLoginDomain validateOTPLoginDomain) {
                 return makeLoginUseCase.createObservable(MakeLoginUseCase.getParam(
                         requestParams.getString(MakeLoginUseCase.PARAM_USER_ID, "")
                 ))
-                        .flatMap(new Func1<MakeLoginDomain, Observable<ValidateOTPLoginDomain>>() {
+                        .flatMap(new Func1<MakeLoginDomain, Observable<ValidateOtpLoginDomain>>() {
                             @Override
-                            public Observable<ValidateOTPLoginDomain> call(MakeLoginDomain makeLoginDomain) {
+                            public Observable<ValidateOtpLoginDomain> call(MakeLoginDomain makeLoginDomain) {
                                 domain.setMakeLoginDomain(makeLoginDomain);
                                 return Observable.just(domain);
                             }
