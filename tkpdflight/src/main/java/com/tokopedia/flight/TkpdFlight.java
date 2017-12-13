@@ -15,9 +15,9 @@ import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 public class TkpdFlight{
 
     public static void init(Context applicationContext){
-        if (FlowManager.getConfig() == null) {
-            FlowManager.init(new FlowConfig.Builder(applicationContext).build());
-        }
+
+        FlowManager.init(new FlowConfig.Builder(applicationContext).build());
+
         FlowManager.initModule(TkpdFlightGeneratedDatabaseHolder.class);
     }
 
