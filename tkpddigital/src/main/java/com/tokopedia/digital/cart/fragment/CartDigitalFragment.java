@@ -301,9 +301,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if (GlobalConfig.isSellerApp()) {
             voucherCartHachikoView.setVisibility(View.GONE);
         } else {
-            voucherCartHachikoView.setVisibility(
-                    cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
-            );
+            if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
+                voucherCartHachikoView.setVisibility(View.VISIBLE);
+                if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                    voucherCartHachikoView.setPromoAndCouponLabel();
+                } else {
+                    voucherCartHachikoView.setPromoLabelOnly();
+                }
+            } else {
+                voucherCartHachikoView.setVisibility(View.GONE);
+            }
 
             UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),
                     cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
