@@ -715,6 +715,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
                     String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
                     String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
+
                     voucherCartHachikoView.setCoupon(couponTitle, couponMessage, couponCode);
                 }
             }
