@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.people.address.activity;
+package com.tokopedia.core.manage.general.districtrecommendation.view;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -9,15 +9,15 @@ import android.os.Bundle;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.people.address.fragment.DistrictRecommendationFragment;
-import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+
+import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 
 public class DistrictRecommendationActivity extends BasePresenterActivity {
 
     public static Intent createInstance(Activity activity, Token token) {
         Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
-        intent.putExtra(DistrictRecomendationFragmentView.Constant.ARGUMENT_DATA_TOKEN, token);
+        intent.putExtra(ARGUMENT_DATA_TOKEN, token);
         return intent;
     }
 
@@ -51,9 +51,8 @@ public class DistrictRecommendationActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        DistrictRecommendationFragment fragment = DistrictRecommendationFragment.newInstance(
-                (Token) getIntent().getParcelableExtra(DistrictRecomendationFragmentView.Constant.
-                        ARGUMENT_DATA_TOKEN));
+        Token token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
+        DistrictRecommendationFragment fragment = DistrictRecommendationFragment.newInstance(token);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.add(R.id.container, fragment,

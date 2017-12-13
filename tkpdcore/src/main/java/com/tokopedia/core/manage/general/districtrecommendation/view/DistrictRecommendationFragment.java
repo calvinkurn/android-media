@@ -1,7 +1,8 @@
-package com.tokopedia.core.manage.people.address.fragment;
+package com.tokopedia.core.manage.general.districtrecommendation.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,22 +11,24 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.manage.people.address.adapter.DistrictRecommendationAdapter;
-import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
-import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenter;
-import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenterImpl;
+import com.tokopedia.core.manage.general.districtrecommendation.di.DaggerDistrictRecommendationComponent;
+import com.tokopedia.core.manage.general.districtrecommendation.di.DistrictRecommendationComponent;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -33,9 +36,12 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
+import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
+
 public class DistrictRecommendationFragment
-        extends BasePresenterFragment<DistrictRecomendationFragmentPresenter>
-        implements DistrictRecomendationFragmentView, DistrictRecommendationAdapter.Listener {
+        extends BasePresenterFragment<DistrictRecommendationContract.Presenter>
+        implements DistrictRecommendationContract.View, DistrictRecommendationAdapter.Listener {
 
     private static final int THRESHOLD = 3;
     @BindView(R2.id.search_address)
@@ -53,6 +59,9 @@ public class DistrictRecommendationFragment
     private DistrictRecommendationAdapter adapter;
     private CompositeSubscription compositeSubscription;
 
+    @Inject
+    DistrictRecommendationContract.Presenter presenter;
+
     public DistrictRecommendationFragment() {
         // Required empty public constructor
     }
@@ -60,7 +69,7 @@ public class DistrictRecommendationFragment
     public static DistrictRecommendationFragment newInstance(Token token) {
         DistrictRecommendationFragment fragment = new DistrictRecommendationFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Constant.ARGUMENT_DATA_TOKEN, token);
+        bundle.putParcelable(ARGUMENT_DATA_TOKEN, token);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -92,8 +101,18 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void initialPresenter() {
-        presenter = new DistrictRecomendationFragmentPresenterImpl(getActivity(), this,
-                (Token) getArguments().getParcelable(Constant.ARGUMENT_DATA_TOKEN));
+        initializeInjector();
+        presenter.attachView(this);
+        presenter.setToken((Token) getArguments().getParcelable(ARGUMENT_DATA_TOKEN));
+    }
+
+    private void initializeInjector() {
+        AppComponent component = ((DistrictRecommendationActivity) getActivity()).getApplicationComponent();
+        DistrictRecommendationComponent districtRecommendationComponent =
+                DaggerDistrictRecommendationComponent.builder()
+                        .appComponent(component)
+                        .build();
+        districtRecommendationComponent.inject(this);
     }
 
     @Override
@@ -220,7 +239,7 @@ public class DistrictRecommendationFragment
     }
 
     @Override
-    public void notifyClearAdapter() {
+    public void notifyUpdateAdapter() {
         adapter.notifyDataSetChanged();
     }
 
@@ -244,15 +263,34 @@ public class DistrictRecommendationFragment
     }
 
     @Override
+    public void setInitialLoading() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.CENTER_VERTICAL);
+            params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            pbLoading.setLayoutParams(params);
+        }
+    }
+
+    @Override
+    public void setLoadMoreLoading() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            params.removeRule(RelativeLayout.CENTER_VERTICAL);
+            pbLoading.setLayoutParams(params);
+        }
+    }
+
+    @Override
     public void hideLoading() {
         pbLoading.setVisibility(View.GONE);
     }
 
     @Override
     public void showNoConnection(@NonNull String message) {
-        if (message.length() == 0) {
-            message = getString(R.string.msg_no_connection);
-        }
         NetworkErrorHelper.showEmptyState(getActivity(), networkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -276,7 +314,9 @@ public class DistrictRecommendationFragment
 
             @Override
             public void onNext(String query) {
-                presenter.searchAddress(query);
+                if (isAdded()) {
+                    presenter.searchAddress(query);
+                }
             }
         };
     }
@@ -284,7 +324,7 @@ public class DistrictRecommendationFragment
     @Override
     public void onItemClick(Address address) {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra(DistrictRecomendationFragmentView.Constant.INTENT_DATA_ADDRESS, address);
+        resultIntent.putExtra(INTENT_DATA_ADDRESS, address);
         getActivity().setResult(Activity.RESULT_OK, resultIntent);
         getActivity().finish();
     }
