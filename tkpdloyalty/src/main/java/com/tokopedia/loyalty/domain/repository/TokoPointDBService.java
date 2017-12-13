@@ -66,7 +66,7 @@ public class TokoPointDBService implements ITokoPointDBService {
                             TokoPointDrawerDataResponse tokoPointDrawerDataResponse
                     ) {
                         if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
-                            globalCacheManager.setCacheDuration(300);
+                            globalCacheManager.setCacheDuration(60);
                             globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
                             globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
                             globalCacheManager.store();

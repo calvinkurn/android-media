@@ -162,6 +162,12 @@ public class SessionHandler {
         AppWidgetUtil.sendBroadcastToAppWidget(context);
 
         deleteCacheBalanceTokoCash();
+        deleteCacheTokoPoint();
+    }
+
+    private static void deleteCacheTokoPoint() {
+        GlobalCacheManager cacheBalanceTokoCash = new GlobalCacheManager();
+        cacheBalanceTokoCash.delete(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
     }
 
     private static void deleteCacheBalanceTokoCash() {
