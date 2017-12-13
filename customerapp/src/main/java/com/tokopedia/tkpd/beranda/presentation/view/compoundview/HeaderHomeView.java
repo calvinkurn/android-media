@@ -48,7 +48,9 @@ public class HeaderHomeView extends BaseCustomView {
                 break;
             default:
                 if (headerViewModel.getTokoPointDrawerData() == null
-                        || headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
+                        || (headerViewModel.getTokoPointDrawerData() != null
+                        && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1)
+                        ) {
                     renderHeaderOnlyTokocash();
                 } else {
                     renderHeaderTokocashWithTokopoint();
@@ -78,6 +80,12 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokoPoint.setVisibility(VISIBLE);
         tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierName());
         tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPoints() + " Poin");
+        tvBalanceTokoPoint.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.actionTokoPointClicked(headerViewModel.getTokoPointDrawerData().getMainPageUrl());
+            }
+        });
     }
 
     private void renderTokocashLayoutListener() {
@@ -93,9 +101,11 @@ public class HeaderHomeView extends BaseCustomView {
                 == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setTextColor(Color.parseColor("#ff5722"));
-            if (homeHeaderWalletAction.isVisibleActionButton())
-                tvActionTokocash.setVisibility(VISIBLE);
-            else tvActionTokocash.setVisibility(GONE);
+            tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+//            if (homeHeaderWalletAction.isVisibleActionButton())
+//                tvActionTokocash.setVisibility(VISIBLE);
+//            else tvActionTokocash.setVisibility(GONE);
+            tvActionTokocash.setVisibility(GONE);
             tvActionTokocash.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -119,6 +129,7 @@ public class HeaderHomeView extends BaseCustomView {
                 tvBalanceTokocash.setVisibility(VISIBLE);
                 tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
                 tvBalanceTokocash.setTextColor(Color.parseColor("#8a000000"));
+                tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_info, 0);
                 tvBalanceTokocash.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -157,7 +168,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
         ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
 
-        renderTokocashLayoutListener();
+        if (headerViewModel.getHomeHeaderWalletActionData() != null) renderTokocashLayoutListener();
     }
 
     public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs) {

@@ -269,6 +269,7 @@ public class TokoPointDrawerData implements Parcelable {
         private String tierName;
         private String tierImageUrl;
         private int rewardPoints;
+        private String mainPageUrl;
 
         public int getTierId() {
             return tierId;
@@ -303,6 +304,17 @@ public class TokoPointDrawerData implements Parcelable {
         }
 
 
+        public UserTier() {
+        }
+
+        public String getMainPageUrl() {
+            return mainPageUrl;
+        }
+
+        public void setMainPageUrl(String mainPageUrl) {
+            this.mainPageUrl = mainPageUrl;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -314,9 +326,7 @@ public class TokoPointDrawerData implements Parcelable {
             dest.writeString(this.tierName);
             dest.writeString(this.tierImageUrl);
             dest.writeInt(this.rewardPoints);
-        }
-
-        public UserTier() {
+            dest.writeString(this.mainPageUrl);
         }
 
         protected UserTier(Parcel in) {
@@ -324,9 +334,10 @@ public class TokoPointDrawerData implements Parcelable {
             this.tierName = in.readString();
             this.tierImageUrl = in.readString();
             this.rewardPoints = in.readInt();
+            this.mainPageUrl = in.readString();
         }
 
-        public static final Parcelable.Creator<UserTier> CREATOR = new Parcelable.Creator<UserTier>() {
+        public static final Creator<UserTier> CREATOR = new Creator<UserTier>() {
             @Override
             public UserTier createFromParcel(Parcel source) {
                 return new UserTier(source);

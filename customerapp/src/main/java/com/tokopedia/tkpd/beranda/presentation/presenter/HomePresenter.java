@@ -17,7 +17,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
@@ -31,7 +30,6 @@ import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
@@ -93,7 +91,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     protected Subscription subscription;
     private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
-    private TokoCashData tokoCashData;
 
     private HeaderViewModel headerViewModel;
 
@@ -158,6 +155,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 headerViewModel = new HeaderViewModel();
                 headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
             }
+            headerViewModel.setPendingTokocashChecked(false);
             getLocalHomeDataItem(headerViewModel);
             sendBroadcastGetHeaderData();
         } else if (isViewAttached()) {
@@ -237,8 +235,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
             headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
-        }else {
+        } else {
             headerViewModel.setCashBackData(cashBackData);
+            headerViewModel.setPendingTokocashChecked(true);
         }
         getView().updateHeaderItem(headerViewModel);
     }
@@ -300,23 +299,61 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+//        Activity activity = getView().getActivity();
+//        if (activity != null && !activity.isFinishing()) {
+//            UnifyTracking.eventClickCategoriesIcon(data.getName());
+//            if (String.valueOf(data.getCategoryId()).equalsIgnoreCase("103")
+//                    && tokoCashData != null
+//                    && tokoCashData.getLink()
+//                    == TokoCashTypeDef.TOKOCASH_ACTIVE) {
+//                WalletRouterUtil.navigateWallet(activity.getApplication(), this,
+//                        IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+//                        tokoCashData.getAction().getmAppLinks() == null ? ""
+//                                : tokoCashData.getAction().getmAppLinks(),
+//                        tokoCashData.getAction().getRedirectUrl() == null ? ""
+//                                : tokoCashData.getAction().getRedirectUrl(),
+//                        new Bundle()
+//                );
+//            } else {
+//                if (activity != null && ((TkpdCoreRouter) activity.getApplication())
+//                        .isSupportedDelegateDeepLink(data.getApplinks())) {
+//                    DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+//                            .appLinks(data.getApplinks())
+//                            .categoryId(String.valueOf(data.getCategoryId()))
+//                            .categoryName(data.getName())
+//                            .url(data.getUrl())
+//                            .build();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+//                    Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
+//                    intent.putExtras(bundle);
+//                    intent.setData(Uri.parse(data.getApplinks()));
+//                    activity.startActivity(intent);
+//                } else {
+//                    getView().onGimickItemClicked(data, parentPosition, childPosition);
+//                }
+//            }
+//            TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
+//        }
+
+
         Activity activity = getView().getActivity();
         if (activity != null && !activity.isFinishing()) {
             UnifyTracking.eventClickCategoriesIcon(data.getName());
             if (String.valueOf(data.getCategoryId()).equalsIgnoreCase("103")
-                    && tokoCashData != null
-                    && tokoCashData.getLink()
-                    == TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                    && headerViewModel.getHomeHeaderWalletActionData() != null
+                    && headerViewModel.getHomeHeaderWalletActionData().getTypeAction()
+                    == HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION) {
                 WalletRouterUtil.navigateWallet(activity.getApplication(), this,
                         IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                        tokoCashData.getAction().getmAppLinks() == null ? ""
-                                : tokoCashData.getAction().getmAppLinks(),
-                        tokoCashData.getAction().getRedirectUrl() == null ? ""
-                                : tokoCashData.getAction().getRedirectUrl(),
+                        headerViewModel.getHomeHeaderWalletActionData().getAppLinkActionButton() == null ? ""
+                                : headerViewModel.getHomeHeaderWalletActionData().getAppLinkActionButton(),
+                        headerViewModel.getHomeHeaderWalletActionData().getRedirectUrlActionButton() == null ? ""
+                                : headerViewModel.getHomeHeaderWalletActionData().getRedirectUrlActionButton(),
                         new Bundle()
                 );
             } else {
-                if (activity != null && ((TkpdCoreRouter) activity.getApplication())
+                if (((TkpdCoreRouter) activity.getApplication())
                         .isSupportedDelegateDeepLink(data.getApplinks())) {
                     DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                             .appLinks(data.getApplinks())

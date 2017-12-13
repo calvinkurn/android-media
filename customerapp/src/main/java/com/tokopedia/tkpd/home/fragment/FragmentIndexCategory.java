@@ -820,7 +820,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             }
 
             @Override
-            public void clickOnButton(String url) {
+            public void clickOnButton(String url, String appLink) {
                 String seamlessUrl;
                 seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
                         getContext());

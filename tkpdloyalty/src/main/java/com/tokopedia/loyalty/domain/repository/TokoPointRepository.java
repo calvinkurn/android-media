@@ -73,7 +73,7 @@ public class TokoPointRepository implements ITokoPointRepository {
                     public List<CouponData> call(Response<TokoPointResponse> tokoplusResponseResponse) {
                         if (tokoplusResponseResponse.body() == null) {
                             throw new LoyaltyErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        } else if(tokoplusResponseResponse
+                        } else if (tokoplusResponseResponse
                                 .body()
                                 .getTokoPointHeaderResponse()
                                 .getErrorCode() != null) {
@@ -151,15 +151,21 @@ public class TokoPointRepository implements ITokoPointRepository {
                         new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
                             @Override
                             public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
-                                return tokoPointResponseMapper.convertTokoplusPointDrawer(
+                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
                                         tokoplusResponseResponse.body().convertDataObj(
                                                 TokoPointDrawerDataResponse.class
-                                        )
-                                );
-//                                return tokoPointResponseMapper.convertTokoplusPointDrawer(
+                                        );
+
+//                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
 //                                        new Gson().fromJson(DummyTokoPointResponse.RESPONSE_DRAWER_DATA,
-//                                                TokoPointDrawerDataResponse.class)
-//                                );
+//                                                TokoPointDrawerDataResponse.class);
+
+                                TokoPointDrawerData tokoPointDrawerData =
+                                        tokoPointResponseMapper.convertTokoplusPointDrawer(
+                                                tokoPointDrawerDataResponse
+                                        );
+                                tokoPointDBService.storePointDrawer(tokoPointDrawerDataResponse);
+                                return tokoPointDrawerData;
                             }
                         });
             }
