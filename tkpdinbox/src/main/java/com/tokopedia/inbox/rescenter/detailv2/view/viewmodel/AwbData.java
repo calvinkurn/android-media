@@ -17,7 +17,7 @@ public class AwbData implements Parcelable {
     private String awbDateTimestamp;
     private String shipmentID;
     private List<AwbAttachmentViewModel> attachments;
-
+    private boolean isAddButtonAvailable;
     public AwbData() {
     }
 
@@ -69,6 +69,14 @@ public class AwbData implements Parcelable {
         this.shipmentName = shipmentName;
     }
 
+    public boolean isAddButtonAvailable() {
+        return isAddButtonAvailable;
+    }
+
+    public void setAddButtonAvailable(boolean addButtonAvailable) {
+        isAddButtonAvailable = addButtonAvailable;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -82,6 +90,7 @@ public class AwbData implements Parcelable {
         dest.writeString(this.awbDateTimestamp);
         dest.writeString(this.shipmentID);
         dest.writeTypedList(this.attachments);
+        dest.writeByte(this.isAddButtonAvailable ? (byte) 1 : (byte) 0);
     }
 
     protected AwbData(Parcel in) {
@@ -91,6 +100,7 @@ public class AwbData implements Parcelable {
         this.awbDateTimestamp = in.readString();
         this.shipmentID = in.readString();
         this.attachments = in.createTypedArrayList(AwbAttachmentViewModel.CREATOR);
+        this.isAddButtonAvailable = in.readByte() != 0;
     }
 
     public static final Creator<AwbData> CREATOR = new Creator<AwbData>() {

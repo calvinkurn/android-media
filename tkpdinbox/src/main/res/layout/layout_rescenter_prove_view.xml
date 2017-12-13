@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:text="@string/string_from_buyer"
             android:textSize="@dimen/text_size_xsmall"
-            android:textColor="@color/black_38"
+            android:textColor="@color/color_chat_buyer"
             android:layout_marginBottom="@dimen/margin_vvs"/>
 
         <android.support.v7.widget.RecyclerView
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:text="@string/string_from_seller"
             android:textSize="@dimen/text_size_xsmall"
-            android:textColor="@color/black_38"
+            android:textColor="@color/color_chat_seller"
             android:layout_marginBottom="@dimen/margin_vvs"/>
 
         <android.support.v7.widget.RecyclerView
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:text="@string/string_from_admin"
             android:textSize="@dimen/text_size_xsmall"
-            android:textColor="@color/black_38"
+            android:textColor="@color/color_chat_admin"
             android:layout_marginBottom="@dimen/margin_vvs"/>
 
         <android.support.v7.widget.RecyclerView

@@ -1,8 +1,10 @@
 package com.tokopedia.core.util;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +19,8 @@ public class DateFormatUtils {
     public static final String FORMAT_DD_MMMM_YYYY = "dd MMMM yyyy";
     public static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
-    public static final String FORMAT_T_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    public static final String FORMAT_T_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";;
+    public static final String FORMAT_T_Z_PRE = "yyyy-MM-dd HH:mm:ss";
     public static final String FORMAT_DD_MMM_YYYY_HH_MM = "dd MMM yyyy HH:mm";
     public static final String FORMAT_MMM = "MMM";
     public static final String FORMAT_DD = "dd";
@@ -45,8 +48,15 @@ public class DateFormatUtils {
         return date;
     }
 
-    public static String formatDate(String currentFormat, String newFormat, String dateString, Locale locale){
+    public static String formatDateForResoChatV2PreLollipop(String dateString) {
+        String date = DateFormatUtils.formatDate(
+                DateFormatUtils.FORMAT_T_Z_PRE,
+                DateFormatUtils.FORMAT_DD_MMM_YYYY_HH_MM,
+                dateString) + " WIB";
+        return date;
+    }
 
+    public static String formatDate(String currentFormat, String newFormat, String dateString, Locale locale){
         try{
             DateFormat fromFormat = new SimpleDateFormat(currentFormat, locale);
             fromFormat.setLenient(false);
@@ -54,7 +64,7 @@ public class DateFormatUtils {
             toFormat.setLenient(false);
             Date date = fromFormat.parse(dateString);
             return toFormat.format(date);
-        }catch (Exception e){
+        }catch (ParseException e){
             e.printStackTrace();
             return dateString;
         }

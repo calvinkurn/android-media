@@ -60,6 +60,9 @@ public class HistoryActionSubsriber extends Subscriber<HistoryActionData> {
             data.setDateTimestamp(item.getDateTimestamp());
             data.setLatest(i == domainData.getListHistoryAddress().size() - 1);
             data.setHistoryText(item.getHistoryStr());
+            data.setDateNumber(item.getDateNumber());
+            data.setMonth(item.getMonth());
+            data.setCreateTimestampStr(item.getCreateTimestampStr());
             historyActionViewItems.add(data);
             i++;
         }

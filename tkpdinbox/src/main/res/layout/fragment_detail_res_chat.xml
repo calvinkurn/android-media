@@ -105,15 +105,18 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_chat"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@id/ff_chat"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_med"
         android:src="@drawable/ic_arrow_down_grey"
         android:tint="@color/white"
+        android:background="@color/tkpd_main_green"
         app:backgroundTint="@color/tkpd_main_green"
         app:borderWidth="0dp"
-        />
+        app:fabSize="normal"
+        app:rippleColor="@color/black_12"
+        app:elevation="6dp" />
 </RelativeLayout>

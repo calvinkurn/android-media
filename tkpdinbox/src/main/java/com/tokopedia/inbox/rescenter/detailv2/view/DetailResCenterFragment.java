@@ -747,6 +747,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void hideTimeTicker() {
         timeView.setVisibility(View.GONE);
+        presenter.refreshPage();
     }
 
     private void showActionDialog(String title, String solution, View.OnClickListener action) {
@@ -758,7 +759,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         ImageView ivClose = resCenterDialog.findViewById(R.id.iv_close);
         Button btnBack = resCenterDialog.findViewById(R.id.btn_back);
         Button btnAccept = resCenterDialog.findViewById(R.id.btn_yes);
-        String newTitle = title + " ?";
+        String newTitle = title + "?";
         tvTitle.setText(newTitle);
         tvSolution.setText(MethodChecker.fromHtml(solution));
         btnBack.setOnClickListener(new View.OnClickListener() {

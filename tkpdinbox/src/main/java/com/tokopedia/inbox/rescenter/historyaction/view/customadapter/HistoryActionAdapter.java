@@ -108,9 +108,9 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void renderData(ActionViewHolder holder, HistoryActionViewItem item) {
         holder.tvUsername.setText(item.getActionByText());
-        holder.tvMonth.setText(DateFormatUtils.get3LettersMonth(item.getDateTimestamp()));
-        holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDateTimestamp()));
-        holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDateTimestamp()));
+        holder.tvMonth.setText(item.getMonth());
+        holder.tvDateNumber.setText(item.getDateNumber());
+        holder.tvTime.setText(item.getCreateTimestampStr());
         holder.history.setText(item.getHistoryText());
         holder.tvDateNumber.setVisibility(View.VISIBLE);
         holder.tvMonth.setVisibility(View.VISIBLE);

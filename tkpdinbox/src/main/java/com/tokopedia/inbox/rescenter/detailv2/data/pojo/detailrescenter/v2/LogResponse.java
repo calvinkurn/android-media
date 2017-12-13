@@ -21,6 +21,36 @@ public class LogResponse {
     private String createTime;
     @SerializedName("createTimeStr")
     private String createTimeStr;
+    @SerializedName("createTimestampStr")
+    private String createTimestampStr;
+    @SerializedName("month")
+    private String month;
+    @SerializedName("dateNumber")
+    private String dateNumber;
+
+    public String getCreateTimestampStr() {
+        return createTimestampStr;
+    }
+
+    public void setCreateTimestampStr(String createTimestampStr) {
+        this.createTimestampStr = createTimestampStr;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getDateNumber() {
+        return dateNumber;
+    }
+
+    public void setDateNumber(String dateNumber) {
+        this.dateNumber = dateNumber;
+    }
 
     public int getId() {
         return id;

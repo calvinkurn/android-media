@@ -75,6 +75,7 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
                 setWhiteButton(holder.btnAction, buttonViewItem.getLabel());
             }
             holder.btnAction.setOnClickListener(onActionButtonListener(buttonViewItem.getType()));
+            holder.separator.setVisibility(buttonViewItemList.size() == 3 && position == 0 ? View.VISIBLE : View.GONE);
         }
 
     }
@@ -139,9 +140,11 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
 
     public class Holder extends RecyclerView.ViewHolder {
         TextView btnAction;
+        View separator;
         public Holder(View itemView) {
             super(itemView);
             btnAction = (TextView) itemView.findViewById(R.id.btn_action);
+            separator = itemView.findViewById(R.id.view_separator);
         }
     }
 

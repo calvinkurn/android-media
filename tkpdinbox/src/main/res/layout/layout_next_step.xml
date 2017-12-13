@@ -52,8 +52,7 @@
                 android:text="asdad asd"
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingRight="@dimen/padding_small"
-                android:textColor="@color/black_70b"
-                android:textStyle="bold"/>
+                android:textColor="@color/black_87"/>
 
             <ImageView
                 android:layout_width="15dp"

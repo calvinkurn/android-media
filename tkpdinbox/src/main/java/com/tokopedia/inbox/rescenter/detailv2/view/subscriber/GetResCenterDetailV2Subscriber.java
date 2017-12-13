@@ -120,9 +120,10 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
                 mappingAddressReturData(detailResponseData.getLast().getSellerAddress()) :
                 null);
         viewModel.setAwbData(detailResponseData.getLast().getUserAwb() != null ?
-                mappingAwbData(detailResponseData.getLast().getUserAwb()) :
+                mappingAwbData(detailResponseData.getLast().getUserAwb(), detailResponseData.getButton()) :
                 null);
-        viewModel.setButtonData(mappingButtonData(detailResponseData.getButton(), detailResponseData.getResolution().getStatus().getId()));
+        viewModel.setButtonData(mappingButtonData(detailResponseData.getButton(),
+                detailResponseData.getResolution().getStatus().getId()));
         viewModel.setDetailData(mappingDetailData(detailResponseData));
         viewModel.setHistoryData(detailResponseData.getLogs() != null ?
                 mappingHistoryData(detailResponseData.getLogs()) :
@@ -146,18 +147,20 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
     private ProveData mappingProveData(FirstData firstData, List<AttachmentUserData> dataList) {
         ProveData proveData = new ProveData();
         proveData.setRemark(firstData.getBuyerRemark());
-        for (AttachmentUserData data : dataList) {
-            if (data.getActionBy() == ACTION_BY_BUYER) {
-                proveData.setBuyerAttachmentList(mappingAttachmentData(data.getAttachments()));
-            } else if (data.getActionBy() == ACTION_BY_SELLER) {
-                proveData.setSellerAttachmentList(mappingAttachmentData(data.getAttachments()));
-            } else if (data.getActionBy() == ACTION_BY_ADMIN) {
-                proveData.setAdminAttachmentList(mappingAttachmentData(data.getAttachments()));
+        if (dataList != null && dataList.size() != 0) {
+            for (AttachmentUserData data : dataList) {
+                if (data.getActionBy() == ACTION_BY_BUYER) {
+                    proveData.setBuyerAttachmentList(mappingAttachmentData(data.getAttachments()));
+                } else if (data.getActionBy() == ACTION_BY_SELLER) {
+                    proveData.setSellerAttachmentList(mappingAttachmentData(data.getAttachments()));
+                } else if (data.getActionBy() == ACTION_BY_ADMIN) {
+                    proveData.setAdminAttachmentList(mappingAttachmentData(data.getAttachments()));
+                }
             }
         }
-        if (dataList.size() != 0
-                || firstData.getBuyerRemark() != null
-                || !firstData.getBuyerRemark().isEmpty()) {
+        if ((dataList != null && dataList.size() != 0)
+                || (firstData.getBuyerRemark() != null
+                && !firstData.getBuyerRemark().isEmpty())) {
             proveData.setCanShowProveData(true);
         } else {
             proveData.setCanShowProveData(false);
@@ -219,7 +222,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         solutionData.setSolutionDate(lastSolutionData.getCreateTime());
         solutionData.setSolutionProvider(String.valueOf(lastSolutionData.getActionBy()));
         solutionData.setSolutionProviderName(mappingSolutionProvider(lastSolutionData.getActionBy()));
-        solutionData.setSolutionText(lastSolutionData.getName());
+        solutionData.setSolutionText(lastSolutionData.getNameCustom());
         solutionData.setEditAble(buttonDomain.getEdit() == 1);
         solutionData.setSolutionProblem(problem);
         return solutionData;
@@ -260,7 +263,9 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         for (LogData logData : logDataList) {
             HistoryItem item = new HistoryItem();
             item.setLatest(pos == logDataList.size() - 1);
-            item.setDate(logData.getCreateTimeStr());
+            item.setDate(logData.getCreateTimestampStr());
+            item.setDateNumber(logData.getDateNumber());
+            item.setMonth(logData.getMonth());
             item.setHistoryText(logData.getAction());
             item.setProvider(logData.getActionBy().getName());
             item.setDateTimestamp(logData.getCreateTime());
@@ -299,7 +304,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         return data;
     }
 
-    private AwbData mappingAwbData(UserAwbData userAwbData) {
+    private AwbData mappingAwbData(UserAwbData userAwbData, ButtonDomain domainModel) {
         AwbData awbData = new AwbData();
         awbData.setShipmentID(String.valueOf(userAwbData.getShipping().getId()));
         awbData.setShipmentRef(userAwbData.getAwb());
@@ -307,6 +312,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         awbData.setAwbDateTimestamp(userAwbData.getCreateTime());
         awbData.setAwbDate(userAwbData.getCreateTimeStr());
         awbData.setAttachments(mappingAwbAttachments(userAwbData.getAttachments()));
+        awbData.setAddButtonAvailable(domainModel.getInputAWB() == 1);
         return awbData;
     }
 
