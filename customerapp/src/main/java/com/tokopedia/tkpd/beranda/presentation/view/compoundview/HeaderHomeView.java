@@ -102,9 +102,10 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setTextColor(Color.parseColor("#ff5722"));
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            if (homeHeaderWalletAction.isVisibleActionButton())
-                tvActionTokocash.setVisibility(VISIBLE);
-            else tvActionTokocash.setVisibility(GONE);
+//            if (homeHeaderWalletAction.isVisibleActionButton())
+//                tvActionTokocash.setVisibility(VISIBLE);
+//            else tvActionTokocash.setVisibility(GONE);
+            tvActionTokocash.setVisibility(GONE);
             tvActionTokocash.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
