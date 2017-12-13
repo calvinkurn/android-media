@@ -49,8 +49,9 @@ public class SendReviewSubmitUseCase extends UseCase<SendReviewSubmitDomain> {
         JSONObject reviewPhotos = new JSONObject();
         try {
             for (ImageUpload image : sendReviewRequestModel.getListUpload()) {
-                if (!TextUtils.isEmpty(image.getPicObj()))
+                if (!TextUtils.isEmpty(image.getPicObj())){
                     reviewPhotos.put(image.getImageId(), image.getPicObj());
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
