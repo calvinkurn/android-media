@@ -55,6 +55,7 @@
                     android:id="@+id/ff_change_address"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_margin="1dp"
                     android:background="@drawable/bg_bubble_button">
 
                     <Button

@@ -8,34 +8,32 @@ import android.os.Parcelable;
  */
 
 public class HistoryItem implements Parcelable {
-    public static final Creator<HistoryItem> CREATOR = new Creator<HistoryItem>() {
-        @Override
-        public HistoryItem createFromParcel(Parcel source) {
-            return new HistoryItem(source);
-        }
-
-        @Override
-        public HistoryItem[] newArray(int size) {
-            return new HistoryItem[size];
-        }
-    };
     private String provider;
     private int providerId;
     private String date;
     private String dateTimestamp;
     private String historyText;
     private boolean latest;
+    private String month;
+    private String dateNumber;
 
     public HistoryItem() {
     }
 
-    protected HistoryItem(Parcel in) {
-        this.provider = in.readString();
-        this.providerId = in.readInt();
-        this.date = in.readString();
-        this.dateTimestamp = in.readString();
-        this.historyText = in.readString();
-        this.latest = in.readByte() != 0;
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getDateNumber() {
+        return dateNumber;
+    }
+
+    public void setDateNumber(String dateNumber) {
+        this.dateNumber = dateNumber;
     }
 
     public String getDateTimestamp() {
@@ -99,5 +97,30 @@ public class HistoryItem implements Parcelable {
         dest.writeString(this.dateTimestamp);
         dest.writeString(this.historyText);
         dest.writeByte(this.latest ? (byte) 1 : (byte) 0);
+        dest.writeString(this.month);
+        dest.writeString(this.dateNumber);
     }
+
+    protected HistoryItem(Parcel in) {
+        this.provider = in.readString();
+        this.providerId = in.readInt();
+        this.date = in.readString();
+        this.dateTimestamp = in.readString();
+        this.historyText = in.readString();
+        this.latest = in.readByte() != 0;
+        this.month = in.readString();
+        this.dateNumber = in.readString();
+    }
+
+    public static final Creator<HistoryItem> CREATOR = new Creator<HistoryItem>() {
+        @Override
+        public HistoryItem createFromParcel(Parcel source) {
+            return new HistoryItem(source);
+        }
+
+        @Override
+        public HistoryItem[] newArray(int size) {
+            return new HistoryItem[size];
+        }
+    };
 }

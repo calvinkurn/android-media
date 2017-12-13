@@ -424,7 +424,10 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                             mappingCreatedByData(response.getCreateBy()) :
                             null,
                     response.getCreateTime(),
-                    response.getCreateTimeStr());
+                    response.getCreateTimeStr(),
+                    response.getCreateTimestampStr(),
+                    response.getMonth(),
+                    response.getDateNumber());
             domainList.add(domain);
         }
         return domainList;
@@ -454,7 +457,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
         return new LastSolutionData(
                 response.getId(),
                 response.getName(),
-                response.getNameCustom(),
+                !response.getNameCustom().isEmpty() ? response.getNameCustom() : response.getName(),
                 response.getActionBy(),
                 response.getReceivedFlag(),
                 response.getAmount() != null ?

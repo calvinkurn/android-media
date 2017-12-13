@@ -8,17 +8,6 @@ import android.os.Parcelable;
  */
 public class LogData implements Parcelable {
 
-    public static final Parcelable.Creator<LogData> CREATOR = new Parcelable.Creator<LogData>() {
-        @Override
-        public LogData createFromParcel(Parcel source) {
-            return new LogData(source);
-        }
-
-        @Override
-        public LogData[] newArray(int size) {
-            return new LogData[size];
-        }
-    };
     private int id;
     private String action;
     private LastSolutionData solution;
@@ -26,8 +15,20 @@ public class LogData implements Parcelable {
     private CreateByData createBy;
     private String createTime;
     private String createTimeStr;
+    private String createTimestampStr;
+    private String month;
+    private String dateNumber;
 
-    public LogData(int id, String action, LastSolutionData solution, CreateByData actionBy, CreateByData createBy, String createTime, String createTimeStr) {
+    public LogData(int id,
+                   String action,
+                   LastSolutionData solution,
+                   CreateByData actionBy,
+                   CreateByData createBy,
+                   String createTime,
+                   String createTimeStr,
+                   String createTimestampStr,
+                   String month,
+                   String dateNumber) {
         this.id = id;
         this.action = action;
         this.solution = solution;
@@ -35,16 +36,33 @@ public class LogData implements Parcelable {
         this.createBy = createBy;
         this.createTime = createTime;
         this.createTimeStr = createTimeStr;
+        this.createTimestampStr = createTimestampStr;
+        this.month = month;
+        this.dateNumber = dateNumber;
     }
 
-    protected LogData(Parcel in) {
-        this.id = in.readInt();
-        this.action = in.readString();
-        this.solution = in.readParcelable(LastSolutionData.class.getClassLoader());
-        this.actionBy = in.readParcelable(CreateByData.class.getClassLoader());
-        this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
-        this.createTime = in.readString();
-        this.createTimeStr = in.readString();
+    public String getCreateTimestampStr() {
+        return createTimestampStr;
+    }
+
+    public void setCreateTimestampStr(String createTimestampStr) {
+        this.createTimestampStr = createTimestampStr;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getDateNumber() {
+        return dateNumber;
+    }
+
+    public void setDateNumber(String dateNumber) {
+        this.dateNumber = dateNumber;
     }
 
     public int getId() {
@@ -117,5 +135,33 @@ public class LogData implements Parcelable {
         dest.writeParcelable(this.createBy, flags);
         dest.writeString(this.createTime);
         dest.writeString(this.createTimeStr);
+        dest.writeString(this.createTimestampStr);
+        dest.writeString(this.month);
+        dest.writeString(this.dateNumber);
     }
+
+    protected LogData(Parcel in) {
+        this.id = in.readInt();
+        this.action = in.readString();
+        this.solution = in.readParcelable(LastSolutionData.class.getClassLoader());
+        this.actionBy = in.readParcelable(CreateByData.class.getClassLoader());
+        this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
+        this.createTime = in.readString();
+        this.createTimeStr = in.readString();
+        this.createTimestampStr = in.readString();
+        this.month = in.readString();
+        this.dateNumber = in.readString();
+    }
+
+    public static final Creator<LogData> CREATOR = new Creator<LogData>() {
+        @Override
+        public LogData createFromParcel(Parcel source) {
+            return new LogData(source);
+        }
+
+        @Override
+        public LogData[] newArray(int size) {
+            return new LogData[size];
+        }
+    };
 }

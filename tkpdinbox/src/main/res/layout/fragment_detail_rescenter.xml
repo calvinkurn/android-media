@@ -114,7 +114,7 @@
         android:layout_above="@id/button_view"
         android:visibility="gone"
         app:cardCornerRadius="30dp"
-        app:cardBackgroundColor="@color/tkpd_main_green_70"
+        app:cardBackgroundColor="@color/tkpd_main_green"
         context:visibility="visible">
 
         <LinearLayout
@@ -126,16 +126,16 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/ic_discussion"/>
+                android:src="@drawable/ic_discussion" />
 
             <TextView
-                android:layout_marginLeft="@dimen/margin_small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/string_ic_discussion"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_small"
                 android:gravity="center"
-                android:textColor="@color/white"
-                android:layout_gravity="center"/>
+                android:text="@string/string_ic_discussion"
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

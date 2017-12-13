@@ -70,7 +70,7 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     @Override
     public void renderData(@NonNull AwbData data) {
         setVisibility(VISIBLE);
-        actionAdd.setVisibility(GONE);
+        actionAdd.setVisibility(data.isAddButtonAvailable() ? VISIBLE : GONE);
         informationText.setText(generateInformationText(data));
         awbText.setText(generateShippingName(data));
         actionTrack.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));

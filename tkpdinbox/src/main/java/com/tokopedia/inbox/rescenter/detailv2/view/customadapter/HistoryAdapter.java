@@ -87,9 +87,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         Context context = holder.itemView.getContext();
         holder.history.setText(item.getHistoryText());
         holder.tvUsername.setText(item.getProvider());
-        holder.tvMonth.setText(DateFormatUtils.get3LettersMonth(item.getDateTimestamp()));
-        holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDateTimestamp()));
-        holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDateTimestamp()));
+        holder.tvMonth.setText(item.getMonth());
+        holder.tvDateNumber.setText(item.getDateNumber());
+        holder.tvTime.setText(item.getDate());
         holder.lineSeparator.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
         holder.lineIndicator.setVisibility(position == getHistoryItems().size() - 1 ? View.GONE : View.VISIBLE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +121,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             holder.tvUsername.setTextColor(MethodChecker.getColor(
                     context,
                     item.isLatest() ? R.color.tkpd_main_green : R.color.label_text_color));
+            holder.history.setTextColor(MethodChecker.getColor(
+                    context,
+                    item.isLatest() ? R.color.black_70 : R.color.label_text_color));
         }
     }
 
