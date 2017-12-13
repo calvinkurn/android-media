@@ -70,7 +70,6 @@ import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
-import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
@@ -105,7 +104,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected PagerAdapter adapter;
     protected ViewPager mViewPager;
     protected TabLayout indicator;
-    protected View footerCat;
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
@@ -364,7 +362,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     private void setView() {
         inflateView(R.layout.activity_index_home_4);
-        footerCat = View.inflate(ParentIndexHome.this, R.layout.fragment_category, null);
         mViewPager = (ViewPager) findViewById(R.id.index_page);
         indicator = (TabLayout) findViewById(R.id.indicator);
     }
