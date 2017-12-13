@@ -639,8 +639,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
-            adapter.notifyItemChanged(0);
+        if (adapter.getItemCount() > 0) {
+            if (adapter.getItem(0) instanceof HeaderViewModel) {
+                adapter.notifyItemChanged(0);
+                return;
+            }
+            if (adapter.getItem(1) instanceof HeaderViewModel) {
+                adapter.notifyItemChanged(1);
+            }
         }
     }
 
