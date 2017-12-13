@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -47,7 +49,8 @@ public class SendReviewSubmitUseCase extends UseCase<SendReviewSubmitDomain> {
         JSONObject reviewPhotos = new JSONObject();
         try {
             for (ImageUpload image : sendReviewRequestModel.getListUpload()) {
-                reviewPhotos.put(image.getImageId(), image.getPicObj());
+                if (!TextUtils.isEmpty(image.getPicObj()))
+                    reviewPhotos.put(image.getImageId(), image.getPicObj());
             }
         } catch (JSONException e) {
             e.printStackTrace();

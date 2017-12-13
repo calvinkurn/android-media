@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
+import android.text.TextUtils;
+
+import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -8,8 +11,10 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendRevie
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadImageUseCase;
+import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.model.UploadImageDomain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -68,6 +73,56 @@ public class EditReviewUseCase extends SendReviewUseCase {
                             SendReviewSubmitUseCase.getParam(sendReviewRequestModel))
                             .flatMap(addSubmitImageResultToRequestModel(sendReviewRequestModel));
                 }
+            }
+        };
+    }
+
+    @Override
+    protected Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>
+    addListImageUploadToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
+        return new Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>() {
+            @Override
+            public Observable<SendReviewRequestModel> call(@Nullable List<UploadImageDomain>
+                                                                   uploadImageDomains) {
+                if (!sendReviewRequestModel.getPostKey().isEmpty()) {
+                    for (int i = 0; i < uploadImageDomains.size(); i++) {
+                        sendReviewRequestModel.getListUpload().get(i).setPicObj(uploadImageDomains
+                                .get(i).getPicObj());
+                        sendReviewRequestModel.getListUpload().get(i).setPicSrc(uploadImageDomains
+                                .get(i).getPicSrc());
+                    }
+                }
+                return Observable.just(sendReviewRequestModel);
+            }
+        };
+    }
+
+    @Override
+    protected Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>> getObservableUploadImages(final List<ImageUpload> listImage) {
+        return new Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>() {
+            @Override
+            public Observable<SendReviewRequestModel> call(final SendReviewRequestModel sendReviewRequestModel) {
+                return Observable.from(listImage)
+                        .flatMap(new Func1<ImageUpload, Observable<UploadImageDomain>>() {
+                            @Override
+                            public Observable<UploadImageDomain> call(ImageUpload imageUpload) {
+                                if (sendReviewRequestModel.getPostKey().isEmpty()) {
+                                    return Observable.just(null);
+                                } else if (imageUpload.getFileLoc() == null
+                                        && !TextUtils.isEmpty(imageUpload.getPicSrc())) {
+                                    return Observable.just(new UploadImageDomain(imageUpload
+                                            .getPicObj(), imageUpload.getPicSrc()));
+                                } else {
+                                    return uploadImageUseCase.createObservable(
+                                            UploadImageUseCase.getParam(
+                                                    sendReviewRequestModel,
+                                                    imageUpload.getImageId(),
+                                                    imageUpload.getFileLoc()
+                                            ));
+                                }
+                            }
+                        }).toList()
+                        .flatMap(addListImageUploadToRequestModel(sendReviewRequestModel));
             }
         };
     }

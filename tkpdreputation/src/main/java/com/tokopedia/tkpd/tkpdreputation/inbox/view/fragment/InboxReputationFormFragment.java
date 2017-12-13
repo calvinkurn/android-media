@@ -200,6 +200,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                                 String.valueOf(rating.getRating()),
                                 review.getText().toString(),
                                 adapter.getList(),
+                                adapter.getDeletedList(),
                                 shareFbSwitch.isChecked(),
                                 anomymousSwitch.isChecked()
                         ));
@@ -239,6 +240,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                                 String.valueOf(rating.getRating()),
                                 review.getText().toString(),
                                 adapter.getList(),
+                                adapter.getDeletedList(),
                                 shareFbSwitch.isChecked(),
                                 anomymousSwitch.isChecked()
                         ));
