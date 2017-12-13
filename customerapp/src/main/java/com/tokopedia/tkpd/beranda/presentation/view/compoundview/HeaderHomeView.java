@@ -83,6 +83,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokoPoint.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventUserProfileTokopoints();
                 listener.actionTokoPointClicked(headerViewModel.getTokoPointDrawerData().getMainPageUrl());
             }
         });

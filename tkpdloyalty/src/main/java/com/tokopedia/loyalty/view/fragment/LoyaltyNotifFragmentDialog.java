@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.R;
@@ -52,6 +53,7 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.fragment_dialog_notify_loyalty, container, false);
+        UnifyTracking.eventViewTokopointPopup();
         tvTitle = view.findViewById(R.id.tv_tokopoint_notif_title);
         tvDesc = view.findViewById(R.id.tv_tokopoint_notif_desc);
         ivPic = view.findViewById(R.id.iv_tokopoint_notif_image);
@@ -65,6 +67,7 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
         tvAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventClickTokoPointPopup();
                 dismiss();
 
                 if (!TextUtils.isEmpty(popUpNotifData.getAppLink())) {

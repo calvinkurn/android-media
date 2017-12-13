@@ -4,7 +4,7 @@
               android:layout_alignParentTop="true"
               android:layout_centerHorizontal="true"
               android:orientation="vertical">
-
+    
     <include layout="@layout/layout_tab_indicator_main"/>
 
     <com.tkpd.library.ui.widget.TouchViewPager

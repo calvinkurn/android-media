@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -19,6 +20,7 @@ import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerLoyaltyViewComponent;
 import com.tokopedia.loyalty.di.component.LoyaltyViewComponent;
 import com.tokopedia.loyalty.di.module.LoyaltyViewModule;
+import com.tokopedia.loyalty.listener.LoyaltyActivityTabSelectedListener;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
@@ -137,7 +139,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         loyaltyPagerAdapter.addAllItem(loyaltyPagerItemListCouponActive);
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
-        indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        indicator.setOnTabSelectedListener(new LoyaltyActivityTabSelectedListener(viewPager));
         setShowCase();
 
     }
@@ -316,4 +318,9 @@ public class LoyaltyActivity extends BasePresenterActivity
                 .build();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        UnifyTracking.eventCouponPageClosed();
+    }
 }

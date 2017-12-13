@@ -16,6 +16,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
@@ -254,6 +255,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             holder.tvTokoPointAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    UnifyTracking.eventUserClickedPoints();
                     listener.onTokoPointActionClicked(data.getTokoPointDrawerData().getMainPageUrl());
                 }
             });
