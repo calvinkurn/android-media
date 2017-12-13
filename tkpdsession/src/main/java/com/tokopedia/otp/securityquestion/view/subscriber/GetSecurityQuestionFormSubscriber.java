@@ -41,7 +41,7 @@ public class GetSecurityQuestionFormSubscriber extends Subscriber<QuestionViewMo
             viewListener.onSuccessGetQuestionEmail(questionViewModel);
         } else {
             viewListener.onErrorGetQuestion(
-                    ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNKNOWN_SECURITY_QUESTION_TYPE));
+                    ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }
 }
