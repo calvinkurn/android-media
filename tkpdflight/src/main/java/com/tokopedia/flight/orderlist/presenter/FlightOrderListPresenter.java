@@ -4,10 +4,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +47,8 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    buildAndRenderFilterList();
                     getView().hideGetInitialOrderDataLoading();
+                    getView().showErrorGetInitialOrders(FlightErrorUtil.getMessageFromException(e));
                 }
             }
 
@@ -53,45 +56,126 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             public void onNext(List<FlightOrder> orderEntities) {
                 buildAndRenderFilterList();
                 getView().hideGetInitialOrderDataLoading();
-                renderUi(orderEntities);
+                if (orderEntities.size() > 0) {
+                    getView().renderOrders(transformOrderDataToViewData(orderEntities));
+                } else {
+                    getView().showEmptyView();
+                }
             }
         });
     }
 
-    private void renderUi(List<FlightOrder> flightOrders) {
-        List<Visitable> visitables = new ArrayList<>();
-        for (FlightOrder flightOrder : flightOrders) {
+    @Override
+    public void onFilterSelected(String typeFilter) {
+        getView().showGetInitialOrderDataLoading();
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, typeFilter), new Subscriber<List<FlightOrder>>() {
+            @Override
+            public void onCompleted() {
 
-            for (FlightOrderJourney journey : flightOrder.getJourneys()) {
-                switch (journey.getStatus()) {
-                    case "100":
+            }
 
-                        break;
-                    default:
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    getView().hideGetInitialOrderDataLoading();
+                    getView().showErrorGetOrderOnFilterChanged(FlightErrorUtil.getMessageFromException(e));
                 }
             }
+
+            @Override
+            public void onNext(List<FlightOrder> orderEntities) {
+                buildAndRenderFilterList();
+                getView().hideGetInitialOrderDataLoading();
+                if (orderEntities.size() > 0) {
+                    getView().renderOrders(transformOrderDataToViewData(orderEntities));
+                } else {
+                    getView().showEmptyView();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onOrderLoadMore(String selectedFilter, int page) {
+        getView().showLoadMoreLoading();
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(page, selectedFilter), new Subscriber<List<FlightOrder>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    getView().hideLoadMoreLoading();
+                    getView().setLoadMoreStatusToFalse();
+                }
+            }
+
+            @Override
+            public void onNext(List<FlightOrder> orderEntities) {
+                getView().hideLoadMoreLoading();
+                getView().setLoadMoreStatusToFalse();
+                getView().renderAddMoreData(transformOrderDataToViewData(orderEntities));
+            }
+        });
+    }
+
+    private List<Visitable> transformOrderDataToViewData(List<FlightOrder> flightOrders) {
+        List<Visitable> visitables = new ArrayList<>();
+        for (FlightOrder flightOrder : flightOrders) {
+            switch (flightOrder.getStatus()) {
+                case 700:
+                    for (FlightOrderJourney journey : flightOrder.getJourneys()) {
+                        FlightOrderSuccessViewModel successViewModel = new FlightOrderSuccessViewModel();
+                        successViewModel.setCreateTime(flightOrder.getCreateTime());
+                        successViewModel.setId(flightOrder.getId());
+                        successViewModel.setOrderJourney(journey);
+                        successViewModel.setTitle(getView().getString(R.string.flight_order_success_title));
+                        successViewModel.setStatus(journey.getStatus());
+                        visitables.add(successViewModel);
+                    }
+                    break;
+                case 600:
+                    FlightOrderFailedViewModel failedViewModel = new FlightOrderFailedViewModel();
+                    failedViewModel.setCreateTime(flightOrder.getCreateTime());
+                    failedViewModel.setId(flightOrder.getId());
+                    failedViewModel.setOrderJourney(flightOrder.getJourneys());
+                    failedViewModel.setStatus(flightOrder.getStatus());
+                    failedViewModel.setTitle(getView().getString(R.string.flight_order_failed_title));
+                    visitables.add(failedViewModel);
+                    break;
+                case 0:
+                    FlightOrderFailedViewModel expired = new FlightOrderFailedViewModel();
+                    expired.setCreateTime(flightOrder.getCreateTime());
+                    expired.setId(flightOrder.getId());
+                    expired.setOrderJourney(flightOrder.getJourneys());
+                    expired.setStatus(flightOrder.getStatus());
+                    expired.setTitle(getView().getString(R.string.flight_order_expire_title));
+                    visitables.add(expired);
+                    break;
+
+            }
         }
+        return visitables;
+
     }
 
     private void buildAndRenderFilterList() {
 
         int[] colorBorder = new int[4];
-        colorBorder[0] = R.color.filter_order_blue;
-        colorBorder[1] = R.color.filter_order_green;
+        colorBorder[0] = R.color.filter_order_green;
+        colorBorder[1] = R.color.filter_order_red;
         colorBorder[2] = R.color.filter_order_orange;
-        colorBorder[3] = R.color.filter_order_green_medium;
+        colorBorder[3] = R.color.filter_order_yellow;
 
         Map<String, String> filtersMap = new HashMap<>();
-        filtersMap.put("100", "Finished");
-        filtersMap.put("700", "Confirmed");
-        filtersMap.put("650", "Refunded");
-        filtersMap.put("600", "Failed");
-        filtersMap.put("300", "In Progress");
-        filtersMap.put("200", "Ready for Queue");
-        filtersMap.put("102", "Waiting for Transfer");
-        filtersMap.put("101", "Waiting for Third Party");
-        filtersMap.put("100", "Waiting for Payment");
-        filtersMap.put("0", "Expired");
+        filtersMap.put("100", "Berhasil");
+        filtersMap.put("700", "Tidak Berhasil");
+        filtersMap.put("650", "Menunggu Pembayaran");
+        filtersMap.put("300", "Dalam Proses");
 
         List<QuickFilterItem> filterItems = new ArrayList<>();
         int colorInd = 0;
@@ -100,7 +184,11 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             finishFilter.setName(entry.getValue());
             finishFilter.setType(entry.getKey());
             finishFilter.setColorBorder(colorBorder[colorInd]);
-            finishFilter.setSelected(false);
+            if (getView().getSelectedFilter().equalsIgnoreCase(entry.getKey())) {
+                finishFilter.setSelected(true);
+            } else {
+                finishFilter.setSelected(false);
+            }
             filterItems.add(finishFilter);
             colorInd++;
             if (colorInd >= colorBorder.length) {

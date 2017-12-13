@@ -21,6 +21,7 @@ import rx.functions.Func4;
  */
 
 public class FlightGetOrdersUseCase extends UseCase<List<FlightOrder>> {
+    private static final String PARAM_STATUS = "status";
     private static final String PARAM_PAGE = "page";
     private static final String PARAM_PER_PAGE = "per_page";
     private static final int DEFAULT_PER_PAGE_VALUE = 10;
@@ -103,10 +104,12 @@ public class FlightGetOrdersUseCase extends UseCase<List<FlightOrder>> {
                                                                                                            List<FlightDetailRouteViewModel> routeViewModels) {
                                                                                 if (departureAirports != null && departureAirports.size() > 0) {
                                                                                     FlightAirportDB flightAirportDB = departureAirports.get(0);
+                                                                                    flightOrderJourney.setDepartureCityCode(flightAirportDB.getCityCode());
                                                                                     flightOrderJourney.setDepartureCity(flightAirportDB.getCityName());
                                                                                 }
                                                                                 if (arrivalAirports != null && arrivalAirports.size() > 0) {
                                                                                     FlightAirportDB flightAirportDB = arrivalAirports.get(0);
+                                                                                    flightOrderJourney.setArrivalCityCode(flightAirportDB.getCityCode());
                                                                                     flightOrderJourney.setArrivalCity(flightAirportDB.getCityName());
                                                                                 }
                                                                                 if (routeViewModels != null && routeViewModels.size() > 0) {
@@ -136,6 +139,14 @@ public class FlightGetOrdersUseCase extends UseCase<List<FlightOrder>> {
     public RequestParams createRequestParam(int page) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(PARAM_PAGE, page);
+        requestParams.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE_VALUE);
+        return requestParams;
+    }
+
+    public RequestParams createRequestParam(int page, String status) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putInt(PARAM_PAGE, page);
+        requestParams.putString(PARAM_STATUS, status);
         requestParams.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE_VALUE);
         return requestParams;
     }

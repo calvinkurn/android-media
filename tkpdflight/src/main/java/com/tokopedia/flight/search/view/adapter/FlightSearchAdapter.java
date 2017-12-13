@@ -36,9 +36,11 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
     private OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
     private String errorMessage;
 
-    public interface OnBaseFlightSearchAdapterListener{
+    public interface OnBaseFlightSearchAdapterListener {
         void onResetFilterClicked();
+
         void onChangeDateClicked();
+
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
     }
 
@@ -97,41 +99,41 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
         }
 
         private void setArrivalAddDay(FlightSearchViewModel flightSearchViewModel) {
-            if(flightSearchViewModel.getAddDayArrival() > 0) {
+            if (flightSearchViewModel.getAddDayArrival() > 0) {
                 arrivalAddDay.setVisibility(View.VISIBLE);
                 arrivalAddDay.setText(itemView.getContext().getString(R.string.flight_label_duration_add_day, flightSearchViewModel.getAddDayArrival()));
-            }else{
+            } else {
                 arrivalAddDay.setVisibility(View.GONE);
             }
         }
 
         void setDuration(FlightSearchViewModel flightSearchViewModel) {
             Duration duration = DurationUtil.convertFormMinute(flightSearchViewModel.getDurationMinute());
-            String durationString = DurationUtil.getReadableString(itemView.getContext(),duration);
-            if(flightSearchViewModel.getTotalTransit() > 0){
+            String durationString = DurationUtil.getReadableString(itemView.getContext(), duration);
+            if (flightSearchViewModel.getTotalTransit() > 0) {
                 tvDuration.setText(itemView.getContext().getString(R.string.flight_label_duration_transit,
                         durationString, String.valueOf(flightSearchViewModel.getTotalTransit())));
-            }else {
+            } else {
                 tvDuration.setText(itemView.getContext().getString(R.string.flight_label_duration_direct,
                         durationString));
             }
         }
 
         private void setSavingPrice(FlightSearchViewModel flightSearchViewModel) {
-            if(TextUtils.isEmpty(flightSearchViewModel.getBeforeTotal())){
+            if (TextUtils.isEmpty(flightSearchViewModel.getBeforeTotal())) {
                 savingPrice.setVisibility(View.GONE);
-            }else{
+            } else {
                 savingPrice.setVisibility(View.VISIBLE);
                 savingPrice.setText(MethodChecker.fromHtml(getString(R.string.flight_label_saving_price_html, flightSearchViewModel.getBeforeTotal())));
             }
         }
 
         private void setAirline(FlightSearchViewModel flightSearchViewModel) {
-            if(flightSearchViewModel.getAirlineList().size() > 1) {
+            if (flightSearchViewModel.getAirlineList().size() > 1) {
                 List<FlightAirlineDB> flightAirlineDBs = flightSearchViewModel.getAirlineList();
-                if (flightAirlineDBs!= null && flightAirlineDBs.size() > 0) {
+                if (flightAirlineDBs != null && flightAirlineDBs.size() > 0) {
                     List<String> airlineLogoList = new ArrayList<>();
-                    for (int i =0, sizei = flightAirlineDBs.size(); i<sizei; i++) {
+                    for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
                         FlightAirlineDB flightAirlineDB = flightAirlineDBs.get(i);
                         airlineLogoList.add(flightAirlineDB.getLogo());
                     }
@@ -140,16 +142,16 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
                     flightMultiAirlineView.setAirlineLogos(null);
                 }
                 tvAirline.setText(R.string.flight_label_multi_maskapai);
-            }else if(flightSearchViewModel.getAirlineList().size() == 1){
+            } else if (flightSearchViewModel.getAirlineList().size() == 1) {
                 flightMultiAirlineView.setAirlineLogo(flightSearchViewModel.getAirlineList().get(0).getLogo());
                 tvAirline.setText(flightSearchViewModel.getAirlineList().get(0).getName());
             }
         }
 
         private void setRefundableInfo(FlightSearchViewModel flightSearchViewModel) {
-            if(flightSearchViewModel.isRefundable() == RefundableEnum.NOT_REFUNDABLE){
+            if (flightSearchViewModel.isRefundable() == RefundableEnum.NOT_REFUNDABLE) {
                 airlineRefundableInfo.setVisibility(View.GONE);
-            }else{
+            } else {
                 airlineRefundableInfo.setVisibility(View.VISIBLE);
                 airlineRefundableInfo.setText(flightSearchViewModel.isRefundable().getValueRes());
             }
@@ -202,7 +204,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
         return new FlightBaseRetryDataBinder(this);
     }
 
-    private class FlightBaseRetryDataBinder extends BaseRetryDataBinder{
+    private class FlightBaseRetryDataBinder extends BaseRetryDataBinder {
 
         public FlightBaseRetryDataBinder(DataBindAdapter dataBindAdapter) {
             super(dataBindAdapter, R.drawable.ic_flight_empty_state);

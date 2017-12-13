@@ -26,6 +26,7 @@ public class FlightOrderMapper {
         if (orderEntity != null) {
             flightOrder = new FlightOrder();
             flightOrder.setId(orderEntity.getId());
+            flightOrder.setStatus(orderEntity.getAttributes().getStatus());
             flightOrder.setCreateTime(orderEntity.getAttributes().getCreateTime());
             flightOrder.setEmail(orderEntity.getAttributes().getFlight().getEmail());
             flightOrder.setCurrency(orderEntity.getAttributes().getFlight().getCurrency());

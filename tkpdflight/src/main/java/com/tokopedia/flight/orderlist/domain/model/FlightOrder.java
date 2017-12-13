@@ -7,19 +7,20 @@ import java.util.List;
  */
 
 public class FlightOrder {
-    private String id;
-    private String createTime;
-    private String email;
-    private String telp;
-    private String totalAdult;
-    private int totalAdultNumeric;
-    private String totalChild;
-    private int totalChildNumeric;
-    private String totalInfant;
-    private int totalInfantNumeric;
-    private String currency;
-    private List<FlightOrderJourney> journeys;
-    private List<FlightOrderPassengerViewModel> passengerViewModels;
+    protected String id;
+    protected int status;
+    protected String createTime;
+    protected String email;
+    protected String telp;
+    protected String totalAdult;
+    protected int totalAdultNumeric;
+    protected String totalChild;
+    protected int totalChildNumeric;
+    protected String totalInfant;
+    protected int totalInfantNumeric;
+    protected String currency;
+    protected List<FlightOrderJourney> journeys;
+    protected List<FlightOrderPassengerViewModel> passengerViewModels;
 
     public FlightOrder() {
     }
@@ -112,11 +113,11 @@ public class FlightOrder {
         this.currency = currency;
     }
 
-    public List<com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney> getJourneys() {
+    public List<FlightOrderJourney> getJourneys() {
         return journeys;
     }
 
-    public void setJourneys(List<com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney> journeys) {
+    public void setJourneys(List<FlightOrderJourney> journeys) {
         this.journeys = journeys;
     }
 
@@ -126,5 +127,13 @@ public class FlightOrder {
 
     public void setPassengerViewModels(List<FlightOrderPassengerViewModel> passengerViewModels) {
         this.passengerViewModels = passengerViewModels;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

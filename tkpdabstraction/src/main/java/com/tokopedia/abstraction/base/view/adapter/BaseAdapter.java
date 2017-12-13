@@ -18,12 +18,12 @@ import java.util.List;
 
 public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
-    private LoadingModel loadingModel = new LoadingModel();
-    private ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
     protected List<Visitable> visitables;
-    protected BaseAdapterTypeFactory adapterTypeFactory;
+    protected AdapterTypeFactory adapterTypeFactory;
+    private Visitable loadingModel = new LoadingModel();
+    private Visitable errorNetworkModel = new ErrorNetworkModel();
 
-    public BaseAdapter(BaseAdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
+    public BaseAdapter(AdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
         this.visitables = visitables;
     }

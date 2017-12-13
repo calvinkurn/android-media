@@ -23,6 +23,7 @@
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/font_black_primary_70" />
+            android:textColor="@color/font_black_primary_70"
+            android:textSize="@dimen/font_body2" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 </LinearLayout>
