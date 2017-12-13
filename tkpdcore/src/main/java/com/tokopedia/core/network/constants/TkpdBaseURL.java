@@ -60,6 +60,8 @@ public class TkpdBaseURL {
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
+    public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
+
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -534,6 +536,8 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_VOUCHER_CODE = "check_voucher_code.pl";
 
         public static final String PATH_TX_PAYMENT_EMONEY = "tx-payment-emoney.pl";
+
+        public static final String GET_COUPON_LIST = "coupon/list/";
     }
 
     public static class Shipment {
@@ -769,7 +773,7 @@ public class TkpdBaseURL {
     public static class Wallet {
         public static final String GET_HISTORY = "api/v1/me/history";
         public static final String POST_COMPLAINT = "api/v1/cs/complaint";
-        public static final String GET_OAUTH_INFO_ACCOUNT= "api/v1/me/profile";
+        public static final String GET_OAUTH_INFO_ACCOUNT = "api/v1/me/profile";
         public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
     }
 
@@ -852,8 +856,6 @@ public class TkpdBaseURL {
         public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
 
 
-
-
     }
 
     public static class Replacement {
@@ -902,5 +904,23 @@ public class TkpdBaseURL {
     public class Maps {
         public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
+    }
+
+    public class TokoPoint {
+        public static final String VERSION = "v1/";
+        public static final String HMAC_KEY = "web_service_v4";
+
+        public static final String POST_COUPON_VALIDATE_REDEEM = "coupon/validate/redeem";
+        public static final String POST_COUPON_REDEEM = "coupon/redeem";
+        public static final String GET_COUPON_LIST = "coupon/list";
+        public static final String GET_POINT_RECENT_HISTORY = "points/history";
+        public static final String GET_POINT_MAIN = "points/main";
+        public static final String GET_POINT_DRAWER = "points/drawer";
+        public static final String GET_POINT_STATUS = "points/status";
+        public static final String GET_CATALOG_LIST = "catalog/list";
+        public static final String GET_CATALOG_DETAIL = "catalog/detail";
+        public static final String GET_CATALOG_FILTER_CATEGORY = "catalog/filter";
+
+
     }
 }

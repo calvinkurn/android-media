@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.beranda.listener;
 
+import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
@@ -37,4 +38,12 @@ public interface HomeCategoryListener {
     void onPromoClick(BannerSlidesModel slidesModel);
 
     void openShop();
+
+    void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance);
+
+    void onRequestPendingCashBack();
+
+    void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String redirectUrlActionButton, String appLinkActionButton);
+
+    void actionTokoPointClicked(String tokoPointUrl);
 }

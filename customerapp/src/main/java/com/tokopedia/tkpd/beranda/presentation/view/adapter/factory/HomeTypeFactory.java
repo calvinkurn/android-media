@@ -9,6 +9,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryIt
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
@@ -36,6 +37,8 @@ public interface HomeTypeFactory {
     int type(EmptyShopViewModel emptyShopViewModel);
 
     int type(SaldoViewModel saldoViewModel);
+
+    int type(HeaderViewModel headerViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 

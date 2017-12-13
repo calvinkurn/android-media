@@ -7,7 +7,11 @@ import android.support.annotation.StringRes;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 
 import java.util.List;
@@ -27,6 +31,10 @@ public interface HomeContract {
 
         void setItem(int pos, Visitable item);
 
+        void updateHeaderItem(HeaderViewModel headerViewModel);
+
+        void refreshAdapter();
+
         void showNetworkError(String message);
 
         void removeNetworkError();
@@ -45,6 +53,12 @@ public interface HomeContract {
 
     interface Presenter extends CustomerPresenter<View> {
         void getHomeData();
+
+        void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletActionData);
+
+        void updateHeaderTokoCashPendingData(CashBackData cashBackData);
+
+        void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData);
 
         void getShopInfo(String url, String shopDomain);
 

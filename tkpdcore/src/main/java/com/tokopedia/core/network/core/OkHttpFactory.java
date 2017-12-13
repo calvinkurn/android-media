@@ -439,4 +439,8 @@ public class OkHttpFactory {
                 .addDebugInterceptor()
                 .build();
     }
+
+    public OkHttpClient.Builder getClientBuilder() {
+        return builder == null ? client.newBuilder() : builder;
+    }
 }

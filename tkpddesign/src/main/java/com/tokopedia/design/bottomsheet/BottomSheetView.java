@@ -86,7 +86,9 @@ public class BottomSheetView extends BottomSheetDialog {
         if (bottomSheetField.getUrlButton() != null) {
             btnOpsiBottomSheet.setVisibility(View.VISIBLE);
             btnOpsiBottomSheet.setText(bottomSheetField.getLabelButton());
-            btnOpsiBottomSheet.setOnClickListener(getClickButtonListener(bottomSheetField.getUrlButton()));
+            btnOpsiBottomSheet.setOnClickListener(getClickButtonListener(
+                    bottomSheetField.getUrlButton(), bottomSheetField.getAppLinkButton())
+            );
         } else {
             btnOpsiBottomSheet.setVisibility(View.GONE);
         }
@@ -101,11 +103,11 @@ public class BottomSheetView extends BottomSheetDialog {
         };
     }
 
-    private View.OnClickListener getClickButtonListener(final String url) {
+    private View.OnClickListener getClickButtonListener(final String url, final String appLink) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.clickOnButton(url);
+                listener.clickOnButton(url, appLink);
                 dismiss();
             }
         };
@@ -120,15 +122,18 @@ public class BottomSheetView extends BottomSheetDialog {
         private final String urlButton;
         private final String labelButton;
         private final String labelTextLink;
+        private final String appLinkButton;
 
         private BottomSheetField(BottomSheetFieldBuilder builder) {
             this.title = builder.title;
             this.body = builder.body;
             this.img = builder.img;
+            this.appLinkButton = builder.appLinkButton;
             this.urlTextLink = builder.urlTextLink;
             this.urlButton = builder.urlButton;
             this.labelTextLink = builder.labelTextLink;
             this.labelButton = builder.labelButton;
+
         }
 
         public String getTitle() {
@@ -151,6 +156,10 @@ public class BottomSheetView extends BottomSheetDialog {
             return urlButton;
         }
 
+        public String getAppLinkButton() {
+            return appLinkButton;
+        }
+
         public String getLabelButton() {
             return labelButton;
         }
@@ -166,6 +175,7 @@ public class BottomSheetView extends BottomSheetDialog {
             private int img;
             private String urlTextLink;
             private String urlButton;
+            private String appLinkButton;
             private String labelTextLink;
             private String labelButton;
 
@@ -184,14 +194,17 @@ public class BottomSheetView extends BottomSheetDialog {
                 return this;
             }
 
-            public BottomSheetFieldBuilder setUrlTextLink(String url, String labelTextLink) {
-                this.urlTextLink = url;
-                this.labelTextLink = labelTextLink;
+
+            public BottomSheetFieldBuilder setUrlButton(String url, String appLink, String labelButton) {
+                this.urlButton = url;
+                this.appLinkButton = appLink;
+                this.labelButton = labelButton;
                 return this;
             }
 
             public BottomSheetFieldBuilder setUrlButton(String url, String labelButton) {
                 this.urlButton = url;
+                this.appLinkButton = "";
                 this.labelButton = labelButton;
                 return this;
             }
@@ -205,6 +218,6 @@ public class BottomSheetView extends BottomSheetDialog {
     public interface ActionListener {
         void clickOnTextLink(String url);
 
-        void clickOnButton(String url);
+        void clickOnButton(String url, String appLink);
     }
 }

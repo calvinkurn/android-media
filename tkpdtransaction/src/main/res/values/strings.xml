@@ -110,4 +110,6 @@
     <string name="authentication_description_2">Anda akan diminta memasukkan CVV dan verifikasi via SMS untuk setiap transaksi.</string>
     <string name="menu_credit_card_authentication">Pengaturan Autentikasi</string>
     <string name="title_preorder_proccess_time">Waktu Proses: </string>
+    <string name="title_use_promo_code">Gunakan Kode Promo</string>
+    <string name="title_use_promo_code_and_voucher">Gunakan Kode Promo dan Voucher</string>
 </resources>
