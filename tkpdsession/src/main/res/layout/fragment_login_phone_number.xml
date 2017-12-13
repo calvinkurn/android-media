@@ -70,7 +70,7 @@
         android:background="@drawable/green_button_rounded"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:text="@string/"
+        android:text="@string/login"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_medium"
