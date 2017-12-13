@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/margin_vvvs">
+    android:layout_margin="@dimen/margin_vs">
 
     <TextView
         android:id="@+id/text"
@@ -14,6 +14,7 @@
         android:padding="@dimen/padding_vs"
         android:scrollbars="horizontal"
         android:singleLine="true"
+        android:textSize="@dimen/text_size_small"
         android:textColor="@color/tkpd_main_green"
         tools:text="Maaf mengganggu" />
 
