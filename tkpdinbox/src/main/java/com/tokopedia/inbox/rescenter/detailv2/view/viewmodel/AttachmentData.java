@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 
 public class AttachmentData implements Parcelable {
+    public static final int TYPE_IMAGE = 0;
+    public static final int TYPE_VIDEO = 1;
 
     private String imageUrl;
     private String imageThumbUrl;
