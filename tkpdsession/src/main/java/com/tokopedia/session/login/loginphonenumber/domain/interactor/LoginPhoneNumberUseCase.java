@@ -13,7 +13,6 @@ import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
-import com.tokopedia.session.login.loginphonenumber.domain.model.AccessTokenTokoCashDomain;
 import com.tokopedia.session.login.loginphonenumber.domain.model.CodeTokoCashDomain;
 
 import javax.inject.Inject;

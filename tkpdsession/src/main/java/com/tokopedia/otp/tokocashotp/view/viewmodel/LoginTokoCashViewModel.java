@@ -3,7 +3,6 @@ package com.tokopedia.otp.tokocashotp.view.viewmodel;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
-import com.tokopedia.session.login.loginphonenumber.domain.model.AccessTokenTokoCashDomain;
 import com.tokopedia.session.login.loginphonenumber.domain.model.CodeTokoCashDomain;
 
 /**

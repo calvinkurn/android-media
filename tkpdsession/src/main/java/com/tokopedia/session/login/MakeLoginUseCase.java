@@ -11,7 +11,7 @@ import rx.Observable;
 
 /**
  * @author by nisie on 5/26/17.
- * @deprecated
+ * @deprecated use MakeLoginUseCase in interactor.
  */
 
 @Deprecated
