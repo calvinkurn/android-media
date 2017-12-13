@@ -154,8 +154,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
-        SessionHandler.setFirstTimeUserNewOnboard(this, false);
+        onDonePressed();
     }
 
     public void setNextResource() {
