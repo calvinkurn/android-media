@@ -85,21 +85,23 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private String createSmsMessage(String phoneNumber) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            phoneNumber = phoneNumber.substring(phoneNumber.length() - 4);
-            String maskedPhone = String.format(
-                    ("<b>****-****- %s </b>"), phoneNumber);
-            return getString(R.string.verification_code_sent_to_sms) + " " + maskedPhone;
+            return getString(R.string.verification_code_sent_to_sms) + " " + getMaskedPhone(phoneNumber);
         } else {
             return "";
         }
     }
 
+    private String getMaskedPhone(String phoneNumber) {
+        String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{3})(\\d{3})(\\d+)",
+                "($1)-$2-$3");
+        return String.format(
+                ("<b>%s</b>"), masked);
+    }
+
     private String createCallMessage(String phoneNumber) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            phoneNumber = phoneNumber.substring(phoneNumber.length() - 4);
-            String maskedPhone = String.format(
-                    ("<b>****-****- %s </b>"), phoneNumber);
-            return getString(R.string.verification_code_sent_to_call) + " " + maskedPhone;
+            return getString(R.string.verification_code_sent_to_call)
+                    + " " + getMaskedPhone(phoneNumber);
         } else {
             return "";
         }

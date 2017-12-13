@@ -98,7 +98,7 @@
             android:maxLength="6"
             android:paddingBottom="@dimen/margin_small"
             android:textIsSelectable="false"
-            android:textSize="20sp"
+            android:textSize="30sp"
             android:visibility="visible"
             app:pinLineColors="@color/pin_line_colors"/>
 
@@ -112,7 +112,7 @@
             android:textColor="@color/red_500"
             android:textSize="@dimen/text_size_small"
             android:textStyle="normal"
-            android:visibility="gone"
+            android:visibility="invisible"
             tools:visibility="visible"
             />
 

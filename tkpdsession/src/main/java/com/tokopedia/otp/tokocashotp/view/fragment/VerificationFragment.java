@@ -42,6 +42,7 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
+import com.tokopedia.session.login.view.customview.LargerSpannedMovementMethod;
 
 import java.util.concurrent.TimeUnit;
 
@@ -213,7 +214,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
                 .drawable.green_button_rounded));
         inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        errorOtp.setVisibility(View.GONE);
+        errorOtp.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -361,7 +362,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 , 0);
 
         countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
+        countdownText.setMovementMethod(new LargerSpannedMovementMethod());
+
     }
 
     private void setLimitReachedCountdownText() {
@@ -383,7 +385,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 , 0);
 
         countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
+        countdownText.setMovementMethod(new LargerSpannedMovementMethod());
     }
 
     private void setRunningCountdownText(String countdown) {
@@ -394,7 +396,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 getString(R.string.to_resend_otp));
 
         countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
+        countdownText.setMovementMethod(new LargerSpannedMovementMethod());
     }
 
     private void goToOtherVerificationMethod() {

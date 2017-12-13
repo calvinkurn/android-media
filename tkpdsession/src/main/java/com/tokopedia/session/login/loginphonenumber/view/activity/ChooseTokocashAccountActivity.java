@@ -68,4 +68,13 @@ public class ChooseTokocashAccountActivity extends TActivity implements HasCompo
         intent.putExtras(bundle);
         return intent;
     }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
+    }
 }

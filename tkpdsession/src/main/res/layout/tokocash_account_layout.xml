@@ -70,6 +70,6 @@
         android:layout_height="1dp"
         android:layout_below="@id/avatar"
         android:layout_marginLeft="@dimen/padding_activity"
-        android:background="@color/grey_300"/>
+        android:background="@color/grey_100"/>
 
 </RelativeLayout>

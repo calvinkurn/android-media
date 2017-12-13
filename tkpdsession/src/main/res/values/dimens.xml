@@ -28,4 +28,5 @@
     <dimen name="text_size_16">16sp</dimen>
     <dimen name="padding_activity">24dp</dimen>
     <dimen name="verification_icon">38dp</dimen>
+    <dimen name="extra_space_start">5dp</dimen>
 </resources>

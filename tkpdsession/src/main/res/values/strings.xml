@@ -97,9 +97,9 @@
     <string name="success_request_otp">Kode verifikasi telah dikirim.</string>
 
     <!-- LOGIN PHONE NUMBER -->
-    <string name="login_with_phone_number_tokocash">Masuk dengan\nNomor Ponsel TokoCash</string>
+    <string name="login_with_phone_number">Masuk dengan Nomor Ponsel</string>
     <string name="phone_number">Nomor Ponsel</string>
-    <string name="we_will_send_verification_code">Kami akan mengirimkan sms kode verifikasi</string>
+    <string name="we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
     <string name="title_verify">Verifikasi</string>
     <string name="verification_code_sent_to_sms">Kode verifikasi telah dikirimkan ke</string>
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
@@ -120,7 +120,7 @@
     <string name="phone_number_not_connected_to_tokocash">Nomor Ponsel Belum\nTerhubung ke
         TokoCash</string>
     <string name="not_connected_tokocash_message">Untuk masuk dengan nomor ponsel akun TokoCash Anda, harap lakukan verifikasi nomor ponsel terlebih dahulu.</string>
-    <string name="login_with_other_method">Masuk dengan Pilihan Lainnya</string>
+    <string name="login_with_other_method">Gunakan metode verifikasi lain</string>
     <string name="no_tokocash_account">Tidak ada Akun Tokopedia yang\nTerhubung ke TokoCash</string>
     <string name="no_tokocash_account_message">Silakan gunakan pilihan lainnya untuk masuk. Untuk menggunakan pilihan ini, harap lakukan aktivasi TokoCash kembali dari akun Tokopedia Anda</string>
     <string name="phone_number_not_connected">Nomor Ponsel Belum Terhubung</string>
@@ -131,5 +131,6 @@
     <string name="phone_number_not_registered">Nomor ponsel belum terdaftar</string>
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
+    <string name="login">Masuk</string>
 
 </resources>

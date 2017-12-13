@@ -84,20 +84,6 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         ScreenTracking.screen(getScreenName());
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        if (savedInstanceState != null) {
-//            model = savedInstanceState.getParcelable(LoginPhoneNumberActivity
-//                    .ARGS_FORM_DATA);
-//        } else if (getArguments() != null) {
-//            model = getArguments().getParcelable(LoginPhoneNumberActivity
-//                    .ARGS_FORM_DATA);
-//        } else {
-//            getActivity().finish();
-//        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
