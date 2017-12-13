@@ -106,7 +106,7 @@ public class EditReviewUseCase extends SendReviewUseCase {
                         .flatMap(new Func1<ImageUpload, Observable<UploadImageDomain>>() {
                             @Override
                             public Observable<UploadImageDomain> call(ImageUpload imageUpload) {
-                                if (sendReviewRequestModel.getPostKey().isEmpty()) {
+                                if (TextUtils.isEmpty(sendReviewRequestModel.getPostKey())) {
                                     return Observable.just(null);
                                 } else if (imageUpload.getFileLoc() == null
                                         && !TextUtils.isEmpty(imageUpload.getPicSrc())) {
