@@ -1,15 +1,20 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
+import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,11 +54,32 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        if(e instanceof LoyaltyErrorException) {
-                            view.onErrorFetchCouponList(e.getMessage());
+                        if (e instanceof TokoPointResponseErrorException) {
+                            view.renderErrorGetCouponList(e.getMessage());
+                        } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                            view.renderErrorNoConnectionGetCouponList(
+                                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_SHORT
+                            );
+                        } else if (e instanceof SocketTimeoutException) {
+                            view.renderErrorTimeoutConnectionGetCouponList(
+                                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT
+                            );
+                        } else if (e instanceof HttpErrorException) {
+                            view.renderErrorHttpGetCouponList(
+                                    e.getMessage()
+                            );
                         } else {
-                            view.onErrorFetchCouponList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            view.renderErrorGetCouponList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
+
+
+
+
+//                        if(e instanceof LoyaltyErrorException) {
+//                            view.onErrorFetchCouponList(e.getMessage());
+//                        } else {
+//                            view.onErrorFetchCouponList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+//                        }
                     }
 
                     @Override

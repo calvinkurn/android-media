@@ -6,6 +6,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -142,6 +143,51 @@ public class PromoCouponFragment extends BasePresenterFragment
     }
 
     @Override
+    public void renderErrorGetCouponList(String message) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_response),
+                message,
+                null, 0,
+                getRetryGetCouponListErrorHandlerListener()
+        );
+    }
+
+
+    @Override
+    public void renderErrorHttpGetCouponList(String message) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_response),
+                message,
+                null, 0,
+                getRetryGetCouponListErrorHandlerListener()
+        );
+    }
+
+    @Override
+    public void renderErrorNoConnectionGetCouponList(String message) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_response),
+                message,
+                null, 0,
+                getRetryGetCouponListErrorHandlerListener()
+        );
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionGetCouponList(String message) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_response),
+                message,
+                null, 0,
+                getRetryGetCouponListErrorHandlerListener()
+        );
+    }
+
+    @Override
     public void couponDataNoResult() {
         NetworkErrorHelper.showEmptyState(context, mainView,
                 "Anda Tidak Memiliki Kupon",
@@ -164,11 +210,11 @@ public class PromoCouponFragment extends BasePresenterFragment
                 mainView,
                 errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
-            }
-        });
+                    @Override
+                    public void onRetryClicked() {
+                        dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+                    }
+                });
     }
 
     @Override
@@ -287,6 +333,16 @@ public class PromoCouponFragment extends BasePresenterFragment
         listener = (ChooseCouponListener) context;
     }
 
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getRetryGetCouponListErrorHandlerListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+            }
+        };
+    }
+
     public interface ChooseCouponListener {
 
         void onCouponSuccess(
@@ -298,5 +354,4 @@ public class PromoCouponFragment extends BasePresenterFragment
     }
 
 
-    
 }
