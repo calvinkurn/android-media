@@ -748,7 +748,6 @@ public class TxListPresenterImpl implements TxListPresenter {
                 break;
             case OrderDetailActivity.REQUEST_CODE_ORDER_DETAIL:
                 if (resultCode == Activity.RESULT_OK) {
-                    TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                     viewListener.showToastSuccessMessage(
                             context.getString(com.tokopedia.transaction.R.string.success_cancel_replacement));
                 }
