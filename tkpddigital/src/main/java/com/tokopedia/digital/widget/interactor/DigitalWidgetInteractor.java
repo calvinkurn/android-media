@@ -1,5 +1,6 @@
 package com.tokopedia.digital.widget.interactor;
 
+import android.graphics.Path;
 import android.support.v4.util.Pair;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -94,6 +95,51 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         .subscribeOn(Schedulers.from(threadExecutor))
                         .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
+    }
+
+    @Override
+    public void getOperatorAndProductsFromPrefix2(Subscriber<Pair<Operator, List<Product>>> subscriber,
+                                                  final int categoryId, String prefix) {
+        compositeSubscription.add(
+                getOperatorByPrefix(prefix)
+                        .flatMap(new Func1<List<Operator>, Observable<Pair<Operator, List<Product>>>>() {
+                            @Override
+                            public Observable<Pair<Operator, List<Product>>> call(List<Operator> operators) {
+                                final Operator operator = operators.get(0);
+                                final int operatorId = operator.getId();
+
+                                return digitalWidgetRepository.getObservableProducts(useCache)
+                                        .map(productMapper)
+                                        .flatMapIterable(new Func1<List<Product>, Iterable<Product>>() {
+                                            @Override
+                                            public Iterable<Product> call(List<Product> products) {
+                                                return products;
+                                            }
+                                        })
+                                        .filter(new Func1<Product, Boolean>() {
+                                            @Override
+                                            public Boolean call(Product product) {
+                                                return product
+                                                        .getRelationships()
+                                                        .getOperator()
+                                                        .getData()
+                                                        .getId() == operatorId;
+                                            }
+                                        })
+                                        .toList()
+                                        .map(new Func1<List<Product>, Pair<Operator, List<Product>>>() {
+                                            @Override
+                                            public Pair<Operator, List<Product>> call(List<Product> products) {
+                                                return Pair.create(operator, products);
+                                            }
+                                        });
+                            }
+                        })
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
+                        .subscribe(subscriber));
+
     }
 
     @Override
