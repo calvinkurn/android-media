@@ -132,5 +132,6 @@
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
     <string name="login">Masuk</string>
-
+    <string name="use_other_method">gunakan metode verifikasi lain</string>
+    <string name="or_small">atau</string>
 </resources>

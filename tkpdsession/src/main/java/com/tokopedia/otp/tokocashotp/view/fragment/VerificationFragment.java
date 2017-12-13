@@ -2,19 +2,13 @@ package com.tokopedia.otp.tokocashotp.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +65,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     TextView verifyButton;
     TextView errorOtp;
     View limitOtp;
+    View finishCountdownView;
+    TextView noCodeText;
 
     CountDownTimer countDownTimer;
     TkpdProgressDialog progressDialog;
@@ -156,6 +152,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton = view.findViewById(R.id.verify_button);
         limitOtp = view.findViewById(R.id.limit_otp);
         errorOtp = view.findViewById(R.id.error_otp);
+        finishCountdownView = view.findViewById(R.id.finish_countdown);
+        noCodeText = view.findViewById(R.id.no_code);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -169,8 +167,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
 
         limitOtp.setVisibility(View.GONE);
-        countdownText.setHighlightColor(Color.TRANSPARENT);
-
         inputOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -340,75 +336,59 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void setFinishedCountdownText() {
-        Spannable spannable = new SpannableString(getString(R.string.countdown_finish_otp));
+        countdownText.setVisibility(View.GONE);
+        finishCountdownView.setVisibility(View.VISIBLE);
+        noCodeText.setVisibility(View.VISIBLE);
 
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
-                                  presenter.requestOTP(viewModel);
-                              }
+        TextView resend = finishCountdownView.findViewById(R.id.resend);
+        resend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.requestOTP(viewModel);
+            }
+        });
 
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
-                              }
-                          }
-                , spannable.toString().indexOf(RESEND)
-                , spannable.toString().lastIndexOf(RESEND) + RESEND.length()
-                , 0);
+        TextView useOtherMethod = finishCountdownView.findViewById(R.id.use_other_method);
+        useOtherMethod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToOtherVerificationMethod();
 
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
-                                  goToOtherVerificationMethod();
-                              }
-
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
-                              }
-                          }
-                , spannable.toString().indexOf(USE_OTHER_METHOD)
-                , spannable.length()
-                , 0);
-
-        countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
-
+            }
+        });
     }
 
     private void setLimitReachedCountdownText() {
-        Spannable spannable = new SpannableString(getString(R.string.login_with_other_method));
+        countdownText.setVisibility(View.VISIBLE);
+        finishCountdownView.setVisibility(View.GONE);
+        noCodeText.setVisibility(View.GONE);
 
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
-                                  goToOtherVerificationMethod();
-                                  countdownText.setEnabled(false);
-                              }
+        countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        countdownText.setText(R.string.login_with_other_method);
+        countdownText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToOtherVerificationMethod();
+            }
+        });
 
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
-                              }
-                          }
-                , spannable.toString().indexOf(getString(R.string.login_with_other_method))
-                , spannable.length()
-                , 0);
-
-        countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void setRunningCountdownText(String countdown) {
-        Spannable spannable = new SpannableString(getString(R.string.please_wait_in)
+        countdownText.setVisibility(View.VISIBLE);
+        finishCountdownView.setVisibility(View.GONE);
+        noCodeText.setVisibility(View.GONE);
+
+        countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+
+        String text = getString(R.string.please_wait_in)
                 + " " +
                 countdown
                 + " " +
-                getString(R.string.to_resend_otp));
+                getString(R.string.to_resend_otp);
 
-        countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
+        countdownText.setText(text);
+
     }
 
     private void goToOtherVerificationMethod() {
@@ -427,13 +407,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         progressDialog = null;
 
         presenter.detachView();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (countdownText != null) countdownText.setEnabled(false);
-
     }
 
     public void setData(Bundle bundle) {
