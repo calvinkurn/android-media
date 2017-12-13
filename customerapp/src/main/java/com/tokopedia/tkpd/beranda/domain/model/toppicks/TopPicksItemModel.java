@@ -20,7 +20,7 @@ public class TopPicksItemModel {
     private String url;
     @SerializedName("applinks")
     @Expose
-    private String applinks;
+    private String applinks="";
 
     public int getId() {
         return id;
