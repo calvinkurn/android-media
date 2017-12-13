@@ -132,7 +132,7 @@
             <TextView
                 android:id="@+id/deadline_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:layout_toRightOf="@id/icon_deadline"
@@ -179,7 +179,7 @@
             <TextView
                 android:id="@+id/locked_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="@dimen/margin_vs"

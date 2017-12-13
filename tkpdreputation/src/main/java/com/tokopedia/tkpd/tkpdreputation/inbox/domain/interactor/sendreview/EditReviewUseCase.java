@@ -12,6 +12,7 @@ import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadIma
 import java.util.ArrayList;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author by nisie on 9/12/17.
@@ -53,5 +54,21 @@ public class EditReviewUseCase extends SendReviewUseCase {
             RequestParams requestParams, SendReviewRequestModel sendReviewRequestModel) {
         return editReviewValidateUseCase.createObservable(requestParams)
                 .flatMap(addValidateResultToRequestModel(sendReviewRequestModel));
+    }
+
+    protected Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>
+    getObservableSubmitReview() {
+        return new Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>() {
+            @Override
+            public Observable<SendReviewRequestModel> call(SendReviewRequestModel sendReviewRequestModel) {
+                if (sendReviewRequestModel.getPostKey().isEmpty()) {
+                    return Observable.just(sendReviewRequestModel);
+                } else {
+                    return editReviewSubmitUseCase.createObservable(
+                            SendReviewSubmitUseCase.getParam(sendReviewRequestModel))
+                            .flatMap(addSubmitImageResultToRequestModel(sendReviewRequestModel));
+                }
+            }
+        };
     }
 }
