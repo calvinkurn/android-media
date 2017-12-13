@@ -9,6 +9,7 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
+import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 
 import java.util.Map;
 
@@ -142,8 +143,14 @@ public class KeroppiParam {
     }
 
     private static String setInsurance(CartItem cartItem) {
-        if (cartItem.getCartForceInsurance() == 1) {
-            return "1";
-        } else return "0";
+        for (CartProduct cartProduct : cartItem.getCartProducts()) {
+            if (cartProduct.getProductMustInsurance().equals("1")
+                    || cartProduct.getProductUseInsurance() == 1) return "1";
+        }
+        return "0";
+
+//        if (cartItem.getCartForceInsurance() == 1) {
+//            return "1";
+//        } else return "0";
     }
 }

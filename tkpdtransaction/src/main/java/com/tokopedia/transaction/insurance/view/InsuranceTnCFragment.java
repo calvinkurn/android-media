@@ -40,6 +40,10 @@ public class InsuranceTnCFragment extends BasePresenterFragment<InsuranceTnCCont
     @Inject
     InsuranceTnCContract.Presenter presenter;
 
+    public InsuranceTnCFragment() {
+        // Required empty public constructor
+    }
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -139,7 +143,6 @@ public class InsuranceTnCFragment extends BasePresenterFragment<InsuranceTnCCont
         presenter.detachView();
     }
 
-
     private class TermsAndConditionsWebViewClient extends WebViewClient {
         @Override
         public void onLoadResource(WebView view, String url) {
@@ -183,7 +186,6 @@ public class InsuranceTnCFragment extends BasePresenterFragment<InsuranceTnCCont
         public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
             return super.shouldOverrideKeyEvent(view, event);
         }
-
 
     }
 

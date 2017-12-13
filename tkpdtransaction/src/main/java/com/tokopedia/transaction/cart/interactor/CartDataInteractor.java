@@ -452,9 +452,11 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     private boolean isInsuranced(CartItem cartItem) {
-        return (cartItem.getCartForceInsurance() == 1
-                || cartItem.getCartInsuranceProd() == 1
-                || isProductUseInsurance(cartItem.getCartProducts()));
+//        return (cartItem.getCartForceInsurance() == 1
+//                || cartItem.getCartInsuranceProd() == 1
+//                || isProductUseInsurance(cartItem.getCartProducts()));
+
+        return isProductUseInsurance(cartItem.getCartProducts());
     }
 
     private boolean isProductUseInsurance(List<CartProduct> cartProducts) {
