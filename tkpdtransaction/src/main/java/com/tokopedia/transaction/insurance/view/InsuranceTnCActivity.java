@@ -36,7 +36,10 @@ public class InsuranceTnCActivity extends TActivity implements FragmentGeneralWe
     }
 
     private void showFragmentWebView() {
-        Fragment fragment = FragmentGeneralWebView.createInstance(url, false);
+//        Fragment fragment = FragmentGeneralWebView.createInstance(url, false);
+//        getFragmentManager().beginTransaction().add(R.id.parent_view, fragment).commit();
+
+        Fragment fragment = new InsuranceTnCFragment();
         getFragmentManager().beginTransaction().add(R.id.parent_view, fragment).commit();
     }
 
