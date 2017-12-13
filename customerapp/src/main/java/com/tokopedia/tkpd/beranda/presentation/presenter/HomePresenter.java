@@ -29,6 +29,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
