@@ -20,7 +20,6 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TokoPointAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.WalletAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
@@ -441,15 +440,7 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildClientTokoplusAuth(String authorizationString) {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(loggingInterceptor)
-                .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new TokoPointAuthInterceptor(authorizationString))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
+    public OkHttpClient.Builder getClientBuilder() {
+        return builder == null ? client.newBuilder() : builder;
     }
 }

@@ -3,8 +3,12 @@ package com.tokopedia.loyalty.domain.apiservice;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.TkpdOkHttpBuilder;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.services.BaseService;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -30,11 +34,20 @@ TokoPointService extends BaseService<TokoPointApi> {
 
     @Override
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {
-        return TokoPointRetrofitFactory.createRetrofitTokoPointConfig(processedBaseUrl)
-                .client(OkHttpFactory.create()
-                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientTokoplusAuth(TkpdBaseURL.TokoPoint.HMAC_KEY))
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
+        OkHttpClient.Builder builder = OkHttpFactory.create().addOkHttpRetryPolicy(getOkHttpRetryPolicy()).getClientBuilder();
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder);
+        tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
+        tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor());
+        tkpdOkHttpBuilder.addInterceptor(new TokoPointAuthInterceptor(TkpdBaseURL.TokoPoint.HMAC_KEY));
+        tkpdOkHttpBuilder.setOkHttpRetryPolicy(getOkHttpRetryPolicy());
+        tkpdOkHttpBuilder.addDebugInterceptor();
+        OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
+
+        return TokoPointRetrofitFactory.createRetrofitTokoPointConfig(processedBaseUrl)
+                .client(okHttpClient)
                 .build();
     }
 
