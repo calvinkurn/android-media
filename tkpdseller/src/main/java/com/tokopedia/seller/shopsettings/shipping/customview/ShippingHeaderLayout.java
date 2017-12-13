@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -100,8 +101,11 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     public void initializeZipCodes() {
         zipCode.setText("");
+        String header = getResources().getString(R.string.hint_type_postal_code);
         ArrayList<String> zipCodes = presenter.getselectedAddress().getZipCodes();
-        zipCodes.add(0, getResources().getString(R.string.hint_type_postal_code));
+        if (!zipCodes.contains(header)) {
+            zipCodes.add(0, header);
+        }
         zipCodeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text_double_row,
                 R.id.item, presenter.getselectedAddress().getZipCodes());
         zipCode.setAdapter(zipCodeAdapter);
@@ -115,6 +119,10 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
     @Override
     public void renderData(@NonNull ShopShipping shopData) {
         zipCode.setText(shopData.postalCode);
+        if (!TextUtils.isEmpty(shopData.districtName) && !TextUtils.isEmpty(shopData.cityName) &&
+                !TextUtils.isEmpty(shopData.provinceName)) {
+            updateLocationData(shopData.provinceName, shopData.cityName, shopData.districtName);
+        }
     }
 
     @Override
@@ -143,6 +151,10 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     public String getZipCodeData() {
         return zipCode.getText().toString();
+    }
+
+    public String getDistrictAndCity() {
+        return shopCity.getText().toString();
     }
 
     private TextWatcher postTextWatcher() {
