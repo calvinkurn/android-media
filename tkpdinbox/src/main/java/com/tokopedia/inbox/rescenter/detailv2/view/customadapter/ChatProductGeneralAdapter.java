@@ -1,10 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
-import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,9 +51,9 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(productList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+                if(getTypeFromModel(productList.get(position)).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
                     openProductPreview(productList, position);
-                } else if (productList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_VIDEO)) {
+                } else if (getTypeFromModel(productList.get(position)).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_VIDEO)) {
                     openVideoPlayer(productList.get(position).getFull());
                 }
             }
