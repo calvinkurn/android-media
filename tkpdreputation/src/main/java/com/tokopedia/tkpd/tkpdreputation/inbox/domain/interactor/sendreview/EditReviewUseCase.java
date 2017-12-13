@@ -66,7 +66,7 @@ public class EditReviewUseCase extends SendReviewUseCase {
         return new Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>() {
             @Override
             public Observable<SendReviewRequestModel> call(SendReviewRequestModel sendReviewRequestModel) {
-                if (sendReviewRequestModel.getPostKey().isEmpty()) {
+                if (TextUtils.isEmpty(sendReviewRequestModel.getPostKey())) {
                     return Observable.just(sendReviewRequestModel);
                 } else {
                     return editReviewSubmitUseCase.createObservable(
@@ -84,7 +84,7 @@ public class EditReviewUseCase extends SendReviewUseCase {
             @Override
             public Observable<SendReviewRequestModel> call(@Nullable List<UploadImageDomain>
                                                                    uploadImageDomains) {
-                if (!sendReviewRequestModel.getPostKey().isEmpty()) {
+                if (!TextUtils.isEmpty(sendReviewRequestModel.getPostKey())) {
                     for (int i = 0; i < uploadImageDomains.size(); i++) {
                         sendReviewRequestModel.getListUpload().get(i).setPicObj(uploadImageDomains
                                 .get(i).getPicObj());
