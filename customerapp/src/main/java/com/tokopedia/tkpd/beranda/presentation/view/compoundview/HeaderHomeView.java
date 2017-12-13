@@ -107,21 +107,8 @@ public class HeaderHomeView extends BaseCustomView {
 //                tvActionTokocash.setVisibility(VISIBLE);
 //            else tvActionTokocash.setVisibility(GONE);
             tvActionTokocash.setVisibility(GONE);
-            tvActionTokocash.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!homeHeaderWalletAction.getAppLinkBalance().equals("") &&
-                            !homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
-                            homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
-                        UnifyTracking.eventTokoCashCheckSaldoClick();
-
-                        listener.actionAppLinkWalletHeader(
-                                homeHeaderWalletAction.getRedirectUrlBalance(),
-                                homeHeaderWalletAction.getAppLinkBalance()
-                        );
-                    }
-                }
-            });
+            tvActionTokocash.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
+            tvBalanceTokocash.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
         } else {
             if (headerViewModel.isPendingTokocashChecked()
                     && headerViewModel.getCashBackData() != null
@@ -160,6 +147,25 @@ public class HeaderHomeView extends BaseCustomView {
                 );
             }
         });
+    }
+
+    @NonNull
+    private OnClickListener getOnClickTokocashBalance(final HomeHeaderWalletAction homeHeaderWalletAction) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!homeHeaderWalletAction.getAppLinkBalance().equals("") &&
+                        !homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
+                        homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
+                    UnifyTracking.eventTokoCashCheckSaldoClick();
+
+                    listener.actionAppLinkWalletHeader(
+                            homeHeaderWalletAction.getRedirectUrlBalance(),
+                            homeHeaderWalletAction.getAppLinkBalance()
+                    );
+                }
+            }
+        };
     }
 
     private void renderHeaderOnlyTokocash() {
