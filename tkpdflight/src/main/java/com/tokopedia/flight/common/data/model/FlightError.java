@@ -51,6 +51,6 @@ public class FlightError {
 
     @Override
     public String toString() {
-        return title + " (" + id + ")";
+        return title;
     }
 }
