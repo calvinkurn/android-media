@@ -13,11 +13,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AttachmentData;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AttachmentData.TYPE_IMAGE;
+import static com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AttachmentData.TYPE_VIDEO;
 
 /**
  * Created by yfsx on 10/11/17.
@@ -48,7 +50,11 @@ public class ProveAdapter extends RecyclerView.Adapter<ProveAdapter.Holder> {
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openProductPreview(attachmentDataList, position);
+                if (attachmentDataList.get(position).getIsVideo() == TYPE_IMAGE) {
+                    openProductPreview(attachmentDataList, position);
+                } else if (attachmentDataList.get(position).getIsVideo() == TYPE_VIDEO) {
+                    openVideoPlayer(attachmentDataList.get(position).getImageUrl());
+                }
             }
         });
     }
@@ -56,12 +62,22 @@ public class ProveAdapter extends RecyclerView.Adapter<ProveAdapter.Holder> {
     private void openProductPreview(List<AttachmentData> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
         for (AttachmentData model : list) {
-            imageUrls.add(model.getImageUrl());
+            if (attachmentDataList.get(position).getIsVideo() == TYPE_IMAGE) {
+                imageUrls.add(model.getImageUrl());
+            }
         }
         Intent intent = new Intent(context, PreviewProductImage.class);
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("fileloc", imageUrls);
         bundle.putInt("img_pos", position);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    private void openVideoPlayer(String urlVideo) {
+        Intent intent = new Intent(context, VideoPlayerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, urlVideo);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

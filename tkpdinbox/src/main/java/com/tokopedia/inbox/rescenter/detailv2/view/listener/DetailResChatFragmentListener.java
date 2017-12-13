@@ -15,6 +15,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -103,6 +104,10 @@ public interface DetailResChatFragmentListener {
         void goToProductDetail(ConversationProductDomain product);
 
         void goToProductList(ConversationProductDomain product);
+
+        void openImagePreview(ArrayList<String> imageUrls, int position);
+
+        void openVideoPlayer(String videoUrl);
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {

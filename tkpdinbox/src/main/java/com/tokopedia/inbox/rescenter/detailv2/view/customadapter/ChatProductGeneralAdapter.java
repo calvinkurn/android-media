@@ -1,10 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
-import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +22,16 @@ import java.util.List;
 
 public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductGeneralAdapter.Holder> {
 
+    DetailResChatFragmentListener.View mainView;
     private Context context;
     private List<ConversationAttachmentDomain> productList = new ArrayList<>();
     private int maxShowCount = 0;
 
-    public ChatProductGeneralAdapter(Context context, List<ConversationAttachmentDomain> productList, int maxShowCount) {
+    public ChatProductGeneralAdapter(DetailResChatFragmentListener.View mainView,
+                                     Context context,
+                                     List<ConversationAttachmentDomain> productList,
+                                     int maxShowCount) {
+        this.mainView = mainView;
         this.context = context;
         this.productList = productList;
         this.maxShowCount = maxShowCount;
@@ -50,9 +51,9 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(productList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+                if(getTypeFromModel(productList.get(position)).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
                     openProductPreview(productList, position);
-                } else if (productList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_VIDEO)) {
+                } else if (getTypeFromModel(productList.get(position)).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_VIDEO)) {
                     openVideoPlayer(productList.get(position).getFull());
                 }
             }
@@ -67,24 +68,15 @@ public class ChatProductGeneralAdapter extends RecyclerView.Adapter<ChatProductG
                 imageUrls.add(model.getFull());
             }
         }
-        Intent intent = new Intent(context, PreviewProductImage.class);
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("fileloc", imageUrls);
-        bundle.putInt("img_pos", position);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+        mainView.openImagePreview(imageUrls, position);
     }
 
     private String getTypeFromModel(ConversationAttachmentDomain model) {
         return (model.getType() != null) ? model.getType() : "";
     }
 
-    private void openVideoPlayer(String urlVideo) {
-        Intent intent = new Intent(context, VideoPlayerActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, urlVideo);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+    private void openVideoPlayer(String videoUrl) {
+        mainView.openVideoPlayer(videoUrl);
     }
 
     @Override

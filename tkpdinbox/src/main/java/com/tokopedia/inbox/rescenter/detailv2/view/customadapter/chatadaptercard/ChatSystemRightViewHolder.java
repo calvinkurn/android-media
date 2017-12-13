@@ -66,7 +66,7 @@ public class ChatSystemRightViewHolder extends AbstractViewHolder<ChatSystemRigh
                     itemView.getContext(),
                     LinearLayoutManager.HORIZONTAL,
                     false));
-            adapter = new ChatProductGeneralAdapter(MainApplication.getAppContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
+            adapter = new ChatProductGeneralAdapter(mainView, MainApplication.getAppContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
             rvAttachment.setAdapter(adapter);
         }
         if (!element.getConversation().getMessage().isEmpty()) {

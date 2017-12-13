@@ -92,7 +92,7 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
                     itemView.getContext(),
                     LinearLayoutManager.HORIZONTAL,
                     false));
-            adapter = new ChatProductGeneralAdapter(MainApplication.getAppContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
+            adapter = new ChatProductGeneralAdapter(mainView, MainApplication.getAppContext(), element.getConversation().getAttachment(), COUNT_MAX_PRODUCT);
             rvAttachment.setAdapter(adapter);
         }
 
