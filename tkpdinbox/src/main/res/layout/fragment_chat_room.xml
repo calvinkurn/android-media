@@ -117,15 +117,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/add_url"
+                    android:layout_alignParentTop="true"
                     android:layout_toEndOf="@+id/add_url"
                     android:layout_toLeftOf="@+id/send_but"
                     android:layout_toRightOf="@+id/add_url"
                     android:layout_toStartOf="@+id/send_but"
-                    android:background="@color/white"
+                    android:background="@drawable/bg_rounded_chat_input"
                     android:hint="@string/chat_edit_text"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
-                    android:padding="@dimen/padding_vs"
+                    android:padding="@dimen/padding_small"
                     android:textSize="@dimen/font_medium" />
 
 
