@@ -151,14 +151,14 @@ public class TokoPointRepository implements ITokoPointRepository {
                         new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
                             @Override
                             public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
-//                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
-//                                        tokoplusResponseResponse.body().convertDataObj(
-//                                                TokoPointDrawerDataResponse.class
-//                                        );
-
                                 TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
-                                        new Gson().fromJson(DummyTokoPointResponse.RESPONSE_DRAWER_DATA,
-                                                TokoPointDrawerDataResponse.class);
+                                        tokoplusResponseResponse.body().convertDataObj(
+                                                TokoPointDrawerDataResponse.class
+                                        );
+
+//                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
+//                                        new Gson().fromJson(DummyTokoPointResponse.RESPONSE_DRAWER_DATA,
+//                                                TokoPointDrawerDataResponse.class);
 
                                 TokoPointDrawerData tokoPointDrawerData =
                                         tokoPointResponseMapper.convertTokoplusPointDrawer(
