@@ -33,7 +33,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.presenter.VerificationPresenter;
@@ -44,7 +43,6 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
-import com.tokopedia.session.login.view.customview.LargerSpannedMovementMethod;
 
 import java.util.concurrent.TimeUnit;
 
@@ -375,7 +373,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 , 0);
 
         countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(new LargerSpannedMovementMethod());
+        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
 
     }
 
@@ -386,6 +384,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                               @Override
                               public void onClick(View view) {
                                   goToOtherVerificationMethod();
+                                  countdownText.setEnabled(false);
                               }
 
                               @Override
@@ -398,7 +397,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 , 0);
 
         countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(new LargerSpannedMovementMethod());
+        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void setRunningCountdownText(String countdown) {
@@ -409,7 +408,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 getString(R.string.to_resend_otp));
 
         countdownText.setText(spannable, TextView.BufferType.SPANNABLE);
-        countdownText.setMovementMethod(new LargerSpannedMovementMethod());
+        countdownText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void goToOtherVerificationMethod() {
@@ -428,6 +427,13 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         progressDialog = null;
 
         presenter.detachView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (countdownText != null) countdownText.setEnabled(false);
+
     }
 
     public void setData(Bundle bundle) {

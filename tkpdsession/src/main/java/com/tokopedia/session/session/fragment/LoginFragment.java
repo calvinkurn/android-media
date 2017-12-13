@@ -63,6 +63,7 @@ import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
@@ -607,7 +608,6 @@ LoginFragment extends Fragment implements LoginView {
         if (listProvider != null && checkHasNoProvider()) {
             login.saveProvider(listProvider);
             listProvider.add(getLoginPhoneNumberBean());
-
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -857,18 +857,20 @@ LoginFragment extends Fragment implements LoginView {
                         model.setEmail(googleSignInAccount.getEmail());
                         model.setAccessToken(accessToken);
 
-                    startLoginWithGoogle(LoginModel.GoogleType, model);
-                }else{
-                    showProgress(false);
+                        startLoginWithGoogle(LoginModel.GoogleType, model);
+                    } else {
+                        showProgress(false);
+                    }
+                    break;
+                case REQUEST_PHONE_NUMBER: {
+                    if (resultCode == Activity.RESULT_OK) {
+                        destroyActivity();
+                    }
+                    break;
                 }
-                break;
-            case REQUEST_PHONE_NUMBER: {
-                if (resultCode == Activity.RESULT_OK) {
-                    destroyActivity();
-                }
-                break;
-            }default:
-                break;}
+                default:
+                    break;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             if (getActivity() != null) {
