@@ -14,7 +14,10 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel
  */
 
 public class FlightOrderAdapterTypeFactory extends BaseAdapterTypeFactory implements FlightOrderTypeFactory {
-    public FlightOrderAdapterTypeFactory() {
+    private FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener;
+
+    public FlightOrderAdapterTypeFactory(FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener) {
+        this.adapterInteractionListener = adapterInteractionListener;
     }
 
     @Override
@@ -31,9 +34,9 @@ public class FlightOrderAdapterTypeFactory extends BaseAdapterTypeFactory implem
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         AbstractViewHolder viewHolder;
         if (viewType == FlightOrderSuccessViewHolder.LAYOUT) {
-            viewHolder = new FlightOrderSuccessViewHolder(view);
+            viewHolder = new FlightOrderSuccessViewHolder(adapterInteractionListener, view);
         } else if (viewType == FlightOrderFailedViewHolder.LAYOUT) {
-            viewHolder = new FlightOrderFailedViewHolder(view);
+            viewHolder = new FlightOrderFailedViewHolder(view, adapterInteractionListener);
         } else {
             viewHolder = super.createViewHolder(view, viewType);
         }

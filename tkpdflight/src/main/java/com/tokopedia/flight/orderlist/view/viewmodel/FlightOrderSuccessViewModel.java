@@ -10,6 +10,7 @@ import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 
 public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFactory> {
     private String id;
+    private String title;
     private String createTime;
     private String status;
     private FlightOrderJourney orderJourney;
@@ -52,5 +53,13 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
     @Override
     public int type(FlightOrderTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

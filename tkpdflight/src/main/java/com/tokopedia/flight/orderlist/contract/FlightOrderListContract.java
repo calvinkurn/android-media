@@ -22,10 +22,32 @@ public interface FlightOrderListContract {
         void renderOrderStatus(List<QuickFilterItem> filterItems);
 
         void renderOrders(List<Visitable> visitables);
+
+        String getString(int resId);
+
+        void showLoadMoreLoading();
+
+        void hideLoadMoreLoading();
+
+        void renderAddMoreData(List<Visitable> visitables);
+
+        void setLoadMoreStatusToFalse();
+
+        void showEmptyView();
+
+        String getSelectedFilter();
+
+        void showErrorGetOrderOnFilterChanged(String message);
+
+        void showErrorGetInitialOrders(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getInitialOrderData();
+
+        void onFilterSelected(String typeFilter);
+
+        void onOrderLoadMore(String selectedFilter, int page);
     }
 }

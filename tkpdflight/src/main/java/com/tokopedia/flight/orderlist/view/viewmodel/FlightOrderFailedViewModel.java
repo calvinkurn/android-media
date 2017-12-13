@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class FlightOrderFailedViewModel implements Visitable<FlightOrderTypeFactory> {
+    private String title;
     private String id;
     private String createTime;
     private int status;
@@ -54,5 +55,13 @@ public class FlightOrderFailedViewModel implements Visitable<FlightOrderTypeFact
     @Override
     public int type(FlightOrderTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
