@@ -15,9 +15,11 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -189,6 +191,17 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 } else {
                     disableVerifyButton();
                 }
+            }
+        });
+
+        inputOtp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
+                    return true;
+                }
+                return false;
             }
         });
 

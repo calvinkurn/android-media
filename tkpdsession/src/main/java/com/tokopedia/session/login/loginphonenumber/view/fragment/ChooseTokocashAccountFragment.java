@@ -128,7 +128,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     private Drawable getDraw() {
         TextDrawable drawable = new TextDrawable(getActivity());
-        drawable.setText(getResources().getString(R.string.action_logout)+"   ");
+        drawable.setText(getResources().getString(R.string.action_logout));
         drawable.setTextColor(R.color.black_70b);
         return drawable;
     }

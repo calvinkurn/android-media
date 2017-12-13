@@ -92,8 +92,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
     }
 
     private String getMaskedPhone(String phoneNumber) {
-        String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{3})(\\d{3})(\\d+)",
-                "($1)-$2-$3");
+        String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{4})(\\d{4})(\\d+)",
+                "$1-$2-$3");
         return String.format(
                 ("<b>%s</b>"), masked);
     }
