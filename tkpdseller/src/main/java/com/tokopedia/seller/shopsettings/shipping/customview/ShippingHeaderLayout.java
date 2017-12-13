@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -118,8 +119,9 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
     @Override
     public void renderData(@NonNull ShopShipping shopData) {
         zipCode.setText(shopData.postalCode);
-        if (shopData.districtName != null && shopData.districtName.length() > 0) {
-            shopCity.setText(shopData.districtName);
+        if (!TextUtils.isEmpty(shopData.districtName) && !TextUtils.isEmpty(shopData.cityName) &&
+                !TextUtils.isEmpty(shopData.provinceName)) {
+            updateLocationData(shopData.provinceName, shopData.cityName, shopData.districtName);
         }
     }
 

@@ -41,10 +41,8 @@ public class DetailTransactionActivity extends BasePresenterActivity {
     TextView titleItem;
     @BindView(R2.id.desc_item_history)
     TextView descItem;
-    @BindView(R2.id.date_item_history)
-    TextView dateItem;
-    @BindView(R2.id.transaction_id_history)
-    TextView transactionId;
+    @BindView(R2.id.transaction_info_detail)
+    TextView transactionInfoDetail;
     @BindView(R2.id.bantuan_btn)
     Button bantuanBtn;
     @BindView(R2.id.button_opsi)
@@ -116,7 +114,8 @@ public class DetailTransactionActivity extends BasePresenterActivity {
     protected void setActionVar() {
         titleItem.setText(itemHistory.getTitle());
         descItem.setText(itemHistory.getDescription());
-        dateItem.setText(itemHistory.getTransactionInfoDate());
+        transactionInfoDetail.setText(itemHistory.getTransactionInfoId() + " " +
+                itemHistory.getTransactionInfoDate());
         priceItem.setText(itemHistory.getAmountChanges());
         priceItem.setTextColor(ContextCompat.getColor(this,
                 itemHistory.getAmountChangesSymbol().equals("+") ? R.color.green_500 : R.color.red_500));
