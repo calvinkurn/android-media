@@ -1,14 +1,16 @@
 package com.tokopedia.tkpd.thankyou.data.factory;
 
-import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
+import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.source.DigitalTrackerCloudSource;
 import com.tokopedia.tkpd.thankyou.data.source.MarketplaceTrackerCloudSource;
 import com.tokopedia.tkpd.thankyou.data.source.ThanksTrackerCloudSource;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerApi;
+import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 
 /**
@@ -17,18 +19,24 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 
 public class ThanksTrackerFactory {
     private DigitalTrackerApi digitalTrackerApi;
-    private ApolloClient apolloClient;
+    private DigitalTrackerMapper digitalTrackerMapper;
+    private MarketplaceTrackerApi marketplaceTrackerApi;
+    private MarketplaceTrackerMapper marketplaceTrackerMapper;
     private Gson gson;
     private SessionHandler sessionHandler;
     private GCMHandler gcmHandler;
 
     public ThanksTrackerFactory(DigitalTrackerApi digitalTrackerApi,
-                                ApolloClient apolloClient,
+                                DigitalTrackerMapper digitalTrackerMapper,
+                                MarketplaceTrackerApi marketplaceTrackerApi,
+                                MarketplaceTrackerMapper marketplaceTrackerMapper,
                                 Gson gson,
                                 SessionHandler sessionHandler,
                                 GCMHandler gcmHandler) {
         this.digitalTrackerApi = digitalTrackerApi;
-        this.apolloClient = apolloClient;
+        this.digitalTrackerMapper = digitalTrackerMapper;
+        this.marketplaceTrackerApi = marketplaceTrackerApi;
+        this.marketplaceTrackerMapper = marketplaceTrackerMapper;
         this.gson = gson;
         this.sessionHandler = sessionHandler;
         this.gcmHandler = gcmHandler;
@@ -37,11 +45,11 @@ public class ThanksTrackerFactory {
     public ThanksTrackerCloudSource cloudSource(RequestParams params) {
         String platform = params.getString(ThanksTrackerConst.Key.PLATFORM, "");
 
-        if(!platform.isEmpty()) {
+        if (!platform.isEmpty()) {
             if (platform.equals(ThanksTrackerConst.Platform.DIGITAL)) {
-                return new DigitalTrackerCloudSource(params, digitalTrackerApi, gson, sessionHandler, gcmHandler);
+                return new DigitalTrackerCloudSource(params, digitalTrackerApi, digitalTrackerMapper, gson, sessionHandler, gcmHandler);
             } else if (platform.equals(ThanksTrackerConst.Platform.MARKETPLACE)) {
-                return new MarketplaceTrackerCloudSource(params, apolloClient);
+                return new MarketplaceTrackerCloudSource(params, marketplaceTrackerApi, marketplaceTrackerMapper);
             }
         }
 

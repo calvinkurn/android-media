@@ -4,7 +4,6 @@ apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
-apply plugin: 'com.apollographql.android'
 
 
 def getDpiId(String density) {
@@ -76,11 +75,9 @@ def archiveAPK(variant, output) {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
-        jcenter()
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
     }
 }
 
@@ -303,8 +300,4 @@ dependencies {
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
-
-    compile rootProject.ext.apolloDependencies.apolloRxSupport
-    compile rootProject.ext.apolloDependencies.apolloRuntime
-    compile rootProject.ext.apolloDependencies.apolloAndroidSupport
 }

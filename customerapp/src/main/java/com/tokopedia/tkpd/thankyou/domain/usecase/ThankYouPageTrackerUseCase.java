@@ -10,7 +10,7 @@ import rx.Observable;
  * Created by okasurya on 12/4/17.
  */
 
-public class ThankYouPageTrackerUseCase extends UseCase<String> {
+public class ThankYouPageTrackerUseCase extends UseCase<Boolean> {
     private ThanksTrackerRepository thanksTrackerRepository;
 
     public ThankYouPageTrackerUseCase(ThanksTrackerRepository thanksTrackerRepository) {
@@ -18,7 +18,7 @@ public class ThankYouPageTrackerUseCase extends UseCase<String> {
     }
 
     @Override
-    public Observable<String> createObservable(RequestParams requestParams) {
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
         return thanksTrackerRepository.sendTracker(requestParams);
     }
 }

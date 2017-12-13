@@ -11,7 +11,9 @@ public interface ThanksTrackerConst {
     }
 
     interface Template {
-        String INSTANT_PAYMENT = "instant_payment";
+        String TRANSFER = "transfer";
+        String DEFER = "defer";
+        String INSTANT = "instant";
     }
 
     interface Key {

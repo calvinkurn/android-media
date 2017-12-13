@@ -15,5 +15,5 @@ public abstract class ThanksTrackerCloudSource {
         this.requestParams = requestParams;
     }
 
-    public abstract Observable<String> sendAnalytics();
+    public abstract Observable<Boolean> sendAnalytics();
 }

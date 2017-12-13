@@ -216,6 +216,8 @@ public class TkpdCache {
         public static final String CONFIG_SHOW_HIDE_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
         public static final String CONFIG_APP_SHARE_DESCRIPTION = "app_share_description";
         public static final String CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
+
+        public static final String CART_CACHE_TRACKER = "CART_CACHE_TRACKER";
     }
 
 }
