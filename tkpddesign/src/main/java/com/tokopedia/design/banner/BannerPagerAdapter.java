@@ -14,6 +14,8 @@ import android.widget.RelativeLayout;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 import com.tokopedia.design.R;
 
 import java.util.List;
@@ -34,13 +36,10 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
     }
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {
-
-        RelativeLayout relativeLayout;
         ImageView bannerImage;
 
         public BannerViewHolder(View itemView) {
             super(itemView);
-            relativeLayout = itemView.findViewById(R.id.root_banner);
             bannerImage = itemView.findViewById(R.id.image);
         }
     }
@@ -66,21 +65,14 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                     getBannerImageOnClickListener(position)
             );
         }
-
-        if (bannerImageUrls.size() == 1) {
-            holder.relativeLayout.setLayoutParams(
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            );
-            holder.relativeLayout.requestLayout();
-            holder.relativeLayout.setGravity(Gravity.CENTER);
-        }
         try {
             Glide.with(holder.itemView.getContext())
                     .load(bannerImageUrls.get(position))
-                    .fitCenter()
                     .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .placeholder(R.drawable.ic_loading_image)
                     .error(R.drawable.ic_loading_image)
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .into(holder.bannerImage);
         } catch (Exception e) {
             e.printStackTrace();

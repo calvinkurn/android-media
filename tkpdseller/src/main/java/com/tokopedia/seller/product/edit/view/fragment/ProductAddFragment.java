@@ -120,6 +120,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
      */
     private ArrayList<String> imageUrlList;
     private Listener listener;
+    private View btnSave;
+    private View btnSaveAndAdd;
 
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
@@ -196,7 +198,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productScoreViewHolder.setListener(this);
         presenter.attachView(this);
         presenter.getShopInfo();
-        view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
+        btnSave = view.findViewById(R.id.button_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isDataValid()) {
@@ -204,7 +207,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         });
-        view.findViewById(R.id.button_save_and_add).setOnClickListener(new View.OnClickListener() {
+        btnSaveAndAdd = view.findViewById(R.id.button_save_and_add);
+        btnSaveAndAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isDataValid()) {
@@ -213,6 +217,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             }
         });
         saveDefaultModel();
+        view.requestFocus();
         return view;
     }
 

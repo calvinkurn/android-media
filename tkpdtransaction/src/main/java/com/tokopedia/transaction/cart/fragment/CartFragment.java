@@ -449,6 +449,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
             TopAdsView topAdsView = (TopAdsView) emptyState.findViewById(R.id.topads);
             topAdsView.setConfig(config);
+            topAdsView.setDisplayMode(DisplayMode.FEED);
             topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
