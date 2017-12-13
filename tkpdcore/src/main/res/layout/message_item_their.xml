@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingRight="@dimen/padding_vs"
-    android:paddingLeft="@dimen/padding_vs"
     android:paddingTop="3dp"
     android:paddingBottom="3dp"
+    android:paddingLeft="@dimen/margin_sm"
+    android:paddingRight="@dimen/margin_sm"
     android:orientation="vertical">
 
     <LinearLayout
@@ -17,7 +17,7 @@
         android:layout_marginRight="@dimen/margin_med"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_small"
-        android:background="@drawable/border_button_rounded"
+        android:background="@drawable/border_button_default"
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
 
@@ -37,7 +37,6 @@
             android:textColor="@color/black_38"
             android:textSize="12sp"
             android:textStyle="italic"
-            android:clickable="false"
             tools:text="Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: Wolverine Cap Toe Boot Warna Red Tua Ukurannya 42"
             />
     </LinearLayout>
@@ -100,7 +99,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
         android:layout_below="@id/name"
         android:layout_toRightOf="@id/user_ava"
         android:background="@drawable/left_bubble"
@@ -129,7 +127,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/view_user_box"
         android:layout_gravity="left"
-        android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"
         android:layout_toRightOf="@id/user_ava"
         android:gravity="left"

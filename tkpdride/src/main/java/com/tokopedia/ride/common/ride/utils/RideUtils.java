@@ -34,7 +34,7 @@ public class RideUtils {
         return outputFormatter.format(dt);
     }
 
-    public static String convertPriceValueToIdrFormat(int price){
+    public static String convertPriceValueToIdrFormat(int price) {
         DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
         kursIndonesia.setMaximumFractionDigits(0);
         DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
@@ -50,7 +50,6 @@ public class RideUtils {
     }
 
 
-
     public static String formatStringToPriceString(String numberString, String currency) {
         try {
             if (currency.equalsIgnoreCase(IND_CURRENCY) || currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
@@ -63,7 +62,7 @@ public class RideUtils {
         }
     }
 
-    private static String formaNumberToPriceString(float number, String currency) {
+    public static String formaNumberToPriceString(float number, String currency) {
         try {
             if (currency.equalsIgnoreCase(IND_LOCAL_CURRENCY)) {
                 currency = IND_CURRENCY;
@@ -82,5 +81,14 @@ public class RideUtils {
         } catch (Exception ex) {
             return currency + " " + number;
         }
+    }
+
+    public static boolean isUberMoto(String productDisplayName) {
+        boolean isMoto = false;
+        if (productDisplayName != null) {
+            isMoto = productDisplayName.toLowerCase().contains("ubermo");
+        }
+
+        return isMoto;
     }
 }

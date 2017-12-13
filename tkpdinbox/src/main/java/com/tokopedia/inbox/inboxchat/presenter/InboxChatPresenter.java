@@ -91,7 +91,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         attempt = 0;
 
         client = new OkHttpClient();
-        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN+ TkpdBaseURL.Chat.CHAT_WEBSOCKET +
+        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN + TkpdBaseURL.Chat.CHAT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
@@ -114,7 +114,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void getMessage() {
         if (viewModel != null) viewModel.setKeyword("");
-        showLoading();
+        if (!getView().getAdapter().containLoading()) {
+            showLoading();
+        }
         getView().disableActions();
         getView().removeError();
         isRequesting = true;
@@ -171,19 +173,18 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             }
         }
 
-        if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
+        if (!result.isHasNext() && result.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
-
-        setCache(getView().getAdapter().getList());
     }
 
-    private void setCache(List<Visitable> list) {
+    public void setCache(List<Visitable> list) {
         this.listFetchCache = new ArrayList<>();
         this.listFetchCache.addAll(list);
     }
 
     public void resetSearch() {
+        viewModel.setMode(InboxChatViewModel.GET_CHAT_MODE);
         viewModel.setKeyword("");
         getView().getAdapter().setList(listFetchCache);
         chatSize = listFetchCache.size();
@@ -219,7 +220,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             }
         }
 
-        if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
+        if (!result.isHasNext() && result.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
 
@@ -370,7 +371,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void prepareNextPage(boolean hasNext) {
-        getView().getAdapter().removeLoading();
         if (hasNext) {
             getView().getAdapter().showLoading();
         }
@@ -407,7 +407,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

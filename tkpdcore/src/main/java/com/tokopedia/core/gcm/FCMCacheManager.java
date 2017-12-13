@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -21,17 +22,28 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * @author by Herdi_WORK on 13.12.16.
  */
 
 public class FCMCacheManager {
+    public static final String GCM_ID = "gcm_id";
+    public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
+    public static final long GCM_ID_EXPIRED_TIME = 259200000; // 3*24*60*60*1000 miliseconds;
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
     private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
@@ -249,13 +261,65 @@ public class FCMCacheManager {
 
     public static void storeRegId(String id, Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        cache.putString("gcm_id", id);
+        cache.putString(GCM_ID, id);
         cache.applyEditor();
+    }
+
+    public static void storeFcmTimestamp(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        cache.putLong(GCM_ID_TIMESTAMP, System.currentTimeMillis());
+        cache.applyEditor();
+    }
+
+    public static boolean isFcmExpired(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        return (System.currentTimeMillis() - cache.getLong(GCM_ID_TIMESTAMP, 0) >= GCM_ID_EXPIRED_TIME);
+    }
+
+    public static void setFcmExpired(Context context) {
+        LocalCacheHandler.clearSingleCacheKey(context, GCM_STORAGE, GCM_ID_TIMESTAMP);
+    }
+
+    public static void checkAndSyncFcmId(final Context context) {
+        if (FCMCacheManager.isFcmExpired(context)) {
+            // force FCM token refresh to be called
+            Observable.just(true).map(new Func1<Boolean, Boolean>() {
+                @Override
+                public Boolean call(Boolean aBoolean) {
+                    try {
+                        FirebaseInstanceId.getInstance().deleteInstanceId();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        FirebaseInstanceId.getInstance().getToken();
+                    }
+                    return aBoolean;
+                }
+            }).subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Boolean>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            // no operation, handled in FCMInstanceIDService
+                        }
+
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            // no operation, handled in FCMInstanceIDService
+                        }
+                    });
+        }
     }
 
     public static String getRegistrationId(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString("gcm_id", "");
+        return cache.getString(GCM_ID, "");
     }
 
     public static void setDialogNotificationSetting(Context context) {

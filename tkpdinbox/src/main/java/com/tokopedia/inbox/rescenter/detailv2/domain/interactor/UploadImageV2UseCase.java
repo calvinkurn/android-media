@@ -24,10 +24,9 @@ import okhttp3.RequestBody;
 import rx.Observable;
 
 /**
- * Created by hangnadi on 6/12/17.
+ * Created by yfsx
  */
 
-@SuppressWarnings("WeakerAccess")
 public class UploadImageV2UseCase extends UseCase<UploadImageModel> {
 
     public static final String PARAM_URL = "url";

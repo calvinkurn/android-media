@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ButtonViewAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -42,7 +41,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
 
     @Override
     protected int getLayoutView() {
-        return R.layout.layout_rescenter_button_view_v2;
+        return R.layout.layout_rescenter_button_view;
     }
 
     @Override

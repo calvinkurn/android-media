@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.subscriber;
 
+import android.util.Log;
+
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -15,8 +17,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.C
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
@@ -38,6 +38,7 @@ import rx.Subscriber;
 
 public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> {
 
+    public static final String TAG = GetDetailResChatSubscriber.class.getSimpleName();
     public static final String CREATE = "create";
     public static final String RECOMPLAIN = "recomplain";
     public static final String EDIT_SOLUTION = "edit_solution";
@@ -157,14 +158,7 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                 lastAction = 0;
                 items.add(new ChatCommonLeftViewModel(conversationDomain, actionType));
             } else {
-                if (actionBy == conversationDomain.getAction().getBy()) {
-                    lastAction = 0;
-                    items.add(new ChatNotSupportedRightViewModel(
-                            conversationDomain));
-                } else {
-                    items.add(new ChatNotSupportedLeftViewModel(
-                            conversationDomain));
-                }
+                Log.e(TAG, "initChatData: not supported type " + actionType , null );
             }
         }
         return items;

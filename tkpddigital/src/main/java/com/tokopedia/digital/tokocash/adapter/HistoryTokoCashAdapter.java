@@ -24,17 +24,19 @@ import butterknife.ButterKnife;
 
 /**
  * Created by nabillasabbaha on 8/24/17.
+ * Contains 3 View Holder : Item, Loading, & empty state for the last item
  */
 
 public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
 
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
+    private final int VIEW_EMPTY = 2;
 
     private List<ItemHistory> itemHistoryList;
     private Context context;
     private ItemHistoryListener listener;
-    private boolean showLoader;
+    private boolean nextUriAvailable;
 
     public HistoryTokoCashAdapter(List<ItemHistory> itemHistoryList) {
         this.itemHistoryList = itemHistoryList;
@@ -55,6 +57,10 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
             View view = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.layout_loading_view, parent, false);
             return new ItemLoadingViewHolder(view);
+        } else if (viewType == VIEW_EMPTY) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.layout_empty_loading_history, parent, false);
+            return new EmptyViewHolder(view);
         }
         return null;
     }
@@ -65,11 +71,8 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
             renderItemView((ItemViewHolderHistory) holder, itemHistoryList.get(position));
         } else if (holder instanceof ItemLoadingViewHolder) {
             ItemLoadingViewHolder loadingViewHolder = (ItemLoadingViewHolder) holder;
-            if (showLoader) {
-                loadingViewHolder.progressBarHistory.setVisibility(View.VISIBLE);
-            } else {
-                loadingViewHolder.progressBarHistory.setVisibility(View.GONE);
-            }
+            loadingViewHolder.progressBarHistory.setVisibility(View.VISIBLE);
+        } else if (holder instanceof EmptyViewHolder) {
         }
     }
 
@@ -90,11 +93,6 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return itemHistoryList == null || itemHistoryList.size() == 0 ? 0 : itemHistoryList.size() + 1;
-    }
-
     public void addItemHistoryList(List<ItemHistory> itemHistoryList) {
         this.itemHistoryList.clear();
         this.itemHistoryList.addAll(itemHistoryList);
@@ -104,6 +102,27 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
     public void addItemHistoryListLoadMore(List<ItemHistory> itemHistoryList) {
         this.itemHistoryList.addAll(itemHistoryList);
         notifyDataSetChanged();
+    }
+
+    public void isNextUri(boolean nextUri) {
+        this.nextUriAvailable = nextUri;
+    }
+
+    @Override
+    public int getItemCount() {
+        return itemHistoryList == null || itemHistoryList.size() == 0 ? 0 : itemHistoryList.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position != 0 && position == getItemCount() - 1) {
+            if (!nextUriAvailable)
+                return VIEW_EMPTY;
+            else
+                return VIEW_TYPE_LOADING;
+        } else {
+            return VIEW_TYPE_ITEM;
+        }
     }
 
     static class ItemViewHolderHistory extends RecyclerView.ViewHolder {
@@ -138,16 +157,15 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
         }
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position != 0 && position == getItemCount() - 1 ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
-    }
+    static class EmptyViewHolder extends RecyclerView.ViewHolder {
 
-    public void showLoading(boolean show) {
-        this.showLoader = show;
+        public EmptyViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 
     public interface ItemHistoryListener {
+
         void onClickItemHistory(ItemHistory itemHistory);
     }
 }

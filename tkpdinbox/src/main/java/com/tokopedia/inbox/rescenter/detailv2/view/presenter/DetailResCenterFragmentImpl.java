@@ -67,8 +67,6 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         fragmentView.showLoading(true);
         getResCenterDetailV2UseCase.execute(getInitResCenterDetailParam(),
                 new GetResCenterDetailV2Subscriber(fragmentView));
-//        getResCenterDetailUseCase.execute(getInitResCenterDetailParam(),
-//                new GetResCenterDetailSubscriber(fragmentView));
     }
 
     private RequestParams getInitResCenterDetailParam() {

@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.util.TextDrawable;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;

@@ -14,8 +14,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatInputAddressLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatInputAddressRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatLeftViewHolder;
-import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatNotSupportedLeftViewHolder;
-import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatNotSupportedRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatSystemLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatSystemRightViewHolder;
@@ -30,8 +28,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.C
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatInputAddressRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
@@ -60,16 +56,6 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory implements
     @Override
     public int type(ChatCreateLeftViewModel viewModel) {
         return ChatCreateLeftViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(ChatNotSupportedLeftViewModel viewModel) {
-        return ChatNotSupportedLeftViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(ChatNotSupportedRightViewModel viewModel) {
-        return ChatNotSupportedRightViewHolder.LAYOUT;
     }
 
     @Override
@@ -131,10 +117,6 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory implements
             viewHolder = new ChatRightViewHolder(view, mainView);
         } else if (type == ChatCreateLeftViewHolder.LAYOUT) {
             viewHolder = new ChatCreateLeftViewHolder(view, mainView);
-        } else if (type == ChatNotSupportedRightViewHolder.LAYOUT) {
-            viewHolder = new ChatNotSupportedRightViewHolder(view, mainView);
-        } else if (type == ChatNotSupportedLeftViewHolder.LAYOUT) {
-            viewHolder = new ChatNotSupportedLeftViewHolder(view, mainView);
         } else if (type == ChatSystemRightViewHolder.LAYOUT) {
             viewHolder = new ChatSystemRightViewHolder(view, mainView);
         } else if (type == ChatSystemLeftViewHolder.LAYOUT) {

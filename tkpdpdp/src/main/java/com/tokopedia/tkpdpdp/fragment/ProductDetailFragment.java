@@ -85,6 +85,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
 import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
+import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
 import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
@@ -134,6 +135,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
     public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
+    public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
@@ -180,6 +182,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     ReportProductDialogFragment fragment;
 
     Bundle recentBundle;
+    private YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcessListener;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -268,17 +271,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 switch (state){
                     case COLLAPSED:
                         isAppBarCollapsed = true;
-                        initStatusBarLight();
-                        initToolbarLight();
-                        fabWishlist.hide();
+                        collapsedAppBar();
                         break;
                     case EXPANDED:
                         isAppBarCollapsed = false;
-                        initStatusBarDark();
-                        initToolbarTransparant();
-                        if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
-                            fabWishlist.show();
-                        }
+                        expandedAppBar();
                         break;
                 }
             }
@@ -296,6 +293,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
         }
 
+    }
+
+    private void collapsedAppBar(){
+        initStatusBarLight();
+        initToolbarLight();
+        fabWishlist.hide();
+    }
+
+    private void expandedAppBar(){
+        initStatusBarDark();
+        initToolbarTransparant();
+        if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
+            fabWishlist.show();
+        }
     }
 
     @Override
@@ -580,7 +591,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void loadVideo(VideoData data) {
-        this.videoDescriptionLayout.renderVideoData(data);
+        this.videoDescriptionLayout.renderVideoData(data,youTubeThumbnailLoadInProcessListener);
         videoData = data;
     }
 
@@ -639,6 +650,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
         }
+        if(context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
+            youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) context;
     }
 
     @Override
@@ -649,6 +662,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
         }
+        if(context instanceof YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess)
+            youTubeThumbnailLoadInProcessListener = (YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) context;
     }
 
     @Override
@@ -778,6 +793,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
         presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
+        presenter.saveStateAppBarCollapsed(outState, STATE_APP_BAR_COLLAPSED, isAppBarCollapsed);
     }
 
     @Override
@@ -1163,5 +1179,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.productData.setLatestTalkViewModel(latestTalkViewModel);
         this.latestTalkView.renderData(this.productData);
         this.latestTalkView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void restoreIsAppBarCollapsed(boolean isAppBarCollapsed) {
+        this.isAppBarCollapsed = isAppBarCollapsed;
+        if(isAppBarCollapsed) {
+            collapsedAppBar();
+        } else {
+            expandedAppBar();
+        }
     }
 }

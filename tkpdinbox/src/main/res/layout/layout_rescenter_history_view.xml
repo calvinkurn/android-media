@@ -47,7 +47,6 @@
         android:padding="@dimen/padding_small"
         android:gravity="center_vertical"
         android:text="@string/action_see_more_history"
-        android:drawableRight="@drawable/ic_chevron_right"
         android:textColor="@color/tkpd_main_green"
         android:fontFamily="sans-serif-medium"
         android:textSize="@dimen/font_small" />
