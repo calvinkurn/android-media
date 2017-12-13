@@ -48,6 +48,8 @@ public interface EditShippingViewListener {
 
     void setShopLocationData(ShopShipping shopData);
 
+    String getDistrictAndCity();
+
     String getZipCode();
 
     String getStreetAddress();
