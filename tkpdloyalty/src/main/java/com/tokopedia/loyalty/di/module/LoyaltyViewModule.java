@@ -71,7 +71,7 @@ public class LoyaltyViewModule {
                                         .getExtras()
                                         .getString(EXTRA_CATEGORY, "")))
                         .position(0)
-                        .tabTitle("Kupon Promo")
+                        .tabTitle("Kupon Saya")
                         .build()
         );
         return loyaltyPagerItemList;

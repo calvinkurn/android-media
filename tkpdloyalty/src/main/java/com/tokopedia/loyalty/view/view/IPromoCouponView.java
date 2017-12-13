@@ -26,6 +26,8 @@ public interface IPromoCouponView extends IBaseView {
 
     void receiveResult(CouponViewModel couponViewModel);
 
+    void receiveDigitalResult(CouponViewModel couponViewModel);
+
     void onErrorFetchCouponList(String errorMessage);
 
     void couponError();

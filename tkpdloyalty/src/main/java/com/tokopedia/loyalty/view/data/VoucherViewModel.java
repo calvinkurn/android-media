@@ -14,6 +14,10 @@ public class VoucherViewModel {
 
     private String code;
 
+    private long rawDiscount;
+
+    private long rawCashback;
+
     public boolean isSuccess() {
         return isSuccess;
     }
@@ -44,5 +48,21 @@ public class VoucherViewModel {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public long getRawDiscount() {
+        return rawDiscount;
+    }
+
+    public void setRawDiscount(long rawDiscount) {
+        this.rawDiscount = rawDiscount;
+    }
+
+    public long getRawCashback() {
+        return rawCashback;
+    }
+
+    public void setRawCashback(long rawCashback) {
+        this.rawCashback = rawCashback;
     }
 }

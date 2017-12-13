@@ -191,7 +191,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     public void couponDataNoResult() {
         NetworkErrorHelper.showEmptyState(context, mainView,
                 "Anda Tidak Memiliki Kupon",
-                "Tukar poin Anda dengan kupon di halaman TopPoins.",
+                "Tukar poin Anda dengan kupon di halaman TokoPoins.",
                 "",
                 R.drawable.ic_coupon_image, null);
     }
@@ -202,6 +202,15 @@ public class PromoCouponFragment extends BasePresenterFragment
                 couponViewModel.getMessage(),
                 couponViewModel.getAmount(),
                 couponViewModel.getTitle());
+    }
+
+    @Override
+    public void receiveDigitalResult(CouponViewModel couponViewModel) {
+        listener.onDigitalCouponSuccess(couponViewModel.getCode(),
+                couponViewModel.getMessage(),
+                couponViewModel.getTitle(),
+                couponViewModel.getRawDiscount(),
+                couponViewModel.getRawCashback());
     }
 
     @Override
@@ -350,6 +359,13 @@ public class PromoCouponFragment extends BasePresenterFragment
                 String promoMessage,
                 String amount,
                 String couponTitle);
+
+        void onDigitalCouponSuccess(
+                String promoCode,
+                String promoMessage,
+                String CouponTitle,
+                long discountAmount,
+                long cashbackAmount);
 
     }
 

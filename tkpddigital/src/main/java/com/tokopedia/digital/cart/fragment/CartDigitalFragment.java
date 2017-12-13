@@ -643,6 +643,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void disableVoucherDisount() {
+        this.voucherDigitalState = null;
+        checkoutHolderView.disableVoucherDiscount();
+    }
+
+    @Override
     public void trackingSuccessVoucher(String voucherCode) {
         UnifyTracking.eventVoucherSuccess(voucherCode, "");
     }
@@ -695,7 +701,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 if (bundle != null) {
                     String voucherCode = bundle.getString(LoyaltyActivity.VOUCHER_CODE, "");
                     String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
+                    long voucherDiscountAmount = bundle.getLong(LoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+
                     voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
+
+                    checkoutHolderView.enableVoucherDiscount(
+                            voucherDiscountAmount
+                    );
                 }
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
@@ -703,6 +715,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
                     String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
                     String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
+
                     voucherCartHachikoView.setCoupon(couponTitle, couponMessage, couponCode);
                 }
             }

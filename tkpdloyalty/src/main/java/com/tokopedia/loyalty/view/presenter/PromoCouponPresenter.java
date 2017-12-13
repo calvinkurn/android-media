@@ -146,10 +146,36 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 couponData.getTitle(),
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param
-                ), makeCouponSubscriber(couponData));
+                ), makeDigitalCouponSubscriber(couponData));
     }
 
     private Subscriber<CouponViewModel> makeCouponSubscriber(final CouponData couponData) {
+        return new Subscriber<CouponViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                    couponData.setErrorMessage(e.getMessage());
+                    view.hideProgressLoading();
+                    view.couponError();
+                } else {
+                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(CouponViewModel couponViewModel) {
+                view.receiveResult(couponViewModel);
+                view.hideProgressLoading();
+            }
+        };
+    }
+
+    private Subscriber<CouponViewModel> makeDigitalCouponSubscriber(final CouponData couponData) {
         return new Subscriber<CouponViewModel>() {
             @Override
             public void onCompleted() {

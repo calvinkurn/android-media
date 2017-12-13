@@ -10,5 +10,7 @@ public interface IPromoCodeView extends IBaseView {
 
     void checkVoucherSuccessfull(VoucherViewModel voucherModel);
 
+    void checkDigitalVoucherSucessful(VoucherViewModel voucherModel);
+
     void promoCodeError(String errorMessage);
 }

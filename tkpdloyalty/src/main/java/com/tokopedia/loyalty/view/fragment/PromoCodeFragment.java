@@ -185,6 +185,15 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     }
 
     @Override
+    public void checkDigitalVoucherSucessful(VoucherViewModel voucher) {
+        listener.onDigitalCodeSuccess(
+                voucher.getCode(),
+                voucher.getMessage(),
+                voucher.getRawDiscount(),
+                voucher.getRawCashback());
+    }
+
+    @Override
     public void promoCodeError(String errorMessage) {
         NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
@@ -274,6 +283,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     public interface ManualInsertCodeListener {
 
         void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount);
+
+        void onDigitalCodeSuccess(String voucherCode, String voucherMessage, long discountAmount, long cashBackAmount);
 
     }
 }
