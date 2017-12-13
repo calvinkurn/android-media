@@ -135,17 +135,23 @@ public class VerificationActivity extends TActivity implements HasComponent {
     }
 
     public void goToSelectVerificationMethod() {
-        Fragment fragment = ChooseVerificationMethodFragment.createInstance(getIntent().getExtras());
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
-                .tokopedia.core.R.animator.slide_out_right);
-        fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
-        fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
-        fragmentTransaction.commit();
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                ChooseVerificationMethodFragment)) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            Fragment fragment = ChooseVerificationMethodFragment.createInstance(getIntent().getExtras());
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
+                    .tokopedia.core.R.animator.slide_out_right);
+            fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
+            fragmentTransaction.commit();
+        }
     }
 
     public void goToSmsVerification() {
-        if (getIntent().getExtras() != null) {
+        if (getIntent().getExtras() != null
+                && (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                VerificationFragment))) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             String phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER, "");
@@ -161,7 +167,9 @@ public class VerificationActivity extends TActivity implements HasComponent {
     }
 
     public void goToCallVerification() {
-        if (getIntent().getExtras() != null) {
+        if (getIntent().getExtras() != null
+                && (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                VerificationFragment))) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             String phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER, "");
