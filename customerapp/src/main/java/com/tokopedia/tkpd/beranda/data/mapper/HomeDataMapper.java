@@ -4,14 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
-import com.tokopedia.core.drawer2.data.pojo.toppoints.TopPointsData;
-import com.tokopedia.core.drawer2.data.pojo.toppoints.TopPointsModel;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
@@ -36,9 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import rx.functions.Func5;
 import rx.functions.Func6;
-import rx.functions.Func7;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -86,17 +78,18 @@ public class HomeDataMapper implements Func6<SaldoViewModel, HomeBannerResponseM
         if (!SessionHandler.isV4Login(context) || !SessionHandler.isUserSeller(context)) {
             list.add(new EmptyShopViewModel());
         }
-        return rearrangeList(list);
+        return swapList(list);
     }
 
-    private List<Visitable> rearrangeList(List<Visitable> list) {
+    private List<Visitable> swapList(List<Visitable> list) {
         int brandIndex = 0;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof BrandsViewModel) {
                 brandIndex = i;
             }
         }
-        Collections.swap(list, brandIndex, (brandIndex + 1));
+        if (brandIndex > 0)
+            Collections.swap(list, brandIndex, (brandIndex + 1));
         return list;
     }
 

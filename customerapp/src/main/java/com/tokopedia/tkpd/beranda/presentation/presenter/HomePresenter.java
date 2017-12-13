@@ -96,7 +96,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     protected Subscription subscription;
     private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
-    private TokoCashData tokoCashData;
 
     public HomePresenter(Context context) {
         this.context = context;
