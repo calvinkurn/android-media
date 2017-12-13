@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FavoriteCtaDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
@@ -20,6 +21,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBa
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.core.util.TimeConverter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -66,7 +68,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_KOL = "kolpost";
     private static final String TYPE_KOL_FOLLOWED = "followedkolpost";
     private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
-
+    private static final String TYPE_FAVORITE_CTA = "favorite_cta";
 
     private final int page;
 
@@ -264,6 +266,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(kolRecommendationViewModel);
                         }
                         break;
+                    case TYPE_FAVORITE_CTA:
+                        if (domain.getContent() != null
+                                && domain.getContent().getFavoriteCtaDomain() != null) {
+                            FavoriteCtaViewModel favoriteCtaViewModel =
+                                    convertToFavoriteCtaViewModel(domain.getContent().getFavoriteCtaDomain());
+                            listFeedView.add(favoriteCtaViewModel);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -280,6 +290,13 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 domain.getExploreLink(),
                 domain.getHeaderTitle(),
                 convertToListKolRecommend(domain.getListRecommendation())
+        );
+    }
+
+    private FavoriteCtaViewModel convertToFavoriteCtaViewModel(FavoriteCtaDomain domain) {
+        return new FavoriteCtaViewModel(
+                domain.getTitle(),
+                domain.getSubtitle()
         );
     }
 

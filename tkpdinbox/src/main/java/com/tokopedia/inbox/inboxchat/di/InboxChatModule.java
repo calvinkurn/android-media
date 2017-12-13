@@ -10,12 +10,14 @@ import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.SearchFactory;
+import com.tokopedia.inbox.inboxchat.data.factory.TemplateChatFactory;
 import com.tokopedia.inbox.inboxchat.data.mapper.DeleteMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SearchChatMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SendMessageMapper;
+import com.tokopedia.inbox.inboxchat.data.mapper.TemplateChatMapper;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
@@ -23,9 +25,12 @@ import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.SearchRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.SearchRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.SendMessageSource;
+import com.tokopedia.inbox.inboxchat.data.repository.TemplateRepository;
+import com.tokopedia.inbox.inboxchat.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
@@ -66,6 +71,16 @@ public class InboxChatModule {
         return new SearchFactory(chatService, searchChatMapper);
     }
 
+
+    @InboxChatScope
+    @Provides
+    TemplateChatFactory provideTemplateFactory(
+            ChatService chatService,
+            TemplateChatMapper templateChatMapper){
+        return new TemplateChatFactory(templateChatMapper, chatService);
+    }
+
+
     @InboxChatScope
     @Provides
     GetReplyMapper provideGetReplyMapper(){
@@ -97,6 +112,15 @@ public class InboxChatModule {
         return new SearchChatMapper();
     }
 
+
+    @InboxChatScope
+    @Provides
+    TemplateChatMapper provideTemplateChatMapper(){
+        return new TemplateChatMapper();
+    }
+
+
+
     @InboxChatScope
     @Provides
     MessageRepository provideMessageRepository(MessageFactory messageFactory,
@@ -114,6 +138,13 @@ public class InboxChatModule {
     @Provides
     SearchRepository provideSearchRepository(SearchFactory searchFactory){
         return new SearchRepositoryImpl(searchFactory);
+    }
+
+
+    @InboxChatScope
+    @Provides
+    TemplateRepository provideTemplateRepository(TemplateChatFactory templateChatFactory) {
+        return new TemplateRepositoryImpl(templateChatFactory);
     }
 
     @InboxChatScope
@@ -157,6 +188,16 @@ public class InboxChatModule {
                                                       MessageRepository messageRepository){
         return new DeleteMessageListUseCase(threadExecutor, postExecutor, messageRepository);
     }
+
+    @InboxChatScope
+    @Provides
+    GetTemplateUseCase provideGetTemplateUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutor,
+                                                 TemplateRepository templateRepository) {
+        return new GetTemplateUseCase(threadExecutor, postExecutor, templateRepository);
+    }
+
+
 
     @InboxChatScope
     @Provides

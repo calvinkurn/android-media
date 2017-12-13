@@ -3,11 +3,12 @@ package com.tokopedia.seller.shopsettings.shipping.presenter;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
@@ -113,6 +114,13 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                         , shopInformation.cityName
                         , shopInformation.districtName);
             }
+        } else {
+            shopInformation.provinceName = selectedAddress.getProvinceName();
+            shopInformation.provinceId = selectedAddress.getProvinceId();
+            shopInformation.cityName = selectedAddress.getCityName();
+            shopInformation.cityId = selectedAddress.getCityId();
+            shopInformation.districtName = selectedAddress.getDistrictName();
+            shopInformation.districtId = selectedAddress.getDistrictId();
         }
         view.onShowViewAfterLoading();
         displayCourierList(model);
@@ -210,6 +218,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     , selectedAddress.getDistrictName());
         } else if (openShopModel.getShopShipping().provinceName == null || openShopModel.getShopShipping().provinceName.isEmpty()) {
             view.setLocationProvinceCityDistrict();
+            setShopInfoFromOpenShopData(model);
         } else {
             view.setLocationProvinceCityDistrict(openShopModel.getShopShipping().provinceName
                     , openShopModel.getShopShipping().cityName
@@ -219,6 +228,40 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         displayCourierOpenShop(model);
         setFragmentHeaderData();
         view.finishStartingFragment();
+    }
+
+    private void setShopInfoFromOpenShopData(OpenShopData model) {
+        if (model.getOpenShopHashMap() != null) {
+            String addressStreet = model.getOpenShopHashMap().get(EditShippingPresenter.ADDR_STREET);
+            if (addressStreet != null) {
+                shopInformation.addrStreet = addressStreet;
+            }
+
+            String latitude = model.getOpenShopHashMap().get(EditShippingPresenter.LATITUDE);
+            if (latitude != null) {
+                shopInformation.latitude = latitude;
+            }
+
+            String longitude = model.getOpenShopHashMap().get(EditShippingPresenter.LONGITUDE);
+            if (longitude != null) {
+                shopInformation.longitude = longitude;
+            }
+
+            String selectedAddressStr = model.getOpenShopHashMap().get(EditShippingPresenter.SELECTED_ADDRESS);
+            if (selectedAddressStr != null && selectedAddressStr.length() > 0) {
+                selectedAddress = new Gson().fromJson(selectedAddressStr, Address.class);
+
+                view.setLocationProvinceCityDistrict(selectedAddress.getProvinceName(),
+                        selectedAddress.getCityName(), selectedAddress.getDistrictName());
+
+                view.initializeZipCodes();
+            }
+
+            String postalCode = model.getOpenShopHashMap().get(EditShippingPresenter.SHOP_POSTAL);
+            if (postalCode != null) {
+                shopInformation.postalCode = postalCode;
+            }
+        }
     }
 
     private EditShippingRetrofitInteractor.CourierListListener fetchDataByLocationListener(final String districtID) {
@@ -362,6 +405,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
         if (selectedAddress != null) {
+            shippingParams.put(SELECTED_ADDRESS, new Gson().toJson(selectedAddress));
             shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
             shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
         } else {
@@ -379,6 +423,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
         if (selectedAddress != null) {
+            shippingParams.put(SELECTED_ADDRESS, new Gson().toJson(selectedAddress));
             shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
             shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
         } else {
