@@ -731,7 +731,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser, categoryDataState.getName()
+                        getActivity(), operatorListData, titleChooser,
+                        categoryDataState.getOperatorLabel(),
+                        categoryDataState.getName()
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );

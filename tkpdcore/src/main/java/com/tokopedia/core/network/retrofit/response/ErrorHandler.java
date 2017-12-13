@@ -2,8 +2,10 @@ package com.tokopedia.core.network.retrofit.response;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
@@ -46,6 +48,7 @@ public class ErrorHandler {
             case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                 Log.d(TAG, getErrorInfo(code, SERVER_INFO);
                 listener.onServerError(;
+
                 break;
             case ResponseStatus.SC_FORBIDDEN:
                 Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO);
@@ -76,6 +79,56 @@ public class ErrorHandler {
 
     private static String getErrorInfo(int code, String msg) {
         return "Error " + String.valueOf(code) + " : " + msg;
+    }
+
+    public static String getErrorMessage(Throwable e, final Context context) {
+        if (e instanceof UnknownHostException) {
+            return context.getString(R.string.msg_no_connection);
+        } else if (e instanceof SocketTimeoutException) {
+            return context.getString(R.string.default_request_error_timeout);
+        } else if (e instanceof IOException) {
+            return context.getString(R.string.default_request_error_internal_server);
+        } else if (e instanceof RuntimeException &&
+                e.getLocalizedMessage() != null &&
+                !e.getLocalizedMessage().equals("") &&
+                e.getLocalizedMessage().length() <= 3) {
+            int code = Integer.parseInt(e.getLocalizedMessage());
+            switch (code) {
+                case ResponseStatus.SC_REQUEST_TIMEOUT:
+                    Log.d(TAG, getErrorInfo(code, TIMEOUT_INFO));
+                    return
+                            context.getString(R.string.default_request_error_timeout);
+                case ResponseStatus.SC_GATEWAY_TIMEOUT:
+                    Log.d(TAG, getErrorInfo(code, TIMEOUT_INFO));
+                    return
+                            context.getString(R.string.default_request_error_timeout);
+                case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
+                    Log.d(TAG, getErrorInfo(code, SERVER_INFO));
+                    return
+                            context.getString(R.string.default_request_error_internal_server);
+                case ResponseStatus.SC_FORBIDDEN:
+                    Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO));
+                    return
+                            context.getString(R.string.default_request_error_forbidden_auth);
+                case ResponseStatus.SC_BAD_GATEWAY:
+                    Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO));
+                    return
+                            context.getString(R.string.default_request_error_bad_request);
+                case ResponseStatus.SC_BAD_REQUEST:
+                    Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO));
+                    return
+                            context.getString(R.string.default_request_error_bad_request);
+                default:
+                    Log.d(TAG, getErrorInfo(code, UNKNOWN_INFO));
+                    return
+                            context.getString(R.string.default_request_error_unknown);
+            }
+        } else if (e instanceof ErrorMessageException
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
+            return e.getLocalizedMessage();
+        } else {
+            return context.getString(R.string.default_request_error_unknown);
+        }
     }
 
     public static String getErrorMessage(Throwable e) {
@@ -132,7 +185,7 @@ public class ErrorHandler {
                                     context.getString(R.string.code_error) + " " + code;
             }
         } else if (e instanceof ErrorMessageException
-                && e.getLocalizedMessage() != null) {
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
             if (!e.getLocalizedMessage().contains(context.getString(R.string.code_error)))
                 return e.getLocalizedMessage() + " " +
                         context.getString(R.string.code_error) + ErrorCode.WS_ERROR;

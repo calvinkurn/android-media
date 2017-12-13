@@ -24,7 +24,6 @@ public class LabelView extends BaseCustomView {
 
     private TextView titleTextView;
     private TextView contentTextView;
-    private ImageView arrow;
 
     private String titleText;
     @ColorInt
@@ -36,7 +35,6 @@ public class LabelView extends BaseCustomView {
     private int contentColorValue;
     private int titleTextStyleValue;
 
-    private boolean showArrow;
     private int maxLines;
     private float textSize;
     private int minTitleWidth;
@@ -67,7 +65,6 @@ public class LabelView extends BaseCustomView {
             contentColorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_content_textStyle, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
-            showArrow = styledAttributes.getBoolean(R.styleable.LabelView_label_show_arrow, false);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
             textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
                     getResources().getDimension(com.tokopedia.design.R.dimen.font_subheading));
@@ -82,7 +79,6 @@ public class LabelView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_label_view, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
-        arrow = (ImageView) view.findViewById(R.id.arrow_left);
     }
 
     @Override
@@ -94,7 +90,6 @@ public class LabelView extends BaseCustomView {
         contentTextView.setTypeface(null, contentTextStyleValue);
         contentTextView.setMaxLines(maxLines);
         titleTextView.setTypeface(null, titleTextStyleValue);
-        setVisibleArrow(showArrow);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         titleTextView.setMinWidth(minTitleWidth);
@@ -104,7 +99,6 @@ public class LabelView extends BaseCustomView {
 
     public void resetContentText() {
         setContent(contentText);
-        setVisibleArrow(showArrow);
         invalidate();
         requestLayout();
     }
@@ -120,12 +114,9 @@ public class LabelView extends BaseCustomView {
         if (enabled) {
             titleTextView.setTextColor(titleColorValue);
             contentTextView.setTextColor(contentColorValue);
-            arrow.clearColorFilter();
         } else {
             titleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
             contentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
-            arrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_400),
-                    PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -171,13 +162,5 @@ public class LabelView extends BaseCustomView {
         contentTextView.setTextColor(colorValue);
         invalidate();
         requestLayout();
-    }
-
-    public void setVisibleArrow(boolean isVisible) {
-        if (isVisible) {
-            arrow.setVisibility(VISIBLE);
-        } else {
-            arrow.setVisibility(GONE);
-        }
     }
 }

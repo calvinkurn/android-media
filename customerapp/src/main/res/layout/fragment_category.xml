@@ -117,8 +117,6 @@
                     android:paddingRight="@dimen/padding_small"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
-                    android:drawableEnd="@drawable/ic_chevron_right"
-                    android:drawableRight="@drawable/ic_chevron_right"
                     android:gravity="center_vertical|end"
                     android:text="@string/see_all"
                     android:textColor="@color/green_400"

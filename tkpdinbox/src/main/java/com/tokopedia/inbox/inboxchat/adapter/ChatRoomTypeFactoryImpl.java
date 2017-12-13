@@ -4,14 +4,19 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.data.factory.TemplateChatFactory;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
+import com.tokopedia.inbox.inboxchat.viewholder.AttachImageViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.TemplateChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
@@ -47,6 +52,11 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
         return TypingChatViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(AttachImageModel attachImageModel) {
+        return AttachImageViewHolder.LAYOUT;
+    }
+
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
@@ -61,6 +71,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new TimeMachineChatViewHolder(view, viewListener);
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);
+        else if (type == AttachImageViewHolder.LAYOUT)
+            viewHolder = new AttachImageViewHolder(view);
         else
             return super.createViewHolder(view, type);
 
