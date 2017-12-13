@@ -12,5 +12,6 @@ public interface ITokoPointDBService {
 
     Observable<TokoPointDrawerDataResponse> getPointDrawer();
 
-    Observable<TokoPointDrawerDataResponse> storePointDrawer(TokoPointDrawerDataResponse tokoPointDrawerDataResponse);
+    Observable<TokoPointDrawerDataResponse> storePointDrawer(
+            TokoPointDrawerDataResponse tokoPointDrawerDataResponse);
 }

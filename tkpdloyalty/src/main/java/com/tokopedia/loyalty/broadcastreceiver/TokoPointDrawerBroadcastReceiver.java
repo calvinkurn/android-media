@@ -82,11 +82,11 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
                 Intent intentDrawerActivity = new Intent(
                         DrawerActivityBroadcastReceiverConstant.INTENT_ACTION
                 );
-                intentHomeFragment.putExtra(
+                intentDrawerActivity.putExtra(
                         DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
                         DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA
                 );
-                intentHomeFragment.putExtra(
+                intentDrawerActivity.putExtra(
                         DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA,
                         topPointDrawerData
                 );
