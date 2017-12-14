@@ -1,27 +1,14 @@
 package com.tokopedia.ride.bookingride.view;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
-import com.tokopedia.core.drawer2.data.mapper.TokoCashMapper;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
-import com.tokopedia.core.drawer2.data.repository.TokoCashRepositoryImpl;
-import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
@@ -51,13 +38,15 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetPaymentMethodListUseCase getPaymentMethodListUseCase;
     private GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase;
+    private TokoCashUseCase tokoCashUseCase;
     private String tokoCashBalance;
 
     @Inject
-    public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase, GetPaymentMethodListUseCase getPaymentMethodListUseCase, GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase) {
+    public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase, GetPaymentMethodListUseCase getPaymentMethodListUseCase, GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase, TokoCashUseCase tokoCashUseCase) {
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getPaymentMethodListUseCase = getPaymentMethodListUseCase;
         this.getPaymentMethodListCacheUseCase = getPaymentMethodListCacheUseCase;
+        this.tokoCashUseCase = tokoCashUseCase;
     }
 
     @Override
@@ -204,56 +193,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
         if (!isViewAttached() || getView().getActivity() == null) {
             return;
         }
-
-        //first try to fetch from cache, if found then return
-        try {
-            GlobalCacheManager cacheManager = new GlobalCacheManager();
-            String cache = cacheManager.getValueString(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
-
-            if (cache != null) {
-                TokoCashModel tokoCashModel = CacheUtil.convertStringToModel(cache, new TypeToken<TokoCashModel>() {
-                }.getType());
-
-                if (tokoCashModel != null
-                        && tokoCashModel.isSuccess()
-                        && tokoCashModel.getTokoCashData() != null
-                        && tokoCashModel.getTokoCashData().getLink() == 1) {
-                    CommonUtils.dumper("ConfirmBookingPresenter tokocash balance == " + tokoCashModel.getTokoCashData().getBalance());
-
-                    tokoCashBalance = "(" + tokoCashModel.getTokoCashData().getBalance() + ")";
-
-                    //show tokocash balance
-                    getView().showTokoCashBalance(tokoCashBalance);
-                    return;
-                }
-            }
-        } catch (Exception ex) {
-        }
-
-
-        SessionHandler sessionHandler = new SessionHandler(getView().getActivity());
-
-        Bundle bundle = new Bundle();
-        String authKey = sessionHandler.getAccessToken(getView().getActivity());
-        authKey = BEARER_TOKEN + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-        AccountsService accountsService = new AccountsService(bundle);
-        GlobalCacheManager walletCache = new GlobalCacheManager();
-
-        TokoCashSourceFactory tokoCashSourceFactory = new TokoCashSourceFactory(
-                getView().getActivity(),
-                accountsService,
-                new TokoCashMapper(),
-                walletCache);
-
-
-        TokoCashRepository tokoCashRepository = new TokoCashRepositoryImpl(tokoCashSourceFactory);
-        TokoCashUseCase tokoCashUseCase = new TokoCashUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                tokoCashRepository
-        );
-
 
         tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashModel>() {
             @Override

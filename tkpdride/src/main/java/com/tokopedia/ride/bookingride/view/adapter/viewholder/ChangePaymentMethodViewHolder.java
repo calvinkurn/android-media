@@ -54,10 +54,10 @@ public class ChangePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
             otherInfoTextView.setText(paymentMethodViewModel.getTokoCashBalance());
         } else if (paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMode.CC)) {
             if (paymentMethodViewModel.isSaveWebView()) {
-                otherInfoTextView.setText("Auto debit not allowed");
+                otherInfoTextView.setText(context.getString(R.string.auto_debit_not_allowed));
                 otherInfoTextView.setTextColor(ContextCompat.getColor(context, R.color.red_500));
             } else {
-                otherInfoTextView.setText("Auto debit allowed");
+                otherInfoTextView.setText(context.getString(R.string.auto_debit_allowed));
             }
         }
 

@@ -190,4 +190,6 @@
     <string name="allow_auto_debit">ALLOW AUTO DEBIT</string>
     <string name="toolbar_title_auto_debit">Auto Debit</string>
     <string name="prefx_trip_id">Trip Id:</string>
+    <string name="auto_debit_not_allowed">Auto debit not allowed</string>
+    <string name="auto_debit_allowed">Auto debit allowed</string>
 </resources>
