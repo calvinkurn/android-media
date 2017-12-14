@@ -13,6 +13,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -627,11 +628,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
-        if(containsInstance(items, TickerViewModel.class)) {
-            spaceItemDecoration.setStart(2);
-        } else {
-            spaceItemDecoration.setStart(1);
-        }
+        spaceItemDecoration.setStart(containsInstance(items, TickerViewModel.class) ? 2 : 1);
         recyclerView.invalidateItemDecorations();
         adapter.setItems(items);
     }
@@ -683,7 +680,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-
     private void openActivity(String depID, String title) {
         IntermediaryActivity.moveTo(
                 getActivity(),
@@ -732,7 +728,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onTokoCashDataError(String errorMessage) {
-
+        Log.e(TAG, errorMessage);
     }
 
     public class HomeFragmentBroadcastReceiver extends BroadcastReceiver {

@@ -60,7 +60,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
             list.add(mappingBanner(homeBannerResponseModel));
         }
 
-        if (ticker.getData().getTickers() != null && ticker.getData().getTickers().size() > 0) {
+        if (ticker.getData() != null && ticker.getData().getTickers().size() > 0) {
             list.add(mappingTicker(ticker.getData().getTickers()));
         }
 
