@@ -25,4 +25,9 @@ public class EmptyViewHolder extends AbstractViewHolder<EmptyModel> {
 
     }
 
+    @Override
+    public int viewType() {
+        return LAYOUT;
+    }
+
 }
