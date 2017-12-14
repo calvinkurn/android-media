@@ -1,24 +1,10 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * @author by alvarisi on 12/13/17.
  */
 
-public class OrderDetailPassData implements Parcelable {
-    public static final Creator<OrderDetailPassData> CREATOR = new Creator<OrderDetailPassData>() {
-        @Override
-        public OrderDetailPassData createFromParcel(Parcel in) {
-            return new OrderDetailPassData(in);
-        }
-
-        @Override
-        public OrderDetailPassData[] newArray(int size) {
-            return new OrderDetailPassData[size];
-        }
-    };
+public class OrderDetailPassData {
     private String orderId;
     private String departureCity;
     private String departureAiportId;
@@ -26,20 +12,9 @@ public class OrderDetailPassData implements Parcelable {
     private String arrivalCity;
     private String arrivalAirportId;
     private String arrivalTime;
-    private String status;
+    private int status;
 
     public OrderDetailPassData() {
-    }
-
-    protected OrderDetailPassData(Parcel in) {
-        orderId = in.readString();
-        departureCity = in.readString();
-        departureAiportId = in.readString();
-        departureTime = in.readString();
-        arrivalCity = in.readString();
-        arrivalAirportId = in.readString();
-        arrivalTime = in.readString();
-        status = in.readString();
     }
 
     public String getOrderId() {
@@ -98,28 +73,12 @@ public class OrderDetailPassData implements Parcelable {
         this.arrivalTime = arrivalTime;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(orderId);
-        parcel.writeString(departureCity);
-        parcel.writeString(departureAiportId);
-        parcel.writeString(departureTime);
-        parcel.writeString(arrivalCity);
-        parcel.writeString(arrivalAirportId);
-        parcel.writeString(arrivalTime);
-        parcel.writeString(status);
-    }
 }

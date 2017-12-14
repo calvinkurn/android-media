@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -23,43 +22,7 @@
                 android:layout_height="3dp"
                 android:background="@color/filter_order_green" />
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_title"
-                style="@style/TextView.Body1.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_sm"
-                android:gravity="center"
-                android:text="Transaksi Berhasil" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:layout_marginTop="@dimen/margin_med"
-                android:padding="@dimen/padding_small">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/tv_order_date"
-                    style="@style/TextView.Caption"
-                    tools:text="9 Jan 2017" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/tv_order_id"
-                    style="@style/TextView.Body1"
-                    android:layout_below="@+id/tv_order_date"
-                    tools:text="Order ID: 323088926194" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/iv_overflow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/selectable_background_tokopedia"
-                    android:src="@drawable/ic_toolbar_overflow_level_two_black" />
-            </RelativeLayout>
+            <include layout="@layout/partial_flight_order_header_detail" />
 
             <View
                 android:layout_width="match_parent"
@@ -86,41 +49,9 @@
                     android:paddingLeft="@dimen/padding_small"
                     android:paddingStart="@dimen/padding_small">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                    <include layout="@layout/partial_flight_order_journey_view" />
 
-                        <android.support.v7.widget.AppCompatTextView
-                            android:id="@+id/tv_departure_city"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textSize="@dimen/font_title"
-                            tools:text="Jakarta" />
-
-                        <android.support.v7.widget.AppCompatTextView
-                            android:id="@+id/tv_arrival_city"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textSize="@dimen/font_title"
-                            tools:text="London" />
-                    </LinearLayout>
-
-                    <android.support.v7.widget.AppCompatTextView
-                        style="@style/TextView.Caption.BlackSecondary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_med"
-                        android:text="Jadwal Penerbangan" />
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/tv_departure_time"
-                        style="@style/TextView.Body1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="6 Oktober 2017, 07:10 WIB" />
+                    <include layout="@layout/partial_flight_order_departure_schedule" />
                 </LinearLayout>
 
             </LinearLayout>

@@ -9,6 +9,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderRefundViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -24,7 +25,6 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
     private AppCompatTextView tvOrderId;
     private AppCompatTextView tvDepartureCity;
     private AppCompatTextView tvArrivalCity;
-    private AppCompatTextView tvDepartureTime;
     private AppCompatTextView tvRebooking;
     private FlightOrderRefundViewModel item;
 
@@ -40,7 +40,6 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
         tvOrderId = (AppCompatTextView) view.findViewById(R.id.tv_order_id);
         tvDepartureCity = (AppCompatTextView) view.findViewById(R.id.tv_departure_city);
         tvArrivalCity = (AppCompatTextView) view.findViewById(R.id.tv_arrival_city);
-        tvDepartureTime = (AppCompatTextView) view.findViewById(R.id.tv_departure_time);
         tvRebooking = (AppCompatTextView) view.findViewById(R.id.tv_rebooking);
         tvRebooking.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +57,7 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
         tvOrderDate.setText(FlightDateUtil.formatToUi(element.getCreateTime()));
         tvOrderId.setText(String.format("%s %s", itemView.getContext().getString(R.string.flight_order_order_id_prefix), element.getId()));
         if (element.getOrderJourney().size() > 0) {
-            //TODO : set Cemter icon
+            renderArrow(element.getOrderJourney());
             FlightOrderJourney orderJourney = element.getOrderJourney().get(0);
             tvDepartureCity.setText(getAirportTextForView(
                     orderJourney.getDepartureAiportId(),
@@ -68,7 +67,7 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
                     orderJourney.getDepartureAiportId(),
                     orderJourney.getDepartureCityCode(),
                     orderJourney.getDepartureCity()));
-            tvDepartureTime.setText(FlightDateUtil.formatToUi(orderJourney.getDepartureTime()));
+            renderDepartureSchedule(element.getOrderJourney());
         }
     }
 
@@ -79,6 +78,20 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
 
     @Override
     protected void onDetailOptionClicked() {
-        adapterInteractionListener.onFailedOrderDetailClicked(item);
+        if (item.getOrderJourney().size() == 1) {
+            OrderDetailPassData passData = new OrderDetailPassData();
+            passData.setOrderId(item.getId());
+            FlightOrderJourney orderJourney = item.getOrderJourney().get(0);
+            passData.setDepartureAiportId(orderJourney.getDepartureAiportId());
+            passData.setDepartureCity(orderJourney.getDepartureCity());
+            passData.setDepartureTime(orderJourney.getDepartureTime());
+            passData.setArrivalAirportId(orderJourney.getArrivalAirportId());
+            passData.setArrivalCity(orderJourney.getArrivalCity());
+            passData.setArrivalTime(orderJourney.getArrivalTime());
+            passData.setStatus(item.getStatus());
+            adapterInteractionListener.onDetailOrderClicked(passData);
+        } else {
+            adapterInteractionListener.onDetailOrderClicked(item.getId());
+        }
     }
 }

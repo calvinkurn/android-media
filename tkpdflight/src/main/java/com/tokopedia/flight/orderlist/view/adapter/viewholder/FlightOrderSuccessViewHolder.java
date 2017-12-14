@@ -8,6 +8,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -24,7 +25,6 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
     private AppCompatTextView tvDepartureCity;
     private AppCompatTextView tvMainButton;
     private AppCompatTextView tvArrivalCity;
-    private AppCompatTextView tvDepartureTime;
     private FlightOrderSuccessViewModel item;
 
     public FlightOrderSuccessViewHolder(FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener, View itemView) {
@@ -39,7 +39,6 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         tvOrderId = (AppCompatTextView) view.findViewById(R.id.tv_order_id);
         tvDepartureCity = (AppCompatTextView) view.findViewById(R.id.tv_departure_city);
         tvArrivalCity = (AppCompatTextView) view.findViewById(R.id.tv_arrival_city);
-        tvDepartureTime = (AppCompatTextView) view.findViewById(R.id.tv_departure_time);
         tvMainButton = (AppCompatTextView) view.findViewById(R.id.tv_main_button);
     }
 
@@ -58,13 +57,14 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
                 element.getOrderJourney().getDepartureAiportId(),
                 element.getOrderJourney().getDepartureCityCode(),
                 element.getOrderJourney().getDepartureCity()));
-        tvDepartureTime.setText(FlightDateUtil.formatToUi(element.getOrderJourney().getDepartureTime()));
         tvMainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
+        setSingleArrow();
+        renderDepartureSchedule(element.getOrderJourney());
     }
 
 
@@ -75,6 +75,15 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
 
     @Override
     protected void onDetailOptionClicked() {
-        adapterInteractionListener.onSuccessOrderDetailClicked(item);
+        OrderDetailPassData passData = new OrderDetailPassData();
+        passData.setOrderId(item.getId());
+        passData.setDepartureAiportId(item.getOrderJourney().getDepartureAiportId());
+        passData.setDepartureCity(item.getOrderJourney().getDepartureCity());
+        passData.setDepartureTime(item.getOrderJourney().getDepartureTime());
+        passData.setArrivalAirportId(item.getOrderJourney().getArrivalAirportId());
+        passData.setArrivalCity(item.getOrderJourney().getArrivalCity());
+        passData.setArrivalTime(item.getOrderJourney().getArrivalTime());
+        passData.setStatus(item.getStatus());
+        adapterInteractionListener.onDetailOrderClicked(passData);
     }
 }

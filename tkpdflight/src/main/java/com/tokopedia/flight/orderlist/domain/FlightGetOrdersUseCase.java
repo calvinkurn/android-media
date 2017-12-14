@@ -21,7 +21,7 @@ import rx.functions.Func4;
  */
 
 public class FlightGetOrdersUseCase extends UseCase<List<FlightOrder>> {
-    private static final String PARAM_STATUS = "status";
+    private static final String PARAM_STATUS = "status_bulk";
     private static final String PARAM_PAGE = "page";
     private static final String PARAM_PER_PAGE = "per_page";
     private static final int DEFAULT_PER_PAGE_VALUE = 10;

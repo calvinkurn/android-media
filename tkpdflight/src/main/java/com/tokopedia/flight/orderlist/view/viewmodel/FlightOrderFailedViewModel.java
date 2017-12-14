@@ -1,5 +1,7 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
+import android.support.annotation.StringRes;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
@@ -10,14 +12,14 @@ import java.util.List;
  * @author by alvarisi on 12/12/17.
  */
 
-public class FlightOrderFailedViewModel implements Visitable<FlightOrderTypeFactory> {
-    protected String title;
-    protected String id;
-    protected String createTime;
-    protected int status;
-    protected List<FlightOrderJourney> orderJourney;
+public class FlightOrderFailedViewModel extends FlightOrderBaseViewModel implements Visitable<FlightOrderTypeFactory> {
 
     public FlightOrderFailedViewModel() {
+    }
+
+    @Override
+    public int type(FlightOrderTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
     public String getId() {
@@ -52,16 +54,11 @@ public class FlightOrderFailedViewModel implements Visitable<FlightOrderTypeFact
         this.orderJourney = orderJourney;
     }
 
-    @Override
-    public int type(FlightOrderTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
-
-    public String getTitle() {
+    public int getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(@StringRes int title) {
         this.title = title;
     }
 }
