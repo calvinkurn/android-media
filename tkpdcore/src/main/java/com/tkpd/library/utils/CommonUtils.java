@@ -341,7 +341,7 @@ public class CommonUtils {
         return sdf.format(currenTimeZone);
     }
 
-	public static Intent requestBarcodeScanner(Context context){
+    public static Intent requestBarcodeScanner(Context context){
 		return new Intent(context, CaptureActivity.class);
 	}
 
