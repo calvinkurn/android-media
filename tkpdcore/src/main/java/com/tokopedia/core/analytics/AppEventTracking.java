@@ -150,6 +150,11 @@ public interface AppEventTracking {
         String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
+
+        String IMPRESSION_APP_RATING = "impressionAppRating";
+        String CLICK_APP_RATING = "clickAppRating";
+        String CANCEL_APP_RATING = "cancelAppRating";
+
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
     }
 
@@ -250,6 +255,9 @@ public interface AppEventTracking {
         String HOMEPAGE_UNIFY = "homepage tab";
         String EVENT_TOP_NAV = "top nav";
         String CATEGORY_HOTLIST = "hotlist";
+
+        String APP_RATING = "Application Rating";
+
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
     }
 
@@ -810,7 +818,8 @@ public interface AppEventTracking {
         String IS_FEED_EMPTY = "is_feed_empty";
         String IS_FAVORITE_EMPTY = "is_favorite_empty";
         String KEYWORD = "keyword";
-        String IS_RESULT_FOUND = "IS_RESULT_FOUND";
+        String IS_RESULT_FOUND = "is_result_found";
+        String IS_RECEIVED = "is_received";
         String PAYMENT_TYPE = "payment_type";
         String PURCHASE_SITE = "purchase_site";
         String TOTAL_PRICE = "purchase_site";
@@ -859,8 +868,13 @@ public interface AppEventTracking {
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
+        String CLICKED_NEW_ORDER = "Seller_Clicked_Neworder";
+        String SELLER_ADDED_FAVORITE = "Seller_Added_To_Favourite";
+        String SELLER_REMOVE_FAVORITE = "Seller_Removed_From_Favorite";
         String EVENT_ADDR_ADD = "Address_Added";
         String EVENT_USER_ATTR = "User_Attribute_Name";
+        String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
+        String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
     }
 
 

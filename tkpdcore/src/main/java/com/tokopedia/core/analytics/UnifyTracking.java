@@ -218,6 +218,8 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.ORDER_DETAIL
         ).getEvent());
+
+        sendMoEngageClickedNewOrder();
     }
 
     public static void eventTrackOrder() {
@@ -2687,6 +2689,33 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
                 AppEventTracking.Action.CLICK_SALDO,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventAppRatingImpression() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMPRESSION_APP_RATING,
+                AppEventTracking.Category.APP_RATING,
+                AppEventTracking.Action.IMPRESSION,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventClickAppRating() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_APP_RATING,
+                AppEventTracking.Category.APP_RATING,
+                AppEventTracking.Action.CLICK,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventCancelAppRating() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CANCEL_APP_RATING,
+                AppEventTracking.Category.APP_RATING,
+                AppEventTracking.Action.CLICK,
                 ""
         ).getEvent());
     }
