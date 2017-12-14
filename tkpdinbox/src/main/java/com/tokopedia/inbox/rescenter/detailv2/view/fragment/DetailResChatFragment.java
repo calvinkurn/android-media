@@ -783,9 +783,8 @@ public class DetailResChatFragment
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            showAcceptActionDialog(buttonDomain.getAcceptLabel(),
+                            showActionDialog(buttonDomain.getAcceptLabel(),
                                     buttonDomain.getAcceptTextLite(),
-                                    detailResChatDomain.getLast().getSolution().getName(),
                                     new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -864,37 +863,6 @@ public class DetailResChatFragment
         btnAccept.setOnClickListener(action);
         resCenterDialog.show();
     }
-
-    private void showAcceptActionDialog(String title, String solutionTitle, String solution, View.OnClickListener action) {
-        resCenterDialog = new Dialog(getActivity());
-        resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        resCenterDialog.setContentView(R.layout.layout_rescenter_accept_dialog);
-        TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
-        TextView tvSolutionTitle = resCenterDialog.findViewById(R.id.tv_solution_title);
-        TextView tvSolution = resCenterDialog.findViewById(R.id.tv_solution);
-        ImageView ivClose = resCenterDialog.findViewById(R.id.iv_close);
-        Button btnBack = resCenterDialog.findViewById(R.id.btn_back);
-        Button btnAccept = resCenterDialog.findViewById(R.id.btn_yes);
-        String newTitle = title + "?";
-        tvTitle.setText(newTitle);
-        tvSolution.setText(MethodChecker.fromHtml(solution));
-        tvSolutionTitle.setText(MethodChecker.fromHtml(solutionTitle));
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        btnAccept.setOnClickListener(action);
-        resCenterDialog.show();
-    }
-
 
     private void doInputAWB() {
         startActivityForResult(
