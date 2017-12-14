@@ -18,7 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="marquee"
             android:lineSpacingExtra="6sp"
+            android:maxLines="3"
             android:padding="8dp"
             android:textColor="@color/black_54"
             android:textSize="10sp"
@@ -29,13 +31,13 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_margin="8dp"
-            android:clickable="true"
-            android:background="@drawable/bg_btn_ticker">
+            android:background="@drawable/bg_btn_ticker"
+            android:clickable="true">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_close_24dp"/>
+                android:src="@drawable/ic_close_24dp" />
         </RelativeLayout>
 
     </LinearLayout>
