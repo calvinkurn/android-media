@@ -56,7 +56,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
                 String rawTrackingData = gson.toJson(marketplaceTrackerData);
                 Map<String, Object> trackingPayload = gson.fromJson(rawTrackingData, LinkedTreeMap.class);
-                PurchaseTracking.marketplace("transaction", trackingPayload);
+                PurchaseTracking.marketplace(PurchaseTracking.TRANSACTION, trackingPayload);
             }
             return true;
         }
