@@ -111,7 +111,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         if (element.getConversationDomain().getAttachment() != null && element.getConversationDomain().getAttachment().size() != 0) {
             rvProve.setVisibility(View.VISIBLE);
             tvProve.setVisibility(View.VISIBLE);
-            rvProve.setLayoutManager(new LinearLayoutManager(context));
+            rvProve.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
             rvProve.setAdapter(proveAdapter);
             rvProve.setHasFixedSize(true);
