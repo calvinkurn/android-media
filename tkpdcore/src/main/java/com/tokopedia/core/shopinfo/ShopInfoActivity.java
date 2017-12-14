@@ -345,6 +345,7 @@ public class ShopInfoActivity extends BaseActivity
         return new ActionShopInfoRetrofit.OnActionToggleFavListener() {
             @Override
             public void onSuccess() {
+                TrackingUtils.sendMoEngageFavoriteEvent(shopModel);
                 if (shopModel.info.shopAlreadyFavorited == 1) {
                     if(getApplication() instanceof IReactNativeRouter) {
                         IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();

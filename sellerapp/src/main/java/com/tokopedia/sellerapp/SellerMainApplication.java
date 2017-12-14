@@ -22,7 +22,6 @@ import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
@@ -177,8 +176,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
         else

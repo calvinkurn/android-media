@@ -140,6 +140,8 @@ dependencies {
     compile rootProject.ext.networkDependencies.glide
 
     compile rootProject.ext.analyticsDependencies.appsflyer
+    compile rootProject.ext.analyticsDependencies.installRef
+
     compile(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
@@ -186,6 +188,9 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
+
+    compile rootProject.ext.playServicesDependencies.firebase
+    compile rootProject.ext.playServicesDependencies.remoteConfig
 }
 
 apply plugin: 'com.google.gms.google-services'
