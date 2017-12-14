@@ -21,6 +21,11 @@ public class UploadImageDomain {
         this.success = success;
     }
 
+    public UploadImageDomain(String picObj, String picSrc) {
+        this.picObj = picObj;
+        this.picSrc = picSrc;
+    }
+
     public String getMessageStatus() {
         return messageStatus;
     }
