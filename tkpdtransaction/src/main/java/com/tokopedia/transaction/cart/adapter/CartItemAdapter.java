@@ -587,7 +587,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
 
-        if (isProductMustInsurance(cartData.getCartProducts())) {
+        if (cartData.getCartCannotInsurance() == 1 || isProductMustInsurance(cartData.getCartProducts())) {
             holder.spUseInsurance.setEnabled(false);
         }
 //        if (cartData.getCartCannotInsurance() == 1 ||

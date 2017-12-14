@@ -151,6 +151,11 @@ public class InsuranceTnCFragment extends BasePresenterFragment<InsuranceTnCCont
             return true;
         }
 
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            hideLoading();
+        }
     }
 
 }
