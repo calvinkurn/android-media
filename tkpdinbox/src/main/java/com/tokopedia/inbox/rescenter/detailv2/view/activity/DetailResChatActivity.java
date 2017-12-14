@@ -114,6 +114,12 @@ public class DetailResChatActivity
     }
 
     @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        toolbar.setPadding(0, 0, 30, 0);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, R.id.action_detail, 0, "");
         MenuItem menuItem = menu.findItem(R.id.action_detail); // OR THIS
