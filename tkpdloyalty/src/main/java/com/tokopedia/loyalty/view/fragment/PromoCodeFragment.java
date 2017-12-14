@@ -42,6 +42,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     private TkpdProgressDialog progressDialog;
 
+    private TextInputLayout voucherCodeFieldHolder;
+
     private static final String PLATFORM_KEY = "PLATFORM_KEY";
 
     private static final String CATEGORY_KEY = "CATEGORY_KEY";
@@ -94,7 +96,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     @Override
     protected void initView(View view) {
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        final TextInputLayout voucherCodeFieldHolder = view.findViewById(R.id.til_et_voucher_code);
+        voucherCodeFieldHolder = view.findViewById(R.id.til_et_voucher_code);
         final EditText voucherCodeField = view.findViewById(R.id.et_voucher_code);
         TextView submitVoucherButton = view.findViewById(R.id.btn_check_voucher);
 
@@ -116,6 +118,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                voucherCodeFieldHolder.setError(null);
                 if(voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
                 } else
@@ -132,6 +135,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                voucherCodeFieldHolder.setError(null);
                 if(voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
                 } else {
@@ -194,8 +198,13 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     }
 
     @Override
-    public void promoCodeError(String errorMessage) {
+    public void onGetGeneralError(String errorMessage) {
         NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onPromoCodeError(String errorMessage) {
+        voucherCodeFieldHolder.setError(errorMessage);
     }
 
     @Override

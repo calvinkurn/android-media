@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/promo_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         tools:src="@drawable/ic_market_place" />
@@ -67,6 +67,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/grey_700"
+                android:layout_marginLeft="@dimen/margin_vvs"
+                android:layout_marginStart="@dimen/margin_vvs"
                 app:cardCornerRadius="4dp">
                 <TextView
                     android:id="@+id/promo_expiry_time"

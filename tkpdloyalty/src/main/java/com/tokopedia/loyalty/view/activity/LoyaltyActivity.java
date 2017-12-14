@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
@@ -120,9 +121,7 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     private void renderViewSingleTabPromoCode() {
-        for (LoyaltyPagerItem loyaltyPagerItem : loyaltyPagerItemListCouponNotActive)
-            indicator.addTab(indicator.newTab().setText(loyaltyPagerItem.getTabTitle()));
-        setTabProperties();
+        indicator.setVisibility(View.GONE);
         viewPager.setOffscreenPageLimit(loyaltyPagerItemListCouponNotActive.size());
         loyaltyPagerAdapter.addAllItem(loyaltyPagerItemListCouponNotActive);
         viewPager.setAdapter(loyaltyPagerAdapter);
