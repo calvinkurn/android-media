@@ -170,4 +170,6 @@
 
     <string name="title_seller_info">Info Penjual</string>
     <string name="seller_info_title_description_format">• %1$s</string>
+    <string name="seller_info_empty_title">"Info Penjual saat ini masih belum tersedia"</string>
+    <string name="seller_info_empty_desc">Nantikan info seputar promo, event, \nupdate produk, fitur dan layanan khusus untuk\nAnda pengguna Tokopedia.</string>
 </resources>
