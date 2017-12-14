@@ -140,6 +140,8 @@ dependencies {
     compile rootProject.ext.networkDependencies.glide
 
     compile rootProject.ext.analyticsDependencies.appsflyer
+    compile rootProject.ext.analyticsDependencies.installRef
+
     compile(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
