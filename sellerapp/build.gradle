@@ -232,6 +232,7 @@ dependencies {
     compile project(':tkpdinbox')
     compile project(':tkpddigital')
     compile project(':tkpdtransaction')
+    compile project(':tkpdreputation')
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
@@ -293,7 +294,4 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    compile rootProject.ext.playServicesDependencies.firebase
-    compile rootProject.ext.playServicesDependencies.remoteConfig
 }

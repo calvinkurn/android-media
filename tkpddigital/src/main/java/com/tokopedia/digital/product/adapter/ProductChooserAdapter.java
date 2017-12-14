@@ -119,8 +119,18 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void setViewPriceDescription(Product product) {
-            tvTitlePrice.setText(product.getDesc());
-            tvPrice.setText(product.getPrice());
+            if (TextUtils.isEmpty(product.getDesc())) {
+                tvTitlePrice.setVisibility(View.GONE);
+            } else {
+                tvTitlePrice.setVisibility(View.VISIBLE);
+                tvTitlePrice.setText(product.getDesc());
+            }
+            if (TextUtils.isEmpty(product.getPrice())) {
+                tvPrice.setVisibility(View.GONE);
+            } else {
+                tvPrice.setVisibility(View.VISIBLE);
+                tvPrice.setText(product.getPrice());
+            }
         }
 
         private void setProductAvailability(final Product product) {
@@ -173,8 +183,20 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void setViewPriceAdditionalFee(Product product) {
-            tvProductPrice.setText(product.getDesc());
-            tvProductTotalPrice.setText(product.getPrice());
+            if (TextUtils.isEmpty(product.getDesc())) {
+                tvProductPrice.setVisibility(View.GONE);
+            } else {
+                tvProductPrice.setVisibility(View.VISIBLE);
+                tvProductPrice.setText(product.getDesc());
+            }
+
+            if (TextUtils.isEmpty(product.getPrice())) {
+                tvProductTotalPrice.setVisibility(View.GONE);
+            } else {
+                tvProductTotalPrice.setVisibility(View.VISIBLE);
+                tvProductTotalPrice.setText(product.getPrice());
+            }
+
             if (TextUtils.isEmpty(product.getDetail())) {
                 tvProductDescription.setVisibility(View.GONE);
             } else {

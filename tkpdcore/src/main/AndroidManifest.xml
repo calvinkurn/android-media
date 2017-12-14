@@ -49,6 +49,8 @@
 
     <uses-feature android:name="android.hardware.camera" />
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/qc_launcher"
@@ -132,7 +134,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ShopStatistic"
             android:label="@string/title_activity_shop_statistic"
@@ -150,7 +152,7 @@
             android:label="@string/title_activity_choose_address"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".manage.people.address.activity.DistrictRecommendationActivity"
+            android:name=".manage.general.districtrecommendation.view.DistrictRecommendationActivity"
             android:label="@string/title_activity_search_address"
             android:screenOrientation="portrait" />
         <activity
@@ -186,10 +188,6 @@
             android:label="@string/title_activity_preview_product_image"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
-        <activity
-            android:name=".NotificationCenter"
-            android:label="@string/title_notification"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".talk.talkproduct.activity.TalkAddNew"
             android:label="@string/title_activity_talk_add_new"
@@ -267,28 +265,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".inboxreputation.activity.InboxReputationActivity"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".inboxreputation.activity.InboxReputationDetailActivity"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".reputationproduct.ReputationProduct"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ShopStatisticDetail"
             android:label="@string/title_activity_shop_statistic_detail"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".reputationproduct.ReputationProductView"
-            android:label="@string/title_activity_reputation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".shopinfo.ReputationViewShop"
-            android:label="@string/title_activity_reputation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".shopinfo.activity.ShopFavoritedActivity"
@@ -348,9 +326,10 @@
         <activity
             android:name=".topads.WebViewTopAdsActivity"
             android:theme="@style/Theme.BrowseProduct" />
-        <activity
-            android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait" />
+
+        <activity android:name=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".msisdn.activity.MsisdnActivity"
             android:label="@string/title_msisdn"
@@ -464,9 +443,6 @@
             android:name=".talkview.intentservice.TalkViewIntentService"
             android:exported="false" />
         <service
-            android:name=".service.HadesService"
-            android:exported="false" />
-        <service
             android:name=".manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
         <service
@@ -500,6 +476,7 @@
         </provider>
 
         <activity android:name=".referral.ReferralActivity" />
+        <activity android:name=".onboarding.NewOnboardingActivity"></activity>
     </application>
 
 </manifest>

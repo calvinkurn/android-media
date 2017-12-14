@@ -27,8 +27,6 @@ import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
-import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
 import com.tokopedia.core.prototype.InboxCache;
 import com.tokopedia.core.prototype.ManageProductCache;
@@ -65,6 +63,7 @@ public class SessionHandler {
     private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
+    private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
     private static final String MSISDN_SESSION = "MSISDN_SESSION";
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
@@ -111,6 +110,7 @@ public class SessionHandler {
     }
 
     public static void clearUserData(Context context) {
+
         logoutInstagram(context);
         InboxCache.ClearCache(context);
         PenjualanCache.ClearCache(context);
@@ -148,10 +148,6 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY);
         LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
-        CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
-        reputationCache.deleteCache();
-        InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
-        reputationDetailCache.deleteAll();
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
@@ -411,12 +407,22 @@ public class SessionHandler {
 
     public static boolean isFirstTimeUser(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(IS_FIRST_TIME_USER, true);
+        return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
     }
 
     public static boolean setFirstTimeUser(Context context, boolean isFirstTime) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER, isFirstTime).commit();
+    }
+
+    public static boolean isFirstTimeUserNewOnboard(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
+    }
+
+    public static boolean setFirstTimeUserNewOnboard(Context context, boolean isFirstTime) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, isFirstTime).commit();
     }
 
     public static boolean isMsisdnVerified() {
