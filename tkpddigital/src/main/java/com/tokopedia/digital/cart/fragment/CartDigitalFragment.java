@@ -712,9 +712,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
                     voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
 
-                    checkoutHolderView.enableVoucherDiscount(
-                            voucherDiscountAmount
-                    );
+                    if (voucherDiscountAmount > 0) {
+                        checkoutHolderView.enableVoucherDiscount(voucherDiscountAmount);
+                    }
                 }
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
@@ -722,8 +722,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
                     String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
                     String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
+                    long couponDiscountAmount = bundle.getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
 
                     voucherCartHachikoView.setCoupon(couponTitle, couponMessage, couponCode);
+
+                    if (couponDiscountAmount > 0) {
+                        checkoutHolderView.enableVoucherDiscount(couponDiscountAmount);
+                    }
                 }
             }
         }
