@@ -54,9 +54,9 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
                 element.getOrderJourney().getDepartureCityCode(),
                 element.getOrderJourney().getDepartureCity()));
         tvArrivalCity.setText(getAirportTextForView(
-                element.getOrderJourney().getDepartureAiportId(),
-                element.getOrderJourney().getDepartureCityCode(),
-                element.getOrderJourney().getDepartureCity()));
+                element.getOrderJourney().getArrivalAirportId(),
+                element.getOrderJourney().getArrivalCityCode(),
+                element.getOrderJourney().getArrivalCity()));
         tvMainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

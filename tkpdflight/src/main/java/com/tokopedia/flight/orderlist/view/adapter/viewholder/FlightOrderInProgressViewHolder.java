@@ -64,9 +64,9 @@ public class FlightOrderInProgressViewHolder extends FlightOrderBaseViewHolder<F
                     orderJourney.getDepartureCityCode(),
                     orderJourney.getDepartureCity()));
             tvArrivalCity.setText(getAirportTextForView(
-                    orderJourney.getDepartureAiportId(),
-                    orderJourney.getDepartureCityCode(),
-                    orderJourney.getDepartureCity()));
+                    orderJourney.getArrivalAirportId(),
+                    orderJourney.getArrivalCityCode(),
+                    orderJourney.getArrivalCity()));
             renderDepartureSchedule(element.getOrderJourney());
         }
     }
