@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Selesaikan Pesanan"
+            android:text="@string/title_dialog_finish_order"
             android:textSize="@dimen/text_size_large"
             android:textStyle="bold" />
 
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/large_dp"
             android:textSize="@dimen/text_size_l_medium"
-            android:text="Pilih selesai apabila barang sudah diterima dan tidak bermasalah" />
+            android:text="@string/body_dialog_finish_order" />
 
         <TextView
             android:id="@+id/card_deletion_info"
@@ -46,7 +46,7 @@
                 android:layout_marginEnd="@dimen/margin_large"
                 android:layout_marginRight="@dimen/margin_large"
                 android:gravity="center"
-                android:text="Batal"
+                android:text="@string/title_cancel"
                 android:textStyle="bold"
                 android:textColor="@color/medium_green" />
 
@@ -57,7 +57,7 @@
                 android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
                 android:gravity="center"
-                android:text="Selesai"
+                android:text="@string/title_done"
                 android:textStyle="bold"
                 android:textColor="@color/medium_green" />
         </LinearLayout>

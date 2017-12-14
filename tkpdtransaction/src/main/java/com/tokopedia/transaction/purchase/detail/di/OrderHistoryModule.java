@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.di;
 
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.transaction.purchase.detail.domain.OrderHistoryRepository;
+import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderHistoryInteractorImpl;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderHistoryPresenterImpl;
 
@@ -32,8 +33,16 @@ public class OrderHistoryModule {
 
     @Provides
     @OrderHistoryScope
+    OrderDetailMapper provideOrderDetailMapper() {
+        return new OrderDetailMapper();
+    }
+
+    @Provides
+    @OrderHistoryScope
     OrderHistoryRepository provideOrderHistoryRepository() {
-        return new OrderHistoryRepository(provideOrderDetailService());
+        return new OrderHistoryRepository(
+                provideOrderDetailService(),
+                provideOrderDetailMapper());
     }
 
     @Provides
