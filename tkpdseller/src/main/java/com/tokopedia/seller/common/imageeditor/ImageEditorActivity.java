@@ -159,7 +159,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     }
 
     private void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isProgress()) {
+        if (!isFinishing() && progressDialog != null && progressDialog.isProgress()) {
             progressDialog.dismiss();
         }
     }

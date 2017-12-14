@@ -3,9 +3,6 @@ package com.tokopedia.core.drawer2.data.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 /**
  * @author anggaprasetiyo on 04/12/17.
  */
@@ -269,6 +266,7 @@ public class TokoPointDrawerData implements Parcelable {
         private String tierName;
         private String tierImageUrl;
         private int rewardPoints;
+        private String rewardPointsStr;
         private String mainPageUrl;
 
         public int getTierId() {
@@ -303,6 +301,13 @@ public class TokoPointDrawerData implements Parcelable {
             this.rewardPoints = rewardPoints;
         }
 
+        public String getRewardPointsStr() {
+            return rewardPointsStr == null ? "" : rewardPointsStr;
+        }
+
+        public void setRewardPointsStr(String rewardPointsStr) {
+            this.rewardPointsStr = rewardPointsStr;
+        }
 
         public UserTier() {
         }
@@ -326,6 +331,7 @@ public class TokoPointDrawerData implements Parcelable {
             dest.writeString(this.tierName);
             dest.writeString(this.tierImageUrl);
             dest.writeInt(this.rewardPoints);
+            dest.writeString(this.rewardPointsStr);
             dest.writeString(this.mainPageUrl);
         }
 
@@ -334,6 +340,7 @@ public class TokoPointDrawerData implements Parcelable {
             this.tierName = in.readString();
             this.tierImageUrl = in.readString();
             this.rewardPoints = in.readInt();
+            this.rewardPointsStr = in.readString();
             this.mainPageUrl = in.readString();
         }
 

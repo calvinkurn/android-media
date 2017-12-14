@@ -91,6 +91,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                     shop {
                       name
                       url
+                      url_app
                       location
                     }
                   }

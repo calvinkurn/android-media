@@ -121,14 +121,16 @@ public class HomeModule {
         authKey = "Bearer " + authKey;
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         AccountsService accountsService = new AccountsService(bundle);
-        return new TokoCashSourceFactory(context, accountsService, new TokoCashMapper(), globalCacheManager);
+        return new TokoCashSourceFactory(context, accountsService, new TokoCashMapper(),
+                globalCacheManager);
     }
 
     @HomeScope
     @Provides
     TopPointsSourceFactory topPointsSourceFactory(@ApplicationContext Context context,
                                                   GlobalCacheManager globalCacheManager) {
-        return new TopPointsSourceFactory(context, new CloverService(), new TopPointsMapper(), globalCacheManager);
+        return new TopPointsSourceFactory(context, new CloverService(), new TopPointsMapper(),
+                globalCacheManager);
     }
 
     @HomeScope
@@ -138,7 +140,8 @@ public class HomeModule {
                                   BrandsOfficialStoreDataSource brandsOfficialStoreDataSource,
                                   TopPicksDataSource topPicksDataSource,
                                   TickerDataSource tickerDataSource) {
-        return new HomeRepositoryImpl(homeCategoryDataSource, homeBannerDataSource, brandsOfficialStoreDataSource, topPicksDataSource, tickerDataSource);
+        return new HomeRepositoryImpl(homeCategoryDataSource, homeBannerDataSource,
+                brandsOfficialStoreDataSource, topPicksDataSource, tickerDataSource);
     }
 
 }
