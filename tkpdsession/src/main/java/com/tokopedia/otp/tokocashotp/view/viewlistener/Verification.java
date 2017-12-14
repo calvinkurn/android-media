@@ -26,6 +26,8 @@ public interface Verification {
         void onErrorNoAccountTokoCash();
 
         boolean isCountdownFinished();
+
+        void dropKeyboard();
     }
 
     interface Presenter extends CustomerPresenter<Verification.View> {

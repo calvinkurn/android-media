@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -191,7 +192,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         inputOtp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE
+                        && inputOtp.length() == 6) {
                     presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
                     return true;
                 }
@@ -310,6 +312,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         return cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false);
     }
 
+    @Override
+    public void dropKeyboard() {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+    }
+
     private void startTimer() {
         if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false)) {
             cacheHandler.putBoolean(HAS_TIMER, true);
@@ -382,12 +389,15 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
 
         String text = getString(R.string.please_wait_in)
-                + " " +
-                countdown
-                + " " +
-                getString(R.string.to_resend_otp);
+                + " "
+                + "<b> "
+                + countdown
+                + " "
+                + getString(R.string.second)
+                + "</b>"
+                + getString(R.string.to_resend_otp);
 
-        countdownText.setText(text);
+        countdownText.setText(MethodChecker.fromHtml(text));
 
     }
 

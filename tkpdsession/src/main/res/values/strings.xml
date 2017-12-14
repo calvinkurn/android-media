@@ -111,8 +111,8 @@
     <string name="choose_verification_method">Pilih Metode Verifikasi</string>
     <string name="pick_one_of_these_method_to_get_verification_code">Pilih salah satu metode
         dibawah ini untuk\nmendapatkan kode verifikasi.</string>
-    <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor<br/>]]></string>
-    <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b><br/> ke
+    <string name="verification_sms_to"><![CDATA[Melalui <b>SMS</b> ke nomor]]></string>
+    <string name="verification_call_to"><![CDATA[Melalui <b>panggilan telepon</b> ke
     nomor]]></string>
     <string name="verification_code_sent_to_call"><![CDATA[Kode verifikasi telah dikirimkan
         lewat<br>panggilan telepon ke]]></string>
@@ -134,4 +134,5 @@
     <string name="login">Masuk</string>
     <string name="use_other_method">gunakan metode verifikasi lain</string>
     <string name="or_small">atau</string>
+    <string name="second">detik</string>
 </resources>

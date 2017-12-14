@@ -36,7 +36,8 @@ import dagger.Provides;
  */
 
 @Module
-public class SessionModule {
+public class
+SessionModule {
 
     private static final String HMAC_SERVICE = "HMAC_SERVICE";
     private static final String BASIC_SERVICE = "BASIC_SERVICE";

@@ -128,7 +128,7 @@ public class LoginTextView extends LinearLayout {
         shape.setCornerRadii(new float[]{3, 3, 3, 3, 3, 3, 3, 3});
         shape.setColor(getBackgroundColor());
         if (getBackgroundColor() == Color.WHITE) shape.setStroke(1,
-                MethodChecker.getColor(getContext(), R.color.black_38));
+                MethodChecker.getColor(getContext(), R.color.grey_300));
     }
 
     private int getInverseColor(int color) {

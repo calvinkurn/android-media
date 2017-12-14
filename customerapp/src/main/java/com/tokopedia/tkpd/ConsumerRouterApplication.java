@@ -642,6 +642,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source);
+        
     }
 
 

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/red_100"
+        android:background="#fdebec"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
@@ -20,7 +20,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/red_500"/>
+            android:background="#f05f68"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -105,7 +105,7 @@
                 android:maxLength="6"
                 android:paddingBottom="@dimen/margin_small"
                 android:textIsSelectable="false"
-                android:textSize="30sp"
+                android:textSize="32sp"
                 android:visibility="visible"
                 app:pinLineColors="@color/pin_line_colors"/>
 

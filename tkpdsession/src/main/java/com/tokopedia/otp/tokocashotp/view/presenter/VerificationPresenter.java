@@ -67,6 +67,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
 
     @Override
     public void verifyOtp(String phoneNumber, String otpCode) {
+        getView().dropKeyboard();
         getView().showLoadingProgress();
         verifyTokoCashOTPUseCase.execute(VerifyOtpTokoCashUseCase.getParam(phoneNumber, otpCode), new
                 VerifyOtpTokoCashSubscriber(getView()));
