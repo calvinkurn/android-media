@@ -16,6 +16,7 @@ public class HistoryItem implements Parcelable {
     private boolean latest;
     private String month;
     private String dateNumber;
+    private String timeNumber;
 
     public HistoryItem() {
     }
@@ -84,6 +85,14 @@ public class HistoryItem implements Parcelable {
         this.latest = latest;
     }
 
+    public String getTimeNumber() {
+        return timeNumber;
+    }
+
+    public void setTimeNumber(String timeNumber) {
+        this.timeNumber = timeNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -99,6 +108,7 @@ public class HistoryItem implements Parcelable {
         dest.writeByte(this.latest ? (byte) 1 : (byte) 0);
         dest.writeString(this.month);
         dest.writeString(this.dateNumber);
+        dest.writeString(this.timeNumber);
     }
 
     protected HistoryItem(Parcel in) {
@@ -110,6 +120,7 @@ public class HistoryItem implements Parcelable {
         this.latest = in.readByte() != 0;
         this.month = in.readString();
         this.dateNumber = in.readString();
+        this.timeNumber = in.readString();
     }
 
     public static final Creator<HistoryItem> CREATOR = new Creator<HistoryItem>() {

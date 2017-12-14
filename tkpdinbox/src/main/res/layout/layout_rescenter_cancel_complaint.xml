@@ -2,15 +2,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:context="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/black_12"
     android:layout_width="match_parent"
     android:layout_height="50dp">
 
     <TextView
         android:id="@+id/tv_button"
+        android:layout_margin="1dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:background="@color/white"
         android:gravity="center"
         context:text="asdasd"
         android:textColor="@color/black_70"

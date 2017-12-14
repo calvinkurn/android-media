@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.FreeReturnResponse;
 
 /**
  * Created by yfsx on 07/11/17.
@@ -27,6 +28,8 @@ public class ResolutionResponse {
     private String updateTime;
     @SerializedName("freeReturn")
     private int freeReturn;
+    @SerializedName("freeReturnText")
+    private FreeReturnResponse freeReturnText;
 
     public int getId() {
         return id;
@@ -108,4 +111,11 @@ public class ResolutionResponse {
         this.freeReturn = freeReturn;
     }
 
+    public FreeReturnResponse getFreeReturnText() {
+        return freeReturnText;
+    }
+
+    public void setFreeReturnText(FreeReturnResponse freeReturnText) {
+        this.freeReturnText = freeReturnText;
+    }
 }

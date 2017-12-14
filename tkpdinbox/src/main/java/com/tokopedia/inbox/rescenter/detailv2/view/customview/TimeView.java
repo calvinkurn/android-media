@@ -97,6 +97,8 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
     }
 
     private void refreshMainPage() {
+        timeTickerView.setVisibility(GONE);
+        btnGetHelp.setVisibility(VISIBLE);
         listener.hideTimeTicker();
     }
 

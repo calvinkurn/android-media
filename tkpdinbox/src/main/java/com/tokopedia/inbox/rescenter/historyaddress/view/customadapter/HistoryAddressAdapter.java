@@ -103,7 +103,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
     private void renderData(AddressViewHolder holder, HistoryAddressViewItem item) {
         holder.date.setText(
                 context.getString(R.string.template_history_additional_information, item.getActionByText(),
-                        DateFormatUtils.formatDateForResoChatV2(item.getCreateTimestamp()))
+                        item.getCreateTimestamp())
         );
         holder.history.setText(MethodChecker.fromHtml(item.getAddress()));
     }
