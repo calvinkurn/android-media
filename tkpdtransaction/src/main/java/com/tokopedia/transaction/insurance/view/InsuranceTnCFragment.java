@@ -151,12 +151,6 @@ public class InsuranceTnCFragment extends BasePresenterFragment<InsuranceTnCCont
             return true;
         }
 
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            super.onReceivedSslError(view, handler, error);
-            handler.cancel();
-        }
-
     }
 
 }

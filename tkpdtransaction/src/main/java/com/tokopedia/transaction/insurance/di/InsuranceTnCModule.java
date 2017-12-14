@@ -36,8 +36,6 @@ public class InsuranceTnCModule {
         return new InsuranceTnCDataStore(insuranceWebViewService);
     }
 
-    // Provide EntityMapper -- X
-
     // Provide Repository
     @Provides
     @InsuranceTnCScope

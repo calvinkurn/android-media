@@ -23,8 +23,8 @@ public class InsuranceTnCRepository {
         this.dataStore = dataStore;
     }
 
-    public Observable<String> getInsuranceTnc(TKPDMapParam<String, String> parameters) {
-        return dataStore.getInsuranceTnC(parameters);
+    public Observable<String> getInsuranceTnc() {
+        return dataStore.getInsuranceTnC();
     }
 
 }

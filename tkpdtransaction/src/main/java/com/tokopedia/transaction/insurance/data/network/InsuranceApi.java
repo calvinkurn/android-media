@@ -17,6 +17,6 @@ import rx.Observable;
 public interface InsuranceApi {
 
     @GET(TkpdBaseURL.Shop.PATH_INSURANCE_TERMS_AND_CONDITIONS)
-    Observable<String> getInsuranceTnC(@QueryMap Map<String, String> param);
+    Observable<String> getInsuranceTnC();
 
 }

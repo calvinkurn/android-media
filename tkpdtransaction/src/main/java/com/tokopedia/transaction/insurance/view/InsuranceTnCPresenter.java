@@ -1,10 +1,7 @@
 package com.tokopedia.transaction.insurance.view;
 
-import android.util.Log;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.transaction.insurance.domain.InsuranceTnCUseCase;
 
 import javax.inject.Inject;
@@ -42,7 +39,7 @@ public class InsuranceTnCPresenter extends BaseDaggerPresenter<InsuranceTnCContr
     @Override
     public void loadWebViewData() {
         getView().showLoading();
-        insuranceTnCUseCase.execute(getParams(), new Subscriber<String>() {
+        insuranceTnCUseCase.execute(RequestParams.create(), new Subscriber<String>() {
             @Override
             public void onCompleted() {
 
@@ -59,18 +56,11 @@ public class InsuranceTnCPresenter extends BaseDaggerPresenter<InsuranceTnCContr
             @Override
             public void onNext(String webViewData) {
                 if (isViewAttached()) {
-                    Log.e("WebViewData", webViewData);
                     getView().hideLoading();
                     getView().showWebView(webViewData);
                 }
             }
         });
     }
-
-    private RequestParams getParams() {
-        RequestParams params = RequestParams.create();
-        return params;
-    }
-
 
 }

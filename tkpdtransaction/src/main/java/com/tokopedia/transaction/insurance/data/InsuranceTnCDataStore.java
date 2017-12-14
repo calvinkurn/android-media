@@ -20,8 +20,8 @@ public class InsuranceTnCDataStore {
         this.service = service;
     }
 
-    public Observable<String> getInsuranceTnC(TKPDMapParam<String, String> params) {
-        return service.getApi().getInsuranceTnC(params);
+    public Observable<String> getInsuranceTnC() {
+        return service.getApi().getInsuranceTnC();
     }
 
 }

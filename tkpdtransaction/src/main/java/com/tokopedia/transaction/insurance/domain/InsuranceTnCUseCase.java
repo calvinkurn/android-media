@@ -28,7 +28,7 @@ public class InsuranceTnCUseCase extends UseCase<String> {
 
     @Override
     public Observable<String> createObservable(RequestParams requestParams) {
-        return repository.getInsuranceTnc(requestParams.getParamsAllValueInString());
+        return repository.getInsuranceTnc();
     }
 
 }
