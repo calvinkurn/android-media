@@ -989,6 +989,7 @@ public class DetailResChatFragment
     public void successCancelComplaint() {
         dismissProgressBar();
         initView();
+        ffChat.setVisibility(View.GONE);
     }
 
     @Override
@@ -1037,6 +1038,7 @@ public class DetailResChatFragment
     public void successFinishResolution() {
         dismissProgressBar();
         initView();
+        ffChat.setVisibility(View.GONE);
     }
 
     @Override
