@@ -137,7 +137,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
     private TopAdsComponent topAdsComponent;
 
-    private RemoteConfig remoteConfig;
+    protected RemoteConfig remoteConfig;
 
     @Override
     public void onCreate() {
