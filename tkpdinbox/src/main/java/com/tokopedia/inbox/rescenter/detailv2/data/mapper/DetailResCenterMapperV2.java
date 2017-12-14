@@ -429,7 +429,8 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                     response.getCreateTimeStr(),
                     response.getCreateTimeFullStr(),
                     response.getMonth(),
-                    response.getDateNumber());
+                    response.getDateNumber(),
+                    response.getTimeNumber());
             domainList.add(domain);
         }
         return domainList;

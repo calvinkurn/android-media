@@ -27,6 +27,8 @@ public class LogResponse {
     private String month;
     @SerializedName("dateNumber")
     private String dateNumber;
+    @SerializedName("timeNumber")
+    private String timeNumber;
 
     public String getCreateTimeFullStr() {
         return createTimeFullStr;
@@ -108,5 +110,11 @@ public class LogResponse {
         this.createTimeStr = createTimeStr;
     }
 
+    public String getTimeNumber() {
+        return timeNumber;
+    }
 
+    public void setTimeNumber(String timeNumber) {
+        this.timeNumber = timeNumber;
+    }
 }

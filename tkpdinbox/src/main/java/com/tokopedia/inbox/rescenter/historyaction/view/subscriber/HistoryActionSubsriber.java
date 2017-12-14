@@ -62,6 +62,7 @@ public class HistoryActionSubsriber extends Subscriber<HistoryActionData> {
             data.setHistoryText(item.getHistoryStr());
             data.setDateNumber(item.getDateNumber());
             data.setMonth(item.getMonth());
+            data.setTimeNumber(item.getTimeNumber());
             data.setCreateTimestampStr(item.getCreateTimestampStr());
             historyActionViewItems.add(data);
             i++;

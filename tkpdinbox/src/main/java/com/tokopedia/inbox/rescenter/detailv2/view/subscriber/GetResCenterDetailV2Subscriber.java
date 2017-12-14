@@ -279,6 +279,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
             item.setProvider(logData.getActionBy().getName());
             item.setDateTimestamp(logData.getCreateTimestampStr());
             item.setProviderId(logData.getActionBy().getId());
+            item.setTimeNumber(logData.getTimeNumber());
             historyItems.add(item);
             pos++;
         }

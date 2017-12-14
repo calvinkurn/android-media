@@ -89,7 +89,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.tvUsername.setText(item.getProvider());
         holder.tvMonth.setText(item.getMonth());
         holder.tvDateNumber.setText(item.getDateNumber());
-        holder.tvTime.setText(item.getDate());
+        holder.tvTime.setText(item.getTimeNumber());
         holder.lineSeparator.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
         holder.lineIndicator.setVisibility(position == getHistoryItems().size() - 1 ? View.GONE : View.VISIBLE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
