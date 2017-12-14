@@ -66,6 +66,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
+import com.tokopedia.ride.bookingride.view.activity.PayPendingFareActivity;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -74,10 +75,12 @@ import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.PendingPayment;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
@@ -120,13 +123,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1009;
     private static final int REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION = 1010;
 
+    public static final String TAG = OnTripMapFragment.class.getSimpleName();
+
     private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
-    private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
-    private static final String EXTRA_ACTION = "EXTRA_ACTION";
-    public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String INTERRUPT_TOKOPEDIA_DIALOG_TAG = "interrupt_tokopedia_dialog";
-    public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final float DEFAUL_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String SMS_INTENT_KEY = "sms";
@@ -327,6 +328,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_ID, confirmBookingViewModel.getProductId());
         requestParams.putString(CreateRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
         requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_NAME, confirmBookingViewModel.getProductDisplayName());
+        requestParams.putString(CreateRideRequestUseCase.PARAM_API_VERSION, "v2");
         if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
             requestParams.putString(CreateRideRequestUseCase.PARAM_PROMO_CODE, confirmBookingViewModel.getPromoCode());
             requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_TYPE, presenter.getDeviceName());
@@ -483,8 +485,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void openInterruptConfirmationWebView(String tosUrl) {
+    public void openInterruptConfirmationWebView(String url) {
         if (!isOpenInterruptWebviewDialog) {
+            RideGATracking.eventOpenInterruptScreen(url);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
             if (previousDialog != null) {
@@ -492,7 +495,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             }
 
             fragmentTransaction.addToBackStack(null);
-            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(url);
             dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
             //using state loss, because sometimes this dialog comes on top of location enablegit
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -864,7 +867,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         if (confirmBookingViewModel != null) {
             markerId = R.drawable.car_map_icon;
-            markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
+            markerId = (RideUtils.isUberMoto(confirmBookingViewModel.getProductDisplayName())) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
         }
 
         MarkerOptions options;
@@ -984,6 +987,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideCancelPanel() {
+        isBackButtonHandleByFragment = false;
+
         //do not hide, layout is already hidden
         if (cancelPanelLayout.getVisibility() == View.GONE) {
             return;
@@ -1422,7 +1427,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void startTopupTokoCashChangeDestinationActivity(PendingPayment pendingPayment, String requestId) {
         Intent topupIntent = TopupTokoCashChangeDestination.getCallingIntent(getActivity(), pendingPayment, requestId);
         startActivityForResult(topupIntent, REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION);
-
     }
 
+    @Override
+    public void showPendingFareInterrupt(GetPending getPending) {
+        if (getActivity() != null) {
+            startActivity(PayPendingFareActivity.getCallingIntent(getActivity(), getPending));
+            getActivity().finish();
+        }
+    }
 }

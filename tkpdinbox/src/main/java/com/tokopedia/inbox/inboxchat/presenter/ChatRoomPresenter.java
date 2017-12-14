@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -23,9 +24,11 @@ import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
@@ -57,6 +60,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     private final GetReplyListUseCase getReplyListUseCase;
     private final ReplyMessageUseCase replyMessageUseCase;
+    private GetTemplateUseCase getTemplateUseCase;
     private SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
     boolean isRequesting;
@@ -76,9 +80,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Inject
     ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
                       ReplyMessageUseCase replyMessageUseCase,
+                      GetTemplateUseCase getTemplateUseCase,
                       SessionHandler sessionHandler) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
+        this.getTemplateUseCase = getTemplateUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -110,6 +116,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         };
 
         createWebSocket();
+        getTemplate();
     }
 
     @Override
@@ -117,7 +124,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         super.detachView();
         countDownTimer.cancel();
         getReplyListUseCase.unsubscribe();
+        getTemplateUseCase.unsubscribe();
         replyMessageUseCase.unsubscribe();
+
     }
 
     public void createWebSocket() {
@@ -392,5 +401,23 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
+    public void getTemplate(){
+        getTemplateUseCase.execute(GetTemplateUseCase.generateParam(), new Subscriber<GetTemplateViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().setTemplate(null);
+            }
+
+            @Override
+            public void onNext(GetTemplateViewModel getTemplateViewModel) {
+                getView().setTemplate(getTemplateViewModel.getListTemplate());
+            }
+        });
+    }
 
 }

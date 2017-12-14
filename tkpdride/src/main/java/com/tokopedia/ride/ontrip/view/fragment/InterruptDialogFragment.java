@@ -21,7 +21,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.ride.R;
-import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
+import com.tokopedia.ride.bookingride.view.activity.RideWebViewActivity;
 
 import java.util.Locale;
 
@@ -111,7 +111,7 @@ public class InterruptDialogFragment extends DialogFragment {
         labelDescriptionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), url);
+                Intent intent = RideWebViewActivity.getCallingIntent(getActivity(), url);
                 startActivity(intent);
             }
         });

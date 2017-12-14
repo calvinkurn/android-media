@@ -51,6 +51,10 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
         this.clientNumbers = clientNumbers;
     }
 
+    public List<OrderClientNumber> getClientNumbers() {
+        return clientNumbers;
+    }
+
     class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView number;
         private TextView name;

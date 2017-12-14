@@ -48,22 +48,9 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:text="@string/perhitungan_poin_reputasi"
+            android:text="@string/reputation_point_calculation"
             android:textColor="@color/font_black_secondary_54"
             android:textSize="16sp" />
-
-        <ImageView
-            android:id="@+id/calendar_arrow_icon"
-            android:layout_width="8dp"
-            android:layout_height="16dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@id/reputation_point_calculation"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="17dp"
-            android:layout_marginRight="17dp"
-            android:layout_marginTop="3dp"
-            android:src="@drawable/ic_arrow_right" />
 
         <View
             android:layout_width="match_parent"
