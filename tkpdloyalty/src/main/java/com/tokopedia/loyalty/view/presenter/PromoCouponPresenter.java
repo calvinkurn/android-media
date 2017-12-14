@@ -159,7 +159,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
                     couponData.setErrorMessage(e.getMessage());
                     view.couponError();
                 } else {
