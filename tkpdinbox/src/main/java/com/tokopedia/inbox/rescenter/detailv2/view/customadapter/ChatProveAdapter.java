@@ -45,9 +45,9 @@ public class ChatProveAdapter extends RecyclerView.Adapter<ChatProveAdapter.Hold
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(attachmentList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
+                if(getTypeFromModel(attachmentList.get(position)).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_IMAGE)) {
                     openProductPreview(attachmentList, position);
-                } else if (attachmentList.get(position).getType().equalsIgnoreCase(ConversationAttachmentDomain.TYPE_VIDEO)) {
+                } else if (getTypeFromModel(attachmentList.get(position)).equalsIgnoreCase(ConversationAttachmentDomain.TYPE_VIDEO)) {
                     openVideoPlayer(attachmentList.get(position).getFull());
                 }
             }

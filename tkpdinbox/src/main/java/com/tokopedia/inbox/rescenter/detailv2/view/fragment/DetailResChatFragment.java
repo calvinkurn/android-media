@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -67,6 +68,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
@@ -1196,6 +1198,25 @@ public class DetailResChatFragment
         startActivity(
                 ListProductActivity.newInstance(context, String.valueOf(resolutionId))
         );
+    }
+
+    @Override
+    public void openImagePreview(ArrayList<String> imageUrls, int position) {
+        Intent intent = new Intent(context, PreviewProductImage.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("fileloc", imageUrls);
+        bundle.putInt("img_pos", position);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void openVideoPlayer(String videoUrl) {
+        Intent intent = new Intent(context, VideoPlayerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, videoUrl);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override

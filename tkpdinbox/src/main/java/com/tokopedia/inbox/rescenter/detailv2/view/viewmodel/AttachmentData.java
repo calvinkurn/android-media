@@ -8,27 +8,14 @@ import android.os.Parcelable;
  */
 
 public class AttachmentData implements Parcelable {
+    public static final int TYPE_IMAGE = 0;
+    public static final int TYPE_VIDEO = 1;
 
-    public static final Parcelable.Creator<AttachmentData> CREATOR = new Parcelable.Creator<AttachmentData>() {
-        @Override
-        public AttachmentData createFromParcel(Parcel source) {
-            return new AttachmentData(source);
-        }
-
-        @Override
-        public AttachmentData[] newArray(int size) {
-            return new AttachmentData[size];
-        }
-    };
     private String imageUrl;
     private String imageThumbUrl;
+    private int isVideo;
 
     public AttachmentData() {
-    }
-
-    protected AttachmentData(Parcel in) {
-        this.imageUrl = in.readString();
-        this.imageThumbUrl = in.readString();
     }
 
     public String getImageUrl() {
@@ -47,6 +34,14 @@ public class AttachmentData implements Parcelable {
         this.imageThumbUrl = imageThumbUrl;
     }
 
+    public int getIsVideo() {
+        return isVideo;
+    }
+
+    public void setIsVideo(int isVideo) {
+        this.isVideo = isVideo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -56,5 +51,24 @@ public class AttachmentData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageThumbUrl);
+        dest.writeInt(this.isVideo);
     }
+
+    protected AttachmentData(Parcel in) {
+        this.imageUrl = in.readString();
+        this.imageThumbUrl = in.readString();
+        this.isVideo = in.readInt();
+    }
+
+    public static final Creator<AttachmentData> CREATOR = new Creator<AttachmentData>() {
+        @Override
+        public AttachmentData createFromParcel(Parcel source) {
+            return new AttachmentData(source);
+        }
+
+        @Override
+        public AttachmentData[] newArray(int size) {
+            return new AttachmentData[size];
+        }
+    };
 }
