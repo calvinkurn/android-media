@@ -47,6 +47,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     private Timer timer;
     private Context context;
     private static final long SLIDE_DELAY = 5000;
+    private boolean hasStarted = false;
 
     public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -61,7 +62,8 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
         Ticker.Tickers ticker = element.getTickers().get(0);
         textMessage.setText(ticker.getMessage());
         ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
-        timer.scheduleAtFixedRate(new SwitchTicker(element.getTickers()), 0, SLIDE_DELAY);
+        if (!hasStarted)
+            timer.scheduleAtFixedRate(new SwitchTicker(element.getTickers()), 0, SLIDE_DELAY);
     }
 
     private class SwitchTicker extends TimerTask {
@@ -77,6 +79,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
             ((Activity) context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    hasStarted = true;
                     if (i < tickers.size() - 1)
                         i++;
                     else
