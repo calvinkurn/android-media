@@ -7,4 +7,5 @@
     <string name="error_empty_voucher_code">Kode Voucher Harus Diisi</string>
     <string name="label_title_error_response">Terjadi Kesalahan</string>
     <string name="button_use_code">Gunakan Kode</string>
+    <string name="hint_voucher_user_code">Masukan Kode Promo</string>
 </resources>

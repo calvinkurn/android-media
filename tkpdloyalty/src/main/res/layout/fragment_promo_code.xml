@@ -19,7 +19,7 @@
             android:id="@+id/til_et_voucher_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Masukkan Kode Promo">
+            android:hint="@string/hint_voucher_user_code">
 
             <EditText
                 android:id="@+id/et_voucher_code"

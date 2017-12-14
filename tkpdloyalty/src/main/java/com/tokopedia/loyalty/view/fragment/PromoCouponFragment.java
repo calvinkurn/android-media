@@ -192,7 +192,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     public void couponDataNoResult() {
         NetworkErrorHelper.showEmptyState(context, mainView,
                 "Anda Tidak Memiliki Kupon",
-                "Tukar poin Anda dengan kupon di halaman TokoPoins.",
+                "Tukar poin Anda dengan kupon di halaman TokoPoints.",
                 "",
                 R.drawable.ic_coupon_image, null);
     }
