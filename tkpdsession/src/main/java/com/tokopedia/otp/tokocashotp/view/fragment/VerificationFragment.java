@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -388,14 +389,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
         countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
 
-        String text = getString(R.string.please_wait_in)
-                + " "
-                + "<b> "
-                + countdown
-                + " "
-                + getString(R.string.second)
-                + "</b> "
-                + getString(R.string.to_resend_otp);
+        String text = String.format("%s1 <b> %s2 %s3</b> %s4",
+                getString(R.string.please_wait_in),
+                countdown,
+                getString(R.string.second),
+                getString(R.string.to_resend_otp));
 
         countdownText.setText(MethodChecker.fromHtml(text));
 
