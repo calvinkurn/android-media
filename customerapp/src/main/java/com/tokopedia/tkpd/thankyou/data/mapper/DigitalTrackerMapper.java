@@ -1,10 +1,11 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.internal.LinkedTreeMap;
 import com.tokopedia.core.analytics.PurchaseTracking;
-import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
-import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalTrackerData;
 
 import java.util.Map;
 
@@ -15,7 +16,8 @@ import rx.functions.Func1;
  * Created by okasurya on 12/7/17.
  */
 
-public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<DigitalTrackerData>>, Boolean> {
+public class DigitalTrackerMapper implements Func1<Response<String>, Boolean> {
+    private static final String DATA = "data";
     private Gson gson;
 
     public DigitalTrackerMapper(Gson gson) {
@@ -23,12 +25,13 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<D
     }
 
     @Override
-    public Boolean call(Response<DigitalDataWrapper<DigitalTrackerData>> response) {
-        PurchaseTracking.digital("transaction", getMappedData(response.body().getData()));
+    public Boolean call(Response<String> response) {
+        JsonObject responseObject = new JsonParser().parse(response.body()).getAsJsonObject();
+        PurchaseTracking.digital(PurchaseTracking.TRANSACTION, getMappedData(responseObject.get(DATA)));
         return false;
     }
 
-    private Map<String, Object> getMappedData(DigitalTrackerData data) {
+    private Map<String, Object> getMappedData(JsonElement data) {
         LinkedTreeMap map = gson.fromJson(gson.toJson(data), LinkedTreeMap.class);
         return map;
     }
