@@ -72,6 +72,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryIt
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
@@ -111,7 +112,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SnackbarRetry messageSnackbar;
     private HomeAdapterFactory adapterFactory;
     private String[] tabSectionTitle;
-
+    private VerticalSpaceItemDecoration spaceItemDecoration;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
 
     public static HomeFragment newInstance() {
@@ -238,8 +239,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.setLayoutManager(layoutManager);
         adapterFactory = new HomeAdapterFactory(getFragmentManager(), this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
+        spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
+        recyclerView.addItemDecoration(spaceItemDecoration);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true));
         recyclerView.addOnScrollListener(new HomeRecycleScrollListener(layoutManager, this));
     }
 
@@ -625,7 +627,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
+        if(containsInstance(items, TickerViewModel.class)) {
+            spaceItemDecoration.setStart(2);
+        } else {
+            spaceItemDecoration.setStart(1);
+        }
+        recyclerView.invalidateItemDecorations();
         adapter.setItems(items);
+    }
+
+    public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
+        for (E e : list) {
+            if (clazz.isInstance(e)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

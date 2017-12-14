@@ -2,12 +2,17 @@ package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -36,7 +41,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     @BindView(R.id.ticker_message)
     TextView textMessage;
     @BindView(R.id.btn_close)
-    ImageView btnClose;
+    RelativeLayout btnClose;
 
     private HomeCategoryListener listener;
     private Timer timer;
@@ -55,7 +60,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     public void bind(TickerViewModel element) {
         Ticker.Tickers ticker = element.getTickers().get(0);
         textMessage.setText(ticker.getMessage());
-        btnClose.setColorFilter(Color.parseColor(ticker.getColor()), PorterDuff.Mode.SRC_IN);
+        ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
         timer.scheduleAtFixedRate(new SwitchTicker(element.getTickers()), 0, SLIDE_DELAY);
     }
 
@@ -78,7 +83,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
                         i = 0;
                     Ticker.Tickers ticker = tickers.get(i);
                     textMessage.setText(ticker.getMessage());
-                    btnClose.setColorFilter(Color.parseColor(ticker.getColor()), PorterDuff.Mode.SRC_IN);
+                    ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
                 }
             });
         }
