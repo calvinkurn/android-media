@@ -77,4 +77,12 @@
         <key>enable_topchat</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_rating_title</key>
+        <value>Beri Rating Aplikasi Kami</value>
+    </entry>
+    <entry>
+        <key>mainapp_rating_message</key>
+        <value>Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</value>
+    </entry>
 </defaultsMap>

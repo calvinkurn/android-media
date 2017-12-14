@@ -28,6 +28,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.OfficialStoreProductAdapter;
 import com.tokopedia.core.shopinfo.listener.OsHomeFragmentView;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
@@ -175,6 +176,12 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (getUserVisibleHint()) {
+            if (getActivity() != null &&
+                    getActivity() instanceof ShopInfoActivity) {
+                ((ShopInfoActivity) getActivity()).swipeAble(false);
+            }
+        }
     }
 
     @Override
@@ -258,6 +265,13 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
                 webView.onPause();
             } else {
                 webView.onResume();
+            }
+        }
+
+        if (isVisibleToUser) {
+            if (getActivity() != null &&
+                    getActivity() instanceof ShopInfoActivity) {
+                ((ShopInfoActivity) getActivity()).swipeAble(false);
             }
         }
     }
