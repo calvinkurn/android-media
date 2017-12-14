@@ -35,6 +35,7 @@ import com.tokopedia.core.var.TkpdCache;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -463,6 +464,28 @@ public class GTMContainer implements IGTMContainer {
                                 DataLayer.listOf(
                                         hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
                         )
+                )
+        );
+    }
+
+    @Override
+    public void enhanceClickFeedRecomItem(List<Object> objects,
+                                          String eventCategory,
+                                          String eventAction,
+                                          String eventLabel,
+                                          String productUrl, String actionField) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", eventCategory,
+                        "eventAction", eventAction,
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField", actionField,
+                                        "products", DataLayer.listOf(objects.toArray(new Object[objects.size()]))
+                                )
+                        ),
+                        "eventCallback", productUrl
                 )
         );
     }
