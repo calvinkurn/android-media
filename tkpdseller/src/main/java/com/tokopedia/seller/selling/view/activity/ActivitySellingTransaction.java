@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -40,7 +39,6 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -155,7 +153,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
-            } else if (!SessionHandler.isUserSeller(this)) {
+            } else if (!SessionHandler.isUserHasShop(this)) {
                 startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();

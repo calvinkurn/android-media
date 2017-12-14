@@ -62,6 +62,7 @@ import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -191,8 +192,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack){
-        return TkpdSeller.getIntentCreateEditShop(context, isCreate, logOutOnBack);
+    public Intent getIntentCreateEditShop(Context context){
+        return TkpdSeller.getIntentCreateEditShop(context, true, false);
     }
 
     @Override
@@ -556,6 +557,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTrueCallerActivityIntent(Context context) {
         return new Intent(context, TruecallerActivity.class);
+    }
+
+    @Override
+    public Intent getPhoneVerificationActivityIntent(Context context) {
+        return PhoneVerificationActivationActivity.getIntent(context, false, false);
     }
 
     @Override

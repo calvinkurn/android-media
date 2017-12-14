@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.data.repository;
 
 import com.tokopedia.seller.shop.open.data.source.ShopOpenDataSource;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 
 import rx.Observable;
 
@@ -23,5 +24,10 @@ public class ShopOpenRepositoryImpl implements ShopOpenRepository {
     @Override
     public Observable<Boolean> checkShop(String shopName) {
         return shopOpenDataSource.checkShopName(shopName);
+    }
+
+    @Override
+    public Observable<ResponseIsReserveDomain> isReserveDomain() {
+        return shopOpenDataSource.isReserveDomain();
     }
 }

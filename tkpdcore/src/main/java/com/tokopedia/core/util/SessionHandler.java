@@ -465,8 +465,9 @@ public class SessionHandler {
         return sharedPrefs.getBoolean(IS_FIRST_TIME_STORAGE, true);
     }
 
-    public static boolean isUserSeller(Context context) {
-        return !SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0");
+    public static boolean isUserHasShop(Context context) {
+        return !TextUtils.isEmpty(SessionHandler.getShopID(context))
+                && !SessionHandler.getShopID(context).equals("0");
     }
 
     public static String getUUID(Context context) {

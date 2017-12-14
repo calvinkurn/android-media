@@ -192,7 +192,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToCreateShop(@NonNull Context context) {
         Intent intent;
         if (SessionHandler.isV4Login(context)) {
-            intent = SellerRouter.getActivityShopCreateEdit(context, true, false);
+            intent = SellerRouter.getActivityShopCreateEdit(context);
             viewListener.navigateToActivity(intent);
         } else {
             intent = SessionRouter.getLoginActivityIntent(context);

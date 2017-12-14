@@ -3,6 +3,7 @@ package com.tokopedia.seller.shop.open.di.component;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
+import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
 
@@ -14,6 +15,6 @@ import dagger.Component;
 @ShopOpenDomainScope
 @Component(modules = ShopOpenDomainModule.class, dependencies = ShopComponent.class)
 public interface ShopOpenDomainComponent {
-    ShopOpenDomainPresenter getPresenter();
     void inject(ShopOpenDomainFragment shopOpenDomainFragment);
+    void inject(ShopOpenDomainActivity shopOpenDomainActivity);
 }

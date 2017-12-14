@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -44,6 +43,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
@@ -64,6 +64,7 @@ import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -89,7 +90,6 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -101,7 +101,6 @@ import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.topads.TkpdTopAds;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -302,7 +301,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getHomeIntent(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
-            if (SessionHandler.isUserSeller(context)) {
+            if (SessionHandler.isUserHasShop(context)) {
                 return DashboardActivity.createInstance((Activity) context);
             } else {
                 return intent;
@@ -320,6 +319,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getTrueCallerActivityIntent(Context context) {
         return new Intent(context, TruecallerActivity.class);
+    }
+
+    @Override
+    public Intent getPhoneVerificationActivityIntent(Context context) {
+        return PhoneVerificationActivationActivity.getIntent(context, true, true);
     }
 
     @Override
@@ -593,8 +597,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack){
-        return TkpdSeller.getIntentCreateEditShop(context, isCreate, logOutOnBack);
+    public Intent getIntentCreateEditShop(Context context){
+        return TkpdSeller.getIntentCreateEditShop(context, true, true);
     }
 
     @Override

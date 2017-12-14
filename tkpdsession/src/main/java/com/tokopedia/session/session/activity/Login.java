@@ -116,6 +116,8 @@ public class Login extends BaseActivity implements SessionView
     public static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
     private static final String INTENT_EXTRA_PARAM_TOKEN_MODEL = "INTENT_EXTRA_PARAM_TOKEN_MODEL";
     private static final String INTENT_LOGIN_TYPE = "INTENT_LOGIN_TYPE";
+
+    public static final int TRUE_CALLER_REQUEST_CODE = 100;
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
     public static final String DEFAULT = "not";
     private static final int AUTOMATIC_LOGIN = 1;
@@ -165,20 +167,24 @@ public class Login extends BaseActivity implements SessionView
         if (context == null)
             return null;
 
-        if (SessionHandler.isMsisdnVerified()) {
-            Intent intent;
-            intent = SellerRouter.getActivityShopCreateEdit(context, true, false);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            return intent;
-        } else {
-            // TODO move to msisdn activity
-            /*Intent intent;
-            intent = new Intent(context, MsisdnActivity.class);
-            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
-            return intent;*/
+        Intent intent;
+        intent = SellerRouter.getActivityShopCreateEdit(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
 
-            return null;
-        }
+//        if (SessionHandler.isMsisdnVerified()) {
+//            Intent intent;
+//            intent = SellerRouter.getActivityShopCreateEdit(context, true, logoutOnBack);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            return intent;
+//        } else {
+//            /*Intent intent;
+//            intent = new Intent(context, MsisdnActivity.class);
+//            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
+//            return intent;*/
+//
+//            return null;
+//        }
     }
 
     public static Intent getAutomaticLoginIntent(Context context, String email, String password) {
@@ -383,19 +389,21 @@ public class Login extends BaseActivity implements SessionView
             case SELLER_HOME:
                 if (SessionHandler.isV4Login(this)) {
                     AppWidgetUtil.sendBroadcastToAppWidget(this);
-                    if (!SessionHandler.isUserSeller(this)) {
+                    if (!SessionHandler.isUserHasShop(this)) {
                         UnifyTracking.eventLoginCreateShopSellerApp();
                     }
                     //TODO, app intro is no longer needed, directly send (1) has shop
-                    if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
+                    /*if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserHasShop(this)) {
                         //  Launch app intro
                         Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
                         startActivity(intent);
                         return;
-                    }
+                    }*/
 
-                    Intent intent = null;
-                    if (SessionHandler.isUserSeller(this)) {
+                    // TODO isMsisdnVerified if the user has domain, but has no shop
+                    Intent intent;
+                    //if (SessionHandler.isMsisdnVerified()) {
+                    if (SessionHandler.isUserHasShop(this)) {
                         intent = SellerAppRouter.getSellerHomeActivity(this);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                                 .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -403,8 +411,10 @@ public class Login extends BaseActivity implements SessionView
                         intent = moveToCreateShop(this);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     }
-                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                            HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                    /*} else {
+                        intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this, true, true);
+                        startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
+                    }*/
                     startActivity(intent);
                 }
                 break;
@@ -484,9 +494,9 @@ public class Login extends BaseActivity implements SessionView
     @Override
     public void verifyTruecaller() {
         if (GlobalConfig.isSellerApp()) {
-            startActivityForResult(SellerAppRouter.getTruecallerIntent(this), 100);
+            startActivityForResult(SellerAppRouter.getTruecallerIntent(this), TRUE_CALLER_REQUEST_CODE);
         } else {
-            startActivityForResult(CustomerRouter.getTruecallerIntent(this), 100);
+            startActivityForResult(CustomerRouter.getTruecallerIntent(this), TRUE_CALLER_REQUEST_CODE);
         }
     }
 
@@ -954,7 +964,7 @@ public class Login extends BaseActivity implements SessionView
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
+        if (requestCode == TRUE_CALLER_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 FragmentSecurityQuestion fragment = (FragmentSecurityQuestion) supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
                 if (data != null && data.getStringExtra("phone") != null) {
@@ -965,8 +975,24 @@ public class Login extends BaseActivity implements SessionView
                 }
             }
         } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
-            loginToHome();
+            if (GlobalConfig.isSellerApp()) {
+                if (SessionHandler.isUserHasShop(this)) {
+                    Intent intent = SellerAppRouter.getSellerHomeActivity(this);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Intent intent = SellerRouter.getActivityShopCreateEdit(this);
+                    startActivity(intent);
+                    finish();
+                }
+            } else {
+                loginToHome();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
+
     }
 
     @Override

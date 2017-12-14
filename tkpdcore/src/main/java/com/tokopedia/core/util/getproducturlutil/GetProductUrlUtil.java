@@ -169,7 +169,7 @@ public class GetProductUrlUtil {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                Intent intent = SellerRouter.getActivityShopCreateEdit(context, true, false);
+                Intent intent = SellerRouter.getActivityShopCreateEdit(context);
                 context.startActivity(intent);
             }
         };

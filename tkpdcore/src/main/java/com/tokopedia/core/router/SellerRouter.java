@@ -12,14 +12,8 @@ import com.tokopedia.core.util.RouterUtils;
 
 public class SellerRouter {
 
-    @Deprecated // use the variable in com.tokopedia.seller module instead, because the extras belong to each module, this just a copy
-    public interface ShopSettingConstant{
-        String FRAGMENT_TO_SHOW = "FragmentToShow";
-        String CREATE_SHOP_FRAGMENT_TAG = "CreateShopFragment";
-    }
-
-    public static Intent getActivityShopCreateEdit(Context context, boolean isCreate, boolean logOutOnBack){
-        return RouterUtils.getRouterFromContext(context).getIntentCreateEditShop(context, isCreate, logOutOnBack);
+    public static Intent getActivityShopCreateEdit(Context context){
+        return RouterUtils.getRouterFromContext(context).getIntentCreateEditShop(context);
     }
 
     public static Intent getActivityManageShop(Context context) {

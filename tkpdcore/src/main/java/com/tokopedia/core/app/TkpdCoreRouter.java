@@ -57,6 +57,8 @@ public interface TkpdCoreRouter {
 
     Intent getTrueCallerActivityIntent(Context context);
 
+    Intent getPhoneVerificationActivityIntent(Context context);
+
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
     DrawerHelper getDrawer(AppCompatActivity activity,
@@ -95,7 +97,7 @@ public interface TkpdCoreRouter {
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
-    Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack);
+    Intent getIntentCreateEditShop(Context context);
 
     Intent getSplashScreenIntent(Context context);
 

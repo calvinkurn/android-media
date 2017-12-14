@@ -7,6 +7,8 @@ import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -29,6 +31,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
     private ShopOpenDomainPresenterImpl.QueryListener domainListener;
     private ShopOpenDomainPresenterImpl.QueryListener shopListener;
 
+    @Inject
     public ShopOpenDomainPresenterImpl(CheckDomainNameUseCase checkDomainNameUseCase,
                                        CheckShopNameUseCase checkShopNameUseCase) {
         this.checkDomainNameUseCase = checkDomainNameUseCase;
@@ -108,6 +111,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
     }
 
     private void checkShopWS(String shopName) {
+        checkShopNameUseCase.unsubscribe();
         checkShopNameUseCase.execute(CheckShopNameUseCase.createRequestParams(shopName), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -129,6 +133,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
     }
 
     private void checkDomainWS(String domainName) {
+        checkDomainNameUseCase.unsubscribe();
         checkDomainNameUseCase.execute(CheckDomainNameUseCase.createRequestParams(domainName), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {

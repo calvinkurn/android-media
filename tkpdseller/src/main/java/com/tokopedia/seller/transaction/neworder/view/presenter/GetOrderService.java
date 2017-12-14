@@ -14,8 +14,6 @@ import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
 import com.tokopedia.seller.transaction.neworder.view.appwidget.GetNewOrderView;
 import com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
@@ -56,7 +54,7 @@ public class GetOrderService extends BaseService implements GetNewOrderView {
 
 
     public void getNewOrder() {
-        if(SessionHandler.isV4Login(this) && SessionHandler.isUserSeller(this)) {
+        if(SessionHandler.isV4Login(this) && SessionHandler.isUserHasShop(this)) {
             presenter.getNewOrderAndCount();
         }else{
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);

@@ -21,15 +21,6 @@ public class ShopOpenDomainModule {
 
     @ShopOpenDomainScope
     @Provides
-    ShopOpenDomainPresenter providePresenter(CheckDomainNameUseCase checkDomainNameUseCase,
-                                             CheckShopNameUseCase checkShopNameUseCase) {
-        return new ShopOpenDomainPresenterImpl(
-                checkDomainNameUseCase, checkShopNameUseCase) {
-        };
-    }
-
-    @ShopOpenDomainScope
-    @Provides
     public ShopOpenRepository provideShopOpenRepository(ShopOpenDataSource shopOpenDataSource) {
         return new ShopOpenRepositoryImpl(shopOpenDataSource);
     }

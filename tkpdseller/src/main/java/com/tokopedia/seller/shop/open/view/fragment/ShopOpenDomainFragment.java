@@ -21,6 +21,8 @@ import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
+import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
 
 import javax.inject.Inject;
 
@@ -32,18 +34,16 @@ import rx.Subscription;
 
 public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOpenDomainView {
 
-    public static final String TAG = "ShopOpenDomain";
+    private static final String TAG = ShopOpenDomainFragment.class.getSimpleName();
 
     @Inject
-    ShopOpenDomainPresenter presenter;
-    ShopOpenDomainComponent component;
+    ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
+
     private View buttonSubmit;
     private TkpdTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
     private TkpdTextInputLayout textInputDomainName;
     private PrefixEditText editTextInputDomainName;
-    // untuk test
-    private Subscription subscription;
 
     public static ShopOpenDomainFragment newInstance() {
         Bundle args = new Bundle();
@@ -55,14 +55,10 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
 
     @Override
     protected void initInjector() {
-        component = DaggerShopOpenDomainComponent
-                .builder()
-                .shopOpenDomainModule(new ShopOpenDomainModule())
-                .shopComponent(getComponent(ShopComponent.class))
-                .build();
+        ShopOpenDomainComponent component = getComponent(ShopOpenDomainComponent.class);
         component.inject(this);
 
-        presenter.attachView(this);
+        shopOpenDomainPresenter.attachView(this);
     }
 
     @Nullable
@@ -81,41 +77,23 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
 
         buttonSubmit.setEnabled(false);
 
-        editTextInputShopName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+        editTextInputShopName.addTextChangedListener(new AfterTextWatcher() {
 
             @Override
             public void afterTextChanged(Editable s) {
                 textInputShopName.setSuccess("");
                 buttonSubmit.setEnabled(false);
-                presenter.checkShop(editTextInputShopName.getText().toString());
+                shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
             }
         });
 
-        editTextInputDomainName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+        editTextInputDomainName.addTextChangedListener(new AfterTextWatcher() {
 
             @Override
             public void afterTextChanged(Editable s) {
                 textInputDomainName.setSuccess("");
                 buttonSubmit.setEnabled(false);
-                presenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
+                shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
             }
         });
         return view;
