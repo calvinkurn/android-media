@@ -158,9 +158,9 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                view.hideProgressLoading();
+                if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
                     couponData.setErrorMessage(e.getMessage());
-                    view.hideProgressLoading();
                     view.couponError();
                 } else {
                     view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
@@ -184,9 +184,9 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                view.hideProgressLoading();
+                if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
                     couponData.setErrorMessage(e.getMessage());
-                    view.hideProgressLoading();
                     view.couponError();
                 } else {
                     view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);

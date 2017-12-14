@@ -12,5 +12,8 @@ public interface IPromoCodeView extends IBaseView {
 
     void checkDigitalVoucherSucessful(VoucherViewModel voucherModel);
 
-    void promoCodeError(String errorMessage);
+    void onGetGeneralError(String errorMessage);
+
+    void onPromoCodeError(String errorMessage);
+
 }
