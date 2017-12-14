@@ -35,9 +35,6 @@ public class HeaderHomeView extends BaseCustomView {
     private TextView tvBalanceTokoPoint;
     private ImageView ivLogoTokoPoint;
 
-    //  private HomeHeaderWalletAction homeHeaderWalletAction;
-
-
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
         super(context);
         this.headerViewModel = headerViewModel;
