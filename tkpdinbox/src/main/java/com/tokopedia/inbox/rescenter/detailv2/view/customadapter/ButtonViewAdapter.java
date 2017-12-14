@@ -36,6 +36,8 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     public static final int STATUS_CANCEL = 0;
 
     public static final int ADAPTER_SPAN_COUNT = 2;
+    public static final int SPAN_COUNT_DOUBLE = 2;
+    public static final int SPAN_COUNT_SINGLE = 1;
 
     private Context context;
     private List<ButtonViewItem> buttonViewItemList;
@@ -122,17 +124,17 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
     @Override
     public int getItemViewType(int position) {
         if (resolutionStatus == STATUS_CANCEL || resolutionStatus == STATUS_FINISHED) {
-            return 2;
+            return SPAN_COUNT_DOUBLE;
         } else {
             // pos 0 always green and bottom
-            if (buttonViewItemList.size() == 1) return 2;
-            else if (buttonViewItemList.size() == 2) return 1;
+            if (buttonViewItemList.size() == 1) return SPAN_COUNT_DOUBLE;
+            else if (buttonViewItemList.size() == 2) return SPAN_COUNT_SINGLE;
             else if (buttonViewItemList.size() == 3) {
-                if (position == 2) return 2;
-                else return 1;
+                if (position == 2) return SPAN_COUNT_DOUBLE;
+                else return SPAN_COUNT_SINGLE;
             } else if (buttonViewItemList.size() == 4) {
-                if (position == 0 || position == 3) return 2;
-                else return 1;
+                if (position == 0 || position == 3) return SPAN_COUNT_DOUBLE;
+                else return SPAN_COUNT_SINGLE;
             }
         }
         return super.getItemViewType(position);

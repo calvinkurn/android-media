@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/border"
-        android:layout_width="69dp"
-        android:layout_height="69dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:scaleType="centerCrop"
         android:src="@drawable/addproduct"
         android:layout_centerInParent="true"
@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/attachment"
-        android:layout_width="69dp"
-        android:layout_height="69dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:scaleType="centerCrop"
         android:layout_centerInParent="true"
         android:padding="5dp"/>
