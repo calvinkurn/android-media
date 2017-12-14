@@ -70,10 +70,10 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
@@ -628,18 +628,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
-        spaceItemDecoration.setStart(containsInstance(items, TickerViewModel.class) ? 2 : 1);
+        spaceItemDecoration.setStart(lastIndexOfInstance(items, CategorySectionViewModel.class));
         recyclerView.invalidateItemDecorations();
         adapter.setItems(items);
     }
 
-    public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {
-        for (E e : list) {
-            if (clazz.isInstance(e)) {
-                return true;
+    public int lastIndexOfInstance(List list, Class clazz) {
+        for (int i = 0; i < list.size(); i++) {
+            if (clazz.isInstance(list.get(i))) {
+                if (i > 0)
+                    return i - 1;
             }
         }
-        return false;
+        return 0;
     }
 
     @Override
