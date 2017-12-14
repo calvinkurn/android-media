@@ -6,6 +6,7 @@ import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksResponseModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 
 import rx.Observable;
 
@@ -34,4 +35,5 @@ public interface HomeRepository {
     Observable<Ticker> getTickers();
 
     Observable<Ticker> getTickersCache();
+
 }

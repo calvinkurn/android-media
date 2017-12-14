@@ -119,6 +119,14 @@ public class VoucherCartHachikoView extends BaseCustomView {
         layoutUsedPromo.setVisibility(VISIBLE);
     }
 
+    public void setPromoAndCouponLabel() {
+        labelUseVoucher.setText(getContext().getString(R.string.use_promo_code_or_coupon));
+    }
+
+    public void setPromoLabelOnly() {
+        labelUseVoucher.setText(getContext().getString(R.string.use_promo_code));
+    }
+
     public interface ActionListener {
         void onClickUseVoucher();
 

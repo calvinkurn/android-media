@@ -1,7 +1,6 @@
 package com.tokopedia.loyalty.domain.entity.response;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * @author anggaprasetiyo on 27/11/17.
  */
-
+@SuppressWarnings("unused")
 public class TokoPointResponse {
     private static final String KEY_DATA = "data";
     private static final String KEY_HEADER = "header";
@@ -32,17 +31,15 @@ public class TokoPointResponse {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static TokoPointResponse factory(String strResponse) throws IOException {
-        Log.d("HCK RESPONSE SUCCESS: ", strResponse);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
         TokoPointResponse tokoPointResponse = new TokoPointResponse();
         JsonElement jsonElement = new JsonParser().parse(strResponse);
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
         String strData;
 
-        TokoPointHeaderResponse tokoPointHeaderResponse = gson.fromJson(
+        TokoPointHeaderResponse tokoPointHeaderResponse = tokoPointResponse.getGson().fromJson(
                 jsonResponse.get(KEY_HEADER).getAsJsonObject().toString(), TokoPointHeaderResponse.class
         );
-
 
         if ((!jsonResponse.has(KEY_DATA) || jsonResponse.get(KEY_DATA).isJsonNull())
                 && (tokoPointHeaderResponse != null && tokoPointHeaderResponse.getErrorCode() != null
@@ -69,7 +66,7 @@ public class TokoPointResponse {
         return jsonElementData;
     }
 
-    public void setJsonElementData(JsonElement jsonElementData) {
+    private void setJsonElementData(JsonElement jsonElementData) {
         this.jsonElementData = jsonElementData;
     }
 
@@ -77,7 +74,7 @@ public class TokoPointResponse {
         return tokoPointHeaderResponse;
     }
 
-    public void setTokoPointHeaderResponse(TokoPointHeaderResponse tokoPointHeaderResponse) {
+    private void setTokoPointHeaderResponse(TokoPointHeaderResponse tokoPointHeaderResponse) {
         this.tokoPointHeaderResponse = tokoPointHeaderResponse;
     }
 
@@ -89,7 +86,7 @@ public class TokoPointResponse {
         return strResponse;
     }
 
-    public void setStrResponse(String strResponse) {
+    private void setStrResponse(String strResponse) {
         this.strResponse = strResponse;
     }
 
@@ -101,16 +98,12 @@ public class TokoPointResponse {
         return strData;
     }
 
-    public void setStrData(String strData) {
+    private void setStrData(String strData) {
         this.strData = strData;
     }
 
     public Gson getGson() {
         return gson;
-    }
-
-    public void setGson(Gson gson) {
-        this.gson = gson;
     }
 
     @SuppressWarnings("unchecked")

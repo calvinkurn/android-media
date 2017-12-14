@@ -24,7 +24,6 @@ public class BrandsOfficialStoreMapper implements Func1<Response<String>, Brands
         BrandsOfficialStoreResponseModel responseModel = new BrandsOfficialStoreResponseModel();
         if(stringResponse.isSuccessful()){
             responseModel = gson.fromJson(stringResponse.body(), BrandsOfficialStoreResponseModel.class);
-            responseModel.setExpiredTime(System.currentTimeMillis() + (5 * 1000));
             responseModel.setSuccess(true);
         } else {
             responseModel.setSuccess(false);

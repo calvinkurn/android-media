@@ -21,6 +21,9 @@ public class UserTier {
     @SerializedName("reward_points")
     @Expose
     private int rewardPoints;
+    @SerializedName("reward_points_str")
+    @Expose
+    private String rewardPointsStr;
 
     public int getTierId() {
         return tierId;
@@ -36,5 +39,9 @@ public class UserTier {
 
     public int getRewardPoints() {
         return rewardPoints;
+    }
+
+    public String getRewardPointsStr() {
+        return rewardPointsStr;
     }
 }

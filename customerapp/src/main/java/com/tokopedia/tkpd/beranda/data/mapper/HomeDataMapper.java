@@ -1,9 +1,12 @@
 package com.tokopedia.tkpd.beranda.data.mapper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
+import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
@@ -21,7 +24,9 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryIt
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 
@@ -30,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.functions.Func5;
+import rx.functions.Func6;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -38,7 +44,6 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         BrandsOfficialStoreResponseModel, TopPicksResponseModel,
         HomeCategoryResponseModel, List<Visitable>> {
     private final Context context;
-
     public HomeDataMapper(Context context) {
         this.context = context;
     }
@@ -49,9 +54,12 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
                                 TopPicksResponseModel topPicksResponseModel,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
-        if (ticker.getData().getTickers().size() > 0) {
+        boolean isLogin = SessionHandler.isV4Login(context);
+
+        if (ticker.getData().getTickers() != null && ticker.getData().getTickers().size() > 0) {
             list.add(mappingTicker(ticker.getData().getTickers()));
         }
+
         if (homeBannerResponseModel.isSuccess()) {
             list.add(mappingBanner(homeBannerResponseModel));
         }
@@ -71,20 +79,21 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
         }
-        if(!SessionHandler.isV4Login(context) || !SessionHandler.isUserSeller(context)){
+        if (!isLogin || !SessionHandler.isUserSeller(context)) {
             list.add(new EmptyShopViewModel());
         }
-        return rearrangeList(list);
+        return swapList(list);
     }
 
-    private List<Visitable> rearrangeList(List<Visitable> list) {
+    private List<Visitable> swapList(List<Visitable> list) {
         int brandIndex = 0;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof BrandsViewModel) {
                 brandIndex = i;
             }
         }
-        Collections.swap(list, brandIndex, (brandIndex + 1));
+        if (brandIndex > 0)
+            Collections.swap(list, brandIndex, (brandIndex + 1));
         return list;
     }
 
@@ -141,4 +150,5 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         viewModel.setSlides(homeBannerResponseModel.getData().getSlides());
         return viewModel;
     }
+
 }

@@ -13,7 +13,6 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.apiservice.DigitalEndpointService;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointService;
-import com.tokopedia.loyalty.domain.dummyresponse.DummyTokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
@@ -147,25 +146,39 @@ public class TokoPointRepository implements ITokoPointRepository {
             @Override
             public Observable<? extends TokoPointDrawerData> call(Throwable throwable) {
                 throwable.printStackTrace();
-                return tokoPointService.getApi().getPointDrawer(param).map(
-                        new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
+//                return tokoPointService.getApi().getPointDrawer(param).map(
+//                        new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
+//                            @Override
+//                            public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
+//                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
+//                                        tokoplusResponseResponse.body().convertDataObj(
+//                                                TokoPointDrawerDataResponse.class
+//                                        );
+//                                TokoPointDrawerData tokoPointDrawerData =
+//                                        tokoPointResponseMapper.convertTokoplusPointDrawer(
+//                                                tokoPointDrawerDataResponse
+//                                        );
+//                                tokoPointDBService.storePointDrawer(tokoPointDrawerDataResponse);
+//                                return tokoPointDrawerData;
+//                            }
+//                        });
+
+                return tokoPointService.getApi().getPointDrawer(param)
+                        .flatMap(new Func1<Response<TokoPointResponse>, Observable<TokoPointDrawerDataResponse>>() {
                             @Override
-                            public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
+                            public Observable<TokoPointDrawerDataResponse> call(Response<TokoPointResponse> tokoPointResponseResponse) {
                                 TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
-                                        tokoplusResponseResponse.body().convertDataObj(
+                                        tokoPointResponseResponse.body().convertDataObj(
                                                 TokoPointDrawerDataResponse.class
                                         );
-
-//                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
-//                                        new Gson().fromJson(DummyTokoPointResponse.RESPONSE_DRAWER_DATA,
-//                                                TokoPointDrawerDataResponse.class);
-
-                                TokoPointDrawerData tokoPointDrawerData =
-                                        tokoPointResponseMapper.convertTokoplusPointDrawer(
-                                                tokoPointDrawerDataResponse
-                                        );
-                                tokoPointDBService.storePointDrawer(tokoPointDrawerDataResponse);
-                                return tokoPointDrawerData;
+                                return tokoPointDBService.storePointDrawer(tokoPointDrawerDataResponse);
+                            }
+                        }).map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerData>() {
+                            @Override
+                            public TokoPointDrawerData call(TokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
+                                return tokoPointResponseMapper.convertTokoplusPointDrawer(
+                                        tokoPointDrawerDataResponse
+                                );
                             }
                         });
             }

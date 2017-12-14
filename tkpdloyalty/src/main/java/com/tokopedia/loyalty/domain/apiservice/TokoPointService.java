@@ -15,8 +15,7 @@ import retrofit2.Retrofit;
  * @author anggaprasetiyo on 27/11/17.
  */
 
-public class
-TokoPointService extends BaseService<TokoPointApi> {
+public class TokoPointService extends BaseService<TokoPointApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(TokoPointApi.class);
@@ -24,7 +23,7 @@ TokoPointService extends BaseService<TokoPointApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.TOKOPOINT_API_DOMAIN + TkpdBaseURL.TokoPoint.VERSION; //TODO BASEURL + VERSION
+        return TkpdBaseURL.TOKOPOINT_API_DOMAIN + TkpdBaseURL.TokoPoint.VERSION;
     }
 
     @Override
@@ -37,9 +36,11 @@ TokoPointService extends BaseService<TokoPointApi> {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient.Builder builder = OkHttpFactory.create().addOkHttpRetryPolicy(getOkHttpRetryPolicy()).getClientBuilder();
+        OkHttpClient.Builder builder = OkHttpFactory.create()
+                .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .getClientBuilder();
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder);
-        tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
+        // tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new TokoPointAuthInterceptor(TkpdBaseURL.TokoPoint.HMAC_KEY));
         tkpdOkHttpBuilder.setOkHttpRetryPolicy(getOkHttpRetryPolicy());

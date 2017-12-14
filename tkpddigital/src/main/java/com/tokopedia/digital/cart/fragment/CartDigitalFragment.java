@@ -301,9 +301,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if (GlobalConfig.isSellerApp()) {
             voucherCartHachikoView.setVisibility(View.GONE);
         } else {
-            voucherCartHachikoView.setVisibility(
-                    cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
-            );
+            if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
+                voucherCartHachikoView.setVisibility(View.VISIBLE);
+                if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                    voucherCartHachikoView.setPromoAndCouponLabel();
+                } else {
+                    voucherCartHachikoView.setPromoLabelOnly();
+                }
+            } else {
+                voucherCartHachikoView.setVisibility(View.GONE);
+            }
 
             UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),
                     cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
@@ -705,9 +712,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
                     voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
 
-                    checkoutHolderView.enableVoucherDiscount(
-                            voucherDiscountAmount
-                    );
+                    if (voucherDiscountAmount > 0) {
+                        checkoutHolderView.enableVoucherDiscount(voucherDiscountAmount);
+                    }
                 }
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
@@ -715,8 +722,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     String couponTitle = bundle.getString(LoyaltyActivity.COUPON_TITLE, "");
                     String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
                     String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
+                    long couponDiscountAmount = bundle.getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
 
                     voucherCartHachikoView.setCoupon(couponTitle, couponMessage, couponCode);
+
+                    if (couponDiscountAmount > 0) {
+                        checkoutHolderView.enableVoucherDiscount(couponDiscountAmount);
+                    }
                 }
             }
         }
