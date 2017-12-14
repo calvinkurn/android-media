@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.listener;
 
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 
@@ -11,6 +10,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewM
 
 public interface DetailResCenterFragmentView {
     String getResolutionID();
+
+    int getResolutionStatus();
 
     void setResolutionID(String resolutionID);
 
@@ -34,9 +35,11 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionCancelResolutionClick();
 
-    void setOnActionAcceptProductClick();
+    void setOnActionFinishResolutionClick();
 
     void setOnActionAcceptSolutionClick();
+
+    void setOnActionRecomplaintClick();
 
     void setOnActionInputAddressClick();
 
@@ -58,7 +61,7 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionEditAddressClick();
 
-    void setOnActionProductClick(String productID);
+    void setOnActionProductClick(String productID, String productName);
 
     void setOnActionPeopleDetailClick(String buyerID);
 
@@ -71,6 +74,10 @@ public interface DetailResCenterFragmentView {
     void setOnActionAppealClick();
 
     void setOnActionInputAwbNumberClick();
+
+    void setOnDiscussionButtonPosition(boolean isButtonAvailable);
+
+    void actionReturnToList();
 
     void doOnInitTimeOut();
 
@@ -92,4 +99,5 @@ public interface DetailResCenterFragmentView {
 
     void doOnActionTimeOut();
 
+    void hideTimeTicker();
 }

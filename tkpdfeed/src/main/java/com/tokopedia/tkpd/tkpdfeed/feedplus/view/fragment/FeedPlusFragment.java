@@ -98,7 +98,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
 /**
  * @author by nisie on 5/15/17.
  */
@@ -564,9 +563,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
-        int positionStart = adapter.getItemCount();
-        adapter.showAddFeed();
-        adapter.notifyItemRangeInserted(positionStart, 1);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
     }
 
@@ -686,9 +682,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onShowAddFeedMore() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
-        int positionStart = adapter.getItemCount();
-        adapter.showAddFeed();
-        adapter.notifyItemRangeInserted(positionStart, 1);
     }
 
     @Override

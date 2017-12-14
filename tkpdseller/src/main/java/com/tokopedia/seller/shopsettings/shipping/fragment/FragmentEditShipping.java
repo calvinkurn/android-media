@@ -27,9 +27,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.manage.people.address.activity.DistrictRecommendationActivity;
-import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
@@ -41,6 +40,8 @@ import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShippin
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
+
+import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
 
 /**
  * Created by Kris on 2/19/2016.
@@ -208,6 +209,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
+    public String getDistrictAndCity() {
+        return fragmentShippingHeader.getDistrictAndCity();
+    }
+
+    @Override
     public String getZipCode() {
         return fragmentShippingHeader.getZipCodeData();
     }
@@ -246,6 +252,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     @Override
     public void setLocationProvinceCityDistrict() {
         fragmentShippingHeader.updateLocationData(getString(R.string.hint_choose_city));
+    }
+
+    @Override
+    public void initializeZipCodes() {
+        fragmentShippingHeader.initializeZipCodes();
     }
 
     @Override
@@ -368,8 +379,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case GET_DISTRICT_RECCOMENDATION_REQUEST_CODE:
-                    Address address = data.getParcelableExtra(
-                            DistrictRecomendationFragmentView.Constant.INTENT_DATA_ADDRESS);
+                    Address address = data.getParcelableExtra(INTENT_DATA_ADDRESS);
                     editShippingPresenter.setSelectedAddress(address);
                     fragmentShippingHeader.initializeZipCodes();
                     fragmentShippingHeader.updateLocationData(

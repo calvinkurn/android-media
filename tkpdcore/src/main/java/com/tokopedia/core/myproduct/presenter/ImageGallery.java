@@ -23,7 +23,7 @@ public interface ImageGallery {
 
     String getFolderPath(int position);
 
-    void getItemListAlbum(int position);
-
     void getItemListAlbum(String folderPath);
+
+    void detach();
 }

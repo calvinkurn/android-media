@@ -2,26 +2,39 @@ package com.tokopedia.topads.keyword.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
+import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nathan on 5/17/17.
  */
 
-public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
+public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
+        implements HasComponent<AppComponent>,
+        TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
+    public static final String RESULT_WORDS = "rslt_wrds";
     public static final String TAG = TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
-
     private static final String EXTRA_IS_POSITIVE = "is_pos";
     private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
+    List<Fragment> fragmentList;
 
     public static void start(Activity activity, int requestCode,
                              boolean isPositive) {
@@ -57,10 +70,30 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
     }
 
     @Override
-    protected Fragment getNewFragment() {
-        boolean isPositive = getIntent().getBooleanExtra(EXTRA_IS_POSITIVE, true);
-        String groupId = getIntent().getStringExtra(EXTRA_CHOOSEN_GROUP);
-        return TopAdsKeywordNewChooseGroupFragment.newInstance(isPositive, groupId);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        boolean isPositive = false;
+        String groupId = null;
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            isPositive = getIntent().getBooleanExtra(EXTRA_IS_POSITIVE, true);
+            groupId = getIntent().getStringExtra(EXTRA_CHOOSEN_GROUP);
+        }
+        stepperModel = new TopAdsKeywordStepperModel();
+        ((TopAdsKeywordStepperModel) stepperModel).setGroupId(groupId);
+        ((TopAdsKeywordStepperModel) stepperModel).setPositive(isPositive);
+        super.onCreate(savedInstanceState);
+    }
+
+    @NonNull
+    @Override
+    protected List<Fragment> getListFragment() {
+        if (fragmentList == null) {
+            fragmentList = new ArrayList<>();
+            fragmentList.add(TopAdsKeywordNewChooseGroupFragment.newInstance());
+            fragmentList.add(TopAdsKeywordAddFragment.newInstance());
+            return fragmentList;
+        } else {
+            return fragmentList;
+        }
     }
 
     @Override
@@ -71,5 +104,55 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    public void finishPage() {
+        setResultAdSaved();
+        super.finishPage();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!exitConfirmation())
+            super.onBackPressed();
+    }
+
+    private boolean exitConfirmation(){
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
+        if(fragment != null && fragment instanceof TopAdsKeywordAddFragment){
+            if(((TopAdsKeywordAddFragment)fragment).isButtonSaveEnabled()){
+                AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                        .setMessage(getString(R.string.topads_keyword_add_cancel_dialog))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                TopAdsKeywordNewChooseGroupActivity.super.onBackPressed();
+                            }
+                        }).setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+
+                            }
+                        }).create();
+                dialog.show();
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void setResultAdSaved() {
+        Intent intent = new Intent();
+        setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public void onSuccessSave(ArrayList<String> keyWordsList) {
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(RESULT_WORDS, keyWordsList);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

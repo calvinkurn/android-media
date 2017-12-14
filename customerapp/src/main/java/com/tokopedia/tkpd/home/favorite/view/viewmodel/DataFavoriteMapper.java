@@ -30,6 +30,7 @@ public class DataFavoriteMapper {
         favoriteShopViewModel.setShopAvatarImageUrl(favoriteShop.getIconUri());
         favoriteShopViewModel.setShopLocation(favoriteShop.getLocation());
         favoriteShopViewModel.setFavoriteShop(favoriteShop.isFav());
+        favoriteShopViewModel.setBadgeUrl(favoriteShop.getBadgeUrl());
         return favoriteShopViewModel;
     }
 
