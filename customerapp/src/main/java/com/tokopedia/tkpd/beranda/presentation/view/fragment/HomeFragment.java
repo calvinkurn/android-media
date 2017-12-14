@@ -589,7 +589,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCloseTicker(int pos) {
-
+        adapter.getItems().remove(pos);
+        adapter.notifyItemRemoved(pos);
     }
 
     @Override

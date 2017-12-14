@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.LayoutRes;
@@ -35,25 +37,26 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     TextView textMessage;
     @BindView(R.id.btn_close)
     ImageView btnClose;
-    @BindView(R.id.announcement_ticker_container)
-    LinearLayout tickerLayout;
 
     private HomeCategoryListener listener;
     private Timer timer;
+    private Context context;
+    private static final long SLIDE_DELAY = 5000;
 
     public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.listener = listener;
         this.timer = new Timer();
+        this.context = itemView.getContext();
     }
 
     @Override
     public void bind(TickerViewModel element) {
         Ticker.Tickers ticker = element.getTickers().get(0);
         textMessage.setText(ticker.getMessage());
-        btnClose.setColorFilter(Color.parseColor(ticker.getColor()), PorterDuff.Mode.MULTIPLY);
-        timer.scheduleAtFixedRate(new SwitchTicker(element.getTickers()), 0, 1000);
+        btnClose.setColorFilter(Color.parseColor(ticker.getColor()), PorterDuff.Mode.SRC_IN);
+        timer.scheduleAtFixedRate(new SwitchTicker(element.getTickers()), 0, SLIDE_DELAY);
     }
 
     private class SwitchTicker extends TimerTask {
@@ -66,20 +69,23 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
 
         @Override
         public void run() {
-            if (i < tickers.size() - 1)
-                i++;
-            else
-                i = 0;
-            Ticker.Tickers ticker = tickers.get(i);
-            textMessage.setText(ticker.getMessage());
-            btnClose.setColorFilter(Color.parseColor(ticker.getColor()), PorterDuff.Mode.MULTIPLY);
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (i < tickers.size() - 1)
+                        i++;
+                    else
+                        i = 0;
+                    Ticker.Tickers ticker = tickers.get(i);
+                    textMessage.setText(ticker.getMessage());
+                    btnClose.setColorFilter(Color.parseColor(ticker.getColor()), PorterDuff.Mode.SRC_IN);
+                }
+            });
         }
     }
 
     @OnClick(R.id.btn_close)
     void closeTicker() {
         listener.onCloseTicker(getAdapterPosition());
-        timer.cancel();
-        tickerLayout.setVisibility(View.GONE);
     }
 }
