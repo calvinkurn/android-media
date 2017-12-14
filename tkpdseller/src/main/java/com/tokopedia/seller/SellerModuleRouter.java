@@ -2,6 +2,7 @@ package com.tokopedia.seller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;

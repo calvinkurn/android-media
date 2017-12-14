@@ -1,20 +1,16 @@
 package com.tokopedia.core.app;
 
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -50,11 +46,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
-
-import java.util.Iterator;
-import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -317,6 +308,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this,
@@ -336,6 +328,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }, DISMISS_TIME);
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onTimezoneError() {
 
@@ -357,7 +350,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                     public void onDialogClicked() {
                         sessionHandler.forceLogout();
                         if (GlobalConfig.isSellerApp()) {
-                            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
+                            Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {

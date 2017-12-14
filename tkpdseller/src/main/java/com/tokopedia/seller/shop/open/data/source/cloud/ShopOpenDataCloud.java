@@ -3,9 +3,9 @@ package com.tokopedia.seller.shop.open.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckShop;
-import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 
 import javax.inject.Inject;
 

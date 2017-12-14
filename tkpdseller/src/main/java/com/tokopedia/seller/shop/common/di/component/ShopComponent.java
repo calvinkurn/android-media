@@ -38,51 +38,14 @@ public interface ShopComponent {
     @ApplicationContext
     Context context();
 
-    @AceQualifier
-    Retrofit aceRetrofit();
-
-    @MerlinQualifier
-    Retrofit merlinRetrofit();
-
-    @MojitoQualifier
-    Retrofit mojitoRetrofit();
-
-    @HadesQualifier
-    Retrofit hadesRetrofit();
-
-    @YoutubeQualifier
-    Retrofit youtubeRetrofit();
-
-    @DefaultAuthWithErrorHandler
-    OkHttpClient okHttpClient();
-
-    @ResolutionQualifier
-    Retrofit resolutionRetrofit();
-
-    @GoldMerchantQualifier
-    Retrofit goldMerchantRetrofit();
-
-    @CartQualifier
-    Retrofit cartRetrofit();
-
     @TomeQualifier
     Retrofit tomeRetrofit();
 
-    Retrofit.Builder retrofitBuilder();
-
     Gson gson();
-
-    @WsV4Qualifier
-    Retrofit baseDomainRetrofit();
-
-    @WsV4QualifierWithErrorHander
-    Retrofit baseDomainWithErrorHandlerRetrofit();
 
     ThreadExecutor threadExecutor();
 
     PostExecutionThread postExecutionThread();
 
     SessionHandler sessionHandler();
-
-    GCMHandler gcmHandler();
 }

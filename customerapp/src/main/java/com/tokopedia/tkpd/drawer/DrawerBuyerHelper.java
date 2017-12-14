@@ -590,9 +590,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        Intent intent = SellerRouter.getActivityShopCreateEdit(context,true,false);
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }

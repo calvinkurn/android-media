@@ -59,14 +59,8 @@ public class SplashScreenActivity extends SplashScreen {
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        if (context == null)
-            return null;
-
         if (SessionHandler.isMsisdnVerified()) {
-            Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
+            Intent intent = SellerRouter.getActivityShopCreateEdit(context, true, true);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         } else {
