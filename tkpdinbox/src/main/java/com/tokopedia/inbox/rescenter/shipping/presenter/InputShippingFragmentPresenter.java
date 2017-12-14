@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.shipping.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,7 +16,7 @@ public interface InputShippingFragmentPresenter {
 
     void onFirstTimeLaunched();
 
-    void onScanBarcodeClick();
+    void onScanBarcodeClick(Context context);
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
