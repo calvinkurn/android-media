@@ -535,8 +535,8 @@ public class DetailResChatFragment
 
     private ConversationCreateTimeDomain getConversationCreateTime() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_T_Z);
-        return new ConversationCreateTimeDomain(format.format(calendar.getTime()), "");
+        SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_RESO);
+        return new ConversationCreateTimeDomain(format.format(calendar.getTime()) + "WIB", "");
     }
 
     private List<ConversationAttachmentDomain> getConversationAttachmentTemp(List<AttachmentViewModel> attachmentList) {

@@ -18,7 +18,7 @@ public class CreateTimeResponse {
     private String month;
     @SerializedName("dateNumber")
     private String dateNumber;
-    @SerializedName("timeNumber")
+    @SerializedName("times")
     private String timeNumber;
 
     public String getCreateTimestamp() {

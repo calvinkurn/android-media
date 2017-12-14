@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
@@ -90,7 +92,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     protected Bundle savedState;
 
     View loading;
-    View mainView;
+    NestedScrollView mainView;
     ButtonView buttonView;
     CardView cvNextStep, cvDiscussion;
     AwbReturView awbReturView;
@@ -268,7 +270,17 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 getActivity().finish();
             }
         });
+        mainView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                Log.v("scrollingView", "x : " + scrollX + " y: " + scrollY + " oldX: " + oldScrollX + " oldY: " + oldScrollY);
+            }
+        });
     }
+
+    private void showDiscussionButton(){}
+
+    private void hideDiscussionButton(){}
 
     @Override
     protected String getScreenName() {

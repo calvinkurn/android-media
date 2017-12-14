@@ -27,7 +27,7 @@ public class LogResponse {
     private String month;
     @SerializedName("dateNumber")
     private String dateNumber;
-    @SerializedName("timeNumber")
+    @SerializedName("times")
     private String timeNumber;
 
     public String getCreateTimeFullStr() {
