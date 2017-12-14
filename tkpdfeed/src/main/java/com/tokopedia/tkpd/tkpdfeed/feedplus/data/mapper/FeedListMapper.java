@@ -5,6 +5,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ContentFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FavoriteCtaDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.InspirationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
@@ -116,7 +117,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                             List<TopPicksDomain> topPicksDomains,
                             List<InspirationDomain> inspirationDomains,
                             KolPostDomain kolPostDomain,
-                            KolRecommendationDomain kolRecommendations) {
+                            KolRecommendationDomain kolRecommendations,
+                            FavoriteCtaDomain favoriteCtaDomain) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 content.total_product() != null ? content.total_product() : 0,
@@ -127,6 +129,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 inspirationDomains,
                 kolPostDomain,
                 kolRecommendations,
+                favoriteCtaDomain,
                 content.status_activity());
     }
 
@@ -228,7 +231,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
 
     private ShopDomain convertToOfficialStoreProductShopDomain(FeedQuery.Data.Shop1 shop) {
         return new ShopDomain(shop.name(),
-                shop.url(),
+                shop.url_app(),
                 shop.location()
         );
     }
@@ -255,6 +258,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 KolPostDomain kolPostDomain = createKolPostDomain(datum);
                 KolRecommendationDomain kolRecommendations
                         = convertToKolRecommendationDomain(datum.content().kolrecommendation());
+                FavoriteCtaDomain favoriteCta
+                        = convertToFavoriteCtaDomain(datum.content().favorite_cta());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
@@ -263,7 +268,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                         topPicksDomains,
                         inspirationDomains,
                         kolPostDomain,
-                        kolRecommendations
+                        kolRecommendations,
+                        favoriteCta
                 );
                 SourceFeedDomain sourceFeedDomain =
                         createSourceFeedDomain(datum.source(), shopFeedDomain);
@@ -286,6 +292,17 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
             return domain;
         }
 
+    }
+
+    private FavoriteCtaDomain convertToFavoriteCtaDomain(FeedQuery.Data.Favorite_cta favoriteCta) {
+        if (favoriteCta == null) {
+            return null;
+        } else {
+            FavoriteCtaDomain domain = new FavoriteCtaDomain(favoriteCta
+                    .title_id() == null ? "" : favoriteCta.title_id(),
+                    favoriteCta.subtitle_id() == null ? "" : favoriteCta.subtitle_id());
+            return domain;
+        }
     }
 
     private List<KolRecommendationItemDomain> convertToListKolRecommendation(List<FeedQuery.Data.Kol> kolrecommendation) {

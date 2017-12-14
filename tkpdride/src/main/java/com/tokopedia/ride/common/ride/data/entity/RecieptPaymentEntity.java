@@ -20,6 +20,10 @@ public class RecieptPaymentEntity {
     @Expose
     private float totalAmount;
 
+    @SerializedName("payment_method")
+    @Expose
+    String paymentMethod;
+
     public RecieptPaymentEntity() {
     }
 
@@ -33,5 +37,13 @@ public class RecieptPaymentEntity {
 
     public float getTotalAmount() {
         return totalAmount;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }
