@@ -656,7 +656,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onVoucherCheckButtonClicked() {
-        UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(), getVoucherCode(), cartDigitalInfoDataState.getAttributes().getOperatorName());
+        UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),
+                getVoucherCode(), cartDigitalInfoDataState.getAttributes().getOperatorName());
         presenter.processCheckVoucher();
         KeyboardHandler.hideSoftKeyboard(getActivity());
     }

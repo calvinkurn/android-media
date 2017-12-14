@@ -24,11 +24,6 @@
             tools:text="Dukungan Pengiriman"
             />
 
-        <View
-            android:layout_width="12dp"
-            android:layout_height="18dp"
-            android:background="@drawable/icon_arrow_right"/>
-
     </LinearLayout>
 
     <RelativeLayout

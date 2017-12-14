@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:hint="@string/input_number"
-                android:imeOptions="actionSearch"
+                android:imeOptions="actionDone"
                 android:inputType="numberDecimal"
                 android:padding="@dimen/digital_padding_12"
                 android:textColor="#212121"

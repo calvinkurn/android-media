@@ -23,7 +23,6 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
-import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -112,14 +111,6 @@ public class NetModule {
     public Retrofit provideAccountsRetrofit(@BearerAuth OkHttpClient okHttpClient,
                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN).client(okHttpClient).build();
-    }
-
-    @RechargeQualifier
-    @ApplicationScope
-    @Provides
-    public Retrofit provideRechargeRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.RECHARGE_API_DOMAIN).client(okHttpClient).build();
     }
 
     @YoutubeQualifier
