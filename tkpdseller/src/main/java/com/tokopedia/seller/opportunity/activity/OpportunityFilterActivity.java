@@ -49,15 +49,17 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     }
 
     public static final String CACHE_OPPORTUNITY_FILTER = "CACHE_OPPORTUNITY_FILTER";
+    public static final String PARAM_FILTER_VIEW_MODEL = "PARAM_FILTER_VIEW_MODEL";
+    public static final String PARAM_SELECTED_FILTER = "PARAM_SELECTED_FILTER";
 
     View saveButton;
     View resetButton;
     private List<Fragment> listFragment;
     private ArrayList<FilterViewModel> listFilter;
+    private ArrayList<FilterPass> listPass;
     private OpportunityFilterPassModel filterPassModel;
     private GlobalCacheManager cacheManager;
     private String trackingEventLabel;
-    private int currentFilterTabPosition;
 
     public static Intent createIntent(Context context) {
         Intent intent = new Intent(context, OpportunityFilterActivity.class);
@@ -69,12 +71,17 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         cacheManager = new GlobalCacheManager();
         trackingEventLabel = "";
 
-        OpportunityFilterPassModel opportunityFilterPassModel =
-                cacheManager.getConvertObjData(OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER,
-                        OpportunityFilterPassModel.class);
+        if (savedInstanceState != null) {
+            listFilter = savedInstanceState.getParcelableArrayList(PARAM_FILTER_VIEW_MODEL);
+            listPass = savedInstanceState.getParcelableArrayList(PARAM_SELECTED_FILTER);
+        } else {
+            OpportunityFilterPassModel opportunityFilterPassModel =
+                    cacheManager.getConvertObjData(OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER,
+                            OpportunityFilterPassModel.class);
 
-        listFilter = opportunityFilterPassModel.getListFilter();
-        currentFilterTabPosition = 0;
+            listFilter = opportunityFilterPassModel.getListFilter();
+            listPass = new ArrayList<>();
+        }
         super.onCreate(savedInstanceState);
 
     }
@@ -272,29 +279,21 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         if (listFragment.size() > pos &&
                 listFragment.get(pos) != null
                 && listFragment.get(pos) instanceof FilterListener) {
-            Fragment f = listFragment.get(pos);
-            ((FilterListener) f).updateData(listFilter.get(pos));
-            Fragment previousFragment = listFragment.get(currentFilterTabPosition);
-            if (previousFragment != null) {
-                fragmentTransaction.hide(previousFragment);
-            }
-            fragmentTransaction.show(f);
+            ((FilterListener) listFragment.get(pos)).updateData(listFilter.get(pos));
         } else {
             listFilter.get(pos).setPosition(pos);
-            listFragment.add( OpportunityFilterFragment.createInstance(listFilter.get(pos)));
-            Fragment fragmentToShow = listFragment.get(pos);
-            fragmentTransaction.add(R.id.container, fragmentToShow).show(fragmentToShow);
+            listFragment.add(OpportunityFilterFragment.createInstance(listFilter.get(pos)));
         }
+
+        fragmentTransaction.replace(R.id.container, listFragment.get(pos));
         fragmentTransaction.commit();
-        currentFilterTabPosition = pos;
 
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        // do not save to outstate, because the data is too large
-//        outState.putParcelableArrayList(PARAM_FILTER_VIEW_MODEL, listFilter);
-//        outState.putParcelableArrayList(PARAM_SELECTED_FILTER, listPass);
+        outState.putParcelableArrayList(PARAM_FILTER_VIEW_MODEL, listFilter);
+        outState.putParcelableArrayList(PARAM_SELECTED_FILTER, listPass);
         super.onSaveInstanceState(outState);
     }
 
