@@ -389,7 +389,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
         countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
 
-        String text = String.format("%s1 <b> %s2 %s3</b> %s4",
+        String text = String.format("%s <b> %s %s</b> %s",
                 getString(R.string.please_wait_in),
                 countdown,
                 getString(R.string.second),
