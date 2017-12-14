@@ -524,6 +524,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
+                    UnifyTracking.eventClickMenuSellerInfo();
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
                     break;
