@@ -85,8 +85,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     private int minLengthDefaultOperator;
 
-    private boolean showPrice = true;
-
     private CompositeSubscription compositeSubscription;
 
     private QueryListener queryListener;
@@ -180,9 +178,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<String>() {
                             @Override
-                            public void call(String s) {
-                                if (s != null) {
-                                    String temp = s;
+                            public void call(String clientNumber) {
+                                if (clientNumber != null) {
+                                    String temp = clientNumber;
                                     temp = validateTextPrefix(temp);
 
                                     if (category.getAttributes().isValidatePrefix()) {
@@ -203,15 +201,31 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                                         }
                                     } else {
                                         // handle style 99
-                                        if (s.length() >= minLengthDefaultOperator) {
-                                            boolean needToShowProduct = selectedOperator.getAttributes().getRule().isShowProduct();
-                                            if (selectedOperator != null && needToShowProduct) {
-                                                presenter.getOperatorAndProductsByOperatorId(category.getId(), category.getAttributes().getDefaultOperatorId());
-                                            } else {
-                                                if (selectedOperator != null) {
-                                                    presenter.getOperatorById(String.valueOf(selectedOperator.getId()));
+                                        if (clientNumber.length() >= minLengthDefaultOperator) {
+                                            if (selectedOperator != null) {
+                                                boolean needToShowProduct = selectedOperator.getAttributes().getRule().isShowProduct();
+                                                if (needToShowProduct) {
+                                                    presenter.getOperatorAndProductsByOperatorId(category.getId(), String.valueOf(selectedOperator.getId()));
+                                                } else {
+                                                    presenter.getOperatorById(String.valueOf(category.getAttributes().getDefaultOperatorId()));
                                                 }
+                                            } else {
+                                                presenter.getOperatorById(String.valueOf(category.getAttributes().getDefaultOperatorId()));
                                             }
+
+//                                            if (clientNumber.length() >= minLengthDefaultOperator) {
+//                                                if (selectedOperator != null && selectedOperator.getAttributes().getRule().isShowProduct()) {
+//                                                    presenter.validateOperatorWithProducts(category.getId(),
+//                                                            selectedOperatorId);
+//                                                } else {
+//                                                    if (selectedOperatorId == null) {
+//                                                        selectedOperatorId = category.getAttributes().getDefaultOperatorId();
+//                                                    } else {
+//                                                        presenter.validateOperatorWithoutProducts(category.getId(),
+//                                                                selectedOperatorId);
+//                                                    }
+//                                                }
+//                                            }
                                         }
                                     }
                                 }
@@ -399,15 +413,13 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
             UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
                     selectedOperator.getAttributes().getName());
             minLengthDefaultOperator = operatorModel.getAttributes().getMinimumLength();
-            widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
             widgetClientNumberView.setFilterMaxLength(operatorModel.getAttributes().getMaximumLength());
+            widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
             widgetClientNumberView.setImgOperatorVisible();
-            widgetClientNumberView.setInputType(operatorModel.getAttributes().getRule().isAllowAphanumericNumber());
+//            widgetClientNumberView.setInputType(operatorModel.getAttributes().getRule().isAllowAphanumericNumber());
             widgetProductChooserView.setTitleProduct(operatorModel.getAttributes().getRule().getProductText());
             widgetProductChooserView.setVisibilityProduct(operatorModel.getAttributes().getRule().isShowProduct());
-            if (!operatorModel.getAttributes().getRule().isShowPrice()) {
-                showPrice = false;
-            }
+
             if (!operatorModel.getAttributes().getRule().isShowProduct()) {
                 clearHolder(holderWidgetWrapperBuy);
                 holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
