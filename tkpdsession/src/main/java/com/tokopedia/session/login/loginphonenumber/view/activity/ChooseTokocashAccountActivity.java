@@ -72,7 +72,7 @@ public class ChooseTokocashAccountActivity extends TActivity implements HasCompo
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        toolbar.setPadding(0, 0, 10, 0);
+        toolbar.setPadding(0, 0, 16, 0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(false);

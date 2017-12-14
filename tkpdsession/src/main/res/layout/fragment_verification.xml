@@ -155,7 +155,7 @@
                 android:textStyle="normal"
                 android:visibility="visible"
                 tools:text="Gunakan metode verifikasi lain"
-                tools:visibility="visible"
+                tools:visibility="gone"
                 />
 
             <TextView
@@ -163,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_med"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="6sp"
@@ -171,6 +171,7 @@
                 android:textSize="@dimen/text_size_small"
                 android:textStyle="normal"
                 android:visibility="gone"
+                tools:visibility="visible"
                 android:text="@string/not_received_code"
                 />
 
@@ -179,6 +180,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                tools:visibility="visible"
                 android:visibility="gone">
 
                 <TextView

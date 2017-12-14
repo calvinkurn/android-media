@@ -394,7 +394,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 + countdown
                 + " "
                 + getString(R.string.second)
-                + "</b>"
+                + "</b> "
                 + getString(R.string.to_resend_otp);
 
         countdownText.setText(MethodChecker.fromHtml(text));

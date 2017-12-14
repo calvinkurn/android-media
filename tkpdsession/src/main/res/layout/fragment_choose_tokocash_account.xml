@@ -31,9 +31,9 @@
         android:layout_marginStart="@dimen/padding_activity"
         android:layout_marginTop="@dimen/margin_small"
         android:fontFamily="sans-serif"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="5sp"
         android:textColor="#61000000"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:textStyle="normal"
         tools:text="Anda memiliki 4 akun dengan nomor ponsel 0856-1552-0031. Pilih salah satu akun untuk masuk."
         />
