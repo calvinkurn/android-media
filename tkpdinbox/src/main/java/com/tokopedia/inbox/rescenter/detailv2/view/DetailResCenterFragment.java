@@ -270,17 +270,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                 getActivity().finish();
             }
         });
-        mainView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                Log.v("scrollingView", "x : " + scrollX + " y: " + scrollY + " oldX: " + oldScrollX + " oldY: " + oldScrollY);
-            }
-        });
     }
-
-    private void showDiscussionButton(){}
-
-    private void hideDiscussionButton(){}
 
     @Override
     protected String getScreenName() {

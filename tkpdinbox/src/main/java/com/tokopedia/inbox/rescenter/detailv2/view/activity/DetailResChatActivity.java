@@ -7,15 +7,20 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 
 /**
  * Created by yoasfs on 10/6/17.
@@ -29,6 +34,9 @@ public class DetailResChatActivity
     public static final String PARAM_SHOP_NAME = "shop_name";
     public static final String PARAM_USER_NAME = "user_name";
     public static final String PARAM_IS_SELLER = "is_seller";
+
+    public static final String PARAM_APPLINK_SELLER = "sellerName";
+    public static final String PARAM_APPLINK_BUYER = "buyerName";
 
     public static final int REQUEST_GO_DETAIL = 8888;
     public static final int ACTION_GO_TO_LIST = 6123;
@@ -51,6 +59,21 @@ public class DetailResChatActivity
         intent.putExtra(PARAM_USER_NAME, username);
         intent.putExtra(PARAM_IS_SELLER, true);
         return intent;
+    }
+
+    @DeepLink(Constants.Applinks.RESCENTER)
+    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Intent parentIntent = InboxResCenterActivity.createIntent(context);
+        Intent destinationIntent = new Intent(context, DetailResChatActivity.class);
+        String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
+        destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
+        destinationIntent.putExtra(PARAM_USER_NAME, bundle.getString(PARAM_APPLINK_BUYER,""));
+        destinationIntent.putExtra(PARAM_SHOP_NAME, bundle.getString(PARAM_APPLINK_SELLER,""));
+        destinationIntent.putExtras(bundle);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(destinationIntent);
+        return taskStackBuilder;
     }
 
     @Override
