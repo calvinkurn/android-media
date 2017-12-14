@@ -42,6 +42,8 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -77,7 +79,6 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSect
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
-import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SectionContainer tabContainer;
     private SwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
-    private FirebaseRemoteConfig firebaseRemoteConfig;
+    private RemoteConfig firebaseRemoteConfig;
     private Trace trace;
     private SnackbarRetry messageSnackbar;
     private HomeAdapterFactory adapterFactory;
@@ -154,18 +155,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void fetchRemoteConfig() {
-        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
-        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
-            @Override
-            public void onComplete(FirebaseRemoteConfig remoteConfig) {
-                firebaseRemoteConfig = remoteConfig;
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
+        firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Nullable
@@ -423,8 +413,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             UnifyTracking.eventViewAllOSNonLogin();
         }
 
-        if (firebaseRemoteConfig != null
-                && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
+        if (firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
             getActivity().startActivity(
                     ReactNativeActivity.createOfficialStoresReactNativeActivity(
                             getActivity(), ReactConst.Screen.OFFICIAL_STORE,
