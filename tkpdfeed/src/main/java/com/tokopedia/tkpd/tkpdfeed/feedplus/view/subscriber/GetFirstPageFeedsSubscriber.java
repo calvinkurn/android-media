@@ -456,7 +456,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             return new InspirationViewModel(
                     domain.getContent().getInspirationDomains().get(0).getTitle(),
                     convertToRecommendationListViewModel(domain.getContent()
-                            .getInspirationDomains().get(0).getListInspirationItem()));
+                            .getInspirationDomains().get(0).getListInspirationItem()),
+                    domain.getContent().getInspirationDomains().get(0).getSource());
         } else {
             return null;
         }

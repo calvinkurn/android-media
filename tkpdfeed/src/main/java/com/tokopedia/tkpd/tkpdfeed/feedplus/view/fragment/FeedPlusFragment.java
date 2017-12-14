@@ -427,13 +427,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetailFromInspiration(int page, int rowNumber,
                                                    String productId, String imageSource,
-                                                   String name, String price) {
+                                                   String name, String price,
+                                                   String productUrl, String source,
+                                                   int itemPosition) {
+        FeedTracking.trackEventClickInspirationEnhanced(name, productId, price,
+                productUrl, rowNumber, itemPosition, source, SessionHandler.getLoginID(getContext()));
         goToProductDetail(productId, imageSource, name, price);
         UnifyTracking.eventR3Product(productId, AppEventTracking.Action.CLICK,
                 getFeedAnalyticsHeader(page, rowNumber)
                         + FeedTrackingEventLabel.Click.FEED_RECOMMENDATION_PDP);
     }
-
 
     @Override
     public void onGoToFeedDetail(int page, int rowNumber, String feedId) {
@@ -902,11 +905,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
     @Override
-    public void onToppicksClicked(int page, int rowNumber, String name, String url) {
+    public void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition) {
         UnifyTracking.eventFeedClick(
                 getFeedAnalyticsHeader(page, rowNumber) +
                         FeedTrackingEventLabel.Click.TOPPICKS + name);
-        trackEventEnhanced(name, url, rowNumber);
+        FeedTracking.trackEventClickTopPicksEnhanced(name, url, rowNumber, itemPosition, SessionHandler.getLoginID(getContext()));
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
                 DeepLinkChecker.openBrowse(url, getActivity());
@@ -923,32 +926,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             , url);
                 }
         }
-    }
-
-    private void trackEventEnhanced(String name, String productUrl, int rowNumber) {
-        FeedTracking.enhanceClickFeedRecomItem(createProductList(name, rowNumber),
-                FeedTracking.getClickTopPicksEventLabel(),
-                FeedTracking.getClickTopPicksActionField(rowNumber),
-                productUrl
-                );
-    }
-
-    private List<Object> createProductList(String name, int rowNumber) {
-        com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
-        product.setName(name);
-        product.setId("");
-        product.setPrice("");
-        product.setBrand("");
-        product.setCategoryId("");
-        product.setCategoryName("");
-        product.setVariant("");
-        product.setList(FeedTracking.getClickTopPicksActionField(rowNumber));
-        product.setPosition(rowNumber);
-        product.setUserId(SessionHandler.getLoginID(getContext()));
-
-        List<Object> list = new ArrayList<>();
-        list.add(product.getProductAsDataLayerForFeedRecomItemClick());
-        return list;
     }
 
     @Override

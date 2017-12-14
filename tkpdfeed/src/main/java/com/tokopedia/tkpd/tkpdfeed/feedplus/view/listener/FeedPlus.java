@@ -62,7 +62,7 @@ public interface FeedPlus {
         void setFirstCursor(String firstCursor);
 
         interface Toppicks {
-            void onToppicksClicked(int page, int rowNumber, String name, String url);
+            void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition);
 
             void onSeeAllToppicks(int page, int rowNumber);
         }
@@ -77,7 +77,9 @@ public interface FeedPlus {
 
         void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price);
 
-        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId, String imageSource, String name, String price);
+        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId,
+                                                String imageSource, String name, String price,
+                                                String productUrl, String source, int itemPosition);
 
         void onGoToFeedDetail(int page, int rowNumber, String feedId);
 
