@@ -119,12 +119,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                         .filter(new Func1<Product, Boolean>() {
                                             @Override
                                             public Boolean call(Product product) {
-                                                return product
-                                                        .getRelationships()
-                                                        .getOperator()
-                                                        .getData()
-                                                        .getId() == operatorId;
-                                            }
+                                                return isProductValidToOperator(product, categoryId, operatorId);                                            }
                                         })
                                         .toList()
                                         .map(new Func1<List<Product>, Pair<Operator, List<Product>>>() {
@@ -401,6 +396,22 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
             }
         };
+    }
+
+    private boolean isProductValidToOperator(final Product product, final int categoryId, final int operatorId) {
+        return product
+                .getRelationships()
+                .getCategory()
+                .getData()
+                .getId() == categoryId
+                &&
+                product
+                        .getRelationships()
+                        .getOperator()
+                        .getData()
+                        .getId() == operatorId
+                &&
+                product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
     }
 
     private Func1<Product, Boolean> isProductExist(final int categoryId, final int operatorId, final int productId) {

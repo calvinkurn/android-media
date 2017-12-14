@@ -212,20 +212,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                                             } else {
                                                 presenter.getOperatorById(String.valueOf(category.getAttributes().getDefaultOperatorId()));
                                             }
-
-//                                            if (clientNumber.length() >= minLengthDefaultOperator) {
-//                                                if (selectedOperator != null && selectedOperator.getAttributes().getRule().isShowProduct()) {
-//                                                    presenter.validateOperatorWithProducts(category.getId(),
-//                                                            selectedOperatorId);
-//                                                } else {
-//                                                    if (selectedOperatorId == null) {
-//                                                        selectedOperatorId = category.getAttributes().getDefaultOperatorId();
-//                                                    } else {
-//                                                        presenter.validateOperatorWithoutProducts(category.getId(),
-//                                                                selectedOperatorId);
-//                                                    }
-//                                                }
-//                                            }
                                         }
                                     }
                                 }
@@ -293,8 +279,10 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onRechargeTextClear() {
-                selectedOperator = null;
-                widgetClientNumberView.setImgOperatorInvisible();
+                if (category.getAttributes().isValidatePrefix()) {
+                    selectedOperator = null;
+                    widgetClientNumberView.setImgOperatorInvisible();
+                }
                 clearHolder(holderWidgetSpinnerProduct);
                 clearHolder(holderWidgetWrapperBuy);
             }
