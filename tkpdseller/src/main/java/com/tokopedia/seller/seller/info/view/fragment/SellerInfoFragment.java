@@ -9,10 +9,12 @@ import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
@@ -128,4 +130,21 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
     public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
         return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
     }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewNoResultBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_state);
+        emptyDataBinder.setEmptyTitleText(getString(R.string.seller_info_empty_title));
+        emptyDataBinder.setEmptyContentText(getString(R.string.seller_info_empty_desc));
+        return emptyDataBinder;
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_state);
+        emptyDataBinder.setEmptyTitleText(getString(R.string.seller_info_empty_title));
+        emptyDataBinder.setEmptyContentText(getString(R.string.seller_info_empty_desc));
+        return emptyDataBinder;
+    }
+
 }
