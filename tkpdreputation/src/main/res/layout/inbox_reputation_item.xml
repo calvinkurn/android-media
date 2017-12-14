@@ -147,28 +147,17 @@
         android:layout_marginTop="@dimen/margin_small"
         android:background="@color/grey_300"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/footer_height"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
         <TextView
             android:id="@+id/action"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/footer_height"
             android:layout_gravity="center_vertical"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/margin_sm"
-            android:gravity="center_vertical"
+            android:gravity="end|center_vertical"
+            android:paddingRight="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_small"
             android:textColor="@color/medium_green"
             android:textSize="14sp"
             tools:text="Beri Penilaian dan Balas Ulasan"/>
-
-    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"

@@ -52,6 +52,7 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -243,7 +244,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 if (SessionHandler.isFirstTimeUser(ParentIndexHome.this)) {
 
                     //  Launch app intro
-                    Intent i = new Intent(ParentIndexHome.this, OnboardingActivity.class);
+                    Intent i = new Intent(ParentIndexHome.this, NewOnboardingActivity.class);
                     startActivityForResult(i, ONBOARDING_REQUEST);
 
                 }

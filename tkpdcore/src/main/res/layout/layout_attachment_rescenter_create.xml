@@ -8,17 +8,28 @@
 
     <ImageView
         android:id="@+id/border"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:scaleType="centerCrop"
         android:src="@drawable/addproduct"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:padding="5dp"/>
 
     <ImageView
         android:id="@+id/attachment"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:scaleType="centerCrop"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:padding="5dp"/>
 
+    <ImageView
+        android:id="@+id/delete_attachment"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_close_image"
+        android:layout_alignTop="@id/attachment"
+        android:layout_alignRight="@id/attachment"
+        android:layout_alignEnd="@id/attachment"
+        android:visibility="gone"/>
 </RelativeLayout>

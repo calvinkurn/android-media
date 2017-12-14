@@ -7,8 +7,8 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
@@ -114,6 +114,13 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                         , shopInformation.cityName
                         , shopInformation.districtName);
             }
+        } else {
+            shopInformation.provinceName = selectedAddress.getProvinceName();
+            shopInformation.provinceId = selectedAddress.getProvinceId();
+            shopInformation.cityName = selectedAddress.getCityName();
+            shopInformation.cityId = selectedAddress.getCityId();
+            shopInformation.districtName = selectedAddress.getDistrictName();
+            shopInformation.districtId = selectedAddress.getDistrictId();
         }
         view.onShowViewAfterLoading();
         displayCourierList(model);
@@ -240,17 +247,19 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                 shopInformation.longitude = longitude;
             }
 
-            String postalCode = model.getOpenShopHashMap().get(EditShippingPresenter.SHOP_POSTAL);
-            if (postalCode != null) {
-                shopInformation.postalCode = postalCode;
-            }
-
             String selectedAddressStr = model.getOpenShopHashMap().get(EditShippingPresenter.SELECTED_ADDRESS);
             if (selectedAddressStr != null && selectedAddressStr.length() > 0) {
                 selectedAddress = new Gson().fromJson(selectedAddressStr, Address.class);
 
                 view.setLocationProvinceCityDistrict(selectedAddress.getProvinceName(),
                         selectedAddress.getCityName(), selectedAddress.getDistrictName());
+
+                view.initializeZipCodes();
+            }
+
+            String postalCode = model.getOpenShopHashMap().get(EditShippingPresenter.SHOP_POSTAL);
+            if (postalCode != null) {
+                shopInformation.postalCode = postalCode;
             }
         }
     }
@@ -396,6 +405,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
         if (selectedAddress != null) {
+            shippingParams.put(SELECTED_ADDRESS, new Gson().toJson(selectedAddress));
             shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
             shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
         } else {
@@ -420,7 +430,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
             shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
         }
-        shippingParams.put(DISTRICT_AND_CITY, view.getDistrictAndCity());
         addAdditionalOptionsConfigurations(shippingParams);
     }
 

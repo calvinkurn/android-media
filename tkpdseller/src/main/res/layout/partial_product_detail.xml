@@ -98,7 +98,6 @@
         android:focusable="true"
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/product_label_shop_window" />
 
     <com.tokopedia.design.text.SpinnerTextView
