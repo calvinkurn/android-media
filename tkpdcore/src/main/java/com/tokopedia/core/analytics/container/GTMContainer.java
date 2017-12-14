@@ -471,15 +471,15 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void enhanceClickFeedRecomItem(List<Object> objects,
-                                          String eventCategory,
-                                          String eventAction,
                                           String eventLabel,
-                                          String productUrl, String actionField) {
+                                          String productUrl,
+                                          String actionField) {
+
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf("event", "productClick",
-                        "eventCategory", eventCategory,
-                        "eventAction", eventAction,
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - click card item",
                         "eventLabel", eventLabel,
                         "ecommerce", DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField", actionField,

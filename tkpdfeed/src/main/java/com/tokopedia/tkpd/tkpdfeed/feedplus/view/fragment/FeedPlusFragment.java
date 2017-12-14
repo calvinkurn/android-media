@@ -23,6 +23,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -96,6 +97,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -904,6 +906,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         UnifyTracking.eventFeedClick(
                 getFeedAnalyticsHeader(page, rowNumber) +
                         FeedTrackingEventLabel.Click.TOPPICKS + name);
+        trackEventEnhanced(name, url, rowNumber);
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
                 DeepLinkChecker.openBrowse(url, getActivity());
@@ -920,6 +923,32 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             , url);
                 }
         }
+    }
+
+    private void trackEventEnhanced(String name, String productUrl, int rowNumber) {
+        FeedTracking.enhanceClickFeedRecomItem(createProductList(name, rowNumber),
+                FeedTracking.getClickTopPicksEventLabel(),
+                FeedTracking.getClickTopPicksActionField(rowNumber),
+                productUrl
+                );
+    }
+
+    private List<Object> createProductList(String name, int rowNumber) {
+        com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
+        product.setName(name);
+        product.setId("");
+        product.setPrice("");
+        product.setBrand("");
+        product.setCategoryId("");
+        product.setCategoryName("");
+        product.setVariant("");
+        product.setList(FeedTracking.getClickTopPicksActionField(rowNumber));
+        product.setPosition(rowNumber);
+        product.setUserId(SessionHandler.getLoginID(getContext()));
+
+        List<Object> list = new ArrayList<>();
+        list.add(product.getProductAsDataLayerForFeedRecomItemClick());
+        return list;
     }
 
     @Override

@@ -111,5 +111,5 @@ public interface IGTMContainer {
 
     void eventImpressionHotlistProductFeatured(Hotlist hotlist);
 
-    void enhanceClickFeedRecomItem(List<Object> objects, String eventCategory, String eventAction, String eventLabel, String productUrl, String actionField);
+    void enhanceClickFeedRecomItem(List<Object> objects, String eventLabel, String productUrl, String actionField);
 }
