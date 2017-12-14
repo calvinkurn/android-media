@@ -130,7 +130,7 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
         ImageHandler.loadImageWithIdWithoutPlaceholder(image, R.drawable.ic_tokocash_no_account);
         title.setText(R.string.no_tokocash_account);
         message.setText(R.string.no_tokocash_account_message);
-        actionButton.setText(R.string.login_with_other_method);
+        actionButton.setText(R.string.login_with_other_method_2);
 
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override

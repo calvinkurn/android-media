@@ -82,7 +82,7 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:lineSpacingExtra="8sp"
+                android:lineSpacingExtra="5sp"
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="normal"
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_vl"
                 android:layout_marginRight="@dimen/margin_vl"
-                android:layout_marginTop="@dimen/margin_large"
+                android:layout_marginTop="24dp"
                 android:background="@null"
                 android:cursorVisible="false"
                 android:digits="1234567890"
@@ -130,7 +130,7 @@
                 android:layout_height="@dimen/btn_height"
                 android:layout_marginLeft="42dp"
                 android:layout_marginRight="42dp"
-                android:layout_marginTop="@dimen/margin_large"
+                android:layout_marginTop="24dp"
                 android:background="@drawable/grey_button_rounded"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
@@ -145,7 +145,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginTop="@dimen/margin_small"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="6sp"
@@ -155,7 +155,7 @@
                 android:textStyle="normal"
                 android:visibility="visible"
                 tools:text="Gunakan metode verifikasi lain"
-                tools:visibility="gone"
+                tools:visibility="visible"
                 />
 
             <TextView
@@ -163,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginTop="@dimen/margin_small"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="6sp"
@@ -171,7 +171,7 @@
                 android:textSize="@dimen/text_size_small"
                 android:textStyle="normal"
                 android:visibility="gone"
-                tools:text="Tidak menerima kode?"
+                android:text="@string/not_received_code"
                 />
 
             <RelativeLayout

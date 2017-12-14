@@ -121,6 +121,7 @@
         TokoCash</string>
     <string name="not_connected_tokocash_message">Untuk masuk dengan nomor ponsel akun TokoCash Anda, harap lakukan verifikasi nomor ponsel terlebih dahulu.</string>
     <string name="login_with_other_method">Gunakan metode verifikasi lain</string>
+    <string name="login_with_other_method_2">Masuk dengan Pilihan Lainnya</string>
     <string name="no_tokocash_account">Tidak ada Akun Tokopedia yang\nTerhubung ke TokoCash</string>
     <string name="no_tokocash_account_message">Silakan gunakan pilihan lainnya untuk masuk. Untuk menggunakan pilihan ini, harap lakukan aktivasi TokoCash kembali dari akun Tokopedia Anda</string>
     <string name="phone_number_not_connected">Nomor Ponsel Belum Terhubung</string>
@@ -135,4 +136,5 @@
     <string name="use_other_method">gunakan metode verifikasi lain</string>
     <string name="or_small">atau</string>
     <string name="second">detik</string>
+    <string name="not_received_code">Tidak menerima kode?</string>
 </resources>

@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/margin_sm">
 
         <ImageView
             android:id="@+id/icon"
@@ -29,7 +29,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_sm"
             android:fontFamily="sans-serif"
-            android:lineSpacingExtra="8sp"
+            android:lineSpacingExtra="5sp"
             android:textColor="@color/black_54"
             android:textSize="@dimen/text_size_medium"
             android:textStyle="normal"
