@@ -24,6 +24,7 @@ import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
 import com.tokopedia.seller.seller.info.view.presenter.SellerInfoPresenter;
 import com.tokopedia.seller.seller.info.view.util.SellerInfoDateUtil;
+import com.tokopedia.core.analytics.UnifyTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
         if(sellerInfoModel instanceof SellerInfoSectionModel)
             return;
+        UnifyTracking.eventClickItemSellerInfo(sellerInfoModel.getTitle());
 
         startActivity(SellerInfoWebViewActivity.getCallingIntent(this, sellerInfoModel.getExternalLink()));
     }

@@ -2545,6 +2545,23 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventSellerInfo(String eventAction, String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SHOP_MANAGE,
+                AppEventTracking.Category.SELLER_INFO_HOMEPAGE,
+                eventAction,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventClickMenuSellerInfo(){
+        eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
+    }
+
+    public static void eventClickItemSellerInfo(String articleName){
+        eventSellerInfo(AppEventTracking.Action.CLICK_ARTICLE, articleName);
+    }
+
     public static void eventClickMenuFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
     }

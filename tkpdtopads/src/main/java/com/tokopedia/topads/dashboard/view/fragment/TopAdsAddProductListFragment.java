@@ -356,9 +356,9 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         SearchView.SearchAutoComplete mSearchSrcTextView =
                 (SearchView.SearchAutoComplete)
                         searchView.findViewById(com.tokopedia.core.R.id.search_src_text);
-        mSearchSrcTextView.setTextColor(getResources().getColor(com.tokopedia.core.R.color.white));
+        mSearchSrcTextView.setTextColor(getResources().getColor(com.tokopedia.core.R.color.black_70));
         mSearchSrcTextView.setHintTextColor(
-                getResources().getColor(com.tokopedia.core.R.color.white)
+                getResources().getColor(com.tokopedia.core.R.color.black_70)
         );
 
         updateOptionMenuColor(menu);
