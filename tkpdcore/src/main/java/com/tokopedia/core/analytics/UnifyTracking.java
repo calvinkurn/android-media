@@ -2547,7 +2547,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventSellerInfo(String eventAction, String eventLabel) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SHOP_MANAGE,
+                AppEventTracking.Event.SELLER_INFO,
                 AppEventTracking.Category.SELLER_INFO_HOMEPAGE,
                 eventAction,
                 eventLabel

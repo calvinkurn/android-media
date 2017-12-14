@@ -151,6 +151,7 @@ public interface AppEventTracking {
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
+        String SELLER_INFO = "seller info-homepage";
     }
 
     interface Category {
