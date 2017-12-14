@@ -108,6 +108,12 @@ public class ShopReputationList extends V2BaseFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         this.isVisibleToUser = isVisibleToUser;
+        if (isVisibleToUser) {
+            if (getActivity() != null &&
+                    getActivity() instanceof ShopInfoActivity) {
+                ((ShopInfoActivity) getActivity()).swipeAble(true);
+            }
+        }
     }
 
     private void initFacade() {

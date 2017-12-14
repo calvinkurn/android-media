@@ -274,7 +274,8 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
                 Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                 Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType()
+                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed()
         ));
 
         return this;

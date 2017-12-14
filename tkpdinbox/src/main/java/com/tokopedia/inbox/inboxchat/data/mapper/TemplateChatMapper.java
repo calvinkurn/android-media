@@ -57,9 +57,11 @@ public class TemplateChatMapper implements Func1<Response<TkpdResponse>, GetTemp
         if(data.isIsEnable()){
             List<Visitable> list = new ArrayList<>();
             for (int i = 0; i < data.getTemplates().size(); i++) {
-                TemplateChatModel templateChatModel = new TemplateChatModel();
-                templateChatModel.setMessage(data.getTemplates().get(i));
-                list.add(templateChatModel);
+                if(!data.getTemplates().get(i).equals("_")){
+                    TemplateChatModel templateChatModel = new TemplateChatModel();
+                    templateChatModel.setMessage(data.getTemplates().get(i));
+                    list.add(templateChatModel);
+                }
             }
             model.setListTemplate(list);
         }

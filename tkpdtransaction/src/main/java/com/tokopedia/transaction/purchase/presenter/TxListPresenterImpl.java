@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
@@ -431,6 +432,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TrackingUtils.sendMoEngageShippingReceivedEvent(false);
                 dialog.dismiss();
             }
         });
@@ -438,6 +440,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TrackingUtils.sendMoEngageShippingReceivedEvent(true);
                 confirmPurchaseOrder(context, dialog, orderData);
             }
         });
