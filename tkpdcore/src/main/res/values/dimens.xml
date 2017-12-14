@@ -212,6 +212,22 @@
     <dimen name="intermediary_brand">86dp</dimen>
     <dimen name="intermediary_card">100dp</dimen>
     <dimen name="media_grid_spacing">4dp</dimen>
+
+
+    <!--NEW ONBOARDING-->
+    <dimen name="line_spacing_6">6sp</dimen>
+    <dimen name="line_spacing_8">8sp</dimen>
+    <dimen name="step_size_nob">30dp</dimen>
+    <dimen name="padding_button_nob">16dp</dimen>
+    <dimen name="margin_side_button_nob">40dp</dimen>
+    <dimen name="margin_bottom_button_nob">8dp</dimen>
+    <dimen name="fab_button_diameter_nob">40dp</dimen>
+    <dimen name="space_nob_s">30dp</dimen>
+    <dimen name="space_nob">60dp</dimen>
+    <dimen name="margin_stepper_nob">70dp</dimen>
+    <dimen name="margin_left_skip_nob">20dp</dimen>
+
+
     <dimen name="verified_icon_size">12dp</dimen>
     <dimen name="featured_product_item_image_size">205dp</dimen>
     <dimen name="product_item_title_min_height">38dp</dimen>
