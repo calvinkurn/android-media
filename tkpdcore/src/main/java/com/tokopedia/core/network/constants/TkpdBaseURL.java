@@ -823,17 +823,23 @@ public class TkpdBaseURL {
         public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
         public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";
         public static final String BASE_DETAIL_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
+        public static final String BASE_DETAIL_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_2 + "detail/{resolution_id}";
 
         public static final String GET_RESOLUTION_LIST = BASE_INBOX_RESOLUTION;
         public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;
+        public static final String GET_RESOLUTION_DETAIL_V2 = BASE_DETAIL_RESOLUTION_V2;
         public static final String GET_RESOLUTION_CONVERSATION = BASE_DETAIL_RESOLUTION + "/conversation";
         public static final String GET_RESOLUTION_CONVERSATION_MORE = BASE_DETAIL_RESOLUTION + "/conversation/more";
         public static final String GET_RESOLUTION_HISTORY_AWB = BASE_DETAIL_RESOLUTION + "/history/awb";
         public static final String GET_RESOLUTION_HISTORY_ACTION = BASE_DETAIL_RESOLUTION + "/history/action";
+        public static final String GET_RESOLUTION_HISTORY_ACTION_V2 = BASE_DETAIL_RESOLUTION_V2 + "/history/action";
         public static final String GET_RESOLUTION_HISTORY_ADDRESS = BASE_DETAIL_RESOLUTION + "/history/address";
         public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
         public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
         public static final String ACTION_REPLY_RESOLUTION = BASE_DETAIL_RESOLUTION + "/reply";
+        public static final String ACTION_FINISH_RESOLUTION = BASE_DETAIL_RESOLUTION + "/finish";
+        public static final String ACTION_CANCEL_RESOLUTION = BASE_DETAIL_RESOLUTION + "/cancel";
+        public static final String ACTION_ASK_HELP_RESOLUTION = BASE_DETAIL_RESOLUTION + "/report_resolution";
 
 
         public static final String BASE_RESOLUTION_CREATE = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
@@ -842,13 +848,22 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_STEP_1 = BASE_RESOLUTION_CREATE + "/step1";
         public static final String POST_RESOLUTION_STEP_2_3 = BASE_RESOLUTION_CREATE + "/step2_3";
 
-        public static final String BASE_RESOLUTION_EDIT = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
-        public static final String GET_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
-        public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
-        public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
-        public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
+        public static final String BASE_RESOLUTION_DETAIL_V1 = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
+        public static final String GET_RESOLUTION_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/edit";
+        public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/edit";
+        public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_DETAIL_V1 + "/appeal";
+        public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_DETAIL_V1 + "/appeal";
 
 
+        public static final String BASE_DETAIL_NEXT_ACTION_RESOLUTION_V2 = BASE_DETAIL_RESOLUTION_V2 + "/next_action";
+        public static final String GET_RESOLUTION_CONVERSATION_V2 = BASE_DETAIL_RESOLUTION_V2 + "/conversation";
+        public static final String GET_RESOLUTION_CONVERSATION_MORE_V2 = GET_RESOLUTION_CONVERSATION_V2 + "/more";
+        public static final String POST_RESOLUTION_CONVERSATION_REPLY = BASE_RESOLUTION_DETAIL_V1 + "/reply";
+        public static final String POST_RESOLUTION_CONVERSATION_ADDRESS = BASE_RESOLUTION_DETAIL_V1 + "/address";
+        public static final String POST_RESOLUTION_CONVERSATION_ADDRESS_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/conversation/{conversation_id}/edit_address";
+        public static final String POST_RESOLUTION_CONVERSATION_AWB = BASE_RESOLUTION_DETAIL_V1 + "/awb";
+        public static final String POST_RESOLUTION_CONVERSATION_AWB_EDIT = BASE_RESOLUTION_DETAIL_V1 + "/conversation/{conversation_id}/edit_awb";
+        public static final String GET_RESOLUTION_CONVERSATION_V2_MORE = BASE_DETAIL_RESOLUTION_V2 + "/more";
 
 
     }

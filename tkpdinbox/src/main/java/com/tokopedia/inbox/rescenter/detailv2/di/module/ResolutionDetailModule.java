@@ -13,8 +13,13 @@ import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapperV2;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetDetailResChatMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetDetailResChatMoreMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetNextActionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
@@ -23,10 +28,30 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptAdminSolut
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CreatePictureUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GenerateHostUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GenerateHostV2UseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetNextActionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatMoreUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.LoadMoreDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.NewReplyDiscussionSubmitUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.NewReplyDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.ReplyDiscussionSubmitUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.ReplyDiscussionValidationUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionV2UseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadImageUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadImageV2UseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadVideoUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.view.fragment.TrackShippingFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
@@ -41,6 +66,7 @@ import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageV2Mapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadVideoMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussionParam;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
@@ -61,6 +87,8 @@ public class ResolutionDetailModule {
 
     private DetailResCenterFragmentView viewListener;
 
+    private TrackShippingFragment trackShippingFragment;
+
     public ResolutionDetailModule() {
 
     }
@@ -69,10 +97,15 @@ public class ResolutionDetailModule {
         this.viewListener = viewListener;
     }
 
+    public ResolutionDetailModule(TrackShippingFragment viewListener) {
+        this.trackShippingFragment = viewListener;
+    }
+
     @ResolutionDetailScope
     @Provides
     DetailResCenterFragmentImpl provideDetailResCenterFragmentPresenter(
             GetResCenterDetailUseCase getResCenterDetailUseCase,
+            GetResCenterDetailV2UseCase getResCenterDetailV2UseCase,
             TrackAwbReturProductUseCase trackAwbReturProductUseCase,
             CancelResolutionUseCase cancelResolutionUseCase,
             AskHelpResolutionUseCase askHelpResolutionUseCase,
@@ -84,6 +117,7 @@ public class ResolutionDetailModule {
         return new DetailResCenterFragmentImpl(
                 viewListener,
                 getResCenterDetailUseCase,
+                getResCenterDetailV2UseCase,
                 trackAwbReturProductUseCase,
                 cancelResolutionUseCase,
                 askHelpResolutionUseCase,
@@ -94,7 +128,6 @@ public class ResolutionDetailModule {
                 editAddressUseCase
         );
     }
-
     @ResolutionDetailScope
     @Provides
     GetResCenterDetailUseCase provideGetResCenterDetailUseCase(
@@ -106,6 +139,7 @@ public class ResolutionDetailModule {
                 postExecutionThread,
                 resCenterRepository);
     }
+
 
     @ResolutionDetailScope
     @Provides
@@ -205,6 +239,36 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
+    GetResChatUseCase provideGetResChatUseCase(ThreadExecutor threadExecutor,
+                                               PostExecutionThread postExecutionThread,
+                                               ResCenterRepository resCenterRepository){
+        return new GetResChatUseCase(threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GetResChatMoreUseCase provideGetResChatMoreUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   ResCenterRepository resCenterRepository){
+        return new GetResChatMoreUseCase(threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GetResCenterDetailV2UseCase provideGetResCenterDetailV2UseCase(ThreadExecutor threadExecutor,
+                                               PostExecutionThread postExecutionThread,
+                                               ResCenterRepository resCenterRepository){
+        return new GetResCenterDetailV2UseCase(threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
     ResCenterRepository provideResCenterRepository(ResCenterDataSourceFactory resCenterDataSourceFactory) {
         return new ResCenterRepositoryImpl(resCenterDataSourceFactory);
     }
@@ -225,7 +289,11 @@ public class ResolutionDetailModule {
             DiscussionResCenterMapper discussionResCenterMapper,
             LoadMoreMapper loadMoreMapper,
             ReplyResolutionMapper replyResolutionMapper,
-            ReplyResolutionSubmitMapper replyResolutionSubmitMapper) {
+            ReplyResolutionSubmitMapper replyResolutionSubmitMapper,
+            GetDetailResChatMapper getDetailResChatMapper,
+            GetDetailResChatMoreMapper getDetailResChatMoreMapper,
+            GetNextActionMapper nextActionMapper,
+            DetailResCenterMapperV2 detailResCenterMapperV2) {
 
         return new ResCenterDataSourceFactory(
                 context,
@@ -241,7 +309,11 @@ public class ResolutionDetailModule {
                 discussionResCenterMapper,
                 loadMoreMapper,
                 replyResolutionMapper,
-                replyResolutionSubmitMapper
+                replyResolutionSubmitMapper,
+                getDetailResChatMapper,
+                getDetailResChatMoreMapper,
+                nextActionMapper,
+                detailResCenterMapperV2
         );
     }
 
@@ -267,6 +339,18 @@ public class ResolutionDetailModule {
     @Provides
     ResCenterActApi provideResCenterActService(@UploadWsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ResCenterActApi.class);
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GetDetailResChatMapper provideGetDetailResChatMapper() {
+        return new GetDetailResChatMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GetDetailResChatMoreMapper provideGetDetailResChatMoreMapper() {
+        return new GetDetailResChatMoreMapper();
     }
 
     @ResolutionDetailScope
@@ -349,6 +433,218 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
+    GetResCenterDiscussionUseCase provideGetResCenterDiscussionUseCase(ThreadExecutor threadExecutor,
+                                                                       PostExecutionThread postExecutionThread,
+                                                                       ResCenterRepository resCenterRepository) {
+        return new GetResCenterDiscussionUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    LoadMoreDiscussionUseCase provideLoadMoreDiscussionUseCase(ThreadExecutor threadExecutor,
+                                                               PostExecutionThread postExecutionThread,
+                                                               ResCenterRepository resCenterRepository) {
+        return new LoadMoreDiscussionUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    SendDiscussionUseCase provideSendDiscussionUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       GenerateHostUseCase generateHostUseCase,
+                                                       ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
+                                                       UploadImageUseCase uploadImageUseCase,
+                                                       CreatePictureUseCase createPictureUseCase,
+                                                       ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase) {
+        return new SendDiscussionUseCase(
+                threadExecutor,
+                postExecutionThread,
+                generateHostUseCase,
+                replyDiscussionValidationUseCase,
+                uploadImageUseCase,
+                createPictureUseCase,
+                replyDiscussionSubmitUseCase
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    SendDiscussionV2UseCase provideSendDiscussionV2UseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           GenerateHostV2UseCase generateHostUseCase,
+                                                           NewReplyDiscussionUseCase replyDiscussionUseCase,
+                                                           NewReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase,
+                                                           UploadImageV2UseCase uploadImageUseCase,
+                                                           UploadVideoUseCase uploadVideoUseCase) {
+        return new SendDiscussionV2UseCase(
+                threadExecutor,
+                postExecutionThread,
+                generateHostUseCase,
+                replyDiscussionUseCase,
+                replyDiscussionSubmitUseCase,
+                uploadImageUseCase,
+                uploadVideoUseCase
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    ReplyDiscussionValidationUseCase provideReplyDiscussionValidationUseCase(ThreadExecutor threadExecutor,
+                                                                             PostExecutionThread postExecutionThread,
+                                                                             ResCenterRepository resCenterRepository) {
+        return new ReplyDiscussionValidationUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    NewReplyDiscussionUseCase provideNewReplyDiscussionUseCase(ThreadExecutor threadExecutor,
+                                                               PostExecutionThread postExecutionThread,
+                                                               ResCenterRepository resCenterRepository) {
+        return new NewReplyDiscussionUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    NewReplyDiscussionSubmitUseCase provideNewReplyDiscussionSubmitUseCase(ThreadExecutor threadExecutor,
+                                                                           PostExecutionThread postExecutionThread,
+                                                                           ResCenterRepository resCenterRepository) {
+        return new NewReplyDiscussionSubmitUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GenerateHostV2UseCase provideGenerateHostV2UseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       ResCenterRepository repository) {
+        return new GenerateHostV2UseCase(
+                threadExecutor,
+                postExecutionThread,
+                repository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GenerateHostUseCase provideGenerateHostUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   UploadImageRepository uploadImageRepository) {
+        return new GenerateHostUseCase(
+                threadExecutor,
+                postExecutionThread,
+                uploadImageRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadImageUseCase provideUploadImageUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 UploadImageRepository uploadImageRepository) {
+        return new UploadImageUseCase(
+                threadExecutor,
+                postExecutionThread,
+                uploadImageRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadImageV2UseCase provideUploadImageV2UseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     UploadImageRepository uploadImageRepository) {
+        return new UploadImageV2UseCase(
+                threadExecutor,
+                postExecutionThread,
+                uploadImageRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadVideoUseCase provideUploadVideoUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 UploadImageRepository uploadImageRepository) {
+        return new UploadVideoUseCase(threadExecutor,
+                postExecutionThread,
+                uploadImageRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    CreatePictureUseCase provideCreatePictureUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     UploadImageRepository uploadImageRepository) {
+        return new CreatePictureUseCase(
+                threadExecutor,
+                postExecutionThread,
+                uploadImageRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    ReplyDiscussionSubmitUseCase provideReplyDiscussionSubmitUseCase(ThreadExecutor threadExecutor,
+                                                                     PostExecutionThread postExecutionThread,
+                                                                     UploadImageRepository uploadImageRepository) {
+        return new ReplyDiscussionSubmitUseCase(
+                threadExecutor,
+                postExecutionThread,
+                uploadImageRepository
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    FinishResolutionUseCase provideFinishResolutionUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           ResCenterRepository resCenterRepository) {
+        return new FinishResolutionUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GetNextActionUseCase provideGetNextActionUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     ResCenterRepository resCenterRepository) {
+        return new GetNextActionUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    SendReplyDiscussionParam provideSendReplyDiscussionParam() {
+        return new SendReplyDiscussionParam();
+    }
+
+
+    @ResolutionDetailScope
+    @Provides
     GenerateHostActService provideGenerateHostActService() {
         return new GenerateHostActService();
     }
@@ -397,8 +693,20 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
+    GetNextActionMapper provideNextActionMapper() {
+        return new GetNextActionMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
     ReplyResolutionSubmitMapper provideReplyResolutionSubmitMapper() {
         return new ReplyResolutionSubmitMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    DetailResCenterMapperV2 provideDetailResCenterMapperV2() {
+        return new DetailResCenterMapperV2();
     }
 
 }

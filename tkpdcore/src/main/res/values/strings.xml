@@ -890,6 +890,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_fax_optional">Fax (Opsional)</string>
     <string name="title_process_partial">Proses sebagian</string>
     <string name="title_reject">Tolak</string>
+    <string name="title_save_button">Simpan</string>
     <string name="title_confirm_button">Konfirmasi</string>
     <string name="title_transaction_value">Jumlah transaksi</string>
     <string name="title_shipping_status">STATUS</string>
@@ -1240,6 +1241,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
         <item>@string/title_last_update</item>
     </string-array>
     <string name="index_spinner_0_default">Pilih</string>
+    <string name="index_spinner_0_shipping">Pilih Kurir</string>
 
     <!-- End of Strings related Res Center -->
     <string name="title_activity_create_resolution">Buat Resolusi</string>
@@ -1831,7 +1833,7 @@ di Tokopedia Sekarang!</string>
     <string name="action_keep">Batal</string>
     <string name="title_free_return">Free Returns</string>
     <string name="title_activity_edit_resolution">Ubah Solusi</string>
-    <string name="title_activity_input_shipping">Input Resi</string>
+    <string name="title_activity_input_shipping">Masukkan No. Resi</string>
     <string name="title_message_for_seller">Pesan untuk penjual</string>
     <string name="title_message_for_buyer">Pesan untuk pembeli</string>
     <string name="title_summary_trouble_product">X123 produk Y123</string>
