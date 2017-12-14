@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.detailv2.view;
+package com.tokopedia.inbox.rescenter.detailv2.view.activity;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -13,6 +13,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailViewListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPresenter;
@@ -23,13 +24,18 @@ import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
  */
 
 public class DetailResCenterActivity extends BasePresenterActivity<DetailResCenterPresenter>
-    implements DetailViewListener, HasComponent {
+        implements DetailViewListener, HasComponent {
 
+    public static final String PARAM_SHOP_NAME = "shop_name";
+    public static final String PARAM_USER_NAME = "user_name";
+    public static final String PARAM_IS_SELLER = "is_seller";
     private static final String EXTRA_PARAM_RESOLUTION_CENTER_DETAIL = "resolution_id";
     private static final String TAG_DETAIL_FRAGMENT_RESOLUTION_CENTER = DetailResCenterFragment.class.getSimpleName();
-
     private String resolutionID;
     private Fragment detailResCenterFragment;
+    private String shopName;
+    private String userName;
+    private boolean isSeller;
 
     public static Intent newInstance(Context context, String resolutionID) {
         Intent intent = new Intent(context, DetailResCenterActivity.class);
@@ -38,6 +44,23 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
         intent.putExtras(bundle);
         return intent;
     }
+
+    public static Intent newBuyerInstance(Context context, String resolutionId, String shopName) {
+        Intent intent = new Intent(context, DetailResCenterActivity.class);
+        intent.putExtra(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resolutionId);
+        intent.putExtra(PARAM_SHOP_NAME, shopName);
+        intent.putExtra(PARAM_IS_SELLER, false);
+        return intent;
+    }
+
+    public static Intent newSellerInstance(Context context, String resolutionId, String username) {
+        Intent intent = new Intent(context, DetailResCenterActivity.class);
+        intent.putExtra(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resolutionId);
+        intent.putExtra(PARAM_USER_NAME, username);
+        intent.putExtra(PARAM_IS_SELLER, true);
+        return intent;
+    }
+
 
     @DeepLink(Constants.Applinks.RESCENTER)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
@@ -80,6 +103,12 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     @Override
     protected void setupBundlePass(Bundle extras) {
         setResolutionID(extras.getString(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL));
+        isSeller = extras.getBoolean(PARAM_IS_SELLER);
+        if (isSeller) {
+            userName = extras.getString(PARAM_USER_NAME);
+        } else {
+            shopName = extras.getString(PARAM_SHOP_NAME);
+        }
     }
 
     @Override
@@ -95,6 +124,11 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     @Override
     protected void initView() {
         presenter.generateDetailResCenterFragment();
+        if (isSeller) {
+            toolbar.setTitle(getString(R.string.complaint_from) + " " + userName);
+        } else {
+            toolbar.setTitle(getString(R.string.complaint_to) + " " + shopName);
+        }
         inflateFragment();
     }
 
@@ -130,5 +164,11 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
     }
 }

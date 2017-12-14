@@ -156,6 +156,8 @@ public interface AppEventTracking {
         String CANCEL_APP_RATING = "cancelAppRating";
 
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
+
+        String EVENT_ONBOARDING = "onBoardingEvent";
     }
 
     interface Category {
@@ -259,6 +261,8 @@ public interface AppEventTracking {
         String APP_RATING = "Application Rating";
 
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
+
+        String ONBOARDING = "onboarding";
     }
 
     interface Action {
@@ -391,6 +395,9 @@ public interface AppEventTracking {
         String FEED_UNFOLLOW_KOL_RECOMMENDATION = "feed - unfollow kol recommendation";
         String FEED_CLICK_KOL_RECOMMENDATION_PROFILE = "feed - click kol recommendation profile";
         String FEED_VIEW_ALL_KOL_RECOMMENDATION = "feed - view all kol recommendation";
+
+        String ONBOARDING_SKIP = "click - skip button";
+        String ONBOARDING_START = "click - mulai";
     }
 
     interface EventLabel {
@@ -718,6 +725,9 @@ public interface AppEventTracking {
         String FEED_CONTENT_COMMENT_DETAIL_BACK = "back";
         String FEED_CONTENT_COMMENT_DETAIL_LOAD_MORE = "load more";
         String FEED_KOL_RECOMMENDATION_VIEW_ALL = "kol discovery page";
+
+        String ONBOARDING_SKIP_LABEL = "skip - ";
+        String ONBOARDING_START_LABEL = "click mulai sekarang";
     }
 
     interface SOCIAL_MEDIA {

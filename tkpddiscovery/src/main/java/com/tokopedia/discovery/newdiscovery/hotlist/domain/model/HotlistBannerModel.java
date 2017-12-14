@@ -10,6 +10,7 @@ public class HotlistBannerModel {
     private String bannerImage;
     private String bannerDesc;
     private boolean disableTopads;
+    private HotlistPromoInfo hotlistPromoInfo;
 
     public HotlistQueryModel getHotlistQueryModel() {
         return hotlistQueryModel;
@@ -41,5 +42,13 @@ public class HotlistBannerModel {
 
     public boolean isDisableTopads() {
         return disableTopads;
+    }
+
+    public HotlistPromoInfo getHotlistPromoInfo() {
+        return hotlistPromoInfo;
+    }
+
+    public void setHotlistPromoInfo(HotlistPromoInfo hotlistPromoInfo) {
+        this.hotlistPromoInfo = hotlistPromoInfo;
     }
 }

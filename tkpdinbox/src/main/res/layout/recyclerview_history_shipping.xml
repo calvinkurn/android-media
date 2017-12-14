@@ -102,19 +102,32 @@
         android:layout_alignTop="@id/tv_date"
         android:layout_alignBottom="@id/separator">
 
-        <ImageView
-            android:id="@+id/indicator"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:src="@drawable/ic_check_circle_48dp"
-            />
+        <FrameLayout
+            android:id="@+id/fl_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp">
+
+            <ImageView
+                android:id="@+id/indicator"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:src="@drawable/bg_circle_green"
+                />
+
+            <com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView
+                android:id="@+id/view_glowing"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"/>
+        </FrameLayout>
 
         <View
             android:id="@+id/line_indicator"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/indicator"
+            android:layout_below="@id/fl_button"
             android:background="@color/grey"
             />
 
