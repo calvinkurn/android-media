@@ -5,6 +5,4 @@
     android:layout_height="wrap_content"
     android:adjustViewBounds="true"
     android:focusable="true"
-    android:minHeight="180dp"
-    android:maxHeight="200dp"
     android:src="@drawable/ic_loading_image" />

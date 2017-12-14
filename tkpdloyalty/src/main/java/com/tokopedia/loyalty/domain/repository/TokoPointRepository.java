@@ -42,7 +42,6 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     private final TokoPointService tokoPointService;
     private final TXVoucherService txVoucherService;
-    private final TXService txService;
     private final TokoPointResponseMapper tokoPointResponseMapper;
     private final ITokoPointDBService tokoPointDBService;
     private final DigitalEndpointService digitalService;
@@ -52,14 +51,12 @@ public class TokoPointRepository implements ITokoPointRepository {
                                ITokoPointDBService tokoPointDBService,
                                TokoPointResponseMapper tokoPointResponseMapper,
                                TXVoucherService txVoucherService,
-                               TXService txService,
                                DigitalEndpointService digitalService
 
     ) {
         this.tokoPointService = tokoPointService;
         this.tokoPointResponseMapper = tokoPointResponseMapper;
         this.tokoPointDBService = tokoPointDBService;
-        this.txService = txService;
         this.txVoucherService = txVoucherService;
         this.digitalService = digitalService;
     }
@@ -146,23 +143,6 @@ public class TokoPointRepository implements ITokoPointRepository {
             @Override
             public Observable<? extends TokoPointDrawerData> call(Throwable throwable) {
                 throwable.printStackTrace();
-//                return tokoPointService.getApi().getPointDrawer(param).map(
-//                        new Func1<Response<TokoPointResponse>, TokoPointDrawerData>() {
-//                            @Override
-//                            public TokoPointDrawerData call(Response<TokoPointResponse> tokoplusResponseResponse) {
-//                                TokoPointDrawerDataResponse tokoPointDrawerDataResponse =
-//                                        tokoplusResponseResponse.body().convertDataObj(
-//                                                TokoPointDrawerDataResponse.class
-//                                        );
-//                                TokoPointDrawerData tokoPointDrawerData =
-//                                        tokoPointResponseMapper.convertTokoplusPointDrawer(
-//                                                tokoPointDrawerDataResponse
-//                                        );
-//                                tokoPointDBService.storePointDrawer(tokoPointDrawerDataResponse);
-//                                return tokoPointDrawerData;
-//                            }
-//                        });
-
                 return tokoPointService.getApi().getPointDrawer(param)
                         .flatMap(new Func1<Response<TokoPointResponse>, Observable<TokoPointDrawerDataResponse>>() {
                             @Override

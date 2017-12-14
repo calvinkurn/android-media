@@ -85,56 +85,6 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    TokoCashUseCase tokoCashUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread,
-                                    TokoCashRepository tokoCashRepository) {
-        return new TokoCashUseCase(threadExecutor, postExecutionThread, tokoCashRepository);
-    }
-
-    @HomeScope
-    @Provides
-    TopPointsUseCase topPointsUseCase(ThreadExecutor threadExecutor,
-                                      PostExecutionThread postExecutionThread,
-                                      TopPointsRepository topPointsRepository) {
-        return new TopPointsUseCase(threadExecutor, postExecutionThread, topPointsRepository);
-    }
-
-    @HomeScope
-    @Provides
-    TokoCashRepository tokoCashRepository(TokoCashSourceFactory tokoCashSourceFactory){
-        return new TokoCashRepositoryImpl(tokoCashSourceFactory);
-    }
-
-    @HomeScope
-    @Provides
-    TopPointsRepository topPointsRepository(TopPointsSourceFactory topPointsSourceFactory) {
-        return new TopPointsRepositoryImpl(topPointsSourceFactory);
-    }
-
-    @HomeScope
-    @Provides
-    TokoCashSourceFactory tokoCashSourceFactory(@ApplicationContext Context context,
-                                                SessionHandler sessionHandler,
-                                                GlobalCacheManager globalCacheManager){
-        Bundle bundle = new Bundle();
-        String authKey = sessionHandler.getAccessToken(context);
-        authKey = "Bearer " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-        AccountsService accountsService = new AccountsService(bundle);
-        return new TokoCashSourceFactory(context, accountsService, new TokoCashMapper(),
-                globalCacheManager);
-    }
-
-    @HomeScope
-    @Provides
-    TopPointsSourceFactory topPointsSourceFactory(@ApplicationContext Context context,
-                                                  GlobalCacheManager globalCacheManager) {
-        return new TopPointsSourceFactory(context, new CloverService(), new TopPointsMapper(),
-                globalCacheManager);
-    }
-
-    @HomeScope
-    @Provides
     HomeRepository homeRepository(HomeCategoryDataSource homeCategoryDataSource,
                                   HomeBannerDataSource homeBannerDataSource,
                                   BrandsOfficialStoreDataSource brandsOfficialStoreDataSource,

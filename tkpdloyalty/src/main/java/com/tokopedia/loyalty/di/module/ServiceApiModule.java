@@ -34,12 +34,6 @@ public class ServiceApiModule {
 
     @Provides
     @LoyaltyScope
-    TXService provideTxService() {
-        return new TXService();
-    }
-
-    @Provides
-    @LoyaltyScope
     DigitalEndpointService provideDigitalEndpointService() {
         return new DigitalEndpointService();
     }
@@ -56,7 +50,6 @@ public class ServiceApiModule {
                                                      ITokoPointDBService tokoPointDBService,
                                                      TokoPointResponseMapper tokoPointResponseMapper,
                                                      TXVoucherService txVoucherService,
-                                                     TXService txService,
                                                      DigitalEndpointService digitalEndpointService
     ) {
         return new TokoPointRepository(
@@ -64,7 +57,6 @@ public class ServiceApiModule {
                 tokoPointDBService,
                 tokoPointResponseMapper,
                 txVoucherService,
-                txService,
                 digitalEndpointService);
     }
 }
