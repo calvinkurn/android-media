@@ -5,16 +5,16 @@
     android:orientation="vertical">
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/pb_loading"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-6dp"
         android:indeterminate="true" />
 
     <WebView
         android:id="@+id/web_view_terms_and_condition"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>
