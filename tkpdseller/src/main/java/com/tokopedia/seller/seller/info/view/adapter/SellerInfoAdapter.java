@@ -61,6 +61,10 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(rawModels.isEmpty())
+                    return;
+
                 // change rawModels read status
                 Integer pos = positions.get(t);
                 if(pos != null){
