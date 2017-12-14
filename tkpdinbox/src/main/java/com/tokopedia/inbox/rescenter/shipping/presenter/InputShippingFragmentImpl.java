@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 
@@ -40,6 +41,10 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private final GlobalCacheManager cacheManager;
     private final RetrofitInteractor retrofit;
     private final InputShippingFragmentView viewListener;
+
+    private boolean isShippingRefValid = false;
+    private boolean isShippingSpinnerValid = false;
+    private boolean isListAttachmentValid = false;
 
     public InputShippingFragmentImpl(InputShippingFragmentView viewListener) {
         this.viewListener = viewListener;
@@ -301,6 +306,37 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private void clearAttachment() {
         LocalCacheManager.AttachmentShippingResCenter.Builder(viewListener.getParamsModel().getResolutionID())
                 .clearAll();
+    }
+
+    @Override
+    public void onShippingRefChanged(Editable editable) {
+        String shippingRef = editable.toString().replaceAll("\\s+","");
+        isShippingRefValid = (shippingRef.length()>=8 && shippingRef.length()<=17);
+
+        checkFormValidity();
+    }
+
+    @Override
+    public void onShippingSpinnerChanged(int position) {
+        String shippingId = generateShippingID();
+        isShippingSpinnerValid = !shippingId.isEmpty();
+
+        checkFormValidity();
+    }
+
+    @Override
+    public void onListAttachmentChanged(int itemCount) {
+        isListAttachmentValid = (itemCount>1);
+
+        checkFormValidity();
+    }
+
+    private void checkFormValidity(){
+        if(isShippingRefValid && isShippingSpinnerValid && isListAttachmentValid){
+            viewListener.setConfirmButtonEnabled();
+        } else {
+            viewListener.setConfirmButtonDisabled();
+        }
     }
 
     private boolean isValidToSubmit(ShippingParamsPostModel params) {

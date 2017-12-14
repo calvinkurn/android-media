@@ -194,7 +194,7 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (revieweeBadgeSellerViewModel.getIsFavorited() == 1) {
             MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
                     .getContext(), R.drawable.white_button_rounded));
-            ImageHandler.loadImageWithIdWithoutPlaceholder(favoriteIcon, R.drawable.shop_list_favorite_check);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(favoriteIcon, R.drawable.ic_done_24dp);
             favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
                     .grey_500));
             favoriteText.setText(R.string.already_favorite);
@@ -215,7 +215,7 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (!element.getReputationDataViewModel().isShowRevieweeScore()
                 && element.getReputationDataViewModel().
                 getRevieweeScore() != NO_REPUTATION) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.shop_list_favorite_check);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_done_24dp);
         } else {
             switch (element.getReputationDataViewModel().getRevieweeScore()) {
                 case NO_REPUTATION:

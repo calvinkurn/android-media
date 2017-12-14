@@ -13,9 +13,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -24,7 +24,8 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -50,7 +51,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
     @BindView(R2.id.indicator)
     TabLayout indicator;
     private ArrayList<Fragment> fragmentList;
-//
+
 //    @DeepLink(Constants.Applinks.MESSAGE)
 //    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
 //        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
@@ -89,9 +90,10 @@ public class InboxChatActivity extends DrawerPresenterActivity
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         Intent destination;
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
             destination = new Intent(context, InboxChatActivity.class)
                     .setData(uri.build())
                     .putExtras(extras);
