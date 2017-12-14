@@ -628,31 +628,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItem(int pos, Visitable item) {
-        if (adapter.getItemCount() > 0 && adapter.getItemCount() > pos) {
-            adapter.getItems().set(pos, item);
-        } else {
-            adapter.getItems().add(pos, item);
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 0) {
-            if (adapter.getItem(0) instanceof HeaderViewModel) {
-                adapter.notifyItemChanged(0);
-                return;
-            }
-            if (adapter.getItem(1) instanceof HeaderViewModel) {
-                adapter.notifyItemChanged(1);
-            }
+        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
+            adapter.notifyItemChanged(0);
         }
-    }
-
-    @Override
-    public void refreshAdapter() {
-        adapter.notifyDataSetChanged();
     }
 
     @Override

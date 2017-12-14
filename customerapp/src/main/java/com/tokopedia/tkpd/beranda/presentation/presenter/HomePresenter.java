@@ -328,8 +328,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onNext(List<Visitable> visitables) {
             if (isViewAttached()) {
-                if(SessionHandler.isV4Login(context)){
-                    visitables.add(visitables.get(0) instanceof TickerViewModel ? 1 : 0, headerViewModel);
+                if (SessionHandler.isV4Login(context)) {
+                    visitables.add(0, headerViewModel);
                 }
                 getView().setItems(visitables);
                 if (isDataValid(visitables)) {

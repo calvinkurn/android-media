@@ -56,13 +56,14 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         List<Visitable> list = new ArrayList<>();
         boolean isLogin = SessionHandler.isV4Login(context);
 
+        if (homeBannerResponseModel.isSuccess()) {
+            list.add(mappingBanner(homeBannerResponseModel));
+        }
+
         if (ticker.getData().getTickers() != null && ticker.getData().getTickers().size() > 0) {
             list.add(mappingTicker(ticker.getData().getTickers()));
         }
 
-        if (homeBannerResponseModel.isSuccess()) {
-            list.add(mappingBanner(homeBannerResponseModel));
-        }
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.add(mappingCategorySection());
         }
