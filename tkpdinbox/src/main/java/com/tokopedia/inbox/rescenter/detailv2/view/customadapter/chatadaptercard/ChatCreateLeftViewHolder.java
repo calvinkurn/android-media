@@ -93,8 +93,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
 
         tvUserTitle.setText(context.getResources().getString(R.string.string_tokopedia_system));
         tvUsername.setText(context.getResources().getString(R.string.string_tokopedia));
-        String date = DateFormatUtils.formatDateForResoChatV2(
-                element.getConversationDomain().getCreateTime().getTimestamp());
+        String date = element.getConversationDomain().getCreateTime().getTimestamp();
         tvDate1.setText(date);
         tvDate2.setText(date);
         tvDate3.setText(date);

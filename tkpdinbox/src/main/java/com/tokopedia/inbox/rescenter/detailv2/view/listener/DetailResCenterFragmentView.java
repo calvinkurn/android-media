@@ -61,6 +61,8 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionEditAddressClick();
 
+    void setOnFreeReturnClicked();
+
     void setOnActionProductClick(String productID, String productName);
 
     void setOnActionPeopleDetailClick(String buyerID);

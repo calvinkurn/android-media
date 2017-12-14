@@ -17,8 +17,8 @@ public class ListHistoryAction {
     private String actionByStr;
     @SerializedName("remark")
     private String remark;
-    @SerializedName("createTimestampStr")
-    private String createTimestampStr;
+    @SerializedName("createTimeFullStr")
+    private String createTimeFullStr;
     @SerializedName("month")
     private String month;
     @SerializedName("dateNumber")
@@ -64,12 +64,12 @@ public class ListHistoryAction {
         this.remark = remark;
     }
 
-    public String getCreateTimestampStr() {
-        return createTimestampStr;
+    public String getCreateTimeFullStr() {
+        return createTimeFullStr;
     }
 
-    public void setCreateTimestampStr(String createTimestampStr) {
-        this.createTimestampStr = createTimestampStr;
+    public void setCreateTimeFullStr(String createTimeFullStr) {
+        this.createTimeFullStr = createTimeFullStr;
     }
 
     public String getMonth() {

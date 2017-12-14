@@ -28,6 +28,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
@@ -43,6 +44,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.CancelComplaintView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.FreeReturnView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ProveView;
@@ -98,6 +100,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     ListProductView listProductView;
     SolutionView solutionView;
     ProveView proveView;
+    FreeReturnView freeReturnView;
     HistoryView historyView;
     CancelComplaintView cancelComplaintView;
     TextView tvNextStep;
@@ -223,6 +226,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         cvDiscussion = view.findViewById(R.id.cv_discussion);
         ivNextStepStatic = view.findViewById(R.id.iv_next_step_static);
         glowingView = view.findViewById(R.id.view_glowing);
+        freeReturnView = view.findViewById(R.id.free_return_view);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         cvNextStep.setVisibility(View.GONE);
@@ -242,6 +246,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         solutionView.setListener(this);
         proveView.setListener(this);
         historyView.setListener(this);
+        freeReturnView.setListener(this);
         cancelComplaintView.setListener(this);
 
         cvNextStep.setOnClickListener(new View.OnClickListener() {
@@ -383,6 +388,10 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         }
         if (getViewData().getHistoryData() != null) {
             historyView.renderData(getViewData().getHistoryData());
+        }
+        if (getViewData().getFreeReturnData() != null
+                && getViewData().getFreeReturnData().isFreeReturnShow()) {
+            freeReturnView.renderData(getViewData().getFreeReturnData());
         }
     }
 
@@ -637,6 +646,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, REQUEST_EDIT_ADDRESS);
+    }
+
+    @Override
+    public void setOnFreeReturnClicked() {
+        startActivity(FreeReturnActivity
+                .newInstance(getActivity(), getViewData().getFreeReturnData().getFreeReturnLink()));
     }
 
     @Override

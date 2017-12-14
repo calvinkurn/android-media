@@ -365,7 +365,9 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         mappingCreatedByData(response.getUpdateBy()) :
                         null,
                 response.getUpdateTime(),
-                response.getFreeReturn());
+                response.getFreeReturn(),
+                response.getFreeReturn() == 1 ? response.getFreeReturnText().getInfo() : null,
+                response.getFreeReturn() == 1 ? response.getFreeReturnText().getLink() : null);
     }
 
     private StatusData mappingStatusData(StatusResponse response) {
@@ -425,7 +427,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                             null,
                     response.getCreateTime(),
                     response.getCreateTimeStr(),
-                    response.getCreateTimestampStr(),
+                    response.getCreateTimeFullStr(),
                     response.getMonth(),
                     response.getDateNumber());
             domainList.add(domain);
@@ -464,7 +466,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         mappingAmountData(response.getAmount()) :
                         null,
                 response.getCreateTime(),
-                response.getCreateTimeStr());
+                response.getCreateTimeFullStr());
     }
 
     private List<AttachmentUserData> mappingAttachmentUserDomain(List<AttachmentUserResponse> responseList) {

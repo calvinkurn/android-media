@@ -12,6 +12,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonViewItem;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.FreeReturnData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductData;
@@ -141,7 +142,15 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
                 mappingProveData(detailResponseData.getFirst(), detailResponseData.getAttachments()) :
                 null);
         viewModel.setStatusData(mappingStatusData(detailResponseData.getLast()));
+        viewModel.setFreeReturnData(mappingFreeReturn(detailResponseData.getResolution()));
         return viewModel;
+    }
+
+    private FreeReturnData mappingFreeReturn(ResolutionData data) {
+        return new FreeReturnData(
+                data.getFreeReturn() == 1,
+                data.getFreeReturnText(),
+                data.getFreeReturnLink());
     }
 
     private ProveData mappingProveData(FirstData firstData, List<AttachmentUserData> dataList) {
@@ -219,7 +228,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
 
     private SolutionData mappingSolutionData(LastSolutionData lastSolutionData, ButtonDomain buttonDomain, String problem) {
         SolutionData solutionData = new SolutionData();
-        solutionData.setSolutionDate(lastSolutionData.getCreateTime());
+        solutionData.setSolutionDate(lastSolutionData.getCreateTimeStr());
         solutionData.setSolutionProvider(String.valueOf(lastSolutionData.getActionBy()));
         solutionData.setSolutionProviderName(mappingSolutionProvider(lastSolutionData.getActionBy()));
         solutionData.setSolutionText(lastSolutionData.getNameCustom());
@@ -268,7 +277,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
             item.setMonth(logData.getMonth());
             item.setHistoryText(logData.getAction());
             item.setProvider(logData.getActionBy().getName());
-            item.setDateTimestamp(logData.getCreateTime());
+            item.setDateTimestamp(logData.getCreateTimestampStr());
             item.setProviderId(logData.getActionBy().getId());
             historyItems.add(item);
             pos++;
