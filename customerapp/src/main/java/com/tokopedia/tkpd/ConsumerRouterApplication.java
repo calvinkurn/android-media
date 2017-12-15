@@ -504,6 +504,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void actionOpenGeneralWebViewWithTitle(Activity activity, String mobileUrl, String title) {
+        activity.startActivity(BannerWebView.getCallingIntentWithTitle(activity, mobileUrl, title));
+    }
+
+    @Override
     public void onLogout(AppComponent appComponent) {
         CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
         cacheApiClearAllUseCase.execute(RequestParams.EMPTY, new TkpdSellerLogout.EmptySubscriber());

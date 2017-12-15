@@ -14,6 +14,7 @@ public class TokoPointDrawerData implements Parcelable {
     private UserTier userTier;
     private PopUpNotif popUpNotif;
     private String mainPageUrl;
+    private String mainPageTitle;
 
     public int getOffFlag() {
         return offFlag;
@@ -49,6 +50,14 @@ public class TokoPointDrawerData implements Parcelable {
 
     public String getMainPageUrl() {
         return mainPageUrl;
+    }
+
+    public String getMainPageTitle() {
+        return mainPageTitle;
+    }
+
+    public void setMainPageTitle(String mainPageTitle) {
+        this.mainPageTitle = mainPageTitle;
     }
 
     public void setMainPageUrl(String mainPageUrl) {
@@ -373,6 +382,7 @@ public class TokoPointDrawerData implements Parcelable {
         dest.writeParcelable(this.userTier, flags);
         dest.writeParcelable(this.popUpNotif, flags);
         dest.writeString(this.mainPageUrl);
+        dest.writeString(this.mainPageTitle);
     }
 
     protected TokoPointDrawerData(Parcel in) {
@@ -381,6 +391,7 @@ public class TokoPointDrawerData implements Parcelable {
         this.userTier = in.readParcelable(UserTier.class.getClassLoader());
         this.popUpNotif = in.readParcelable(PopUpNotif.class.getClassLoader());
         this.mainPageUrl = in.readString();
+        this.mainPageTitle = in.readString();
     }
 
     public static final Creator<TokoPointDrawerData> CREATOR = new Creator<TokoPointDrawerData>() {

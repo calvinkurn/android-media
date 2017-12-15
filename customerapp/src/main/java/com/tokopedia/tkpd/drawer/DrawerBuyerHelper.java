@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -577,10 +578,12 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     @Override
-    public void onTokoPointActionClicked(String url) {
+    public void onTokoPointActionClicked(String mainPageUrl, String title) {
         if (context.getApplication() instanceof TkpdCoreRouter) {
             TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
-            tkpdCoreRouter.actionOpenGeneralWebView(context, url);
+            if (TextUtils.isEmpty(title))
+                tkpdCoreRouter.actionOpenGeneralWebView(context, mainPageUrl);
+            else tkpdCoreRouter.actionOpenGeneralWebViewWithTitle(context, mainPageUrl, title);
         }
     }
 

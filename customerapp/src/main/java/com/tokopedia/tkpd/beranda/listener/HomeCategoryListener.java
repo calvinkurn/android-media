@@ -45,5 +45,5 @@ public interface HomeCategoryListener {
 
     void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String redirectUrlActionButton, String appLinkActionButton);
 
-    void actionTokoPointClicked(String tokoPointUrl);
+    void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
 }

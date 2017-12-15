@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderView
  */
 
 public class HeaderHomeView extends BaseCustomView {
+    private static final String TITLE_HEADER_WEBSITE = "TokoPoints";
     private HomeCategoryListener listener;
     private HeaderViewModel headerViewModel;
 
@@ -81,7 +83,12 @@ public class HeaderHomeView extends BaseCustomView {
             @Override
             public void onClick(View view) {
                 UnifyTracking.eventUserProfileTokopoints();
-                listener.actionTokoPointClicked(headerViewModel.getTokoPointDrawerData().getMainPageUrl());
+                listener.actionTokoPointClicked(
+                        headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
+                        TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
+                                ? TITLE_HEADER_WEBSITE
+                                : headerViewModel.getTokoPointDrawerData().getMainPageTitle()
+                );
             }
         });
     }
