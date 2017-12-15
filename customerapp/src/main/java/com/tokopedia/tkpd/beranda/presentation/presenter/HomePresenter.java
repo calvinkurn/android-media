@@ -40,14 +40,12 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-
 
 import java.util.List;
 
@@ -366,7 +364,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         );
         intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
                 DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
+
+
+        Intent intentGetTokoPoint = new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION);
         context.sendBroadcast(intentGetTokocash);
-        context.sendBroadcast(new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION));
+        context.sendBroadcast(intentGetTokoPoint);
     }
 }
