@@ -57,6 +57,8 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
+    public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
+
     public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -945,5 +947,10 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/likedislike";
         public static final String PATH_LIKE_DISLIKE_REVIEW = "review/api/"
                 + REPUTATION_VERSION + "/likedislike";
+    }
+
+    public class Purchase {
+        public static final String PATH_ORDER_DETAIL = "/v4/order/detail";
+        public static final String PATH_ORDER_HISTORY = "/v4/order/history";
     }
 }

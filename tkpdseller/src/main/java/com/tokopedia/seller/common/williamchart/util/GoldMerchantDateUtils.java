@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -151,6 +152,14 @@ public class GoldMerchantDateUtils {
         sCDate.setTimeInMillis(currentDay);
         sCDate.add(Calendar.DATE, -1 * (previousDayCount));
         return sCDate.getTimeInMillis();
+    }
+
+    public static Date getPreviousDateInDate(long currentDay, int previousDayCount) {
+        // calculate range
+        Calendar sCDate = Calendar.getInstance();
+        sCDate.setTimeInMillis(currentDay);
+        sCDate.add(Calendar.DATE, -1 * (previousDayCount));
+        return new Date(sCDate.getTimeInMillis());
     }
 
     public static int daysBetween(Calendar day1, Calendar day2){
