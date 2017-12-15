@@ -370,7 +370,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_CANCELED) {
+        if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_AIRPORT_CLASSES:
                     FlightClassViewModel viewModel = data.getParcelableExtra(FlightClassesActivity.EXTRA_FLIGHT_CLASS);
@@ -396,6 +396,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     presenter.onLoginResultReceived();
                     break;
             }
+        }else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
+            presenter.onLoginResultReceived();
         }
     }
 
