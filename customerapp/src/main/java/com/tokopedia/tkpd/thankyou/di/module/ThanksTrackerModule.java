@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd.thankyou.di.module;
 
+import android.content.Context;
+
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -12,6 +15,8 @@ import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepository;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepositoryImpl;
+import com.tokopedia.tkpd.thankyou.data.source.DigitalTrackerCloudSource;
+import com.tokopedia.tkpd.thankyou.data.source.MarketplaceTrackerCloudSource;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerApi;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerService;
 import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
@@ -74,6 +79,7 @@ public class ThanksTrackerModule {
                                                        DigitalTrackerMapper digitalTrackerMapper,
                                                        MarketplaceTrackerApi marketplaceTrackerApi,
                                                        MarketplaceTrackerMapper marketplaceTrackerMapper,
+                                                       @ApplicationContext Context context,
                                                        Gson gson,
                                                        SessionHandler sessionHandler,
                                                        GCMHandler gcmHandler) {
@@ -82,6 +88,7 @@ public class ThanksTrackerModule {
                 digitalTrackerMapper,
                 marketplaceTrackerApi,
                 marketplaceTrackerMapper,
+                context,
                 gson,
                 sessionHandler,
                 gcmHandler

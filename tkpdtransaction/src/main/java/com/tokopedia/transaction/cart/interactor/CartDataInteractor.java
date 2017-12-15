@@ -55,6 +55,8 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class CartDataInteractor implements ICartDataInteractor {
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
+    private static final String COUPON = "coupon";
+    private static final String DATA = "data";
 
     private final TXService txService;
     private final TXActService txActService;
@@ -408,8 +410,8 @@ public class CartDataInteractor implements ICartDataInteractor {
                     GlobalCacheManager cacheManager = new GlobalCacheManager();
                     cacheManager.setCacheDuration((int) TimeUnit.DAYS.toSeconds(1));
                     LinkedTreeMap mapData = new LinkedTreeMap();
-                    mapData.put("coupon", checkoutData.getVoucherCode());
-                    mapData.put("data", cartItemList);
+                    mapData.put(COUPON, checkoutData.getVoucherCode());
+                    mapData.put(DATA, cartItemList);
                     String data = new Gson().toJson(mapData, LinkedTreeMap.class);
                     cacheManager.setKey(TkpdCache.Key.CART_CACHE_TRACKER);
                     cacheManager.setValue(data);

@@ -1,11 +1,18 @@
 package com.tokopedia.tkpd.thankyou.data.source;
 
-import com.google.gson.Gson;
+import android.content.Context;
+import android.content.res.Resources;
+
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import rx.Observable;
 
@@ -14,13 +21,16 @@ import rx.Observable;
  */
 
 public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
+    private Context context;
     private MarketplaceTrackerApi marketplaceTrackerApi;
     private MarketplaceTrackerMapper mapper;
 
     public MarketplaceTrackerCloudSource(RequestParams requestParams,
                                          MarketplaceTrackerApi marketplaceTrackerApi,
-                                         MarketplaceTrackerMapper mapper) {
+                                         MarketplaceTrackerMapper mapper,
+                                         Context context) {
         super(requestParams);
+        this.context = context;
         this.marketplaceTrackerApi = marketplaceTrackerApi;
         this.mapper = mapper;
     }
@@ -31,51 +41,28 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     }
 
     private String getRequestPayload() {
-        return "{\n" +
-                "  payment(payment_id:"+requestParams.getString(ThanksTrackerConst.Key.ID, "0")+"){\n" +
-                "    payment_id\n" +
-                "    payment_ref_num\n" +
-                "    orders{\n" +
-                "    \torder_id\n" +
-                "    \tphone\n" +
-                "    }\n" +
-                "    partial {\n" +
-                "    \tamount\n" +
-                "    \tgateway{\n" +
-                "      \t  gateway_name\n" +
-                "          gateway_img_url\n" +
-                "          gateway_id\n" +
-                "      \t}\n" +
-                "    }\n" +
-                "    payment_method{\n" +
-                "      method\n" +
-                "      instant{\n" +
-                "        gateway{\n" +
-                "      \t  gateway_name\n" +
-                "          gateway_img_url\n" +
-                "          gateway_id\n" +
-                "      \t}\n" +
-                "      }\n" +
-                "      transfer{\n" +
-                "      \tdestination_name\n" +
-                "      \tdestination_account\n" +
-                "      \tsource_account\n" +
-                "      \tsource_name\n" +
-                "      \tgateway{\n" +
-                "      \t  gateway_name\n" +
-                "          gateway_img_url\n" +
-                "          gateway_id\n" +
-                "      \t}\n" +
-                "      }\n" +
-                "      defer{\n" +
-                "      \tgateway{\n" +
-                "      \t  gateway_name\n" +
-                "          gateway_img_url\n" +
-                "          gateway_id\n" +
-                "      \t}\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }\n" +
-                "}";
+        return String.format(
+                loadRawString(context.getResources(), R.raw.payment_tracker_query),
+                requestParams.getString(ThanksTrackerConst.Key.ID, "0")
+        );
+    }
+
+    private String loadRawString(Resources resources, int resId) {
+        InputStream rawResource = resources.openRawResource(resId);
+        String content = streamToString(rawResource);
+        try {rawResource.close();} catch (IOException e) {}
+        return content;
+    }
+
+    private String streamToString(InputStream in) {
+        String temp;
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            while ((temp = bufferedReader.readLine()) != null) {
+                stringBuilder.append(temp + "\n");
+            }
+        } catch (IOException e) {}
+        return stringBuilder.toString();
     }
 }
