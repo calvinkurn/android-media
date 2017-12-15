@@ -32,6 +32,12 @@
 
     </RelativeLayout>
 
+    <com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView
+        android:id="@+id/view_hotlist_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
     <HorizontalScrollView
         android:id="@+id/hashtag_scroll_view"
         android:layout_width="match_parent"

@@ -60,6 +60,14 @@
             android:name=".insurance.view.InsuranceTnCActivity"
             android:label="@string/title_term_and_condition"/>
 
+        <activity
+            android:name=".purchase.detail.activity.OrderDetailActivity"
+            android:label="@string/title_activity_people_tx_details"/>
+
+        <activity
+            android:name=".purchase.detail.activity.OrderHistoryActivity"
+            android:label="@string/title_activity_people_tx_details"/>
+
         <service
             android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />

@@ -181,7 +181,8 @@ public class InboxReputationDetailItemViewHolder extends
             productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail(element.getProductId());
+                    viewListener.onGoToProductDetail(element.getProductId(), element
+                            .getProductAvatar(), element.getProductName());
                 }
             });
 
@@ -189,7 +190,8 @@ public class InboxReputationDetailItemViewHolder extends
             productAvatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail(element.getProductId());
+                    viewListener.onGoToProductDetail(element.getProductId(),
+                            element.getProductAvatar(), element.getProductName());
                 }
             });
         }

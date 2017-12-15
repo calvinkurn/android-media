@@ -417,7 +417,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
 
     @NeedsPermission({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcodeClicked() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+        startActivityForResult(CommonUtils.requestBarcodeScanner(getContext()), 0);
     }
 
     private boolean checkEditRef(EditText ref) {

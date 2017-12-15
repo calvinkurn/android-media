@@ -200,6 +200,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                                 String.valueOf(rating.getRating()),
                                 review.getText().toString(),
                                 adapter.getList(),
+                                adapter.getDeletedList(),
                                 shareFbSwitch.isChecked(),
                                 anomymousSwitch.isChecked()
                         ));
@@ -239,6 +240,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                                 String.valueOf(rating.getRating()),
                                 review.getText().toString(),
                                 adapter.getList(),
+                                adapter.getDeletedList(),
                                 shareFbSwitch.isChecked(),
                                 anomymousSwitch.isChecked()
                         ));
@@ -477,6 +479,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         Intent intent = new Intent();
         intent.putExtra(InboxReputationFormActivity.ARGS_REVIEWEE_NAME,
                 getArguments().getString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, ""));
+        intent.putExtra(InboxReputationFormActivity.ARGS_RATING, rating.getRating());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -528,6 +531,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         Intent intent = new Intent();
         intent.putExtra(InboxReputationFormActivity.ARGS_REVIEWEE_NAME,
                 getArguments().getString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, ""));
+        intent.putExtra(InboxReputationFormActivity.ARGS_RATING, rating.getRating());
         getActivity().setResult(Activity.RESULT_OK, intent);
         showFbShareDialog(model);
 

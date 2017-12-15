@@ -514,6 +514,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             Config config = new Config.Builder()
                     .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                     .setUserId(SessionHandler.getLoginID(getActivity()))
+                    .withPreferedCategory()
                     .setEndpoint(Endpoint.PRODUCT)
                     .displayMode(DisplayMode.FEED)
                     .topAdsParams(params)
@@ -521,6 +522,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
             TopAdsView topAdsView = (TopAdsView) emptyState.findViewById(R.id.topads);
             topAdsView.setConfig(config);
+            topAdsView.setDisplayMode(DisplayMode.FEED);
             topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();

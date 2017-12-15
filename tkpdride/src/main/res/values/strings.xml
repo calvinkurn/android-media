@@ -78,7 +78,7 @@
     <string name="ride_push_toolbar_tap_view_detail">Tap to view trip details</string>
     <string name="ride_push_toolbar_driver_not_found">No Driver Found</string>
     <string name="ride_push_toolbar_driver_not_found_desc">Sorry no driver found immediately, you can try again</string>
-    <string name="ride_push_driver_cancel">Driver canceled your booking</string>
+    <string name="ride_push_driver_cancel">driver cancelled your ride</string>
     <string name="ride_push_book_request_again">Please Book another Uber</string>
     <string name="ride_home_driver_cancel_last_rid">Driver canceled your last ride.</string>
     <string name="complete_trip_amount_charged">Amount Charged</string>
@@ -167,7 +167,7 @@
     <string name="booking_ride_menu_payment">Payment</string>
     <string name="payment_toolbar_title">Payment</string>
     <string name="add_credit_card_toolbar_title">Add Credit Card</string>
-    <string name="change_payment_method">Change Payment Method</string>
+    <string name="change_payment_method">Change</string>
     <string name="receipt_pending">Receipt Pending</string>
     <string name="message_uber_waiting_receipt">Your trip is now completed and receipt is being generated.</string>
     <string name="ride_push_title_template_accepted">Your %s is booked</string>
@@ -190,4 +190,6 @@
     <string name="allow_auto_debit">ALLOW AUTO DEBIT</string>
     <string name="toolbar_title_auto_debit">Auto Debit</string>
     <string name="prefx_trip_id">Trip Id:</string>
+    <string name="auto_debit_not_allowed">Auto debit not allowed</string>
+    <string name="auto_debit_allowed">Auto debit allowed</string>
 </resources>
