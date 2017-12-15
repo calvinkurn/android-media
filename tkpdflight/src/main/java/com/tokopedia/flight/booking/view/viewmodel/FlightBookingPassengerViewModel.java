@@ -3,38 +3,16 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerTypeFactory;
+
 import java.util.List;
 
 /**
  * @author by alvarisi on 11/7/17.
  */
 
-public class FlightBookingPassengerViewModel implements Parcelable {
-    private int passengerId; //passengerLocalNumber
-    private boolean singleRoute;
-    private int type;
-    private String passengerTitle;
-    private String headerTitle;
-    private String passengerName;
-    private String passengerBirthdate;
-    private List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels;
-    private List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels;
-
-    public FlightBookingPassengerViewModel() {
-    }
-
-    protected FlightBookingPassengerViewModel(Parcel in) {
-        passengerId = in.readInt();
-        singleRoute = in.readByte() != 0;
-        type = in.readInt();
-        passengerTitle = in.readString();
-        headerTitle = in.readString();
-        passengerName = in.readString();
-        passengerBirthdate = in.readString();
-        flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
-        flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
-    }
-
+public class FlightBookingPassengerViewModel implements Parcelable, Visitable<FlightBookingPassengerTypeFactory> {
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
         @Override
         public FlightBookingPassengerViewModel createFromParcel(Parcel in) {
@@ -46,6 +24,32 @@ public class FlightBookingPassengerViewModel implements Parcelable {
             return new FlightBookingPassengerViewModel[size];
         }
     };
+    private int passengerId; //passengerLocalNumber
+    private int type;
+    private String passengerTitle;
+    private String headerTitle;
+    private String passengerFirstName;
+    private String passengerLastName;
+    private String passengerBirthdate;
+    private List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels;
+    private List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels;
+    private int passengerTitleId;
+
+    public FlightBookingPassengerViewModel() {
+    }
+
+    protected FlightBookingPassengerViewModel(Parcel in) {
+        passengerId = in.readInt();
+        type = in.readInt();
+        passengerTitle = in.readString();
+        headerTitle = in.readString();
+        passengerFirstName = in.readString();
+        passengerLastName = in.readString();
+        passengerBirthdate = in.readString();
+        flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
+        flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
+        passengerTitleId = in.readInt();
+    }
 
     public int getType() {
         return type;
@@ -63,12 +67,12 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.headerTitle = headerTitle;
     }
 
-    public String getPassengerName() {
-        return passengerName;
+    public String getPassengerFirstName() {
+        return passengerFirstName;
     }
 
-    public void setPassengerName(String passengerName) {
-        this.passengerName = passengerName;
+    public void setPassengerFirstName(String passengerFirstName) {
+        this.passengerFirstName = passengerFirstName;
     }
 
     public String getPassengerBirthdate() {
@@ -77,14 +81,6 @@ public class FlightBookingPassengerViewModel implements Parcelable {
 
     public void setPassengerBirthdate(String passengerBirthdate) {
         this.passengerBirthdate = passengerBirthdate;
-    }
-
-    public boolean isSingleRoute() {
-        return singleRoute;
-    }
-
-    public void setSingleRoute(boolean singleRoute) {
-        this.singleRoute = singleRoute;
     }
 
     public List<FlightBookingAmenityMetaViewModel> getFlightBookingMealMetaViewModels() {
@@ -132,21 +128,43 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.passengerTitle = passengerTitle;
     }
 
+    public int getPassengerTitleId() {
+        return passengerTitleId;
+    }
+
+    public void setPassengerTitleId(int passengerTitleId) {
+        this.passengerTitleId = passengerTitleId;
+    }
+
+    public String getPassengerLastName() {
+        return passengerLastName;
+    }
+
+    public void setPassengerLastName(String passengerLastName) {
+        this.passengerLastName = passengerLastName;
+    }
+
+    @Override
+    public int type(FlightBookingPassengerTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(passengerId);
-        dest.writeByte((byte) (singleRoute ? 1 : 0));
-        dest.writeInt(type);
-        dest.writeString(passengerTitle);
-        dest.writeString(headerTitle);
-        dest.writeString(passengerName);
-        dest.writeString(passengerBirthdate);
-        dest.writeTypedList(flightBookingLuggageMetaViewModels);
-        dest.writeTypedList(flightBookingMealMetaViewModels);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(passengerId);
+        parcel.writeInt(type);
+        parcel.writeString(passengerTitle);
+        parcel.writeString(headerTitle);
+        parcel.writeString(passengerFirstName);
+        parcel.writeString(passengerLastName);
+        parcel.writeString(passengerBirthdate);
+        parcel.writeTypedList(flightBookingLuggageMetaViewModels);
+        parcel.writeTypedList(flightBookingMealMetaViewModels);
+        parcel.writeInt(passengerTitleId);
     }
 }

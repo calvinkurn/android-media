@@ -1,20 +1,17 @@
 package com.tokopedia.flightmockapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdFlightGeneratedDatabaseHolder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.utils.GlobalConfig;
 import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.common.di.component.DaggerFlightComponent;
-import com.tokopedia.flight.common.di.component.FlightComponent;
+import com.tokopedia.flight.TkpdFlight;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Created by User on 10/24/2017.
@@ -22,27 +19,17 @@ import java.util.Map;
 
 public class FlightMainApplication extends BaseMainApplication implements FlightModuleRouter, AbstractionRouter{
 
-    private FlightComponent flightComponent;
-
     @Override
     public void onCreate() {
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         super.onCreate();
-        initDBFlow();
-    }
-
-    private void initDBFlow() {
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdFlightGeneratedDatabaseHolder.class)
-                .build());
+        TkpdFlight.init(getApplicationContext());
     }
 
     @Override
-    public FlightComponent getFlightComponent() {
-        if (flightComponent == null) {
-            flightComponent = DaggerFlightComponent.builder().baseAppComponent(getBaseAppComponent()).build();
-        }
-        return flightComponent;
+    public long getLongConfig(String flightAirport) {
+        // use remote config from other module
+        return 100;
     }
 
     @Override
@@ -120,9 +107,24 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
 
             @Override
             public String getUserId() {
-                return null;
+                return "";
+            }
+
+            @Override
+            public boolean isLoggedIn() {
+                return true;
             }
         };
         return userSession;
+    }
+
+    @Override
+    public Intent getLoginIntent() {
+        return null;
+    }
+
+    @Override
+    public void goToFlightActivity(Context context) {
+        TkpdFlight.goToFlightActivity(context);
     }
 }

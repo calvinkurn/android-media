@@ -1,6 +1,8 @@
 package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -8,14 +10,13 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
 /**
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightDashboardViewModel implements Cloneable {
+public class FlightDashboardViewModel implements Parcelable, Cloneable {
     private String departureDate;
     private String departureDateFmt;
     private String returnDate;
@@ -57,6 +58,33 @@ public class FlightDashboardViewModel implements Cloneable {
         this.arrivalAirportFmt = arrivalAirportFmt;
         this.flightClass = flightClass;
     }
+
+    protected FlightDashboardViewModel(Parcel in) {
+        departureDate = in.readString();
+        departureDateFmt = in.readString();
+        returnDate = in.readString();
+        returnDateFmt = in.readString();
+        isOneWay = in.readByte() != 0;
+        flightPassengerViewModel = in.readParcelable(FlightPassengerViewModel.class.getClassLoader());
+        flightPassengerFmt = in.readString();
+        departureAirport = in.readParcelable(FlightAirportDB.class.getClassLoader());
+        departureAirportFmt = in.readString();
+        arrivalAirport = in.readParcelable(FlightAirportDB.class.getClassLoader());
+        arrivalAirportFmt = in.readString();
+        flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
+    }
+
+    public static final Creator<FlightDashboardViewModel> CREATOR = new Creator<FlightDashboardViewModel>() {
+        @Override
+        public FlightDashboardViewModel createFromParcel(Parcel in) {
+            return new FlightDashboardViewModel(in);
+        }
+
+        @Override
+        public FlightDashboardViewModel[] newArray(int size) {
+            return new FlightDashboardViewModel[size];
+        }
+    };
 
     public String getDepartureDate() {
         return departureDate;
@@ -213,6 +241,27 @@ public class FlightDashboardViewModel implements Cloneable {
 
     public void setFlightClass(FlightClassViewModel flightClass) {
         this.flightClass = flightClass;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(departureDate);
+        parcel.writeString(departureDateFmt);
+        parcel.writeString(returnDate);
+        parcel.writeString(returnDateFmt);
+        parcel.writeByte((byte) (isOneWay ? 1 : 0));
+        parcel.writeParcelable(flightPassengerViewModel, i);
+        parcel.writeString(flightPassengerFmt);
+        parcel.writeParcelable(departureAirport, i);
+        parcel.writeString(departureAirportFmt);
+        parcel.writeParcelable(arrivalAirport, i);
+        parcel.writeString(arrivalAirportFmt);
+        parcel.writeParcelable(flightClass, i);
     }
 
     public static class Builder {

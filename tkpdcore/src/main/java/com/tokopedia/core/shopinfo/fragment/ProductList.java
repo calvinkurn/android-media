@@ -477,7 +477,9 @@ public class ProductList extends V2BaseFragment {
 
                         @Override
                         public void onFailure(int connectionTypeError, String message) {
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            if (isAdded() && getActivity() != null) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 } else {

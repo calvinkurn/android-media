@@ -9,13 +9,13 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.DateFormatUtils;
 import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailViewHolder extends BaseViewHolder<Route> {
+public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteViewModel> {
 
     public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String FORMAT_TIME = "HH:mm";
@@ -58,57 +58,53 @@ public class FlightDetailViewHolder extends BaseViewHolder<Route> {
     }
 
     @Override
-    public void bindObject(Route route) {
+    public void bindObject(FlightDetailRouteViewModel route) {
         airlineName.setText(route.getAirlineName());
-        airlineCode.setText(String.format("%s - %s", route.getAirline(), route.getFlightNumber()));
+        airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
         setRefundableInfo(route);
         departureTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_TIME, route.getDepartureTimestamp()));
         departureDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_DATE, route.getDepartureTimestamp()));
-        setColorCircle(route);
-        departureAirportName.setText(String.format("%s (%s)", route.getDepartureAirportCity(), route.getDepartureAirport()));
+        setColorCircle();
+        departureAirportName.setText(String.format("%s (%s)", route.getDepartureAirportCity(), route.getDepartureAirportCode()));
         departureAirportDesc.setText(route.getDepartureAirportName());
         flightTime.setText(route.getDuration());
         arrivalTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_TIME, route.getArrivalTimestamp()));
         arrivalDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_DATE, route.getArrivalTimestamp()));
-        arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirport()));
+        arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
         arrivalAirportDesc.setText(route.getArrivalAirportName());
-        transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(),route.getLayover()));
-        ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),R.drawable.ic_airline_default);
+        transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
+        ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(), R.drawable.ic_airline_default);
     }
 
-    private void setRefundableInfo(Route route) {
-        if(route.getRefundable()){
+    private void setRefundableInfo(FlightDetailRouteViewModel route) {
+        if (route.isRefundable()) {
             refundableInfo.setText(R.string.flight_label_refundable_info);
-            refundableInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
-            refundableInfo.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_rect_stroke_flight_green));
             refundableInfo.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             refundableInfo.setText(R.string.flight_label_non_refundable_info);
-            refundableInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.grey_200));
-            refundableInfo.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_rect_stroke_flight_grey));
             refundableInfo.setVisibility(View.GONE);
         }
     }
 
     //set color circle to green if position holder is on first index
-    private void setColorCircle(Route route) {
-        if(getAdapterPosition() == 0){
+    private void setColorCircle() {
+        if (getAdapterPosition() == 0) {
             departureCircleImage.setEnabled(true);
         }
     }
 
     //set color circle to red if position holder is on last index
     public void bindLastPosition(boolean lastItemPosition) {
-        if(lastItemPosition){
+        if (lastItemPosition) {
             arrivalCircleImage.setEnabled(false);
         }
     }
 
     //set visible transit info if flight have transit and position holder is on first index
-    public void bindTransitInfo(int sizeInfo){
-        if(sizeInfo > 0 && getAdapterPosition() < sizeInfo - 1){
+    public void bindTransitInfo(int sizeInfo) {
+        if (sizeInfo > 0 && getAdapterPosition() < sizeInfo - 1) {
             transitInfo.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             transitInfo.setVisibility(View.GONE);
         }
     }

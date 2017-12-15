@@ -8,9 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -20,13 +18,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
@@ -65,8 +61,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private AppCompatTextView tvHeader;
     private AppCompatTextView tvSubheader;
     private SpinnerTextView spTitle;
-    private TkpdHintTextInputLayout tilName;
-    private AppCompatEditText etName;
+    private TkpdHintTextInputLayout tilFirstName;
+    private AppCompatEditText etFirstName;
+    private TkpdHintTextInputLayout tilLastName;
+    private AppCompatEditText etLastName;
     private TkpdHintTextInputLayout tilBirthDate;
     private AppCompatEditText etBirthDate;
     private LinearLayout luggageContainer;
@@ -135,8 +133,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         tvHeader = (AppCompatTextView) view.findViewById(R.id.tv_header);
         tvSubheader = (AppCompatTextView) view.findViewById(R.id.tv_subheader);
         spTitle = (SpinnerTextView) view.findViewById(R.id.sp_title);
-        tilName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_name);
-        etName = (AppCompatEditText) view.findViewById(R.id.et_name);
+        tilFirstName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_first_name);
+        etFirstName = (AppCompatEditText) view.findViewById(R.id.et_first_name);
+        tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_last_name);
+        etLastName = (AppCompatEditText) view.findViewById(R.id.et_last_name);
         tilBirthDate = (TkpdHintTextInputLayout) view.findViewById(R.id.til_birth_date);
         etBirthDate = (AppCompatEditText) view.findViewById(R.id.et_birth_date);
         luggageContainer = (LinearLayout) view.findViewById(R.id.luggage_container);
@@ -225,7 +225,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingMealRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingAmenityMetaViewModel.getDescription(),
-                        "Pilih"
+                        getString(R.string.flight_booking_passenger_choose_label)
                 );
                 for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingAmenityMetaViewModel.getKey())) {
@@ -268,7 +268,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingLuggageMetaViewModel.getDescription(),
-                        "Pilih"
+                        getString(R.string.flight_booking_passenger_choose_label)
                 );
                 for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
@@ -302,6 +302,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public int getPassengerTitleId() {
+        return spTitle.getSpinnerPosition();
+    }
+
+    @Override
     public void hideBirthdayInputView() {
         tilBirthDate.setVisibility(View.GONE);
     }
@@ -322,8 +327,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public String getPassengerName() {
-        return etName.getText().toString().trim();
+    public String getPassengerFirstName() {
+        return etFirstName.getText().toString().trim();
     }
 
     @Override
@@ -360,6 +365,36 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void showPassengerInfantBirthdateShouldNoMoreThan2Years(int resID) {
         showMessageErrorInSnackBar(resID);
+    }
+
+    @Override
+    public void showPassengerFirstNameShouldNoMoreThanMaxError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerLastNameShouldNoMoreThanMaxError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerLastNameShouldOneWordError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public String getPassengerLastName() {
+        return etLastName.getText().toString().trim();
     }
 
     @Override
@@ -403,8 +438,9 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void renderPassengerName(String passengerName) {
-        etName.setText(passengerName);
+    public void renderPassengerName(String passengerName, String passengerLastName) {
+        etFirstName.setText(passengerName);
+        etLastName.setText(passengerLastName);
     }
 
     @Override

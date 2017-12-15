@@ -1,0 +1,36 @@
+package com.tokopedia.flight.review.data;
+
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
+import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
+
+import javax.inject.Inject;
+
+import retrofit2.Response;
+import rx.Observable;
+import rx.functions.Func1;
+
+/**
+ * Created by zulfikarrahman on 12/7/17.
+ */
+
+public class FlightBookingDataSourceCloud {
+
+    private final FlightApi flightApi;
+
+    @Inject
+    public FlightBookingDataSourceCloud(FlightApi flightApi) {
+        this.flightApi = flightApi;
+    }
+
+    public Observable<DataResponseVerify> verifyBooking(VerifyRequest verifyRequest) {
+        return flightApi.verifyBooking(verifyRequest)
+                .flatMap(new Func1<Response<DataResponse<DataResponseVerify>>, Observable<DataResponseVerify>>() {
+                    @Override
+                    public Observable<DataResponseVerify> call(Response<DataResponse<DataResponseVerify>> dataResponseResponse) {
+                        return Observable.just(dataResponseResponse.body().getData());
+                    }
+                });
+    }
+}

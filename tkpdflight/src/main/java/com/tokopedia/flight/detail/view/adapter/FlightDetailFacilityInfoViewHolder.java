@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.data.cloud.model.response.Info;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
 
 /**
  * Created by zulfikarrahman on 10/31/17.
@@ -22,7 +22,7 @@ public class FlightDetailFacilityInfoViewHolder extends RecyclerView.ViewHolder 
         descInfo = (TextView) itemView.findViewById(R.id.desc_info);
     }
 
-    public void bindData(Info info) {
+    public void bindData(FlightDetailRouteInfoViewModel info) {
         titleInfo.setText(info.getLabel());
         descInfo.setText(info.getValue());
     }

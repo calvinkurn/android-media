@@ -6,9 +6,13 @@ import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 11/10/17.
@@ -45,9 +49,15 @@ public interface FlightBookingReviewContract {
         String getIdEmpotencyKey(String s);
 
         boolean isRoundTrip();
+
+        void onErrorVerifyCode(Throwable e);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{
+
+        void verifyBooking(String promoCode, int price, int adult, String cartId,
+                           List<FlightBookingPassengerViewModel> flightPassengerViewModels,
+                           String contactName, String country, String email, String phone);
 
         void checkVoucherCode(String cartId, String voucherCode);
 

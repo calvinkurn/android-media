@@ -24,7 +24,7 @@
         <activity
             android:name=".completetrip.view.CompleteTripActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
-        <activity android:name=".bookingride.view.activity.TokoCashWebViewActivity" />
+        <activity android:name=".bookingride.view.activity.RideWebViewActivity" />
         <activity
             android:name=".history.view.RideHistoryActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
@@ -62,8 +62,24 @@
         <activity
             android:name=".ontrip.view.TopupTokoCashChangeDestination"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.AddCreditCardActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.ManagePaymentOptionsActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.EditDeleteCreditCardActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
 
-        <service android:name=".ontrip.view.service.ActivityRecognizedService"></service>
+        <service android:name=".ontrip.view.service.ActivityRecognizedService" />
+
+        <activity
+            android:name=".scrooge.ScroogeActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.PayPendingFareActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
     </application>
 
 </manifest>

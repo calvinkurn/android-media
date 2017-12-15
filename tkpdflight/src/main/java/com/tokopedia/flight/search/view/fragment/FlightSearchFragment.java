@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -26,8 +27,10 @@ import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
@@ -173,7 +176,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     protected final void initInjector() {
         DaggerFlightSearchComponent.builder()
-                .flightComponent(((FlightModuleRouter) getActivity().getApplication()).getFlightComponent())
+                .flightComponent(FlightComponentInstance.getFlightComponent(getActivity().getApplication()))
                 .build()
                 .inject(this);
         flightSearchPresenter.attachView(this);

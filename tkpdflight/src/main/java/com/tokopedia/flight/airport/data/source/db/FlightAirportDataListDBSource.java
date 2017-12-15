@@ -121,6 +121,9 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                             .or(FlightAirportDB_Table.airport_id.like(queryLike))
                             .or(FlightAirportDB_Table.airport_name.like(queryLike))
                             .or(FlightAirportDB_Table.aliases.like(queryLike))
+                            .orderBy(FlightAirportDB_Table.country_name, true)
+                            .orderBy(FlightAirportDB_Table.city_name, true)
+                            .orderBy(FlightAirportDB_Table.airport_id, true)
                             .queryList();
                     subscriber.onNext(flightAirportDBList);
                 }

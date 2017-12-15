@@ -2,15 +2,13 @@ package com.tokopedia.flight.search.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchReturnFragment;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
@@ -22,6 +20,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 public class FlightSearchReturnActivity extends FlightSearchActivity implements FlightSearchFragment.OnFlightSearchFragmentListener {
 
     public static final String EXTRA_SEL_DEPARTURE_ID = "EXTRA_DEPARTURE_ID";
+    private static final int REQUEST_CODE_BOOKING = 13;
 
     private String selectedDepartureID;
 
@@ -65,7 +64,21 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
 
     @Override
     public void selectFlight(String selectedFlightID) {
-        startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedDepartureID, selectedFlightID));
+        startActivityForResult(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedDepartureID, selectedFlightID), REQUEST_CODE_BOOKING);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_BOOKING:
+                if (data != null) {
+                    FlightFlowUtil.actionSetResultAndClose(this,
+                            getIntent(),
+                            data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)
+                    );
+                }
+                break;
+        }
+    }
 }

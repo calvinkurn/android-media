@@ -1,40 +1,53 @@
 package com.tokopedia.flight.booking.view.adapter;
 
 import android.app.Activity;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
-import com.tokopedia.design.label.LabelView;
-import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.abstraction.base.view.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBookingPassengerAdapter.ViewHolder> {
-    private List<FlightBookingPassengerViewModel> viewModels;
-    private OnClickListener listener;
+public class FlightBookingPassengerAdapter extends BaseAdapter {
+    private List<Visitable> viewModels;
+    private FlightBookingPassengerTypeFactory typeFactory;
     private Activity activity;
 
-    public interface OnClickListener {
-        void onChangePassengerData(FlightBookingPassengerViewModel viewModel);
+    public FlightBookingPassengerAdapter(FlightBookingPassengerAdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
+        super(adapterTypeFactory, visitables);
+        typeFactory = adapterTypeFactory;
     }
 
-    public FlightBookingPassengerAdapter(Activity activity) {
+    @Override
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+        return typeFactory.createViewHolder(view, viewType);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        holder.bind(visitables.get(position));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public int getItemViewType(int position) {
+        return visitables.get(position).type(typeFactory);
+    }
+
+
+    /*public FlightBookingPassengerAdapter(FlightBookingPassengerTypeFactory typeFactory, Activity activity) {
+        this.typeFactory = typeFactory;
         this.activity = activity;
         viewModels = new ArrayList<>();
     }
@@ -98,10 +111,10 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                     }
                 }
             });
-            if (viewModel.getPassengerName() != null) {
+            if (viewModel.getPassengerFirstName() != null) {
                 passengerDetailLayout.setVisibility(View.VISIBLE);
                 headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_change_label));
-                String passengerName = viewModel.getPassengerName();
+                String passengerName = viewModel.getPassengerFirstName() + " " + viewModel.getPassengerLastName();
                 if (viewModel.getPassengerTitle() != null && viewModel.getPassengerTitle().length() > 0) {
                     passengerName = String.format("%s %s", viewModel.getPassengerTitle(), passengerName);
                 }
@@ -150,5 +163,5 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                 headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_fill_data_label));
             }
         }
-    }
+    }*/
 }

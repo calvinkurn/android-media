@@ -57,6 +57,16 @@ class HomeCategoryMenuMapper {
     @NonNull
     private List<CategoryItemModel> getCategoryItemModels(LayoutSection layoutSection) {
         List<CategoryItemModel> listCategoryItemModels = new ArrayList<>();
+
+        // TODO : this section is for dummie, please remove when api available
+        CategoryItemModel temp = new CategoryItemModel();
+        temp.setName("Flight");
+        temp.setImageUrl("https://ecs7.tokopedia.net/img/category/new/v1/icon_mainan.png");
+        temp.setCategoryId("11");
+        temp.setRedirectValue("http://tokopedia.com");
+        temp.setType(CategoryItemModel.TYPE.DIGITAL);
+        temp.setAppLinks("tokopedia://flight");
+        listCategoryItemModels.add(temp);
         for (LayoutRow layoutRow : layoutSection.getLayoutRows()) {
             CategoryItemModel categoryItemModel = new CategoryItemModel();
             categoryItemModel.setName(layoutRow.getName());

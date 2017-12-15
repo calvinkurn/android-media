@@ -5,15 +5,21 @@ import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightBookingReviewSubmitUseCase;
+import com.tokopedia.flight.review.domain.FlightBookingVerifyUseCase;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
+import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,15 +33,28 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     private final FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase;
     private final FlightBookingReviewSubmitUseCase flightBookingReviewSubmitUseCase;
+    private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
 
     @Inject
     public FlightBookingReviewPresenter(FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase,
                                         FlightBookingReviewSubmitUseCase flightBookingReviewSubmitUseCase,
                                         FlightAddToCartUseCase flightAddToCartUseCase,
-                                        FlightBookingCartDataMapper flightBookingCartDataMapper) {
+                                        FlightBookingCartDataMapper flightBookingCartDataMapper,
+                                        FlightBookingVerifyUseCase flightBookingVerifyUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightCheckVoucherCodeUseCase = flightCheckVoucherCodeUseCase;
         this.flightBookingReviewSubmitUseCase = flightBookingReviewSubmitUseCase;
+        this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
+    }
+
+    @Override
+    public void verifyBooking(String promoCode, int price, int adult, String cartId,
+                              List<FlightBookingPassengerViewModel> flightPassengerViewModels,
+                              String contactName, String country, String email, String phone) {
+        getView().showProgressDialog();
+        flightBookingVerifyUseCase.execute(flightBookingVerifyUseCase.createRequestParams(promoCode,
+                price, adult, cartId, flightPassengerViewModels, contactName, country, email, phone)
+                , getSubscriberVerifyBooking());
     }
 
     @Override
@@ -47,6 +66,29 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     public void submitData() {
         flightBookingReviewSubmitUseCase.execute(RequestParams.create(), getSubscriberSubmitData());
+    }
+
+    private Subscriber<DataResponseVerify> getSubscriberVerifyBooking() {
+        return new Subscriber<DataResponseVerify>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()){
+                    getView().hideProgressDialog();
+                    getView().onErrorVerifyCode(e);
+                }
+            }
+
+            @Override
+            public void onNext(DataResponseVerify dataResponseVerify) {
+                getView().hideProgressDialog();
+
+            }
+        };
     }
 
     private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode() {

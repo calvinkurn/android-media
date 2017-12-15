@@ -4,7 +4,7 @@
 
     <style name="Theme.White" parent="Base.Theme">
         <item name="toolbarTheme">@style/Toolbar.White</item>
-        <item name="tabTheme">@style/TabBar.White</item>
+        <item name="tabThemeWhite">@style/TabBar.White</item>
         <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
     </style>
 
@@ -18,10 +18,16 @@
     </style>
 
     <style name="TabBar.White" parent="BaseTabBar">
+        <item name="android:textSize">@dimen/font_body1</item>
         <item name="android:background">@android:color/white</item>
         <item name="tabTextColor">@color/grey_title</item>
         <item name="tabIndicatorColor">@color/tkpd_main_green</item>
         <item name="tabSelectedTextColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="TitlePageWhiteIndicator">
+        <item name="android:textSize">@dimen/font_caption</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="TitleTextAppearance.White">

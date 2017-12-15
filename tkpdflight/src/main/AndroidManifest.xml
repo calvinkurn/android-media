@@ -84,9 +84,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".orderlist.FlightOrderListActivity"
+            android:name=".orderlist.view.FlightOrderListActivity"
             android:label="@string/activity_label_flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+        <activity
+            android:name=".detail.view.activity.FlightDetailOrderActivity"
+            android:label="@string/activity_label_flight_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <service
+            android:name=".airport.service.GetAirportListService"
+            android:exported="false" />
     </application>
 </manifest>

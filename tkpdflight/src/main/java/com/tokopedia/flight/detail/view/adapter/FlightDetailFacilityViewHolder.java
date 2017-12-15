@@ -12,9 +12,9 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
-import com.tokopedia.flight.search.data.cloud.model.response.Info;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
+public class FlightDetailFacilityViewHolder extends BaseViewHolder<FlightDetailRouteViewModel> {
 
     public static final int NUMBER_OF_COLUMN_AMENITY = 3;
     private final ListInfoAdapter adapterInfo;
@@ -54,17 +54,17 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
     }
 
     @Override
-    public void bindObject(Route route) {
+    public void bindObject(FlightDetailRouteViewModel route) {
         adapterInfo.addData(route.getInfos());
         setDefaultAmenities(route);
         airlineName.setText(route.getAirlineName());
-        airlineCode.setText(String.format("%s - %s", route.getAirline(), route.getFlightNumber()));
-        ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),R.drawable.ic_airline_default);
+        airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
+        ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(), R.drawable.ic_airline_default);
         setRefundableInfo(route);
     }
 
-    private void setRefundableInfo(Route route) {
-        if (route.getRefundable()) {
+    private void setRefundableInfo(FlightDetailRouteViewModel route) {
+        if (route.isRefundable()) {
             refundableInfo.setText(R.string.flight_label_refundable_info);
             refundableInfo.setVisibility(View.VISIBLE);
         } else {
@@ -73,18 +73,20 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
         }
     }
 
-    public void setDefaultAmenities(Route defaultAmenities) {
-        while (defaultAmenities.getAmenities().size() % 3
-                != 0) {
-            Amenity amenity = new Amenity();
-            amenity.setDefault(true);
-            defaultAmenities.getAmenities().add(amenity);
+    public void setDefaultAmenities(FlightDetailRouteViewModel flightDetailRouteViewModel) {
+        if (flightDetailRouteViewModel.getAmenities() != null && flightDetailRouteViewModel.getAmenities().size() > 0) {
+            while (flightDetailRouteViewModel.getAmenities().size() % 3
+                    != 0) {
+                Amenity amenity = new Amenity();
+                amenity.setDefault(true);
+                flightDetailRouteViewModel.getAmenities().add(amenity);
+            }
+            adapterAmenity.addData(flightDetailRouteViewModel.getAmenities());
         }
-        adapterAmenity.addData(defaultAmenities.getAmenities());
     }
 
     private class ListInfoAdapter extends RecyclerView.Adapter<FlightDetailFacilityInfoViewHolder> {
-        List<Info> infoList;
+        List<FlightDetailRouteInfoViewModel> infoList;
 
         public ListInfoAdapter() {
             infoList = new ArrayList<>();
@@ -106,7 +108,7 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
             return infoList.size();
         }
 
-        public void addData(List<Info> infos) {
+        public void addData(List<FlightDetailRouteInfoViewModel> infos) {
             infoList.clear();
             infoList.addAll(infos);
             notifyDataSetChanged();
