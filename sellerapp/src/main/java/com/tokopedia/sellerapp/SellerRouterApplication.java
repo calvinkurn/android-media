@@ -40,6 +40,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
@@ -718,12 +719,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getDetailResCenterIntentBuyer(Context context, String res_id, String shopName) {
-        return DetailResCenterActivity.newBuyerInstance(context, res_id, shopName);
+    public Intent getResolutionCenterIntent(Context context) {
+        return InboxResCenterActivity.createIntent(context);
     }
 
     @Override
-    public Intent getResolutionCenterIntent(Context context) {
-        return InboxResCenterActivity.createIntent(context);
+    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
+        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
 }

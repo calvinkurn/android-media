@@ -208,7 +208,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     public void successEditSolution(String message) {
         hideLoading();
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 

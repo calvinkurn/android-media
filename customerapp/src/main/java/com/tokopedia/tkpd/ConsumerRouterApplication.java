@@ -62,6 +62,7 @@ import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -845,12 +846,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getDetailResCenterIntentBuyer(Context context, String res_id, String shopName) {
-        return DetailResCenterActivity.newBuyerInstance(context, res_id, shopName);
+    public Intent getResolutionCenterIntent(Context context) {
+        return InboxResCenterActivity.createIntent(context);
     }
 
     @Override
-    public Intent getResolutionCenterIntent(Context context) {
-        return InboxResCenterActivity.createIntent(context);
+    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
+        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
 }

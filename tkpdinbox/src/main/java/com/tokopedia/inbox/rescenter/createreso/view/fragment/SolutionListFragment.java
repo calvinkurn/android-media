@@ -244,7 +244,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void successEditSolution(String message) {
         hideLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), message);
+//        NetworkErrorHelper.showSnackbar(getActivity(), message);
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }

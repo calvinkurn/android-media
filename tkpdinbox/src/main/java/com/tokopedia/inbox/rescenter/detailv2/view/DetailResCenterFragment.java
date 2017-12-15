@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -90,6 +91,10 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     public static final String ACTION_HELP = "help";
     public static final String ACTION_ACCEPT = "accept";
     public static final String ACTION_CANCEL = "cancel";
+    public static final String ACTION_INPUT_AWB = "input_awb";
+    public static final String ACTION_EDIT_AWB = "edit_awb";
+    public static final String ACTION_INPUT_ADDRESS = "input_address";
+    public static final String ACTION_EDIT_ADDRESS = "edit_address";
 
     public static final int STATUS_FINISHED = 500;
     public static final int STATUS_CANCEL = 0;
@@ -748,12 +753,13 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void doOnActionSuccess(String action) {
         showLoadingDialog(false);
+
         String message = "";
         if (action.equals(ACTION_HELP)) message = getResources().getString(R.string.string_success_help);
         else if (action.equals(ACTION_FINISH)) message = getResources().getString(R.string.string_success_finish);
         else if (action.equals(ACTION_ACCEPT)) message = getResources().getString(R.string.string_success_accept);
         else if (action.equals(ACTION_CANCEL)) message = getResources().getString(R.string.string_success_cancel);
-        showSnackBar(message);
+        if (!TextUtils.isEmpty(message)) showSnackBar(message);
         presenter.refreshPage();
     }
 

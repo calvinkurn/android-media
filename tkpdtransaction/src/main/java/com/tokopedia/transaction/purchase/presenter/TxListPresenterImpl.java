@@ -379,7 +379,7 @@ public class TxListPresenterImpl implements TxListPresenter {
 
         if (MainApplication.getAppContext() instanceof TransactionRouter) {
             Intent intent = ((TransactionRouter) MainApplication.getAppContext())
-                    .getDetailResCenterIntentBuyer(context, res_id, data.getOrderShop().getShopName());
+                    .getDetailResChatIntentBuyer(context, res_id, data.getOrderShop().getShopName());
             viewListener.navigateToActivity(intent);
         }
     }

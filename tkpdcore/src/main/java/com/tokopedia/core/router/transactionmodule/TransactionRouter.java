@@ -16,7 +16,7 @@ public interface TransactionRouter {
 
     Intent getInboxReputationIntent(Context context);
 
-    Intent getDetailResCenterIntentBuyer(Context context, String res_id, String shopName);
+    Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName);
 
     Intent getResolutionCenterIntent(Context context);
 }

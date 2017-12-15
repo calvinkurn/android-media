@@ -82,7 +82,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         String res_id = uri.getQueryParameter("id");
         if (MainApplication.getAppContext() instanceof TransactionRouter) {
             Intent intent = ((TransactionRouter) MainApplication.getAppContext())
-                    .getDetailResCenterIntentBuyer(context, res_id, orderShop.getShopName());
+                    .getDetailResChatIntentBuyer(context, res_id, orderShop.getShopName());
             viewListener.navigateToActivity(intent);
         }
 
