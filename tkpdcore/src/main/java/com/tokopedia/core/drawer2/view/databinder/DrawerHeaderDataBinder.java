@@ -37,8 +37,6 @@ import static com.tokopedia.core.drawer2.data.source.CloudDepositSource.DRAWER_C
 
 public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.ViewHolder> {
 
-    private static final String TITLE_HEADER_WEBSITE = "TokoPoints";
-
     public interface DrawerHeaderListener {
         void onGoToDeposit();
 
@@ -248,6 +246,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
     @SuppressLint("SetTextI18n")
     private void setTokoPoint(ViewHolder holder) {
+        final String TITLE_HEADER_WEBSITE = "TokoPoints";
         if (data.getTokoPointDrawerData() != null && data.getTokoPointDrawerData().getOffFlag() == 0) {
             holder.tokoPointContainer.setVisibility(View.VISIBLE);
             final String title = data.getTokoPointDrawerData().getMainPageTitle();
@@ -262,9 +261,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                     UnifyTracking.eventUserClickedPoints();
                     listener.onTokoPointActionClicked(
                             data.getTokoPointDrawerData().getMainPageUrl(),
-                            TextUtils.isEmpty(title)
-                                    ? TITLE_HEADER_WEBSITE
-                                    : title
+                            TextUtils.isEmpty(title) ? TITLE_HEADER_WEBSITE : title
                     );
                 }
             });
