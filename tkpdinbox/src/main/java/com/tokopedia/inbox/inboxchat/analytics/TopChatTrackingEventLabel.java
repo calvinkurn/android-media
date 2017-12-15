@@ -31,6 +31,7 @@ public class TopChatTrackingEventLabel {
         public static final String CHAT_DETAIL_SEND ="click on send button";
         public static final String CHAT_DETAIL_INSERT ="click on insert button";
         public static final String CHAT_DETAIL_ATTACHMENT ="click on send product attachemnt";
+        public static final String TEMPLATE_CHAT_CLICK ="click on template chat";
     }
 
     public interface Label {
