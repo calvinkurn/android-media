@@ -1,8 +1,5 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * @author by alvarisi on 12/13/17.
  */
@@ -26,7 +23,7 @@ public class FlightOrderDetailPassData implements Parcelable {
     private String arrivalCity;
     private String arrivalAirportId;
     private String arrivalTime;
-    private String status;
+    private int status;
 
     public FlightOrderDetailPassData() {
     }
@@ -98,28 +95,12 @@ public class FlightOrderDetailPassData implements Parcelable {
         this.arrivalTime = arrivalTime;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(orderId);
-        parcel.writeString(departureCity);
-        parcel.writeString(departureAiportId);
-        parcel.writeString(departureTime);
-        parcel.writeString(arrivalCity);
-        parcel.writeString(arrivalAirportId);
-        parcel.writeString(arrivalTime);
-        parcel.writeString(status);
-    }
 }

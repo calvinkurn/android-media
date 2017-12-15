@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/WidgetSelectPassengerView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/WidgetSelectPassengerView"
     android:orientation="horizontal">
 
     <android.support.v7.widget.AppCompatImageView
@@ -17,21 +17,21 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:gravity="center"
-        android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_title"
+            style="@style/TextView.Subheading.Bold"
             android:layout_width="match_parent"
-            style="@style/TextView.Title"
             tools:text="Dewasa" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_subtitle"
-            android:layout_width="match_parent"
             style="@style/TextView.Caption.BlackSecondary"
+            android:layout_width="match_parent"
             tools:text="(Lebih dari 12 tahun)" />
     </LinearLayout>
 
@@ -39,6 +39,6 @@
         android:id="@+id/number_picker_passenger"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.6"
-        android:layout_gravity="center_vertical"/>
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.6" />
 </LinearLayout>

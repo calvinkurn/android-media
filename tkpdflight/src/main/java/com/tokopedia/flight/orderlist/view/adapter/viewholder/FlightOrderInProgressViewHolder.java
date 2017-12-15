@@ -8,16 +8,16 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderInProcessViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
 
 /**
  * @author by alvarisi on 12/12/17.
  */
 
-public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<FlightOrderFailedViewModel> {
+public class FlightOrderInProgressViewHolder extends FlightOrderBaseViewHolder<FlightOrderInProcessViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_flight_order_failed;
+    public static final int LAYOUT = R.layout.item_flight_order_in_progress;
     private final FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener;
 
     private AppCompatTextView tvTitle;
@@ -26,9 +26,9 @@ public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<Fligh
     private AppCompatTextView tvDepartureCity;
     private AppCompatTextView tvArrivalCity;
     private AppCompatTextView tvRebooking;
-    private FlightOrderFailedViewModel item;
+    private FlightOrderInProcessViewModel item;
 
-    public FlightOrderFailedViewHolder(View itemView, FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener) {
+    public FlightOrderInProgressViewHolder(View itemView, FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener) {
         super(itemView);
         this.adapterInteractionListener = adapterInteractionListener;
         findViews(itemView);
@@ -51,10 +51,10 @@ public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<Fligh
 
 
     @Override
-    public void bind(FlightOrderFailedViewModel element) {
+    public void bind(FlightOrderInProcessViewModel element) {
         this.item = element;
         tvTitle.setText(element.getTitle());
-        tvOrderDate.setText(FlightDateUtil.formatToUi(element.getCreateTime()));
+        tvOrderDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.FORMAT_DATE, element.getCreateTime()));
         tvOrderId.setText(String.format("%s %s", itemView.getContext().getString(R.string.flight_order_order_id_prefix), element.getId()));
         if (element.getOrderJourney().size() > 0) {
             renderArrow(element.getOrderJourney());

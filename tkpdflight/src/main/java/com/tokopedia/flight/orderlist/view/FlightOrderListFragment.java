@@ -24,9 +24,8 @@ import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -200,7 +199,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void onFailedOrderDetailClicked(FlightOrderFailedViewModel viewModel) {
+    public void onDetailOrderClicked(OrderDetailPassData viewModel) {
         FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
         passData.setOrderId(viewModel.getId());
         passData.setDepartureAiportId(viewModel.getOrderJourney().get(0).getDepartureAiportId());
@@ -214,7 +213,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void onSuccessOrderDetailClicked(FlightOrderSuccessViewModel viewModel) {
+    public void onDetailOrderClicked(String orderId) {
         FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
         passData.setOrderId(viewModel.getId());
         passData.setDepartureAiportId(viewModel.getOrderJourney().getDepartureAiportId());
@@ -225,7 +224,6 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
         passData.setArrivalTime(viewModel.getOrderJourney().getArrivalTime());
         passData.setStatus(viewModel.getStatus());
         startActivity(FlightDetailOrderActivity.createIntent(getActivity(), passData));
-        // TODO: pass to detail activity
     }
 
     @Override
@@ -234,7 +232,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void onReBookingClicked(FlightOrderFailedViewModel item) {
+    public void onReBookingClicked(FlightOrderBaseViewModel item) {
 
     }
 }

@@ -8,16 +8,16 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderWaitingForPaymentViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
 
 /**
  * @author by alvarisi on 12/12/17.
  */
 
-public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<FlightOrderFailedViewModel> {
+public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewHolder<FlightOrderWaitingForPaymentViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_flight_order_failed;
+    public static final int LAYOUT = R.layout.item_flight_order_waiting_for_payment;
     private final FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener;
 
     private AppCompatTextView tvTitle;
@@ -26,9 +26,9 @@ public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<Fligh
     private AppCompatTextView tvDepartureCity;
     private AppCompatTextView tvArrivalCity;
     private AppCompatTextView tvRebooking;
-    private FlightOrderFailedViewModel item;
+    private FlightOrderWaitingForPaymentViewModel item;
 
-    public FlightOrderFailedViewHolder(View itemView, FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener) {
+    public FlightOrderWaitingForPaymentViewHolder(View itemView, FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener) {
         super(itemView);
         this.adapterInteractionListener = adapterInteractionListener;
         findViews(itemView);
@@ -51,7 +51,7 @@ public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<Fligh
 
 
     @Override
-    public void bind(FlightOrderFailedViewModel element) {
+    public void bind(FlightOrderWaitingForPaymentViewModel element) {
         this.item = element;
         tvTitle.setText(element.getTitle());
         tvOrderDate.setText(FlightDateUtil.formatToUi(element.getCreateTime()));
