@@ -25,12 +25,14 @@ import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+;
 
 /**
  * @author by zulfikarrahman on 11/28/17.
@@ -200,10 +202,14 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void onDetailOrderClicked(FlightOrderDetailPassData viewModel) {
+        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), viewModel));
     }
 
     @Override
     public void onDetailOrderClicked(String orderId) {
+        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
+        passData.setOrderId(orderId);
+        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), passData));
     }
 
     @Override
@@ -213,6 +219,6 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void onReBookingClicked(FlightOrderBaseViewModel item) {
-
+        getActivity().finish();
     }
 }
