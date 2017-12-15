@@ -75,6 +75,11 @@ public interface FeedPlus {
 
         void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
 
+        void onGoToProductDetailFromProductUpload(
+                int rowNumber, int page, int itemPosition,
+                String productId, String imageSourceSingle,
+                String name, String price, String productUrl);
+
         void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price);
 
         void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId,

@@ -417,6 +417,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToProductDetailFromProductUpload(int rowNumber, int page, int itemPosition,
+                                                     String productId, String imageSourceSingle, String name,
+                                                     String price, String productUrl) {
+        FeedTracking.trackEventClickProductUploadEnhanced(name, productId, price, productUrl,
+                rowNumber, itemPosition, SessionHandler.getLoginID(getContext()));
+        goToProductDetail(productId, imageSourceSingle, name, price);
+    }
+
+    @Override
     public void onGoToProductDetailFromRecentView(String productId, String imgUri,
                                                   String name, String price) {
         goToProductDetail(productId, imgUri, name, price);

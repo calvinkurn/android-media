@@ -21,6 +21,26 @@ public class FeedTracking extends TrackingUtils {
     public static final String CARD_DETAIL_SELLER_STORY = "Seller Story";
     public static final String CARD_DETAIL_OS_BRAND = "OS Brand";
 
+    public static void trackEventClickProductUploadEnhanced(String name, String id,
+                                                          String price, String productUrl,
+                                                          int rowNumber, int itemPosition,
+                                                          String userId) {
+        String actionField = getClickProductUploadActionField(rowNumber);
+        enhanceClickFeedRecomItem(createProductList(name, id, price, itemPosition, actionField, userId),
+                getClickProductUploadEventLabel(),
+                actionField,
+                productUrl
+        );
+    }
+
+    private static String getClickProductUploadEventLabel() {
+        return generateClickRecomItemEventLabel(FeedTracking.CARD_TYPE_PRODUCT, FeedTracking.CARD_DETAIL_PRODUCT_UPLOAD);
+    }
+
+    private static String getClickProductUploadActionField(int rowNumber) {
+        return generateClickRecomItemActionField(rowNumber, FeedTracking.CARD_TYPE_PRODUCT, FeedTracking.CARD_DETAIL_PRODUCT_UPLOAD);
+    }
+
     public static void trackEventClickInspirationEnhanced(String name, String id,
                                                           String price, String productUrl,
                                                           int rowNumber, int itemPosition,
