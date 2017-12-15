@@ -59,6 +59,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
     public final static String USER = "Pengguna";
     final static String ADMIN = "Administrator";
+    final static String OFFICIAL = "Official";
     final static String SELLER = "Penjual";
 
     @LayoutRes
@@ -249,7 +250,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                         presenter.onSelected(position);
                     }
                 }else {
-                    if (!messageItem.getLabel().equals(ADMIN)) {
+                    if (!messageItem.getLabel().equals(ADMIN) && !messageItem.getLabel().equals(OFFICIAL)) {
                         if (messageItem.getLabel().equals(SELLER)) {
                             presenter.goToShop(Integer.parseInt(messageItem.getSenderId()));
                         } else {

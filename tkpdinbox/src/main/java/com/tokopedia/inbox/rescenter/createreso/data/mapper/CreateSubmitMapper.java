@@ -4,8 +4,10 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateSubmitResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.ResolutionResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.ShopResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateSubmitDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.ResolutionDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.ShopDomain;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -27,6 +29,8 @@ public class CreateSubmitMapper implements Func1<Response<TkpdResponse>, CreateS
         CreateSubmitDomain model = new CreateSubmitDomain(
                 createSubmitResponse.getResolution() != null ?
                         mappingResolutionDomain(createSubmitResponse.getResolution()) : null,
+                createSubmitResponse.getShop() != null ?
+                        mappingShopDomain(createSubmitResponse.getShop()) : null,
                 createSubmitResponse.getSuccessMessage());
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
@@ -46,5 +50,9 @@ public class CreateSubmitMapper implements Func1<Response<TkpdResponse>, CreateS
 
     private ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {
         return new ResolutionDomain(response.getId());
+    }
+
+    private ShopDomain mappingShopDomain(ShopResponse response) {
+        return new ShopDomain(response.getName());
     }
 }

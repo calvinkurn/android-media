@@ -14,7 +14,8 @@
             android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".inbox.view.activity.InboxReputationDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".inbox.view.activity.InboxReputationFormActivity"
             android:label="@string/title_activity_submit_review"

@@ -52,6 +52,8 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import info.vividcode.android.zxing.CaptureActivity;
+
 public class CommonUtils {
 
     public CommonUtils() {
@@ -339,9 +341,9 @@ public class CommonUtils {
         return sdf.format(currenTimeZone);
     }
 
-    public static Intent requestBarcodeScanner() {
-        return new Intent("com.google.zxing.client.android.SCAN");
-    }
+    public static Intent requestBarcodeScanner(Context context){
+		return new Intent(context, CaptureActivity.class);
+	}
 
     public static String getBarcode(Intent data) {
         try {

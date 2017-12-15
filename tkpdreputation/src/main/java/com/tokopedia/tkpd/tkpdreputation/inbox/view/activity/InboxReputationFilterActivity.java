@@ -143,4 +143,10 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        toolbar.setPadding(0,0,20,0);
+    }
 }
