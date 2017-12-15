@@ -38,6 +38,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
     @Override
     public void processGetCouponList(String platform) {
+        view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
         param.put("type", platform);
@@ -49,7 +50,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 new Subscriber<List<CouponData>>() {
                     @Override
                     public void onCompleted() {
-
+                        view.enableSwipeRefresh();
                     }
 
                     @Override
@@ -71,8 +72,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                         } else {
                             view.renderErrorGetCouponList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
-
-
 
 
 //                        if(e instanceof LoyaltyErrorException) {
