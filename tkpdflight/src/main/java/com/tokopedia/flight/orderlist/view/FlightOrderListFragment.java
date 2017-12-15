@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
@@ -24,7 +25,7 @@ import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,13 +199,11 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void onDetailOrderClicked(OrderDetailPassData viewModel) {
-
+    public void onDetailOrderClicked(FlightOrderDetailPassData viewModel) {
     }
 
     @Override
     public void onDetailOrderClicked(String orderId) {
-
     }
 
     @Override

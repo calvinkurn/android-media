@@ -35,6 +35,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -303,7 +304,16 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public int getPassengerTitleId() {
-        return spTitle.getSpinnerPosition();
+        switch (spTitle.getSpinnerPosition()){
+            case 0:
+                return FlightPassengerTitleType.TUAN;
+            case 1:
+                return FlightPassengerTitleType.NYONYA;
+            case 2:
+                return FlightPassengerTitleType.NONA;
+            default:
+                return 0;
+        }
     }
 
     @Override
