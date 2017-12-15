@@ -281,8 +281,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         tosAgreementText.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                getActivity().startActivity(InsuranceTnCActivity.createInstance(getActivity(),
-                        "https://ws-staging.tokopedia.com/v4/web-view/get_insurance_info.pl"));
+                getActivity().startActivity(new Intent(getActivity(), InsuranceTnCActivity.class));
             }
         }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvInsuranceTerms.setMovementMethod(LinkMovementMethod.getInstance());
