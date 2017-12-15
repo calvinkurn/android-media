@@ -168,6 +168,7 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         } else {
             return VIEW_SHIPPING_ITEM;
         }
+
     }
 
     private boolean isLastItemPosition(int position) {
