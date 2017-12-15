@@ -27,6 +27,7 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.TkpdActivity;
@@ -178,6 +179,8 @@ public class ActivitySellingTransaction extends TkpdActivity
         if (fromWidget) {
             UnifyTracking.eventAccessAppViewWidget();
         }
+
+        TrackingUtils.sendMoEngageOpenSellerScreen();
     }
 
     @Override

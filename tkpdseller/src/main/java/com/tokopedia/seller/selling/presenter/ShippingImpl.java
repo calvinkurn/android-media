@@ -457,8 +457,10 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void updateRefNumBarcode(int getBarcodePosition, String barcode) {
-        modelList.get(getBarcodePosition).RefNum = barcode;
-        view.notifyDataSetChanged(modelList);
+        if (getBarcodePosition >= 0 && getBarcodePosition < modelList.size()) {
+            modelList.get(getBarcodePosition).RefNum = barcode;
+            view.notifyDataSetChanged(modelList);
+        }
     }
 
     @Override

@@ -24,8 +24,10 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistViewPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
 
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final LinearLayout containerHashtag;
     private final RelativeLayout hotlistBackground;
     private final View hashtTagScrollView;
+    private final HotlistPromoView hotlistPromoView;
 
     private int counterError;
 
@@ -58,6 +61,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         this.containerHashtag = (LinearLayout) parent.findViewById(R.id.hot_list_banner_hashtags);
         this.hotlistBackground = (RelativeLayout) parent.findViewById(R.id.hotlist_background);
         this.hashtTagScrollView = parent.findViewById(R.id.hashtag_scroll_view);
+        this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
     }
 
     @Override
@@ -74,6 +78,17 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         } else {
             hashtTagScrollView.setVisibility(View.GONE);
         }
+
+        if (element.getHotlistPromo() != null) {
+            hotlistPromoView.setVisibility(View.VISIBLE);
+            renderPromoView(element.getHotlistPromo());
+        } else {
+            hotlistPromoView.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderPromoView(HotlistPromo hotlistPromo) {
+        hotlistPromoView.renderData(hotlistPromo);
     }
 
     private void renderHashtag(final List<HotlistHashTagViewModel> hashTags) {

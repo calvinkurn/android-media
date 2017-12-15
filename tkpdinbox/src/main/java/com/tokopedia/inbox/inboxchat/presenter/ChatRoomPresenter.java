@@ -74,6 +74,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     final static String USER = "Pengguna";
     final static String ADMIN = "Administrator";
+    final static String OFFICIAL = "Official";
     final static String SELLER = "shop";
     private CountDownTimer countDownTimer;
 
@@ -144,7 +145,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void onGoToDetail(String id, String role) {
-        if (role!=null && id!=null &&!role.equals(ADMIN.toLowerCase())) {
+        if (role!=null && id!=null &&!role.equals(ADMIN.toLowerCase()) &&!role.equals(OFFICIAL.toLowerCase())) {
             if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(id), "");

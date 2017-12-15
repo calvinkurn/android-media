@@ -2,8 +2,11 @@ package com.tokopedia.ride.bookingride.view;
 
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
+import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.ride.R;
@@ -30,15 +33,20 @@ import rx.Subscriber;
 public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingContract.View>
         implements ConfirmBookingContract.Presenter {
 
+    private final String BEARER_TOKEN = "Bearer ";
+
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetPaymentMethodListUseCase getPaymentMethodListUseCase;
     private GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase;
+    private TokoCashUseCase tokoCashUseCase;
+    private String tokoCashBalance;
 
     @Inject
-    public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase, GetPaymentMethodListUseCase getPaymentMethodListUseCase, GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase) {
+    public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase, GetPaymentMethodListUseCase getPaymentMethodListUseCase, GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase, TokoCashUseCase tokoCashUseCase) {
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getPaymentMethodListUseCase = getPaymentMethodListUseCase;
         this.getPaymentMethodListCacheUseCase = getPaymentMethodListCacheUseCase;
+        this.tokoCashUseCase = tokoCashUseCase;
     }
 
     @Override
@@ -166,8 +174,51 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
                 if (selectedPaymentMethod != null) {
                     getView().showPaymentMethod(selectedPaymentMethod.getLabel(), selectedPaymentMethod.getCardTypeImage());
+                    if (selectedPaymentMethod.getMode().equalsIgnoreCase(PaymentMode.WALLET)) {
+                        fetchTokoCashBalance();
+                    } else {
+                        getView().hideTokoCashBalance();
+                    }
                 } else {
                     getView().hidePaymentMethod();
+                }
+            }
+        });
+    }
+
+    /**
+     * This function fetches the tokocash balance and update on UI
+     */
+    private void fetchTokoCashBalance() {
+        if (!isViewAttached() || getView().getActivity() == null) {
+            return;
+        }
+
+        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("ConfirmBookingPresenter :: inside tokocash subscriber error");
+            }
+
+            @Override
+            public void onNext(TokoCashModel tokoCashModel) {
+                if (tokoCashModel != null
+                        && tokoCashModel.isSuccess()
+                        && tokoCashModel.getTokoCashData() != null
+                        && tokoCashModel.getTokoCashData().getLink() == 1) {
+                    CommonUtils.dumper("ConfirmBookingPresenter :: tokocash balance == " + tokoCashModel.getTokoCashData().getBalance());
+
+                    tokoCashBalance = "(" + tokoCashModel.getTokoCashData().getBalance() + ")";
+
+                    //show tokocash balance
+                    if (isViewAttached()) {
+                        getView().showTokoCashBalance(tokoCashBalance);
+                    }
                 }
             }
         });

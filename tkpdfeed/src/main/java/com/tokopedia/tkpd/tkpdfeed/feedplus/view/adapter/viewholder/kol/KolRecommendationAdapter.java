@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -51,54 +52,57 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
             avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    kolViewListener.onGoToKolProfile(data.getPage(),
-                            data.getRowNumber(),
-                            data.getListRecommend().get(getAdapterPosition()).getUrl());
+                    navigateToProfilePage(getAdapterPosition());
                 }
             });
 
             name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    kolViewListener.onGoToKolProfile(data.getPage(),
-                            data.getRowNumber(),
-                            data.getListRecommend().get(getAdapterPosition()).getUrl());
+                    navigateToProfilePage(getAdapterPosition());
                 }
             });
 
             mainView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    kolViewListener.onGoToKolProfile(data.getPage(),
-                            data.getRowNumber(),
-                            data.getListRecommend().get(getAdapterPosition()).getUrl());
+                    navigateToProfilePage(getAdapterPosition());
                 }
             });
 
             followButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (data.getListRecommend().get(getAdapterPosition()).isFollowed()) {
+                    KolRecommendItemViewModel kolItem = data.getListRecommend().get(getAdapterPosition());
+                    if (kolItem.isFollowed()) {
+                        UnifyTracking.eventKolRecommendationUnfollowClick(kolItem.getLabel(), kolItem.getName());
                         kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
                                 data.getRowNumber(),
-                                data.getListRecommend().get(getAdapterPosition())
-                                        .getId(),
+                                kolItem.getId(),
                                 getAdapterPosition());
-                        data.getListRecommend().get(getAdapterPosition()).setFollowed(false);
+                        kolItem.setFollowed(false);
                         notifyItemChanged(getAdapterPosition());
                     } else {
+                        UnifyTracking.eventKolRecommendationFollowClick(kolItem.getLabel(), kolItem.getName());
                         kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
                                 data.getRowNumber(),
-                                data.getListRecommend().get(getAdapterPosition())
-                                        .getId(),
+                                kolItem.getId(),
                                 getAdapterPosition());
-                        data.getListRecommend().get(getAdapterPosition()).setFollowed(true);
+                        kolItem.setFollowed(true);
                         notifyItemChanged(getAdapterPosition());
                     }
                 }
             });
 
         }
+    }
+
+    private void navigateToProfilePage(int adapterPosition) {
+        KolRecommendItemViewModel kolItem = data.getListRecommend().get(adapterPosition);
+        UnifyTracking.eventKolRecommendationGoToProfileClick(kolItem.getLabel(), kolItem.getName());
+        kolViewListener.onGoToKolProfile(data.getPage(),
+                data.getRowNumber(),
+                kolItem.getUrl());
     }
 
     @Override

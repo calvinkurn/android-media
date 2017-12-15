@@ -243,6 +243,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        KeyboardHandler.hideSoftKeyboard(getActivity());
         if (savedInstanceState != null)
             presenter.getFilteredInboxReputation(
                     savedInstanceState.getString(ARGS_QUERY, ""),
