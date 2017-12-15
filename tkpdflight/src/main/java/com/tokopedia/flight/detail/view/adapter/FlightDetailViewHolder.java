@@ -1,6 +1,10 @@
 package com.tokopedia.flight.detail.view.adapter;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.DateFormatUtils;
 import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
 /**
@@ -17,9 +22,6 @@ import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
 public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteViewModel> {
 
-    public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    public static final String FORMAT_TIME = "HH:mm";
-    public static final String FORMAT_DATE = "EEEE, dd LLLL yyyy";
     private ImageView imageAirline;
     private TextView airlineName;
     private TextView airlineCode;
@@ -36,6 +38,9 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
     private TextView arrivalAirportName;
     private TextView arrivalAirportDesc;
     private TextView transitInfo;
+    private View containerPNR;
+    private TextView pnrCode;
+    private ImageView copyPnr;
 
     public FlightDetailViewHolder(View itemView) {
         super(itemView);
@@ -55,6 +60,9 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
         arrivalAirportName = (TextView) itemView.findViewById(R.id.arrival_airport_name);
         arrivalAirportDesc = (TextView) itemView.findViewById(R.id.arrival_desc_airport_name);
         transitInfo = (TextView) itemView.findViewById(R.id.transit_info);
+        containerPNR = itemView.findViewById(R.id.container_pnr);
+        pnrCode = itemView.findViewById(R.id.pnr_code);
+        copyPnr = itemView.findViewById(R.id.copy_pnr);
     }
 
     @Override
@@ -62,18 +70,36 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
         setRefundableInfo(route);
-        departureTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_TIME, route.getDepartureTimestamp()));
-        departureDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_DATE, route.getDepartureTimestamp()));
+        departureTime.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getDepartureTimestamp()));
+        departureDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.getDepartureTimestamp()));
         setColorCircle();
         departureAirportName.setText(String.format("%s (%s)", route.getDepartureAirportCity(), route.getDepartureAirportCode()));
         departureAirportDesc.setText(route.getDepartureAirportName());
         flightTime.setText(route.getDuration());
-        arrivalTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_TIME, route.getArrivalTimestamp()));
-        arrivalDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_DATE, route.getArrivalTimestamp()));
+        arrivalTime.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getArrivalTimestamp()));
+        arrivalDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getArrivalTimestamp()));
         arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
         arrivalAirportDesc.setText(route.getArrivalAirportName());
         transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
+        setPNR(route.getPnr());
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(), R.drawable.ic_airline_default);
+    }
+
+    private void setPNR(String pnr) {
+        if(!TextUtils.isEmpty(pnr)){
+            containerPNR.setVisibility(View.VISIBLE);
+            pnrCode.setText(pnr);
+            copyPnr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText(getString(R.string.flight_label_order_id), pnrCode.getText().toString());
+                    clipboard.setPrimaryClip(clip);
+                }
+            });
+        }else{
+            containerPNR.setVisibility(View.GONE);
+        }
     }
 
     private void setRefundableInfo(FlightDetailRouteViewModel route) {

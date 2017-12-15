@@ -11,12 +11,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/pb_full_page"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/full_page_loading"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            tools:visibility="gone" />
+            android:orientation="vertical"
+            android:padding="@dimen/padding_med"
+            tools:visibility="visible">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:gravity="center"
+                android:text="@string/flight_booking_atc_loading_label" />
+        </LinearLayout>
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/container_full_page"
@@ -24,7 +40,7 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,11 +164,11 @@
 
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_total_price"
+                            style="@style/TextView.Subheading.Bold"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
-                            style="@style/TextView.Subheading.Bold"
                             tools:text="Rp45.846.900" />
 
                     </LinearLayout>

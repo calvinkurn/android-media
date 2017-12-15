@@ -8,8 +8,8 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderWaitingForPaymentViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -79,7 +79,7 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
     @Override
     protected void onDetailOptionClicked() {
         if (item.getOrderJourney().size() == 1) {
-            OrderDetailPassData passData = new OrderDetailPassData();
+            FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
             passData.setOrderId(item.getId());
             FlightOrderJourney orderJourney = item.getOrderJourney().get(0);
             passData.setDepartureAiportId(orderJourney.getDepartureAiportId());

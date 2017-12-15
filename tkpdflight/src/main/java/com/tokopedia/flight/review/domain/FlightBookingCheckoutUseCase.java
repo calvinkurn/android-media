@@ -8,13 +8,13 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * Created by zulfikarrahman on 11/10/17.
+ * @author by zulfikarrahman on 11/10/17.
  */
 
-public class FlightBookingReviewSubmitUseCase extends UseCase<Boolean> {
+public class FlightBookingCheckoutUseCase extends UseCase<Boolean> {
 
     @Inject
-    public FlightBookingReviewSubmitUseCase() {
+    public FlightBookingCheckoutUseCase() {
     }
 
     @Override

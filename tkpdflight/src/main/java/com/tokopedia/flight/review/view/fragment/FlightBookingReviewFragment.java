@@ -32,12 +32,12 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
+import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
-import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
@@ -63,11 +63,15 @@ import javax.inject.Inject;
 public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, VoucherCartView.ActionListener {
 
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
-    private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
-    private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     public static final int RESULT_ERROR_VERIFY = 874;
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
-
+    private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
+    private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
+    @Inject
+    FlightDetailRouteViewModelMapper flightDetailRouteViewModelMapper;
+    @Inject
+    FlightBookingReviewPresenter flightBookingReviewPresenter;
+    FlightBookingReviewModel flightBookingReviewModel;
     private CountdownTimeView reviewTime;
     private TextView reviewDetailDepartureFlight;
     private RecyclerView recyclerViewDepartureFlight;
@@ -81,11 +85,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
-    @Inject
-    FlightDetailRouteViewModelMapper flightDetailRouteViewModelMapper;
-    @Inject
-    FlightBookingReviewPresenter flightBookingReviewPresenter;
-    FlightBookingReviewModel flightBookingReviewModel;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
@@ -146,7 +145,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
             public void onClick(View v) {
                 flightBookingReviewPresenter.verifyBooking(voucherCartView.getVoucherCode(), flightBookingReviewModel.getTotalPriceNumeric(),
                         flightBookingReviewModel.getAdult(), flightBookingReviewModel.getId(), flightBookingReviewModel.getDetailPassengersData(), flightBookingReviewModel.getContactName(),
-                        flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(), flightBookingReviewModel.getContactEmail(),flightBookingReviewModel.getContactPhone());
+                        flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(), flightBookingReviewModel.getContactEmail(), flightBookingReviewModel.getContactPhone());
             }
         });
         reviewDetailReturnFlight.setOnClickListener(new View.OnClickListener() {
@@ -437,16 +436,16 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void onErrorVerifyCode(Throwable e) {
-        if(e instanceof FlightException){
-            for(FlightError flightError:((FlightException) e).getErrorList()){
-                if(FlightErrorUtil.getErrorCode(flightError) >= 14 && FlightErrorUtil.getErrorCode(flightError) <= 21){
+        if (e instanceof FlightException) {
+            for (FlightError flightError : ((FlightException) e).getErrorList()) {
+                if (FlightErrorUtil.getErrorCode(flightError) >= 14 && FlightErrorUtil.getErrorCode(flightError) <= 21) {
                     Intent intent = new Intent();
                     intent.putExtra(RESULT_ERROR_CODE, FlightErrorUtil.getErrorCode(flightError));
                     getActivity().setResult(RESULT_ERROR_VERIFY, intent);
                     getActivity().finish();
                 }
             }
-        }else{
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity(), FlightErrorUtil.getMessageFromException(e));
         }
     }
