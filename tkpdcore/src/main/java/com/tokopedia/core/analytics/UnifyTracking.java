@@ -2770,7 +2770,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_VIEW_ALL_KOL_RECOMMENDATION,
                 AppEventTracking.EventLabel.FEED_KOL_RECOMMENDATION_VIEW_ALL
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolRecommendationGoToProfileClick(String kolCategory, String kolName) {
@@ -2779,7 +2779,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_CLICK_KOL_RECOMMENDATION_PROFILE,
                 generateKolRecommendationEventLabel(kolCategory, kolName)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolRecommendationUnfollowClick(String kolCategory, String kolName) {
@@ -2788,7 +2788,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_UNFOLLOW_KOL_RECOMMENDATION,
                 generateKolRecommendationEventLabel(kolCategory, kolName)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolRecommendationFollowClick(String kolCategory, String kolName) {
@@ -2797,7 +2797,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_FOLLOW_KOL_RECOMMENDATION,
                 generateKolRecommendationEventLabel(kolCategory, kolName)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     private static String generateKolRecommendationEventLabel(String kolCategory, String kolName) {
@@ -2810,7 +2810,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
                 AppEventTracking.Action.FEED_LOAD_MORE_COMMENTS,
                 AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_LOAD_MORE
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolCommentDetailBack() {
@@ -2819,7 +2819,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
                 AppEventTracking.Action.FEED_COMMENT_CLICK_BACK,
                 AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_BACK
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolCommentDetailSubmitComment() {
@@ -2828,7 +2828,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
                 AppEventTracking.Action.FEED_SUBMIT_COMMENT,
                 AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_COMMENT
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolContentCommentClick(boolean isFollowed, String type) {
@@ -2837,7 +2837,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_CLICK_CONTENT_COMMENT,
                 generateKolEventLabel(isFollowed, type)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolContentUnlike(boolean isFollowed, String type) {
@@ -2846,7 +2846,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_UNLIKE_CONTENT,
                 generateKolEventLabel(isFollowed, type)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolContentLike(boolean isFollowed, String type) {
@@ -2855,7 +2855,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_LIKE_CONTENT,
                 generateKolEventLabel(isFollowed, type)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolContentGoToProfilePage(boolean isFollowed, String type) {
@@ -2864,7 +2864,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_CLICK_CONTENT_WRITER_NAME,
                 generateKolEventLabel(isFollowed, type)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolContentCtaClick(boolean isFollowed, String type) {
@@ -2873,7 +2873,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_CLICK_CONTENT_CTA,
                 generateKolEventLabel(isFollowed, type)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolContentReadMoreClick(boolean isFollowed, String type) {
@@ -2882,7 +2882,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_EXPAND_CONTENT,
                 generateKolEventLabel(isFollowed, type)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolContentFollowClick(String type) {
@@ -2891,7 +2891,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_FOLLOW_CONTENT,
                 generateKolEventLabel(false, type)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     public static void eventKolContentUnfollowClick(String type) {
@@ -2900,7 +2900,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_UNFOLLOW_CONTENT,
                 generateKolEventLabel(true, type)
-        ).getEvent());
+        ).setUserId().getEvent());
     }
 
     private static String generateKolEventLabel(boolean isFollowed, String type) {
