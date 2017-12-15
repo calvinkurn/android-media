@@ -88,7 +88,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_attachment"
-        android:layout_above="@id/ff_chat"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_above="@id/layout_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/trans_black_40"
@@ -110,7 +111,8 @@
         android:id="@+id/fab_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/ff_chat"
+        android:layout_above="@id/rv_attachment"
+        android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_med"
