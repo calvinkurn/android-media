@@ -102,6 +102,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         }
         addTablayoutListener(rechargeViewPagerAdapter);
         viewPager.setOffscreenPageLimit(rechargeCategory.size());
+//        viewPager.setOffscreenPageLimit(1);
         setTabSelected(rechargeCategory.size());
         rechargeViewPagerAdapter.notifyDataSetChanged();
     }
