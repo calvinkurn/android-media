@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.thankyou.data.source;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -15,9 +14,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalRequestPayload;
 import com.tokopedia.tkpd.thankyou.data.source.api.DigitalTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by okasurya on 12/5/17.
@@ -25,6 +22,7 @@ import rx.functions.Func1;
 
 public class DigitalTrackerCloudSource extends ThanksTrackerCloudSource {
     private static final String KEY_TRACK_THANKYOU = "track_thankyou";
+    private static final String OS_TYPE_ANDROID = "1";
     private DigitalTrackerApi digitalTrackerApi;
     private DigitalTrackerMapper digitalTrackerMapper;
     private Gson gson;
@@ -72,7 +70,7 @@ public class DigitalTrackerCloudSource extends ThanksTrackerCloudSource {
     private RequestBodyIdentifier getIdentifier() {
         RequestBodyIdentifier identifier = new RequestBodyIdentifier();
         identifier.setDeviceToken(gcmHandler.getRegistrationId());
-        identifier.setOsType("1");
+        identifier.setOsType(OS_TYPE_ANDROID);
         identifier.setUserId(sessionHandler.getLoginID());
         return identifier;
     }
