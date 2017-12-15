@@ -12,6 +12,8 @@ public interface TransactionRouter {
 
     void goToUserPaymentList(Activity activity);
 
+    void goToOrderHistory(Context context, String orderId, int userMode);
+
     Intent getInboxReputationIntent(Context context);
 
     Intent getDetailResCenterIntentBuyer(Context context, String res_id, String shopName);

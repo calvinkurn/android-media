@@ -211,6 +211,6 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        toolbar.setPadding(0,0,10,0);
+        toolbar.setPadding(0,0,30,0);
     }
 }

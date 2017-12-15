@@ -100,6 +100,7 @@ public class DigitalWidgetView extends BaseCustomView {
         }
         addTablayoutListener(rechargeViewPagerAdapter);
         viewPager.setOffscreenPageLimit(rechargeCategory.size());
+//        viewPager.setOffscreenPageLimit(1);
         setTabSelected(rechargeCategory.size());
     }
 

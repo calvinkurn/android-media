@@ -11,6 +11,7 @@ def getTkpdCore() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
+
 def getTkpdDesign() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
@@ -109,4 +110,5 @@ dependencies {
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
+
 }
