@@ -848,7 +848,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     quantity.toString()));
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
-//            presenter.calculateAllPrices(AddToCartActivity.this, orderData);
             presenter.calculateProduct(AddToCartActivity.this, orderData);
         }
     }

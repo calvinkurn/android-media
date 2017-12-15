@@ -2,7 +2,6 @@ package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
@@ -71,7 +70,6 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @NonNull final Context context, @NonNull final TKPDMapParam<String, String> param,
             @NonNull final OnCalculateKeroAddressShipping listener) {
         Observable<Response<String>> observable = keroService.getApi().calculateShippingRate(param);
-        Log.e("RequestRate", "CALCULATE!");
         Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
             @Override
             public void onCompleted() {
