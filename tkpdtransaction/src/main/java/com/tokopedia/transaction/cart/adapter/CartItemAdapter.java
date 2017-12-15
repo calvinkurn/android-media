@@ -589,13 +589,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if (cartData.getCartCannotInsurance() == 1 || isProductMustInsurance(cartData.getCartProducts())) {
             holder.spUseInsurance.setEnabled(false);
-        }
-//        if (cartData.getCartCannotInsurance() == 1 ||
-//                (cartData.getCartForceInsurance() == 1 ||
-//                        isProductMustInsurance(cartData.getCartProducts()))) {
-//            holder.spUseInsurance.setEnabled(false);
-//        }
-        else if (unEditable(cartData)) {
+        } else if (unEditable(cartData)) {
             holder.spUseInsurance.setEnabled(false);
         } else {
             holder.spUseInsurance.setEnabled(true);

@@ -58,16 +58,11 @@ public class KeroppiParam {
         params.put(ORDER_VALUE, getRawPrice(productDetail.getProductPrice()));
         params.put(CAT_ID, productDetail.getProductCatId());
 
-        Log.e("PARAMS__", "paramsKero");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
-
         return params;
     }
 
-    private static String getRawPrice(String formattedPrice){
-        return formattedPrice.replace("Rp ","").replace(".","");
+    private static String getRawPrice(String formattedPrice) {
+        return formattedPrice.replace("Rp ", "").replace(".", "");
     }
 
     public static TKPDMapParam<String, String> paramsKeroOrderData(OrderData orderData) {
@@ -92,11 +87,6 @@ public class KeroppiParam {
         params.put(INSURANCE, "1");
         params.put(ORDER_VALUE, getRawPrice(orderData.getPriceTotal()));
         params.put(CAT_ID, orderData.getCatId());
-
-        Log.e("PARAMS__", "paramsKeroOrderData");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
 
         return params;
     }
@@ -134,11 +124,6 @@ public class KeroppiParam {
         params.put(UT, ut);
         params.put(INSURANCE, "1");
 
-        Log.e("PARAMS__", "paramsKeroCart");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
-
         return params;
     }
 
@@ -148,9 +133,5 @@ public class KeroppiParam {
                     || cartProduct.getProductUseInsurance() == 1) return "1";
         }
         return "0";
-
-//        if (cartItem.getCartForceInsurance() == 1) {
-//            return "1";
-//        } else return "0";
     }
 }

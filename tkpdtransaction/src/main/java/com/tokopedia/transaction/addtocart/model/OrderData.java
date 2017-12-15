@@ -2,7 +2,6 @@ package com.tokopedia.transaction.addtocart.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;

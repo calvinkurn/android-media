@@ -2,7 +2,6 @@ package com.tokopedia.transaction.cart.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.google.gson.Gson;
@@ -373,7 +372,6 @@ public class CartPresenter implements ICartPresenter {
                         );
                         if (!responseTransform.getMessageSuccess().isEmpty()) {
                             messageSuccess = responseTransform.getMessageSuccess();
-                            view.updateInsuranceTermsVisibility(cartData.getCartItemList());
                         }
                         view.showToastMessage(messageSuccess);
                         try {
@@ -561,7 +559,7 @@ public class CartPresenter implements ICartPresenter {
         /*
             Branch.io block
          */
-        BranchSdkUtils.sendCommerceEvent(locaProducts,revenue,totalShipping);
+        BranchSdkUtils.sendCommerceEvent(locaProducts, revenue, totalShipping);
 
     }
 
@@ -573,10 +571,10 @@ public class CartPresenter implements ICartPresenter {
     }
 
     private void trackCanceledCart(CartItem canceledCartItem) {
-        if(canceledCartItem != null
+        if (canceledCartItem != null
                 && canceledCartItem.getCartProducts() != null
                 && !canceledCartItem.getCartProducts().isEmpty()) {
-            for(CartProduct cartProduct : canceledCartItem.getCartProducts()) {
+            for (CartProduct cartProduct : canceledCartItem.getCartProducts()) {
                 trackCanceledProduct(canceledCartItem, cartProduct);
             }
         }
@@ -796,7 +794,6 @@ public class CartPresenter implements ICartPresenter {
                 if (cartRatesData.getRatesResponse() == null) {
                     view.setCartError(cartRatesData.getRatesIndex());
                 } else {
-                    Log.e("CP_keroRatesListener", cartRatesData.getRatesResponse());
                     Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
                             Rates.class);
                     CartCourierPrices cartCourierPrices = new CartCourierPrices();
@@ -849,7 +846,6 @@ public class CartPresenter implements ICartPresenter {
             if (currentKeroShipmentServiceId == shipmentServiceId) {
                 courierPrices.setShipmentPrice(keroShipmentServices.get(i).getPrice());
                 courierPrices.setInsuranceMode(keroShipmentServices.get(i).getInsuranceMode());
-                Log.e("InsuranceMode", String.valueOf(keroShipmentServices.get(i).getInsuranceMode()));
                 if (courierPrices.getInsuranceMode() == MUST_INSURANCE_MODE) {
                     courierPrices.setInsurancePrice(keroShipmentServices.get(i)
                             .getInsurancePrice());

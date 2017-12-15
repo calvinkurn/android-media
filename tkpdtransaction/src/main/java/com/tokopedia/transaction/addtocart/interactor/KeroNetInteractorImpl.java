@@ -2,13 +2,11 @@ package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.addtocart.model.kero.Product;
 import com.tokopedia.transaction.addtocart.model.kero.Rates;
 
 import retrofit2.Response;
@@ -52,15 +50,8 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
             @Override
             public void onNext(Response<String> stringResponse) {
-                if(stringResponse.body() != null) {
-                    Log.e("RES_KNI_A", stringResponse.body());
+                if (stringResponse.body() != null) {
                     Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
-                    for(int i=0; i<rates.getData().getAttributes().size();i++){
-                        Log.e("Shipper", rates.getData().getAttributes().get(i).getShipperName());
-                        for(Product product : rates.getData().getAttributes().get(i).getProducts()){
-                            Log.e(product.getShipperProductName(), String.valueOf(product.getInsuranceUsedType()));
-                        }
-                    }
                     listener.onSuccess(rates.getData());
                 } else {
                     throw new RuntimeException("Empty Response");
@@ -94,7 +85,6 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @Override
             public void onNext(Response<String> response) {
                 if (response.isSuccessful()) {
-                    Log.e("RES_KNI_B", response.body());
                     Rates rates = new Gson().fromJson(response.body(), Rates.class);
                     listener.onSuccess(rates.getData().getAttributes());
                 } else {

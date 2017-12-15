@@ -60,28 +60,13 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         checkForceLogout(chain, response, finalRequest);
 
         String bodyResponse = response.body().string();
-        Log.e("RESPONSE_LENGTH", String.valueOf(bodyResponse.length()));
-        if (bodyResponse.length() > 4000) {
-            Log.e("RESPONSE", "sb.length = " + bodyResponse.length());
-            int chunkCount = bodyResponse.length() / 4000;
-            for (int i = 0; i <= chunkCount; i++) {
-                int max = 4000 * (i + 1);
-                if (max >= bodyResponse.length()) {
-                    Log.e("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(4000 * i));
-                } else {
-                    Log.e("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(4000 * i, max));
-                }
-            }
-        } else {
-            Log.e("RESPONSE", bodyResponse);
-        }
         checkResponse(bodyResponse, response);
 
         return createNewResponse(response, bodyResponse);
     }
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
-            IOException{
+            IOException {
         if (isNeedRelogin(response)) {
             refreshTokenWithRelogin();
             if (finalRequest.header("authorization").contains("Bearer")) {
@@ -99,7 +84,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return response;
     }
 
-    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
+    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
         Response response = chain.proceed(newestRequest);
         if (isUnauthorized(newestRequest, response)) {
             ServerErrorHandler.showForceLogoutDialog();
@@ -346,7 +331,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
+    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException {
         Request newest = chain.request();
         Request.Builder newestRequestBuilder = chain.request().newBuilder();
         generateHmacAuthRequest(newest, newestRequestBuilder);

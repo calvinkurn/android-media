@@ -31,7 +31,6 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -83,7 +82,6 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
-import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -102,6 +100,7 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
+import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.transaction.utils.ValueConverter;
 
@@ -414,33 +413,22 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setInsuranceTermsVisibility(CartCourierPrices cartCourierPrices) {
-        Log.e("TOS_VISIBILITY_A", String.valueOf(!hasLogisticInsurance));
-        Log.e("TOS_VISIBILITY_B", String.valueOf(cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST));
-        Log.e("TOS_VISIBILITY_C", String.valueOf(cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL));
-        Log.e("TOS_VISIBILITY_MODE", String.valueOf(cartCourierPrices.getInsuranceMode()));
-
         if (cartCourierPrices.getCartInsuranceProd() != 0) {
-            Log.e("TOS_VISIBILITY", "Use Insurance");
             if (!hasLogisticInsurance &&
                     (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST ||
                             cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
                 if (cartCourierPrices.getInsuranceUsedType() == KeroppiConstants.InsuranceUsedType.TOKOPEDIA_INSURANCE) {
-                    Log.e("TOS_VISIBILITY", "VISIBLE|A");
                     tvInsuranceTerms.setVisibility(View.VISIBLE);
                 } else if (cartCourierPrices.getInsuranceUsedType() == KeroppiConstants.InsuranceUsedType.LOGISTIC_INSURANCE) {
-                    Log.e("TOS_VISIBILITY", "GONE|B");
                     tvInsuranceTerms.setVisibility(View.GONE);
                     hasLogisticInsurance = true;
                 } else {
-                    Log.e("TOS_VISIBILITY", "GONE|C");
                     tvInsuranceTerms.setVisibility(View.GONE);
                 }
             } else {
-                Log.e("TOS_VISIBILITY", "GONE|D");
                 tvInsuranceTerms.setVisibility(View.GONE);
             }
         } else {
-            Log.e("TOS_VISIBILITY", "Not Use Insurance");
             tvInsuranceTerms.setVisibility(View.GONE);
         }
 
@@ -851,15 +839,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onUpdateInsuranceCartItem(CartItemEditable cartItemEditable, boolean useInsurance) {
         presenter.processUpdateInsurance(cartItemEditable, useInsurance);
-    }
-
-    @Override
-    public void updateInsuranceTermsVisibility(List<CartItem> cartItems) {
-        Log.e("UpdateInsurance", "START");
-//        for(CartItem cartItem : cartItems){
-//            Log.e("getCartInsuranceProd", String.valueOf(cartItem.getCartInsuranceProd()));
-//            Log.e("getCartInsuranceProd", String.valueOf(cartItem.getCartProducts().get(0).get));
-//        }
     }
 
     @Override

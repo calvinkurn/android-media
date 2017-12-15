@@ -234,7 +234,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void calculateKeroAddressShipping(@NonNull Context context,
                                              @NonNull final OrderData orderData) {
-        Log.e("CalculateKero", "A");
         keroNetInteractor.calculateKeroCartAddressShipping(context,
                 AuthUtil.generateParamsNetwork(
                         context, KeroppiParam.paramsKeroOrderData(orderData)
@@ -271,7 +270,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 && orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)) {
             viewListener.disableBuyButton();
             CommonUtils.dumper("rates/v1 kerorates called calculateAllShipping");
-            Log.e("CalculateKero", "B");
             keroNetInteractor.calculateKeroCartAddressShipping(context,
                     AuthUtil.generateParamsNetwork(
                             context, KeroppiParam.paramsKeroOrderData(orderData)
@@ -279,14 +277,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                     new KeroNetInteractor.OnCalculateKeroAddressShipping() {
                         @Override
                         public void onSuccess(List<Attribute> datas) {
-//                            if (productInsurance == null) {
-//                                Log.e("ProductInsurance", "Null");
-//                                productInsurance = orderData.getInsurance();
-//                            } else {
-//                                Log.e("ProductInsurance", productInsurance);
-//                                orderData.setInsurance(productInsurance);
-//                            }
-
                             viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
                                     datas, orderData.getShipments())
                             );
@@ -299,20 +289,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                             viewListener.showCalculateShippingErrorMessage();
                         }
                     });
-        }
-    }
-
-    private void getSelectedCourierProduct(List<Attribute> datas) {
-        Product currentCourierProduct = viewListener.getSelectedCourerProduct();
-        if (currentCourierProduct != null) {
-            for (int i = 0; i < datas.size(); i++) {
-                for (Product product : datas.get(i).getProducts()) {
-                    if (product.getShipperProductId().equals(currentCourierProduct.getShipperProductId())) {
-                        viewListener.setInsuranceSpinnerVisibility(product);
-                        break;
-                    }
-                }
-            }
         }
     }
 
@@ -578,17 +554,17 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     private boolean isAllowedCourier(AtcFormData data) {
-        boolean allowedInstant = data.getForm().getDestination().getLatitude()!=null
+        boolean allowedInstant = data.getForm().getDestination().getLatitude() != null
                 && !data.getForm().getDestination().getLatitude().isEmpty();
-        for (int i = 0; i<data.getForm().getShipment().size(); i++) {
-            for(int j = 0; j<data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
+        for (int i = 0; i < data.getForm().getShipment().size(); i++) {
+            for (int j = 0; j < data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
                 ShipmentPackage shipmentPackage = data.getForm().getShipment().get(i)
                         .getShipmentPackage().get(j);
                 boolean packageAvailable = shipmentPackage.getPackageAvailable() == 1;
                 boolean isGojek = shipmentPackage.getShipmentId().equals(GOJEK_ID);
                 if (packageAvailable && !isGojek)
                     return true;
-                else if(allowedInstant)
+                else if (allowedInstant)
                     return true;
             }
         }

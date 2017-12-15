@@ -2,7 +2,6 @@ package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
@@ -68,7 +67,6 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
-                    Log.e("RES_ATC_A", response.body().getStrResponse());
                     if (!response.body().isError() && !response.body().isNullData()) {
                         listener.onSuccess(response.body().convertDataObj(AtcFormData.class));
                         return;
@@ -105,7 +103,6 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful() && !response.body().isError()
                         && !response.body().isNullData()) {
-                    Log.e("RES_ATC_B", response.body().getStrResponse());
                     listener.onSuccess(response.body().convertDataObj(AddressData.class));
                 } else {
                     listener.onFailure();
@@ -141,7 +138,6 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
                 try {
                     if (response.isSuccessful() && !response.body().isError()
                             && !response.body().isNullData()) {
-                        Log.e("RES_ATC_C", response.body().getStrResponse());
                         listener.onSuccess(response.body()
                                 .getJsonData().getJSONObject("product").getString("price"));
                     } else if (response.body().isError()) {
@@ -180,7 +176,6 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful() && !response.body().isNullData()) {
-                    Log.e("RES_ATC_D", response.body().getStrResponse());
                     listener.onSuccess(response.body().convertDataObj(Form.class).getShipment());
                 } else {
                     calculateCartShipping(context, param, listener);
@@ -216,7 +211,6 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful() && !response.body().isNullData()) {
-                    Log.e("RES_ATC_E", response.body().getStrResponse());
                     listener.onSuccess(response.body().convertDataObj(Form.class).getShipment());
                 } else {
                     calculateCartAddressShipping(context, param, listener);
@@ -251,7 +245,6 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
-                    Log.e("RES_ATC_F", response.body().getStrResponse());
                     TkpdResponse tkpdResponse = response.body();
                     if (tkpdResponse.isError()) {
                         if (!tkpdResponse.getErrorMessages().isEmpty()) {
@@ -352,7 +345,6 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
 
             @Override
             public void onNext(Response<TkpdResponse> response) {
-                Log.e("RES_ATC_G", response.body().getStrResponse());
                 if (!response.body().isError()) {
                     TkpdResponse tkpdResponse = response.body();
                     if (!tkpdResponse.isNullData()) {
