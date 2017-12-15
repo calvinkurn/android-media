@@ -155,9 +155,7 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
 
             holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
             holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
-            if (holder.glowingView.getVisibility() == View.VISIBLE) {
-                holder.glowingView.renderData(new Object());
-            }
+            holder.glowingView.renderData(new Object());
         }
     }
 
