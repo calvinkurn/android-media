@@ -262,7 +262,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public void calculateAllPrices(@NonNull final Context context, @NonNull final OrderData orderData) {
+    public void calculateAllPrices(@NonNull Context context, @NonNull final OrderData orderData) {
         if ((orderData.getShipment() != null
                 && orderData.getShipmentPackage() != null
                 && orderData.getAddress() != null)

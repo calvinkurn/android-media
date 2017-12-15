@@ -1,7 +1,5 @@
 package com.tokopedia.transaction.addtocart.utils;
 
-import android.util.Log;
-
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.transaction.addtocart.model.OrderData;
@@ -10,8 +8,6 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
-
-import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 11/18/16.

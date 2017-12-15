@@ -72,5 +72,4 @@ public interface AddToCartViewListener extends IBaseView {
 
     void setInsuranceSpinnerVisibility(Product product);
 
-    Product getSelectedCourerProduct();
 }

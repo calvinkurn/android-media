@@ -108,8 +108,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
     private SnackbarRetry snackbarRetry;
     private String insuranceInfo;
-    private Product currentProduct;
-    private boolean mustInsurance;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -616,7 +614,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
-                currentProduct = product;
                 setInsuranceInfoButtonVisibility(product);
             }
             if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
@@ -658,11 +655,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else {
             spInsurance.setEnabled(true);
         }
-    }
-
-    @Override
-    public Product getSelectedCourerProduct() {
-        return currentProduct;
     }
 
     @Override
