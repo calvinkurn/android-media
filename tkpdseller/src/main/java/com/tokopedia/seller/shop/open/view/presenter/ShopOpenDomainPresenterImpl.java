@@ -37,7 +37,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
         this.checkDomainNameUseCase = checkDomainNameUseCase;
         this.checkShopNameUseCase = checkShopNameUseCase;
 
-        domainDebounceSubscription = Observable.create(
+        domainDebounceSubscription = Observable.unsafeCreate(
                 new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(final Subscriber<? super String> subscriber) {
@@ -67,7 +67,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
                         checkDomainWS(s);
                     }
                 });
-        shopDebounceSubscription = Observable.create(
+        shopDebounceSubscription = Observable.unsafeCreate(
                 new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(final Subscriber<? super String> subscriber) {

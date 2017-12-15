@@ -5,7 +5,6 @@ import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
-import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
 
 import dagger.Component;
 

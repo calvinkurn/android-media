@@ -40,6 +40,7 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     public static final String EXTRA_LOGOUT_ON_BACK = "LOGOUT_ON_BACK";
 
     private ShopOpenDomainComponent shopOpenDomainComponent;
+    private ShopOpenDomainFragment shopOpenDomainFragment;
 
     @Inject
     ShopCheckIsReservePresenterImpl shopCheckIsReservePresenter;
@@ -97,7 +98,22 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopOpenDomainFragment.newInstance();
+        shopOpenDomainFragment = ShopOpenDomainFragment.newInstance();
+        return shopOpenDomainFragment;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (shopOpenDomainFragment == null) {
+            inflateFragment();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        shopCheckIsReservePresenter.detachView();
     }
 
     @Override

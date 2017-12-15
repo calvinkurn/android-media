@@ -388,6 +388,7 @@ public class Login extends BaseActivity implements SessionView
 
             case SELLER_HOME:
                 if (SessionHandler.isV4Login(this)) {
+                    SessionHandler.getShopID(this);
                     AppWidgetUtil.sendBroadcastToAppWidget(this);
                     if (!SessionHandler.isUserHasShop(this)) {
                         UnifyTracking.eventLoginCreateShopSellerApp();
