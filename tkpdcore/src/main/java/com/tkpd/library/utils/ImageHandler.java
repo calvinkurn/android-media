@@ -374,7 +374,7 @@ public class ImageHandler {
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(context)
+            Glide.with(imageview.getContext())
                     .load(url)
                     .asBitmap()
                     .dontAnimate()

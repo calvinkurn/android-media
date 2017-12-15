@@ -168,7 +168,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private ActionField getActionField(PaymentData paymentData, CartItem cartItem) {
         ActionField actionField = new ActionField();
-        actionField.setId(String.valueOf(paymentData.getPaymentId()));
+//        actionField.setId(String.valueOf(paymentData.getPaymentId()));
 //        actionField.setAffiliation();
         actionField.setCoupon(paymentData.getCoupon());
         actionField.setRevenue(cartItem.getCartTotalAmount());

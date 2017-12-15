@@ -150,7 +150,14 @@ public interface AppEventTracking {
         String EVENT_INTERNAL_PROMO_MULTI = "internalPromoEvent";
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
+
+        String IMPRESSION_APP_RATING = "impressionAppRating";
+        String CLICK_APP_RATING = "clickAppRating";
+        String CANCEL_APP_RATING = "cancelAppRating";
+
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
+        String SELLER_INFO = "clickSellerInfo";
+        String EVENT_ONBOARDING = "onBoardingEvent";
     }
 
     interface Category {
@@ -195,7 +202,10 @@ public interface AppEventTracking {
         String NOTES = "Notes";
         String LOCATION = "Location";
         String ADD_PRODUCT = "Add Product";
+        String EDIT_PRODUCT = "edit product";
+        String EDIT_PRODUCT_IMAGE = "edit product image";
         String HAMBURGER = "Hamburger Icon";
+        String CLICK_HAMBURGER = "click hamburger icon";
         String SALES = "Sales";
         String TRUECALLER = "TrueCaller";
         String GOLD_MERCHANT = "Gold Merchant";
@@ -247,10 +257,16 @@ public interface AppEventTracking {
         String SHOP_PAGE = "shop page";
         String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
+        String SELLER_INFO_HOMEPAGE = "click hamburger icon";
         String HOMEPAGE_UNIFY = "homepage tab";
         String EVENT_TOP_NAV = "top nav";
         String CATEGORY_HOTLIST = "hotlist";
+
+        String APP_RATING = "Application Rating";
+
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
+
+        String ONBOARDING = "onboarding";
     }
 
     interface Action {
@@ -383,6 +399,22 @@ public interface AppEventTracking {
         String FEED_UNFOLLOW_KOL_RECOMMENDATION = "feed - unfollow kol recommendation";
         String FEED_CLICK_KOL_RECOMMENDATION_PROFILE = "feed - click kol recommendation profile";
         String FEED_VIEW_ALL_KOL_RECOMMENDATION = "feed - view all kol recommendation";
+
+        String CLICK_HAMBURGER_ICON = "click hamburger icon";
+        String CLICK_ARTICLE = "click article";
+
+        String ONBOARDING_SKIP = "click - skip button";
+        String ONBOARDING_START = "click - mulai";
+
+        String CLICK_IMAGE_SETTINGS = "click image settings";
+        String CLICK_SAVE_EDIT = "click save edit";
+    }
+
+    interface ImageEditor{
+        String NO_ACTION = "no action";
+        String ROTATE_ONLY = "rotate only";
+        String CROP_ONLY = "crop only";
+        String ROTATE_AND_CROP = "rotate and crop";
     }
 
     interface EventLabel {
@@ -669,6 +701,7 @@ public interface AppEventTracking {
         String PRODUCT_PAGE =  "message shop";
         String APP_SHARE_LABEL="Share";
         String FEATURED_PRODUCT = "Featured Product";
+        String SELLER_INFO = "seller info";
         String ADD_FEATURED_PRODUCT = "Add Featured Product";
         String TICK_ERROR = "Tick Error";
         String SAVE_FEATURED_PRODUCT_PICKER = "Simpan - ";
@@ -710,6 +743,9 @@ public interface AppEventTracking {
         String FEED_CONTENT_COMMENT_DETAIL_BACK = "back";
         String FEED_CONTENT_COMMENT_DETAIL_LOAD_MORE = "load more";
         String FEED_KOL_RECOMMENDATION_VIEW_ALL = "kol discovery page";
+
+        String ONBOARDING_SKIP_LABEL = "skip - ";
+        String ONBOARDING_START_LABEL = "click mulai sekarang";
     }
 
     interface SOCIAL_MEDIA {
@@ -810,7 +846,8 @@ public interface AppEventTracking {
         String IS_FEED_EMPTY = "is_feed_empty";
         String IS_FAVORITE_EMPTY = "is_favorite_empty";
         String KEYWORD = "keyword";
-        String IS_RESULT_FOUND = "IS_RESULT_FOUND";
+        String IS_RESULT_FOUND = "is_result_found";
+        String IS_RECEIVED = "is_received";
         String PAYMENT_TYPE = "payment_type";
         String PURCHASE_SITE = "purchase_site";
         String TOTAL_PRICE = "purchase_site";
@@ -859,8 +896,13 @@ public interface AppEventTracking {
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
+        String CLICKED_NEW_ORDER = "Seller_Clicked_Neworder";
+        String SELLER_ADDED_FAVORITE = "Seller_Added_To_Favourite";
+        String SELLER_REMOVE_FAVORITE = "Seller_Removed_From_Favorite";
         String EVENT_ADDR_ADD = "Address_Added";
         String EVENT_USER_ATTR = "User_Attribute_Name";
+        String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
+        String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
     }
 
 

@@ -523,7 +523,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onStartBarcodeScanner() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        startActivityForResult(CommonUtils.requestBarcodeScanner(getActivity()), REQUEST_CODE_BARCODE);
     }
 
     @Override
