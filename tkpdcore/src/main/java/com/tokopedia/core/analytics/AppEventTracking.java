@@ -202,6 +202,8 @@ public interface AppEventTracking {
         String NOTES = "Notes";
         String LOCATION = "Location";
         String ADD_PRODUCT = "Add Product";
+        String EDIT_PRODUCT = "edit product";
+        String EDIT_PRODUCT_IMAGE = "edit product image";
         String HAMBURGER = "Hamburger Icon";
         String SALES = "Sales";
         String TRUECALLER = "TrueCaller";
@@ -398,6 +400,16 @@ public interface AppEventTracking {
 
         String ONBOARDING_SKIP = "click - skip button";
         String ONBOARDING_START = "click - mulai";
+
+        String CLICK_IMAGE_SETTINGS = "click image settings";
+        String CLICK_SAVE_EDIT = "click save edit";
+    }
+
+    interface ImageEditor{
+        String NO_ACTION = "no action";
+        String ROTATE_ONLY = "rotate only";
+        String CROP_ONLY = "crop only";
+        String ROTATE_AND_CROP = "rotate and crop";
     }
 
     interface EventLabel {

@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.R;
 
@@ -102,8 +104,16 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         if (item.getItemId() == R.id.main_action_crop) {
             // no need to crop if the rect is same and in local tkpd already
             if (checkIfSameWithPrevImage()) {
+                UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.NO_ACTION);
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
+                boolean isRotate = mCropImageView.getRotatedDegrees() != 0;
+                boolean isCrop = !mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect());
+                boolean isRotateAndCrop = isRotate && isCrop;
+                UnifyTracking.eventClickSaveEditImageProduct(
+                        isRotateAndCrop ? AppEventTracking.ImageEditor.ROTATE_AND_CROP:
+                        isRotate? AppEventTracking.ImageEditor.ROTATE_ONLY:
+                                AppEventTracking.ImageEditor.CROP_ONLY);
                 File file = FileUtils.getTkpdImageCacheFile(FileUtils.generateUniqueFileName());
                 croppedPath = file.getAbsolutePath();
                 mCropImageView.startCropWorkerTask(0, 0, CropImageView.RequestSizeOptions.NONE,

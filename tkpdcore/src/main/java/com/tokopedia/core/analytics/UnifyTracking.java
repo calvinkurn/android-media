@@ -1577,6 +1577,33 @@ public class UnifyTracking extends TrackingUtils {
         eventManageProductClicked(AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU);
     }
 
+    public static void eventClickImageInAddProduct(String itemSettings) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
+                AppEventTracking.Category.ADD_PRODUCT,
+                AppEventTracking.Action.CLICK_IMAGE_SETTINGS,
+                itemSettings
+        ).getEvent());
+    }
+
+    public static void eventClickImageInEditProduct(String itemSettings) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
+                AppEventTracking.Category.EDIT_PRODUCT,
+                AppEventTracking.Action.CLICK_IMAGE_SETTINGS,
+                itemSettings
+        ).getEvent());
+    }
+
+    public static void eventClickSaveEditImageProduct(String editSequence) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
+                AppEventTracking.Category.EDIT_PRODUCT_IMAGE,
+                AppEventTracking.Action.CLICK_SAVE_EDIT,
+                editSequence
+        ).getEvent());
+    }
+
     public static void eventClickPopularSearch(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
