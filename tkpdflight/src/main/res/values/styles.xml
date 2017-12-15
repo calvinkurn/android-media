@@ -30,7 +30,12 @@
 
     <style name="WidgetSelectPassengerView">
         <item name="android:background">@color/white</item>
-        <item name="android:padding">@dimen/padding_vvs</item>
+        <item name="android:paddingStart">@dimen/padding_small</item>
+        <item name="android:paddingLeft">@dimen/padding_small</item>
+        <item name="android:paddingEnd">@dimen/padding_small</item>
+        <item name="android:paddingRight">@dimen/padding_small</item>
+        <item name="android:paddingTop">@dimen/padding_med</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
     </style>
 
     <style name="WidgetSelectPassengerViewIcon">

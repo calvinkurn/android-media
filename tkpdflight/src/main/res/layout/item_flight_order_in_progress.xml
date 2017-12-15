@@ -20,7 +20,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:background="@color/filter_order_green" />
+                android:background="@color/filter_order_yellow" />
 
             <include layout="@layout/partial_flight_order_header_detail" />
 
@@ -63,14 +63,15 @@
                 android:background="@drawable/bg_line_separator" />
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_main_button"
+                android:id="@+id/tv_rebooking"
                 style="@style/TextView.Subheading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selectable_background_tokopedia"
                 android:gravity="center_horizontal"
                 android:padding="@dimen/padding_small"
-                android:text="Unduh E-Ticket" />
+                android:text="Pesan Ulang"
+                android:textColor="@color/orange" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

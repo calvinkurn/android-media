@@ -23,8 +23,7 @@ import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
 
 import java.util.ArrayList;
@@ -199,22 +198,13 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void onFailedOrderDetailClicked(FlightOrderFailedViewModel viewModel) {
+    public void onDetailOrderClicked(OrderDetailPassData viewModel) {
 
     }
 
     @Override
-    public void onSuccessOrderDetailClicked(FlightOrderSuccessViewModel viewModel) {
-        OrderDetailPassData passData = new OrderDetailPassData();
-        passData.setOrderId(viewModel.getId());
-        passData.setDepartureAiportId(viewModel.getOrderJourney().getDepartureAiportId());
-        passData.setDepartureCity(viewModel.getOrderJourney().getDepartureCity());
-        passData.setDepartureTime(viewModel.getOrderJourney().getDepartureTime());
-        passData.setArrivalAirportId(viewModel.getOrderJourney().getArrivalAirportId());
-        passData.setArrivalCity(viewModel.getOrderJourney().getArrivalCity());
-        passData.setArrivalTime(viewModel.getOrderJourney().getArrivalTime());
-        passData.setStatus(viewModel.getStatus());
-        // TODO: pass to detail activity
+    public void onDetailOrderClicked(String orderId) {
+
     }
 
     @Override
@@ -223,7 +213,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void onReBookingClicked(FlightOrderFailedViewModel item) {
+    public void onReBookingClicked(FlightOrderBaseViewModel item) {
 
     }
 }

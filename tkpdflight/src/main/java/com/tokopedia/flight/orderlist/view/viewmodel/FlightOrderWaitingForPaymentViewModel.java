@@ -6,21 +6,21 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 
+import java.util.List;
+
 /**
  * @author by alvarisi on 12/12/17.
  */
 
-public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFactory> {
-    private String id;
-    @StringRes
-    private int title;
-    private String createTime;
-    private int status;
-    private FlightOrderJourney orderJourney;
+public class FlightOrderWaitingForPaymentViewModel extends FlightOrderBaseViewModel implements Visitable<FlightOrderTypeFactory> {
 
-    public FlightOrderSuccessViewModel() {
+    public FlightOrderWaitingForPaymentViewModel() {
     }
 
+    @Override
+    public int type(FlightOrderTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
     public String getId() {
         return id;
     }
@@ -45,17 +45,12 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
         this.status = status;
     }
 
-    public FlightOrderJourney getOrderJourney() {
+    public List<FlightOrderJourney> getOrderJourney() {
         return orderJourney;
     }
 
-    public void setOrderJourney(FlightOrderJourney orderJourney) {
+    public void setOrderJourney(List<FlightOrderJourney> orderJourney) {
         this.orderJourney = orderJourney;
-    }
-
-    @Override
-    public int type(FlightOrderTypeFactory typeFactory) {
-        return typeFactory.type(this);
     }
 
     public int getTitle() {

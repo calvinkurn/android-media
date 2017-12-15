@@ -1,6 +1,5 @@
 package com.tokopedia.flight.orderlist.presenter;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
@@ -8,9 +7,7 @@ import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,10 +24,13 @@ import rx.Subscriber;
 
 public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderListContract.View> implements FlightOrderListContract.Presenter {
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
+    private FlightOrderViewModelMapper flightOrderViewModelMapper;
 
     @Inject
-    public FlightOrderListPresenter(FlightGetOrdersUseCase flightGetOrdersUseCase) {
+    public FlightOrderListPresenter(FlightGetOrdersUseCase flightGetOrdersUseCase,
+                                    FlightOrderViewModelMapper flightOrderViewModelMapper) {
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
+        this.flightOrderViewModelMapper = flightOrderViewModelMapper;
     }
 
 
@@ -57,7 +57,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 buildAndRenderFilterList();
                 getView().hideGetInitialOrderDataLoading();
                 if (orderEntities.size() > 0) {
-                    getView().renderOrders(transformOrderDataToViewData(orderEntities));
+                    getView().renderOrders(flightOrderViewModelMapper.transform(orderEntities));
                 } else {
                     getView().showEmptyView();
                 }
@@ -88,7 +88,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 buildAndRenderFilterList();
                 getView().hideGetInitialOrderDataLoading();
                 if (orderEntities.size() > 0) {
-                    getView().renderOrders(transformOrderDataToViewData(orderEntities));
+                    getView().renderOrders(flightOrderViewModelMapper.transform(orderEntities));
                 } else {
                     getView().showEmptyView();
                 }
@@ -118,64 +118,25 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             public void onNext(List<FlightOrder> orderEntities) {
                 getView().hideLoadMoreLoading();
                 getView().setLoadMoreStatusToFalse();
-                getView().renderAddMoreData(transformOrderDataToViewData(orderEntities));
+                getView().renderAddMoreData(flightOrderViewModelMapper.transform(orderEntities));
             }
         });
     }
 
-    private List<Visitable> transformOrderDataToViewData(List<FlightOrder> flightOrders) {
-        List<Visitable> visitables = new ArrayList<>();
-        for (FlightOrder flightOrder : flightOrders) {
-            switch (flightOrder.getStatus()) {
-                case 700:
-                    for (FlightOrderJourney journey : flightOrder.getJourneys()) {
-                        FlightOrderSuccessViewModel successViewModel = new FlightOrderSuccessViewModel();
-                        successViewModel.setCreateTime(flightOrder.getCreateTime());
-                        successViewModel.setId(flightOrder.getId());
-                        successViewModel.setOrderJourney(journey);
-                        successViewModel.setTitle(getView().getString(R.string.flight_order_success_title));
-                        successViewModel.setStatus(journey.getStatus());
-                        visitables.add(successViewModel);
-                    }
-                    break;
-                case 600:
-                    FlightOrderFailedViewModel failedViewModel = new FlightOrderFailedViewModel();
-                    failedViewModel.setCreateTime(flightOrder.getCreateTime());
-                    failedViewModel.setId(flightOrder.getId());
-                    failedViewModel.setOrderJourney(flightOrder.getJourneys());
-                    failedViewModel.setStatus(flightOrder.getStatus());
-                    failedViewModel.setTitle(getView().getString(R.string.flight_order_failed_title));
-                    visitables.add(failedViewModel);
-                    break;
-                case 0:
-                    FlightOrderFailedViewModel expired = new FlightOrderFailedViewModel();
-                    expired.setCreateTime(flightOrder.getCreateTime());
-                    expired.setId(flightOrder.getId());
-                    expired.setOrderJourney(flightOrder.getJourneys());
-                    expired.setStatus(flightOrder.getStatus());
-                    expired.setTitle(getView().getString(R.string.flight_order_expire_title));
-                    visitables.add(expired);
-                    break;
-
-            }
-        }
-        return visitables;
-
-    }
-
     private void buildAndRenderFilterList() {
-
-        int[] colorBorder = new int[4];
+        int[] colorBorder = new int[5];
         colorBorder[0] = R.color.filter_order_green;
         colorBorder[1] = R.color.filter_order_red;
         colorBorder[2] = R.color.filter_order_orange;
         colorBorder[3] = R.color.filter_order_yellow;
+        colorBorder[4] = R.color.filter_order_blue;
 
         Map<String, String> filtersMap = new HashMap<>();
-        filtersMap.put("100", "Berhasil");
-        filtersMap.put("700", "Tidak Berhasil");
-        filtersMap.put("650", "Menunggu Pembayaran");
-        filtersMap.put("300", "Dalam Proses");
+        filtersMap.put("700,800", getView().getString(R.string.flight_order_status_success_label));
+        filtersMap.put("0,600", getView().getString(R.string.flight_order_status_failed_label));
+        filtersMap.put("100,102", getView().getString(R.string.flight_order_status_waiting_for_payment_label));
+        filtersMap.put("101,200,300", getView().getString(R.string.flight_order_status_in_progress_label));
+        filtersMap.put("650", getView().getString(R.string.flight_order_status_refund_label));
 
         List<QuickFilterItem> filterItems = new ArrayList<>();
         int colorInd = 0;
