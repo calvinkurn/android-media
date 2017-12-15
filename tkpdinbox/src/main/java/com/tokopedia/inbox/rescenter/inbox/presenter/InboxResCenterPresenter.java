@@ -73,7 +73,7 @@ public interface InboxResCenterPresenter {
 
     void setOnRequestSuccess();
 
-    void setActionOnItemListClickListener(Context context, String resolutionID);
+    void setActionOnItemListClickListener(Context context, String resolutionID, String shopName, String username);
 
     InboxResCenterActivity.Model getResCenterTabModel();
 }

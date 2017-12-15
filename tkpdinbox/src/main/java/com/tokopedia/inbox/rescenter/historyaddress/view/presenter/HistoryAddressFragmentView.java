@@ -16,6 +16,10 @@ public interface HistoryAddressFragmentView {
 
     String getResolutionID();
 
+    void setResolutionStatus(int resolutionStatus);
+
+    int getResolutionStatus();
+
     void setErrorMessage(String messageError);
 
     void onGetHistoryAwbFailed(String messageError);

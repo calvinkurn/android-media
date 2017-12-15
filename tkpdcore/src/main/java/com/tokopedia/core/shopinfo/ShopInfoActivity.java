@@ -12,7 +12,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -34,10 +33,10 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
@@ -70,6 +69,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.widgets.NonSwipeableViewPager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -105,7 +105,7 @@ public class ShopInfoActivity extends BaseActivity
     public final static int NAVIGATION_TO_INFO = 6;
 
     private class ViewHolder {
-        ViewPager pager;
+        NonSwipeableViewPager pager;
         TabLayout indicator;
         AppBarLayout appBarLayout;
         ImageView banner;
@@ -344,6 +344,7 @@ public class ShopInfoActivity extends BaseActivity
         return new ActionShopInfoRetrofit.OnActionToggleFavListener() {
             @Override
             public void onSuccess() {
+                TrackingUtils.sendMoEngageFavoriteEvent(shopModel);
                 if (shopModel.info.shopAlreadyFavorited == 1) {
                     if(getApplication() instanceof IReactNativeRouter) {
                         IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
@@ -493,7 +494,7 @@ public class ShopInfoActivity extends BaseActivity
 
     private void initView() {
         holder = new ViewHolder();
-        holder.pager = (ViewPager) findViewById(R.id.view_pager);
+        holder.pager = (NonSwipeableViewPager) findViewById(R.id.view_pager);
         holder.indicator = (TabLayout) findViewById(R.id.indicator);
         holder.banner = (ImageView) findViewById(R.id.banner);
         holder.shopName = (TextView) findViewById(R.id.shop_name);
@@ -573,7 +574,11 @@ public class ShopInfoActivity extends BaseActivity
     private void updateView() throws Exception {
         facadeAction.setShopModel(shopModel);
         if (shopModel.info.shopIsOfficial == 1) {
-            adapter.initOfficialShop(shopModel);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                adapter.initOfficialShop(shopModel);
+            } else {
+                adapter.initRegularShop(shopModel);
+            }
         } else {
             adapter.initRegularShop(shopModel);
         }
@@ -856,14 +861,17 @@ public class ShopInfoActivity extends BaseActivity
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
             if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                UnifyTracking.eventShopSendChat();
                 intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                         .getAskSellerIntent(this,
                                 shopModel.info.shopId,
                                 shopModel.info.shopName,
-                                TkpdInboxRouter.SHOP);
+                                TkpdInboxRouter.SHOP,
+                                shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
-        } else {
+        }
+        else {
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
@@ -1041,4 +1049,11 @@ public class ShopInfoActivity extends BaseActivity
             super.onBackPressed();
         }
     }
+
+    public void swipeAble(boolean able) {
+        if (holder != null && holder.pager != null) {
+            holder.pager.setSwipeAble(able);
+        }
+    }
+
 }

@@ -31,10 +31,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
+        View view = inflater.inflate(getLayout(), container, false);
         webView = (TkpdWebView) view.findViewById(R.id.webview);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         return view;
+    }
+
+    protected int getLayout(){
+        return R.layout.fragment_fragment_general_web_view;
     }
 
     @Override
@@ -55,9 +59,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (newProgress == MAX_PROGRESS) {
-                    if (progressBar != null) {
-                        progressBar.setVisibility(View.GONE);
-                    }
+                    onLoadFinished();
                 }
                 super.onProgressChanged(view, newProgress);
             }
@@ -69,6 +71,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         });
+    }
+
+    protected void onLoadFinished(){
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override

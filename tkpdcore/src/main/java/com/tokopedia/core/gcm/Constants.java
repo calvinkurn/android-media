@@ -25,6 +25,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
+    String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
@@ -74,6 +75,7 @@ public interface Constants {
         String PRODUCT_INFO = "tokopedia://product/{product_id}";
         String PRODUCT_ADD = "tokopedia://product/add";
         String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
+        String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
         String PURCHASE_ORDER = "tokopedia://buyer/order";
         String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
         String PURCHASE_HISTORY = "tokopedia://buyer/history";
@@ -108,6 +110,8 @@ public interface Constants {
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
+        String TOPCHAT = "tokopedia://topchat/{message_id}";
+        String TOPCHAT_IDLESS = "tokopedia://topchat";
         String REFERRAL = "tokopedia://referral";
         String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
         String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";

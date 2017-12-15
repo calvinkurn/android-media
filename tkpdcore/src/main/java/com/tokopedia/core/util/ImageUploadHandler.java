@@ -53,6 +53,7 @@ public class ImageUploadHandler {
     }
 
     public static final int REQUEST_CODE = 111;
+    public static final int REQUEST_CODE_GALLERY = 1243;
 
     private Activity activity;
     private Fragment fragment;
@@ -68,6 +69,13 @@ public class ImageUploadHandler {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
         startActivity(intent, REQUEST_CODE);
+    }
+
+    public String actionCamera2() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
+        startActivity(intent, REQUEST_CODE);
+        return model.cameraFileLoc;
     }
 
     private void startActivity(Intent intent, int code) {

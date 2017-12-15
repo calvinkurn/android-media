@@ -20,10 +20,11 @@ import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginBypassModel;
@@ -63,13 +64,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isTaskRoot()) {
-            final Intent intent = getIntent();
-            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(intent.getAction())) {
-                finish();
-                return;
-            }
-        }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_splash_screen);
         mReceiver = new DownloadResultReceiver(new Handler());
@@ -85,6 +79,13 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
+
+        fetchRemoteConfig();
+    }
+
+    private void fetchRemoteConfig() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        remoteConfig.fetch(null);
     }
 
     @Override
@@ -108,6 +109,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
         registerFCMDeviceID();
+        finishSplashScreen();
     }
 //        }, TIME_DELAY);
 
@@ -133,7 +135,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         return new GCMHandlerListener() {
             @Override
             public void onGCMSuccess(String regId) {
-                bypassV2Login();
+                //bypassV2Login();
             }
         };
     }
@@ -197,8 +199,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private void resetAllDatabaseFlag() {
         LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
         if (!flagDB.getBoolean("reset_db_flag", false)) {
-            Log.i("DATABASE DATABSE UWOOO", "clearing the database flag");
-            LocalCacheHandler.clearCache(this, CategoryDatabaseManager.KEY_STORAGE_NAME);
             LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
             if (getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) getApplication()).resetAddProductCache(this);

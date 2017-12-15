@@ -69,6 +69,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -452,12 +453,16 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             Config config = new Config.Builder()
                     .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                     .setUserId(SessionHandler.getLoginID(getActivity()))
+                    .withPreferedCategory()
                     .setEndpoint(Endpoint.PRODUCT)
+                    .displayMode(DisplayMode.FEED)
                     .topAdsParams(params)
                     .build();
 
             TopAdsView topAdsView = (TopAdsView) emptyState.findViewById(R.id.topads);
             topAdsView.setConfig(config);
+            topAdsView.setDisplayMode(DisplayMode.FEED);
+            topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
         }
@@ -1038,7 +1043,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             @Override
             public void onClick(View view) {
                 navigateToActivity(
-                        BrowseProductRouter.getDefaultBrowseIntent(getActivity())
+                        BrowseProductRouter.getSearchProductIntent(getActivity())
                 );
                 getActivity().finish();
             }

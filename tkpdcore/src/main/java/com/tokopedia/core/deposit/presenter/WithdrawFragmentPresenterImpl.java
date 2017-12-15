@@ -106,58 +106,62 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
                 }
 
                 @Override
-                public void setDepartments(List<CategoryDB> departments) {
-
-                }
-
-                @Override
                 public void setShippingCity(List<District> districts) {
 
                 }
 
                 @Override
                 public void onNetworkError(String message) {
-                    viewListener.finishLoading();
-                    viewListener.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getBankList();
-                        }
-                    });
+                    if (viewListener != null && viewListener.getActivity() != null) {
+                        viewListener.finishLoading();
+                        viewListener.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getBankList();
+                            }
+                        });
+                    }
 
                 }
 
                 @Override
                 public void onMessageError(String message) {
-                    viewListener.finishLoading();
-                    viewListener.showEmptyState(message, new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getBankList();
-                        }
-                    });
+                    if (viewListener != null && viewListener.getActivity() != null) {
+                        viewListener.finishLoading();
+                        viewListener.showEmptyState(message, new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getBankList();
+                            }
+                        });
+                    }
                 }
 
                 @Override
                 public void onUnknownError(String message) {
-                    viewListener.finishLoading();
-                    viewListener.showEmptyState(message, new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getBankList();
-                        }
-                    });
+                    if (viewListener != null && viewListener.getActivity() != null) {
+                        viewListener.finishLoading();
+                        viewListener.showEmptyState(message, new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getBankList();
+                            }
+                        });
+                    }
                 }
 
                 @Override
                 public void onTimeout() {
-                    viewListener.finishLoading();
-                    viewListener.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getBankList();
-                        }
-                    });
+                    if (viewListener != null && viewListener.getActivity() != null) {
+
+                        viewListener.finishLoading();
+                        viewListener.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getBankList();
+                            }
+                        });
+                    }
                 }
 
                 @Override
@@ -175,34 +179,43 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
         networkInteractor.getWithdrawForm(viewListener.getActivity(), new HashMap<String, String>(), new WithdrawRetrofitInteractor.WithdrawFormListener() {
             @Override
             public void onSuccess(@NonNull WithdrawForm data) {
-                viewListener.finishLoading();
-                viewListener.enableView();
-                viewListener.setForm(data);
-                viewListener.getAdapter().setList(data.getBankAccount());
-                cacheInteractor.setWithdrawFormCache(data);
+                if (viewListener != null && viewListener.getActivity() != null) {
+
+                    viewListener.finishLoading();
+                    viewListener.enableView();
+                    viewListener.setForm(data);
+                    viewListener.getAdapter().setList(data.getBankAccount());
+                    cacheInteractor.setWithdrawFormCache(data);
+                }
             }
 
             @Override
             public void onTimeout(String message) {
-                viewListener.finishLoading();
-                viewListener.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getWithdrawForm();
-                    }
-                });
+                if (viewListener != null && viewListener.getActivity() != null) {
+
+                    viewListener.finishLoading();
+                    viewListener.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getWithdrawForm();
+                        }
+                    });
+                }
 
             }
 
             @Override
             public void onError(String error) {
-                viewListener.finishLoading();
-                viewListener.showEmptyState(error, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getWithdrawForm();
-                    }
-                });
+                if (viewListener != null && viewListener.getActivity() != null) {
+
+                    viewListener.finishLoading();
+                    viewListener.showEmptyState(error, new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getWithdrawForm();
+                        }
+                    });
+                }
             }
 
             @Override
@@ -212,13 +225,16 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
 
             @Override
             public void onNoNetworkConnection() {
-                viewListener.finishLoading();
-                viewListener.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getWithdrawForm();
-                    }
-                });
+                if (viewListener != null && viewListener.getActivity() != null) {
+
+                    viewListener.finishLoading();
+                    viewListener.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getWithdrawForm();
+                        }
+                    });
+                }
             }
         });
     }
@@ -230,40 +246,54 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
         networkInteractor.doWithdraw(viewListener.getActivity(), getDoWithdrawParam(), new WithdrawRetrofitInteractor.DoWithdrawListener() {
             @Override
             public void onSuccess() {
-                UnifyTracking.eventDepositWithdraw();
-                viewListener.finishLoading();
-                viewListener.enableView();
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putString("withdraw", viewListener.getTotalWithdrawal().getText().toString());
-                viewListener.getActivity().setResult(Activity.RESULT_OK, intent);
-                viewListener.getActivity().finish();
+                if (viewListener != null && viewListener.getActivity() != null) {
+
+                    UnifyTracking.eventDepositWithdraw();
+                    viewListener.finishLoading();
+                    viewListener.enableView();
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("withdraw", viewListener.getTotalWithdrawal().getText().toString());
+                    viewListener.getActivity().setResult(Activity.RESULT_OK, intent);
+                    viewListener.getActivity().finish();
+                }
             }
 
             @Override
             public void onTimeout(String message) {
-                viewListener.finishLoading();
-                viewListener.enableView();
-                viewListener.setError("");
+                if (viewListener != null && viewListener.getActivity() != null) {
+
+                    viewListener.finishLoading();
+                    viewListener.enableView();
+                    viewListener.setError("");
+                }
             }
 
             @Override
             public void onError(String error) {
-                viewListener.finishLoading();
-                viewListener.enableView();
-                viewListener.setError(error);
+                if (viewListener != null && viewListener.getActivity() != null) {
+
+                    viewListener.finishLoading();
+                    viewListener.enableView();
+                    viewListener.setError(error);
+                }
             }
 
             @Override
             public void onNullData() {
-                viewListener.finishLoading();
+                if (viewListener != null && viewListener.getActivity() != null) {
+                    viewListener.finishLoading();
+                }
             }
 
             @Override
             public void onNoNetworkConnection() {
-                viewListener.finishLoading();
-                viewListener.enableView();
-                viewListener.setError("");
+                if (viewListener != null && viewListener.getActivity() != null) {
+
+                    viewListener.finishLoading();
+                    viewListener.enableView();
+                    viewListener.setError("");
+                }
             }
         });
     }
@@ -283,7 +313,7 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
             param.setBankBranch(viewListener.getBranchName().getText().toString());
         } else {
             param.setBankAccountId(viewListener.getAdapter().getList().get(
-                            viewListener.getBankList().getSelectedItemPosition() - 1).getBankAccountId()
+                    viewListener.getBankList().getSelectedItemPosition() - 1).getBankAccountId()
             );
 
         }
