@@ -32,6 +32,7 @@ public class CreateResoWithAttachmentSubscriber extends Subscriber<CreateSubmitD
     public void onNext(CreateSubmitDomain createSubmitDomain) {
         mainView.successCreateResoWithAttachment(String.valueOf(
                 createSubmitDomain.getResolution().getId()),
-                createSubmitDomain.getSuccessMessage());
+                createSubmitDomain.getSuccessMessage(),
+                createSubmitDomain.getShop().getName());
     }
 }

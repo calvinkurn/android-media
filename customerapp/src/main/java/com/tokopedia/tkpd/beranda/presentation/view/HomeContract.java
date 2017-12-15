@@ -29,11 +29,7 @@ public interface HomeContract {
 
         void setItems(List<Visitable> items);
 
-        void setItem(int pos, Visitable item);
-
         void updateHeaderItem(HeaderViewModel headerViewModel);
-
-        void refreshAdapter();
 
         void showNetworkError(String message);
 

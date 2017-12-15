@@ -13,6 +13,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -69,13 +72,13 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
-import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -106,12 +109,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SectionContainer tabContainer;
     private SwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
-    private FirebaseRemoteConfig firebaseRemoteConfig;
+    private RemoteConfig firebaseRemoteConfig;
     private Trace trace;
     private SnackbarRetry messageSnackbar;
     private HomeAdapterFactory adapterFactory;
     private String[] tabSectionTitle;
-
+    private VerticalSpaceItemDecoration spaceItemDecoration;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
 
     public static HomeFragment newInstance() {
@@ -152,18 +155,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void fetchRemoteConfig() {
-        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
-        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
-            @Override
-            public void onComplete(FirebaseRemoteConfig remoteConfig) {
-                firebaseRemoteConfig = remoteConfig;
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
+        firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Nullable
@@ -238,8 +230,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.setLayoutManager(layoutManager);
         adapterFactory = new HomeAdapterFactory(getFragmentManager(), this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
+        spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
+        recyclerView.addItemDecoration(spaceItemDecoration);
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true));
         recyclerView.addOnScrollListener(new HomeRecycleScrollListener(layoutManager, this));
     }
 
@@ -420,8 +413,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             UnifyTracking.eventViewAllOSNonLogin();
         }
 
-        if (firebaseRemoteConfig != null
-                && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
+        if (firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
             getActivity().startActivity(
                     ReactNativeActivity.createOfficialStoresReactNativeActivity(
                             getActivity(), ReactConst.Screen.OFFICIAL_STORE,
@@ -589,7 +581,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCloseTicker(int pos) {
-
+        adapter.getItems().remove(pos);
+        adapter.notifyItemRemoved(pos);
     }
 
     @Override
@@ -624,35 +617,26 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
+        spaceItemDecoration.setStart(lastIndexOfInstance(items, CategorySectionViewModel.class));
+        recyclerView.invalidateItemDecorations();
         adapter.setItems(items);
     }
 
-    @Override
-    public void setItem(int pos, Visitable item) {
-        if (adapter.getItemCount() > 0 && adapter.getItemCount() > pos) {
-            adapter.getItems().set(pos, item);
-        } else {
-            adapter.getItems().add(pos, item);
+    public int lastIndexOfInstance(List list, Class clazz) {
+        for (int i = 0; i < list.size(); i++) {
+            if (clazz.isInstance(list.get(i))) {
+                if (i > 0)
+                    return i - 1;
+            }
         }
-        adapter.notifyDataSetChanged();
+        return 0;
     }
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 0) {
-            if (adapter.getItem(0) instanceof HeaderViewModel) {
-                adapter.notifyItemChanged(0);
-                return;
-            }
-            if (adapter.getItem(1) instanceof HeaderViewModel) {
-                adapter.notifyItemChanged(1);
-            }
+        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
+            adapter.notifyItemChanged(0);
         }
-    }
-
-    @Override
-    public void refreshAdapter() {
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -685,7 +669,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             messageSnackbar.hideRetrySnackbar();
         }
     }
-
 
     private void openActivity(String depID, String title) {
         IntermediaryActivity.moveTo(
@@ -735,7 +718,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onTokoCashDataError(String errorMessage) {
-
+        Log.e(TAG, errorMessage);
     }
 
     public class HomeFragmentBroadcastReceiver extends BroadcastReceiver {

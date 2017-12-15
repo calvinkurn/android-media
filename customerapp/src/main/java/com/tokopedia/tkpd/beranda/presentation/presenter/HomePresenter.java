@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -322,14 +323,15 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             if (isViewAttached()) {
                 getView().showNetworkError(ErrorHandler.getErrorMessage(e));
                 onCompleted();
+                Log.e(TAG, e.getLocalizedMessage());
             }
         }
 
         @Override
         public void onNext(List<Visitable> visitables) {
             if (isViewAttached()) {
-                if(SessionHandler.isV4Login(context)){
-                    visitables.add(visitables.get(0) instanceof TickerViewModel ? 1 : 0, headerViewModel);
+                if (SessionHandler.isV4Login(context)) {
+                    visitables.add(0, headerViewModel);
                 }
                 getView().setItems(visitables);
                 if (isDataValid(visitables)) {

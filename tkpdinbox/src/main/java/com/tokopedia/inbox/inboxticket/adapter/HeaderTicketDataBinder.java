@@ -178,7 +178,7 @@ public class HeaderTicketDataBinder extends DataBinder<HeaderTicketDataBinder.Vi
                         Bundle bundle = new Bundle();
                         ArrayList<String> listImage = new ArrayList<>();
                         for(int i = 0 ; i < imageUpload.size(); i++){
-                            listImage.add(imageUpload.get(i).getPicSrc());
+                            listImage.add(imageUpload.get(i).getPicSrcLarge());
                         }
                         bundle.putStringArrayList("fileloc", listImage);
                         intent.putExtras(bundle);
