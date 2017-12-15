@@ -168,6 +168,12 @@
     <string name="title_multiple_select">Multi Select</string>
     <string name="crop_image_menu_watermark">watermark</string>
     <string name="crop_image_watermark_cannot_be_changed">*Watermark tidak dapat diubah setelah disimpan.</string>
+
+    <string name="title_seller_info">Info Penjual</string>
+    <string name="seller_info_title_description_format">• %1$s</string>
+    <string name="seller_info_empty_title">"Info Penjual saat ini masih belum tersedia"</string>
+    <string name="seller_info_empty_desc">Nantikan info seputar promo, event, \nupdate produk, fitur dan layanan khusus untuk\nAnda pengguna Tokopedia.</string>
+
     <string name="item_replacement_no_note"><![CDATA[<i>]]>Tidak ada catatan dari pengguna<![CDATA[</i>]]></string>
     <string name="reputation_value">Nilai Reputasi:</string>
     <string name="note_for_seller">Catatan untuk Penjual:</string>
@@ -175,4 +181,5 @@
     <string name="transaction_value">Nilai Transaksi</string>
     <string name="title_tooltip_reputation_multiplier">Nilai Reputasi</string>
     <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
+
 </resources>

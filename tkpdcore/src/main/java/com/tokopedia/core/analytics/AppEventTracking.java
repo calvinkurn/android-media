@@ -156,7 +156,7 @@ public interface AppEventTracking {
         String CANCEL_APP_RATING = "cancelAppRating";
 
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
-
+        String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
     }
 
@@ -205,6 +205,7 @@ public interface AppEventTracking {
         String EDIT_PRODUCT = "edit product";
         String EDIT_PRODUCT_IMAGE = "edit product image";
         String HAMBURGER = "Hamburger Icon";
+        String CLICK_HAMBURGER = "click hamburger icon";
         String SALES = "Sales";
         String TRUECALLER = "TrueCaller";
         String GOLD_MERCHANT = "Gold Merchant";
@@ -256,6 +257,7 @@ public interface AppEventTracking {
         String SHOP_PAGE = "shop page";
         String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
+        String SELLER_INFO_HOMEPAGE = "click hamburger icon";
         String HOMEPAGE_UNIFY = "homepage tab";
         String EVENT_TOP_NAV = "top nav";
         String CATEGORY_HOTLIST = "hotlist";
@@ -397,6 +399,9 @@ public interface AppEventTracking {
         String FEED_UNFOLLOW_KOL_RECOMMENDATION = "feed - unfollow kol recommendation";
         String FEED_CLICK_KOL_RECOMMENDATION_PROFILE = "feed - click kol recommendation profile";
         String FEED_VIEW_ALL_KOL_RECOMMENDATION = "feed - view all kol recommendation";
+
+        String CLICK_HAMBURGER_ICON = "click hamburger icon";
+        String CLICK_ARTICLE = "click article";
 
         String ONBOARDING_SKIP = "click - skip button";
         String ONBOARDING_START = "click - mulai";
@@ -696,6 +701,7 @@ public interface AppEventTracking {
         String PRODUCT_PAGE =  "message shop";
         String APP_SHARE_LABEL="Share";
         String FEATURED_PRODUCT = "Featured Product";
+        String SELLER_INFO = "seller info";
         String ADD_FEATURED_PRODUCT = "Add Featured Product";
         String TICK_ERROR = "Tick Error";
         String SAVE_FEATURED_PRODUCT_PICKER = "Simpan - ";
