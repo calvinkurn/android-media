@@ -1,7 +1,5 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.util.Log;
-
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -44,7 +42,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Lock lock = new ReentrantLock();
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(Chain chain) throws IOException{
         final Request originRequest = chain.request();
         Request.Builder newRequest = chain.request().newBuilder();
 
@@ -66,7 +64,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
-            IOException {
+            IOException{
         if (isNeedRelogin(response)) {
             refreshTokenWithRelogin();
             if (finalRequest.header("authorization").contains("Bearer")) {
@@ -84,7 +82,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return response;
     }
 
-    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
+    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
         Response response = chain.proceed(newestRequest);
         if (isUnauthorized(newestRequest, response)) {
             ServerErrorHandler.showForceLogoutDialog();
