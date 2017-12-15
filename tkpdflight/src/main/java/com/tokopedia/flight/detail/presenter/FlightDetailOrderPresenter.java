@@ -117,7 +117,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             for (FlightOrderJourney flightOrderJourney : journeys) {
                 if (flightOrderJourney.getDepartureAiportId().equals(flightOrderDetailPassData.getDepartureAiportId()) &&
                         flightOrderJourney.getArrivalAirportId().equals(flightOrderDetailPassData.getArrivalAirportId()) &&
-                        flightOrderJourney.getStatus().equals(flightOrderDetailPassData.getStatus()) &&
+                        flightOrderJourney.getStatus().equals(String.valueOf(flightOrderDetailPassData.getStatus())) &&
                         flightOrderJourney.getDepartureTime().equals(flightOrderDetailPassData.getDepartureTime())) {
                     journeyList.add(flightOrderJourney);
                 }

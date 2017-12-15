@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class FlightOrderAdapter extends BaseAdapter {
     }
 
     public interface OnAdapterInteractionListener {
-        void onDetailOrderClicked(OrderDetailPassData viewModel);
+        void onDetailOrderClicked(FlightOrderDetailPassData viewModel);
 
         void onDetailOrderClicked(String orderId);
 

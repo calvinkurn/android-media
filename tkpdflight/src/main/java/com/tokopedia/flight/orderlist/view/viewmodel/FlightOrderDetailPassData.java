@@ -1,21 +1,13 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author by alvarisi on 12/13/17.
  */
 
 public class FlightOrderDetailPassData implements Parcelable {
-    public static final Creator<FlightOrderDetailPassData> CREATOR = new Creator<FlightOrderDetailPassData>() {
-        @Override
-        public FlightOrderDetailPassData createFromParcel(Parcel in) {
-            return new FlightOrderDetailPassData(in);
-        }
-
-        @Override
-        public FlightOrderDetailPassData[] newArray(int size) {
-            return new FlightOrderDetailPassData[size];
-        }
-    };
     private String orderId;
     private String departureCity;
     private String departureAiportId;
@@ -26,17 +18,6 @@ public class FlightOrderDetailPassData implements Parcelable {
     private int status;
 
     public FlightOrderDetailPassData() {
-    }
-
-    protected FlightOrderDetailPassData(Parcel in) {
-        orderId = in.readString();
-        departureCity = in.readString();
-        departureAiportId = in.readString();
-        departureTime = in.readString();
-        arrivalCity = in.readString();
-        arrivalAirportId = in.readString();
-        arrivalTime = in.readString();
-        status = in.readString();
     }
 
     public String getOrderId() {
@@ -103,4 +84,43 @@ public class FlightOrderDetailPassData implements Parcelable {
         this.status = status;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.orderId);
+        dest.writeString(this.departureCity);
+        dest.writeString(this.departureAiportId);
+        dest.writeString(this.departureTime);
+        dest.writeString(this.arrivalCity);
+        dest.writeString(this.arrivalAirportId);
+        dest.writeString(this.arrivalTime);
+        dest.writeInt(this.status);
+    }
+
+    protected FlightOrderDetailPassData(Parcel in) {
+        this.orderId = in.readString();
+        this.departureCity = in.readString();
+        this.departureAiportId = in.readString();
+        this.departureTime = in.readString();
+        this.arrivalCity = in.readString();
+        this.arrivalAirportId = in.readString();
+        this.arrivalTime = in.readString();
+        this.status = in.readInt();
+    }
+
+    public static final Creator<FlightOrderDetailPassData> CREATOR = new Creator<FlightOrderDetailPassData>() {
+        @Override
+        public FlightOrderDetailPassData createFromParcel(Parcel source) {
+            return new FlightOrderDetailPassData(source);
+        }
+
+        @Override
+        public FlightOrderDetailPassData[] newArray(int size) {
+            return new FlightOrderDetailPassData[size];
+        }
+    };
 }

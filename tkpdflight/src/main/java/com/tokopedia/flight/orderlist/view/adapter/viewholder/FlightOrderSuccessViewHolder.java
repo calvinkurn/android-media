@@ -7,8 +7,8 @@ import android.view.View;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -75,7 +75,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
 
     @Override
     protected void onDetailOptionClicked() {
-        OrderDetailPassData passData = new OrderDetailPassData();
+        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
         passData.setOrderId(item.getId());
         passData.setDepartureAiportId(item.getOrderJourney().getDepartureAiportId());
         passData.setDepartureCity(item.getOrderJourney().getDepartureCity());

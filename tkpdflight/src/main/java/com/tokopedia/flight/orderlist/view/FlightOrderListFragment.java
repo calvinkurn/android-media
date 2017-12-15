@@ -199,31 +199,11 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void onDetailOrderClicked(OrderDetailPassData viewModel) {
-        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
-        passData.setOrderId(viewModel.getId());
-        passData.setDepartureAiportId(viewModel.getOrderJourney().get(0).getDepartureAiportId());
-        passData.setDepartureCity(viewModel.getOrderJourney().get(0).getDepartureCity());
-        passData.setDepartureTime(viewModel.getOrderJourney().get(0).getDepartureTime());
-        passData.setArrivalAirportId(viewModel.getOrderJourney().get(0).getArrivalAirportId());
-        passData.setArrivalCity(viewModel.getOrderJourney().get(0).getArrivalCity());
-        passData.setArrivalTime(viewModel.getOrderJourney().get(0).getArrivalTime());
-        passData.setStatus(String.valueOf(viewModel.getStatus()));
-        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), passData));
+    public void onDetailOrderClicked(FlightOrderDetailPassData viewModel) {
     }
 
     @Override
     public void onDetailOrderClicked(String orderId) {
-        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
-        passData.setOrderId(viewModel.getId());
-        passData.setDepartureAiportId(viewModel.getOrderJourney().getDepartureAiportId());
-        passData.setDepartureCity(viewModel.getOrderJourney().getDepartureCity());
-        passData.setDepartureTime(viewModel.getOrderJourney().getDepartureTime());
-        passData.setArrivalAirportId(viewModel.getOrderJourney().getArrivalAirportId());
-        passData.setArrivalCity(viewModel.getOrderJourney().getArrivalCity());
-        passData.setArrivalTime(viewModel.getOrderJourney().getArrivalTime());
-        passData.setStatus(viewModel.getStatus());
-        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), passData));
     }
 
     @Override
