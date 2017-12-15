@@ -17,6 +17,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
@@ -90,8 +91,14 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     protected void onResume() {
         super.onResume();
 //        new DiscoveryInteractorImpl().editProductDetail(this, "45469593", "", "");
-        handleBranchDefferedDeeplink();
+      //  handleBranchDefferedDeeplink();
         //  moveToHome();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        handleBranchDefferedDeeplink();
     }
 
     private void moveToHome() {
@@ -244,6 +251,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         if (branch == null){
             moveToHome();
         }else {
+            Branch.getInstance().setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
