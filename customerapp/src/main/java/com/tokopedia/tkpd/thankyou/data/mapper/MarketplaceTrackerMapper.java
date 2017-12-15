@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.analytics.PurchaseTracking;
@@ -31,6 +33,8 @@ import rx.functions.Func1;
  */
 
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
+    private static final String DATA = "data";
+    private static final String COUPON = "coupon";
     private GlobalCacheManager globalCacheManager;
     private Gson gson;
 
@@ -40,28 +44,42 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     }
 
     @Override
-    public Boolean call(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
-        if(graphqlResponse != null
-                && graphqlResponse.body() != null
-                && graphqlResponse.body().getData() != null
-                && graphqlResponse.body().getData().getPayment() != null) {
+    public Boolean call(Response<GraphqlResponse<PaymentGraphql>> response) {
+        if(isResponseValid(response)) {
+            JsonObject cacheData = new JsonParser().parse(
+                    globalCacheManager.getValueString(TkpdCache.Key.CART_CACHE_TRACKER)
+            ).getAsJsonObject();
+
             List<CartItem> cartItemList = gson.fromJson(
-                    globalCacheManager.getValueString(TkpdCache.Key.CART_CACHE_TRACKER),
-                    new TypeToken<List<CartItem>>() {
-                    }.getType()
+                    cacheData.get(DATA),
+                    new TypeToken<List<CartItem>>() {}.getType()
             );
+            PaymentData paymentData = response.body().getData().getPayment();
+            paymentData.setCoupon(cacheData.get(COUPON).isJsonNull() ? "" : cacheData.get(COUPON).toString());
 
-            for(CartItem cartItem: cartItemList) {
-                MarketplaceTrackerData marketplaceTrackerData = getTrackingData(graphqlResponse.body().getData().getPayment(), cartItem);
-
-                String rawTrackingData = gson.toJson(marketplaceTrackerData);
-                Map<String, Object> trackingPayload = gson.fromJson(rawTrackingData, LinkedTreeMap.class);
-                PurchaseTracking.marketplace(PurchaseTracking.TRANSACTION, trackingPayload);
+            if(cartItemList != null) {
+                for (CartItem cartItem : cartItemList) {
+                    processData(paymentData, cartItem);
+                }
             }
             return true;
         }
 
         return false;
+    }
+
+    private boolean isResponseValid(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
+        return graphqlResponse != null
+                && graphqlResponse.body() != null
+                && graphqlResponse.body().getData() != null
+                && graphqlResponse.body().getData().getPayment() != null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void processData(PaymentData payment, CartItem cartItem) {
+        MarketplaceTrackerData marketplaceTrackerData = getTrackingData(payment, cartItem);
+        String rawTrackingData = gson.toJson(marketplaceTrackerData);
+        PurchaseTracking.marketplace(gson.fromJson(rawTrackingData, LinkedTreeMap.class));
     }
 
     private MarketplaceTrackerData getTrackingData(PaymentData paymentData, CartItem cartItem) {
@@ -116,7 +134,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private Ecommerce getEcommerceData(PaymentData paymentData, CartItem cartItem) {
         Ecommerce ecommerce = new Ecommerce();
-        ecommerce.setCurrencyCode("");
+        ecommerce.setCurrencyCode("IDR");
         ecommerce.setPurchase(
                 getPurchaseData(paymentData,cartItem)
         );
@@ -126,26 +144,22 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private Purchase getPurchaseData(PaymentData paymentData, CartItem cartItem) {
         Purchase purchase = new Purchase();
-        purchase.setActionField(
-                getActionField(paymentData, cartItem)
-        );
-        purchase.setProducts(
-                getProductList(paymentData, cartItem)
-        );
+        purchase.setActionField(getActionField(paymentData, cartItem));
+        purchase.setProducts(getProductList(paymentData, cartItem.getCartProducts()));
         return purchase;
     }
 
-    private List<Product> getProductList(PaymentData paymentData, CartItem cartItem) {
+    private List<Product> getProductList(PaymentData paymentData, List<CartProduct> cartProducts) {
         List<Product> products = new ArrayList<>();
-        for(CartProduct cartProduct : cartItem.getCartProducts()) {
+        for(CartProduct cartProduct : cartProducts) {
             Product product = new Product();
-            product.setBrand("");
-//            product.setCategory();
-//            product.setCoupon();
+//            product.setBrand();
+//            product.setCategory(cartProduct.);
+            product.setCoupon(paymentData.getCoupon());
             product.setId(cartProduct.getProductId());
             product.setName(cartProduct.getProductName());
             product.setPrice(cartProduct.getProductPrice());
-            product.setQuantity(String.valueOf(cartProduct.getProductQuantity()));
+            product.setQuantity(cartProduct.getProductQuantity());
 //            product.setVariant(cartProduct.);
             products.add(product);
         }
@@ -154,12 +168,11 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private ActionField getActionField(PaymentData paymentData, CartItem cartItem) {
         ActionField actionField = new ActionField();
-//        actionField.setId();
+        actionField.setId(String.valueOf(paymentData.getPaymentId()));
 //        actionField.setAffiliation();
-//        actionField.setCoupon();
-//        actionField.setRevenue();
-        actionField.setShipping(cartItem.getCartShipments().getShipmentName());
-//        actionField.setTax("");
+        actionField.setCoupon(paymentData.getCoupon());
+        actionField.setRevenue(cartItem.getCartTotalAmount());
+        actionField.setShipping(cartItem.getCartShippingRate());
         return actionField;
     }
 }

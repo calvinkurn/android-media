@@ -23,6 +23,8 @@ public class PaymentData {
     @Expose
     private PaymentMethod paymentMethod;
 
+    private String coupon;
+
     public int getPaymentId() {
         return paymentId;
     }
@@ -53,5 +55,13 @@ public class PaymentData {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(String coupon) {
+        this.coupon = coupon;
     }
 }

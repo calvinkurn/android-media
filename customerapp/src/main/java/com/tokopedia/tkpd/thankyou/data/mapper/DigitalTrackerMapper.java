@@ -27,7 +27,7 @@ public class DigitalTrackerMapper implements Func1<Response<String>, Boolean> {
     @Override
     public Boolean call(Response<String> response) {
         JsonObject responseObject = new JsonParser().parse(response.body()).getAsJsonObject();
-        PurchaseTracking.digital(PurchaseTracking.TRANSACTION, getMappedData(responseObject.get(DATA)));
+        PurchaseTracking.digital(getMappedData(responseObject.get(DATA)));
         return false;
     }
 

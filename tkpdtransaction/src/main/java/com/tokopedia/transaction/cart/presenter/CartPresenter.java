@@ -626,6 +626,7 @@ public class CartPresenter implements ICartPresenter {
         List<String> partialDeliverStringList = new ArrayList<>();
         List<String> rateKeyList = new ArrayList<>();
         List<String> rateDataList = new ArrayList<>();
+        List<CartItem> cartItemList = new ArrayList<>();
 
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
@@ -640,6 +641,7 @@ public class CartPresenter implements ICartPresenter {
                 rateKeyList.add(data.getCartCourierPrices().getKey());
                 rateDataList.add(data.getCartCourierPrices().getKeroValue());
             }
+            cartItemList.add(data.getCartItem());
         }
 
         StringBuilder dropShipperParamStringBuilder = new StringBuilder();
@@ -693,7 +695,7 @@ public class CartPresenter implements ICartPresenter {
             view.showToastMessage(view.getStringFromResource(
                     R.string.label_message_error_cannot_checkout));
         } else {
-            saveCartDataToCache(cartItemEditables);
+            saveCartDataToCache(checkoutData, cartItemList);
             Bundle bundle = new Bundle();
             bundle.putParcelable(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
             bundle.putInt(TopPayIntentService.EXTRA_ACTION,
@@ -875,40 +877,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
 
-    private void saveCartDataToCache(List<CartItemEditable> cartItemEditables) {
-        Observable.just(cartItemEditables)
-        .map(new Func1<List<CartItemEditable>, Boolean>() {
-            @Override
-            public Boolean call(List<CartItemEditable> cartItemEditables) {
-                GlobalCacheManager cacheManager = new GlobalCacheManager();
-                cacheManager.setCacheDuration((int) TimeUnit.DAYS.toSeconds(1));
-                List<CartItem> cartItems = new ArrayList<>();
-                for(CartItemEditable editable: cartItemEditables) {
-                    cartItems.add(editable.getCartItem());
-                }
-                String data = new Gson().toJson(cartItems, new TypeToken<List<CartItem>>(){}.getType());
-                cacheManager.setKey(TkpdCache.Key.CART_CACHE_TRACKER);
-                cacheManager.setValue(data);
-                cacheManager.store();
-                return true;
-            }
-        })
-        .subscribeOn(Schedulers.newThread())
-        .subscribe(new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                //no-op
-            }
-        });
+    private void saveCartDataToCache(CheckoutData checkoutData, List<CartItem> cartItemList) {
+        cartDataInteractor.saveCartDataToCache(checkoutData, cartItemList);
     }
 }
