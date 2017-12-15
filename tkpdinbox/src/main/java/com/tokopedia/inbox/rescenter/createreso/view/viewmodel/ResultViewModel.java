@@ -16,6 +16,13 @@ import java.util.List;
  */
 
 public class ResultViewModel implements Parcelable {
+
+    public static final String PARAM_PROBLEM = "problem";
+    public static final String PARAM_SOLUTION = "solution";
+    public static final String PARAM_REFUND = "refundAmount";
+    public static final String PARAM_ATTACHMENT = "attachmentCount";
+    public static final String PARAM_MESSAGE = "message";
+    public static final String PARAM_RESOLUTION_ID = "resolutionID";
     public List<ProblemResult> problem = new ArrayList<>();
     public int solution;
     public String solutionName;
@@ -24,6 +31,7 @@ public class ResultViewModel implements Parcelable {
     public int attachmentCount;
     public String orderId;
     public boolean isAttachmentRequired;
+    public String resolutionId;
     public List<AttachmentViewModel> attachmentList = new ArrayList<>();
 
     public ResultViewModel() {
@@ -49,21 +57,24 @@ public class ResultViewModel implements Parcelable {
         JSONObject object = new JSONObject();
         try {
             if (problem.size() != 0) {
-                object.put("problem", getProblemArray());
+                object.put(PARAM_PROBLEM, getProblemArray());
             }
             if (solution != 0) {
-                object.put("solution", solution);
+                object.put(PARAM_SOLUTION, solution);
             }
             if (refundAmount != 0) {
-                object.put("refundAmount", refundAmount);
+                object.put(PARAM_REFUND, refundAmount);
             }
             if (attachmentCount != 0) {
-                object.put("attachmentCount", attachmentCount);
+                object.put(PARAM_ATTACHMENT, attachmentCount);
             }
             if (message != null) {
                 if (!message.remark.equals("")) {
-                    object.put("message", message.writeToJson());
+                    object.put(PARAM_MESSAGE, message.writeToJson());
                 }
+            }
+            if (resolutionId != null) {
+                object.put(PARAM_RESOLUTION_ID, Integer.valueOf(resolutionId));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,6 +110,7 @@ public class ResultViewModel implements Parcelable {
         dest.writeInt(this.attachmentCount);
         dest.writeString(this.orderId);
         dest.writeByte(this.isAttachmentRequired ? (byte) 1 : (byte) 0);
+        dest.writeString(this.resolutionId);
         dest.writeTypedList(this.attachmentList);
     }
 
@@ -111,6 +123,7 @@ public class ResultViewModel implements Parcelable {
         this.attachmentCount = in.readInt();
         this.orderId = in.readString();
         this.isAttachmentRequired = in.readByte() != 0;
+        this.resolutionId = in.readString();
         this.attachmentList = in.createTypedArrayList(AttachmentViewModel.CREATOR);
     }
 

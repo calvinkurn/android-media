@@ -4,6 +4,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 9/4/17.
@@ -18,13 +19,13 @@ public class SendReviewPass {
     String rating;
     String reviewMessage;
     ArrayList<ImageUpload> listImage;
-    ArrayList<ImageUpload> listDeleted;
+    List<ImageUpload> listDeleted;
     boolean shareFb;
     boolean anonymous;
 
     public SendReviewPass(String reviewId, String productId, String reputationId, String shopId,
                           String rating, String reviewMessage, ArrayList<ImageUpload> listImage,
-                          boolean shareFb, boolean anonymous) {
+                          List<ImageUpload> listDeleted, boolean shareFb, boolean anonymous) {
         this.reviewId = reviewId;
         this.productId = productId;
         this.reputationId = reputationId;
@@ -32,7 +33,7 @@ public class SendReviewPass {
         this.rating = rating;
         this.reviewMessage = reviewMessage;
         this.listImage = listImage;
-        this.listDeleted = new ArrayList<>();
+        this.listDeleted = listDeleted;
         this.shareFb = shareFb;
         this.anonymous = anonymous;
     }
@@ -73,7 +74,7 @@ public class SendReviewPass {
         return anonymous;
     }
 
-    public ArrayList<ImageUpload> getListDeleted() {
+    public List<ImageUpload> getListDeleted() {
         return listDeleted;
     }
 

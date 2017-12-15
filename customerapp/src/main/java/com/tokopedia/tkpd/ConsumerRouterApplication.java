@@ -61,6 +61,7 @@ import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -107,6 +108,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.util.ArrayList;
@@ -579,6 +581,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public void goToOrderHistory(Context context, String orderId, int userMode) {
+        Intent intent = OrderHistoryActivity.createInstance(context, orderId, userMode);
+        context.startActivity(intent);
     }
 
     @Override

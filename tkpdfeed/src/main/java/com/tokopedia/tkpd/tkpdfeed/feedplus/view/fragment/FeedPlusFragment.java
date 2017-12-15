@@ -100,7 +100,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
 /**
  * @author by nisie on 5/15/17.
  */
