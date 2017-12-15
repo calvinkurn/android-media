@@ -299,7 +299,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         data.setBuyerID(String.valueOf(customerData.getId()));
         data.setBuyerName(customerData.getName());
         data.setComplaintDate(resolutionData.getCreateTimeStr());
-        data.setComplaintDateTimestamp(resolutionData.getCreateTime());
+        data.setComplaintDateTimestamp(resolutionData.getCreateTimeStr());
         data.setInvoice(orderData.getInvoice().getRefNum());
         data.setInvoiceUrl(orderData.getInvoice().getUrl());
         data.setResponseDeadline(resolutionData.getExpireTimeStr());
@@ -319,7 +319,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         awbData.setShipmentID(String.valueOf(userAwbData.getShipping().getId()));
         awbData.setShipmentRef(userAwbData.getAwb());
         awbData.setShipmentName(userAwbData.getShipping().getName());
-        awbData.setAwbDateTimestamp(userAwbData.getCreateTime());
+        awbData.setAwbDateTimestamp(userAwbData.getCreateTimeFullStr());
         awbData.setAwbDate(userAwbData.getCreateTimeStr());
         awbData.setAttachments(mappingAwbAttachments(userAwbData.getAttachments()));
         awbData.setAddButtonAvailable(domainModel.getInputAWB() == 1);

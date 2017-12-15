@@ -166,6 +166,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         null,
                 response.getCreateTime(),
                 response.getCreateTimeStr(),
+                response.getCreateTimeFullStr(),
                 response.getConversationId());
     }
 
@@ -195,6 +196,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getTrackable(),
                 response.getCreateTime(),
                 response.getCreateTimeStr(),
+                response.getCreateTimeFullStr(),
                 mappingAttachments(response.getAttachments()));
     }
 
@@ -358,7 +360,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         mappingCreatedByData(response.getCreateBy()) :
                         null,
                 response.getCreateTime(),
-                response.getCreateTimeStr(),
+                response.getCreateTimeFullStr(),
                 response.getExpireTime(),
                 response.getExpireTimeStr(),
                 response.getUpdateBy() != null ?

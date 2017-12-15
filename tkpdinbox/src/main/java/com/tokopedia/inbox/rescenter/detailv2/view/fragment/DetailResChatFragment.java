@@ -875,7 +875,7 @@ public class DetailResChatFragment
     }
 
     @Override
-    public void showSnackBarError(String message) {
+    public void showSnackBar(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
@@ -913,6 +913,7 @@ public class DetailResChatFragment
     @Override
     public void successAcceptSolution() {
         dismissProgressBar();
+        showSnackBar(getActivity().getString(R.string.string_success_accept));
         initView();
     }
 
@@ -925,6 +926,7 @@ public class DetailResChatFragment
     @Override
     public void successCancelComplaint() {
         dismissProgressBar();
+        showSnackBar(getActivity().getString(R.string.string_success_cancel));
         initView();
         ffChat.setVisibility(View.GONE);
     }
@@ -938,6 +940,7 @@ public class DetailResChatFragment
     @Override
     public void successAskHelp() {
         dismissProgressBar();
+        showSnackBar(getActivity().getString(R.string.string_success_help));
         initView();
     }
 
@@ -974,6 +977,7 @@ public class DetailResChatFragment
     @Override
     public void successFinishResolution() {
         dismissProgressBar();
+        showSnackBar(getActivity().getString(R.string.string_success_finish));
         initView();
         ffChat.setVisibility(View.GONE);
     }
@@ -1024,18 +1028,22 @@ public class DetailResChatFragment
                 break;
             case REQUEST_EDIT_SOLUTION:
                 if (resultCode == Activity.RESULT_OK)
+                    showSnackBar(getActivity().getString(R.string.string_success_edit_solution));
                     initView();
                 break;
             case REQUEST_APPEAL_SOLUTION:
                 if (resultCode == Activity.RESULT_OK)
+                    showSnackBar(getActivity().getString(R.string.string_success_appeal));
                     initView();
                 break;
             case REQUEST_INPUT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK)
+                    showSnackBar(getActivity().getString(R.string.string_success_input_awb));
                     initView();
                 break;
             case REQUEST_EDIT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_edit_awb));
                     initView();
                 }
                 break;

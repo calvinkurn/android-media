@@ -93,7 +93,7 @@ public interface DetailResCenterFragmentView {
 
     void doOnTrackingFailed();
 
-    void doOnActionSucess();
+    void doOnActionSuccess(String action);
 
     void doOnActionError(String messageError);
 

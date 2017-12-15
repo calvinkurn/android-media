@@ -18,6 +18,8 @@ public class ResolutionResponse {
     private String createTime;
     @SerializedName("createTimeStr")
     private String createTimeStr;
+    @SerializedName("createTimeFullStr")
+    private String createTimeFullStr;
     @SerializedName("expireTime")
     private String expireTime;
     @SerializedName("expireTimeStr")
@@ -117,5 +119,13 @@ public class ResolutionResponse {
 
     public void setFreeReturnText(FreeReturnResponse freeReturnText) {
         this.freeReturnText = freeReturnText;
+    }
+
+    public String getCreateTimeFullStr() {
+        return createTimeFullStr;
+    }
+
+    public void setCreateTimeFullStr(String createTimeFullStr) {
+        this.createTimeFullStr = createTimeFullStr;
     }
 }

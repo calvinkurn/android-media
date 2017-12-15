@@ -48,7 +48,7 @@ public interface DetailResChatFragmentListener {
 
         void errorReplyDiscussion(String error);
 
-        void showSnackBarError(String message);
+        void showSnackBar(String message);
 
         void addAttachmentFile(AttachmentViewModel attachmentViewModel);
 

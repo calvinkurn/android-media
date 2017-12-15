@@ -86,6 +86,11 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 890;
     private static final int REQUEST_EDIT_ADDRESS = 901;
 
+    public static final String ACTION_FINISH = "finish";
+    public static final String ACTION_HELP = "help";
+    public static final String ACTION_ACCEPT = "accept";
+    public static final String ACTION_CANCEL = "cancel";
+
     public static final int STATUS_FINISHED = 500;
     public static final int STATUS_CANCEL = 0;
 
@@ -414,21 +419,25 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         switch (requestCode) {
             case REQUEST_EDIT_SOLUTION:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_edit_solution));
                     presenter.refreshPage();
                 }
                 break;
             case REQUEST_APPEAL_SOLUTION:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_appeal));
                     presenter.refreshPage();
                 }
                 break;
             case REQUEST_EDIT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_edit_awb));
                     presenter.refreshPage();
                 }
                 break;
             case REQUEST_INPUT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_input_awb));
                     presenter.refreshPage();
                 }
                 break;
@@ -737,8 +746,14 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void doOnActionSucess() {
+    public void doOnActionSuccess(String action) {
         showLoadingDialog(false);
+        String message = "";
+        if (action.equals(ACTION_HELP)) message = getResources().getString(R.string.string_success_help);
+        else if (action.equals(ACTION_FINISH)) message = getResources().getString(R.string.string_success_finish);
+        else if (action.equals(ACTION_ACCEPT)) message = getResources().getString(R.string.string_success_accept);
+        else if (action.equals(ACTION_CANCEL)) message = getResources().getString(R.string.string_success_cancel);
+        showSnackBar(message);
         presenter.refreshPage();
     }
 
