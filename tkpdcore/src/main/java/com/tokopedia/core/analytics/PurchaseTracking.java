@@ -9,11 +9,11 @@ import java.util.Map;
 public class PurchaseTracking extends TrackingUtils {
     public static final String TRANSACTION = "transaction";
 
-    public static void marketplace(String name, Map<String, Object> data) {
-        getGTMEngine().event(name, data);
+    public static void marketplace(Map<String, Object> data) {
+        getGTMEngine().event(TRANSACTION, data);
     }
 
-    public static void digital(String name, Map<String, Object> data) {
-        getGTMEngine().event(name, data);
+    public static void digital(Map<String, Object> data) {
+        getGTMEngine().event(TRANSACTION, data);
     }
 }

@@ -27,7 +27,7 @@ public class Product {
     private String variant;
     @SerializedName("quantity")
     @Expose
-    private String quantity;
+    private int quantity;
     @SerializedName("coupon")
     @Expose
     private String coupon;
@@ -80,11 +80,11 @@ public class Product {
         this.variant = variant;
     }
 
-    public String getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

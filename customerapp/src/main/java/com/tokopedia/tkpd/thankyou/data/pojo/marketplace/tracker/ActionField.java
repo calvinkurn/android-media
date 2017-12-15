@@ -6,7 +6,7 @@ package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker;
 public class ActionField {
     private String id;
     private String affiliation;
-    private double revenue;
+    private String revenue;
     private String tax;
     private String shipping;
     private String coupon;
@@ -27,11 +27,11 @@ public class ActionField {
         this.affiliation = affiliation;
     }
 
-    public double getRevenue() {
+    public String getRevenue() {
         return revenue;
     }
 
-    public void setRevenue(double revenue) {
+    public void setRevenue(String revenue) {
         this.revenue = revenue;
     }
 
