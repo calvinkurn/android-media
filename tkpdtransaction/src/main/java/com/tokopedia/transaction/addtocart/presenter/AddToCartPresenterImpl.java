@@ -213,7 +213,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                     public void onSuccess(String price) {
                         viewListener.renderProductPrice(price);
                         viewListener.enableBuyButton();
-                        calculateKeroAddressShipping(context, orderData);
+                        calculateAllPrices(context, orderData);
+//                        calculateKeroAddressShipping(context, orderData);
                     }
 
                     @Override
@@ -234,6 +235,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void calculateKeroAddressShipping(@NonNull Context context,
                                              @NonNull final OrderData orderData) {
+        Log.e("RequestRate", "calculateKeroAddressShipping");
         keroNetInteractor.calculateKeroCartAddressShipping(context,
                 AuthUtil.generateParamsNetwork(
                         context, KeroppiParam.paramsKeroOrderData(orderData)
@@ -268,6 +270,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 && orderData.getAddress() != null)
                 || orderData.getShipment() != null
                 && orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)) {
+            Log.e("RequestRate", "calculateAllPrices");
             viewListener.disableBuyButton();
             CommonUtils.dumper("rates/v1 kerorates called calculateAllShipping");
             keroNetInteractor.calculateKeroCartAddressShipping(context,
