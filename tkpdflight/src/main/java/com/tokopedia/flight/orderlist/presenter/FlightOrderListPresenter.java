@@ -66,9 +66,9 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     }
 
     @Override
-    public void onFilterSelected(String typeFilter) {
+    public void onFilterSelected() {
         getView().showGetInitialOrderDataLoading();
-        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, typeFilter), new Subscriber<List<FlightOrder>>() {
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, getView().getSelectedFilter()), new Subscriber<List<FlightOrder>>() {
             @Override
             public void onCompleted() {
 
@@ -127,7 +127,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     public void onSwipeRefresh() {
         getView().showGetInitialOrderDataLoading();
         getView().disableSwipeRefresh();
-        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0), new Subscriber<List<FlightOrder>>() {
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, getView().getSelectedFilter()), new Subscriber<List<FlightOrder>>() {
             @Override
             public void onCompleted() {
 
@@ -155,6 +155,12 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        detachView();
+        flightGetOrdersUseCase.unsubscribe();
     }
 
     private void buildAndRenderFilterList() {

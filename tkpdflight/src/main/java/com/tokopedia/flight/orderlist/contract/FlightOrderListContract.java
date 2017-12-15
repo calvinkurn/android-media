@@ -50,10 +50,12 @@ public interface FlightOrderListContract {
 
         void getInitialOrderData();
 
-        void onFilterSelected(String typeFilter);
+        void onFilterSelected();
 
         void onOrderLoadMore(String selectedFilter, int page);
 
         void onSwipeRefresh();
+
+        void onDestroyView();
     }
 }

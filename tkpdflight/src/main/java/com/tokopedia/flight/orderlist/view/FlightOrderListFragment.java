@@ -175,7 +175,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.onFilterSelected(selectedFilter);
+                        presenter.onFilterSelected();
                     }
                 }
         );
@@ -212,8 +212,8 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void selectFilter(String typeFilter) {
-        presenter.onFilterSelected(typeFilter);
         selectedFilter = typeFilter;
+        presenter.onFilterSelected();
         endlessRecyclerviewListener.resetState();
     }
 
@@ -232,6 +232,12 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onHelpOptionClicked(String orderId) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroyView();
+        super.onDestroyView();
     }
 
     @Override
