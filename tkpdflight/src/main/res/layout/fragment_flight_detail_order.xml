@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -140,23 +141,6 @@
         </LinearLayout>
 
 
-        <com.tokopedia.flight.detail.view.adapter.FlightDetailRecyclerView
-            android:id="@+id/recycler_view_flight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_med"
-            android:nestedScrollingEnabled="false"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:paddingTop="@dimen/padding_med" />
-
-        <TextView
-            style="@style/TextView.Caption.BlackDisabled"
-            android:layout_width="match_parent"
-            android:background="@color/white"
-            android:padding="@dimen/padding_med"
-            android:text="@string/flight_label_cek_t_and_c" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -164,10 +148,32 @@
             android:background="@color/white"
             android:orientation="vertical">
 
+            <com.tokopedia.flight.detail.view.adapter.FlightDetailRecyclerView
+                android:id="@+id/recycler_view_flight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med"
+                android:paddingTop="@dimen/padding_med" />
+
             <TextView
-                style="@style/TextView.Title.Bold"
+                style="@style/TextView.Caption.BlackDisabled"
+                android:layout_width="match_parent"
+                android:background="@color/white"
                 android:padding="@dimen/padding_med"
-                android:text="@string/flight_label_passenger_data" />
+                android:text="@string/flight_label_cek_t_and_c" />
+        </LinearLayout>
+
+        <com.tokopedia.flight.common.view.FlightExpandableOptionArrow
+            android:id="@+id/title_journey_flight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            app:eo_checked="true"
+            app:eo_theme="@style/style_expandable_flight"
+            app:eo_title="@string/flight_label_passenger_data">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view_data_passenger"
@@ -177,7 +183,7 @@
                 android:paddingBottom="@dimen/padding_med"
                 android:paddingLeft="@dimen/padding_med"
                 android:paddingRight="@dimen/padding_med" />
-        </LinearLayout>
+        </com.tokopedia.flight.common.view.FlightExpandableOptionArrow>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -286,11 +292,11 @@
                 android:text="@string/flight_label_reschedule_ticket" />
 
             <Button
-                tools:visibility="visible"
-                android:visibility="gone"
                 android:id="@+id/button_reorder"
+                style="@style/Button.Submit.Orange"
                 android:text="@string/flight_label_reorder"
-                style="@style/Button.Submit.Orange"/>
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
 
     </LinearLayout>

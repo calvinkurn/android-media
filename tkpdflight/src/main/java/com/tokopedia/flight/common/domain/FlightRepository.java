@@ -26,6 +26,8 @@ import rx.Observable;
 public interface FlightRepository {
     Observable<List<FlightAirportDB>> getAirportList(String query);
 
+    Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry);
+
     Observable<List<FlightClassEntity>> getFlightClasses();
 
     Observable<List<FlightAirlineDB>> getAirlineList();

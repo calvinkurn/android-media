@@ -12,13 +12,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
@@ -36,7 +36,6 @@ import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdap
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPriceAdapter;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -139,6 +138,12 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(getString(R.string.flight_label_order_id), orderId.getText().toString());
                 clipboard.setPrimaryClip(clip);
+                clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
+                    @Override
+                    public void onPrimaryClipChanged() {
+                        Toast.makeText(getActivity(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -159,16 +164,24 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadEticket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(eticketLink));
-                startActivity(browserIntent);
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(eticketLink));
+                    startActivity(browserIntent);
+                } catch (Exception e) {
+
+                }
             }
         });
 
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(invoiceLink));
-                startActivity(browserIntent);
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(invoiceLink));
+                    startActivity(browserIntent);
+                } catch (Exception e) {
+
+                }
             }
         });
 
@@ -293,25 +306,25 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     void updateViewStatus(int orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
                           boolean isCancelVisible, boolean isReorderVisible) {
         orderStatus.setText(orderStatusString);
-        orderStatus.setTextColor(ContextCompat.getColor(getActivity(),color));
-        if(isTicketVisible){
+        orderStatus.setTextColor(ContextCompat.getColor(getActivity(), color));
+        if (isTicketVisible) {
             containerDownloadEticket.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             containerDownloadEticket.setVisibility(View.GONE);
         }
-        if(isScheduleVisible){
+        if (isScheduleVisible) {
             buttonRescheduleTicket.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             buttonRescheduleTicket.setVisibility(View.GONE);
         }
-        if(isCancelVisible){
+        if (isCancelVisible) {
             buttonCancelTicket.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             buttonCancelTicket.setVisibility(View.GONE);
         }
-        if(isReorderVisible){
+        if (isReorderVisible) {
             buttonReorder.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             buttonReorder.setVisibility(View.GONE);
         }
     }
