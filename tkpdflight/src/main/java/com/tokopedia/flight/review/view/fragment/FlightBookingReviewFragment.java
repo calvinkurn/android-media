@@ -85,9 +85,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
-    @Inject
-    FlightBookingReviewPresenter flightBookingReviewPresenter;
-    FlightBookingReviewModel flightBookingReviewModel;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
