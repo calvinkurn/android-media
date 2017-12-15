@@ -257,6 +257,9 @@ public class SessionHandler {
         String shop_id = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         shop_id = sharedPrefs.getString(SHOP_ID, "0");
+        if ("-1".equals(shop_id)) {
+            shop_id = "0";
+        }
         return shop_id;
     }
 
@@ -466,8 +469,8 @@ public class SessionHandler {
     }
 
     public static boolean isUserHasShop(Context context) {
-        return !TextUtils.isEmpty(SessionHandler.getShopID(context))
-                && !SessionHandler.getShopID(context).equals("0");
+        String shopID = SessionHandler.getShopID(context);
+        return !TextUtils.isEmpty(shopID) && !"0".equals(shopID);
     }
 
     public static String getUUID(Context context) {

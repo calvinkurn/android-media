@@ -59,7 +59,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            if (!SessionHandler.isV4Login(this) || SessionHandler.getShopID(this).isEmpty() || SessionHandler.getShopID(this).equals("0")) {
+            if (!SessionHandler.isV4Login(this) || !SessionHandler.isUserHasShop(this)) {
                 if (SessionHandler.isV4Login(this)) {
                     startActivity(moveToCreateShop(this));
                 } else {

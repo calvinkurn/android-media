@@ -165,8 +165,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 true));
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
-        if (!SessionHandler.getShopID(context).equals("0")
-                && !SessionHandler.getShopID(context).equals("")) {
+        if (SessionHandler.isUserHasShop(context)) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
             data.add(getGoldMerchantMenu());

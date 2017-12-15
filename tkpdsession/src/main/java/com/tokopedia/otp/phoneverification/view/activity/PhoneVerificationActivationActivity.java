@@ -155,8 +155,7 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     }
 
     private boolean isHasShop() {
-        return !SessionHandler.getShopID(PhoneVerificationActivationActivity.this).equals("")
-                && !SessionHandler.getShopID(PhoneVerificationActivationActivity.this).equals("0");
+        return SessionHandler.isUserHasShop(this);
     }
 
     @Override
