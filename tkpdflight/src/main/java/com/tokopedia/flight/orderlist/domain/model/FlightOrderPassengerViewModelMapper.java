@@ -41,6 +41,9 @@ public class FlightOrderPassengerViewModelMapper {
             amenityViewModel.setPrice(amentityEntity.getPrice());
             amenityViewModel.setPriceNumeric(amentityEntity.getPriceNumeric());
             amenityViewModel.setTitle(amentityEntity.getDetail());
+            amenityViewModel.setDepartureId(amentityEntity.getDepartureAirportId());
+            amenityViewModel.setArrivalId(amentityEntity.getArrivalAirportId());
+            amenityViewModel.setAmenityType(amentityEntity.getAmenityType());
             viewModels.add(amenityViewModel);
         }
         return viewModels;

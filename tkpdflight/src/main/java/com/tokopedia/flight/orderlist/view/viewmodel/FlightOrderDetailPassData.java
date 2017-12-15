@@ -7,16 +7,16 @@ import android.os.Parcelable;
  * @author by alvarisi on 12/13/17.
  */
 
-public class OrderDetailPassData implements Parcelable {
-    public static final Creator<OrderDetailPassData> CREATOR = new Creator<OrderDetailPassData>() {
+public class FlightOrderDetailPassData implements Parcelable {
+    public static final Creator<FlightOrderDetailPassData> CREATOR = new Creator<FlightOrderDetailPassData>() {
         @Override
-        public OrderDetailPassData createFromParcel(Parcel in) {
-            return new OrderDetailPassData(in);
+        public FlightOrderDetailPassData createFromParcel(Parcel in) {
+            return new FlightOrderDetailPassData(in);
         }
 
         @Override
-        public OrderDetailPassData[] newArray(int size) {
-            return new OrderDetailPassData[size];
+        public FlightOrderDetailPassData[] newArray(int size) {
+            return new FlightOrderDetailPassData[size];
         }
     };
     private String orderId;
@@ -28,10 +28,10 @@ public class OrderDetailPassData implements Parcelable {
     private String arrivalTime;
     private String status;
 
-    public OrderDetailPassData() {
+    public FlightOrderDetailPassData() {
     }
 
-    protected OrderDetailPassData(Parcel in) {
+    protected FlightOrderDetailPassData(Parcel in) {
         orderId = in.readString();
         departureCity = in.readString();
         departureAiportId = in.readString();

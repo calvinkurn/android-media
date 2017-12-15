@@ -17,6 +17,10 @@ public class FlightDateUtil {
     public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_VIEW_FORMAT = "dd MMM yyyy";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
+    public static final String FORMAT_DATE_API_DETAIL = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String FORMAT_TIME_DETAIL = "HH:mm";
+    public static final String FORMAT_DATE_LOCAL_DETAIL = "EEEE, dd LLLL yyyy";
+    public static final String FORMAT_DATE_LOCAL_DETAIL_ORDER = "dd MMM yyyy, HH:mm";
 
     public static String formatDate(String currentFormat, String newFormat, String dateString) {
         return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);

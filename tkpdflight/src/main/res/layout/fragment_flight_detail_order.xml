@@ -50,7 +50,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <view
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginBottom="@dimen/margin_sm"
@@ -78,51 +78,7 @@
                     tools:text="1 Sep 2017, 05:00 WIB" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/padding_vvvs"
-                android:paddingTop="@dimen/padding_vvvs"
-                android:weightSum="2">
-
-                <TextView
-                    style="@style/TextView.Body1.BlackSecondary"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/flight_label_refund_time" />
-
-                <TextView
-                    android:id="@+id/refund_date"
-                    style="@style/TextView.Body1.Bold"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    tools:text="1 Sep 2017, 05:00 WIB" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/padding_vvvs"
-                android:paddingTop="@dimen/padding_vvvs"
-                android:weightSum="2">
-
-                <TextView
-                    style="@style/TextView.Body1.BlackSecondary"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/flight_label_refund_status" />
-
-                <TextView
-                    android:id="@+id/status_refund"
-                    style="@style/TextView.Body1.Bold"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    tools:text="1 Sep 2017, 05:00 WIB" />
-            </LinearLayout>
-
-            <view
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginBottom="@dimen/margin_sm"
@@ -183,27 +139,23 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <LinearLayout
+
+        <com.tokopedia.flight.detail.view.adapter.FlightDetailRecyclerView
+            android:id="@+id/recycler_view_flight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_med"
+            android:nestedScrollingEnabled="false"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:paddingTop="@dimen/padding_med" />
+
+        <TextView
+            style="@style/TextView.Caption.BlackDisabled"
+            android:layout_width="match_parent"
             android:background="@color/white"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view_flight"
-                android:paddingTop="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
-                android:paddingLeft="@dimen/padding_med"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
-
-            <TextView
-                android:padding="@dimen/padding_med"
-                android:text="@string/flight_label_cek_t_and_c"
-                style="@style/TextView.Caption.BlackDisabled"/>
-        </LinearLayout>
+            android:padding="@dimen/padding_med"
+            android:text="@string/flight_label_cek_t_and_c" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -217,20 +169,20 @@
                 android:padding="@dimen/padding_med"
                 android:text="@string/flight_label_passenger_data" />
 
-            <android.support.v7.widget.RecyclerView
-                android:paddingRight="@dimen/padding_med"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingBottom="@dimen/padding_med"
+            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view_data_passenger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"
+                android:paddingBottom="@dimen/padding_med"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginBottom="@dimen/margin_med"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_med"
             android:background="@color/white"
             android:orientation="vertical">
@@ -271,12 +223,12 @@
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:paddingRight="@dimen/padding_med"
-                android:paddingLeft="@dimen/padding_med"
                 android:id="@+id/recycler_view_detail_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -300,37 +252,45 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center_horizontal"
-            android:padding="@dimen/padding_med"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:padding="@dimen/padding_med">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:text="Untuk bantuan silakan klik"
+                    style="@style/TextView.Caption"
                     android:layout_marginRight="@dimen/margin_vvs"
-                    style="@style/TextView.Caption"/>
+                    android:text="Untuk bantuan silakan klik" />
 
                 <TextView
                     android:id="@+id/help"
-                    android:text="disini"
-                    style="@style/TextView.Caption.Green"/>
+                    style="@style/TextView.Caption.Green"
+                    android:text="disini" />
             </LinearLayout>
 
             <Button
                 android:id="@+id/button_cancel"
-                android:text="@string/flight_label_cancel_ticket"
-                style="@style/Button.Submit.White.Stroke"/>
+                style="@style/Button.Submit.White.Stroke"
+                android:text="@string/flight_label_cancel_ticket" />
 
             <Button
                 android:id="@+id/button_reschedule"
-                android:text="@string/flight_label_reschedule_ticket"
-                style="@style/Button.Submit.White.Stroke"/>
+                style="@style/Button.Submit.White.Stroke"
+                android:text="@string/flight_label_reschedule_ticket" />
+
+            <Button
+                tools:visibility="visible"
+                android:visibility="gone"
+                android:id="@+id/button_reorder"
+                android:text="@string/flight_label_reorder"
+                style="@style/Button.Submit.Orange"/>
         </LinearLayout>
 
     </LinearLayout>

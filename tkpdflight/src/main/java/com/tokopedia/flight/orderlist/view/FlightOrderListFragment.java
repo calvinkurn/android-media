@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
@@ -25,7 +26,7 @@ import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -200,12 +201,21 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void onFailedOrderDetailClicked(FlightOrderFailedViewModel viewModel) {
-
+        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
+        passData.setOrderId(viewModel.getId());
+        passData.setDepartureAiportId(viewModel.getOrderJourney().get(0).getDepartureAiportId());
+        passData.setDepartureCity(viewModel.getOrderJourney().get(0).getDepartureCity());
+        passData.setDepartureTime(viewModel.getOrderJourney().get(0).getDepartureTime());
+        passData.setArrivalAirportId(viewModel.getOrderJourney().get(0).getArrivalAirportId());
+        passData.setArrivalCity(viewModel.getOrderJourney().get(0).getArrivalCity());
+        passData.setArrivalTime(viewModel.getOrderJourney().get(0).getArrivalTime());
+        passData.setStatus(String.valueOf(viewModel.getStatus()));
+        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), passData));
     }
 
     @Override
     public void onSuccessOrderDetailClicked(FlightOrderSuccessViewModel viewModel) {
-        OrderDetailPassData passData = new OrderDetailPassData();
+        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
         passData.setOrderId(viewModel.getId());
         passData.setDepartureAiportId(viewModel.getOrderJourney().getDepartureAiportId());
         passData.setDepartureCity(viewModel.getOrderJourney().getDepartureCity());
@@ -214,6 +224,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
         passData.setArrivalCity(viewModel.getOrderJourney().getArrivalCity());
         passData.setArrivalTime(viewModel.getOrderJourney().getArrivalTime());
         passData.setStatus(viewModel.getStatus());
+        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), passData));
         // TODO: pass to detail activity
     }
 
