@@ -319,12 +319,12 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
     @Override
     public void doRequestOtpToEmail() {
-        if (viewModel != null && TextUtils.isEmpty(viewModel.getEmail())) {
-            view.showError(mContext.getString(R.string.email_otp_error));
-        } else {
+        if (viewModel != null && !TextUtils.isEmpty(viewModel.getEmail())) {
             view.displayProgress(true);
             view.disableOtpButton();
             doRequestOtpToEmail(getRequestOTPWithEmailParam());
+        } else {
+            view.showError(mContext.getString(R.string.email_otp_error));
         }
     }
 
