@@ -226,6 +226,10 @@
             android:name=".opportunity.activity.OpportunityDetailActivity"
             android:label="@string/title_opportunity_detail"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".opportunity.activity.OpportunityTncActivity"
+            android:label="@string/take_opportunity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".reputation.view.activity.SellerReputationDatePickerActivity"

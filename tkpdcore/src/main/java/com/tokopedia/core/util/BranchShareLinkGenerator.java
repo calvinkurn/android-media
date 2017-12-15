@@ -2,11 +2,11 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 
 import io.branch.indexing.BranchUniversalObject;
@@ -98,11 +98,8 @@ public class BranchShareLinkGenerator {
         if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
             return true;
         } else {
-            if(activity.getApplication() instanceof RemoteConfigRouter) {
-                return ((RemoteConfigRouter) activity.getApplication())
-                        .getBooleanConfig(TkpdCache.Key.CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS);
-            }
-            return true;
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
+            return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
         }
     }
 
@@ -119,10 +116,9 @@ public class BranchShareLinkGenerator {
     }
 
     private static String getAppShareDescription(Activity activity, String type) {
-        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type) &&
-                activity.getApplication() instanceof RemoteConfigRouter) {
-            return ((RemoteConfigRouter) activity.getApplication())
-                    .getStringConfig(TkpdCache.Key.CONFIG_APP_SHARE_DESCRIPTION)  + " \n";
+        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
+            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DESCRIPTION) + " \n";
         }
 
         return "";

@@ -1,63 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
-    android:background="@color/white">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:context="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+    <View
+        android:id="@+id/view_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_12"
+        android:visibility="gone"
+        context:visibility="visible"
+        android:layout_marginTop="@dimen/padding_small"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"/>
 
-    <TextView
-        android:id="@+id/tv_date"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/indicator_container"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:text="@string/template_history_additional_information"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_small"
-        android:textStyle="bold"
-        />
+        android:paddingTop="@dimen/padding_small"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_history_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_date"
-        android:layout_toRightOf="@id/indicator_container"
-        android:paddingBottom="@dimen/padding_small"
-        android:gravity="center_vertical"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
-        android:textColor="@color/label_text_color"
-        android:textSize="@dimen/fontvs"
-        />
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/indicator_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_alignTop="@id/tv_date"
-        android:layout_alignBottom="@id/tv_history_text">
+            <TextView
+                android:id="@+id/tv_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/tkpd_main_green"
+                context:text="AUG"/>
 
-        <ImageView
-            android:id="@+id/indicator"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:src="@drawable/ic_check_circle_48dp"
-            />
+            <TextView
+                android:id="@+id/tv_date_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/fontxl"
+                android:textStyle="bold"
+                context:text="24"/>
+        </LinearLayout>
 
-        <View
-            android:id="@+id/line_indicator"
-            android:layout_width="1dp"
+        <RelativeLayout
+            android:id="@+id/indicator_container"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/indicator"
-            android:background="@color/grey"
-            />
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small">
 
-    </RelativeLayout>
+            <FrameLayout
+                android:id="@+id/fl_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp">
 
-</RelativeLayout>
+                <ImageView
+                    android:id="@+id/indicator"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/bg_circle_green"
+                    />
+
+                <com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView
+                    android:id="@+id/view_glowing"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <View
+                android:id="@+id/line_indicator"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/fl_button"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp"
+                android:background="@color/black_12"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small">
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/text_size_s_medium"
+                android:textStyle="bold"
+                context:text="Pembeli"
+                />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/fontvs"
+                context:text="12.34 WIB"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_history_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tv_username"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:paddingBottom="@dimen/padding_small"
+                context:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_s_medium"/>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

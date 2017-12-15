@@ -91,10 +91,11 @@
     <string name="action_back">Kembali</string>
     <string name="title_opportunity_detail">Peluang Baru</string>
     <string name="cashback">Cashback :</string>
-    <string name="respond_deadline">Batas Respon :</string>
-    <string name="destination_city">Kota Tujuan :</string>
-    <string name="shipping">Pengiriman :</string>
-    <string name="title_quantity">Jumlah :</string>
+    <string name="cashback_for_buyer">Cashback Untuk Pembeli:</string>
+    <string name="respond_deadline">Batas Respon:</string>
+    <string name="destination_city">Kota Tujuan:</string>
+    <string name="shipping">Pengiriman:</string>
+    <string name="title_quantity_colon">Jumlah:</string>
     <string name="item">barang</string>
     <string name="title_supported_shipping">Dukungan Pengiriman</string>
     <string name="message_dialog_reject_opportunity">Apakah anda yakin ingin menghapus peluang ini?</string>
@@ -172,4 +173,13 @@
     <string name="seller_info_title_description_format">• %1$s</string>
     <string name="seller_info_empty_title">"Info Penjual saat ini masih belum tersedia"</string>
     <string name="seller_info_empty_desc">Nantikan info seputar promo, event, \nupdate produk, fitur dan layanan khusus untuk\nAnda pengguna Tokopedia.</string>
+
+    <string name="item_replacement_no_note"><![CDATA[<i>]]>Tidak ada catatan dari pengguna<![CDATA[</i>]]></string>
+    <string name="reputation_value">Nilai Reputasi:</string>
+    <string name="note_for_seller">Catatan untuk Penjual:</string>
+    <string name="see_product">Lihat Produk</string>
+    <string name="transaction_value">Nilai Transaksi</string>
+    <string name="title_tooltip_reputation_multiplier">Nilai Reputasi</string>
+    <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
+
 </resources>

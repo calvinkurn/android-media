@@ -53,6 +53,7 @@ public class ImageUploadHandler {
     }
 
     public static final int REQUEST_CODE = 111;
+    public static final int REQUEST_CODE_GALLERY = 1243;
 
     private Activity activity;
     private Fragment fragment;

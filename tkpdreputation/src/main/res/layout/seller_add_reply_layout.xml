@@ -44,8 +44,8 @@
 
     <ImageView
         android:id="@+id/send_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="center_vertical"
         android:padding="@dimen/margin_vs"
         android:src="@drawable/ic_send_grey_transparent"/>
