@@ -18,6 +18,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCouponComponent;
 import com.tokopedia.loyalty.di.component.PromoCouponComponent;
@@ -39,7 +40,7 @@ import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DIGITAL_STRING
  */
 
 public class PromoCouponFragment extends BasePresenterFragment
-        implements IPromoCouponView, CouponListAdapter.CouponListAdapterListener {
+        implements IPromoCouponView, CouponListAdapter.CouponListAdapterListener, RefreshHandler.OnRefreshHandlerListener {
 
     @Inject
     IPromoCouponPresenter dPresenter;
@@ -47,6 +48,8 @@ public class PromoCouponFragment extends BasePresenterFragment
     private TkpdProgressDialog progressDialog;
 
     private RecyclerView couponListRecyclerView;
+
+    private RefreshHandler refreshHandler;
 
     private ViewGroup mainView;
 
@@ -105,6 +108,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        refreshHandler = new RefreshHandler(getActivity(), view, this);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         mainView = view.findViewById(R.id.main_view_coupon);
         couponListRecyclerView = view.findViewById(R.id.coupon_recycler_view);
@@ -123,7 +127,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     protected void setActionVar() {
-        dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+        refreshHandler.startRefresh();
     }
 
     @Override
@@ -138,6 +142,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void renderCouponListDataResult(List<CouponData> couponData) {
+        refreshHandler.finishRefresh();
         adapter = new CouponListAdapter(couponData, this);
         couponListRecyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -145,6 +150,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void renderErrorGetCouponList(String message) {
+        refreshHandler.finishRefresh();
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
                 getString(R.string.label_title_error_response),
@@ -157,6 +163,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void renderErrorHttpGetCouponList(String message) {
+        refreshHandler.finishRefresh();
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
                 getString(R.string.label_title_error_response),
@@ -168,6 +175,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void renderErrorNoConnectionGetCouponList(String message) {
+        refreshHandler.finishRefresh();
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
                 getString(R.string.label_title_error_response),
@@ -179,6 +187,7 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void renderErrorTimeoutConnectionGetCouponList(String message) {
+        refreshHandler.finishRefresh();
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
                 getString(R.string.label_title_error_response),
@@ -216,13 +225,14 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void onErrorFetchCouponList(String errorMessage) {
+        refreshHandler.finishRefresh();
         NetworkErrorHelper.showEmptyState(getActivity(),
                 mainView,
                 errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+                        refreshHandler.startRefresh();
                     }
                 });
     }
@@ -312,6 +322,16 @@ public class PromoCouponFragment extends BasePresenterFragment
         return getActivity();
     }
 
+    @Override
+    public void disableSwipeRefresh() {
+        refreshHandler.setPullEnabled(false);
+    }
+
+    @Override
+    public void enableSwipeRefresh() {
+        refreshHandler.setPullEnabled(true);
+    }
+
     public static PromoCouponFragment newInstance(String platform, String categoryKey) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
@@ -349,9 +369,15 @@ public class PromoCouponFragment extends BasePresenterFragment
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
+                refreshHandler.startRefresh();
             }
         };
+    }
+
+    @Override
+    public void onRefresh(View view) {
+        if (refreshHandler.isRefreshing())
+            dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
     }
 
     public interface ChooseCouponListener {
