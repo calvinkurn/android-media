@@ -42,8 +42,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
-        GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
-        GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        GlobalConfig.VERSION_CODE = 217001101;
+        GlobalConfig.VERSION_NAME = "2.17";
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         generateConsumerAppBaseUrl();
