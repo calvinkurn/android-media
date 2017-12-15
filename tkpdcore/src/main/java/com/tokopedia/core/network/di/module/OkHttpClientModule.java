@@ -49,19 +49,8 @@ public class OkHttpClientModule {
 
     @ApplicationScope
     @Provides
-    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
-        return okHttpClientBuilder.build();
-    }
-
-    @ApplicationScope
-    @Provides
-    public OkHttpClient.Builder provideOkHttpClientBuilder(TkpdBaseInterceptor tkpdBaseInterceptor,
-                                                           DebugInterceptor debugInterceptor) {
-
-        return new TkpdOkHttpBuilder(new OkHttpClient.Builder())
-                .addInterceptor(debugInterceptor)
-                .addInterceptor(tkpdBaseInterceptor)
-                .getBuilder();
+    public OkHttpClient.Builder provideOkHttpClientBuilder() {
+        return new OkHttpClient.Builder();
     }
 
     @TomeBearerAuth
@@ -69,13 +58,10 @@ public class OkHttpClientModule {
     @Provides
     public OkHttpClient provideOkHttpClientTomeBearerAuth(OkHttpClient.Builder okHttpClientBuilder,
                                                           HttpLoggingInterceptor httpLoggingInterceptor,
-                                                          BearerInterceptor bearerInterceptor,
-                                                          TkpdAuthInterceptor tkpdAuthInterceptor) {
-
-        return okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
+                                                          BearerInterceptor bearerInterceptor) {
+        return okHttpClientBuilder
                 .addInterceptor(bearerInterceptor)
-                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
                 .build();
     }
 

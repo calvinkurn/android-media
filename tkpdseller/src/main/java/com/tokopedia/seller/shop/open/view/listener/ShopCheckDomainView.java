@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 
 /**
  * Created by sebastianuskh on 3/17/17.
@@ -8,7 +9,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 
 public interface ShopCheckDomainView extends CustomerView {
 
-    void onSuccessCheckReserveDomain(Object object);
+    void onSuccessCheckReserveDomain(ResponseIsReserveDomain object);
 
     void onErrorCheckReserveDomain(Throwable t);
 

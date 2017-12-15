@@ -81,7 +81,7 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
 
             @Override
             public void afterTextChanged(Editable s) {
-                textInputShopName.setSuccess("");
+                textInputShopName.setErrorSuccessEnabled(false);
                 buttonSubmit.setEnabled(false);
                 shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
             }
@@ -91,7 +91,7 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
 
             @Override
             public void afterTextChanged(Editable s) {
-                textInputDomainName.setSuccess("");
+                textInputDomainName.setErrorSuccessEnabled(false);
                 buttonSubmit.setEnabled(false);
                 shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
             }

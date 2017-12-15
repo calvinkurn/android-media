@@ -202,4 +202,5 @@
     <string name="title_multiple_select">Multi Select</string>
     <string name="crop_image_menu_watermark">watermark</string>
     <string name="crop_image_watermark_cannot_be_changed">*Watermark tidak dapat diubah setelah disimpan.</string>
+    <string name="getting_shop_step">Mengambil Informasi Toko</string>
 </resources>
