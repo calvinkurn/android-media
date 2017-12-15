@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.List;
@@ -53,6 +54,6 @@ public interface FlightDetailOrderContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-
+        void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData);
     }
 }

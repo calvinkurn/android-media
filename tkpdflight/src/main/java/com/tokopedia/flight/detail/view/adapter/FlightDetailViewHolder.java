@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.DateFormatUtils;
@@ -95,6 +96,12 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
                     ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText(getString(R.string.flight_label_order_id), pnrCode.getText().toString());
                     clipboard.setPrimaryClip(clip);
+                    clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
+                        @Override
+                        public void onPrimaryClipChanged() {
+                            Toast.makeText(itemView.getContext(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }else{
