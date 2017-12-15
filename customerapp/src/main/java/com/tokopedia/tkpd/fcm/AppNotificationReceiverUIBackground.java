@@ -22,7 +22,8 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
-import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -61,9 +62,11 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
  */
 
 public class AppNotificationReceiverUIBackground extends BaseAppNotificationReceiverUIBackground {
+    private RemoteConfig remoteConfig;
 
     public AppNotificationReceiverUIBackground(Application application) {
         super(application);
+        remoteConfig = new FirebaseRemoteConfigImpl(application);
     }
 
     @Override
@@ -151,10 +154,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         String serverId = "";
         switch (category) {
             case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                if (MainApplication.getInstance() instanceof RemoteConfigRouter
-                        && !((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
-                        (TkpdInboxRouter.ENABLE_TOPCHAT)) {
-
+                if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                     customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
                     if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                         serverId = Uri.parse(applinks).getLastPathSegment();
@@ -193,9 +193,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 break;
 
             case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if (MainApplication.getInstance() instanceof RemoteConfigRouter
-                        && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
-                        (TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                     if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
                             && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
                         NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();

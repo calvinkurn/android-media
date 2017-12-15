@@ -227,6 +227,7 @@ public class DetailResChatFragmentPresenter
     @Override
     public void sendIconPressed(String message, List<AttachmentViewModel> attachmentList) {
         if (message.length() >= PARAM_MIN_REPLY_CHAR_COUNT && message.length() <= PARAM_MAX_REPLY_CHAR_COUNT) {
+            getView().showDummyText();
             postReply(message, attachmentList);
         } else {
             mainView.errorInputMessage(context.getResources().getString(R.string.string_error_min_max_words));

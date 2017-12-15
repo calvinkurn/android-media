@@ -337,8 +337,6 @@ public class DetailResChatFragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                //define FAB position
-                resetFABPosition();
 
                 //hide FAB when reach bottom
                 int visibleItemCount = linearLayoutManager.getChildCount();
@@ -365,33 +363,6 @@ public class DetailResChatFragment
         };
     }
 
-    private void resetFABPosition() {
-        RelativeLayout.LayoutParams params = getButtonInitParams();
-        if (rvAttachment.getVisibility() == View.VISIBLE) {
-            params.addRule(RelativeLayout.ABOVE, R.id.rv_attachment);
-        } else if (actionButtonLayout.getVisibility() == View.VISIBLE) {
-            params.addRule(RelativeLayout.ABOVE, R.id.layout_action);
-        } else if (ffChat.getVisibility() == View.VISIBLE) {
-            params.addRule(RelativeLayout.ABOVE, R.id.ff_chat);
-        } else {
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        }
-        fabChat.setLayoutParams(params);
-    }
-
-    private RelativeLayout.LayoutParams getButtonInitParams() {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics()));
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        params.setMargins(
-                0,
-                0,
-                (int) getResources().getDimension(R.dimen.margin_small),
-                (int) getResources().getDimension(R.dimen.margin_small));
-        return params;
-    }
-
     private AttachmentAdapter.ProductImageListener getAttachmentAdapterListener() {
         return new AttachmentAdapter.ProductImageListener() {
             @Override
@@ -410,7 +381,6 @@ public class DetailResChatFragment
                             initActionButton(detailResChatDomain.getButton());
                         }
                         attachmentAdapter.notifyDataSetChanged();
-                        resetFABPosition();
                     }
                 };
             }
@@ -445,20 +415,8 @@ public class DetailResChatFragment
         ivSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConversationDomain conversationDomain;
-                if (attachmentAdapter.getList().size() == 0) {
-                    conversationDomain = getTempConversationDomain(etChat.getText().toString());
-                } else {
-                    conversationDomain = getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
-                }
 
-                chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
-                chatAdapter.notifyDataSetChanged();
-                scrollChatToBottom(false);
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
-                etChat.setText("");
-                rvAttachment.setVisibility(View.GONE);
-                initActionButton(detailResChatDomain.getButton());
             }
         });
 
@@ -495,6 +453,20 @@ public class DetailResChatFragment
                 scrollChatToBottom(false);
             }
         });
+    }
+
+    @Override
+    public void showDummyText() {
+        ConversationDomain conversationDomain;
+        if (attachmentAdapter.getList().size() == 0) {
+            conversationDomain = getTempConversationDomain(etChat.getText().toString());
+        } else {
+            conversationDomain = getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
+        }
+
+        chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
+        chatAdapter.notifyDataSetChanged();
+        scrollChatToBottom(false);
     }
 
     private void scrollChatToBottom(boolean isInitChat) {
@@ -580,7 +552,7 @@ public class DetailResChatFragment
     @Override
     public void errorInputMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
-        chatAdapter.deleteLastItem();
+//        chatAdapter.deleteLastItem();
     }
 
     @Override
@@ -915,7 +887,6 @@ public class DetailResChatFragment
             actionButtonLayout.setVisibility(View.GONE);
         }
         attachmentAdapter.notifyDataSetChanged();
-        resetFABPosition();
     }
 
     @Override
@@ -955,6 +926,7 @@ public class DetailResChatFragment
     public void successCancelComplaint() {
         dismissProgressBar();
         initView();
+        ffChat.setVisibility(View.GONE);
     }
 
     @Override
@@ -1003,6 +975,7 @@ public class DetailResChatFragment
     public void successFinishResolution() {
         dismissProgressBar();
         initView();
+        ffChat.setVisibility(View.GONE);
     }
 
     @Override

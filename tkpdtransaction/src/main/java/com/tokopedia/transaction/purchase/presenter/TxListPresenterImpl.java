@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
@@ -241,8 +242,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
         LayoutInflater li = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        final View promptsView = li.inflate(R.layout.dialog_package_not_rcv,
+        @SuppressLint("InflateParams") final View promptsView = li.inflate(R.layout.dialog_package_not_rcv,
                 null);
         alertDialogBuilder.setView(promptsView);
         TextView dShopName = (TextView) promptsView
@@ -374,9 +374,12 @@ public class TxListPresenterImpl implements TxListPresenter {
     public void processShowComplain(Context context, OrderData data) {
         Uri uri = Uri.parse(data.getOrderButton().getButtonResCenterUrl());
         String res_id = uri.getQueryParameter("id");
-        viewListener.navigateToActivity(
-                InboxRouter.getDetailResCenterActivityIntent(context, res_id)
-        );
+
+        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .getDetailResCenterIntentBuyer(context, res_id, data.getOrderShop().getShopName());
+            viewListener.navigateToActivity(intent);
+        }
     }
 
     @Override
@@ -384,7 +387,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         netInteractor.unSubscribeObservable();
     }
 
-    
+
     @Override
     public void cancelReplacement(Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -431,6 +434,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TrackingUtils.sendMoEngageShippingReceivedEvent(false);
                 dialog.dismiss();
             }
         });
@@ -438,6 +442,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TrackingUtils.sendMoEngageShippingReceivedEvent(true);
                 confirmPurchaseOrder(context, dialog, orderData);
             }
         });
@@ -587,9 +592,12 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        viewListener.navigateToActivity(
-                                InboxRouter.getInboxResCenterActivityIntent(context)
-                        );
+                        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+                            viewListener.navigateToActivity(((TransactionRouter) MainApplication.getAppContext())
+                                    .getResolutionCenterIntent(context)
+                            );
+
+                        }
                     }
                 });
         Dialog alertDialog = builder.create();

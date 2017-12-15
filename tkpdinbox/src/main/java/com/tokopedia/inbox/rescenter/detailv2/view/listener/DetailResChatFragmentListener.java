@@ -108,6 +108,8 @@ public interface DetailResChatFragmentListener {
         void openImagePreview(ArrayList<String> imageUrls, int position);
 
         void openVideoPlayer(String videoUrl);
+
+        void showDummyText();
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {

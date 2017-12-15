@@ -53,9 +53,14 @@ public class CatalogPickerActivity extends BaseSimpleActivity implements HasComp
     @Override
     protected Fragment getNewFragment() {
         Bundle extras = getIntent().getExtras();
-        String keyword = extras.getString(KEYWORD);
-        long departmentId = extras.getLong(DEP_ID);
-        long selectedCatalogId = extras.getLong(CATALOG_ID);
+        String keyword = "";
+        long departmentId = -1;
+        long selectedCatalogId = -1;
+        if (extras != null) {
+            keyword = extras.getString(KEYWORD);
+            departmentId = extras.getLong(DEP_ID);
+            selectedCatalogId = extras.getLong(CATALOG_ID);
+        }
         return CatalogPickerFragment.newInstance(keyword, departmentId, selectedCatalogId);
     }
 
