@@ -40,6 +40,10 @@ public interface FlightOrderListContract {
         void showErrorGetOrderOnFilterChanged(String message);
 
         void showErrorGetInitialOrders(String message);
+
+        void disableSwipeRefresh();
+
+        void enableSwipeRefresh();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -49,5 +53,7 @@ public interface FlightOrderListContract {
         void onFilterSelected(String typeFilter);
 
         void onOrderLoadMore(String selectedFilter, int page);
+
+        void onSwipeRefresh();
     }
 }

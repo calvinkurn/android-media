@@ -123,6 +123,40 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         });
     }
 
+    @Override
+    public void onSwipeRefresh() {
+        getView().showGetInitialOrderDataLoading();
+        getView().disableSwipeRefresh();
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0), new Subscriber<List<FlightOrder>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    getView().enableSwipeRefresh();
+                    getView().hideGetInitialOrderDataLoading();
+                    getView().showErrorGetInitialOrders(FlightErrorUtil.getMessageFromException(e));
+                }
+            }
+
+            @Override
+            public void onNext(List<FlightOrder> orderEntities) {
+                getView().enableSwipeRefresh();
+                buildAndRenderFilterList();
+                getView().hideGetInitialOrderDataLoading();
+                if (orderEntities.size() > 0) {
+                    getView().renderOrders(flightOrderViewModelMapper.transform(orderEntities));
+                } else {
+                    getView().showEmptyView();
+                }
+            }
+        });
+    }
+
     private void buildAndRenderFilterList() {
         int[] colorBorder = new int[5];
         colorBorder[0] = R.color.filter_order_green;
