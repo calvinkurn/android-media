@@ -106,6 +106,7 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -674,6 +675,12 @@ public abstract class SellerRouterApplication extends MainApplication
         if (activity != null) {
             ProductAddActivity.start(activity);
         }
+    }
+
+    @Override
+    public void goToOrderHistory(Context context, String orderId, int userMode) {
+        Intent intent = OrderHistoryActivity.createInstance(context, orderId, userMode);
+        context.startActivity(intent);
     }
 
     @Override

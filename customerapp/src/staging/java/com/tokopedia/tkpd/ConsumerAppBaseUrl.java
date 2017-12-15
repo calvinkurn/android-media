@@ -9,6 +9,7 @@ public class ConsumerAppBaseUrl {
 
     public static final String BASE_TOKOPEDIA_WEBSITE = "https://staging.tokopedia.com/";
     public static final String BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
+    public static final String BASE_API_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace-staging.tokopedia.com/";
     public static final String BASE_TOME_DOMAIN = "https://tome-staging.tokopedia.com/";
     public static final String BASE_CLOVER_DOMAIN = "https://points-staging.tokopedia.com/";

@@ -3,7 +3,6 @@ package com.tokopedia.core.router.transactionmodule;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 /**
  * Created by kris on 7/21/17. Tokopedia
@@ -12,6 +11,8 @@ import android.os.Bundle;
 public interface TransactionRouter {
 
     void goToUserPaymentList(Activity activity);
+
+    void goToOrderHistory(Context context, String orderId, int userMode);
 
     Intent getInboxReputationIntent(Context context);
 }
