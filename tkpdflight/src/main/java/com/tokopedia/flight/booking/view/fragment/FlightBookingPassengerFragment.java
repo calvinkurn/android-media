@@ -35,6 +35,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -225,7 +226,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingMealRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingAmenityMetaViewModel.getDescription(),
-                        "Pilih"
+                        getString(R.string.flight_booking_passenger_choose_label)
                 );
                 for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingAmenityMetaViewModel.getKey())) {
@@ -268,7 +269,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageRouteViewModels) {
                 SimpleViewModel viewModel = new SimpleViewModel(
                         flightBookingLuggageMetaViewModel.getDescription(),
-                        "Pilih"
+                        getString(R.string.flight_booking_passenger_choose_label)
                 );
                 for (FlightBookingAmenityMetaViewModel selected : selecteds) {
                     if (selected.getKey().equalsIgnoreCase(flightBookingLuggageMetaViewModel.getKey())) {
@@ -303,7 +304,16 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public int getPassengerTitleId() {
-        return spTitle.getSpinnerPosition();
+        switch (spTitle.getSpinnerPosition()){
+            case 0:
+                return FlightPassengerTitleType.TUAN;
+            case 1:
+                return FlightPassengerTitleType.NYONYA;
+            case 2:
+                return FlightPassengerTitleType.NONA;
+            default:
+                return 0;
+        }
     }
 
     @Override

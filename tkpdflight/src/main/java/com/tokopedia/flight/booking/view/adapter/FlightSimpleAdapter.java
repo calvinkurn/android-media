@@ -30,10 +30,6 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     @ColorInt
     private int contentColorValue;
 
-    public interface OnAdapterInteractionListener {
-        void onItemClick(int adapterPosition, SimpleViewModel viewModel);
-    }
-
     public FlightSimpleAdapter() {
         viewModels = new ArrayList<>();
         isArrowVisible = false;
@@ -55,6 +51,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     @Override
     public int getItemCount() {
         return viewModels.size();
+    }
+
+    public void setViewModel(SimpleViewModel simpleViewModel) {
+        this.viewModels.add(simpleViewModel);
     }
 
     public void setViewModels(List<SimpleViewModel> viewModels) {
@@ -79,6 +79,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
 
     public void setInteractionListener(OnAdapterInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
+    }
+
+    public interface OnAdapterInteractionListener {
+        void onItemClick(int adapterPosition, SimpleViewModel viewModel);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

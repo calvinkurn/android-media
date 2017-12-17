@@ -2,4 +2,5 @@
 <resources>
     <attr name="toolbarTheme" format="reference" />
     <attr name="tabTheme" format="reference" />
+    <attr name="tabThemeWhite" format="reference"/>
 </resources>

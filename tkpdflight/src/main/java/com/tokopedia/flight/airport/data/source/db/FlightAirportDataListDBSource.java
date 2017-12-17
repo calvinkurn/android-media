@@ -2,7 +2,9 @@ package com.tokopedia.flight.airport.data.source.db;
 
 import android.text.TextUtils;
 
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
@@ -107,20 +109,35 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
     @Override
     public Observable<List<FlightAirportDB>> getData(HashMap<String, Object> params) {
         final String id = FlightAirportDataListSource.getIDFromMap(params);
+        final String idCountry = FlightAirportDataListSource.getIdCountryFromMap(params);
         if (TextUtils.isEmpty(id)) {
             final String queryText = FlightAirportDataListSource.getQueryFromMap(params);
             return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightAirportDB>>() {
                 @Override
                 public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
+                    ConditionGroup conditions = ConditionGroup.clause();
+                    if(!TextUtils.isEmpty(idCountry)){
+                        conditions.and(FlightAirportDB_Table.country_id.eq(idCountry));
+                    }
                     String queryLike = "%" + queryText + "%";
-                    List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
-                            .where(FlightAirportDB_Table.country_id.like(queryLike))
-                            .or(FlightAirportDB_Table.country_name.like(queryLike))
-                            .or(FlightAirportDB_Table.city_name.like(queryLike))
-                            .or(FlightAirportDB_Table.city_code.like(queryLike))
-                            .or(FlightAirportDB_Table.airport_id.like(queryLike))
-                            .or(FlightAirportDB_Table.airport_name.like(queryLike))
-                            .or(FlightAirportDB_Table.aliases.like(queryLike))
+                    if (!TextUtils.isEmpty(queryText)){
+                        ConditionGroup likeConditionsGroup = ConditionGroup.clause();
+                        likeConditionsGroup.or(FlightAirportDB_Table.country_id.like(queryLike))
+                                .or(FlightAirportDB_Table.country_name.like(queryLike))
+                                .or(FlightAirportDB_Table.city_name.like(queryLike))
+                                .or(FlightAirportDB_Table.city_code.like(queryLike))
+                                .or(FlightAirportDB_Table.airport_id.like(queryLike))
+                                .or(FlightAirportDB_Table.airport_name.like(queryLike))
+                                .or(FlightAirportDB_Table.aliases.like(queryLike));
+                        conditions.and(likeConditionsGroup);
+                    }
+                    List<OrderBy> orderBies = new ArrayList<OrderBy>();
+                    orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.country_name).ascending());
+                    orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.city_name).ascending());
+                    orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.airport_id).ascending());
+                    List<FlightAirportDB> flightAirportDBList  = new Select().from(FlightAirportDB.class)
+                            .where(conditions)
+                            .orderByAll(orderBies)
                             .queryList();
                     subscriber.onNext(flightAirportDBList);
                 }

@@ -12,9 +12,11 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
-import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
+import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
@@ -53,6 +55,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightBookingDataSource flightBookingDataSource;
     private FlightAirportVersionDBSource flightAirportVersionDBSource;
     private FlightOrderDataSource flightOrderDataSource;
+    private FlightOrderMapper flightOrderMapper;
 
     public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource,
                                 FlightAirlineDataListSource flightAirlineDataListSource,
@@ -65,7 +68,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                 FlightBookingDataSource flightBookingDataSource,
                                 FlightAirportVersionDBSource flightAirportVersionDBSource,
-                                FlightOrderDataSource flightOrderDataSource) {
+                                FlightOrderDataSource flightOrderDataSource,
+                                FlightOrderMapper flightOrderMapper) {
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
         this.flightSearchSingleDataListSource = flightSearchSingleDataListSource;
@@ -78,11 +82,17 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightBookingDataSource = flightBookingDataSource;
         this.flightAirportVersionDBSource = flightAirportVersionDBSource;
         this.flightOrderDataSource = flightOrderDataSource;
+        this.flightOrderMapper = flightOrderMapper;
     }
 
     @Override
     public Observable<List<FlightAirportDB>> getAirportList(String query) {
         return flightAirportDataListSource.getAirportList(query);
+    }
+
+    @Override
+    public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
+        return flightAirportDataListSource.getAirportList(query, idCountry);
     }
 
     @Override
@@ -225,20 +235,33 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     @Override
     public Observable<Boolean> checkVersionAirport(long versionOnCloud) {
-        if(flightAirportVersionDBSource.getVersion() <  versionOnCloud) {
+        if (flightAirportVersionDBSource.getVersion() < versionOnCloud) {
             return Observable.just(true);
-        }else{
+        } else {
             return Observable.just(false);
         }
     }
 
     @Override
-    public Observable<List<OrderEntity>> getOrders(Map<String, Object> maps) {
-        return flightOrderDataSource.getOrders(maps);
+    public Observable<List<FlightOrder>> getOrders(Map<String, Object> maps) {
+        return flightOrderDataSource.getOrders(maps)
+                .map(new Func1<List<OrderEntity>, List<FlightOrder>>() {
+                    @Override
+                    public List<FlightOrder> call(List<OrderEntity> orderEntities) {
+                        return flightOrderMapper.transform(orderEntities);
+                    }
+                });
+
     }
 
     @Override
-    public Observable<OrderEntity> getOrder(String id) {
-        return flightOrderDataSource.getOrder(id);
+    public Observable<FlightOrder> getOrder(String id) {
+        return flightOrderDataSource.getOrder(id)
+                .map(new Func1<OrderEntity, FlightOrder>() {
+                    @Override
+                    public FlightOrder call(OrderEntity orderEntity) {
+                        return flightOrderMapper.transform(orderEntity);
+                    }
+                });
     }
 }

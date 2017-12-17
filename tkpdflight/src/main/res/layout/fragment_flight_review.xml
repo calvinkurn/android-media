@@ -87,8 +87,9 @@
                     android:id="@+id/recycler_view_departure_flight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
+                    android:paddingLeft="@dimen/padding_med"
+                    android:paddingRight="@dimen/padding_med"
+                    android:paddingBottom="@dimen/padding_med"
                     android:nestedScrollingEnabled="false" />
             </LinearLayout>
 
@@ -122,11 +123,12 @@
                 </RelativeLayout>
 
                 <android.support.v7.widget.RecyclerView
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
                     android:id="@+id/recycler_view_return_flight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_med"
+                    android:paddingRight="@dimen/padding_med"
+                    android:paddingBottom="@dimen/padding_med"
                     android:nestedScrollingEnabled="false" />
             </LinearLayout>
 
@@ -144,6 +146,10 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_data_passenger"
+
+                    android:paddingLeft="@dimen/padding_med"
+                    android:paddingRight="@dimen/padding_med"
+                    android:paddingBottom="@dimen/padding_med"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false" />
@@ -170,11 +176,11 @@
                     android:text="@string/flight_label_detail_price" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:paddingLeft="@dimen/padding_med"
-                    android:paddingRight="@dimen/padding_med"
                     android:id="@+id/recycler_view_detail_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_med"
+                    android:paddingRight="@dimen/padding_med"
                     android:nestedScrollingEnabled="false" />
 
                 <RelativeLayout

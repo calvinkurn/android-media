@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/counter_flight"
+        style="@style/TextView.Title.Bold"
+        android:text="Detail Penerbangan"/>
+
+    <com.tokopedia.flight.common.view.FlightExpandableOptionArrow
+        android:id="@+id/title_journey_flight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:eo_checked="true"
+        app:eo_title="Detail Penerbangan"
+        app:eo_theme="@style/style_expandable_flight_detail_order">
+
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/recycler_view_flight_detail_journey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.tokopedia.flight.common.view.FlightExpandableOptionArrow>
+
+</LinearLayout>

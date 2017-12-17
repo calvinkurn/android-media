@@ -22,11 +22,11 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -63,9 +63,9 @@ public interface FlightApi {
     Observable<Response<DataResponse<List<OrderEntity>>>> getOrders(@QueryMap Map<String, Object> paramsAllValueInString);
 
     @GET(FlightUrl.FLIGHT_ORDER)
-    Observable<Response<DataResponse<OrderEntity>>> getOrder(@Query("id") String id);
+    Observable<Response<DataResponse<OrderEntity>>> getOrder(@Path("id") int id);
 
-    @FormUrlEncoded
+    @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)
     Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body VerifyRequest verifyRequest);
 }

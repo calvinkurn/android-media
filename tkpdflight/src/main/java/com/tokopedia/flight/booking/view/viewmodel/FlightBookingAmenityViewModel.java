@@ -16,28 +16,12 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
     private String title;
     private String price;
     private int priceNumeric;
+    private String departureId;
+    private String arrivalId;
+    private String amenityType;
 
     public FlightBookingAmenityViewModel() {
     }
-
-    protected FlightBookingAmenityViewModel(Parcel in) {
-        id = in.readString();
-        title = in.readString();
-        price = in.readString();
-        priceNumeric = in.readInt();
-    }
-
-    public static final Creator<FlightBookingAmenityViewModel> CREATOR = new Creator<FlightBookingAmenityViewModel>() {
-        @Override
-        public FlightBookingAmenityViewModel createFromParcel(Parcel in) {
-            return new FlightBookingAmenityViewModel(in);
-        }
-
-        @Override
-        public FlightBookingAmenityViewModel[] newArray(int size) {
-            return new FlightBookingAmenityViewModel[size];
-        }
-    };
 
     public void setId(String id) {
         this.id = id;
@@ -92,16 +76,65 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
         this.priceNumeric = priceNumeric;
     }
 
+    public void setDepartureId(String departureId) {
+        this.departureId = departureId;
+    }
+
+    public String getDepartureId() {
+        return departureId;
+    }
+
+    public String getArrivalId() {
+        return arrivalId;
+    }
+
+    public void setArrivalId(String arrivalId) {
+        this.arrivalId = arrivalId;
+    }
+
+    public void setAmenityType(String amenityType) {
+        this.amenityType = amenityType;
+    }
+
+    public String getAmenityType() {
+        return amenityType;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
-        parcel.writeString(title);
-        parcel.writeString(price);
-        parcel.writeInt(priceNumeric);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.price);
+        dest.writeInt(this.priceNumeric);
+        dest.writeString(this.departureId);
+        dest.writeString(this.arrivalId);
+        dest.writeString(this.amenityType);
     }
+
+    protected FlightBookingAmenityViewModel(Parcel in) {
+        this.id = in.readString();
+        this.title = in.readString();
+        this.price = in.readString();
+        this.priceNumeric = in.readInt();
+        this.departureId = in.readString();
+        this.arrivalId = in.readString();
+        this.amenityType = in.readString();
+    }
+
+    public static final Creator<FlightBookingAmenityViewModel> CREATOR = new Creator<FlightBookingAmenityViewModel>() {
+        @Override
+        public FlightBookingAmenityViewModel createFromParcel(Parcel source) {
+            return new FlightBookingAmenityViewModel(source);
+        }
+
+        @Override
+        public FlightBookingAmenityViewModel[] newArray(int size) {
+            return new FlightBookingAmenityViewModel[size];
+        }
+    };
 }
