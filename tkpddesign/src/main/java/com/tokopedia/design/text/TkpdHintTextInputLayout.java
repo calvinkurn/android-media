@@ -724,8 +724,9 @@ public class TkpdHintTextInputLayout extends LinearLayout {
             length = mEditText.getText().length();
         }
         boolean wasCounterOverflowed = mCounterOverflowed;
+        int currentLength = length > mPrefixLength ? length - mPrefixLength : length;
         if (mCounterMaxLength == INVALID_MAX_LENGTH) {
-            mTvCounter.setText(String.valueOf(length - mPrefixLength));
+            mTvCounter.setText(String.valueOf(currentLength - mPrefixLength));
             mCounterOverflowed = false;
         } else {
             mCounterOverflowed = length > mCounterMaxLength;
@@ -734,7 +735,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
                         ? mCounterOverflowTextAppearance : mCounterTextAppearance);
             }
             mTvCounter.setText(String.format(Locale.US, "%1$d / %2$d",
-                    length - mPrefixLength, mCounterMaxLength - mPrefixLength));
+                    currentLength, mCounterMaxLength - mPrefixLength));
         }
         if (mEditText != null && wasCounterOverflowed != mCounterOverflowed) {
             updateLabelState(false);
