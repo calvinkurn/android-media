@@ -110,7 +110,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         e.printStackTrace();
                         if (isViewAttached()) {
                             getView().hideUpdatePriceLoading();
-                            getView().showUpdateDataErrorStateLayout(FlightErrorUtil.getMessageFromException(e));
+                            getView().showUpdateDataErrorStateLayout(e);
                             if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))){
                                 getView().showExpireTransactionDialog();
                             }

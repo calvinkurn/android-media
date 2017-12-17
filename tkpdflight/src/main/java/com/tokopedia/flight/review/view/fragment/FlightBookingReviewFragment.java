@@ -217,8 +217,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
-    public void onErrorCheckVoucherCode(String e) {
-        voucherCartView.setErrorVoucher(e);
+    public void onErrorCheckVoucherCode(Throwable t) {
+        voucherCartView.setErrorVoucher(FlightErrorUtil.getMessageFromException(getActivity(), t));
     }
 
     @Override
@@ -282,9 +282,9 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
-    public void showUpdateDataErrorStateLayout(String messageFromException) {
+    public void showUpdateDataErrorStateLayout(Throwable t) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), messageFromException,
+                getActivity(), getView(), FlightErrorUtil.getMessageFromException(getActivity(), t),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -447,7 +447,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 }
             }
         }else{
-            NetworkErrorHelper.showSnackbar(getActivity(), FlightErrorUtil.getMessageFromException(e));
+            NetworkErrorHelper.showSnackbar(getActivity(), FlightErrorUtil.getMessageFromException(getActivity(), e));
         }
     }
 

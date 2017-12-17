@@ -22,7 +22,7 @@ public interface FlightBookingReviewContract {
 
     interface View extends FlightBaseBookingContact.View{
 
-        void onErrorCheckVoucherCode(String e);
+        void onErrorCheckVoucherCode(Throwable t);
 
         void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher);
 
