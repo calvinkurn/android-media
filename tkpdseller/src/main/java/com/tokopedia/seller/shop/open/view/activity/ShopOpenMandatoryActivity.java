@@ -1,10 +1,13 @@
 package com.tokopedia.seller.shop.open.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
@@ -52,6 +55,15 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements Ha
             return fragmentList;
         } else {
             return fragmentList;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!SessionHandler.isMsisdnVerified()) {
+            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
+            startActivity(intent);
         }
     }
 

@@ -1,56 +1,54 @@
 package com.tokopedia.seller.shop.open.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
-import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
-import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
+import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
-import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
 import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-
 /**
  * Created by Hendry on 3/17/2017.
  */
 
-public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOpenDomainView {
-
-    private static final String TAG = ShopOpenDomainFragment.class.getSimpleName();
+public class ShopOpenDomainFragment extends BasePresenterFragment implements ShopOpenDomainView {
+    private OnShopOpenDomainFragmentListener onShopOpenDomainFragmentListener;
+    public interface OnShopOpenDomainFragmentListener{
+        void onSuccessReserveShop();
+    }
 
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
 
     private View buttonSubmit;
-    private TkpdTextInputLayout textInputShopName;
+    private TkpdHintTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
-    private TkpdTextInputLayout textInputDomainName;
+    private TkpdHintTextInputLayout textInputDomainName;
     private PrefixEditText editTextInputDomainName;
+    private SnackbarRetry snackbarRetry;
+    private TkpdProgressDialog tkpdProgressDialog;
 
     public static ShopOpenDomainFragment newInstance() {
-        Bundle args = new Bundle();
-        // TODO need arguments?
-        ShopOpenDomainFragment fragment = new ShopOpenDomainFragment();
-        fragment.setArguments(args);
-        return fragment;
+        return new ShopOpenDomainFragment();
     }
 
     @Override
@@ -81,9 +79,14 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
 
             @Override
             public void afterTextChanged(Editable s) {
-                textInputShopName.setErrorSuccessEnabled(false);
+                textInputShopName.disableSuccessError();
                 buttonSubmit.setEnabled(false);
-                shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
+                hideSnackBarRetry();
+                if (TextUtils.isEmpty(s)) {
+                    textInputShopName.setError(getString(R.string.shop_name_must_be_filled));
+                } else if (s.toString().length() <= textInputShopName.getCounterMaxLength()) {
+                    shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
+                }
             }
         });
 
@@ -91,22 +94,75 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
 
             @Override
             public void afterTextChanged(Editable s) {
-                textInputDomainName.setErrorSuccessEnabled(false);
+                textInputDomainName.disableSuccessError();
                 buttonSubmit.setEnabled(false);
-                shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
+                hideSnackBarRetry();
+                if (TextUtils.isEmpty(s)) {
+                    textInputDomainName.setError(getString(R.string.domain_name_must_be_filled));
+                } else if (s.toString().length() <= textInputDomainName.getCounterMaxLength()) {
+                    shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
+                }
+            }
+        });
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonSubmitClicked();
             }
         });
         return view;
+    }
+
+    private void hideSnackBarRetry(){
+        if (snackbarRetry!= null && snackbarRetry.isShown()) {
+            snackbarRetry.hideRetrySnackbar();
+        }
+    }
+
+    private void hideSubmitLoading(){
+        if (tkpdProgressDialog!= null) {
+            tkpdProgressDialog.dismiss();
+        }
+    }
+
+    private void showSubmitLoading(){
+        if (tkpdProgressDialog== null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
+                    getString(R.string.title_loading));
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
+    private void onButtonSubmitClicked(){
+        if (!isShopNameDomainValid()) {
+            return;
+        }
+        showSubmitLoading();
+        String shopName = editTextInputShopName.getText().toString();
+        String shopDomain = editTextInputDomainName.getTextWithoutPrefix();
+        shopOpenDomainPresenter.submitReserveNameAndDomainShop(shopName, shopDomain);
+    }
+
+    @Override
+    public boolean isShopNameInValidRange() {
+        int inputShopNameLength = editTextInputShopName.getText().length();
+        return inputShopNameLength > 0 && inputShopNameLength <= textInputShopName.getCounterMaxLength();
+    }
+
+    @Override
+    public boolean isShopDomainInValidRange() {
+        int inputShopDomainLength = editTextInputDomainName.getText().length();
+        return inputShopDomainLength > 0 && inputShopDomainLength <= textInputDomainName.getCounterMaxLength();
     }
 
     @Override
     public void onSuccessCheckShopName(boolean existed) {
         if (existed) {
             textInputShopName.setSuccess(getString(R.string.shop_name_available));
-            checkEnableSubmit();
         } else {
             textInputShopName.setError(getString(R.string.shop_name_not_available));
         }
+        checkEnableSubmit();
     }
 
     @Override
@@ -118,10 +174,10 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
     public void onSuccessCheckShopDomain(boolean existed) {
         if (existed) {
             textInputDomainName.setSuccess(getString(R.string.domain_name_available));
-            checkEnableSubmit();
         } else {
             textInputDomainName.setError(getString(R.string.domain_name_not_available));
         }
+        checkEnableSubmit();
     }
 
     @Override
@@ -129,14 +185,52 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
         textInputDomainName.setError(getString(R.string.domain_name_not_available));
     }
 
+    @Override
+    public void onErrorReserveShop(Throwable t) {
+        hideSubmitLoading();
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                onButtonSubmitClicked();
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void onFailedReserveShop() {
+        hideSubmitLoading();
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                getString(R.string.shop_name_or_domain_has_been_reserved), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        onButtonSubmitClicked();
+                    }
+                });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void onSuccessReserveShop() {
+        hideSubmitLoading();
+        onShopOpenDomainFragmentListener.onSuccessReserveShop();
+    }
+
     private void checkEnableSubmit() {
-        if (textInputDomainName.isSuccess() && textInputShopName.isSuccess()) {
+        if (isShopNameDomainValid()) {
             buttonSubmit.setEnabled(true);
         }
     }
 
+    private boolean isShopNameDomainValid(){
+        return isShopNameInValidRange() && isShopDomainInValidRange() &&
+                textInputDomainName.isSuccessShown() && textInputShopName.isSuccessShown();
+    }
+
     @Override
-    protected String getScreenName() {
-        return null;
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        onShopOpenDomainFragmentListener = (OnShopOpenDomainFragmentListener) context;
     }
 }

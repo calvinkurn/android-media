@@ -29,31 +29,15 @@ public class ResponseReserveDomain {
         return shopDomain;
     }
 
-    public void setShopDomain(String shopDomain) {
-        this.shopDomain = shopDomain;
-    }
-
     public String getShopName() {
         return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
     }
 
     public String getShopDomainStatus() {
         return shopDomainStatus;
     }
 
-    public void setShopDomainStatus(String shopDomainStatus) {
-        this.shopDomainStatus = shopDomainStatus;
-    }
-
     public String getShopNameStatus() {
         return shopNameStatus;
-    }
-
-    public void setShopNameStatus(String shopNameStatus) {
-        this.shopNameStatus = shopNameStatus;
     }
 }

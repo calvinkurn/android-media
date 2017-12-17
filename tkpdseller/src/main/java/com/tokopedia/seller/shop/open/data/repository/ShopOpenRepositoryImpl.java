@@ -30,4 +30,9 @@ public class ShopOpenRepositoryImpl implements ShopOpenRepository {
     public Observable<ResponseIsReserveDomain> isReserveDomain() {
         return shopOpenDataSource.isReserveDomain();
     }
+
+    @Override
+    public Observable<Boolean> reserveShopNameDomain(String shopName, String shopDomainName) {
+        return shopOpenDataSource.reserveShopNameDomain(shopName, shopDomainName);
+    }
 }

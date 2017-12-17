@@ -19,7 +19,7 @@
             style="@style/TextView.Subheading"
             android:text="@string/fill_domain_and_shop"/>
 
-        <com.tokopedia.seller.lib.widget.TkpdTextInputLayout
+        <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/text_input_shop_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,18 +27,18 @@
             app:counterMaxLength="@integer/max_shop_name"
             android:layout_marginTop="@dimen/margin_med"
             android:hint="@string/shop_name"
-            style="@style/TextInputLayout">
+            style="@style/HintTextInputLayout">
 
             ​<android.support.v7.widget.AppCompatEditText
-            android:id="@+id/edit_text_shop_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textNoSuggestions"
-            style="@style/EditText"/>
+                android:id="@+id/edit_text_shop_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions"
+                style="@style/EditText"/>
             ​
-        </com.tokopedia.seller.lib.widget.TkpdTextInputLayout>
+        </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
-        <com.tokopedia.seller.lib.widget.TkpdTextInputLayout
+        <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/text_input_domain_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             app:prefixString="@string/domain_short"
             android:hint="@string/domain_name"
             android:layout_marginTop="@dimen/margin_small"
-            style="@style/TextInputLayout">
+            style="@style/HintTextInputLayout">
 
             ​<com.tokopedia.seller.common.widget.PrefixEditText
                 android:id="@+id/edit_text_domain_name"
@@ -59,7 +59,7 @@
                 android:maxLines="2"
                 android:inputType="textNoSuggestions|textMultiLine"/>
             ​
-        </com.tokopedia.seller.lib.widget.TkpdTextInputLayout>
+        </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
         <Button
             android:id="@+id/button_submit"
@@ -67,7 +67,8 @@
             android:text="@string/title_open_shop"
             android:layout_marginTop="@dimen/margin_med"
             android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"/>
+            android:layout_marginRight="0dp"
+            android:foreground="?attr/selectableItemBackground"/>
     </LinearLayout>
 </ScrollView>
 

@@ -203,4 +203,8 @@
     <string name="crop_image_menu_watermark">watermark</string>
     <string name="crop_image_watermark_cannot_be_changed">*Watermark tidak dapat diubah setelah disimpan.</string>
     <string name="getting_shop_step">Mengambil Informasi Toko</string>
+    <string name="shop_name_must_be_filled">Nama Toko harus diisi</string>
+    <string name="domain_name_must_be_filled">Nama domain harus diisi</string>
+    <string name="loading_reserve_shop_name_domain">Mereservasi nama toko dan domain</string>
+    <string name="shop_name_or_domain_has_been_reserved">Nama atau domain toko sudah terpakai</string>
 </resources>

@@ -6,13 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.fragment.FragmentSecurityQuestion;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -32,9 +26,9 @@ import javax.inject.Inject;
  */
 
 public class ShopOpenDomainActivity extends BaseSimpleActivity
-        implements HasComponent<ShopOpenDomainComponent>, ShopCheckDomainView {
+        implements HasComponent<ShopOpenDomainComponent>, ShopCheckDomainView,
+        ShopOpenDomainFragment.OnShopOpenDomainFragmentListener{
     public static final String EXTRA_LOGOUT_ON_BACK = "LOGOUT_ON_BACK";
-    private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
 
     private ShopOpenDomainComponent shopOpenDomainComponent;
 
@@ -65,7 +59,6 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     private void setUpPresenter(){
         ShopOpenDomainComponent shopOpenDomainComponent = getComponent();
         shopOpenDomainComponent.inject(this);
-        shopCheckIsReservePresenter.attachView(this);
     }
 
     @Override
@@ -78,12 +71,7 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
         hideLoading();
         boolean isReservingDomain = responseIsReserveDomain.isDomainAlreadyReserved();
         if (isReservingDomain) {
-            if (SessionHandler.isMsisdnVerified()) {
-                goToShopOpenMandatory();
-            } else {
-                Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
-                startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
-            }
+            goToShopOpenMandatory();
         } else {
             inflateFragment();
         }
@@ -111,19 +99,10 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     @Override
     protected void onResume() {
         super.onResume();
+        shopCheckIsReservePresenter.attachView(this);
         if (shopOpenDomainFragment == null) {
             showLoading();
             shopCheckIsReservePresenter.isReservingDomain();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
-            goToShopOpenMandatory();
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -160,6 +139,11 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     }
 
     @Override
+    public void onSuccessReserveShop() {
+        goToShopOpenMandatory();
+    }
+
+    @Override
     public void onBackPressed() {
         if (isLogoutOnBack) {
             SessionHandler session = new SessionHandler(this);
@@ -168,6 +152,5 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
             super.onBackPressed();
         }
     }
-
 
 }
