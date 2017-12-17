@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderlist.domain.model;
 
+import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.List;
  * @author by alvarisi on 12/11/17.
  */
 
-public class FlightOrderJourney {
+public class FlightOrderJourney implements ItemType {
+    public static final int TYPE = 923;
     private String departureCity;
     private String departureCityCode;
     private String departureAiportId;
@@ -101,5 +103,10 @@ public class FlightOrderJourney {
 
     public void setArrivalCityCode(String arrivalCityCode) {
         this.arrivalCityCode = arrivalCityCode;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

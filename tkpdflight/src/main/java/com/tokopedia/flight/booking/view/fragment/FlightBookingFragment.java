@@ -21,7 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -76,8 +76,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_REVIEW = 4;
-
-    private ProgressBar fullPageProgressBar;
+    @Inject
+    FlightBookingPresenter presenter;
+    private LinearLayout fullPageLoadingLayout;
     private NestedScrollView fullPageLayout;
     private CountdownTimeView countdownFinishTransactionView;
     private AppCompatTextView priceTotalAppCompatTextView;
@@ -94,19 +95,17 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatTextView tvPhoneCountryCode;
     private AppCompatEditText etPhoneNumber;
     private RecyclerView pricelistsRecyclerView;
-
-
     private String departureTripId, returnTripId;
     private FlightBookingParamViewModel paramViewModel;
     private FlightBookingCartData flightBookingCartData;
-
-    @Inject
-    FlightBookingPresenter presenter;
-
     private FlightBookingPassengerAdapter adapter;
     private FlightSimpleAdapter priceListAdapter;
     private ProgressDialog progressDialog;
 
+
+    public FlightBookingFragment() {
+        // Required empty public constructor
+    }
 
     public static Fragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
         FlightBookingFragment fragment = new FlightBookingFragment();
@@ -116,11 +115,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         bundle.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-
-    public FlightBookingFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -155,7 +149,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         tvPhoneCountryCode = (AppCompatTextView) view.findViewById(R.id.et_phone_country_code);
         etPhoneNumber = (AppCompatEditText) view.findViewById(R.id.et_phone_number);
         pricelistsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_price_lists);
-        fullPageProgressBar = (ProgressBar) view.findViewById(R.id.pb_full_page);
+        fullPageLoadingLayout = (LinearLayout) view.findViewById(R.id.full_page_loading);
         fullPageLayout = (NestedScrollView) view.findViewById(R.id.container_full_page);
 
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
@@ -404,13 +398,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void showFullPageLoading() {
-        fullPageProgressBar.setVisibility(View.VISIBLE);
+        fullPageLoadingLayout.setVisibility(View.VISIBLE);
         fullPageLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void hideFullPageLoading() {
-        fullPageProgressBar.setVisibility(View.GONE);
+        fullPageLoadingLayout.setVisibility(View.GONE);
         fullPageLayout.setVisibility(View.VISIBLE);
     }
 

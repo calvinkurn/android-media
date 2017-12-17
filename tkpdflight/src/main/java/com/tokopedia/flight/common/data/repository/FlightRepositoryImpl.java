@@ -91,6 +91,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
+        return flightAirportDataListSource.getAirportList(query, idCountry);
+    }
+
+    @Override
     public Observable<List<FlightAirlineDB>> getAirlineList() {
         return flightAirlineDataListSource.getAirlineList();
     }
