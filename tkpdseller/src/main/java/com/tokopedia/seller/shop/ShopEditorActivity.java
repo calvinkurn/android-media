@@ -69,8 +69,7 @@ public class ShopEditorActivity extends TActivity implements
     @DeepLink(Constants.Applinks.CREATE_SHOP)
     public static Intent getCallingApplinkCreateShopIntent(Context context, Bundle extras) {
         if (SessionHandler.isV4Login(context)
-                && (SessionHandler.getShopID(context).isEmpty()
-                || SessionHandler.getShopID(context).equals("0"))) {
+                && !SessionHandler.isUserHasShop(context)) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, ShopEditorActivity.class)
                     .setData(uri.build())

@@ -99,7 +99,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     @DeepLink(Constants.Applinks.PRODUCT_ADD)
     public static Intent getCallingApplinkAddProductMainAppIntent(Context context, Bundle extras) {
         Intent intent = null;
-        if (!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0")) {
+        if (SessionHandler.isUserHasShop(context)) {
             intent = new Intent(context, ProductAddActivity.class);
         } else {
             if (GlobalConfig.isSellerApp()) {

@@ -41,7 +41,7 @@ public class NewOrderWidget extends AppWidgetProvider {
                 views.setRemoteAdapter(R.id.list_order, intent);
                 views.setEmptyView(R.id.list_order, R.id.view_no_result);
                 views.setTextViewText(R.id.count_order, String.valueOf(dataOrderViewWidget.getDataOrderCount()));
-                Intent intentOrder = ActivitySellingTransaction.createIntent(context, SellerRouter.TAB_POSITION_SELLING_NEW_ORDER);
+                Intent intentOrder = ActivitySellingTransaction.createIntent(context, ActivitySellingTransaction.TAB_POSITION_SELLING_NEW_ORDER);
                 intentOrder.putExtra(ActivitySellingTransaction.FROM_WIDGET_TAG, true);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentOrder, 0);
                 views.setOnClickPendingIntent(R.id.container_order_count, pendingIntent);
@@ -96,7 +96,7 @@ public class NewOrderWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget_new_order_setup_page);
 
-            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(context);
+            Intent intent = SellerRouter.getActivitySplashScreenActivity(context);
             PendingIntent pendingIntentSplashScreen = PendingIntent.getActivity(context, 0, intent, 0);
             views.setOnClickPendingIntent(R.id.button_sign_in, pendingIntentSplashScreen);
 

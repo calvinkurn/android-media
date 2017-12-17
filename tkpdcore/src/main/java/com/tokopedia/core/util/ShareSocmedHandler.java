@@ -440,7 +440,7 @@ public class ShareSocmedHandler {
 
         boolean isShop = false;
         if (SessionHandler.isV4Login(context)) {
-            if (!SessionHandler.getShopID(context).equals("0")) {
+            if (SessionHandler.isUserHasShop(context)) {
                 isShop = true;
             }
         }

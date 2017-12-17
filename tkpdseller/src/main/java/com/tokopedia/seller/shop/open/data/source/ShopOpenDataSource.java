@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.open.data.source;
 
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.setting.data.source.cache.ShopOpenDataCache;
 import com.tokopedia.seller.shop.open.data.source.cloud.ShopOpenDataCloud;
 
@@ -27,5 +28,9 @@ public class ShopOpenDataSource {
 
     public Observable<Boolean> checkShopName(String shopName) {
         return shopOpenDataCloud.checkShopName(shopName);
+    }
+
+    public Observable<ResponseIsReserveDomain> isReserveDomain() {
+        return shopOpenDataCloud.isReserveDomainResponseObservable();
     }
 }

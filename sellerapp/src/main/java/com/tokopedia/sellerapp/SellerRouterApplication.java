@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -64,13 +63,14 @@ import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
@@ -89,12 +89,14 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
+import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.remoteconfig.RemoteConfigFetcher;
+import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -122,8 +124,6 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, RemoteConfigRouter, TkpdSessionRouter {
-    public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
-    public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
     private DaggerProductComponent.Builder daggerProductBuilder;
     private ProductComponent productComponent;
@@ -187,11 +187,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void startInstopedActivity(Context context) {
-        InstopedActivity.startInstopedActivity(context);
-    }
-
-    @Override
     public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
         InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
@@ -209,13 +204,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Override
-    public void goToManageEtalase(Context context) {
-        Intent intent = new Intent(context, EtalaseShopEditor.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -312,7 +300,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getHomeIntent(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
-            if (SessionHandler.isUserSeller(context)) {
+            if (SessionHandler.isUserHasShop(context)) {
                 return DashboardActivity.createInstance((Activity) context);
             } else {
                 return intent;
@@ -323,11 +311,26 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getOnBoardingActivityIntent(Context context) {
+        return new Intent(context, OnboardingSellerActivity.class);
+    }
+
+    @Override
+    public Intent getTrueCallerActivityIntent(Context context) {
+        return new Intent(context, TruecallerActivity.class);
+    }
+
+    @Override
+    public Intent getPhoneVerificationActivityIntent(Context context) {
+        return PhoneVerificationActivationActivity.getIntent(context, true, true);
+    }
+
+    @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         if (SessionHandler.isV4Login(context)) {
-            return Class.forName(COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY);
+            return DashboardActivity.class;
         } else {
-            return Class.forName(COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY);
+            return WelcomeActivity.class;
         }
     }
 
@@ -364,12 +367,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getRegisterIntent(Context context) {
         Intent intent = Login.getSellerRegisterIntent(context);
         return intent;
-    }
-
-    @Override
-    public void goToProfileCompletion(Context context) {
-        Intent intent = new Intent(context, ProfileCompletionActivity.class);
-        context.startActivity(intent);
     }
 
     @Override
@@ -596,6 +593,66 @@ public abstract class SellerRouterApplication extends MainApplication
     public Observable<DataDeposit> getDataDeposit(String shopId) {
         GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
         return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
+    }
+
+    @Override
+    public Intent getIntentCreateEditShop(Context context){
+        return TkpdSeller.getIntentCreateEditShop(context, true, true);
+    }
+
+    @Override
+    public Intent getSplashScreenIntent(Context context) {
+        return new Intent(context, SplashScreenActivity.class);
+    }
+
+    @Override
+    public Class getDeepLinkClass() {
+        return DeepLinkActivity.class;
+    }
+
+    @Override
+    public Intent getIntentManageShop(Context context){
+        return TkpdSeller.getIntentManageShop(context);
+    }
+
+    @Override
+    public android.app.Fragment getFragmentShopSettings() {
+        return TkpdSeller.getFragmentShopSettings();
+    }
+
+    @Override
+    public android.app.Fragment getFragmentSellingNewOrder() {
+        return TkpdSeller.getFragmentSellingNewOrder();
+    }
+
+    @Override
+    public Class getSellingActivityClass() {
+        return TkpdSeller.getSellingActivityClass();
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionNewOrder(Context context) {
+        return TkpdSeller.getActivitySellingTransactionNewOrder(context);
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
+        return TkpdSeller.getActivitySellingTransactionConfirmShipping(context);
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionShippingStatus(Context context) {
+        return TkpdSeller.getActivitySellingTransactionShippingStatus(context);
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionList(Context context) {
+        return TkpdSeller.getActivitySellingTransactionList(context);
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionOpportunity(Context context) {
+        return TkpdSeller.getActivitySellingTransactionOpportunity(context);
     }
 
     @Override

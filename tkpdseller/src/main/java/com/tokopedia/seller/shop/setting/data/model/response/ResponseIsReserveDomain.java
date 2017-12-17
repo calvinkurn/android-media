@@ -11,25 +11,18 @@ public class ResponseIsReserveDomain {
 
     @SerializedName("reserve_status")
     @Expose
-    private String reserveStatus = null;
+    private int reserveStatus;
 
     @SerializedName("user_data")
     @Expose
     private ResponseUserData responseUserData = null;
 
-    public String getReserveStatus() {
-        return reserveStatus;
-    }
-
-    public void setReserveStatus(String reserveStatus) {
-        this.reserveStatus = reserveStatus;
+    public boolean isDomainAlreadyReserved(){
+        return reserveStatus!= 0;
     }
 
     public ResponseUserData getResponseUserData() {
         return responseUserData;
     }
 
-    public void setResponseUserData(ResponseUserData responseUserData) {
-        this.responseUserData = responseUserData;
-    }
 }

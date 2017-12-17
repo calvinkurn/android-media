@@ -23,8 +23,6 @@ import com.tokopedia.core.util.SessionHandler;
  */
 public interface TkpdCoreRouter {
 
-    void startInstopedActivity(Context context);
-
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
 
     void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
@@ -34,8 +32,6 @@ public interface TkpdCoreRouter {
     void goToManageProduct(Context context);
 
     void goToDraftProductList(Context context);
-
-    void goToManageEtalase(Context context);
 
     void clearEtalaseCache();
 
@@ -57,6 +53,12 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
+    Intent getOnBoardingActivityIntent(Context context);
+
+    Intent getTrueCallerActivityIntent(Context context);
+
+    Intent getPhoneVerificationActivityIntent(Context context);
+
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
     DrawerHelper getDrawer(AppCompatActivity activity,
@@ -66,8 +68,6 @@ public interface TkpdCoreRouter {
 
 
     void onLogout(AppComponent appComponent);
-
-    void goToProfileCompletion(Context context);
 
     void goToCreateMerchantRedirect(Context context);
 
@@ -96,5 +96,29 @@ public interface TkpdCoreRouter {
     void invalidateCategoryMenuData();
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
+
+    Intent getIntentCreateEditShop(Context context);
+
+    Intent getSplashScreenIntent(Context context);
+
+    Class getDeepLinkClass();
+
+    Intent getIntentManageShop(Context context);
+
+    android.app.Fragment getFragmentShopSettings();
+
+    android.app.Fragment getFragmentSellingNewOrder();
+
+    Class getSellingActivityClass();
+
+    Intent getActivitySellingTransactionNewOrder(Context context);
+
+    Intent getActivitySellingTransactionConfirmShipping(Context context);
+
+    Intent getActivitySellingTransactionShippingStatus(Context context);
+
+    Intent getActivitySellingTransactionList(Context context);
+
+    Intent getActivitySellingTransactionOpportunity(Context context);
 
 }

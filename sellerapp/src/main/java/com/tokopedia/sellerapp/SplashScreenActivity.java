@@ -25,8 +25,7 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
-        if (sessionHandler != null && !TextUtils.isEmpty(sessionHandler.getShopID()) &&
-                !sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
+        if (SessionHandler.isUserHasShop(this)) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
                 DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
@@ -44,37 +43,31 @@ public class SplashScreenActivity extends SplashScreen {
                 // Means it is a Seller
                 startActivity(DashboardActivity.createInstance(this));
             }
+        } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(this))) {
+            Intent intent = moveToCreateShop(this);
+            startActivity(intent);
         } else {
-            // Means it is buyer
-            if (sessionHandler != null && !TextUtils.isEmpty(sessionHandler.getLoginID())) {
-                Intent intent = moveToCreateShop(this);
-                startActivity(intent);
-            } else {
-                Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
+            startActivity(intent);
         }
         finish();
     }
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        if (context == null)
-            return null;
-
-        if (SessionHandler.isMsisdnVerified()) {
-            Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
+        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+        // Msisdn logic is between the shop create.
+        // Therefore below logic is not valid.
+        /*if (SessionHandler.isMsisdnVerified()) {
+            Intent intent = SellerRouter.getActivityShopCreateEdit(context, true, true);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         } else {
             Intent intent;
-            intent = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            intent = SessionRouter.getPhoneVerificationActivationActivityIntent(context, true, true);
             return intent;
-        }
+        }*/
     }
 }
