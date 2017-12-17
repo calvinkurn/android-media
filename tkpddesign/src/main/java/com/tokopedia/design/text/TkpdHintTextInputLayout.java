@@ -499,7 +499,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     }
 
     public boolean isSuccessShown(){
-        return TextUtils.isEmpty(mErrorText) && mSuccessEnabled;
+        return mSuccessEnabled;
     }
 
     public void setHelper(@Nullable final CharSequence helper) {
