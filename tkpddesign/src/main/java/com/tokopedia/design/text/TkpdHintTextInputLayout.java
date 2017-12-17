@@ -705,6 +705,10 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         return mCounterEnabled;
     }
 
+    public int getCounterMaxLength() {
+        return mCounterMaxLength;
+    }
+
     public void setCounterMaxLength(int maxLength) {
         if (mCounterMaxLength != maxLength) {
             if (maxLength > 0) {
