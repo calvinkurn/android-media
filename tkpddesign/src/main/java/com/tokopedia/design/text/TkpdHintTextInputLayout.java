@@ -498,6 +498,10 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         updateLabelState(animate);
     }
 
+    public boolean isSuccessShown(){
+        return TextUtils.isEmpty(mErrorText) && mSuccessEnabled;
+    }
+
     public void setHelper(@Nullable final CharSequence helper) {
         mHelperText = helper;
 
@@ -544,6 +548,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         }
     }
 
+    @SuppressWarnings("RestrictedApi")
     private void updatePasswordToggleView() {
         if (mEditText == null) {
             // If there is no EditText, there is nothing to update
@@ -619,6 +624,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         }
     }
 
+    @SuppressWarnings("RestrictedApi")
     void passwordVisibilityToggleRequested() {
         if (mPasswordToggleEnabled) {
             // Store the current cursor position
@@ -815,6 +821,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         mInDrawableStateChanged = false;
     }
 
+    @SuppressWarnings("RestrictedApi")
     private void updateEditTextBackground() {
         if (mEditText == null) {
             return;
