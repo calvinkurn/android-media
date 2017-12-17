@@ -114,7 +114,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
         } else {
-            if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
+            if (!SessionHandler.isUserHasShop(this)) {
                 indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
                 indicator.setVisibility(View.GONE);
             } else {
@@ -138,7 +138,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
             fragmentList.add(sellerReputationFragment.getTkpdFragment());
         } else {
-            if (SessionHandler.getShopID(this).equals("0") || SessionHandler.getShopID(this).equals("")) {
+            if (!SessionHandler.isUserHasShop(this)) {
                 fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
             } else {
                 fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));

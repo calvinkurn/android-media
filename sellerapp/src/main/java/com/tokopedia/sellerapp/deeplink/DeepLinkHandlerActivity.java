@@ -59,7 +59,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            if (!SessionHandler.isV4Login(this) || SessionHandler.getShopID(this).isEmpty() || SessionHandler.getShopID(this).equals("0")) {
+            if (!SessionHandler.isV4Login(this) || !SessionHandler.isUserHasShop(this)) {
                 if (SessionHandler.isV4Login(this)) {
                     startActivity(moveToCreateShop(this));
                 } else {
@@ -91,17 +91,18 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         if (context == null)
             return null;
 
-        if (SessionHandler.isMsisdnVerified()) {
+        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+
+        // MSISDN will between shop create
+        /*if (SessionHandler.isMsisdnVerified()) {
             Intent intent = SellerRouter.getActivityShopCreateEdit(context, true, true);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         } else {
-            Intent intent;
-            intent = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            return intent;
-        }
+            return SessionRouter.getPhoneVerificationActivationActivityIntent(context);
+        }*/
     }
 
     @DeepLink(Constants.Applinks.SellerApp.BROWSER)
