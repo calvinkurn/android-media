@@ -97,12 +97,12 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
         UserSession userSession = new UserSession() {
             @Override
             public String getAccessToken() {
-                return SessionHandler.getAccessToken();
+                return "";
             }
 
             @Override
             public String getFreshToken() {
-                return SessionHandler.getAccessToken();
+                return "";
             }
 
             @Override
