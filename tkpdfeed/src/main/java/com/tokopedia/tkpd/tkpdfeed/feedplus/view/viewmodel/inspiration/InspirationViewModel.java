@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by stevenfredian on 5/18/17.
@@ -59,5 +61,25 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public List<Object> getListProductAsObjectDataLayer(String eventLabel) {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < getListProduct().size(); i++) {
+            InspirationProductViewModel viewModel = getListProduct().get(i);
+            list.add(
+                    DataLayer.mapOf(
+                            "name", viewModel.getName(),
+                            "id", viewModel.getProductId(),
+                            "price", viewModel.getPrice(),
+                            "brand", "",
+                            "category", "",
+                            "variant", "",
+                            "list", String.format("feed - product %d - %s", i, eventLabel),
+                            "position", i
+                    )
+            );
+        }
+        return list;
     }
 }

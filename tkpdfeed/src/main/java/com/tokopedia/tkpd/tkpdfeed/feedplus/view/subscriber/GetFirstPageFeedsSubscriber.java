@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
@@ -241,8 +242,15 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
                         if (inspirationViewModel != null
                                 && inspirationViewModel.getListProduct() != null
-                                && !inspirationViewModel.getListProduct().isEmpty())
+                                && !inspirationViewModel.getListProduct().isEmpty()) {
                             listFeedView.add(inspirationViewModel);
+
+                            String eventLabel = String.format("%s - %s", TYPE_INSPIRATION, inspirationViewModel.getSource());
+                            FeedTracking.eventImpressionFeedInspiration(
+                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel),
+                                    eventLabel
+                            );
+                        }
                         break;
                     case TYPE_TOPADS:
                         break;
