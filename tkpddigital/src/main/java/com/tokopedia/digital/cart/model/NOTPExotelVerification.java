@@ -34,8 +34,16 @@ public class NOTPExotelVerification {
 
     public void verifyNo(String phoneNo, Context context, final NOTPVerificationListener verificationListener) {
         this.verificationlistener = verificationListener;
+        if(phoneNo == null) {
+            verificationListener.onVerificationFail();
+            return;
+        }
         phoneNo = DeviceUtil.validatePrefixClientNumber(phoneNo);
-        phoneNo = "+62"+phoneNo.substring(1);
+        if(phoneNo.charAt(0) == '0') {
+            phoneNo = "+62" + phoneNo.substring(1);
+        }else {
+            phoneNo = "+62" + phoneNo;
+        }
         ExotelVerification eVerification = new ExotelVerification();
         Config config = null;
         try {
