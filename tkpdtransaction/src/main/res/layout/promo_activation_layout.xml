@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="@dimen/padding_small">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_small"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_kupon"/>
+
+        <TextView
+            android:id="@+id/promo_activation_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"
+            tools:text="Gunakan Kode Promo atau Kupon"/>
+
+    </LinearLayout>
+
+</LinearLayout>

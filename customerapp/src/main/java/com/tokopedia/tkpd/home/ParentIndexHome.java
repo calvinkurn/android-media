@@ -65,12 +65,12 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
-import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
@@ -105,7 +105,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected PagerAdapter adapter;
     protected ViewPager mViewPager;
     protected TabLayout indicator;
-    protected View footerCat;
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
@@ -364,7 +363,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     private void setView() {
         inflateView(R.layout.activity_index_home_4);
-        footerCat = View.inflate(ParentIndexHome.this, R.layout.fragment_category, null);
         mViewPager = (ViewPager) findViewById(R.id.index_page);
         indicator = (TabLayout) findViewById(R.id.indicator);
     }
@@ -410,7 +408,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             if (SessionHandler.isV4Login(ParentIndexHome.this)) {
 
                 if (getPageTitle(position).equals(content.get(0))) {
-                    Fragment fragment = FragmentIndexCategory.newInstance();
+                    Fragment fragment = HomeFragment.newInstance();
                     registeredFragments.put(position, fragment);
                     return fragment;
                 }
@@ -435,7 +433,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             } else {
                 switch (position) {
                     case 0:
-                        Fragment fragment = FragmentIndexCategory.newInstance();
+                        Fragment fragment = HomeFragment.newInstance();
                         registeredFragments.put(position, fragment);
                         return fragment;
                     case 1:

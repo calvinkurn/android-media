@@ -2737,6 +2737,70 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventMyCouponClicked() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_TOKO_POINT,
+                AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
+                AppEventTracking.Action.CLICK_MY_COUPON,
+                AppEventTracking.EventLabel.MY_COUPON
+        ).getEvent());
+    }
+
+    public static void eventCouponChosen(String couponName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_TOKO_POINT,
+                AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
+                AppEventTracking.Action.CHOOSE_COUPON,
+                couponName
+        ).getEvent());
+    }
+
+    public static void eventCouponPageClosed() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_TOKO_POINT,
+                AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
+                AppEventTracking.Action.CLOSE_COUPON_PAGE,
+                AppEventTracking.EventLabel.CLOSE_COUPON_PAGE
+        ).getEvent());
+    }
+
+    public static void eventUserClickedPoints() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.HOMEPAGE,
+                AppEventTracking.Category.TOKO_POINTS_PROMO_HOMEPAGE,
+                AppEventTracking.Action.CLICK_TOKO_POINTS_STATUS,
+                AppEventTracking.EventLabel.TOKOPOINTS_LABEL
+        ).getEvent());
+    }
+
+    public static void eventUserProfileTokopoints() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_TOKO_POINT,
+                AppEventTracking.Category.TOKOPOINTS_USER_PAGE,
+                AppEventTracking.Action.CLICK_TOKO_POINTS,
+                AppEventTracking.EventLabel.TOKOPOINTS_LABEL
+        ).getEvent());
+    }
+
+    public static void eventViewTokopointPopup() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_TOKO_POINT,
+                AppEventTracking.Category.TOKOPOINTS_POP_UP,
+                AppEventTracking.Action.TOKOPOINTS_POP_UP_IMPRESSION,
+                AppEventTracking.EventLabel.TOKOPOINTS_POP_UP
+        ).getEvent());
+    }
+
+    public static void eventClickTokoPointPopup() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_TOKO_POINT,
+                AppEventTracking.Category.TOKOPOINTS_POP_UP,
+                AppEventTracking.Action.TOKOPOINTS_POP_UP_CLICK,
+                AppEventTracking.EventLabel.TOKOPOINTS_POP_UP_BUTTON
+        ).getEvent());
+    }
+
+
     public static void eventAppRatingImpression() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.IMPRESSION_APP_RATING,

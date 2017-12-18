@@ -346,12 +346,12 @@ public class ShopInfoActivity extends BaseActivity
             public void onSuccess() {
                 TrackingUtils.sendMoEngageFavoriteEvent(shopModel);
                 if (shopModel.info.shopAlreadyFavorited == 1) {
-                    if(getApplication() instanceof IReactNativeRouter) {
+                    if (getApplication() instanceof IReactNativeRouter) {
                         IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
                         reactNativeRouter.sendRemoveFavoriteEmitter(String.valueOf(shopModel.info.shopId), SessionHandler.getLoginID(ShopInfoActivity.this));
                     }
                 } else {
-                    if(getApplication() instanceof IReactNativeRouter) {
+                    if (getApplication() instanceof IReactNativeRouter) {
                         IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
                         reactNativeRouter.sendAddFavoriteEmitter(String.valueOf(shopModel.info.shopId), SessionHandler.getLoginID(ShopInfoActivity.this));
                     }
@@ -645,7 +645,7 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
-        if(data.badges != null) {
+        if (data.badges != null) {
             List<Badge> badges = data.badges;
             for (int i = 0; i < badges.size(); i++) {
                 Badge badge = badges.get(i);
@@ -767,7 +767,7 @@ public class ShopInfoActivity extends BaseActivity
                         .setUri(shopModel.info.shopUrl)
                         .setId(shopModel.info.shopId)
                         .build();
-                startActivity(ShareActivity.createIntent(ShopInfoActivity.this,shareData));
+                startActivity(ShareActivity.createIntent(ShopInfoActivity.this, shareData));
             }
         };
     }
@@ -828,7 +828,7 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (SessionHandler.isV4Login(ShopInfoActivity.this)){
+                if (SessionHandler.isV4Login(ShopInfoActivity.this)) {
                     holder.favorite.startAnimation(animateFav);
                     facadeAction.actionToggleFav();
                 } else {
@@ -870,8 +870,7 @@ public class ShopInfoActivity extends BaseActivity
                                 shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
-        }
-        else {
+        } else {
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
@@ -1039,13 +1038,14 @@ public class ShopInfoActivity extends BaseActivity
         if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
-        } if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+        }
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
             super.onBackPressed();
         } else if (isTaskRoot()) {
             startActivity(HomeRouter.getHomeActivity(this));
             super.onBackPressed();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
