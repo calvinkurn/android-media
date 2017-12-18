@@ -30,7 +30,6 @@ public class BranchSdkUtils {
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
     private static final String URI_REDIRECT_MODE_KEY = "$uri_redirect_mode";
     private static final String CAMPAIGN_NAME = "Android App";
-    private static String extraDescription = "";
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
@@ -44,11 +43,6 @@ public class BranchSdkUtils {
 
     public static void generateBranchLink(final ShareData data, final Activity activity, final GenerateShareContents ShareContentsCreateListener) {
 
-        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(data.getType())) {
-            extraDescription = getAppShareDescription(activity, data.getType());
-        } else {
-            extraDescription = "";
-        }
         if (isBranchUrlActivated(activity, data.getType())) {
             BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
             LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
@@ -57,14 +51,15 @@ public class BranchSdkUtils {
                 public void onLinkCreate(String url, BranchError error) {
 
                     if (error == null) {
-                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContentForBranch(url), extraDescription + url, url);
+                        ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
                     } else {
-                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(), url);
+                        ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
+
                     }
                 }
             });
         } else {
-            ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(), data.renderShareUri());
+            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), data.renderShareUri());
 
         }
     }
@@ -76,7 +71,9 @@ public class BranchSdkUtils {
         if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());//"product/" + data.getId();
         } else if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(data.getType())) {
-            deeplinkPath = getApplinkPath(Constants.Applinks.HOME, "");//"home";
+            deeplinkPath = getApplinkPath(Constants.Applinks.REFERRAL_WELCOME, data.getId());//"home";
+            deeplinkPath = deeplinkPath.replaceFirst("\\{.*?\\} ?", SessionHandler.getLoginName(activity) == null ? "" : SessionHandler.getLoginName(activity));
+
         } else if (ShareData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.SHOP, data.getId());//"shop/" + data.getId();
         } else if (ShareData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
@@ -95,6 +92,7 @@ public class BranchSdkUtils {
         linkProperties.setCampaign(CAMPAIGN_NAME);
         linkProperties.setChannel(channel);
         linkProperties.setFeature(data.getType());
+        // linkProperties.addControlParameter(URI_REDIRECT_MODE_KEY, URI_REDIRECT_MODE_VALUE);
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         return linkProperties;
@@ -112,22 +110,13 @@ public class BranchSdkUtils {
     private static String getApplinkPath(String url, String id) {
         if (url.contains(Constants.Schemes.APPLINKS + "://")) {
             url = url.replace(Constants.Schemes.APPLINKS + "://", "");
-            url = url.replaceAll("\\{.*?\\} ?", id == null ? "" : id);
+            url = url.replaceFirst("\\{.*?\\} ?", id == null ? "" : id);
         } else if (url.contains(TkpdBaseURL.WEB_DOMAIN)) {
             url = url.replace(TkpdBaseURL.WEB_DOMAIN, "");
         } else if (url.contains(TkpdBaseURL.MOBILE_DOMAIN)) {
             url = url.replace(TkpdBaseURL.MOBILE_DOMAIN, "");
         }
         return url;
-    }
-
-    private static String getAppShareDescription(Activity activity, String type) {
-        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DESCRIPTION) + " \n";
-        }
-        return "";
-
     }
 
     public static void sendCommerceEvent(ArrayList<Product> locaProducts, String revenue, String totalShipping) {

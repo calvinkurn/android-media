@@ -578,6 +578,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getReferralPhoneNumberActivityIntent(Activity activity) {
+        return ReferralPhoneNumberVerificationActivity.getCallingIntent(activity);
+    }
+
+    @Override
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);

@@ -953,4 +953,8 @@ public class TkpdBaseURL {
         public static final String PATH_ORDER_DETAIL = "/v4/order/detail";
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
     }
+
+    public class Referral {
+        public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";
+    }
 }

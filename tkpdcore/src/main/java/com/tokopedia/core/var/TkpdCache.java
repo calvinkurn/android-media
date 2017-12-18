@@ -51,8 +51,8 @@ public class TkpdCache {
     public static String LAST_BRI = "LAST_BRI";
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
-    public static final String FIREBASE_REMOTE_CONFIG = "FIREBASE_REMOTE_CONFIG";
     public static final String APP_RATING = "APP_RATING";
+    public static final String REFERRAL = "REFERRAL";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -208,13 +208,10 @@ public class TkpdCache {
         public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
 
-        public static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "SHOW_HIDE_APP_SHARE_BUTTON_KEY";
-        public static final String APP_SHARE_DESCRIPTION_KEY = "APP_SHARE_DESCRIPTION_KEY";
-        public static final String MAINAPP_ACTIVATE_BRANCH_LINKS_KEY = "MAINAPP_ACTIVATE_BRANCH_LINKS_KEY";
-
         public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
 
         public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
+        public static final String REFERRAL_CODE = "REFERRAL_CODE";
     }
 
     public class RemoteConfigKey {
@@ -227,6 +224,11 @@ public class TkpdCache {
 
         public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
         public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
+
+        public static final String APP_REFFERAL_CONTENT = "app_refferal_content";
+        public static final String APP_SHARE_WELCOME_MESSAGE = "app_share_welcome_message";
+        public static final String APP_REFERRAL_TITLE = "app_referral_title";
+        public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
     }
 
 }

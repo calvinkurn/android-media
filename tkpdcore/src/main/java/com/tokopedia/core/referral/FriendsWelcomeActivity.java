@@ -11,21 +11,15 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.referral.fragment.FragmentReferral;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.referral.fragment.FragmentReferralFriendsWelcome;
 
-/**
- * Created by ashwanityagi on 18/09/17.
- */
+public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
-public class ReferralActivity extends BasePresenterActivity {
 
-    @DeepLink(Constants.Applinks.REFERRAL)
+    @DeepLink(Constants.Applinks.REFERRAL_WELCOME)
     public static Intent getCallingReferral(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ReferralActivity.class)
+        return new Intent(context, FriendsWelcomeActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
     }
@@ -47,15 +41,16 @@ public class ReferralActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_referral;
+        return R.layout.activity_friends_welcome;
     }
 
     @Override
     protected void initView() {
+
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof FragmentReferral))
+        if (fragment == null || !(fragment instanceof FragmentReferralFriendsWelcome))
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    FragmentReferral.newInstance()).commit();
+                    FragmentReferralFriendsWelcome.newInstance()).commit();
     }
 
     @Override
@@ -92,7 +87,7 @@ public class ReferralActivity extends BasePresenterActivity {
     }
 
     private void invalidateTitleToolBar() {
-        String titleToolbar = getToolbarTitle();
+        String titleToolbar=getString(R.string.app_name);
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
     }
 
@@ -101,8 +96,4 @@ public class ReferralActivity extends BasePresenterActivity {
         return true;
     }
 
-    private String getToolbarTitle() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(ReferralActivity.this);
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, getString(R.string.drawer_title_appshare));
-    }
 }

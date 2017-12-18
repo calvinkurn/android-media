@@ -64,10 +64,10 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
 
     @Override
     public void checkVoucher(
-            TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
+            String gAdsId, TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
     ) {
         compositeSubscription.add(
-                voucherDigitalRepository.checkVoucher(paramNetwork)
+                voucherDigitalRepository.checkVoucher(gAdsId, paramNetwork)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

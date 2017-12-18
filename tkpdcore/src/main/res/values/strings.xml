@@ -2118,7 +2118,7 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
     <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
     <string name="app_share_label">Share ke Temanmu, Yuk!</string>
-    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="app_share_label_desc"><![CDATA[Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp20.000 saat mereka melakukan transaksi pertama di Tokopedia.]]></string>
     <string name="app_share_btn_label">Undang Teman</string>
     <string name="tambah_produk">+ Tambah Produk</string>
     <string name="product_share_subtitle">Dimana saja dan kapan saja</string>
@@ -2129,5 +2129,5 @@ di Tokopedia Sekarang!</string>
     <string name="app_rating_button_later">Nanti</string>
     <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
-
+    <string name="title_app_referral_howitworks">Info lebih lanjut ></string>
 </resources>

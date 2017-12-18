@@ -55,7 +55,7 @@ public interface ICartDataInteractor {
     void getThanksTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
                          Subscriber<ThanksTopPayData> subscriber);
 
-    void checkVoucherCode(TKPDMapParam<String, String> stringStringTKPDMapParam,
+    void checkVoucherCode(final String gAdsId, TKPDMapParam<String, String> stringStringTKPDMapParam,
                           Subscriber<ResponseTransform<VoucherData>> subscriber);
 
     void unSubscribeObservable();

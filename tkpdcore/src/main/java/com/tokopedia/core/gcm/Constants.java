@@ -122,6 +122,7 @@ public interface Constants {
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
+        String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";

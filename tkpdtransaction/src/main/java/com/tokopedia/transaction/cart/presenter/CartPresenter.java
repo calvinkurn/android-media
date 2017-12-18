@@ -12,6 +12,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -396,7 +397,8 @@ public class CartPresenter implements ICartPresenter {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
         params.put(IS_SUGGESTED, String.valueOf(instantCheckVoucher));
-        cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+        cartDataInteractor.checkVoucherCode(analHandler.getAdsId(), view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
                     @Override
                     public void onCompleted() {

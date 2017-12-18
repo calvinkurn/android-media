@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -88,8 +89,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         param.put("voucher_code", view.getVoucherCode());
         param.put("category_id", view.getDigitalCategoryId());
         view.showProgressLoading();
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         cartDigitalInteractor.checkVoucher(
-                view.getGeneratedAuthParamNetwork(param), getSubscriberCheckVoucher()
+                analHandler.getAdsId(), view.getGeneratedAuthParamNetwork(param), getSubscriberCheckVoucher()
         );
     }
 

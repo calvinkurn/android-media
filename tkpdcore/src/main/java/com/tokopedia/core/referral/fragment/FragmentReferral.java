@@ -1,19 +1,31 @@
 package com.tokopedia.core.referral.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.referral.listner.ReferralView;
 import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
+import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdUrl;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by ashwanityagi on 18/09/17.
@@ -25,6 +37,15 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @BindView(R2.id.btn_app_share)
     TextView appShareButton;
+    @BindView(R2.id.tv_referral_code)
+    TextView referralCodeTextView;
+    @BindView(R2.id.tv_app_share_desc)
+    TextView referralContentTextView;
+    @BindView(R2.id.tv_referral_help_link)
+    TextView TextViewHelpLink;
+
+    private ProgressDialog progressBar;
+    private static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
 
     public static FragmentReferral newInstance() {
         FragmentReferral fragmentReferral = new FragmentReferral();
@@ -38,7 +59,6 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     protected void onFirstTimeLaunched() {
-
     }
 
     @Override
@@ -52,6 +72,11 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
@@ -59,6 +84,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     @Override
     protected void initialPresenter() {
         presenter = new ReferralPresenter(this);
+        presenter.initialize();
     }
 
     @Override
@@ -78,9 +104,27 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     protected void initView(View view) {
+        TextViewHelpLink.setText(presenter.getHowItWorks());
         appShareButton.setOnClickListener(getButtonAppShareClickListner());
+
+        renderVoucherCode(presenter.getVoucherCodeFromCache());
+
+        referralContentTextView.setText(presenter.getReferralContents());
+        TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS,"");
+                startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString()));
+
+            }
+        });
+
     }
 
+    @OnClick(R2.id.btn_copy_referral_code)
+    public void clickOnCopyButton() {
+        presenter.copyVoucherCode(referralCodeTextView.getText().toString());
+    }
 
     @Override
     protected void setViewListener() {
@@ -103,10 +147,88 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
             @Override
             public void onClick(View v) {
                 presenter.shareApp();
-                UnifyTracking.eventAppShare();
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE,getReferralCodeFromTextView());
 
             }
         };
 
     }
+
+    @Override
+    public void renderVoucherCode(String voucherCode) {
+        referralCodeTextView.setText(voucherCode);
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        if (getActivity() != null)
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void closeView() {
+        if (getActivity() != null)
+            getActivity().finish();
+    }
+
+    @Override
+    public boolean isUserLoggedIn() {
+        return SessionHandler.isV4Login(getActivity());
+    }
+
+    @Override
+    public boolean isUserPhoneNumberVerified() {
+        return SessionHandler.isMsisdnVerified();
+    }
+
+    @Override
+    public void navigateToLoginPage() {
+
+    }
+
+    @Override
+    public void showVerificationPhoneNumberPage() {
+        if (getApplicationContext() instanceof OtpRouter) {
+            OtpRouter otpRouter = (OtpRouter) getApplicationContext();
+            startActivityForResult(otpRouter.getReferralPhoneNumberActivityIntent(getActivity()),
+                    REFERRAL_PHONE_VERIFY_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REFERRAL_PHONE_VERIFY_REQUEST_CODE) {
+            switch (resultCode) {
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(getActivity(), "Cant cont., must verify your phone number.", Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                    break;
+                default:
+                    presenter.initialize();
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public String getReferralCodeFromTextView() {
+        return referralCodeTextView.getText().toString();
+    }
+
+    @Override
+    public void showProcessDialog() {
+        if (progressBar == null) {
+            progressBar = new ProgressDialog(getActivity());
+        }
+        progressBar.show();
+    }
+
+    @Override
+    public void hideProcessDialog() {
+        if (progressBar != null && progressBar.isShowing()) {
+            progressBar.dismiss();
+        }
+    }
+
 }

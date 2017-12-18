@@ -1,8 +1,33 @@
 package com.tokopedia.core.referral.listner;
 
+import android.app.Activity;
+
 /**
  * Created by ashwanityagi on 18/09/17.
  */
 
 public interface ReferralView {
+
+    void renderVoucherCode(String voucherCode);
+
+    Activity getActivity();
+
+    void showToastMessage(String message);
+
+    void closeView();
+
+    boolean isUserLoggedIn();
+
+    boolean isUserPhoneNumberVerified();
+
+    void navigateToLoginPage();
+
+    void showVerificationPhoneNumberPage();
+
+    String getReferralCodeFromTextView();
+
+    void showProcessDialog();
+
+    void hideProcessDialog();
+
 }

@@ -227,7 +227,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void checkVoucherCode(TKPDMapParam<String, String> param,
+    public void checkVoucherCode(final String gAdsId, TKPDMapParam<String, String> param,
                                  Subscriber<ResponseTransform<VoucherData>> subscriber) {
         compositeSubscription.add(Observable.just(param)
                 .flatMap(new Func1<TKPDMapParam<String, String>,
@@ -235,7 +235,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                     @Override
                     public Observable<Response<TkpdResponse>>
                     call(TKPDMapParam<String, String> param) {
-                        return txVoucherService.getApi().checkVoucherCode(param);
+                        return txVoucherService.getApi().checkVoucherCode(gAdsId, param);
                     }
                 })
                 .map(new Func1<Response<TkpdResponse>, ResponseTransform<VoucherData>>() {
