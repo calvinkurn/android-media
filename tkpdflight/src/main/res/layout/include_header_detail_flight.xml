@@ -5,70 +5,103 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:paddingTop="@dimen/padding_small"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
     tools:showIn="@layout/item_flight_detail">
 
-    <ImageView
-        android:id="@+id/airline_icon"
-        android:layout_width="@dimen/image_width_m"
-        android:layout_height="@dimen/image_width_m"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/margin_sm"
-        tools:src="@drawable/ic_badge_diamond" />
-
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_toLeftOf="@+id/container_refundable_info"
-        android:layout_toRightOf="@+id/airline_icon">
+        android:id="@+id/container_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/airline_icon"
+            android:layout_width="@dimen/image_width_m"
+            android:layout_height="@dimen/image_width_m"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_sm"
+            tools:src="@drawable/ic_badge_diamond" />
 
-        <TextView
-            android:id="@+id/airline_name"
-            style="@style/TextView.Body1.BlackPrimary"
-            tools:text="Cathay Pacific" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/container_refundable_info"
+            android:layout_toRightOf="@+id/airline_icon">
 
-        <TextView
-            android:id="@+id/airline_code"
-            style="@style/TextView.Body1.BlackSecondary"
-            android:layout_alignLeft="@+id/airline_name"
-            android:layout_below="@id/airline_name"
-            tools:text="CP - 321" />
+            <TextView
+                android:id="@+id/airline_name"
+                style="@style/TextView.Body1.BlackPrimary"
+                tools:text="Cathay Pacific" />
+
+            <TextView
+                android:id="@+id/airline_code"
+                style="@style/TextView.Body1.BlackSecondary"
+                android:layout_alignLeft="@+id/airline_name"
+                android:layout_below="@id/airline_name"
+                tools:text="CP - 321" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/container_refundable_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/airline_refundable_info"
+                style="@style/TextView.Caption.BlackSecondary"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_rect_stroke_flight_grey"
+                android:paddingBottom="@dimen/padding_vvs"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_vvs"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:text="Refundable"
+                tools:visibility="visible" />
+
+        </LinearLayout>
     </RelativeLayout>
 
+
     <LinearLayout
-        android:id="@+id/container_refundable_info"
+        android:id="@+id/container_pnr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
-        android:gravity="center"
+        android:layout_below="@+id/container_header"
+        android:layout_marginTop="@dimen/margin_small"
+        android:gravity="center_vertical"
+        tools:visibility="visible"
+        android:visibility="gone"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/airline_refundable_info"
-            style="@style/TextView.Caption.BlackSecondary"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/bg_rect_stroke_flight_grey"
-            android:paddingBottom="@dimen/padding_vvs"
-            android:paddingLeft="@dimen/padding_small"
-            android:paddingRight="@dimen/padding_small"
-            android:paddingTop="@dimen/padding_vvs"
-            android:textSize="10sp"
-            android:visibility="gone"
-            tools:text="Refundable"
-            tools:visibility="visible" />
+            android:layout_marginRight="@dimen/margin_vs"
+            style="@style/TextView.Body1.BlackSecondary"
+            android:text="@string/flight_label_booking_code_pnr" />
 
+        <TextView
+            android:id="@+id/pnr_code"
+            style="@style/TextView.Body1.Green.Bold"
+            android:layout_marginRight="@dimen/margin_vs"
+            tools:text="323088926194" />
+
+        <ImageView
+            android:id="@+id/copy_pnr"
+            android:layout_width="@dimen/image_width_xs"
+            android:layout_height="@dimen/image_width_xs"
+            android:src="@drawable/ic_copy_order" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/airline_icon"
-        android:layout_marginTop="@dimen/margin_small"
-        android:background="@color/black_twenty_percent"/>
+        android:layout_below="@+id/container_pnr"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:background="@color/black_twenty_percent" />
 </RelativeLayout>

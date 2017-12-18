@@ -35,7 +35,7 @@ public class FlightOrderDataSource {
     }
 
     public Observable<OrderEntity> getOrder(String id) {
-        return flightApi.getOrder(id).map(new Func1<Response<DataResponse<OrderEntity>>, OrderEntity>() {
+        return flightApi.getOrder(Integer.parseInt(id)).map(new Func1<Response<DataResponse<OrderEntity>>, OrderEntity>() {
             @Override
             public OrderEntity call(Response<DataResponse<OrderEntity>> dataResponseResponse) {
                 return dataResponseResponse.body().getData();

@@ -1,19 +1,13 @@
 package com.tokopedia.flight.review.view.presenter;
 
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
-import com.tokopedia.flight.common.constant.FlightErrorConstant;
-import com.tokopedia.flight.common.data.model.FlightError;
-import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
-import com.tokopedia.flight.review.domain.FlightBookingReviewSubmitUseCase;
+import com.tokopedia.flight.review.domain.FlightBookingCheckoutUseCase;
 import com.tokopedia.flight.review.domain.FlightBookingVerifyUseCase;
 import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
@@ -32,18 +26,18 @@ import rx.Subscriber;
 public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<FlightBookingReviewContract.View> implements FlightBookingReviewContract.Presenter {
 
     private final FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase;
-    private final FlightBookingReviewSubmitUseCase flightBookingReviewSubmitUseCase;
+    private final FlightBookingCheckoutUseCase flightBookingCheckoutUseCase;
     private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
 
     @Inject
     public FlightBookingReviewPresenter(FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase,
-                                        FlightBookingReviewSubmitUseCase flightBookingReviewSubmitUseCase,
+                                        FlightBookingCheckoutUseCase flightBookingCheckoutUseCase,
                                         FlightAddToCartUseCase flightAddToCartUseCase,
                                         FlightBookingCartDataMapper flightBookingCartDataMapper,
                                         FlightBookingVerifyUseCase flightBookingVerifyUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightCheckVoucherCodeUseCase = flightCheckVoucherCodeUseCase;
-        this.flightBookingReviewSubmitUseCase = flightBookingReviewSubmitUseCase;
+        this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
     }
 
@@ -55,6 +49,19 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         flightBookingVerifyUseCase.execute(flightBookingVerifyUseCase.createRequestParams(promoCode,
                 price, adult, cartId, flightPassengerViewModels, contactName, country, email, phone)
                 , getSubscriberVerifyBooking());
+        /*flightBookingVerifyUseCase.createObservable(
+                flightBookingVerifyUseCase.createRequestParams(
+                        promoCode,
+                        price,
+                        adult,
+                        cartId,
+                        flightPassengerViewModels,
+                        contactName,
+                        country,
+                        email,
+                        phone
+                )
+        );*/
     }
 
     @Override
@@ -65,7 +72,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     @Override
     public void submitData() {
-        flightBookingReviewSubmitUseCase.execute(RequestParams.create(), getSubscriberSubmitData());
+        flightBookingCheckoutUseCase.execute(RequestParams.create(), getSubscriberSubmitData());
     }
 
     private Subscriber<DataResponseVerify> getSubscriberVerifyBooking() {
@@ -77,7 +84,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideProgressDialog();
                     getView().onErrorVerifyCode(e);
                 }
@@ -100,7 +107,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideProgressDialog();
                     getView().onErrorCheckVoucherCode(FlightErrorUtil.getMessageFromException(e));
                 }
@@ -123,7 +130,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().onErrorSubmitData(e);
                 }
             }

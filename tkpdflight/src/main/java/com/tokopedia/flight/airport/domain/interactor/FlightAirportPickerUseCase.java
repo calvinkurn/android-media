@@ -18,6 +18,7 @@ import rx.functions.Func1;
 
 public class FlightAirportPickerUseCase extends UseCase<List<FlightAirportDB>> {
     public static final String KEYWORD = "keyword";
+    public static final String ID_COUNTRY_INDONESIA = "ID";
     private final FlightRepository flightRepository;
 
     @Inject
@@ -33,20 +34,7 @@ public class FlightAirportPickerUseCase extends UseCase<List<FlightAirportDB>> {
 
     @Override
     public Observable<List<FlightAirportDB>> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirportList(requestParams.getString(KEYWORD, ""))
-                .flatMap(new Func1<List<FlightAirportDB>, Observable<List<FlightAirportDB>>>() {
-                    @Override
-                    public Observable<List<FlightAirportDB>> call(List<FlightAirportDB> flightAirportDBs) {
-                        return Observable.from(flightAirportDBs)
-                                .filter(new Func1<FlightAirportDB, Boolean>() {
-                                    @Override
-                                    public Boolean call(FlightAirportDB flightAirportDB) {
-                                        return flightAirportDB.getCountryId().equals("ID");
-                                    }
-                                })
-                                .toList();
-                    }
-                });
+        return flightRepository.getAirportList(requestParams.getString(KEYWORD, ""), ID_COUNTRY_INDONESIA);
     }
 
     public RequestParams createRequestParam(String text) {

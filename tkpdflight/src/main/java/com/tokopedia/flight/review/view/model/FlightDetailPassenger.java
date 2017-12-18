@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

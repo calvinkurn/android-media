@@ -72,6 +72,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void onSaveButtonClicked() {
+        getView().hideKeyboard();
         if (validateFields()) {
             getView().getCurrentPassengerViewModel().setPassengerTitle(getView().getPassengerTitle());
             getView().getCurrentPassengerViewModel().setPassengerTitleId(getView().getPassengerTitleId());

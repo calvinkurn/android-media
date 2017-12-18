@@ -2,6 +2,7 @@ package com.tokopedia.flight.orderlist.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
@@ -24,12 +26,14 @@ import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.OrderDetailPassData;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+;
 
 /**
  * @author by zulfikarrahman on 11/28/17.
@@ -96,6 +100,12 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
         filtersRecyclerView.setNestedScrollingEnabled(false);
         filtersRecyclerView.setAdapter(filterAdapter);
         filterAdapter.setListener(this);
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.onSwipeRefresh();
+            }
+        });
         return view;
     }
 
@@ -165,7 +175,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.onFilterSelected(selectedFilter);
+                        presenter.onFilterSelected();
                     }
                 }
         );
@@ -185,6 +195,16 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void disableSwipeRefresh() {
+        swipeToRefresh.setEnabled(false);
+    }
+
+    @Override
+    public void enableSwipeRefresh() {
+        swipeToRefresh.setEnabled(true);
+    }
+
+    @Override
     public void clearFilter() {
         selectedFilter = "";
         presenter.getInitialOrderData();
@@ -192,19 +212,21 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void selectFilter(String typeFilter) {
-        presenter.onFilterSelected(typeFilter);
         selectedFilter = typeFilter;
+        presenter.onFilterSelected();
         endlessRecyclerviewListener.resetState();
     }
 
     @Override
-    public void onDetailOrderClicked(OrderDetailPassData viewModel) {
-
+    public void onDetailOrderClicked(FlightOrderDetailPassData viewModel) {
+        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), viewModel));
     }
 
     @Override
     public void onDetailOrderClicked(String orderId) {
-
+        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
+        passData.setOrderId(orderId);
+        startActivity(FlightDetailOrderActivity.createIntent(getActivity(), passData));
     }
 
     @Override
@@ -213,7 +235,13 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void onReBookingClicked(FlightOrderBaseViewModel item) {
+    public void onDestroyView() {
+        presenter.onDestroyView();
+        super.onDestroyView();
+    }
 
+    @Override
+    public void onReBookingClicked(FlightOrderBaseViewModel item) {
+        getActivity().finish();
     }
 }
