@@ -119,7 +119,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
         return rowNumber;
     }
 
-    public List<Object> getListProductAsObjectDataLayer(String eventLabel) {
+    public List<Object> getListProductAsObjectDataLayer(String eventLabel, String userId) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < getListProduct().size(); i++) {
             ProductFeedViewModel viewModel = getListProduct().get(i);
@@ -132,7 +132,8 @@ public class ActivityCardViewModel extends ProductCardViewModel {
                             "category", "",
                             "variant", "",
                             "list", String.format("feed - product %d - %s", i, eventLabel),
-                            "position", i
+                            "position", i,
+                            "userId", userId
                     )
             );
         }

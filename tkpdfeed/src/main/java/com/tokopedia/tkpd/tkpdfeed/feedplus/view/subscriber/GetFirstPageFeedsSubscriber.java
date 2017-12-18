@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
@@ -21,7 +23,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
@@ -229,7 +230,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(model);
                             String eventLabel = String.format("%s - %s", "product", "");
                             FeedTracking.eventImpressionFeedUploadedProduct(
-                                    model.getListProductAsObjectDataLayer(eventLabel),
+                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity())),
                                     eventLabel
                             );
                         }
@@ -253,7 +254,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                             String eventLabel = String.format("%s - %s", TYPE_INSPIRATION, inspirationViewModel.getSource());
                             FeedTracking.eventImpressionFeedInspiration(
-                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel),
+                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity())),
                                     eventLabel
                             );
                         }
@@ -467,11 +468,18 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain) {
         if (domain.getContent() != null
                 && !domain.getContent().getInspirationDomains().isEmpty()) {
-            return new InspirationViewModel(
-                    domain.getContent().getInspirationDomains().get(0).getTitle(),
-                    convertToRecommendationListViewModel(domain.getContent()
-                            .getInspirationDomains().get(0).getListInspirationItem()),
-                    domain.getContent().getInspirationDomains().get(0).getSource());
+            InspirationViewModel viewModel = new InspirationViewModel();
+            viewModel.setTitle(domain.getContent().getInspirationDomains().get(0).getTitle());
+            viewModel.setListProduct(
+                    convertToRecommendationListViewModel(
+                            domain.getContent().getInspirationDomains().get(0).getListInspirationItem()
+                    )
+            );
+            viewModel.setSource(
+                    domain.getContent().getInspirationDomains().get(0).getSource()
+            );
+            viewModel.setUserId(SessionHandler.getLoginID(viewListener.getActivity()));
+            return viewModel;
         } else {
             return null;
         }
