@@ -587,9 +587,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
 
-        if (cartData.getCartCannotInsurance() == 1 || isProductMustInsurance(cartData.getCartProducts())) {
+        if (cartData.getCartCannotInsurance() == 1 ||
+                (cartData.getCartForceInsurance() == 1 ||
+                        isProductMustInsurance(cartData.getCartProducts()))) {
             holder.spUseInsurance.setEnabled(false);
-        } else if (unEditable(cartData)) {
+        }
+        else if (unEditable(cartData)) {
             holder.spUseInsurance.setEnabled(false);
         } else {
             holder.spUseInsurance.setEnabled(true);
@@ -660,7 +663,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private boolean isInsuranced(CartItem cartItem) {
-        return isProductUseInsurance(cartItem.getCartProducts());
+        return (cartItem.getCartForceInsurance() == 1
+                || cartItem.getCartInsuranceProd() == 1
+                || isProductUseInsurance(cartItem.getCartProducts()));
     }
 
     @NonNull

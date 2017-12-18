@@ -125,10 +125,8 @@ public class KeroppiParam {
     }
 
     private static String setInsurance(CartItem cartItem) {
-        for (CartProduct cartProduct : cartItem.getCartProducts()) {
-            if (cartProduct.getProductMustInsurance().equals("1")
-                    || cartProduct.getProductUseInsurance() == 1) return "1";
-        }
-        return "0";
+        if (cartItem.getCartForceInsurance() == 1) {
+            return "1";
+        } else return "0";
     }
 }
