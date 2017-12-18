@@ -12,4 +12,5 @@ public interface ShopOpenRepository {
     Observable<Boolean> checkDomain(String domainName);
     Observable<Boolean> checkShop(String shopName);
     Observable<ResponseIsReserveDomain> isReserveDomain();
+    Observable<Boolean> reserveShopNameDomain(String shopName, String shopDomainName);
 }

@@ -78,16 +78,16 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
                 attrs, R.styleable.TkpdTextInputLayout, defStyle, 0);
 
         mSuccessFocusColor = a.getColor(
-                R.styleable.TkpdTextInputLayout_successFocusColor,
+                R.styleable.TkpdTextInputLayout_ttil_successFocusColor,
                 COLOR_GREEN);
         mSuccessLeaveColor = a.getColor(
-                R.styleable.TkpdTextInputLayout_successLeaveColor,
+                R.styleable.TkpdTextInputLayout_ttil_successLeaveColor,
                 mSuccessFocusColor);
         mSuccessTextAppearance = a.getResourceId(
-                R.styleable.TkpdTextInputLayout_successTextAppearance,
+                R.styleable.TkpdTextInputLayout_ttil_successTextAppearance,
                 android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Caption);
         mPrefixString = a.getString(
-                R.styleable.TkpdTextInputLayout_prefixString);
+                R.styleable.TkpdTextInputLayout_ttil_prefixString);
         a.recycle();
 
 

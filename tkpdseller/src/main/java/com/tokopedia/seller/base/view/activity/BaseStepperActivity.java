@@ -88,11 +88,15 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
         }
     }
 
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == android.R.id.home) {
-            onBackEvent();
+            onBackPressed();
             return false;
         }
         return super.onOptionsItemSelected(item);

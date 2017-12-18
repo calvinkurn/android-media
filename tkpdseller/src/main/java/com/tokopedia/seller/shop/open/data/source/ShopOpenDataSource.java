@@ -33,4 +33,8 @@ public class ShopOpenDataSource {
     public Observable<ResponseIsReserveDomain> isReserveDomain() {
         return shopOpenDataCloud.isReserveDomainResponseObservable();
     }
+
+    public Observable<Boolean> reserveShopNameDomain(String shopName, String shopDomainName) {
+        return shopOpenDataCloud.reserveShopNameDomain(shopName, shopDomainName);
+    }
 }

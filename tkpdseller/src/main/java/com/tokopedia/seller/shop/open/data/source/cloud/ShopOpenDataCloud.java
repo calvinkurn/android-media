@@ -7,6 +7,7 @@ import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckShop;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
 
 import javax.inject.Inject;
 
@@ -20,12 +21,10 @@ import rx.functions.Func1;
 
 public class ShopOpenDataCloud {
     private final TomeApi api;
-    private final Context context;
 
     @Inject
-    public ShopOpenDataCloud(TomeApi api, @ApplicationContext Context context) {
+    public ShopOpenDataCloud(TomeApi api) {
         this.api = api;
-        this.context = context;
     }
 
     public Observable<Boolean> checkDomainName(String domainName) {
@@ -63,6 +62,21 @@ public class ShopOpenDataCloud {
                 if (responseCheckShopResponse.isSuccessful()
                         && responseCheckShopResponse.body() != null) {
                     return responseCheckShopResponse.body();
+                } else {
+                    throw null;
+                }
+            }
+        });
+    }
+
+    public Observable<Boolean> reserveShopNameDomain(String shopName, String shopDomainName) {
+        return api.reserveDomain(shopName, shopDomainName).map(new Func1<Response<ResponseReserveDomain>, Boolean>() {
+            @Override
+            public Boolean call(Response<ResponseReserveDomain> responseReserveDomainResponse) {
+                if (responseReserveDomainResponse.isSuccessful()
+                        && responseReserveDomainResponse.body() != null) {
+                    return "1".equals( responseReserveDomainResponse.body().getShopDomainStatus()) &&
+                            "1".equals( responseReserveDomainResponse.body().getShopNameStatus());
                 } else {
                     throw null;
                 }
