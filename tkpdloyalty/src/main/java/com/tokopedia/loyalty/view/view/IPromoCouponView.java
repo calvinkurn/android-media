@@ -35,4 +35,8 @@ public interface IPromoCouponView extends IBaseView {
     void showSnackbarError(String message);
 
     Context getContext();
+
+    void disableSwipeRefresh();
+
+    void enableSwipeRefresh();
 }

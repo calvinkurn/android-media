@@ -57,6 +57,10 @@ public interface ConfirmBookingContract {
         void showPaymentMethod(String label, String url);
 
         void hidePaymentMethod();
+
+        void showTokoCashBalance(String tokoCashBalance);
+
+        void hideTokoCashBalance();
     }
 
     interface Presenter extends CustomerPresenter<View> {

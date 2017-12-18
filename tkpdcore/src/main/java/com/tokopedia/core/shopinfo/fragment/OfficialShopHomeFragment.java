@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.OfficialStoreProductAdapter;
@@ -35,7 +36,11 @@ import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.core.shopinfo.presenter.OsHomePresenter;
 import com.tokopedia.core.shopinfo.presenter.OsHomePresenterImpl;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.widgets.NestedWebView;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -66,9 +71,10 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
 
     private static final String STATE_PRODUCT_MODEL = "STATE_PRODUCT_MODEL";
     private static final String PARAM_ALL = "all";
+    private static final String SEAMLESS = "seamless";
 
     @BindView(R2.id.webview)
-    WebView webView;
+    NestedWebView webView;
     @BindView(R2.id.progress)
     ProgressBar progressBar;
     @BindView(R2.id.linear_product_list)
@@ -161,14 +167,14 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
 
     @Override
     public void onSaveState(Bundle state) {
-        if(productModel != null) {
+        if (productModel != null) {
             state.putParcelable(STATE_PRODUCT_MODEL, productModel);
         }
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-        if(!savedState.isEmpty()){
+        if (!savedState.isEmpty()) {
             onGetProduct((ProductModel) savedState.getParcelable(STATE_PRODUCT_MODEL));
         }
     }
@@ -287,7 +293,8 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     private void initWebView() {
         progressBar.setIndeterminate(true);
         String url = getArguments().getString(SHOP_URL);
-        webView.loadUrl(url);
+
+        loadUrl(url);
         webView.setWebViewClient(new OfficialStoreWebViewClient());
         webView.setWebChromeClient(new OfficialStoreWebChromeClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -301,6 +308,25 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
+    }
+
+    private void loadUrl(String url) {
+        if (SessionHandler.isV4Login(getActivity())) {
+            webView.loadAuthUrl(!url.contains(SEAMLESS) ?
+                    URLGenerator.generateURLSessionLogin(encodeUrl(url), getActivity()) : url);
+        } else {
+            webView.loadUrl(url);
+        }
+    }
+
+    private String encodeUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return url;
     }
 
     private class OfficialStoreWebChromeClient extends WebChromeClient {
@@ -389,6 +415,8 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
                 GetShopProductParam getShopProductParam = buildProductListParameter(uri);
                 mOfficialShopInteractionListener.OnProductListPageRedirected(getShopProductParam);
             }
+        } else if (url.contains("shop-static")) {
+            webView.loadUrl(url);
         } else if (uri.getScheme().startsWith("http")) {
             mOfficialShopInteractionListener.OnWebViewPageRedirected(url);
         }

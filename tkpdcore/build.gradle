@@ -100,7 +100,6 @@ dependencies {
     testCompile rootProject.ext.testDependencies.assertJ
 
     compile rootProject.ext.serviceDependencies.hockeyApp
-    compile rootProject.ext.serviceDependencies.anrWatchDogs
 
     compile rootProject.ext.supportLibDependencies.recyclerViewV7
     compile rootProject.ext.supportLibDependencies.supportV4

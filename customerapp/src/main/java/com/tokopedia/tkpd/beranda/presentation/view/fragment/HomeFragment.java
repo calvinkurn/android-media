@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -507,10 +506,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void actionTokoPointClicked(String tokoPointUrl) {
+    public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
-            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), tokoPointUrl);
+            if (TextUtils.isEmpty(pageTitle))
+                tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), tokoPointUrl);
+            else
+                tkpdCoreRouter.actionOpenGeneralWebViewWithTitle(getActivity(), tokoPointUrl, pageTitle);
         }
     }
 
@@ -635,6 +637,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
         if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
+            adapter.getItems().set(0, headerViewModel);
             adapter.notifyItemChanged(0);
         }
     }

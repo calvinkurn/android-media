@@ -15,8 +15,6 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
-import com.github.anrwatchdog.ANRError;
-import com.github.anrwatchdog.ANRWatchDog;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -275,7 +273,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         initFacebook();
         initCrashlytics();
         initializeAnalytics();
-        initANRWatchDogs();
         initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
@@ -349,20 +346,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
         TrackingUtils.setMoEngageExistingUser();
         TrackingUtils.enableDebugging(isDebug());
-    }
-
-    public void initANRWatchDogs() {
-        if (!BuildConfig.DEBUG) {
-            ANRWatchDog watchDog = new ANRWatchDog();
-            watchDog.setReportMainThreadOnly();
-            watchDog.setANRListener(new ANRWatchDog.ANRListener() {
-                @Override
-                public void onAppNotResponding(ANRError error) {
-                    //Crashlytics.logException(error);
-                }
-            });
-            watchDog.start();
-        }
     }
 
     public void initCrashlytics() {

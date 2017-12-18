@@ -6,6 +6,7 @@ import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCodeInteractor;
@@ -63,7 +64,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if(e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                if(e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
                     view.onPromoCodeError(e.getMessage());
                 } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }

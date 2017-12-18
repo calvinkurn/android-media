@@ -24,6 +24,9 @@ public class TokoPointDrawerDataResponse {
     @SerializedName("mainpage_url")
     @Expose
     private String mainPageUrl;
+    @SerializedName("mainpage_title")
+    @Expose
+    private String mainPageTitle;
 
     public int getOffFlag() {
         return offFlag;
@@ -43,5 +46,9 @@ public class TokoPointDrawerDataResponse {
 
     public String getMainPageUrl() {
         return mainPageUrl;
+    }
+
+    public String getMainPageTitle() {
+        return mainPageTitle;
     }
 }

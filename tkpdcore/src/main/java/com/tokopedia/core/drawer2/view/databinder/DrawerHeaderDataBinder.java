@@ -3,6 +3,7 @@ package com.tokopedia.core.drawer2.view.databinder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
 
-        void onTokoPointActionClicked(String url);
+        void onTokoPointActionClicked(String mainPageUrl, String title);
     }
 
     public interface RetryTokoCashListener {
@@ -245,9 +246,11 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
     @SuppressLint("SetTextI18n")
     private void setTokoPoint(ViewHolder holder) {
+        final String TITLE_HEADER_WEBSITE = "TokoPoints";
         if (data.getTokoPointDrawerData() != null && data.getTokoPointDrawerData().getOffFlag() == 0) {
             holder.tokoPointContainer.setVisibility(View.VISIBLE);
-            holder.tvTokoPointAction.setText("TokoPoints");
+            final String title = data.getTokoPointDrawerData().getMainPageTitle();
+            holder.tvTokoPointAction.setText(TextUtils.isEmpty(title) ? TITLE_HEADER_WEBSITE : "TokoPoints");
             ImageHandler.loadImageThumbs(context,
                     holder.ivTokoPointBadge,
                     data.getTokoPointDrawerData().getUserTier().getTierImageUrl());
@@ -256,10 +259,13 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                 @Override
                 public void onClick(View view) {
                     UnifyTracking.eventUserClickedPoints();
-                    listener.onTokoPointActionClicked(data.getTokoPointDrawerData().getMainPageUrl());
+                    listener.onTokoPointActionClicked(
+                            data.getTokoPointDrawerData().getMainPageUrl(),
+                            TextUtils.isEmpty(title) ? TITLE_HEADER_WEBSITE : title
+                    );
                 }
             });
-        }else {
+        } else {
             holder.tokoPointContainer.setVisibility(View.GONE);
         }
     }

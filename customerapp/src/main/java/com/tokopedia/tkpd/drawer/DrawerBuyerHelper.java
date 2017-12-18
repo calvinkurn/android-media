@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 
@@ -309,6 +311,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
+                TkpdState.DrawerPosition.SELLER_INFO,
+                drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
         return inboxMenu;
     }
 
@@ -505,6 +511,11 @@ public class DrawerBuyerHelper extends DrawerHelper
                         UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
                     }
                     break;
+                case TkpdState.DrawerPosition.SELLER_INFO:
+                    UnifyTracking.eventClickMenuSellerInfo();
+                    intent = new Intent(context, SellerInfoActivity.class);
+                    context.startActivity(intent);
+                    break;
                 default:
                     super.onItemClicked(item);
             }
@@ -577,10 +588,12 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     @Override
-    public void onTokoPointActionClicked(String url) {
+    public void onTokoPointActionClicked(String mainPageUrl, String title) {
         if (context.getApplication() instanceof TkpdCoreRouter) {
             TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
-            tkpdCoreRouter.actionOpenGeneralWebView(context, url);
+            if (TextUtils.isEmpty(title))
+                tkpdCoreRouter.actionOpenGeneralWebView(context, mainPageUrl);
+            else tkpdCoreRouter.actionOpenGeneralWebViewWithTitle(context, mainPageUrl, title);
         }
     }
 
