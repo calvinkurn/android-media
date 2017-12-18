@@ -313,7 +313,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void scanBarcodeClick() {
-        presenter.onScanBarcodeClick();
+        presenter.onScanBarcodeClick(context);
     }
 
     @Override
