@@ -11,12 +11,16 @@ import net.hockeyapp.android.UpdateManager;
  * Created by ricoharisin on 9/19/16.
  */
 public class HockeyAppHelper {
+    public static final String KEY_MAINAPP = "a2ba10bfc3ec8f60d1c6d7c9ac27fe4a";
+    public static final String KEY_SELLERAPP = "404b7bc37aeb4c5bbf0c033c1a9e1f2e";
 
     private static Boolean ENABLE_DISTRIBUTION = false;
+    private static String HOCKEYAPP_KEY = KEY_MAINAPP;
+
 
     public static void handleLogin(Activity activity) {
         if (isAllow()) {
-            LoginManager.register(activity, "a2ba10bfc3ec8f60d1c6d7c9ac27fe4a", LoginManager.LOGIN_MODE_EMAIL_ONLY);
+            LoginManager.register(activity, HOCKEYAPP_KEY, LoginManager.LOGIN_MODE_EMAIL_ONLY);
             LoginManager.verifyLogin(activity, activity.getIntent());
         }
     }
@@ -39,5 +43,9 @@ public class HockeyAppHelper {
 
     public static Boolean getEnableDistribution() {
         return ENABLE_DISTRIBUTION;
+    }
+
+    public static void setHockeyappKey(String key) {
+        HOCKEYAPP_KEY = key;
     }
 }
