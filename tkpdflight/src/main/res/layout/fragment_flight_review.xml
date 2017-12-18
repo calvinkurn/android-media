@@ -203,12 +203,10 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical">
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@drawable/bg_line_separator" />
-
                 <Button
                     android:id="@+id/button_submit"
                     style="@style/Button.Submit.Orange"
