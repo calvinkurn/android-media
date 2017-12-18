@@ -591,9 +591,9 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onTokoPointActionClicked(String mainPageUrl, String title) {
         if (TextUtils.isEmpty(title))
-            BannerWebView.getCallingIntent(context, mainPageUrl);
+            context.startActivity(BannerWebView.getCallingIntent(context, mainPageUrl));
         else
-            BannerWebView.getCallingIntentWithTitle(context, mainPageUrl, title);
+            context.startActivity(BannerWebView.getCallingIntentWithTitle(context, mainPageUrl, title));
     }
 
     private void onGoToCreateShop() {
