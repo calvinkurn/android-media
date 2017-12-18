@@ -98,11 +98,15 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements Ha
 
     @Override
     public void onBackPressed() {
-        if (isLogoutOnBack) {
-            SessionHandler session = new SessionHandler(this);
-            session.Logout(this);
-        } else {
+        if (getCurrentPosition() > 1) {
             super.onBackPressed();
+        } else {
+            if (isLogoutOnBack) {
+                SessionHandler session = new SessionHandler(this);
+                session.Logout(this);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
