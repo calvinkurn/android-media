@@ -754,4 +754,24 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         }
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && getView() != null) {
+            restartBanner();
+        }
+    }
+
+    private void restartBanner() {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public boolean isMainViewVisible() {
+        return getUserVisibleHint();
+    }
+
 }

@@ -50,15 +50,13 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void bind(BannerViewModel element) {
-        if (!bannerView.isInitialized() && element.getSlides() != null) {
-            slidesList = element.getSlides();
-            List<String> promoUrls = new ArrayList<>();
-            for (BannerSlidesModel slidesModel : slidesList) {
-                promoUrls.add(slidesModel.getImageUrl());
-            }
-            bannerView.setPromoList(promoUrls);
-            bannerView.buildView();
+        slidesList = element.getSlides();
+        List<String> promoUrls = new ArrayList<>();
+        for (BannerSlidesModel slidesModel : slidesList) {
+            promoUrls.add(slidesModel.getImageUrl());
         }
+        bannerView.setPromoList(promoUrls);
+        bannerView.buildView();
     }
 
     private Promotion getPromotion(int position) {
@@ -79,7 +77,9 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoScrolled(int position) {
-        PaymentTracking.eventPromoImpression(getPromotion(position));
+        if (listener.isMainViewVisible()) {
+            PaymentTracking.eventPromoImpression(getPromotion(position));
+        }
     }
 
     @Override
