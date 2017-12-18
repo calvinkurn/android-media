@@ -706,9 +706,9 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-//        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-//            return InboxChatActivity.getCallingIntent(context);
-//        else
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+            return InboxChatActivity.getCallingIntent(context);
+        else
             return InboxMessageActivity.getCallingIntent(context);
     }
 
