@@ -219,6 +219,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void run() {
                 presenter.getHomeData();
+                presenter.getHeaderData(true);
             }
         });
         refreshLayout.setOnRefreshListener(this);
@@ -602,6 +603,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onRefresh() {
         presenter.getHomeData();
+        presenter.getHeaderData(false);
     }
 
     @Override
@@ -647,6 +649,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     @Override
                     public void onRetryClicked() {
                         presenter.getHomeData();
+                        presenter.getHeaderData(false);
                     }
                 });
             }
@@ -657,6 +660,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         @Override
                         public void onRetryClicked() {
                             presenter.getHomeData();
+                            presenter.getHeaderData(false);
                         }
                     });
         }

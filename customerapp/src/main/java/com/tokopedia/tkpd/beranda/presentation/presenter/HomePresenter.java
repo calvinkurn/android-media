@@ -119,7 +119,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(new HomeDataSubscriber());
         compositeSubscription.add(subscription);
-        sendBroadcastGetHeaderData();
     }
 
     private void initHeaderViewModelData() {
@@ -301,6 +300,24 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getShopInfoRetrofit.getShopInfo();
     }
 
+    public void getHeaderData(boolean initialStart) {
+        Intent intentGetTokocash = new Intent(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION);
+        intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
+
+        Intent intentGetTokoPoint = new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION);
+
+        if (initialStart && headerViewModel != null) {
+            if (headerViewModel.getHomeHeaderWalletActionData() == null)
+                context.sendBroadcast(intentGetTokocash);
+            if (headerViewModel.getTokoPointDrawerData() == null)
+                context.sendBroadcast(intentGetTokoPoint);
+        } else {
+            context.sendBroadcast(intentGetTokocash);
+            context.sendBroadcast(intentGetTokoPoint);
+        }
+    }
+
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
 
         public HomeDataSubscriber() {
@@ -362,16 +379,4 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     }
 
-    private void sendBroadcastGetHeaderData() {
-        Intent intentGetTokocash = new Intent(
-                DrawerActivityBroadcastReceiverConstant.INTENT_ACTION
-        );
-        intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
-                DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
-
-
-        Intent intentGetTokoPoint = new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION);
-        context.sendBroadcast(intentGetTokocash);
-        context.sendBroadcast(intentGetTokoPoint);
-    }
 }
