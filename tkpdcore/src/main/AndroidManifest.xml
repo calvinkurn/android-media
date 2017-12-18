@@ -197,12 +197,9 @@
             android:label="@string/title_activity_settings_notification"
             android:screenOrientation="portrait" />
         <activity
-            android:name="info.vividcode.android.zxing.CaptureActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="stateAlwaysHidden">
-        </activity>
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullSensor"
+            tools:replace="screenOrientation" />
         <activity
             android:name=".MaintenancePage"
             android:label="@string/title_activity_maintenance_page"

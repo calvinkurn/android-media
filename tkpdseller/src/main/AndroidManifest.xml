@@ -302,6 +302,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
+        <activity android:name=".selling.view.fragment.CustomScannerBarcodeActivity"
+            android:screenOrientation="sensorLandscape"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+
         <service
             android:name=".selling.SellingService"
             android:exported="false" />
