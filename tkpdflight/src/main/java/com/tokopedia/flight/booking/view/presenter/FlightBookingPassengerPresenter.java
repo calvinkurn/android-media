@@ -37,8 +37,12 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
         if (isAdultPassenger()) {
             getView().renderHeaderSubtitle(R.string.flight_booking_passenger_adult_subtitle);
-            getView().hideBirthdayInputView();
             getView().renderSpinnerForAdult();
+            if(getView().isAirAsiaAirline()) {
+                getView().showBirthdayInputView();
+            } else {
+                getView().hideBirthdayInputView();
+            }
         } else {
             getView().renderSpinnerForChildAndInfant();
             getView().showBirthdayInputView();
@@ -93,6 +97,10 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (isChildPassenger()) {
             minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
             maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
+            selectedDate = maxDate;
+        } else if(isAdultPassenger()) {
+            minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -100);
+            maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
             selectedDate = maxDate;
         } else {
             minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);

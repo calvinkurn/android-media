@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.KeyboardHandler;
@@ -55,6 +56,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_RETURN = "EXTRA_RETURN";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
+
+    private ArrayList<String> airAsiaFlightIds;
 
     public interface OnFragmentInteractionListener {
         void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
@@ -409,6 +412,15 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public boolean isAirAsiaAirline() {
+        if (getReturnTripId() != null) {
+            return (compareFlightIdWithAirAsia(getDepartureId()) || compareFlightIdWithAirAsia(getReturnTripId()));
+        } else {
+            return compareFlightIdWithAirAsia(getDepartureId());
+        }
+    }
+
+    @Override
     public String getPassengerLastName() {
         return etLastName.getText().toString().trim();
     }
@@ -497,5 +509,28 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     break;
             }
         }
+    }
+
+    // Method untuk menambahkan Flight Id AirAsia, jadi seandainya nanti ada bertambah lagi, bisa langsung di tambah disini
+    private void initAirAsiaFlightId() {
+        if(this.airAsiaFlightIds == null) {
+            this.airAsiaFlightIds = new ArrayList<>();
+            this.airAsiaFlightIds.add("AK");
+            this.airAsiaFlightIds.add("FD");
+            this.airAsiaFlightIds.add("QZ");
+            this.airAsiaFlightIds.add("XJ");
+            this.airAsiaFlightIds.add("XT");
+        }
+    }
+
+    private boolean compareFlightIdWithAirAsia(String flightId) {
+        this.initAirAsiaFlightId();
+        for (String airAsiaId : this.airAsiaFlightIds) {
+            if (flightId.equals(airAsiaId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

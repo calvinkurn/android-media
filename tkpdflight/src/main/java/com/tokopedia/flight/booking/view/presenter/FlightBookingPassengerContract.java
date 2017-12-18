@@ -90,6 +90,8 @@ public interface FlightBookingPassengerContract {
         void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(@StringRes int resId);
 
         void hideKeyboard();
+
+        boolean isAirAsiaAirline();
     }
 
     interface Presenter extends CustomerPresenter<View> {
