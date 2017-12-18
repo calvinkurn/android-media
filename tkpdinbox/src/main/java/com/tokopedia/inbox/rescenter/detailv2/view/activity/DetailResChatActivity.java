@@ -31,8 +31,8 @@ public class DetailResChatActivity
         implements DetailResChatActivityListener.View, HasComponent {
 
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
-    public static final String PARAM_SHOP_NAME = "shop_name";
-    public static final String PARAM_USER_NAME = "user_name";
+    public static final String PARAM_SHOP_NAME = "shopName";
+    public static final String PARAM_USER_NAME = "buyerName";
     public static final String PARAM_IS_SELLER = "is_seller";
 
     public static final String PARAM_APPLINK_SELLER = "sellerName";
