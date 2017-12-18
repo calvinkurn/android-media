@@ -113,11 +113,23 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getHomeData() {
+        initHeaderViewModelData();
         subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
                 .doOnNext(refreshData())
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(new HomeDataSubscriber());
         compositeSubscription.add(subscription);
+        sendBroadcastGetHeaderData();
+    }
+
+    private void initHeaderViewModelData() {
+        if (SessionHandler.isV4Login(context)) {
+            if (headerViewModel == null) {
+                headerViewModel = new HeaderViewModel();
+                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
+            }
+            headerViewModel.setPendingTokocashChecked(false);
+        }
     }
 
     @NonNull
@@ -292,14 +304,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
 
         public HomeDataSubscriber() {
-            if (SessionHandler.isV4Login(context)) {
-                if (headerViewModel == null) {
-                    headerViewModel = new HeaderViewModel();
-                    headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
-                }
-                headerViewModel.setPendingTokocashChecked(false);
-                sendBroadcastGetHeaderData();
-            }
         }
 
         @Override
@@ -328,7 +332,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onNext(List<Visitable> visitables) {
             if (isViewAttached()) {
-                if (SessionHandler.isV4Login(context)) {
+                if (SessionHandler.isV4Login(context) && headerViewModel != null) {
                     visitables.add(0, headerViewModel);
                 }
                 getView().setItems(visitables);
