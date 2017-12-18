@@ -63,7 +63,7 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
 
     @Override
     protected void setupFragment(Bundle savedInstance) {
-        // no op
+        // no op, handled in onResume
     }
 
     @Override
@@ -78,7 +78,7 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     }
 
     private void goToShopOpenMandatory() {
-        Intent intent = new Intent(this, ShopOpenMandatoryActivity.class);
+        Intent intent = ShopOpenMandatoryActivity.getIntent(this,isLogoutOnBack);
         startActivity(intent);
         this.finish();
     }

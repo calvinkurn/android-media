@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.open.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,12 +27,26 @@ import java.util.List;
 
 public class ShopOpenMandatoryActivity extends BaseStepperActivity implements HasComponent<ShopSettingComponent> {
 
+    public static final String EXTRA_LOGOUT_ON_BACK = "LOGOUT_ON_BACK";
+
     private ShopSettingComponent component;
 
     private List<Fragment> fragmentList;
 
+    boolean isLogoutOnBack = false;
+
+    public static Intent getIntent(Context context, boolean isLogoutOnBack) {
+        Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
+        intent.putExtra(EXTRA_LOGOUT_ON_BACK, isLogoutOnBack);
+        return intent;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_LOGOUT_ON_BACK)) {
+            isLogoutOnBack = getIntent().getBooleanExtra(EXTRA_LOGOUT_ON_BACK, false);
+        }
         super.onCreate(savedInstanceState);
         initComponent();
     }
@@ -80,4 +95,15 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements Ha
     public ShopSettingComponent getComponent() {
         return component;
     }
+
+    @Override
+    public void onBackPressed() {
+        if (isLogoutOnBack) {
+            SessionHandler session = new SessionHandler(this);
+            session.Logout(this);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 }
