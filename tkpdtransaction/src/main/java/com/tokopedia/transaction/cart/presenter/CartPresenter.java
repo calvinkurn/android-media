@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -49,8 +50,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author anggaprasetiyo on 11/3/16.
@@ -392,7 +397,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckVoucherCode(final int instantCheckVoucher) {
+    public void processCheckVoucherCode(final String voucherCode, final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
@@ -423,7 +428,12 @@ public class CartPresenter implements ICartPresenter {
                         ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
-                        view.renderSuccessCheckVoucher(descVoucher, instantCheckVoucher);
+                        view.renderSuccessCheckVoucher(
+                                voucherCode,
+                                responseTransform.getData().getVoucher().getVoucherAmountIdr(),
+                                descVoucher,
+                                instantCheckVoucher
+                        );
                         view.hideProgressLoading();
                     }
                 });
@@ -622,6 +632,7 @@ public class CartPresenter implements ICartPresenter {
         List<String> partialDeliverStringList = new ArrayList<>();
         List<String> rateKeyList = new ArrayList<>();
         List<String> rateDataList = new ArrayList<>();
+        List<CartItem> cartItemList = new ArrayList<>();
 
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
@@ -636,6 +647,7 @@ public class CartPresenter implements ICartPresenter {
                 rateKeyList.add(data.getCartCourierPrices().getKey());
                 rateDataList.add(data.getCartCourierPrices().getKeroValue());
             }
+            cartItemList.add(data.getCartItem());
         }
 
         StringBuilder dropShipperParamStringBuilder = new StringBuilder();
@@ -689,6 +701,7 @@ public class CartPresenter implements ICartPresenter {
             view.showToastMessage(view.getStringFromResource(
                     R.string.label_message_error_cannot_checkout));
         } else {
+            saveCartDataToCache(checkoutData, cartItemList);
             Bundle bundle = new Bundle();
             bundle.putParcelable(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
             bundle.putInt(TopPayIntentService.EXTRA_ACTION,
@@ -779,7 +792,7 @@ public class CartPresenter implements ICartPresenter {
         }
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
-//        processCartRates(data.getTokenKero(), data.getUt(), data.getCartItemList());
+        view.renderPromoView(data.getIsCouponActive() == 1);
     }
 
     @Override
@@ -874,4 +887,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
 
+    private void saveCartDataToCache(CheckoutData checkoutData, List<CartItem> cartItemList) {
+        cartDataInteractor.saveCartDataToCache(checkoutData, cartItemList);
+    }
 }

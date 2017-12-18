@@ -1319,6 +1319,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
     <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
     <string name="error_code_truecaller">Kode Error %1$d</string>
+    <string name="email_otp_error">Terjadi kesalahan. Silakan coba kembali. Kode Error: 1005</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
     <string name="title_credit_value">Nominal Pulsa</string>

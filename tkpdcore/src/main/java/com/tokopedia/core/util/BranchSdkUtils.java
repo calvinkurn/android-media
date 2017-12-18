@@ -29,7 +29,6 @@ public class BranchSdkUtils {
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
     private static final String URI_REDIRECT_MODE_KEY = "$uri_redirect_mode";
-    private static final String URI_REDIRECT_MODE_VALUE = "2";
     private static final String CAMPAIGN_NAME = "Android App";
     private static String extraDescription = "";
 
@@ -96,7 +95,6 @@ public class BranchSdkUtils {
         linkProperties.setCampaign(CAMPAIGN_NAME);
         linkProperties.setChannel(channel);
         linkProperties.setFeature(data.getType());
-        linkProperties.addControlParameter(URI_REDIRECT_MODE_KEY, URI_REDIRECT_MODE_VALUE);
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         return linkProperties;
