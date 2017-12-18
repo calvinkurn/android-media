@@ -225,8 +225,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                     case TYPE_NEW_PRODUCT:
                         ActivityCardViewModel model = convertToActivityViewModel(domain);
-                        if (model.getListProduct() != null && !model.getListProduct().isEmpty())
+                        if (model.getListProduct() != null && !model.getListProduct().isEmpty()) {
                             listFeedView.add(model);
+                            String eventLabel = String.format("%s - %s", "product", "");
+                            FeedTracking.eventImpressionFeedUploadedProduct(
+                                    model.getListProductAsObjectDataLayer(eventLabel),
+                                    eventLabel
+                            );
+                        }
                         break;
                     case TYPE_PROMOTION:
                         PromoCardViewModel promo = convertToPromoViewModel(domain);

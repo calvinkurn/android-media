@@ -507,4 +507,21 @@ public class GTMContainer implements IGTMContainer {
                         )
         );
     }
+
+    @Override
+    public void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - item impression",
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                ))
+                )
+        );
+    }
 }

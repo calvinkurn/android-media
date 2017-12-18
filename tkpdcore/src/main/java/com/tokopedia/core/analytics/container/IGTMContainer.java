@@ -114,4 +114,6 @@ public interface IGTMContainer {
     void enhanceClickFeedRecomItem(List<Object> objects, String eventLabel, String productUrl, String actionField);
 
     void eventImpressionFeedInspiration(List<Object> objects, String eventLabel);
+
+    void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel);
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 5/15/17.
@@ -115,5 +117,25 @@ public class ActivityCardViewModel extends ProductCardViewModel {
 
     public int getRowNumber() {
         return rowNumber;
+    }
+
+    public List<Object> getListProductAsObjectDataLayer(String eventLabel) {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < getListProduct().size(); i++) {
+            ProductFeedViewModel viewModel = getListProduct().get(i);
+            list.add(
+                    DataLayer.mapOf(
+                            "name", viewModel.getName(),
+                            "id", viewModel.getProductId(),
+                            "price", viewModel.getPrice(),
+                            "brand", "",
+                            "category", "",
+                            "variant", "",
+                            "list", String.format("feed - product %d - %s", i, eventLabel),
+                            "position", i
+                    )
+            );
+        }
+        return list;
     }
 }

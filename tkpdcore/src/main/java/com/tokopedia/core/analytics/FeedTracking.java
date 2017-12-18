@@ -120,4 +120,8 @@ public class FeedTracking extends TrackingUtils {
     public static void eventImpressionFeedInspiration(List<Object> list, String eventLabel) {
         getGTMEngine().eventImpressionFeedInspiration(list, eventLabel);
     }
+
+    public static void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
+        getGTMEngine().eventImpressionFeedUploadedProduct(list, eventLabel);
+    }
 }
