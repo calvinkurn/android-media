@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
@@ -400,6 +401,15 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if(view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
