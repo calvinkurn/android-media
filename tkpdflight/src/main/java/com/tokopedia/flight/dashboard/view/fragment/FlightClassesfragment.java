@@ -5,10 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
-import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapter;
+import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapterTypeFactory;
+import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightClassesContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightClassesPresenter;
@@ -20,14 +21,16 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel> implements FlightClassesContract.View, BaseListAdapter.OnBaseListV2AdapterListener<FlightClassViewModel> {
+public class FlightClassesfragment extends BaseListV2Fragment<FlightClassViewModel> implements FlightClassesContract.View, FlightClassViewHolder.ListenerCheckedClass {
     public static final String EXTRA_FLIGHT_SELECTED_CLASS = "EXTRA_FLIGHT_SELECTED_CLASS";
-
+    @Inject
+    FlightClassesPresenter presenter;
     private OnFragmentInteractionListener interactionListener;
     private int selectedId;
 
-    @Inject
-    FlightClassesPresenter presenter;
+    public FlightClassesfragment() {
+        // Required empty public constructor
+    }
 
     public static FlightClassesfragment newInstance(int selectedId) {
         FlightClassesfragment fragment = new FlightClassesfragment();
@@ -49,28 +52,30 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
 
     @Override
     public void renderFlightClasses(List<FlightClassViewModel> viewModels) {
-        onSearchLoaded(viewModels, viewModels.size());
+        renderList(viewModels);
     }
 
-    public interface OnFragmentInteractionListener {
-        void actionClassSelected(FlightClassViewModel flightClassViewModel);
-    }
-
-    public FlightClassesfragment() {
-        // Required empty public constructor
+    @Override
+    public boolean isItemChecked(FlightClassViewModel selectedItem) {
+        return selectedItem.getId() == selectedId;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         selectedId = getArguments().getInt(EXTRA_FLIGHT_SELECTED_CLASS, -1);
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
-    protected FlightClassesAdapter getNewAdapter() {
-        FlightClassesAdapter adapter = new FlightClassesAdapter(getContext(), this);
-        adapter.setSelectedId(selectedId);
-        return adapter;
+    protected void setInitialActionVar() {
+        presenter.attachView(this);
+        presenter.actionFetchClasses();
+    }
+
+    @Override
+    protected BaseListAdapterTypeFactory getAdapterTypeFactory() {
+        return new FlightClassesAdapterTypeFactory(this);
     }
 
     @Override
@@ -91,12 +96,6 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
     }
 
     @Override
-    public void loadData(int page, int currentDataSize, int rowPerPage) {
-        presenter.attachView(this);
-        presenter.actionFetchClasses();
-    }
-
-    @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -104,5 +103,9 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
         } else {
             throw new RuntimeException("Activity must implement OnFragmentInteractionListener");
         }
+    }
+
+    public interface OnFragmentInteractionListener {
+        void actionClassSelected(FlightClassViewModel flightClassViewModel);
     }
 }

@@ -117,8 +117,4 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         }
     }
 
-    @Override
-    public int viewType() {
-        return LAYOUT;
-    }
 }

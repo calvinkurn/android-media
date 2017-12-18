@@ -1,19 +1,15 @@
 package com.tokopedia.flight.dashboard.view.activity;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.di.component.HasComponent;
 import com.tokopedia.abstraction.utils.Constants;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
