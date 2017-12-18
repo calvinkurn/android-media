@@ -92,7 +92,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     protected void onResume() {
         super.onResume();
 //        new DiscoveryInteractorImpl().editProductDetail(this, "45469593", "", "");
-      //  handleBranchDefferedDeeplink();
         //  moveToHome();
     }
 
@@ -251,7 +250,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         if (branch == null){
             moveToHome();
         }else {
-            Branch.getInstance().setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
+            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
@@ -270,7 +269,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
                         }
                     } else {
-                        Log.d("deffered deeplink", "" + error.getMessage());
                         moveToHome();
                     }
                 }
