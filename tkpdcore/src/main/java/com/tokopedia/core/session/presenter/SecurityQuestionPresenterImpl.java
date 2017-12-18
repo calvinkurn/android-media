@@ -647,7 +647,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 final String packageName = line.substring(line.indexOf(':') + 1);
-                if (packageName.toLowerCase().contains(uri.toLowerCase())) {
+                if (uri != null && packageName.toLowerCase().contains(uri.toLowerCase())) {
                     app_installed = true;
                     break;
                 }
