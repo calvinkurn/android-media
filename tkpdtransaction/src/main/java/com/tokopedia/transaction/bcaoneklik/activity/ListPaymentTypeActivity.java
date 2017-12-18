@@ -62,7 +62,6 @@ public class ListPaymentTypeActivity extends TActivity
     }
 
     private void initInjector() {
-
         PaymentOptionComponent component = DaggerPaymentOptionComponent
                 .builder()
                 .appComponent(getApplicationComponent())

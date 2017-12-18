@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_empty_no_history"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:visibility="gone">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/filter_history_tokocash"
+        android:layout_margin="@dimen/margin_large"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/icon_empty_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:src="@drawable/ic_tokocash_no_history_category" />
+
+        <TextView
+            android:id="@+id/text_empty_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/icon_empty_page"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:gravity="center_horizontal"
+            android:text="@string/title_empty_page_tokocash"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/fontm" />
+
+        <TextView
+            android:id="@+id/desc_empty_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_empty_page"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/margin_large"
+            android:layout_marginRight="@dimen/margin_large"
+            android:gravity="center_horizontal"
+            android:text="@string/desc_empty_page_tokocash"
+            android:textColor="@color/black_12"
+            android:textSize="@dimen/fontvs" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

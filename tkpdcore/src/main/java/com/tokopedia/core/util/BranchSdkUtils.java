@@ -2,12 +2,12 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ public class BranchSdkUtils {
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
     private static final String URI_REDIRECT_MODE_KEY = "$uri_redirect_mode";
-    private static final String URI_REDIRECT_MODE_VALUE = "2";
     private static final String CAMPAIGN_NAME = "Android App";
     private static String extraDescription = "";
 
@@ -58,14 +57,14 @@ public class BranchSdkUtils {
                 public void onLinkCreate(String url, BranchError error) {
 
                     if (error == null) {
-                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContentForBranch(url), extraDescription + url,url);
+                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContentForBranch(url), extraDescription + url, url);
                     } else {
-                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(),url);
+                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(), url);
                     }
                 }
             });
         } else {
-            ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(),data.renderShareUri());
+            ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(), data.renderShareUri());
 
         }
     }
@@ -82,6 +81,8 @@ public class BranchSdkUtils {
             deeplinkPath = getApplinkPath(Constants.Applinks.SHOP, data.getId());//"shop/" + data.getId();
         } else if (ShareData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
+        } else if (ShareData.CATALOG_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_CATALOG, data.getId());
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
@@ -94,7 +95,6 @@ public class BranchSdkUtils {
         linkProperties.setCampaign(CAMPAIGN_NAME);
         linkProperties.setChannel(channel);
         linkProperties.setFeature(data.getType());
-        linkProperties.addControlParameter(URI_REDIRECT_MODE_KEY, URI_REDIRECT_MODE_VALUE);
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         return linkProperties;
@@ -104,11 +104,8 @@ public class BranchSdkUtils {
         if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
             return true;
         } else {
-            if(activity.getApplication() instanceof RemoteConfigRouter) {
-                return ((RemoteConfigRouter) activity.getApplication())
-                        .getBooleanConfig(TkpdCache.Key.CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS);
-            }
-            return true;
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
+            return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
         }
     }
 
@@ -125,9 +122,9 @@ public class BranchSdkUtils {
     }
 
     private static String getAppShareDescription(Activity activity, String type) {
-        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type) && activity.getApplication() instanceof RemoteConfigRouter) {
-            return ((RemoteConfigRouter) activity.getApplication())
-                    .getStringConfig(TkpdCache.Key.CONFIG_APP_SHARE_DESCRIPTION) + " \n";
+        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
+            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DESCRIPTION) + " \n";
         }
         return "";
 
@@ -183,6 +180,6 @@ public class BranchSdkUtils {
     }
 
     public interface GenerateShareContents {
-        void onCreateShareContents(String shareContents, String shareUri,String branchUrl);
+        void onCreateShareContents(String shareContents, String shareUri, String branchUrl);
     }
 }

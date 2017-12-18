@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.newgallery.GalleryActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -75,7 +76,7 @@ public class GalleryCropActivity extends GalleryActivity {
     public void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorActivity.start(this,arrayList, null, true);
+        ImageEditorActivity.start(this,arrayList, true);
     }
 
     @Override

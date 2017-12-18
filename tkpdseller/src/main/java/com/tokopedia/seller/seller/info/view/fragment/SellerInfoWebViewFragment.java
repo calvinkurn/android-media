@@ -1,0 +1,39 @@
+package com.tokopedia.seller.seller.info.view.fragment;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.View;
+
+import com.tokopedia.seller.base.view.fragment.BaseWebViewFragment;
+
+/**
+ * Created by normansyahputa on 12/5/17.
+ */
+public class SellerInfoWebViewFragment extends BaseWebViewFragment {
+
+    public static final String EXTRA_URL = "EXTRA_URL";
+    private String extraUrl;
+
+    public static Fragment newInstance(String url){
+        Fragment fragment = new SellerInfoWebViewFragment();
+        Bundle argument = new Bundle();
+        argument.putString(EXTRA_URL, url);
+        fragment.setArguments(argument);
+        return fragment;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        if(savedInstanceState==null){
+            if(getArguments()!= null){
+                extraUrl = getArguments().getString(EXTRA_URL);
+            }
+        }
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    protected String getUrl() {
+        return extraUrl;
+    }
+}

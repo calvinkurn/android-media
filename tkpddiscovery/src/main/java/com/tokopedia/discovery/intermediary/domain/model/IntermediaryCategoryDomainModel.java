@@ -14,6 +14,7 @@ public class IntermediaryCategoryDomainModel {
     public static final String TECHNOLOGY_TEMPLATE = "TECHNOLOGY";
 
     boolean isIntermediary = false;
+    boolean isRevamp = false;
     String departementId = "0";
     String template = "";
     HeaderModel headerModel;
@@ -102,5 +103,13 @@ public class IntermediaryCategoryDomainModel {
 
     public void setBrandModelList(List<BrandModel> brandModelList) {
         this.brandModelList = brandModelList;
+    }
+
+    public boolean isRevamp() {
+        return isRevamp;
+    }
+
+    public void setRevamp(boolean revamp) {
+        isRevamp = revamp;
     }
 }

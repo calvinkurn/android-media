@@ -68,10 +68,6 @@ public class InboxRouter {
         return RouterUtils.getActivityIntent(context, INBOX_TICKET_ACTIVITY);
     }
 
-    public static Intent getInboxMessageActivityIntent(Context context) {
-        return RouterUtils.getActivityIntent(context, INBOX_MESSAGE_ACTIVITY);
-    }
-
     public static Intent getInboxTalkActivityIntent(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, INBOX_TALK_ACTIVITY);
         return intent;

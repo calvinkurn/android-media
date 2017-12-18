@@ -145,6 +145,11 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     }
 
     @Override
+    public void onGetNotif(Bundle data) {
+
+    }
+
+    @Override
     protected void onResume() {
         //[START] this is for set current activity
         MainApplication.setCurrentActivity(this);

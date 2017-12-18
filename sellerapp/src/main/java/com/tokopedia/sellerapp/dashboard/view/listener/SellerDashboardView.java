@@ -32,4 +32,5 @@ public interface SellerDashboardView extends CustomerView {
     void onSuccessOpenShop();
 
     void onErrorOpenShop();
+
 }

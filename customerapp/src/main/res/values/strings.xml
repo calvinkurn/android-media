@@ -38,5 +38,20 @@
 
     <string name="react_native_banner_official_title">Official Store</string>
     <string name="official_store_term_conditions_title"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="deeplink_receiver_applink_update_button_title">Update</string>
+    <string name="deeplink_receiver_applink_update_button_cancel_title">Batal</string>
+
+    <!--tokocash history-->
+    <string name="toko_cash_title_page_date_range">Rentang Tanggal</string>
+    <string name="toko_cash_tab_choose_date">Pilih Tanggal</string>
+    <string name="toko_cash_tab_choose_date_range">Pilih Rentang Waktu</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
+
+    <!--home-->
+    <string name="format_btn_category_more">+%d Kategori Lainnya</string>
+    <string name="buka_toko">Buka Toko</string>
+    <string name="empty_shop_wording_subtitle">Nikmati transaksi yang mudah, aman, dan menguntungkan</string>
+    <string name="empty_shop_wording_title">Buka toko sekarang, banyak lebihnya!</string>
 
 </resources>
