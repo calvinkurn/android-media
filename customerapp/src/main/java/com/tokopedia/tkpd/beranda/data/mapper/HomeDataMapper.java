@@ -43,6 +43,7 @@ import rx.functions.Func6;
 public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         BrandsOfficialStoreResponseModel, TopPicksResponseModel,
         HomeCategoryResponseModel, List<Visitable>> {
+    public static final int DIGITAL_ID = 22;
     private final Context context;
     public HomeDataMapper(Context context) {
         this.context = context;
@@ -120,7 +121,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         List<Visitable> list = new ArrayList<>();
         for (int i = 0; i < layoutSections.size(); i++) {
             CategoryLayoutSectionsModel sections = layoutSections.get(i);
-            if (sections.getId() == 22) { //Id 22 == Digitals
+            if (sections.getId() == DIGITAL_ID) { //Id 22 == Digitals
                 list.add(new DigitalsViewModel(sections.getTitle(), i));
             } else {
                 CategoryItemViewModel viewModel = new CategoryItemViewModel();

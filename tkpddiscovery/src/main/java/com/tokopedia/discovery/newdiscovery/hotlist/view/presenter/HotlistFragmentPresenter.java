@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -13,8 +12,6 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseC
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
-import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
-import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistInitializeUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
@@ -59,10 +56,6 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
 
     public HotlistFragmentPresenter(Context context) {
         this.context = context;
-//        HotlistComponent hotlistComponent = DaggerHotlistComponent.builder()
-//                .appComponent(getComponent(context))
-//                .build();
-//        hotlistComponent.inject(this);
     }
 
     @Override
