@@ -24,7 +24,7 @@ import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
-import com.tokopedia.otp.securityquestion.view.ChangePhoneNumberRequestView;
+import com.tokopedia.otp.securityquestion.view.listener.ChangePhoneNumberRequestView;
 import com.tokopedia.otp.securityquestion.view.presenter.ChangePhoneNumberRequestPresenter;
 import com.tokopedia.otp.securityquestion.view.presenter.ChangePhoneNumberRequestPresenterImpl;
 

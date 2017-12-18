@@ -1,12 +1,12 @@
 package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
-import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.securityquestion.view.fragment.SecurityQuestionFragment;
-import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
-import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
-import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.VerificationFragment;
+import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
+import com.tokopedia.session.login.loginphonenumber.view.fragment.LoginPhoneNumberFragment;
+import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTokocashFragment;
 
 import dagger.Component;
 
@@ -22,13 +22,23 @@ public interface SessionComponent {
 
     void inject(CreatePasswordFragment createPasswordFragment);
 
-    void inject(SecurityQuestionFragment securityQuestionFragment);
-
     void inject(ChangePhoneNumberFragment changePhoneNumberFragment);
 
     void inject(PhoneVerificationFragment phoneVerificationFragment);
 
     void inject(ProfileCompletionPhoneVerificationFragment profileCompletionPhoneVerificationFragment);
+
+    void inject(LoginPhoneNumberFragment loginPhoneNumberFragment);
+
+    void inject(VerificationFragment verificationFragment);
+
+    void inject(ChooseVerificationMethodFragment selectVerificationMethodFragment);
+
+    void inject(ChooseTokocashAccountFragment chooseTokocashAccountFragment);
+
+    void inject(NotConnectedTokocashFragment notConnectedTokocashFragment);
+
+    void inject(SecurityQuestionFragment securityQuestionFragment);
 
 
 }

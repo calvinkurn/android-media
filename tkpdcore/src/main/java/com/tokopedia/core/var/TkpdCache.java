@@ -52,6 +52,7 @@ public class TkpdCache {
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
     public static final String FIREBASE_REMOTE_CONFIG = "FIREBASE_REMOTE_CONFIG";
+    public static final String APP_RATING = "APP_RATING";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -201,6 +202,8 @@ public class TkpdCache {
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+        public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
+        public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
 
         public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
@@ -211,9 +214,19 @@ public class TkpdCache {
 
         public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
 
-        public static final String CONFIG_SHOW_HIDE_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
-        public static final String CONFIG_APP_SHARE_DESCRIPTION = "app_share_description";
-        public static final String CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
+        public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
+    }
+
+    public class RemoteConfigKey {
+        public static final String MAINAPP_SHOW_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
+        public static final String APP_SHARE_DESCRIPTION = "app_share_description";
+        public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
+
+        public static final String TOKO_CASH_TOP_UP = "toko_cash_top_up";
+        public static final String TOKO_CASH_LABEL = "toko_cash_label";
+
+        public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
+        public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
     }
 
 }

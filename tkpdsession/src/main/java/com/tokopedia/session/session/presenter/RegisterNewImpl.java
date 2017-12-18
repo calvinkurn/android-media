@@ -49,7 +49,7 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
     public RegisterNewImpl(RegisterNewView view){
         super(view);
         registerService = new RegisterService();
-        facade = RegisterInteractorImpl.createInstance(this);
+        facade = RegisterInteractorImpl.createInstance();
     }
 
     public static class RegisterUtil{

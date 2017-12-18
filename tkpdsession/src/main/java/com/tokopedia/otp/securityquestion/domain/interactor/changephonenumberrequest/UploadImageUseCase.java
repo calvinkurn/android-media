@@ -9,9 +9,9 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepository;
-import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadImageModel;
 import com.tokopedia.session.R;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadImageModel;
+import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepository;
 
 import java.io.File;
 import java.io.IOException;

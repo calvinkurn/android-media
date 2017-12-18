@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.securityquestion.data.repository.KtpRepository;
 import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.CheckStatusModel;
+import com.tokopedia.otp.securityquestion.data.repository.KtpRepository;
 
 import rx.Observable;
 

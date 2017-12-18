@@ -25,6 +25,7 @@ public class ChangeEmailSubscriber extends Subscriber<ChangeEmailModel> {
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorChangeEmail(ErrorHandler.getErrorMessage(e));
+
     }
 
     @Override

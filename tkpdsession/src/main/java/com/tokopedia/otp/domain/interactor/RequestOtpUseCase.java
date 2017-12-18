@@ -7,7 +7,9 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.otp.data.model.RequestOtpViewModel;
-import com.tokopedia.session.data.repository.SessionRepository;
+import com.tokopedia.otp.data.source.OtpSource;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -29,18 +31,19 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
     public static final int OTP_TYPE_SECURITY_QUESTION = 13;
     public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 11;
 
-    private final SessionRepository sessionRepository;
+    private final OtpSource otpSource;
 
+    @Inject
     public RequestOtpUseCase(ThreadExecutor threadExecutor,
                              PostExecutionThread postExecutionThread,
-                             SessionRepository sessionRepository) {
+                             OtpSource otpSource) {
         super(threadExecutor, postExecutionThread);
-        this.sessionRepository = sessionRepository;
+        this.otpSource = otpSource;
     }
 
     @Override
     public Observable<RequestOtpViewModel> createObservable(RequestParams requestParams) {
-        return sessionRepository.requestOtp(requestParams.getParameters());
+        return otpSource.requestOtp(requestParams.getParameters());
     }
 
     public static RequestParams getParamAfterLogin(String mode, String phone, int otpType) {

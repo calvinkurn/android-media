@@ -34,8 +34,8 @@ public class ProfileCompletionModule {
             GetUserInfoMapper getUserInfoMapper,
             EditUserInfoMapper editUserInfoMapper,
             SessionHandler sessionHandler) {
-        return new ProfileSourceFactory(context, accountsService,
-                getUserInfoMapper, editUserInfoMapper, sessionHandler);
+        return new ProfileSourceFactory(context, accountsService, getUserInfoMapper,
+                editUserInfoMapper, sessionHandler);
     }
 
     @ProfileCompletionScope

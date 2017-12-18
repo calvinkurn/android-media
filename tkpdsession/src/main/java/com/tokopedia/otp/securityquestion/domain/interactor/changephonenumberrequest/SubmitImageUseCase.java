@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepository;
 import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.SubmitImageModel;
+import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepository;
 
 import rx.Observable;
 

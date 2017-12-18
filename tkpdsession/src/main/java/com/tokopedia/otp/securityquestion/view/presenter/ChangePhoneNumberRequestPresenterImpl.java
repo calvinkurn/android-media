@@ -33,7 +33,13 @@ import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest
 import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.UploadImageMapper;
 import com.tokopedia.otp.securityquestion.data.repository.KtpRepositoryImpl;
 import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepositoryImpl;
-import com.tokopedia.otp.securityquestion.view.ChangePhoneNumberRequestView;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.CheckStatusUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.SubmitImageUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.ValidateImageUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.GetUploadHostUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.UploadChangePhoneNumberRequestUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.UploadImageUseCase;
+import com.tokopedia.otp.securityquestion.view.listener.ChangePhoneNumberRequestView;
 
 import java.io.File;
 import java.net.UnknownHostException;

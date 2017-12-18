@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -35,20 +37,20 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
 import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 import com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
+import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
 import com.tokopedia.otp.securityquestion.view.presenter.SecurityQuestionPresenter;
 import com.tokopedia.otp.securityquestion.view.viewmodel.SecurityQuestionViewModel;
 import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
-import com.tokopedia.di.DaggerSessionComponent;
 
 import java.util.concurrent.TimeUnit;
 
@@ -86,11 +88,14 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     private TextView titleSecurity;
     private View vOtp;
     private View vError;
+    private View vSecurity;
     private TextView vSendOtp;
     private TextView vSendOtpCall;
     private TextView vSaveBut;
     private TextView changeNumber;
     private TextView verifyTrueCaller;
+    private View progressFull;
+    private View viewSecurity;
 
     private CountDownTimer countDownTimer;
     private IncomingSmsReceiver smsReceiver;
@@ -143,8 +148,9 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         } else if (getArguments() != null) {
             securityQuestionViewModel = new SecurityQuestionViewModel(
                     (SecurityDomain) getArguments().getParcelable(SecurityQuestionActivity.ARGS_QUESTION),
-                    getArguments().getString(SecurityQuestionActivity.ARGS_NAME),
-                    getArguments().getString(SecurityQuestionActivity.ARGS_EMAIL));
+                    getArguments().getString(SecurityQuestionActivity.ARGS_NAME, ""),
+                    getArguments().getString(SecurityQuestionActivity.ARGS_EMAIL, ""),
+                    getArguments().getString(SecurityQuestionActivity.ARGS_PHONE, ""));
         } else {
             getActivity().finish();
         }
@@ -166,6 +172,8 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         vSaveBut = view.findViewById(R.id.save_but);
         changeNumber = view.findViewById(R.id.title_change_number);
         verifyTrueCaller = view.findViewById(R.id.verify_button);
+        progressFull = view.findViewById(R.id.progress);
+        vSecurity = view.findViewById(R.id.view_security);
         prepareView();
         setViewListener();
         presenter.attachView(this);
@@ -277,6 +285,8 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
+        vSecurity.setVisibility(View.GONE);
+        verifyTrueCaller.setVisibility(View.GONE);
         vOtp.setVisibility(View.VISIBLE);
 
         String title;
@@ -319,7 +329,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
                                   ds.setColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.action_send_otp_with_call).indexOf("lewat")
+                , getString(R.string.action_send_otp_with_call).indexOf("telepon")
                 , getString(R.string.action_send_otp_with_call).length()
                 , 0);
 
@@ -359,7 +369,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     public void onSuccessGetQuestionPhone(QuestionViewModel questionViewModel) {
         vSendOtp.setText(R.string.title_otp_phone);
         vInputOtp.setEnabled(true);
-        String phone = SessionHandler.getTempPhoneNumber(getActivity());
+        String phone = securityQuestionViewModel.getPhone();
         phone = phone.substring(phone.length() - 4);
         String contentSecurity = String.format(getResources().getString(
                 R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>", phone);
@@ -494,11 +504,34 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void disableOtpButton() {
-        MethodChecker.setBackground(vSendOtp,  MethodChecker.getDrawable(getActivity(), R.drawable
+        MethodChecker.setBackground(vSendOtp, MethodChecker.getDrawable(getActivity(), R.drawable
                 .btn_transparent_disable));
         vSendOtp.setEnabled(false);
         vSendOtp.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_600));
         vSendOtpCall.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSuccessGetTrueCallerData() {
+        UnifyTracking.eventClickTruecallerConfirm();
+        SnackbarManager.make(getActivity(),
+                getString(com.tokopedia.core.R.string.success_fetch_truecaller),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showLoadingFull() {
+        vOtp.setVisibility(View.GONE);
+        vSaveBut.setVisibility(View.GONE);
+        progressFull.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void dismissLoadingFull() {
+        vOtp.setVisibility(View.VISIBLE);
+        vSaveBut.setVisibility(View.VISIBLE);
+        progressFull.setVisibility(View.GONE);
     }
 
     @Override

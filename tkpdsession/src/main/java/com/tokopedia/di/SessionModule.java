@@ -9,50 +9,21 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.apiservices.user.InterruptService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.domain.interactor.ValidateOTPLoginUseCase;
-import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
-import com.tokopedia.otp.domain.mapper.RequestOTPMapper;
-import com.tokopedia.otp.domain.mapper.ValidateOTPMapper;
-import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
-import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
-import com.tokopedia.otp.phoneverification.domain.interactor.ChangePhoneNumberUseCase;
-import com.tokopedia.otp.phoneverification.domain.interactor.ValidateVerifyPhoneNumberUseCase;
-import com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase;
-import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
-import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
-import com.tokopedia.otp.securityquestion.domain.mapper.SecurityQuestionMapper;
-import com.tokopedia.otp.securityquestion.data.source.SecurityQuestionDataSource;
-import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
+import com.tokopedia.otp.data.source.OtpSource;
+import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
+import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.session.data.repository.SessionRepository;
-import com.tokopedia.session.data.repository.SessionRepositoryImpl;
-import com.tokopedia.session.data.source.CloudDiscoverDataSource;
-import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
-import com.tokopedia.session.data.source.LocalDiscoverDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
-import com.tokopedia.otp.data.source.OtpSource;
-import com.tokopedia.session.domain.interactor.DiscoverUseCase;
-import com.tokopedia.session.domain.interactor.GetTokenUseCase;
-import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
-import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
-import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
-import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
-import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWebviewUseCase;
-import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWithSosmedUseCase;
-import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordLoginUseCase;
-import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordUseCase;
 
 import javax.inject.Named;
 
@@ -65,7 +36,8 @@ import dagger.Provides;
  */
 
 @Module
-public class SessionModule {
+public class
+SessionModule {
 
     private static final String HMAC_SERVICE = "HMAC_SERVICE";
     private static final String BASIC_SERVICE = "BASIC_SERVICE";
@@ -78,6 +50,10 @@ public class SessionModule {
         return new GlobalCacheManager();
     }
 
+    /**
+     * @return https://accounts.tokopedia.com
+     * with Authorization : Tkpd
+     */
     @SessionScope
     @Named(HMAC_SERVICE)
     @Provides
@@ -88,6 +64,10 @@ public class SessionModule {
         return new AccountsService(bundle);
     }
 
+    /**
+     * @return https://accounts.tokopedia.com
+     * with Authorization : Basic
+     */
     @SessionScope
     @Named(BASIC_SERVICE)
     @Provides
@@ -97,6 +77,12 @@ public class SessionModule {
         return new AccountsService(bundle);
     }
 
+    /**
+     * @param context
+     * @param sessionHandler
+     * @return https://accounts.tokopedia.com
+     * with Authorization : Bearer {Access Token}
+     */
     @SessionScope
     @Named(BEARER_SERVICE)
     @Provides
@@ -133,89 +119,11 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    DiscoverMapper provideDiscoverMapper() {
-        return new DiscoverMapper();
-    }
-
-    @SessionScope
-    @Provides
-    SessionRepository provideSessionRepository(CloudDiscoverDataSource cloudDiscoverDataSource,
-                                               LocalDiscoverDataSource localDiscoverDataSource,
-                                               GetTokenDataSource getTokenDataSource,
-                                               CreatePasswordDataSource createPasswordDataSource,
-                                               MakeLoginDataSource makeLoginDataSource,
-                                               SecurityQuestionDataSource
-                                                       securityQuestionDataSource,
-                                               OtpSource otpSource,
-                                               ChangeMsisdnSource changeMsisdnSource,
-                                               VerifyMsisdnSource verifyMsisdnSource) {
-        return new SessionRepositoryImpl(cloudDiscoverDataSource,
-                localDiscoverDataSource, getTokenDataSource,
-                createPasswordDataSource, makeLoginDataSource,
-                securityQuestionDataSource, otpSource, changeMsisdnSource,
-                verifyMsisdnSource);
-    }
-
-    @SessionScope
-    @Provides
-    CloudDiscoverDataSource provideCloudDiscoverDataSource(GlobalCacheManager globalCacheManager,
-                                                           @Named(HMAC_SERVICE) AccountsService
-                                                                   accountsService,
-                                                           DiscoverMapper discoverMapper) {
-        return new CloudDiscoverDataSource(globalCacheManager, accountsService, discoverMapper);
-    }
-
-    @SessionScope
-    @Provides
-    LocalDiscoverDataSource provideLocalDiscoverDataSource(GlobalCacheManager globalCacheManager) {
-        return new LocalDiscoverDataSource(globalCacheManager);
-    }
-
-
-    @SessionScope
-    @Provides
     GetTokenDataSource provideGetTokenDataSource(@Named(BASIC_SERVICE) AccountsService
                                                          accountsService,
                                                  TokenMapper tokenMapper,
                                                  SessionHandler sessionHandler) {
         return new GetTokenDataSource(accountsService, tokenMapper, sessionHandler);
-    }
-
-
-    @SessionScope
-    @Provides
-    CreatePasswordDataSource provideCreatePasswordDataSource(@Named(BEARER_SERVICE) AccountsService
-                                                                     accountsService,
-                                                             CreatePasswordMapper createPasswordMapper) {
-        return new CreatePasswordDataSource(accountsService, createPasswordMapper);
-    }
-
-    @SessionScope
-    @Provides
-    DiscoverUseCase provideDiscoverUseCase(ThreadExecutor threadExecutor,
-                                           PostExecutionThread postExecutionThread,
-                                           SessionRepository sessionRepository) {
-        return new DiscoverUseCase(threadExecutor, postExecutionThread, sessionRepository);
-    }
-
-    @SessionScope
-    @Provides
-    GetFacebookCredentialUseCase provideGetFacebookCredentialUseCase() {
-        return new GetFacebookCredentialUseCase();
-    }
-
-    @SessionScope
-    @Provides
-    GetTokenUseCase provideGetTokenUseCase(ThreadExecutor threadExecutor,
-                                           PostExecutionThread postExecutionThread,
-                                           SessionRepository sessionRepository) {
-        return new GetTokenUseCase(threadExecutor, postExecutionThread, sessionRepository);
-    }
-
-    @SessionScope
-    @Provides
-    TokenMapper provideTokenMapper() {
-        return new TokenMapper();
     }
 
     @SessionScope
@@ -249,67 +157,12 @@ public class SessionModule {
         return new ProfileRepositoryImpl(profileSourceFactory);
     }
 
-
     @SessionScope
     @Provides
     GetUserInfoUseCase provideGetUserInfoUseCase(ThreadExecutor threadExecutor,
                                                  PostExecutionThread postExecutionThread,
                                                  ProfileRepository profileRepository) {
         return new GetUserInfoUseCase(threadExecutor, postExecutionThread, profileRepository);
-    }
-
-
-    @SessionScope
-    @Provides
-    RegisterWithSosmedUseCase provideRegisterFacebookUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             GetTokenUseCase getTokenUseCase,
-                                                             GetUserInfoUseCase
-                                                                     getUserInfoUseCase,
-                                                             MakeLoginUseCase makeLoginUseCase) {
-        return new RegisterWithSosmedUseCase(
-                threadExecutor, postExecutionThread,
-                getTokenUseCase, getUserInfoUseCase, makeLoginUseCase);
-    }
-
-
-    @SessionScope
-    @Provides
-    RegisterWebviewUseCase provideRegisterWebviewUseCase(ThreadExecutor threadExecutor,
-                                                         PostExecutionThread postExecutionThread,
-                                                         GetTokenUseCase getTokenUseCase,
-                                                         GetUserInfoUseCase getUserInfoUseCase,
-                                                         MakeLoginUseCase makeLoginUseCase) {
-        return new RegisterWebviewUseCase(
-                threadExecutor, postExecutionThread,
-                getTokenUseCase, getUserInfoUseCase, makeLoginUseCase);
-    }
-
-    @SessionScope
-    @Provides
-    CreatePasswordMapper provideCreatePasswordMapper() {
-        return new CreatePasswordMapper();
-    }
-
-    @SessionScope
-    @Provides
-    CreatePasswordUseCase provideCreatePasswordUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       SessionRepository sessionRepository) {
-        return new CreatePasswordUseCase(
-                threadExecutor, postExecutionThread,
-                sessionRepository);
-    }
-
-    @SessionScope
-    @Provides
-    CreatePasswordLoginUseCase provideCreatePasswordLoginUseCase(ThreadExecutor threadExecutor,
-                                                                 PostExecutionThread postExecutionThread,
-                                                                 CreatePasswordUseCase
-                                                                         createPasswordUseCase,
-                                                                 MakeLoginUseCase makeLoginUseCase) {
-        return new CreatePasswordLoginUseCase(
-                threadExecutor, postExecutionThread, createPasswordUseCase, makeLoginUseCase);
     }
 
     @SessionScope
@@ -322,158 +175,11 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    MakeLoginUseCase provideMakeLoginUseCase(ThreadExecutor threadExecutor,
-                                             PostExecutionThread postExecutionThread,
-                                             SessionRepository sessionRepository,
-                                             SessionHandler sessionHandler) {
-        return new MakeLoginUseCase(
-                threadExecutor, postExecutionThread, sessionRepository);
-    }
-
-
-    @SessionScope
-    @Provides
-    MakeLoginMapper provideMakeLoginMapper() {
-        return new MakeLoginMapper();
-    }
-
-    @SessionScope
-    @Provides
-    InterruptService provideInterruptService() {
-        return new InterruptService();
-    }
-
-    @SessionScope
-    @Provides
-    SecurityQuestionDataSource provideSecurityQuestionDataSource(InterruptService interruptService,
-                                                                 SecurityQuestionMapper securityQuestionMapper) {
-        return new SecurityQuestionDataSource(interruptService, securityQuestionMapper);
-    }
-
-    @SessionScope
-    @Provides
-    SecurityQuestionMapper provideSecurityQuestionMapper() {
-        return new SecurityQuestionMapper();
-    }
-
-    @SessionScope
-    @Provides
-    GetSecurityQuestionFormUseCase provideGetSecurityQuestionFormUseCase(ThreadExecutor threadExecutor,
-                                                                         PostExecutionThread postExecutionThread,
-                                                                         SessionRepository sessionRepository,
-                                                                         SessionHandler sessionHandler) {
-        return new GetSecurityQuestionFormUseCase(
-                threadExecutor, postExecutionThread, sessionRepository, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
     OtpSource provideOtpSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                               RequestOTPMapper requestOTPMapper,
-                               ValidateOTPMapper validateOTPMapper,
+                               RequestOtpMapper requestOTPMapper,
+                               ValidateOtpMapper validateOTPMapper,
                                SessionHandler sessionHandler) {
         return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    RequestOTPMapper provideRequestOTPMapper() {
-        return new RequestOTPMapper();
-    }
-
-    @SessionScope
-    @Provides
-    RequestOtpUseCase provideRequestOtpUseCase(ThreadExecutor threadExecutor,
-                                               PostExecutionThread postExecutionThread,
-                                               SessionRepository sessionRepository,
-                                               SessionHandler sessionHandler) {
-        return new RequestOtpUseCase(
-                threadExecutor, postExecutionThread, sessionRepository);
-    }
-
-    @SessionScope
-    @Provides
-    ValidateOTPMapper provideValidateOtpMapper() {
-        return new ValidateOTPMapper();
-    }
-
-    @SessionScope
-    @Provides
-    ValidateOtpUseCase provideValidateOtpUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 SessionRepository sessionRepository,
-                                                 SessionHandler sessionHandler) {
-        return new ValidateOtpUseCase(
-                threadExecutor, postExecutionThread, sessionRepository, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    ValidateOTPLoginUseCase provideValidateOTPLoginUseCase(ThreadExecutor threadExecutor,
-                                                           PostExecutionThread postExecutionThread,
-                                                           ValidateOtpUseCase
-                                                                   validateOtpUseCase,
-                                                           MakeLoginUseCase makeLoginUseCase) {
-        return new ValidateOTPLoginUseCase(
-                threadExecutor, postExecutionThread, validateOtpUseCase, makeLoginUseCase);
-    }
-
-    @SessionScope
-    @Provides
-    ChangeMsisdnSource provideCloudChangeMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                                      ChangePhoneNumberMapper changePhoneNumberMapper,
-                                                      SessionHandler sessionHandler) {
-        return new ChangeMsisdnSource(accountsService, changePhoneNumberMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberMapper provideChangePhoneNumberMapper() {
-        return new ChangePhoneNumberMapper();
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberUseCase provideChangePhoneNumberUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             SessionRepository sessionRepository) {
-        return new ChangePhoneNumberUseCase(
-                threadExecutor, postExecutionThread, sessionRepository);
-    }
-
-    @SessionScope
-    @Provides
-    VerifyMsisdnSource provideVerifyMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                                 VerifyPhoneNumberMapper verifyPhoneNumberMapper,
-                                                 SessionHandler sessionHandler) {
-        return new VerifyMsisdnSource(accountsService, verifyPhoneNumberMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    VerifyPhoneNumberMapper provideVerifyPhoneNumberMapper() {
-        return new VerifyPhoneNumberMapper();
-    }
-
-    @SessionScope
-    @Provides
-    VerifyPhoneNumberUseCase provideVerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             SessionRepository sessionRepository) {
-        return new VerifyPhoneNumberUseCase(
-                threadExecutor, postExecutionThread, sessionRepository);
-    }
-
-
-    @SessionScope
-    @Provides
-    ValidateVerifyPhoneNumberUseCase provideValidateVerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
-                                                                             PostExecutionThread postExecutionThread,
-                                                                             ValidateOtpUseCase
-                                                                                     validateOtpUseCase,
-                                                                             VerifyPhoneNumberUseCase verifyPhoneNumberUseCase) {
-        return new ValidateVerifyPhoneNumberUseCase(
-                threadExecutor, postExecutionThread, validateOtpUseCase, verifyPhoneNumberUseCase);
     }
 
 }

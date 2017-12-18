@@ -8,6 +8,8 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.session.domain.pojo.token.ErrorModel;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -16,6 +18,11 @@ import rx.functions.Func1;
  */
 
 public class TokenMapper implements Func1<Response<String>, TokenViewModel> {
+
+    @Inject
+    public TokenMapper() {
+    }
+
     @Override
     public TokenViewModel call(Response<String> response) {
         if (response.isSuccessful()) {

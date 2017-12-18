@@ -15,8 +15,8 @@
         android:theme="@style/AppBarTheme"
         app:contentInsetLeft="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:subtitleTextAppearance="@style/ToolbarSubtitleText"
-        app:titleTextAppearance="@style/ToolbarText" />
+        app:subtitleTextAppearance="@style/RideToolbarSubtitleText"
+        app:titleTextAppearance="@style/RideToolbarText" />
 
     <FrameLayout
         android:id="@+id/fl_container"

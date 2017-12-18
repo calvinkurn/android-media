@@ -38,7 +38,6 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -206,7 +205,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void setShopAvatar(String imagePath) {
         if (!TextUtils.isEmpty(imagePath)) {
             imageText.setVisibility(View.GONE);
-            ImageHandler.loadImageFit2(getActivity()
+            ImageHandler.loadImageFit2(imageText.getContext()
                     , shopAvatar
                     , MethodChecker.getUri(getActivity(), new File(imagePath)).toString());
             presenter.saveShopAvatarUrl(imagePath);

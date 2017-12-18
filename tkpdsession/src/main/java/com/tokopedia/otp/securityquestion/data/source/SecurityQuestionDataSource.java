@@ -5,6 +5,8 @@ import com.tokopedia.core.network.apiservices.user.InterruptService;
 import com.tokopedia.otp.securityquestion.domain.mapper.SecurityQuestionMapper;
 import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -15,6 +17,7 @@ public class SecurityQuestionDataSource {
     private final InterruptService interruptService;
     private final SecurityQuestionMapper securityQuestionMapper;
 
+    @Inject
     public SecurityQuestionDataSource(InterruptService interruptService,
                                       SecurityQuestionMapper securityQuestionMapper) {
         this.interruptService = interruptService;

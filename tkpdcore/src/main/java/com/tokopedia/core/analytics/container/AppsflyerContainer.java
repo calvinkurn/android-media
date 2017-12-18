@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -60,6 +61,12 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         setAFLog(BuildConfig.DEBUG);
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
         setAppsFlyerKey(key);
+    }
+
+    @Override
+    public void initAppsFlyer(String key, String userID, AppsFlyerConversionListener conversionListener) {
+        AppsFlyerLib.getInstance().init(key, conversionListener, context);
+        initAppsFlyer(key, userID);
     }
 
     private void setAppsFlyerKey(String key) {

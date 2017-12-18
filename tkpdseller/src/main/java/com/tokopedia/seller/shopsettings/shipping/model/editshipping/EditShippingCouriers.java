@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Kris on 2/24/2016. Tokopedia
  */
-public class EditShippingCouriers implements Parcelable{
+public class EditShippingCouriers implements Parcelable {
 
     public static final Creator<EditShippingCouriers> CREATOR = new Creator<EditShippingCouriers>() {
         @Override

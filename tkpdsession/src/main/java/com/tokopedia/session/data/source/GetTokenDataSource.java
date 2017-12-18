@@ -9,6 +9,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Action1;
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -69,5 +70,11 @@ public class KolCommentActivity extends TActivity implements HasComponent {
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    public void onBackPressed() {
+        UnifyTracking.eventKolCommentDetailBack();
+        super.onBackPressed();
     }
 }

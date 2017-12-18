@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -475,7 +476,15 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public boolean onQueryTextSubmit(String query) {
         UnifyTracking.eventClickCariWishlist(query);
         wishList.searchWishlist(query);
+        sendSearchGTM(query);
         return false;
+    }
+
+    private void sendSearchGTM(String keyword) {
+        if (keyword != null &&
+                !TextUtils.isEmpty(keyword)) {
+            UnifyTracking.eventSearchWishlist(keyword);
+        }
     }
 
     @Override

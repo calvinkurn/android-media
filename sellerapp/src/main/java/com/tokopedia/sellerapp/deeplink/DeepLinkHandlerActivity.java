@@ -9,17 +9,17 @@ import android.support.v7.app.AppCompatActivity;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.OldSessionRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
+import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
+import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.sellerapp.SplashScreenActivity;
@@ -37,7 +37,8 @@ import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
         GMApplinkModule.class,
-        SellerappAplinkModule.class
+        SellerappAplinkModule.class,
+        InboxDeeplinkModule.class
 })
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
@@ -47,7 +48,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
-                new SellerappAplinkModuleLoader()
+                new SellerappAplinkModuleLoader(),
+                new InboxDeeplinkModuleLoader()
         );
     }
 

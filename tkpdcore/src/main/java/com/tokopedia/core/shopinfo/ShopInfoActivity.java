@@ -34,10 +34,10 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
@@ -344,6 +344,7 @@ public class ShopInfoActivity extends BaseActivity
         return new ActionShopInfoRetrofit.OnActionToggleFavListener() {
             @Override
             public void onSuccess() {
+                TrackingUtils.sendMoEngageFavoriteEvent(shopModel);
                 if (shopModel.info.shopAlreadyFavorited == 1) {
                     if(getApplication() instanceof IReactNativeRouter) {
                         IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
@@ -856,14 +857,17 @@ public class ShopInfoActivity extends BaseActivity
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
             if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                UnifyTracking.eventShopSendChat();
                 intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                         .getAskSellerIntent(this,
                                 shopModel.info.shopId,
                                 shopModel.info.shopName,
-                                TkpdInboxRouter.SHOP);
+                                TkpdInboxRouter.SHOP,
+                                shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
-        } else {
+        }
+        else {
             bundle.putBoolean("login", true);
             intent = OldSessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);

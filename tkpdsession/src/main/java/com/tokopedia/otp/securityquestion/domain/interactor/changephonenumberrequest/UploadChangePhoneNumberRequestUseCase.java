@@ -8,13 +8,13 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepository;
+import com.tokopedia.session.R;
 import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.ChangePhoneNumberRequestModel;
 import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.SubmitImageModel;
 import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadHostModel;
 import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadImageModel;
 import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.ValidateImageModel;
-import com.tokopedia.session.R;
+import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;

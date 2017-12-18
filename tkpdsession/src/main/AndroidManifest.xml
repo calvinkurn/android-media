@@ -45,14 +45,27 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
+            android:name="com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity"
+            android:label="@string/title_change_phone_number_request"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".activation.view.activity.ChangeEmailActivity"
             android:label="@string/button_change_email"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"/>
         <activity
+            android:name=".login.view.ReloginActivity"
+            android:theme="@style/Theme.AppCompat.Translucent"/>
+        <activity
             android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
             android:label="@string/tokocash"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name="com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
@@ -61,13 +74,25 @@
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name="com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity"
-            android:label="@string/bar_security_question"
+            android:name=".login.loginphonenumber.view.activity.LoginPhoneNumberActivity"
+            android:label="@string/login"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+
+        <activity
+            android:name=".login.loginphonenumber.view.activity.ChooseTokocashAccountActivity"
+            android:label=""
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name="com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity"
+            android:name=".login.loginphonenumber.view.activity.NotConnectedTokocashActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name="com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity"
             android:label="@string/bar_security_question"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>

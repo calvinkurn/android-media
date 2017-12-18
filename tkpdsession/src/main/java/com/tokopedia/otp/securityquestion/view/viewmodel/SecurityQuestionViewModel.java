@@ -16,16 +16,20 @@ public class SecurityQuestionViewModel implements Parcelable {
     private String email;
     private SecurityDomain securityDomain;
     private QuestionViewModel questionViewModel;
+    private String phone;
 
-    public SecurityQuestionViewModel(SecurityDomain securityDomain, String name, String email) {
+    public SecurityQuestionViewModel(SecurityDomain securityDomain, String name, String email,
+                                     String phone) {
         this.securityDomain = securityDomain;
         this.name = name;
         this.email = email;
+        this.phone = phone;
     }
 
     protected SecurityQuestionViewModel(Parcel in) {
         name = in.readString();
         email = in.readString();
+        phone = in.readString();
         securityDomain = in.readParcelable(SecurityDomain.class.getClassLoader());
         questionViewModel = in.readParcelable(QuestionViewModel.class.getClassLoader());
     }
@@ -75,7 +79,16 @@ public class SecurityQuestionViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(email);
+        dest.writeString(phone);
         dest.writeParcelable(securityDomain, flags);
         dest.writeParcelable(questionViewModel, flags);
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

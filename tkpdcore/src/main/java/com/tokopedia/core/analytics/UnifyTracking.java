@@ -28,10 +28,10 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventHomeTab(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.CLICK,
-                label
+                AppEventTracking.Event.HOMEPAGE_UNIFY,
+                AppEventTracking.Category.HOMEPAGE_UNIFY,
+                String.format("click %s", label),
+                ""
         ).getEvent());
     }
 
@@ -218,6 +218,8 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.ORDER_DETAIL
         ).getEvent());
+
+        sendMoEngageClickedNewOrder();
     }
 
     public static void eventTrackOrder() {
@@ -564,9 +566,18 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventDiscoverySearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
-                AppEventTracking.Action.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.SEARCH_PRODUCT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDiscoverySearchShop(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.SEARCH_SHOP,
                 label
         ).getEvent());
     }
@@ -576,6 +587,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.SEARCH,
                 AppEventTracking.Category.SEARCH,
                 AppEventTracking.Action.VOICE_SEARCH,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSearchWishlist(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.HOME_WISHLIST,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.WISHLIST_SEARCH_ITEM,
                 label
         ).getEvent());
     }
@@ -1559,8 +1579,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickPopularSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_POPULAR,
                 label
         ).getEvent());
@@ -1568,8 +1588,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickRecentSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_RECENT,
                 label
         ).getEvent());
@@ -1577,8 +1597,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickHotListSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_HOTLIST,
                 label
         ).getEvent());
@@ -1586,8 +1606,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickAutoCompleteSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_AUTOCOMPLETE,
                 label
         ).getEvent());
@@ -1595,19 +1615,19 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickAutoCompleteShopSearch(String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_AUTOCOMPLETE_SHOP,
                 label
         ).getEvent());
     }
 
-    public static void eventClickAutoCompleteCategory(String catId, String label) {
+    public static void eventClickAutoCompleteCategory(String catName, String catId, String label) {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH,
-                AppEventTracking.Category.SEARCH,
-                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_CATEGORY,
-                catId + " | " + label
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.SEARCH_PRODUCT_SUGGESTION,
+                label + " | " + label + " | " +catName + " | " + catId
         ).getEvent());
     }
 
@@ -2449,6 +2469,56 @@ public class UnifyTracking extends TrackingUtils {
         );
     }
 
+    public static void eventTopChatSearch(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventInsertAttachment(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventSendAttachment (String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void sendChat(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventOpenTopChat(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventPDPSendChat() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.PRODUCT_PAGE
+                                    , AppEventTracking.Category.PRODUCT_PAGE
+                                    , AppEventTracking.Action.PRODUCT_PAGE
+                                    , AppEventTracking.EventLabel.PRODUCT_PAGE
+                                    ).getEvent());
+    }
+
+
+    public static void eventSendMessagePage() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.SEND_MESSAGE_PAGE
+                , AppEventTracking.Category.SEND_MESSAGE_PAGE
+                , AppEventTracking.Action.SEND_MESSAGE_PAGE
+                , ""
+        ).getEvent());
+    }
+
+    public static void eventShopSendChat() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.SHOP_PAGE
+                , AppEventTracking.Category.SHOP_PAGE
+                , AppEventTracking.Action.SHOP_PAGE
+                , ""
+        ).getEvent());
+    }
+
     public static void eventSellerHomeDashboardClick(String main, String item) {
         sendGTMEvent(new EventTracking(
                         AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
@@ -2503,6 +2573,15 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventDeleteFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
+    }
+
+    public static void eventClickCart() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
+                AppEventTracking.Category.EVENT_TOP_NAV,
+                AppEventTracking.Action.CLICK_CART_BUTTON,
+                ""
+        ).getEvent());
     }
 
     public static void eventProductManage(String action, String label){
@@ -2612,5 +2691,180 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK_SALDO,
                 ""
         ).getEvent());
+    }
+
+    public static void eventAppRatingImpression() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMPRESSION_APP_RATING,
+                AppEventTracking.Category.APP_RATING,
+                AppEventTracking.Action.IMPRESSION,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventClickAppRating() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_APP_RATING,
+                AppEventTracking.Category.APP_RATING,
+                AppEventTracking.Action.CLICK,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventCancelAppRating() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CANCEL_APP_RATING,
+                AppEventTracking.Category.APP_RATING,
+                AppEventTracking.Action.CLICK,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventKolRecommendationViewAllClick() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_VIEW_ALL_KOL_RECOMMENDATION,
+                AppEventTracking.EventLabel.FEED_KOL_RECOMMENDATION_VIEW_ALL
+        ).getEvent());
+    }
+
+    public static void eventKolRecommendationGoToProfileClick(String kolCategory, String kolName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_CLICK_KOL_RECOMMENDATION_PROFILE,
+                generateKolRecommendationEventLabel(kolCategory, kolName)
+        ).getEvent());
+    }
+
+    public static void eventKolRecommendationUnfollowClick(String kolCategory, String kolName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_UNFOLLOW_KOL_RECOMMENDATION,
+                generateKolRecommendationEventLabel(kolCategory, kolName)
+        ).getEvent());
+    }
+
+    public static void eventKolRecommendationFollowClick(String kolCategory, String kolName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_FOLLOW_KOL_RECOMMENDATION,
+                generateKolRecommendationEventLabel(kolCategory, kolName)
+        ).getEvent());
+    }
+
+    private static String generateKolRecommendationEventLabel(String kolCategory, String kolName) {
+        return kolCategory + " - " + kolName;
+    }
+
+    public static void eventKolCommentDetailLoadMore() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
+                AppEventTracking.Action.FEED_LOAD_MORE_COMMENTS,
+                AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_LOAD_MORE
+        ).getEvent());
+    }
+
+    public static void eventKolCommentDetailBack() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
+                AppEventTracking.Action.FEED_COMMENT_CLICK_BACK,
+                AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_BACK
+        ).getEvent());
+    }
+
+    public static void eventKolCommentDetailSubmitComment() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
+                AppEventTracking.Action.FEED_SUBMIT_COMMENT,
+                AppEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_COMMENT
+        ).getEvent());
+    }
+
+    public static void eventKolContentCommentClick(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_CLICK_CONTENT_COMMENT,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentUnlike(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_UNLIKE_CONTENT,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentLike(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_LIKE_CONTENT,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentGoToProfilePage(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_CLICK_CONTENT_WRITER_NAME,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentCtaClick(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_CLICK_CONTENT_CTA,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentReadMoreClick(boolean isFollowed, String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_EXPAND_CONTENT,
+                generateKolEventLabel(isFollowed, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentFollowClick(String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_FOLLOW_CONTENT,
+                generateKolEventLabel(false, type)
+        ).getEvent());
+    }
+
+    public static void eventKolContentUnfollowClick(String type) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.FEED_UNFOLLOW_CONTENT,
+                generateKolEventLabel(true, type)
+        ).getEvent());
+    }
+
+    private static String generateKolEventLabel(boolean isFollowed, String type) {
+        String contentType = isFollowed ?
+                AppEventTracking.EventLabel.FEED_CONTENT_TYPE_FOLLOWED
+                : AppEventTracking.EventLabel.FEED_CONTENT_TYPE_RECOMMENDED;
+
+        String campaignType = type + AppEventTracking.EventLabel.FEED_CAMPAIGN_TYPE_SUFFIX;
+        return contentType + " - " + campaignType;
     }
 }

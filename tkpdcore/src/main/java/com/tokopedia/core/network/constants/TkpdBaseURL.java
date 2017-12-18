@@ -24,14 +24,14 @@ public class TkpdBaseURL {
     public static String MOJITO_STAGING_DOMAIN = "https://mojito-staging.tokopedia.com/";
     public static String HADES_DOMAIN = "https://hades.tokopedia.com";
     public static String HADES_STAGING_DOMAIN = "https://hades-staging.tokopedia.com";
-    public static String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String MERLIN_DOMAIN = "https://merlin.tokopedia.com/";
     public static String GOOGLE_APIS = "https://www.googleapis.com";
-    public static String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
     public static String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
     public static String ACCOUNTS_ALPHA_DOMAIN = "https://accounts-alpha.tokopedia.com/";
     public static String INBOX_DOMAIN = "https://inbox.tokopedia.com";
+    public static String CHAT_DOMAIN = "https://chat.tokopedia.com";
+    public static String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
     public static String JS_DOMAIN = "https://js.tokopedia.com/";
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
@@ -264,6 +264,8 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
+        public static final String URL_INBOX_MESSAGE_TIME_MACHINE = MOBILE_DOMAIN +
+                "inbox-message-old.pl?flag_app=1";
     }
 
     public static class Shop {
@@ -439,7 +441,7 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_HOTLIST = "get_hotlist.pl";
         public static final String PATH_GET_HOTLIST_PRODUCT = "get_hotlist_product.pl";
-        public static final String PATH_GET_HOTLIST_BANNER = "get_hotlist_banner.pl";
+        public static final String PATH_GET_HOTLIST_BANNER = "v4/hotlist/get_hotlist_banner.pl";
 
         public static final String PATH_SEARCH_CATALOG = "search_catalog.pl";
         public static final String PATH_SEARCH_PRODUCT = "search_product.pl";
@@ -576,6 +578,11 @@ public class TkpdBaseURL {
         public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
+        public static final String PATH_SEARCH_PRODUCT = "search/product/v3";
+        public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
+        public static final String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
+        public static final String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
+        public static final String PATH_BROWSE_SHOP = "search/v1/shop";
     }
 
     public static class Merlin {
@@ -680,6 +687,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_INFO = "info";
         public static final String PATH_GET_PROFILE = "profile/json/{id}";
         public static final String PATH_DISCOVER_LOGIN = "api/discover";
+        public static final String PATH_DISCOVER_REGISTER = "/api/discover?type=register";
         public static final String DO_REGISTER = "api/register";
         public static final String CREATE_PASSWORD = "api/create-password";
         public static final String RESET_PASSWORD = "api/reset";
@@ -759,6 +767,10 @@ public class TkpdBaseURL {
         public static final String POST_COMPLAINT = "api/v1/cs/complaint";
         public static final String GET_OAUTH_INFO_ACCOUNT= "api/v1/me/profile";
         public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
+        public static final String REQUEST_OTP_LOGIN = "oauth/otp";
+        public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
+        public static final String AUTHORIZE = "oauth/authorize_native";
+        public static final String CHECK_MSISDN = "oauth/check/msisdn";
     }
 
     public static class Truecaller {
@@ -874,8 +886,52 @@ public class TkpdBaseURL {
         public static final String CHECKOUT_ORDER = "v1/cart/order";
     }
 
+    public static class Chat {
+        public static final String CHAT_WEBSOCKET = "/connect";
+        public static final String GET_MESSAGE = "/tc/v1/list_message";
+        public static final String GET_REPLY = "/tc/v1/list_reply/{msgId}";
+        public static final String GET_USER_CONTACT = "/tc/v1/message_contact/";
+        public static final String REPLY = "/tc/v1/reply";
+        public static final String LISTEN_WEBSOCKET = "/connect";
+        public static final String SEARCH = "/tc/v1/search";
+        public static final String DELETE = "/tc/v1/delete";
+        public static final String SEND_MESSAGE = "/tc/v1/send";
+        public static final String GET_TOPCHAT_NOTIFICATION = "tc/v1/notif_unreads";
+        public static final String GET_TEMPLATE = "tc/v1/chat_templates";
+    }
+
     public class Maps {
         public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
+    }
+
+    public static class Reputation {
+        public static final String URL_REPUTATION = LIVE_DOMAIN + "reputationapp/";
+        private static final String REPUTATION_VERSION = "v1";
+
+        public static final String PATH_GET_INBOX_REPUTATION = "reputation/api/"
+                + REPUTATION_VERSION + "/inbox";
+        public static final String PATH_GET_DETAIL_INBOX_REPUTATION = "review/api/"
+                + REPUTATION_VERSION + "/list";
+        public static final String PATH_SEND_REPUTATION_SMILEY = "reputation/api/v1/insert";
+        public static final String PATH_SEND_REVIEW_VALIDATE = "review/api/"
+                + REPUTATION_VERSION + "/insert/validate";
+        public static final String PATH_SEND_REVIEW_SUBMIT = "review/api/"
+                + REPUTATION_VERSION + "/insert/submit";
+        public static final String PATH_SKIP_REVIEW = "review/api/" + REPUTATION_VERSION + "/skip";
+        public static final String PATH_EDIT_REVIEW_VALIDATE = "review/api/"
+                + REPUTATION_VERSION + "/edit/validate";
+        public static final String PATH_EDIT_REVIEW_SUBMIT = "review/api/"
+                + REPUTATION_VERSION + "/edit/submit";
+        public static final String PATH_REPORT_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/report";
+        public static final String PATH_DELETE_REVIEW_RESPONSE = "review/api/"
+                + REPUTATION_VERSION + "/response/delete";
+        public static final String PATH_INSERT_REVIEW_RESPONSE = "review/api/"
+                + REPUTATION_VERSION + "/response/insert";
+        public static final String PATH_GET_LIKE_DISLIKE_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/likedislike";
+        public static final String PATH_LIKE_DISLIKE_REVIEW = "review/api/"
+                + REPUTATION_VERSION + "/likedislike";
     }
 }

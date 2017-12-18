@@ -45,6 +45,14 @@ public interface SecurityQuestion {
         void onGoToPhoneVerification();
 
         void disableOtpButton();
+
+        void onSuccessGetTrueCallerData();
+
+        String getString(int resId);
+
+        void showLoadingFull();
+
+        void dismissLoadingFull();
     }
 
     interface Presenter extends CustomerPresenter<View> {

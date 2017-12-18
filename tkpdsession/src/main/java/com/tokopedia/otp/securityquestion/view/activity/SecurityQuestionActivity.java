@@ -23,6 +23,7 @@ public class SecurityQuestionActivity extends TActivity implements HasComponent 
     public static final String ARGS_QUESTION = "ARGS_QUESTION";
     public static final String ARGS_NAME = "ARGS_NAME";
     public static final String ARGS_EMAIL = "ARGS_EMAIL";
+    public static final String ARGS_PHONE = "ARGS_PHONE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +56,14 @@ public class SecurityQuestionActivity extends TActivity implements HasComponent 
     public static Intent getCallingIntent(Context context,
                                           SecurityDomain securityDomain,
                                           String name,
-                                          String email) {
+                                          String email,
+                                          String phone) {
         Intent intent = new Intent(context, SecurityQuestionActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_QUESTION, securityDomain);
         bundle.putString(ARGS_NAME, name);
         bundle.putString(ARGS_EMAIL, email);
+        bundle.putString(ARGS_PHONE, phone);
         intent.putExtras(bundle);
         return intent;
     }

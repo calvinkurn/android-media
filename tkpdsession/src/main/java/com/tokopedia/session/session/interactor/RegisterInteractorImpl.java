@@ -13,7 +13,6 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.session.session.presenter.RegisterNewImpl;
 
 import org.json.JSONObject;
 
@@ -32,17 +31,15 @@ import rx.subscriptions.CompositeSubscription;
  * migrate retrofit 2 by Angga.Prasetiyo
  */
 public class RegisterInteractorImpl implements RegisterInteractor {
-    RegisterNewImpl presenter;
     CompositeSubscription compositeSubscription;
     AccountsService accountsService;
 
-    public static RegisterInteractor createInstance(RegisterNewImpl registerNew) {
+    public static RegisterInteractor createInstance() {
         Bundle bundle = new Bundle();
         bundle.putBoolean(AccountsService.USING_HMAC, true);
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
 
         RegisterInteractorImpl facade = new RegisterInteractorImpl();
-        facade.presenter = registerNew;
         facade.compositeSubscription = new CompositeSubscription();
         facade.accountsService = new AccountsService(bundle);
         return facade;
@@ -55,7 +52,7 @@ public class RegisterInteractorImpl implements RegisterInteractor {
         }
 
         Observable<Response<TkpdResponse>> observable = accountsService.getApi()
-                .discoverLogin();
+                .discoverRegister();
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override

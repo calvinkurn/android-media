@@ -26,4 +26,7 @@
     <dimen name="text_size_13">13sp</dimen>
     <dimen name="text_size_14">14sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
+    <dimen name="padding_activity">24dp</dimen>
+    <dimen name="verification_icon">38dp</dimen>
+    <dimen name="extra_space_start">3dp</dimen>
 </resources>

@@ -40,13 +40,16 @@ public class MakeLoginDataSource {
             public void call(MakeLoginDomain makeLoginDomain) {
                 if (makeLoginDomain.isLogin()) {
                     sessionHandler.setLoginSession(makeLoginDomain.isLogin(),
-                            makeLoginDomain.getUserId() + "",
+                            String.valueOf(makeLoginDomain.getUserId()),
                             makeLoginDomain.getFullName(),
-                            makeLoginDomain.getShopId() + "",
+                            String.valueOf(makeLoginDomain.getShopId()),
                             makeLoginDomain.isMsisdnVerified());
                     sessionHandler.setGoldMerchant(makeLoginDomain.getShopIsGold());
                     sessionHandler.setPhoneNumber(sessionHandler.getTempPhoneNumber
                             (MainApplication.getAppContext()));
+                }else{
+                    sessionHandler.setTempLoginName(makeLoginDomain.getFullName());
+                    sessionHandler.setTempLoginSession(String.valueOf(makeLoginDomain.getUserId()));
                 }
             }
         };

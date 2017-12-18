@@ -10,6 +10,8 @@ import com.tokopedia.otp.securityquestion.domain.pojo.SecurityQuestionPojo;
 import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 import com.tokopedia.session.R;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -18,6 +20,11 @@ import rx.functions.Func1;
  */
 
 public class SecurityQuestionMapper implements Func1<Response<TkpdResponse>, QuestionViewModel> {
+
+    @Inject
+    public SecurityQuestionMapper() {
+    }
+
     @Override
     public QuestionViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {

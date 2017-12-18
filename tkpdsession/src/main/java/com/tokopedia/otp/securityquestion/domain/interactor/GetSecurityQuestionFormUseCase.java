@@ -8,7 +8,9 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
-import com.tokopedia.session.data.repository.SessionRepository;
+import com.tokopedia.otp.securityquestion.data.source.SecurityQuestionDataSource;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -23,28 +25,31 @@ public class GetSecurityQuestionFormUseCase extends UseCase<QuestionViewModel> {
     private static final String USER_ID = "user_id";
 
     private final SessionHandler sessionHandler;
-    private final SessionRepository sessionRepository;
+    private final SecurityQuestionDataSource securityQuestionDataSource;
 
+    @Inject
     public GetSecurityQuestionFormUseCase(ThreadExecutor threadExecutor,
                                           PostExecutionThread postExecutionThread,
-                                          SessionRepository sessionRepository,
+                                          SecurityQuestionDataSource securityQuestionDataSource,
                                           SessionHandler sessionHandler) {
         super(threadExecutor, postExecutionThread);
-        this.sessionRepository = sessionRepository;
+        this.securityQuestionDataSource = securityQuestionDataSource;
         this.sessionHandler = sessionHandler;
     }
 
     @Override
     public Observable<QuestionViewModel> createObservable(RequestParams requestParams) {
-        return sessionRepository.getSecurityQuestionForm(requestParams);
+        return securityQuestionDataSource.getSecurityQuestion(requestParams);
     }
 
     public RequestParams getParam(int userCheckSecurity1, int userCheckSecurity2) {
         RequestParams params = RequestParams.create();
-        params.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(), params.getParameters()));
         params.putInt(USER_CHECK_SECURITY_ONE, userCheckSecurity1);
         params.putInt(USER_CHECK_SECURITY_TWO, userCheckSecurity2);
         params.putString(USER_ID, sessionHandler.getTempLoginSession(MainApplication.getAppContext()));
+        params.putAll(AuthUtil.generateParamsNetworkObject(MainApplication.getAppContext(),
+                params.getParameters(),
+                sessionHandler.getTempLoginSession(MainApplication.getAppContext())));
         return params;
     }
 }

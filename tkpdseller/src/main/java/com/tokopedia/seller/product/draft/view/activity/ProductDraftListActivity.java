@@ -195,10 +195,6 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
         // no op
     }
 
-    @Override
-    public void onHadesTimeout() {
-        // no op
-    }
 
     @Override
     protected int setDrawerPosition() {
