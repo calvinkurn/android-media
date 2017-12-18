@@ -9,6 +9,9 @@ public final class ShopOpenNetworkConstant {
     public static final String PATH_RESERVE_DOMAIN = "/v1/web-service/apps/reserve_domain";
     public static final String PATH_IS_RESERVE_DOMAIN = "/v1/web-service/apps/is_reserve_domain";
 
+    public static final String PATH_TERMS = "https://www.tokopedia.com/terms.pl";
+    public static final String PATH_CONDITION = "https://www.tokopedia.com/privacy.pl";
+
     public static final String PARAM_SHOP_DOMAIN = "shop_domain";
     public static final String PARAM_SHOP_NAME = "shop_name";
 }

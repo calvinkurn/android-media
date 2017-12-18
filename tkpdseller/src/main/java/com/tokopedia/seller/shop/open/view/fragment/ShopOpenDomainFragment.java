@@ -1,10 +1,19 @@
 package com.tokopedia.seller.shop.open.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +21,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
+import com.tokopedia.seller.shop.constant.ShopOpenNetworkConstant;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
@@ -31,14 +43,8 @@ import javax.inject.Inject;
  */
 
 public class ShopOpenDomainFragment extends BasePresenterFragment implements ShopOpenDomainView {
-    private OnShopOpenDomainFragmentListener onShopOpenDomainFragmentListener;
-    public interface OnShopOpenDomainFragmentListener{
-        void onSuccessReserveShop();
-    }
 
-    @Inject
-    ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
-
+    private TextView tvTermsAndCondition;
     private View buttonSubmit;
     private TkpdHintTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
@@ -46,6 +52,14 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     private PrefixEditText editTextInputDomainName;
     private SnackbarRetry snackbarRetry;
     private TkpdProgressDialog tkpdProgressDialog;
+
+    @Inject
+    ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
+
+    private OnShopOpenDomainFragmentListener onShopOpenDomainFragmentListener;
+    public interface OnShopOpenDomainFragmentListener{
+        void onSuccessReserveShop();
+    }
 
     public static ShopOpenDomainFragment newInstance() {
         return new ShopOpenDomainFragment();
@@ -69,9 +83,12 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
         textInputDomainName = view.findViewById(R.id.text_input_domain_name);
         editTextInputShopName = textInputShopName.getEditText();
         editTextInputDomainName = (PrefixEditText) textInputDomainName.getEditText();
+        tvTermsAndCondition = (TextView) view.findViewById(R.id.tv_terms_and_condition);
 
-        String helloName = getString(R.string.hello_blank_name) + " " + SessionHandler.getLoginName(getActivity());
-        textHello.setText(helloName);
+        String helloName = getString(R.string.hello_x, SessionHandler.getLoginName(getActivity()));
+        textHello.setText(MethodChecker.fromHtml(helloName));
+
+        setTermsAndConditionText();
 
         buttonSubmit.setEnabled(false);
 
@@ -111,6 +128,54 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
             }
         });
         return view;
+    }
+
+    private void setTermsAndConditionText(){
+        SpannableString spannableString = new SpannableString(getString(R.string.openshop_terms_and_conditions));
+        final String termsAndConditionString = getString(R.string.manage_terms_and_conditions);
+        final String privacyString = getString(R.string.manage_privacy);
+        ClickableSpan clickableTerms = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                openWebView(ShopOpenNetworkConstant.PATH_TERMS, termsAndConditionString);
+            }
+        };
+        ClickableSpan clickablePrivacy = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                openWebView(ShopOpenNetworkConstant.PATH_CONDITION, privacyString);
+
+            }
+        };
+        int termsAndConditionStringIndex = spannableString.toString().indexOf(termsAndConditionString);
+        spannableString.setSpan(clickableTerms,
+                termsAndConditionStringIndex, termsAndConditionStringIndex + termsAndConditionString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                R.color.tkpd_main_green)), termsAndConditionStringIndex,
+                termsAndConditionStringIndex + termsAndConditionString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int privacyIndex = spannableString.toString().indexOf(privacyString);
+        spannableString.setSpan(clickablePrivacy,
+                privacyIndex, privacyIndex + privacyString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                R.color.tkpd_main_green)), privacyIndex, privacyIndex + privacyString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvTermsAndCondition.setMovementMethod(LinkMovementMethod.getInstance());
+        tvTermsAndCondition.setText(spannableString);
+    }
+
+    private void openWebView(String path, String title){
+        Intent intent;
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent = ManageWebViewActivity.getCallingIntent(getActivity(), path, title);
+        } else {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(path));
+        }
+        getActivity().startActivity(intent);
     }
 
     private void hideSnackBarRetry(){

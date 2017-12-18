@@ -115,7 +115,7 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     private void showLoading(){
         if (tkpdProgressDialog== null) {
             tkpdProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS,
-                    getString(R.string.getting_shop_step));
+                    getString(R.string.title_loading));
         }
         tkpdProgressDialog.showDialog();
     }
