@@ -368,8 +368,12 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         null,
                 response.getUpdateTime(),
                 response.getFreeReturn(),
-                response.getFreeReturn() == 1 ? response.getFreeReturnText().getInfo() : null,
-                response.getFreeReturn() == 1 ? response.getFreeReturnText().getLink() : null);
+                response.getFreeReturn() == 1 && response.getFreeReturnText() != null ?
+                        response.getFreeReturnText().getInfo() :
+                        null,
+                response.getFreeReturn() == 1  && response.getFreeReturnText() != null ?
+                        response.getFreeReturnText().getLink() :
+                        null);
     }
 
     private StatusData mappingStatusData(StatusResponse response) {

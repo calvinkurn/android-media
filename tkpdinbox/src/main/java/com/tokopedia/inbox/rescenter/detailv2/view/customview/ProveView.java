@@ -149,7 +149,7 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
                             + MainApplication.getAppContext().getString(R.string.string_read_more)
                             + "</font>");
         } else {
-            return MethodChecker.fromHtml(text);
+            return MethodChecker.fromHtml(text.replaceAll("(\r\n|\n)", "<br />"));
         }
     }
 
