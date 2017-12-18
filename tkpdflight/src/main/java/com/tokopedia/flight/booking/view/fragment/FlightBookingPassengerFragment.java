@@ -22,6 +22,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.utils.KeyboardHandler;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -400,6 +401,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void hideKeyboard() {
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 
     @Override

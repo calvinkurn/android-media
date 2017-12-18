@@ -2,6 +2,7 @@ package com.tokopedia.flight.orderlist.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -99,6 +100,12 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
         filtersRecyclerView.setNestedScrollingEnabled(false);
         filtersRecyclerView.setAdapter(filterAdapter);
         filterAdapter.setListener(this);
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.onSwipeRefresh();
+            }
+        });
         return view;
     }
 
@@ -168,7 +175,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.onFilterSelected(selectedFilter);
+                        presenter.onFilterSelected();
                     }
                 }
         );
@@ -188,6 +195,16 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void disableSwipeRefresh() {
+        swipeToRefresh.setEnabled(false);
+    }
+
+    @Override
+    public void enableSwipeRefresh() {
+        swipeToRefresh.setEnabled(true);
+    }
+
+    @Override
     public void clearFilter() {
         selectedFilter = "";
         presenter.getInitialOrderData();
@@ -195,8 +212,8 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void selectFilter(String typeFilter) {
-        presenter.onFilterSelected(typeFilter);
         selectedFilter = typeFilter;
+        presenter.onFilterSelected();
         endlessRecyclerviewListener.resetState();
     }
 
@@ -215,6 +232,12 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onHelpOptionClicked(String orderId) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroyView();
+        super.onDestroyView();
     }
 
     @Override
