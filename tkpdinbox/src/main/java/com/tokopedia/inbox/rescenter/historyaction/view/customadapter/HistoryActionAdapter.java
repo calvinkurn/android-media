@@ -179,4 +179,11 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     public int getItemCount() {
         return arraylist.size() + super.getItemCount();
     }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof ActionViewHolder) {
+            ((ActionViewHolder) holder).glowingView.renderData(new Object());
+        }
+    }
 }

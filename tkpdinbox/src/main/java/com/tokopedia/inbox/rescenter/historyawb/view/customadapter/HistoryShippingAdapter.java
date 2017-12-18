@@ -213,4 +213,11 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     public int getItemCount() {
         return getArraylist().size() + super.getItemCount();
     }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof ShippingViewHolder) {
+            ((ShippingViewHolder)holder).glowingView.renderData(new Object());
+        }
+    }
 }

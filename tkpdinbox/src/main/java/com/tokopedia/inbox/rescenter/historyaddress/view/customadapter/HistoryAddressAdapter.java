@@ -162,4 +162,11 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
     public int getItemCount() {
         return arraylist.size() + super.getItemCount();
     }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof AddressViewHolder) {
+            ((AddressViewHolder)holder).glowingView.renderData(new Object());
+        }
+    }
 }
