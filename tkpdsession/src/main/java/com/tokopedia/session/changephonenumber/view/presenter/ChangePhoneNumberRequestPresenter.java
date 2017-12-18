@@ -1,8 +1,4 @@
-package com.tokopedia.session.changephonenumber.presenter;
-
-import android.view.View;
-
-import com.tokopedia.session.changephonenumber.data.ChangePhoneNumberRequestPass;
+package com.tokopedia.session.changephonenumber.view.presenter;
 
 /**
  * Created by nisie on 3/2/17.

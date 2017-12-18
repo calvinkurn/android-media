@@ -1,4 +1,4 @@
-package com.tokopedia.session.changephonenumber.fragment;
+package com.tokopedia.session.changephonenumber.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
@@ -24,9 +24,9 @@ import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.listener.ChangePhoneNumberRequestView;
-import com.tokopedia.session.changephonenumber.presenter.ChangePhoneNumberRequestPresenter;
-import com.tokopedia.session.changephonenumber.presenter.ChangePhoneNumberRequestPresenterImpl;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberRequestView;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberRequestPresenter;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberRequestPresenterImpl;
 
 import java.io.File;
 import java.util.ArrayList;

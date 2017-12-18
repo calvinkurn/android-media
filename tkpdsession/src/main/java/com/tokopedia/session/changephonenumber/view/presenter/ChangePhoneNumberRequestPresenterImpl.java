@@ -1,4 +1,4 @@
-package com.tokopedia.session.changephonenumber.presenter;
+package com.tokopedia.session.changephonenumber.view.presenter;
 
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -33,7 +33,7 @@ import com.tokopedia.session.changephonenumber.domain.interactor.ValidateImageUs
 import com.tokopedia.session.changephonenumber.domain.interactor.GetUploadHostUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.UploadChangePhoneNumberRequestUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.UploadImageUseCase;
-import com.tokopedia.session.changephonenumber.listener.ChangePhoneNumberRequestView;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberRequestView;
 
 import java.io.File;
 import java.net.UnknownHostException;

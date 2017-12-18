@@ -1,15 +1,14 @@
-package com.tokopedia.session.changephonenumber.activity;
+package com.tokopedia.session.changephonenumber.view.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.fragment.ChangePhoneNumberRequestFragment;
-import com.tokopedia.session.changephonenumber.fragment.ChangePhoneNumberWaitFragment;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberRequestFragment;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWaitFragment;
 
 /**
  * Created by nisie on 3/2/17.

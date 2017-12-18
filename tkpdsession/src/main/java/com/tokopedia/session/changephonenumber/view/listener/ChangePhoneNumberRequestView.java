@@ -1,10 +1,8 @@
-package com.tokopedia.session.changephonenumber.listener;
+package com.tokopedia.session.changephonenumber.view.listener;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.tokopedia.core.network.entity.changephonenumberrequest.CheckStatusData;
-import com.tokopedia.session.changephonenumber.data.CheckStatusModel;
 
 /**
  * Created by nisie on 3/2/17.
