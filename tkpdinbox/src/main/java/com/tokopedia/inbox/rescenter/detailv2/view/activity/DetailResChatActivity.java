@@ -16,6 +16,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
@@ -68,8 +69,8 @@ public class DetailResChatActivity
         Intent destinationIntent = new Intent(context, DetailResChatActivity.class);
         String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
         destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
-        destinationIntent.putExtra(PARAM_USER_NAME, bundle.getString(PARAM_APPLINK_BUYER,""));
-        destinationIntent.putExtra(PARAM_SHOP_NAME, bundle.getString(PARAM_APPLINK_SELLER,""));
+        destinationIntent.putExtra(PARAM_USER_NAME, MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")));
+        destinationIntent.putExtra(PARAM_SHOP_NAME, MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")));
         destinationIntent.putExtras(bundle);
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(destinationIntent);
