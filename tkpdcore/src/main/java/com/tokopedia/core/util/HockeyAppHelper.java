@@ -15,11 +15,12 @@ public class HockeyAppHelper {
     public static final String KEY_SELLERAPP = "404b7bc37aeb4c5bbf0c033c1a9e1f2e";
 
     private static Boolean ENABLE_DISTRIBUTION = false;
+    private static Boolean ANONYMOUS_LOGIN = false;
     private static String HOCKEYAPP_KEY = KEY_MAINAPP;
 
 
     public static void handleLogin(Activity activity) {
-        if (isAllow()) {
+        if (isAllow() && !ANONYMOUS_LOGIN) {
             LoginManager.register(activity, HOCKEYAPP_KEY, LoginManager.LOGIN_MODE_EMAIL_ONLY);
             LoginManager.verifyLogin(activity, activity.getIntent());
         }
@@ -39,6 +40,10 @@ public class HockeyAppHelper {
 
     public static void setEnableDistribution(Boolean enableDistribution) {
         ENABLE_DISTRIBUTION = enableDistribution;
+    }
+
+    public static void setAllowAnonymousLogin(Boolean isAllow) {
+        ANONYMOUS_LOGIN = isAllow;
     }
 
     public static Boolean getEnableDistribution() {
