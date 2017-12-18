@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by stevenfredian on 5/18/17.
@@ -15,6 +17,7 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
     protected ArrayList<InspirationProductViewModel> listProduct;
     private int rowNumber;
     private String source;
+    private String userId;
 
     public InspirationViewModel(String title,
                                 ArrayList<InspirationProductViewModel> listProduct,
@@ -22,6 +25,10 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
         this.title = title;
         this.listProduct = listProduct;
         this.source = source;
+    }
+
+    public InspirationViewModel() {
+
     }
 
     @Override
@@ -59,5 +66,34 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public List<Object> getListProductAsObjectDataLayer(String eventLabel, String userId) {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < getListProduct().size(); i++) {
+            InspirationProductViewModel viewModel = getListProduct().get(i);
+            list.add(
+                    DataLayer.mapOf(
+                            "name", viewModel.getName(),
+                            "id", viewModel.getProductId(),
+                            "price", viewModel.getPrice(),
+                            "brand", "",
+                            "category", "",
+                            "variant", "",
+                            "list", String.format("feed - product %d - %s", i, eventLabel),
+                            "position", i,
+                            "userId", getUserId()
+                    )
+            );
+        }
+        return list;
     }
 }

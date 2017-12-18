@@ -116,4 +116,12 @@ public class FeedTracking extends TrackingUtils {
         list.add(product.getProductAsDataLayerForFeedRecomItemClick());
         return list;
     }
+
+    public static void eventImpressionFeedInspiration(List<Object> list, String eventLabel) {
+        getGTMEngine().eventImpressionFeedInspiration(list, eventLabel);
+    }
+
+    public static void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
+        getGTMEngine().eventImpressionFeedUploadedProduct(list, eventLabel);
+    }
 }
