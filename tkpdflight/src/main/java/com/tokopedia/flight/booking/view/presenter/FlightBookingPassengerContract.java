@@ -88,6 +88,8 @@ public interface FlightBookingPassengerContract {
         void showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(@StringRes int resId);
 
         void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(@StringRes int resId);
+
+        void hideKeyboard();
     }
 
     interface Presenter extends CustomerPresenter<View> {
