@@ -1,5 +1,6 @@
 package com.tokopedia.digital.tokocash.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -10,12 +11,15 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -63,16 +67,19 @@ import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
 import java.util.List;
 
 import butterknife.BindView;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 8/18/17.
  */
-
+@RuntimePermissions
 public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPresenter>
         implements TopUpTokoCashListener {
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
     public static final int REQUEST_CODE_ACCOUNT_SETTING = 112;
+    private static final int QR_REQUEST_CODE = 12;
 
     @BindView(R2.id.balance_tokocash_layout)
     LinearLayout balanceTokoCashViewLayout;
@@ -84,6 +91,8 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     ProgressBar progressLoading;
     @BindView(R2.id.main_content)
     RelativeLayout mainContent;
+    @BindView(R2.id.button_scan_qr)
+    Button scanQRButton;
 
     private CompositeSubscription compositeSubscription;
     private TopUpTokoCashView topUpTokoCashView;
@@ -168,7 +177,31 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
 
     @Override
     protected void setViewListener() {
+        //TODO : ntar didelete karena ini cuma buat report aja
+        scanQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TopUpTokoCashActivityPermissionsDispatcher.scanQRCodeWithCheck(TopUpTokoCashActivity.this);
+            }
+        });
+    }
 
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void scanQRCode() {
+        startActivity(new Intent(getApplicationContext(), CustomScannerQRActivity.class));
+
+//        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+//        intentIntegrator.setOrientationLocked(false);
+//        intentIntegrator.setCaptureActivity(ScanQRActivity.class);
+//        intentIntegrator.initiateScan();
+
+//        Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+//        intent.putExtra("SCAN_WIDTH", "800");
+//        intent.putExtra("SCAN_HEIGHT", "200");
+//        intent.putExtra("PROMPT_MESSAGE", "Arahkan kode QR ke area yang telah ditentukan");
+//        intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+//        intent.putExtra("SCAN_FORMATS", "QR_CODE");
+//        startActivityForResult(intent, QR_REQUEST_CODE);
     }
 
     @Override
@@ -292,28 +325,34 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
-                if (resultCode == Activity.RESULT_OK && data != null)
-                    topUpTokoCashView.renderUpdateDataSelected(
-                            (Product) data.getParcelableExtra(
-                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA));
-                break;
-            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
-                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                    if (!TextUtils.isEmpty(message)) {
-                        showToastMessage(message);
+//        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+//        if (scanResult != null && scanResult.getContents() != null) {
+//            Toast.makeText(getApplicationContext(), scanResult.getContents(), Toast.LENGTH_LONG).show();
+//        } else {
+            switch (requestCode) {
+                case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+                    if (resultCode == Activity.RESULT_OK && data != null)
+                        topUpTokoCashView.renderUpdateDataSelected(
+                                (Product) data.getParcelableExtra(
+                                        DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA));
+                    break;
+                case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+                    if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                        if (!TextUtils.isEmpty(message)) {
+                            showToastMessage(message);
+                        }
                     }
-                }
-                break;
-            case REQUEST_CODE_ACCOUNT_SETTING:
-                if (resultCode == Activity.RESULT_OK && data != null &&
-                        data.hasExtra(WalletAccountSettingActivity.KEY_INTENT_RESULT)) {
-                    setResult(RESULT_OK);
-                    finish();
-                }
-        }
+                    break;
+                case REQUEST_CODE_ACCOUNT_SETTING:
+                    if (resultCode == Activity.RESULT_OK && data != null &&
+                            data.hasExtra(WalletAccountSettingActivity.KEY_INTENT_RESULT)) {
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                    break;
+            }
+//        }
     }
 
     @Override

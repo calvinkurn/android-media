@@ -69,6 +69,9 @@
         <activity
             android:name=".tokocash.activity.WaitingTransactionActivity"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".tokocash.activity.CustomScannerQRActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
