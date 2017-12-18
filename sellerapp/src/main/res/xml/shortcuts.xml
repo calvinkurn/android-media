@@ -1,34 +1,8 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
-        android:shortcutId="shortcut_add_product"
-        android:enabled="true"
-        android:icon="@drawable/ic_badge_diamond"
-        android:shortcutShortLabel="@string/title_activity_add_product"
-        android:shortcutLongLabel="@string/title_activity_add_product"
-        android:shortcutDisabledMessage="@string/title_activity_add_product">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetPackage="com.tokopedia.sellerapp"
-            android:targetClass="com.tokopedia.seller.product.edit.view.activity.ProductAddActivity" />
-        <categories android:name="android.shortcut.conversation" />
-    </shortcut>
-    <shortcut
-        android:shortcutId="shortcut_manage_product"
-        android:enabled="true"
-        android:icon="@drawable/ic_badge_silver"
-        android:shortcutShortLabel="@string/title_activity_manage_product"
-        android:shortcutLongLabel="@string/title_activity_manage_product"
-        android:shortcutDisabledMessage="@string/title_activity_manage_product">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetPackage="com.tokopedia.sellerapp"
-            android:targetClass="com.tokopedia.seller.product.manage.view.activity.ProductManageActivity" />
-        <categories android:name="android.shortcut.conversation" />
-    </shortcut>
-    <shortcut
         android:shortcutId="shortcut_selling"
         android:enabled="true"
-        android:icon="@drawable/ic_badge_gold"
+        android:icon="@drawable/icon_penjualan"
         android:shortcutShortLabel="@string/title_activity_shop_transaction_new"
         android:shortcutLongLabel="@string/title_activity_shop_transaction_new"
         android:shortcutDisabledMessage="@string/title_activity_shop_transaction_new">
