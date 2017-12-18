@@ -2,22 +2,29 @@ package com.tokopedia.seller.shop.open.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.listener.ShopCheckDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopCheckIsReservePresenterImpl;
+import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 
 import javax.inject.Inject;
@@ -40,6 +47,19 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     @Inject
     ShopCheckIsReservePresenterImpl shopCheckIsReservePresenter;
     private ShopOpenDomainFragment shopOpenDomainFragment;
+
+    @DeepLink(Constants.Applinks.CREATE_SHOP)
+    public static Intent getCallingApplinkCreateShopIntent(Context context, Bundle extras) {
+        if (SessionHandler.isV4Login(context)
+                && !SessionHandler.isUserHasShop(context)) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ShopOpenDomainActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_LOGOUT_ON_BACK, GlobalConfig.isSellerApp());
+        } else {
+            return HomeRouter.getHomeActivityInterfaceRouter(context);
+        }
+    }
 
     public static Intent getIntent(Context context, boolean isLogoutOnBack) {
         Intent intent = new Intent(context, ShopOpenDomainActivity.class);
