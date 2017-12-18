@@ -71,9 +71,10 @@ public class CustomScannerQRActivity extends BasePresenterActivity {
                         Toast.makeText(getApplicationContext(), "Scan salah", Toast.LENGTH_LONG).show();
                     } else {
                         decoratedBarcodeView.setStatusText(result.getText());
-                        Intent intent = new Intent();
-                        intent.putExtra("result", result.getText());
-                        setResult(Activity.RESULT_OK);
+                        startActivity(new Intent(getApplicationContext(), SuccessPaymentQRActivity.class));
+//                        Intent intent = new Intent();
+//                        intent.putExtra("result", result.getText());
+//                        setResult(Activity.RESULT_OK);
                         finish();
                     }
                 }
