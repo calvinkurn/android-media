@@ -2,6 +2,7 @@ package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
@@ -70,6 +71,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @NonNull final Context context, @NonNull final TKPDMapParam<String, String> param,
             @NonNull final OnCalculateKeroAddressShipping listener) {
         Observable<Response<String>> observable = keroService.getApi().calculateShippingRate(param);
+        Log.e("RequestRate", "CALCULATE!");
         Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
             @Override
             public void onCompleted() {
@@ -84,10 +86,31 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
             @Override
             public void onNext(Response<String> response) {
+                Log.e("CalculateRate", response.body());
+                String bodyResponse = response.body();
+                int chunkSize = 3000;
+                Log.e("RESPONSE_LENGTH", String.valueOf(bodyResponse.length()));
+                if (bodyResponse.length() > chunkSize) {
+                    Log.e("RESPONSE", "sb.length = " + bodyResponse.length());
+                    int chunkCount = bodyResponse.length() / chunkSize;
+                    for (int i = 0; i <= chunkCount; i++) {
+                        int max = chunkSize * (i + 1);
+                        if (max >= bodyResponse.length()) {
+                            Log.e("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(chunkSize * i));
+                        } else {
+                            Log.e("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(chunkSize * i, max));
+                        }
+                    }
+                } else {
+                    Log.e("RESPONSE", bodyResponse);
+                }
+
+
                 if (response.isSuccessful()) {
                     Rates rates = new Gson().fromJson(response.body(), Rates.class);
                     listener.onSuccess(rates.getData().getAttributes());
                 } else {
+                    Log.e("onFailureCalculateKero", response.body());
                     listener.onFailure();
                 }
             }

@@ -16,6 +16,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +49,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -95,6 +97,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private static final String EXTRA_STATE_PRODUCT_DETAIL_DATA = "productDetailData";
     private static final String EXTRA_STATE_SHIPMENT_LIST_DATA = "shipmentsData";
     private static final String EXTRA_STATE_SHIPMENT_RATE_LIST_DATA = "shipmentRateAttrs";
+    private static final String WAHANA_SHIPPER_ID = "6";
 
     private ProductCartPass productCartPass;
     private TkpdProgressDialog progressDialog;
@@ -108,6 +111,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
     private SnackbarRetry snackbarRetry;
     private String insuranceInfo;
+    private boolean mustReCalculateShippingRate;
+    private boolean hasRecalculateShippingRate;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -485,7 +490,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.calculateProduct(AddToCartActivity.this, orderData);
+                        presenter.calculateProduct(AddToCartActivity.this, orderData,
+                                mustReCalculateShippingRate);
                     }
                 });
         snackbarRetry.showRetrySnackbar();
@@ -586,14 +592,26 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     android.R.layout.simple_spinner_item, list);
             serviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spShippingService.setAdapter(serviceAdapter);
-            orderData.setShipment(((Attribute) parent.getAdapter()
-                    .getItem(position)).getShipperId());
+            String shipperId = ((Attribute) parent.getAdapter()
+                    .getItem(position)).getShipperId();
+            orderData.setShipment(shipperId);
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getShipperProductId().equals(orderData.getShipmentPackage())) {
                     spShippingService.setSelection(i);
                 }
             }
             tvErrorShipping.setVisibility(View.GONE);
+            mustReCalculateShippingRate = shipperId.equalsIgnoreCase(TkpdState.SHIPPING_ID.WAHANA);
+            Log.e("onItemSelected", "TRUE");
+            if (mustReCalculateShippingRate) {
+                if (!hasRecalculateShippingRate) {
+//                    presenter.calculateKeroAddressShipping(this, orderData);
+                    presenter.calculateProduct(this, orderData, mustReCalculateShippingRate);
+                    hasRecalculateShippingRate = true;
+                }
+            } else {
+                hasRecalculateShippingRate = false;
+            }
         } else if (parent.getAdapter().getItem(position) instanceof Product) {
             orderData.setShipmentPackage(((Product) parent.getAdapter()
                     .getItem(position)).getShipperProductId());
@@ -630,11 +648,11 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void setInsuranceInfoButtonVisibility(Product product) {
+        setInsuranceSpinnerVisibility(product);
+
         if (product.getShipperProductName().equals(getString(R.string.atc_selection_shipment_package_info))) {
             imgInsuranceInfo.setVisibility(View.GONE);
         } else {
-            setInsuranceSpinnerVisibility(product);
-
             if (product.getInsuranceUsedInfo() != null && product.getInsuranceUsedInfo().length() > 0) {
                 insuranceInfo = product.getInsuranceUsedInfo();
                 imgInsuranceInfo.setVisibility(View.VISIBLE);
@@ -646,14 +664,19 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void setInsuranceSpinnerVisibility(Product product) {
-        if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
-            spInsurance.setEnabled(false);
-            spInsurance.setSelection(0);
-        } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
-            spInsurance.setEnabled(false);
-            spInsurance.setSelection(1);
+        if (product.getInsuranceMode() != null) {
+            if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
+                spInsurance.setEnabled(false);
+                spInsurance.setSelection(0);
+            } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
+                spInsurance.setEnabled(false);
+                spInsurance.setSelection(1);
+            } else {
+                spInsurance.setEnabled(true);
+            }
         } else {
             spInsurance.setEnabled(true);
+            spInsurance.setSelection(1);
         }
     }
 
@@ -827,13 +850,16 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void quantityChangedEvent(Editable quantity) {
+        Log.e("QuantityChangeTo", quantity.toString());
         if (orderData == null) {
+            Log.e("QuantityChange", "Pos-0");
             presenter.getCartFormData(this, productCartPass);
             return;
         }
         orderData.setQuantity(quantity.length() == 0 ?
                 0 : Integer.parseInt(etQuantity.getText().toString()));
         if (orderData.getQuantity() < orderData.getMinOrder()) {
+            Log.e("QuantityChange", "Pos-1");
             tilAmount.setError(getString(R.string.error_min_order)
                     + " " + orderData.getMinOrder());
             if (etQuantity.requestFocus())
@@ -841,14 +867,24 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
                 );
         } else if (orderData.getAddress() == null) {
+            Log.e("QuantityChange", "Pos-2");
             showErrorMessage(getString(R.string.error_no_address));
         } else {
+            Log.e("QuantityChange", "Pos-3");
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
+            if(orderData.getInsurance() != null){
+                Log.e("OrderDataInsurane", String.valueOf(orderData.getInsurance()));
+            } else {
+                Log.e("OrderDataInsurane", "NULL");
+            }
             orderData.setWeight(presenter.calculateWeight(orderData.getInitWeight(),
                     quantity.toString()));
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
-            presenter.calculateProduct(AddToCartActivity.this, orderData);
+            presenter.calculateAllPrices(AddToCartActivity.this, orderData);
+            presenter.calculateProduct(AddToCartActivity.this, orderData,
+                    mustReCalculateShippingRate);
+            Log.e("QuantityChange", "Pos-4");
         }
     }
 
