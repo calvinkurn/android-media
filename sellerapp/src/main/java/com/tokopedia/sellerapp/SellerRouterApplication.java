@@ -270,11 +270,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void actionOpenGeneralWebViewWithTitle(Activity activity, String mobileUrl, String title) {
-
-    }
-
-    @Override
     public void goToCreateMerchantRedirect(Context context) {
         //no route to merchant redirect on seller, go to default
         goToDefaultRoute(context);

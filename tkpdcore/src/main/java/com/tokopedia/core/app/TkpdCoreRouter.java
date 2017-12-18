@@ -56,8 +56,6 @@ public interface TkpdCoreRouter {
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
-    void actionOpenGeneralWebViewWithTitle(Activity activity, String mobileUrl, String title);
-
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;

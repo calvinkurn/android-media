@@ -33,7 +33,8 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
 
 
     @Override
-    public void getCouponList(TKPDMapParam<String, String> param, Subscriber<List<CouponData>> subscriber) {
+    public void getCouponList(TKPDMapParam<String, String> param,
+                              Subscriber<List<CouponData>> subscriber) {
         compositeSubscription.add(
                 tokoplusRepository.getCouponList(param)
                         .subscribeOn(Schedulers.newThread())
@@ -58,7 +59,9 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     }
 
     @Override
-    public void submitDigitalVoucher(String couponTitle, String voucherCode, TKPDMapParam<String, String> param, Subscriber<CouponViewModel> subscriber) {
+    public void submitDigitalVoucher(String couponTitle, String voucherCode,
+                                     TKPDMapParam<String, String> param,
+                                     Subscriber<CouponViewModel> subscriber) {
         compositeSubscription.add(
                 tokoplusRepository.checkDigitalCouponValidity(param, voucherCode, couponTitle)
                         .subscribeOn(Schedulers.newThread())
@@ -69,12 +72,14 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     }
 
     @Override
-    public void postCouponValidateRedeem(RequestBodyValidateRedeem requestBodyValidateRedeem, Subscriber<String> subscriber) {
+    public void postCouponValidateRedeem(RequestBodyValidateRedeem requestBodyValidateRedeem,
+                                         Subscriber<String> subscriber) {
 
     }
 
     @Override
-    public void postCouponRedeem(RequestBodyCouponRedeem requestBodyCouponRedeem, Subscriber<String> subscriber) {
+    public void postCouponRedeem(RequestBodyCouponRedeem requestBodyCouponRedeem,
+                                 Subscriber<String> subscriber) {
 
     }
 

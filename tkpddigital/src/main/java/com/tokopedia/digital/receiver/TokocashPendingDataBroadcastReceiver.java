@@ -48,7 +48,7 @@ public class TokocashPendingDataBroadcastReceiver extends BroadcastReceiver {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override

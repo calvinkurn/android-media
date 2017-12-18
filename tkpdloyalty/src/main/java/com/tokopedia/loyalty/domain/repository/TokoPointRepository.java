@@ -85,21 +85,6 @@ public class TokoPointRepository implements ITokoPointRepository {
                 });
     }
 
-    /*@Override
-    public Observable<List<CouponData>> getCouponList(TKPDMapParam<String, String> param) {
-        return txService.getApi().getCouponList(param)
-                .map(new Func1<Response<String>, List<CouponData>>() {
-                    @Override
-                    public List<CouponData> call(Response<String> tokoplusResponseResponse) {
-                        TokoPointResponse convertedResponse = new Gson()
-                                .fromJson(tokoplusResponseResponse.body(),TokoPointResponse.class);
-                        return tokoPointResponseMapper.convertCouponListData(
-                                convertedResponse.convertDataObj(CouponListDataResponse.class)
-                        );
-                    }
-                });
-    }*/
-
     @Override
     public Observable<String> postCouponValidateRedeem(RequestBodyValidateRedeem requestBodyValidateRedeem) {
         JsonElement requestJsonElement = new JsonParser().parse(new Gson().toJson(requestBodyValidateRedeem));

@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.beranda.presentation.view.compoundview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -105,12 +104,13 @@ public class HeaderHomeView extends BaseCustomView {
         if (homeHeaderWalletAction.getTypeAction()
                 == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
             tvBalanceTokocash.setVisibility(VISIBLE);
-            tvBalanceTokocash.setTextColor(Color.parseColor("#b3000000"));
+            tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-//            if (homeHeaderWalletAction.isVisibleActionButton())
-//                tvActionTokocash.setVisibility(VISIBLE);
-//            else tvActionTokocash.setVisibility(GONE);
-            tvActionTokocash.setVisibility(GONE);
+            /* Akan dipakai untuk visible invisible tokocash topup button
+            if (homeHeaderWalletAction.isVisibleActionButton())
+                tvActionTokocash.setVisibility(VISIBLE);
+            else tvActionTokocash.setVisibility(GONE);
+            tvActionTokocash.setVisibility(GONE);*/
             tvActionTokocash.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
             tvBalanceTokocash.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
         } else {
@@ -120,7 +120,7 @@ public class HeaderHomeView extends BaseCustomView {
                     tvActionTokocash.setVisibility(GONE);
                     tvBalanceTokocash.setVisibility(VISIBLE);
                     tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
-                    tvBalanceTokocash.setTextColor(Color.parseColor("#61000000"));
+                    tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_38));
                     tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_info, 0);
                     tvBalanceTokocash.setOnClickListener(new OnClickListener() {
                         @Override

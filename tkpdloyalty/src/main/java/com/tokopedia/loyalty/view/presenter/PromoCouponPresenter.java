@@ -72,13 +72,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                         } else {
                             view.renderErrorGetCouponList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                         }
-
-
-//                        if(e instanceof LoyaltyErrorException) {
-//                            view.onErrorFetchCouponList(e.getMessage());
-//                        } else {
-//                            view.onErrorFetchCouponList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-//                        }
                     }
 
                     @Override

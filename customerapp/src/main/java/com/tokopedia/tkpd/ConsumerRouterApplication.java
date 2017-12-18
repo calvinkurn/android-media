@@ -504,10 +504,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
     }
 
-    @Override
-    public void actionOpenGeneralWebViewWithTitle(Activity activity, String mobileUrl, String title) {
-        activity.startActivity(BannerWebView.getCallingIntentWithTitle(activity, mobileUrl, title));
-    }
 
     @Override
     public void onLogout(AppComponent appComponent) {

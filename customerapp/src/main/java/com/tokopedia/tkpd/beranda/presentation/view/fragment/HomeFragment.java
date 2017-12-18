@@ -507,13 +507,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
-        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
-            if (TextUtils.isEmpty(pageTitle))
-                tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), tokoPointUrl);
-            else
-                tkpdCoreRouter.actionOpenGeneralWebViewWithTitle(getActivity(), tokoPointUrl, pageTitle);
-        }
+        if (TextUtils.isEmpty(pageTitle))
+            BannerWebView.getCallingIntent(getActivity(), tokoPointUrl);
+        else
+            BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle);
     }
 
     @Override

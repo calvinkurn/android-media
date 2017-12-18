@@ -28,6 +28,7 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -589,12 +590,10 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onTokoPointActionClicked(String mainPageUrl, String title) {
-        if (context.getApplication() instanceof TkpdCoreRouter) {
-            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) context.getApplication();
-            if (TextUtils.isEmpty(title))
-                tkpdCoreRouter.actionOpenGeneralWebView(context, mainPageUrl);
-            else tkpdCoreRouter.actionOpenGeneralWebViewWithTitle(context, mainPageUrl, title);
-        }
+        if (TextUtils.isEmpty(title))
+            BannerWebView.getCallingIntent(context, mainPageUrl);
+        else
+            BannerWebView.getCallingIntentWithTitle(context, mainPageUrl, title);
     }
 
     private void onGoToCreateShop() {
