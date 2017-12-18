@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -30,10 +30,10 @@
                 android:paddingTop="@dimen/padding_med">
 
                 <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Caption.BlackSecondary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="@style/TextView.Caption.BlackSecondary"
                     android:text="@string/flight_booking_finish_transaction_label" />
 
                 <com.tokopedia.flight.booking.widget.CountdownTimeView
@@ -87,9 +87,9 @@
                     android:id="@+id/recycler_view_departure_flight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:nestedScrollingEnabled="false" />
+                    android:paddingRight="@dimen/padding_small" />
             </LinearLayout>
 
             <LinearLayout
@@ -122,12 +122,12 @@
                 </RelativeLayout>
 
                 <android.support.v7.widget.RecyclerView
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
                     android:id="@+id/recycler_view_return_flight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small" />
             </LinearLayout>
 
             <LinearLayout
@@ -151,9 +151,9 @@
 
             <com.tokopedia.design.voucher.VoucherCartView
                 android:id="@+id/voucher_check_view"
-                android:layout_marginTop="@dimen/margin_med"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_med">
 
             </com.tokopedia.design.voucher.VoucherCartView>
 
@@ -170,12 +170,12 @@
                     android:text="@string/flight_label_detail_price" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:paddingLeft="@dimen/padding_med"
-                    android:paddingRight="@dimen/padding_med"
                     android:id="@+id/recycler_view_detail_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:paddingLeft="@dimen/padding_med"
+                    android:paddingRight="@dimen/padding_med" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -197,14 +197,26 @@
                         tools:text="Rp. 500.0000" />
                 </RelativeLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/bg_line_separator" />
+
+                <Button
+                    android:id="@+id/button_submit"
+                    style="@style/Button.Submit.Orange"
+                    android:text="@string/flight_label_continued_payment" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
-
-    <Button
-        android:id="@+id/button_submit"
-        style="@style/Button.Submit.Orange"
-        android:layout_alignParentBottom="true"
-        android:text="@string/flight_label_continued_payment" />
 </RelativeLayout>
 
