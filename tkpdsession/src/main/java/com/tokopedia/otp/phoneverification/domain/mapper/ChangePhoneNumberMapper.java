@@ -10,6 +10,8 @@ import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel
 import com.tokopedia.otp.phoneverification.domain.pojo.ChangePhoneNumberPojo;
 import com.tokopedia.session.R;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -18,6 +20,10 @@ import rx.functions.Func1;
  */
 
 public class ChangePhoneNumberMapper implements Func1<Response<TkpdResponse>, ChangePhoneNumberViewModel> {
+
+    @Inject
+    public ChangePhoneNumberMapper() {
+    }
 
     @Override
     public ChangePhoneNumberViewModel call(Response<TkpdResponse> response) {

@@ -4,6 +4,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.profilecompletion.data.pojo.EditUserInfoData;
 import com.tokopedia.profilecompletion.domain.model.EditUserInfoDomainModel;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -12,6 +14,10 @@ import rx.functions.Func1;
  */
 
 public class EditUserInfoMapper implements Func1<Response<TkpdResponse>, EditUserInfoDomainModel> {
+
+    @Inject
+    public EditUserInfoMapper() {
+    }
 
     @Override
     public EditUserInfoDomainModel call(Response<TkpdResponse> response) {

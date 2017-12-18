@@ -13,6 +13,8 @@ import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.register.domain.model.RegisterSosmedDomain;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -26,6 +28,7 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
     protected final GetUserInfoUseCase getUserInfoUseCase;
     protected final MakeLoginUseCase makeLoginUseCase;
 
+    @Inject
     public RegisterWithSosmedUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      GetTokenUseCase getTokenUseCase,
@@ -37,12 +40,11 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
         this.makeLoginUseCase = makeLoginUseCase;
     }
 
-
     @Override
     public Observable<RegisterSosmedDomain> createObservable(final RequestParams requestParams) {
         RegisterSosmedDomain registerSosmedDomain = new RegisterSosmedDomain();
         return getToken(registerSosmedDomain,
-                GetTokenUseCase.getParamRegisterThirdParty(
+                GetTokenUseCase.getParamThirdParty(
                         requestParams.getInt(GetTokenUseCase.SOCIAL_TYPE, -1),
                         requestParams.getString(GetTokenUseCase.ACCESS_TOKEN, "")
                 ))
@@ -105,7 +107,7 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
 
 
     private static RequestParams getParamRegisterThirdParty(int socialType, String accessToken) {
-        return GetTokenUseCase.getParamRegisterThirdParty(
+        return GetTokenUseCase.getParamThirdParty(
                 socialType,
                 accessToken
         );

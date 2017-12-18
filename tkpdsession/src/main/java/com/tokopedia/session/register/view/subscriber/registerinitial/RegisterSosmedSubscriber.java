@@ -50,7 +50,8 @@ public class RegisterSosmedSubscriber extends Subscriber<RegisterSosmedDomain> {
             viewListener.onGoToSecurityQuestion(
                     registerSosmedDomain.getMakeLoginModel().getSecurityDomain(),
                     registerSosmedDomain.getMakeLoginModel().getFullName(),
-                    registerSosmedDomain.getInfo().getGetUserInfoDomainData().getEmail());
+                    registerSosmedDomain.getInfo().getGetUserInfoDomainData().getEmail(),
+                    registerSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             viewListener.onErrorRegisterSosmed(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
             viewListener.clearToken();

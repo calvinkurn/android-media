@@ -1,12 +1,17 @@
 package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
+import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.securityquestion.view.fragment.SecurityQuestionFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.VerificationFragment;
+import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.LoginPhoneNumberFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTokocashFragment;
+import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
+import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 
 import dagger.Component;
 

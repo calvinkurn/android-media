@@ -15,6 +15,8 @@ import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -23,6 +25,11 @@ import rx.functions.Func1;
  */
 
 public class DiscoverMapper implements Func1<Response<TkpdResponse>, DiscoverViewModel> {
+
+    @Inject
+    public DiscoverMapper() {
+    }
+
     @Override
     public DiscoverViewModel call(Response<TkpdResponse> response) {
 
@@ -38,8 +45,7 @@ public class DiscoverMapper implements Func1<Response<TkpdResponse>, DiscoverVie
                         && !response.body().getErrorMessages().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
+                    throw new ErrorMessageException("");
                 }
             }
         } else {

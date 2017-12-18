@@ -4,10 +4,12 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.data.model.ValidateOTPDomain;
+import com.tokopedia.otp.data.model.ValidateOtpDomain;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
 import com.tokopedia.otp.phoneverification.data.model.ValidateVerifyPhoneNumberDomain;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -21,6 +23,7 @@ public class ValidateVerifyPhoneNumberUseCase extends UseCase<ValidateVerifyPhon
     ValidateOtpUseCase validateOtpUseCase;
     VerifyPhoneNumberUseCase verifyPhoneNumberUseCase;
 
+    @Inject
     public ValidateVerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
                                             PostExecutionThread postExecutionThread,
                                             ValidateOtpUseCase validateOtpUseCase,
@@ -66,9 +69,9 @@ public class ValidateVerifyPhoneNumberUseCase extends UseCase<ValidateVerifyPhon
                         requestParams.getString(ValidateOtpUseCase.PARAM_CODE, ""),
                         requestParams.getString(ValidateOtpUseCase.PARAM_USER, "")
                 ))
-                .flatMap(new Func1<ValidateOTPDomain, Observable<ValidateVerifyPhoneNumberDomain>>() {
+                .flatMap(new Func1<ValidateOtpDomain, Observable<ValidateVerifyPhoneNumberDomain>>() {
                     @Override
-                    public Observable<ValidateVerifyPhoneNumberDomain> call(ValidateOTPDomain validateOTPDomain) {
+                    public Observable<ValidateVerifyPhoneNumberDomain> call(ValidateOtpDomain validateOTPDomain) {
                         domain.setValidateOtpDomain(validateOTPDomain);
                         return Observable.just(domain);
                     }

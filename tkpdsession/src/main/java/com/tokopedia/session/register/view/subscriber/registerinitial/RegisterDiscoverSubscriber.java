@@ -39,7 +39,7 @@ public class RegisterDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
         } else {
             viewListener.onErrorDiscoverRegister(MainApplication.getAppContext().getString(R
                     .string.error_empty_provider) + " " + MainApplication.getAppContext().getString(R
-                    .string.code_error) + " " + ErrorCode.EMPTY_PROVIDER);
+                    .string.code_error) + " " + ErrorCode.UNSUPPORTED_FLOW);
         }
     }
 }

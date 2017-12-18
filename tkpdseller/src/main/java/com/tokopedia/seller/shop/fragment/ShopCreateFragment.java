@@ -30,21 +30,19 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.router.OldSessionRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
-import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
+import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
 import java.io.File;
 
@@ -194,8 +192,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     public void showVerificationDialog() {
-        if (MainApplication.getAppContext() instanceof SessionRouter) {
-            Intent intent = ((SessionRouter) MainApplication.getAppContext())
+        if (MainApplication.getAppContext() instanceof SellerModuleRouter) {
+            Intent intent = ((SellerModuleRouter) MainApplication.getAppContext())
                     .getPhoneVerificationActivationIntent(getActivity());
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
         }

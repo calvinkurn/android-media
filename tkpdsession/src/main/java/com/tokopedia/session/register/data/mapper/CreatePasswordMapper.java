@@ -10,6 +10,8 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.register.data.pojo.CreatePasswordPojo;
 import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -18,6 +20,11 @@ import rx.functions.Func1;
  */
 
 public class CreatePasswordMapper implements Func1<Response<TkpdResponse>, CreatePasswordDomain> {
+
+    @Inject
+    public CreatePasswordMapper() {
+    }
+
     @Override
     public CreatePasswordDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {

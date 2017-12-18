@@ -12,6 +12,8 @@ import com.tokopedia.profilecompletion.data.pojo.GetUserInfoData;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -23,6 +25,10 @@ public class GetUserInfoMapper implements Func1<Response<String>, GetUserInfoDom
 
     private static final String ERROR = "error";
     private static final String ERROR_DESCRIPTION = "error_description";
+
+    @Inject
+    public GetUserInfoMapper() {
+    }
 
     @Override
     public GetUserInfoDomainModel call(Response<String> response) {

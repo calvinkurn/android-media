@@ -5,7 +5,9 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
-import com.tokopedia.session.data.repository.SessionRepository;
+import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -17,18 +19,19 @@ import rx.functions.Func1;
 public class ChangePhoneNumberUseCase extends UseCase<ChangePhoneNumberViewModel> {
 
     private static final String PARAM_MSISDN = "msisdn";
-    private final SessionRepository sessionRepository;
+    private final ChangeMsisdnSource changeMsisdnSource;
 
+    @Inject
     public ChangePhoneNumberUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
-                                    SessionRepository sessionRepository) {
+                                    ChangeMsisdnSource changeMsisdnSource) {
         super(threadExecutor, postExecutionThread);
-        this.sessionRepository = sessionRepository;
+        this.changeMsisdnSource = changeMsisdnSource;
     }
 
     @Override
     public Observable<ChangePhoneNumberViewModel> createObservable(final RequestParams requestParams) {
-        return sessionRepository.changePhoneNumber(requestParams.getParameters())
+        return changeMsisdnSource.changePhoneNumber(requestParams.getParameters())
                 .flatMap(new Func1<ChangePhoneNumberViewModel, Observable<ChangePhoneNumberViewModel>>() {
                     @Override
                     public Observable<ChangePhoneNumberViewModel> call(ChangePhoneNumberViewModel changePhoneNumberViewModel) {

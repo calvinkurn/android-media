@@ -6,8 +6,10 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.session.data.repository.SessionRepository;
+import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -27,18 +29,19 @@ public class CreatePasswordUseCase extends UseCase<CreatePasswordDomain> {
     public static final String NEW_PASSWORD = "new_pass";
     public static final String USER_ID = "user_id";
 
-    SessionRepository sessionRepository;
+    private CreatePasswordDataSource createPasswordDataSource;
 
+    @Inject
     public CreatePasswordUseCase(ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
-                                 SessionRepository sessionRepository) {
+                                 CreatePasswordDataSource createPasswordDataSource) {
         super(threadExecutor, postExecutionThread);
-        this.sessionRepository = sessionRepository;
+        this.createPasswordDataSource = createPasswordDataSource;
     }
 
     @Override
     public Observable<CreatePasswordDomain> createObservable(RequestParams requestParams) {
-        return sessionRepository.createPassword(requestParams);
+        return createPasswordDataSource.createPassword(requestParams);
     }
 
     public static RequestParams getParam(String fullName, int bdayDay, int bdayMonth,

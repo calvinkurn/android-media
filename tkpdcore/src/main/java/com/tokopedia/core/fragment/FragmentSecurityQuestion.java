@@ -355,11 +355,11 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         changeNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MainApplication.getAppContext() instanceof SessionRouter) {
-                    Intent intent = ((SessionRouter) MainApplication.getAppContext())
-                            .getChangePhoneNumberRequestIntent(getActivity());
-                    startActivity(intent);
-                }
+//                if (MainApplication.getAppContext() instanceof SessionRouter) {
+//                    Intent intent = ((SessionRouter) MainApplication.getAppContext())
+//                            .getChangePhoneNumberRequestIntent(getActivity());
+//                    startActivity(intent);
+//                }
             }
         });
 

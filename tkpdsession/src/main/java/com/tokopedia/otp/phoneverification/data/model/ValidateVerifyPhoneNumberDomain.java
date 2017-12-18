@@ -1,6 +1,6 @@
 package com.tokopedia.otp.phoneverification.data.model;
 
-import com.tokopedia.otp.data.model.ValidateOTPDomain;
+import com.tokopedia.otp.data.model.ValidateOtpDomain;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
 
 /**
@@ -8,14 +8,14 @@ import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
  */
 
 public class ValidateVerifyPhoneNumberDomain {
-    private ValidateOTPDomain validateOtpDomain;
+    private ValidateOtpDomain validateOtpDomain;
     private VerifyPhoneNumberDomain verifyPhoneDomain;
 
-    public void setValidateOtpDomain(ValidateOTPDomain validateOtpDomain) {
+    public void setValidateOtpDomain(ValidateOtpDomain validateOtpDomain) {
         this.validateOtpDomain = validateOtpDomain;
     }
 
-    public ValidateOTPDomain getValidateOtpDomain() {
+    public ValidateOtpDomain getValidateOtpDomain() {
         return validateOtpDomain;
     }
 

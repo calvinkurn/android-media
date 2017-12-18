@@ -8,6 +8,8 @@ import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.register.domain.model.RegisterSosmedDomain;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -17,7 +19,7 @@ import rx.functions.Func1;
 
 public class RegisterWebviewUseCase extends RegisterWithSosmedUseCase {
 
-
+    @Inject
     public RegisterWebviewUseCase(ThreadExecutor threadExecutor,
                                   PostExecutionThread postExecutionThread,
                                   GetTokenUseCase getTokenUseCase,

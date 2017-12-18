@@ -32,8 +32,7 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
     @Inject
     public ValidateOtpUseCase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
-                              OtpSource otpSource,
-                              SessionHandler sessionHandler) {
+                              OtpSource otpSource) {
         super(threadExecutor, postExecutionThread);
         this.otpSource = otpSource;
     }

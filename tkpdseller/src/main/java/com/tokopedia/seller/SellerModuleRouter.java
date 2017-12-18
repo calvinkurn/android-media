@@ -39,4 +39,6 @@ public interface SellerModuleRouter {
     Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
 
     Intent getInboxReputationIntent(Context context);
+
+    Intent getPhoneVerificationActivationIntent(Context context);
 }

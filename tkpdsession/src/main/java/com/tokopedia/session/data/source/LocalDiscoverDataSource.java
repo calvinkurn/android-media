@@ -7,6 +7,8 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -20,12 +22,13 @@ public class LocalDiscoverDataSource {
     private static final String CACHE_EXPIRED = "Cache has expired";
     private final GlobalCacheManager globalCacheManager;
 
+    @Inject
     public LocalDiscoverDataSource(GlobalCacheManager globalCacheManager) {
         this.globalCacheManager = globalCacheManager;
     }
 
-    public Observable<DiscoverViewModel> getDiscover() {
-        return Observable.just(KEY_DISCOVER)
+    public Observable<DiscoverViewModel> getDiscover(String source) {
+        return Observable.just(KEY_DISCOVER + source)
                 .map(new Func1<String, DiscoverViewModel>() {
                     @Override
                     public DiscoverViewModel call(String s) {

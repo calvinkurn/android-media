@@ -95,7 +95,6 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     private TextView changeNumber;
     private TextView verifyTrueCaller;
     private View progressFull;
-    private View viewSecurity;
 
     private CountDownTimer countDownTimer;
     private IncomingSmsReceiver smsReceiver;
@@ -173,7 +172,6 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         changeNumber = view.findViewById(R.id.title_change_number);
         verifyTrueCaller = view.findViewById(R.id.verify_button);
         progressFull = view.findViewById(R.id.progress);
-        vSecurity = view.findViewById(R.id.view_security);
         prepareView();
         setViewListener();
         presenter.attachView(this);
@@ -285,7 +283,6 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        vSecurity.setVisibility(View.GONE);
         verifyTrueCaller.setVisibility(View.GONE);
         vOtp.setVisibility(View.VISIBLE);
 

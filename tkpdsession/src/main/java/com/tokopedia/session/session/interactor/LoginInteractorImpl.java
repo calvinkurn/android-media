@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -52,7 +53,7 @@ public class LoginInteractorImpl implements LoginInteractor {
         }
 
         Observable<Response<TkpdResponse>> observable = accountsService.getApi()
-                .discoverLogin();
+                .discoverLogin(RequestParams.EMPTY.getParameters());
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override

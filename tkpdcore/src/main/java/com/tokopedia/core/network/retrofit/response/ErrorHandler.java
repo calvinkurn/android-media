@@ -189,19 +189,20 @@ public class ErrorHandler {
                                     context.getString(R.string.code_error) + " " + code;
             }
         } else if (e instanceof ErrorMessageException
-                && !TextUtils.isEmpty(e.getLocalizedMessage() )) {
-            if (!e.getLocalizedMessage().contains(context.getString(R.string.code_error) ))
-            if (!e.getLocalizedMessage().contains(context.getString(R.string.code_error)))return e.getLocalizedMessage()+ " " +
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
+            if (!e.getLocalizedMessage().contains(context.getString(R.string.code_error)))
+                return e.getLocalizedMessage() + " " +
                         context.getString(R.string.code_error) + ErrorCode.WS_ERROR;
             else {
                 return e.getLocalizedMessage();
             }
         } else if (BuildConfig.DEBUG) {
             return e.getLocalizedMessage();
-        }else {
+        } else {
             return context.getString(R.string.default_request_error_unknown) + " " +
                     context.getString(R.string.code_error) + ErrorCode.UNKNOWN;
         }
+
     }
 
     public static String getErrorMessage(Response response) {

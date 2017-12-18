@@ -14,16 +14,24 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
+import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
+import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
+import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
+import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.data.source.CloudDiscoverDataSource;
+import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
+import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 
 import javax.inject.Named;
 
@@ -119,23 +127,20 @@ SessionModule {
 
     @SessionScope
     @Provides
+    CloudDiscoverDataSource provideCloudDiscoverDataSource(GlobalCacheManager globalCacheManager,
+                                                           @Named(HMAC_SERVICE) AccountsService
+                                                                   accountsService,
+                                                           DiscoverMapper discoverMapper) {
+        return new CloudDiscoverDataSource(globalCacheManager, accountsService, discoverMapper);
+    }
+
+    @SessionScope
+    @Provides
     GetTokenDataSource provideGetTokenDataSource(@Named(BASIC_SERVICE) AccountsService
                                                          accountsService,
                                                  TokenMapper tokenMapper,
                                                  SessionHandler sessionHandler) {
         return new GetTokenDataSource(accountsService, tokenMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    GetUserInfoMapper provideGetUserInfoMapper() {
-        return new GetUserInfoMapper();
-    }
-
-    @SessionScope
-    @Provides
-    EditUserInfoMapper provideEditUserInfoMapper() {
-        return new EditUserInfoMapper();
     }
 
     @SessionScope
@@ -159,14 +164,6 @@ SessionModule {
 
     @SessionScope
     @Provides
-    GetUserInfoUseCase provideGetUserInfoUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 ProfileRepository profileRepository) {
-        return new GetUserInfoUseCase(threadExecutor, postExecutionThread, profileRepository);
-    }
-
-    @SessionScope
-    @Provides
     MakeLoginDataSource provideMakeLoginDataSource(@Named(WS_SERVICE) AccountsService accountsService,
                                                    MakeLoginMapper makeLoginMapper,
                                                    SessionHandler sessionHandler) {
@@ -182,4 +179,27 @@ SessionModule {
         return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
     }
 
+    @SessionScope
+    @Provides
+    ChangeMsisdnSource provideCloudChangeMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                                      ChangePhoneNumberMapper changePhoneNumberMapper,
+                                                      SessionHandler sessionHandler) {
+        return new ChangeMsisdnSource(accountsService, changePhoneNumberMapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    VerifyMsisdnSource provideVerifyMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                                 VerifyPhoneNumberMapper verifyPhoneNumberMapper,
+                                                 SessionHandler sessionHandler) {
+        return new VerifyMsisdnSource(accountsService, verifyPhoneNumberMapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    CreatePasswordDataSource provideCreatePasswordDataSource(@Named(BEARER_SERVICE) AccountsService
+                                                                     accountsService,
+                                                             CreatePasswordMapper createPasswordMapper) {
+        return new CreatePasswordDataSource(accountsService, createPasswordMapper);
+    }
 }

@@ -70,7 +70,8 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     @Override
     public void getProvider() {
         viewListener.showLoadingDiscover();
-        discoverUseCase.execute(RequestParams.EMPTY, new RegisterDiscoverSubscriber(viewListener));
+        discoverUseCase.execute(DiscoverUseCase.getParamRegister(), new RegisterDiscoverSubscriber
+                (viewListener));
     }
 
     @Override
@@ -97,8 +98,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
             registerWebviewUseCase.execute(RegisterWebviewUseCase.getParamWebview(
                     bundle.getString(ARGS_CODE),
                     HTTPS + bundle.getString(ARGS_SERVER) + bundle.getString(ARGS_PATH),
-                    sessionHandler
-                            .getTempLoginSession(MainApplication.getAppContext())
+                    sessionHandler.getTempLoginSession(MainApplication.getAppContext())
             ), new RegisterSosmedSubscriber(viewListener));
         } else {
             viewListener.dismissProgressBar();

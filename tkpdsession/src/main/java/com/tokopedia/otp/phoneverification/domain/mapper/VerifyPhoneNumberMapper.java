@@ -10,6 +10,8 @@ import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
 import com.tokopedia.otp.phoneverification.domain.pojo.VerifyPhoneNumberPojo;
 import com.tokopedia.session.R;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -18,6 +20,11 @@ import rx.functions.Func1;
  */
 
 public class VerifyPhoneNumberMapper implements Func1<Response<TkpdResponse>, VerifyPhoneNumberDomain> {
+
+    @Inject
+    public VerifyPhoneNumberMapper() {
+    }
+
     @Override
     public VerifyPhoneNumberDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
@@ -32,8 +39,7 @@ public class VerifyPhoneNumberMapper implements Func1<Response<TkpdResponse>, Ve
                         && !response.body().getErrorMessages().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
+                    throw new ErrorMessageException("");
                 }
             }
         } else {

@@ -9,6 +9,8 @@ import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
 import com.tokopedia.session.register.domain.model.CreatePasswordLoginDomain;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -21,6 +23,7 @@ public class CreatePasswordLoginUseCase extends UseCase<CreatePasswordLoginDomai
     CreatePasswordUseCase createPasswordUseCase;
     MakeLoginUseCase makeLoginUseCase;
 
+    @Inject
     public CreatePasswordLoginUseCase(ThreadExecutor threadExecutor,
                                       PostExecutionThread postExecutionThread,
                                       CreatePasswordUseCase createPasswordUseCase,

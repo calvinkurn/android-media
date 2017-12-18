@@ -50,7 +50,7 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> makeLogin(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Accounts.PATH_DISCOVER_LOGIN)
-    Observable<Response<TkpdResponse>> discoverLogin();
+    Observable<Response<TkpdResponse>> discoverLogin(@QueryMap TKPDMapParam<String, Object> parameters);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.DO_REGISTER)

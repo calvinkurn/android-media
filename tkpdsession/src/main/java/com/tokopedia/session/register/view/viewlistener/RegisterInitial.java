@@ -1,7 +1,6 @@
 package com.tokopedia.session.register.view.viewlistener;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
@@ -47,7 +46,7 @@ public interface RegisterInitial {
 
         void clearToken();
 
-        void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email);
+        void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone);
 
         void onGoToPhoneVerification();
     }

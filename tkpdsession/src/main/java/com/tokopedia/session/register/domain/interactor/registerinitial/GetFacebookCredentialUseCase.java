@@ -17,6 +17,8 @@ import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 
+import javax.inject.Inject;
+
 /**
  * @author by nisie on 10/11/17.
  */
@@ -25,6 +27,10 @@ public class GetFacebookCredentialUseCase {
 
     private static final String PARAM_CALLBACK_MANAGER = "PARAM_CALLBACK_MANAGER";
     private static final String PARAM_FRAGMENT = "PARAM_FRAGMENT";
+
+    @Inject
+    public GetFacebookCredentialUseCase() {
+    }
 
     public void execute(RequestParams requestParams, GetFacebookCredentialSubscriber subscriber) {
         final Fragment fragment = (Fragment) requestParams.getObject(PARAM_FRAGMENT);
