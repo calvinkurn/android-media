@@ -24,8 +24,4 @@ public class LoadingViewholder extends AbstractViewHolder<LoadingModel> {
 
     }
 
-    @Override
-    public int viewType() {
-        return LAYOUT;
-    }
 }

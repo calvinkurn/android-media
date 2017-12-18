@@ -2,14 +2,13 @@ package com.tokopedia.abstraction.base.app;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;
+import android.support.multidex.MultiDexApplication;
 
 import com.facebook.stetho.Stetho;
 import com.tokopedia.abstraction.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.di.component.DaggerBaseAppComponent;
 import com.tokopedia.abstraction.di.module.AppModule;
 import com.tokopedia.abstraction.utils.GlobalConfig;
-
-import android.support.multidex.MultiDexApplication;
 
 /**
  * Created by User on 10/24/2017.

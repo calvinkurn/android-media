@@ -1,15 +1,14 @@
 package com.tokopedia.abstraction.utils;
 
 import android.content.Context;
-import android.util.Log;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 /**
  * Created by User on 11/28/2017.

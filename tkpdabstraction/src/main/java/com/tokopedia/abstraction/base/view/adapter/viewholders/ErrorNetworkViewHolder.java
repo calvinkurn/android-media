@@ -26,8 +26,4 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
 
     }
 
-    @Override
-    public int viewType() {
-        return LAYOUT;
-    }
 }

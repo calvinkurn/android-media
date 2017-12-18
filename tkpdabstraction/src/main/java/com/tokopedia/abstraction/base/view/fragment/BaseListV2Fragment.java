@@ -5,31 +5,38 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.listener.BaseListViewListener2;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerviewListener;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
 
 import java.util.List;
 
 public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDaggerFragment
-        implements BaseListViewListener<T> {
+        implements BaseListViewListener2<T>, BaseListAdapterV2.OnAdapterInteractionListener<T> {
 
     private BaseListAdapterV2<T> adapter;
     private SwipeRefreshLayout swipeToRefresh;
     private SnackbarRetry snackBarRetry;
+    private boolean isLoadMoreState;
+    private boolean isAvailableLoadMore = true;
+    private EndlessRecyclerviewListener endlessRecyclerviewListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = getNewAdapter();
+        adapter = new BaseListAdapterV2<>(getAdapterTypeFactory());
     }
 
     @Nullable
@@ -51,11 +58,21 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = getRecyclerView(view);
+        LinearLayoutManager linearLayoutManager = getRecyclerViewLayoutManager();
+        endlessRecyclerviewListener = new EndlessRecyclerviewListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (!isLoadMoreState && isAvailableLoadMore) {
+                    isLoadMoreState = true;
+                    onLoadMoreCalled(page, totalItemsCount);
+                }
+            }
+        };
+        recyclerView.addOnScrollListener(endlessRecyclerviewListener);
         swipeToRefresh = getSwipeRefreshLayout(view);
         if (adapter != null) {
-            if (recyclerView != null) {
-                recyclerView.setAdapter(adapter);
-            }
+            adapter.setOnAdapterInteractionListener(this);
+            recyclerView.setAdapter(adapter);
         }
 
         if (swipeToRefresh != null) {
@@ -68,17 +85,30 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
                 }
             });
         }
-        if (needLoadDataAtStart()) {
-            showLoading();
-            loadInitialData();
-        }
+
+        setInitialActionVar();
     }
 
-    protected boolean needLoadDataAtStart() {
-        return true;
+    protected abstract void setInitialActionVar();
+
+    protected void onLoadMoreCalled(int page, int totalItemsCount) {
+
     }
 
-    protected abstract BaseListAdapterV2<T> getNewAdapter();
+    protected void enableLoadMore() {
+        isAvailableLoadMore = true;
+    }
+
+    protected void disableLoadMore() {
+        isAvailableLoadMore = true;
+    }
+
+    protected LinearLayoutManager getRecyclerViewLayoutManager() {
+        return new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false);
+    }
+
+    protected abstract BaseListAdapterTypeFactory getAdapterTypeFactory();
 
     protected void showLoading() {
         adapter.showLoading();
@@ -86,13 +116,7 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
     }
 
     public void loadInitialData() {
-        adapter.loadStartPage();
-    }
-
-    @Override
-    public void onSearchLoaded(@NonNull List<T> list, int totalItem) {
-        hideLoading();
-        adapter.addData(list);
+        adapter.clearData();
     }
 
     public final BaseListAdapterV2<T> getAdapter() {
@@ -100,33 +124,52 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
     }
 
     @Override
-    public void onLoadSearchError(Throwable t) {
-        hideLoading();
-        if (adapter.getItemCount() > 0) {
-            onLoadSearchErrorWithDataExist(t);
+    public void renderList(@NonNull List<T> list) {
+        adapter.clearData();
+        if (list.size() == 0) {
+            adapter.addElement(getEmptyDataViewModel());
         } else {
-            onLoadSearchErrorWithDataEmpty(t);
+            adapter.addData(list);
         }
     }
 
-    private void onLoadSearchErrorWithDataEmpty(Throwable t) {
+    private Visitable getEmptyDataViewModel() {
+        return new EmptyModel();
+    }
+
+    @Override
+    public void renderAddList(@NonNull List<T> list) {
+        adapter.hideLoading();
+        adapter.addData(list);
+    }
+
+    @Override
+    public void showGetListError() {
+        adapter.hideLoading();
+        if (adapter.getItemCount() > 0) {
+            onGetListErrorWithExistingData();
+        } else {
+            onGetListErrorWithEmptyData();
+        }
+    }
+
+    private void onGetListErrorWithEmptyData() {
         adapter.showErrorNetwork();
         if (swipeToRefresh != null) {
             swipeToRefresh.setEnabled(false);
         }
     }
 
-    private void onLoadSearchErrorWithDataExist(Throwable t) {
+    private void onGetListErrorWithExistingData() {
         showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                adapter.loadNextPage();
+
             }
         });
     }
 
     protected void hideLoading() {
-        adapter.showLoading();
         if (swipeToRefresh != null) {
             swipeToRefresh.setEnabled(true);
             swipeToRefresh.setRefreshing(false);
@@ -147,5 +190,10 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
+    }
+
+    @Override
+    public void onItemClicked(T object) {
+
     }
 }

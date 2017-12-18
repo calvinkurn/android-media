@@ -46,7 +46,6 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return visitables.size();
     }
 
-
     @SuppressWarnings("unchecked")
     @Override
     public int getItemViewType(int position) {

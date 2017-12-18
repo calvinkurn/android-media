@@ -1,6 +1,9 @@
 package com.tokopedia.abstraction.base.view.adapter;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
@@ -10,31 +13,25 @@ import java.util.List;
 /**
  * @author alvarisi
  */
-public abstract class BaseListAdapterV2<T extends Visitable> extends BaseAdapter {
-    private static int DEFAULT_ROW_PER_PAGE = 10;
+public class BaseListAdapterV2<T extends Visitable> extends BaseAdapter {
 
-
-    public interface OnAdapterInteractionListener<T> {
-        void onItemClicked(T t);
-
-        void loadData(int page, int currentDataSize, int rowPerPage);
-    }
-
+    private BaseListAdapterTypeFactory baseListAdapterTypeFactory;
     private OnAdapterInteractionListener onAdapterInteractionListener;
 
-    public BaseListAdapterV2(BaseAdapterTypeFactory adapterTypeFactory) {
-        super(adapterTypeFactory, new ArrayList<Visitable>());
+    public BaseListAdapterV2(BaseListAdapterTypeFactory baseListAdapterTypeFactory) {
+        super(baseListAdapterTypeFactory, new ArrayList<Visitable>());
+        this.baseListAdapterTypeFactory = baseListAdapterTypeFactory;
+    }
+
+    @Override
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+        return baseListAdapterTypeFactory.createViewHolder(view, viewType);
     }
 
     public void setOnAdapterInteractionListener(OnAdapterInteractionListener onAdapterInteractionListener) {
         this.onAdapterInteractionListener = onAdapterInteractionListener;
-    }
-
-    public void loadStartPage() {
-        super.clearData();
-        if (onAdapterInteractionListener != null) {
-            onAdapterInteractionListener.loadData(1, visitables.size(), DEFAULT_ROW_PER_PAGE);
-        }
     }
 
     @Override
@@ -53,5 +50,9 @@ public abstract class BaseListAdapterV2<T extends Visitable> extends BaseAdapter
     public void addData(List<T> visitables) {
         this.visitables.addAll(visitables);
         notifyDataSetChanged();
+    }
+
+    public interface OnAdapterInteractionListener<T> {
+        void onItemClicked(T t);
     }
 }
