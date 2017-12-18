@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Window;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -48,7 +47,6 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.Shipment;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ShipmentPackage;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
-import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.addtocart.utils.NetParamUtil;
 
@@ -215,10 +213,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderProductPrice(price);
                         viewListener.enableBuyButton();
                         if (mustReCalculateAddressShipping) {
-                            Log.e("Recalculate", "TRUE");
                             calculateKeroAddressShipping(context, orderData);
-                        } else {
-                            Log.e("Recalculate", "FALSE");
                         }
                     }
 
@@ -240,7 +235,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void calculateKeroAddressShipping(@NonNull Context context,
                                              @NonNull final OrderData orderData) {
-        Log.e("RequestRate", "calculateKeroAddressShipping");
         keroNetInteractor.calculateKeroCartAddressShipping(context,
                 AuthUtil.generateParamsNetwork(
                         context, KeroppiParam.paramsKeroOrderData(orderData)
@@ -275,7 +269,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 && orderData.getAddress() != null)
                 || orderData.getShipment() != null
                 && orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)) {
-            Log.e("RequestRate", "calculateAllPrices");
             viewListener.disableBuyButton();
             CommonUtils.dumper("rates/v1 kerorates called calculateAllShipping");
             keroNetInteractor.calculateKeroCartAddressShipping(context,

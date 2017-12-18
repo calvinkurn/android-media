@@ -1,7 +1,5 @@
 package com.tokopedia.transaction.addtocart.utils;
 
-import android.util.Log;
-
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.transaction.addtocart.model.OrderData;
@@ -10,8 +8,6 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
-
-import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 11/18/16.
@@ -58,11 +54,6 @@ public class KeroppiParam {
         params.put(ORDER_VALUE, getRawPrice(productDetail.getProductPrice()));
         params.put(CAT_ID, productDetail.getProductCatId());
 
-        Log.e("PARAMS__", "paramsKero");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
-
         return params;
     }
 
@@ -90,15 +81,9 @@ public class KeroppiParam {
 
         params.put(CAT_ID, orderData.getCatId());
         params.put(INSURANCE, "1");
-//        params.put(PRODUCT_INSURANCE, orderData.getInsurance() == null ? "0" : orderData.getInsurance());
         params.put(PRODUCT_INSURANCE, "0");
         String rawPrice = getRawPrice(orderData.getPriceTotal());
         params.put(ORDER_VALUE, rawPrice);
-
-        Log.e("PARAMS__", "paramsKeroOrderData");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
 
         return params;
     }
@@ -135,11 +120,6 @@ public class KeroppiParam {
         params.put(PRODUCT_INSURANCE, setInsurance(cartItem));
         params.put(UT, ut);
         params.put(INSURANCE, "1");
-
-        Log.e("PARAMS__", "paramsKeroCart");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
 
         return params;
     }

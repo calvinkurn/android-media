@@ -16,7 +16,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -97,7 +96,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private static final String EXTRA_STATE_PRODUCT_DETAIL_DATA = "productDetailData";
     private static final String EXTRA_STATE_SHIPMENT_LIST_DATA = "shipmentsData";
     private static final String EXTRA_STATE_SHIPMENT_RATE_LIST_DATA = "shipmentRateAttrs";
-    private static final String WAHANA_SHIPPER_ID = "6";
 
     private ProductCartPass productCartPass;
     private TkpdProgressDialog progressDialog;
@@ -602,10 +600,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             }
             tvErrorShipping.setVisibility(View.GONE);
             mustReCalculateShippingRate = shipperId.equalsIgnoreCase(TkpdState.SHIPPING_ID.WAHANA);
-            Log.e("onItemSelected", "TRUE");
             if (mustReCalculateShippingRate) {
                 if (!hasRecalculateShippingRate) {
-//                    presenter.calculateKeroAddressShipping(this, orderData);
                     presenter.calculateProduct(this, orderData, mustReCalculateShippingRate);
                     hasRecalculateShippingRate = true;
                 }
@@ -850,16 +846,13 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void quantityChangedEvent(Editable quantity) {
-        Log.e("QuantityChangeTo", quantity.toString());
         if (orderData == null) {
-            Log.e("QuantityChange", "Pos-0");
             presenter.getCartFormData(this, productCartPass);
             return;
         }
         orderData.setQuantity(quantity.length() == 0 ?
                 0 : Integer.parseInt(etQuantity.getText().toString()));
         if (orderData.getQuantity() < orderData.getMinOrder()) {
-            Log.e("QuantityChange", "Pos-1");
             tilAmount.setError(getString(R.string.error_min_order)
                     + " " + orderData.getMinOrder());
             if (etQuantity.requestFocus())
@@ -867,16 +860,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
                 );
         } else if (orderData.getAddress() == null) {
-            Log.e("QuantityChange", "Pos-2");
             showErrorMessage(getString(R.string.error_no_address));
         } else {
-            Log.e("QuantityChange", "Pos-3");
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
-            if(orderData.getInsurance() != null){
-                Log.e("OrderDataInsurane", String.valueOf(orderData.getInsurance()));
-            } else {
-                Log.e("OrderDataInsurane", "NULL");
-            }
             orderData.setWeight(presenter.calculateWeight(orderData.getInitWeight(),
                     quantity.toString()));
             tilAmount.setError(null);
@@ -884,7 +870,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);
             presenter.calculateProduct(AddToCartActivity.this, orderData,
                     mustReCalculateShippingRate);
-            Log.e("QuantityChange", "Pos-4");
         }
     }
 
