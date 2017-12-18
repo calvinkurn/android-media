@@ -6,18 +6,18 @@ package com.tokopedia.digital.cart.presenter;
 
 public interface ICartDigitalPresenter {
 
-    void processGetCartData();
+    void processGetCartData(String digitalCategoryId);
 
-    void processGetCartDataAfterCheckout();
+    void processGetCartDataAfterCheckout(String digitalCategoryId);
 
     void processAddToCart();
 
-    void processCheckVoucher();
+    void processCheckVoucher(String voucherCode, String digitalCategoryId);
 
     void processToCheckout();
 
     void processToInstantCheckout();
 
-    void processPatchOtpCart();
+    void processPatchOtpCart(String digitalCategoryId);
 
 }

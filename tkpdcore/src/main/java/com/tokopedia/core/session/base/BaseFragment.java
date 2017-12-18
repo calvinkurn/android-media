@@ -46,8 +46,13 @@ public abstract class BaseFragment<T extends Base> extends Fragment implements B
         inflateOtherView(parentView);
         unbinder = ButterKnife.bind(this, parentView);
         customView();
-        presenter.initData(getActivity());
         return this.parentView = onCreateView(parentView, savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        presenter.initData(getActivity());
     }
 
     public View onCreateView(View parentView, Bundle savedInstanceState){ return parentView; }

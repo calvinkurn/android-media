@@ -19,9 +19,13 @@
     <string name="error_voucher">Kode promo tidak ditemukan</string>
     <string name="use_voucher">Gunakan</string>
     <string name="empty_voucher">Masukkan kode promo terlebih dahulu</string>
+    <string name="all_promo">Lihat Semua Promo</string>
+    <string name="use_promo_code_or_coupon">Gunakan Kode Promo atau Kupon</string>
+    <string name="use_promo_code">Gunakan Kode Promo</string>
+    <string name="my_coupon">Kupon Saya: </string>
+    <string name="promo_code">Kode Promo: </string>
     <string name="button_copy_voucher_code">Salin Kode</string>
     <string name="success_copy_voucher_code">Kode Tersalin!</string>
-
     <string name="buyer_reputation">Reputasi Pembeli</string>
     <string name="buyer_reputation_given_by_seller">Nilai pembeli yang diberikan penjual</string>
     <string name="close">Tutup</string>
