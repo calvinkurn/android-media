@@ -14,6 +14,16 @@
             android:name=".common.imageeditor.GalleryCropWatermarkActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".seller.info.view.activity.SellerInfoWebViewActivity"
+            android:label="@string/title_seller_info"
+            />
+
+        <activity android:name=".seller.info.view.activity.SellerInfoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_seller_info"
+            android:exported="true"
+            />
+
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"
