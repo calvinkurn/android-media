@@ -16,6 +16,8 @@
         android:layout_height="wrap_content"
         app:eo_checked="true"
         app:eo_title="Detail Penerbangan"
+        app:eo_image_arrow_up="@drawable/ic_arrow_up"
+        app:eo_image_arrow_down="@drawable/ic_arrow_down"
         app:eo_theme="@style/style_expandable_flight_detail_order">
 
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
