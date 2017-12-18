@@ -343,7 +343,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         AddressData addressData = sellerAddressData.getAddress();
         addressReturData.setAddressID(String.valueOf(addressData.getAddressId()));
         addressReturData.setAddressReturDate(sellerAddressData.getCreateTimeStr());
-        addressReturData.setAddressReturDateTimestamp(sellerAddressData.getCreateTime());
+        addressReturData.setAddressReturDateTimestamp(sellerAddressData.getCreateTimeFullStr());
         addressReturData.setAddressText(getAddressFormat(sellerAddressData.getAddress()));
         addressReturData.setConversationID(String.valueOf(sellerAddressData.getConversationId()));
         return addressReturData;

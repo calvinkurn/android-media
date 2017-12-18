@@ -247,6 +247,6 @@ yang ditemukan</string>
     <string name="string_success_edit_awb">Terima kasih telah melakukan pengiriman</string>
     <string name="string_success_edit_solution">Solusi berhasil diubah</string>
     <string name="string_success_help">Tokopedia akan mempelajari kasus ini terlebih dahulu dan akan memberikan resolusi dalam waktu 3 hari</string>
-    <string name="string_success_input_awb">Terima kasih telah melakuakn pengiriman</string>
+    <string name="string_success_input_awb">Terima kasih sudah melakukan pengiriman</string>
     <string name="string_success_finish">Komplain ini telah dinyatakan selesai. Terima kasih.</string>
 </resources>

@@ -41,7 +41,7 @@
             android:paddingRight="2dp"
             android:layout_height="match_parent"
             android:tint="@color/black"
-            context:src="@drawable/ic_step_arrow_past"/>
+            context:src="@drawable/arrow_down"/>
     </RelativeLayout>
 
     <LinearLayout
