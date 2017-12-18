@@ -109,8 +109,8 @@ public class HeaderHomeView extends BaseCustomView {
             /* Akan dipakai untuk visible invisible tokocash topup button
             if (homeHeaderWalletAction.isVisibleActionButton())
                 tvActionTokocash.setVisibility(VISIBLE);
-            else tvActionTokocash.setVisibility(GONE);
-            tvActionTokocash.setVisibility(GONE);*/
+            else tvActionTokocash.setVisibility(GONE);*/
+            tvActionTokocash.setVisibility(GONE);
             tvActionTokocash.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
             tvBalanceTokocash.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
         } else {
