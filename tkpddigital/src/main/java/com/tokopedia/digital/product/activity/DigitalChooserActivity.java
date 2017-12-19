@@ -156,12 +156,6 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     }
 
     @Override
-    public void onOperatortItemChooserCanceled() {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-    @Override
     public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
