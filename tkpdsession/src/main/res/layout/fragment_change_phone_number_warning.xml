@@ -133,7 +133,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            tools:listitem="@layout/item_change_phone_number_warning">
+            tools:listitem="@layout/item_change_phone_number_warning"
+            android:id="@+id/warning_rv">
         </android.support.v7.widget.RecyclerView>
 
         <TextView
@@ -147,6 +148,7 @@
             android:textColor="@color/white"
             android:gravity="center"
             tools:text="Ubah Nomor Ponsel"
+            android:id="@+id/next_button"
             />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
