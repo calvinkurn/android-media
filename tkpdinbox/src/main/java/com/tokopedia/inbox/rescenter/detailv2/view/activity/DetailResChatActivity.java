@@ -71,13 +71,15 @@ public class DetailResChatActivity
         Intent destinationIntent = new Intent(context, DetailResChatActivity.class);
         String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
         destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
-        String userName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")).toString().replaceAll("%20", "");
-        String shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")).toString().replaceAll("%20", "");
-        if (TextUtils.isEmpty(shopName.toString())) {
-            destinationIntent.putExtra(PARAM_USER_NAME, userName);
+        String userName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")).toString();
+        String shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")).toString();
+        String userNameSpanned = userName.replaceAll("%20"," ");
+        String shopNameSpanned = shopName.replaceAll("%20"," ");
+        if (TextUtils.isEmpty(shopName)) {
+            destinationIntent.putExtra(PARAM_USER_NAME, userNameSpanned);
             destinationIntent.putExtra(PARAM_IS_SELLER, true);
         } else {
-            destinationIntent.putExtra(PARAM_SHOP_NAME, shopName);
+            destinationIntent.putExtra(PARAM_SHOP_NAME, shopNameSpanned);
             destinationIntent.putExtra(PARAM_IS_SELLER,false);
         }
         destinationIntent.putExtras(bundle);

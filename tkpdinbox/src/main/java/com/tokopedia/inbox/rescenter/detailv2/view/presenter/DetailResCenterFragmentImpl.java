@@ -206,6 +206,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     private RequestParams getEditAddressParam(String addressId, String oldAddressId, String conversationId) {
         RequestParams params = RequestParams.create();
+        params.putString(EditAddressUseCase.PARAM_CONVERSATION_ID, conversationId);
         params.putString(EditAddressUseCase.PARAM_ADDRESS_ID, addressId);
         params.putString(EditAddressUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
         params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId);

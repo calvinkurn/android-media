@@ -91,7 +91,7 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
                 setTextStyle(holder.tvAction, true);
                 holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
                 holder.ivIndicatorArrow.setImageDrawable(nextStep != null && stepMap.get(nextStep) == STEP_AFTER_CURRENT ?
-                        context.getResources().getDrawable(R.drawable.ic_step_arrow_next) :
+                        context.getResources().getDrawable(R.drawable.ic_arrow_dotted) :
                         context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
                 holder.glowingView.renderData(new Object());
                 holder.ivIndicatorArrow.setVisibility(nextStep == null ? View.GONE : View.VISIBLE);
@@ -99,7 +99,7 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
                 holder.ivIndicatorCircle.setVisibility(View.VISIBLE);
                 setTextStyle(holder.tvAction, false);
                 holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_next));
-                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_next));
+                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_dotted));
                 holder.ivIndicatorArrow.setVisibility(nextStep == null ? View.GONE : View.VISIBLE);
             }
         }

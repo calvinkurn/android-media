@@ -83,6 +83,9 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
     public DetailResponseData call(Response<TkpdResponse> response) {
         DetailResponse detailResponse = response.body().convertDataObj(
                 DetailResponse.class);
+        if (detailResponse == null) {
+            throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
+        }
         DetailResponseData model = mappingResponse(detailResponse);
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
