@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.thankyou.data.factory;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -22,6 +24,7 @@ public class ThanksTrackerFactory {
     private DigitalTrackerMapper digitalTrackerMapper;
     private MarketplaceTrackerApi marketplaceTrackerApi;
     private MarketplaceTrackerMapper marketplaceTrackerMapper;
+    private Context context;
     private Gson gson;
     private SessionHandler sessionHandler;
     private GCMHandler gcmHandler;
@@ -30,6 +33,7 @@ public class ThanksTrackerFactory {
                                 DigitalTrackerMapper digitalTrackerMapper,
                                 MarketplaceTrackerApi marketplaceTrackerApi,
                                 MarketplaceTrackerMapper marketplaceTrackerMapper,
+                                Context context,
                                 Gson gson,
                                 SessionHandler sessionHandler,
                                 GCMHandler gcmHandler) {
@@ -37,6 +41,7 @@ public class ThanksTrackerFactory {
         this.digitalTrackerMapper = digitalTrackerMapper;
         this.marketplaceTrackerApi = marketplaceTrackerApi;
         this.marketplaceTrackerMapper = marketplaceTrackerMapper;
+        this.context = context;
         this.gson = gson;
         this.sessionHandler = sessionHandler;
         this.gcmHandler = gcmHandler;
@@ -49,7 +54,7 @@ public class ThanksTrackerFactory {
             if (platform.equals(ThanksTrackerConst.Platform.DIGITAL)) {
                 return new DigitalTrackerCloudSource(params, digitalTrackerApi, digitalTrackerMapper, gson, sessionHandler, gcmHandler);
             } else if (platform.equals(ThanksTrackerConst.Platform.MARKETPLACE)) {
-                return new MarketplaceTrackerCloudSource(params, marketplaceTrackerApi, marketplaceTrackerMapper);
+                return new MarketplaceTrackerCloudSource(params, marketplaceTrackerApi, marketplaceTrackerMapper, context);
             }
         }
 

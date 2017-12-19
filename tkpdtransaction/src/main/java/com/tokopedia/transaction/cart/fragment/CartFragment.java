@@ -15,13 +15,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -42,7 +39,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -60,6 +56,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.topads.sdk.base.Config;
@@ -135,18 +132,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView tvInfoPaymentMethod;
     @BindView(R2.id.btn_checkout)
     TextView btnCheckout;
-    @BindView(R2.id.cb_use_voucher)
-    CheckBox cbUseVoucher;
-    @BindView(R2.id.btn_check_voucher)
-    TextView btnCheckVoucher;
-    @BindView(R2.id.et_voucher_code)
-    EditText etVoucherCode;
-    @BindView(R2.id.til_et_voucher_code)
-    TextInputLayout tilEtVoucherCode;
-    @BindView(R2.id.tv_voucher_desc)
-    TextView tvVoucherDesc;
-    @BindView(R2.id.holder_use_voucher)
-    RelativeLayout holderUseVoucher;
     @BindView(R2.id.tv_cash_back_value)
     TextView tvCashBackValue;
     @BindView(R2.id.cv_cash_back)
@@ -179,6 +164,20 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView instantInsertVoucherButton;
     @BindView(R2.id.instant_promo_placeholder)
     CardView instantPromoPlaceHolder;
+    @BindView(R2.id.promo_code_layout)
+    ViewGroup promoCodeLayout;
+    @BindView(R2.id.promo_result)
+    ViewGroup promoResultLayout;
+    @BindView(R2.id.promo_activation_title)
+    TextView promoActivationTitle;
+    @BindView(R2.id.label_promo_type)
+    TextView labelPromoType;
+    @BindView(R2.id.voucher_code)
+    TextView promoVoucherCode;
+    @BindView(R2.id.voucher_description)
+    TextView voucherDescription;
+    @BindView(R2.id.cancel_promo_layout)
+    ViewGroup cancelPromoLayout;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
@@ -252,8 +251,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     protected void setViewListener() {
         rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
-        cbUseVoucher.setOnCheckedChangeListener(getOnCheckedUseVoucherOptionListener());
-        cbUseVoucher.setChecked(false);
     }
 
     @Override
@@ -328,8 +325,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderButtonCheckVoucherListener() {
-        cbUseVoucher.setOnCheckedChangeListener(getOnCheckedUseVoucherOptionListener());
-        etVoucherCode.addTextChangedListener(getWatcherEtVoucherCode());
     }
 
     @Override
@@ -408,28 +403,21 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderSuccessCheckVoucher(String descVoucher, int instantVoucher) {
-        tilEtVoucherCode.setError(null);
-        tilEtVoucherCode.setErrorEnabled(false);
-        tvVoucherDesc.setText(descVoucher);
-        instantPromoPlaceHolder.setVisibility(View.GONE);
-        if (instantVoucher == 1) {
-            etVoucherCode.setText(voucherCode);
-            cbUseVoucher.setChecked(true);
-        }
+    public void renderSuccessCheckVoucher(String voucherCode,
+                                          String amount,
+                                          String descVoucher,
+                                          int instantVoucher) {
+        setVoucherResultLayout(voucherCode, amount, descVoucher);
+        //TODO Important
     }
 
     @Override
     public void renderErrorCheckVoucher(String message) {
-        tvVoucherDesc.setText("");
-        tilEtVoucherCode.setErrorEnabled(true);
-        tilEtVoucherCode.setError(message);
     }
 
     @Override
     public void renderErrorFromInstantVoucher(int instantVoucher) {
-        if (instantVoucher == 1)
-            cbUseVoucher.setChecked(true);
+        if (instantVoucher == 1) instantPromoPlaceHolder.setVisibility(View.GONE);
     }
 
     @Override
@@ -453,6 +441,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             Config config = new Config.Builder()
                     .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                     .setUserId(SessionHandler.getLoginID(getActivity()))
+                    .withPreferedCategory()
                     .setEndpoint(Endpoint.PRODUCT)
                     .displayMode(DisplayMode.FEED)
                     .topAdsParams(params)
@@ -460,6 +449,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
             TopAdsView topAdsView = (TopAdsView) emptyState.findViewById(R.id.topads);
             topAdsView.setConfig(config);
+            topAdsView.setDisplayMode(DisplayMode.FEED);
             topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             topAdsView.loadTopAds();
@@ -528,12 +518,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public String getVoucherCodeCheckoutData() {
-        return etVoucherCode.getText().toString().trim();
+        //TODO IMPORTANT here is where the data is fetched
+        return voucherCode;
     }
 
     @Override
     public boolean isCheckoutDataUseVoucher() {
-        return cbUseVoucher.isChecked();
+        //TODO IMPORTANT boolean that fetched tells if using voucher or not
+        return promoResultLayout.isShown();
     }
 
     @Override
@@ -543,8 +535,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderDisableErrorCheckVoucher() {
-        tilEtVoucherCode.setError(null);
-        tilEtVoucherCode.setErrorEnabled(false);
     }
 
     @Override
@@ -619,10 +609,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO Change to new voucher stuffs
+
                 CartFragment.this.voucherCode = voucherCode;
-                etVoucherCode.setText(voucherCode);
-                getButtonCheckVoucherClickListener();
-                presenter.processCheckVoucherCode(1);
+                presenter.processCheckVoucherCode(voucherCode, 1);
+                cancelPromoLayout.setOnClickListener(onInstantPromoCancelled());
             }
         };
     }
@@ -724,6 +715,27 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             instantInsertVoucherButton.setTextColor(Color.parseColor(cartPromo.getCtaColor()));
             instantInsertVoucherButton.setOnClickListener(insertCode(cartPromo.getPromoCode()));
         }
+    }
+
+    @Override
+    public void renderPromoView(final boolean isCouponActive) {
+        if (isCouponActive) promoActivationTitle.setText(R.string.title_use_promo_code_and_voucher);
+        else promoActivationTitle.setText(R.string.title_use_promo_code);
+
+        promoCodeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent;
+                if (isCouponActive) {
+                    intent = LoyaltyActivity.newInstanceCouponActive(
+                            getActivity(), "marketplace", "marketplace"
+                    );
+                } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
+                        "marketplace", "marketplace");
+                startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+            }
+        });
     }
 
     @Override
@@ -929,7 +941,64 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     );
                     break;
             }
+        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
+            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                setVoucherResultLayout(
+                        bundle.getString(LoyaltyActivity.VOUCHER_CODE, ""),
+                        bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
+                        bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
+                );
+                cancelPromoLayout.setOnClickListener(onPromoCancelled());
+            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+                Bundle bundle = data.getExtras();
+                promoResultLayout.setVisibility(View.VISIBLE);
+                labelPromoType.setText("Kode Kupon: ");
+                promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
+                voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
+
+                //TODO check state
+                voucherCode = bundle.getString(LoyaltyActivity.COUPON_CODE);
+                instantPromoPlaceHolder.setVisibility(View.GONE);
+                promoCodeLayout.setVisibility(View.GONE);
+                cancelPromoLayout.setOnClickListener(onPromoCancelled());
+            }
         }
+    }
+
+    private void setVoucherResultLayout(String voucherCode,
+                                        String amount,
+                                        String description) {
+        promoResultLayout.setVisibility(View.VISIBLE);
+        labelPromoType.setText("Kode Voucher: ");
+        promoVoucherCode.setText(voucherCode);
+        voucherDescription.setText(description);
+
+        //TODO check state
+        this.voucherCode = voucherCode;
+        promoCodeLayout.setVisibility(View.GONE);
+        instantPromoPlaceHolder.setVisibility(View.GONE);
+    }
+
+    private View.OnClickListener onPromoCancelled() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                promoResultLayout.setVisibility(View.GONE);
+                promoCodeLayout.setVisibility(View.VISIBLE);
+            }
+        };
+    }
+
+    private View.OnClickListener onInstantPromoCancelled() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                promoResultLayout.setVisibility(View.GONE);
+                instantPromoPlaceHolder.setVisibility(View.VISIBLE);
+                promoCodeLayout.setVisibility(View.VISIBLE);
+            }
+        };
     }
 
     @NonNull
@@ -982,45 +1051,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         };
     }
 
-    @NonNull
-    private CompoundButton.OnCheckedChangeListener getOnCheckedUseVoucherOptionListener() {
-        return new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    holderUseVoucher.setVisibility(View.VISIBLE);
-                    btnCheckVoucher.setOnClickListener(getButtonCheckVoucherClickListener());
-                    renderInvisibleLoyaltyBalance();
-                } else {
-                    holderUseVoucher.setVisibility(View.GONE);
-                    btnCheckVoucher.setOnClickListener(null);
-                    etVoucherCode.setText("");
-                    tvVoucherDesc.setText("");
-                    tilEtVoucherCode.setErrorEnabled(false);
-                    if (totalLoyaltyBalance != null)
-                        renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
-                    if (hasPromotion) instantPromoPlaceHolder.setVisibility(View.VISIBLE);
-                }
-            }
-        };
-    }
-
-    @NonNull
-    private View.OnClickListener getButtonCheckVoucherClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                KeyboardHandler.hideSoftKeyboard(getActivity());
-                if (getVoucherCodeCheckoutData().isEmpty()) {
-                    renderErrorCheckVoucher(
-                            getStringFromResource(R.string.label_error_form_voucher_code_empty));
-                } else {
-                    presenter.processCheckVoucherCode(0);
-                }
-            }
-        };
-    }
-
 
     @NonNull
     private View.OnClickListener getButtonPaymentMethodClickListener(
@@ -1064,33 +1094,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             @Override
             public void onRetryClicked() {
                 presenter.processGetCartData();
-            }
-        };
-    }
-
-
-    @NonNull
-    private TextWatcher getWatcherEtVoucherCode() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().isEmpty()) {
-                    renderErrorCheckVoucher(
-                            getString(R.string.label_error_form_voucher_code_empty)
-                    );
-                } else {
-                    renderDisableErrorCheckVoucher();
-                }
             }
         };
     }
@@ -1185,4 +1188,5 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
         return kursIndonesia.format(value);
     }
+
 }

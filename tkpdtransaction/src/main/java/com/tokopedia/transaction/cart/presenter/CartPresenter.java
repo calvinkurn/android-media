@@ -396,7 +396,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckVoucherCode(final int instantCheckVoucher) {
+    public void processCheckVoucherCode(final String voucherCode, final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
@@ -427,7 +427,12 @@ public class CartPresenter implements ICartPresenter {
                         ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
-                        view.renderSuccessCheckVoucher(descVoucher, instantCheckVoucher);
+                        view.renderSuccessCheckVoucher(
+                                voucherCode,
+                                responseTransform.getData().getVoucher().getVoucherAmountIdr(),
+                                descVoucher,
+                                instantCheckVoucher
+                        );
                         view.hideProgressLoading();
                     }
                 });
@@ -786,6 +791,7 @@ public class CartPresenter implements ICartPresenter {
         }
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
+        view.renderPromoView(data.getIsCouponActive() == 1);
     }
 
     @Override

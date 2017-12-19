@@ -137,7 +137,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        startActivityForResult(CommonUtils.requestBarcodeScanner(getActivity()), REQUEST_CODE_BARCODE);
     }
 
     public void requestRefNumDialog(final int pos) {
