@@ -2,6 +2,7 @@ package com.tokopedia.session.changephonenumber.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +11,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
-import com.tokopedia.session.login.view.ReloginActivity;
 
-import butterknife.BindView;
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -56,9 +60,26 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         unbinder = ButterKnife.bind(this, parentView);
         initView(parentView);
         setViewListener();
-        initialVar();
+        initVar();
         //TODO presenter.attachView(this);
         return parentView;
+    }
+
+    private void provideDummyData(){
+        WarningItemViewModel item1 = new WarningItemViewModel(
+                "Saldo Tokopedia tidak dapat ditarik dan digunakan selama 3 hari setelah nomor berhasil diubah.",
+                "Disarankan untuk menarik Saldo Tokopedia sebelum melakukan perubahan",
+                null
+        );
+        WarningItemViewModel item2 = new WarningItemViewModel(
+                "Dana dari Tokocash sebelumnya tidak dapat dipindahkan ke Tokocash dengan nomor yang baru.*",
+                "Disarankan untuk membelanjakan seluruh dana TokoCash terlebih dahulu, atau tetap login TokoCash dengan nomor lama.",
+                "*Pemindahan dana hanya bisa dilakukan untuk kasus-kasus tertentu"
+        );
+        ArrayList<WarningItemViewModel> arrayList = new ArrayList<>();
+        arrayList.add(item1);
+        arrayList.add(item2);
+        viewModel = new WarningViewModel("Rp 102.123.241,000", "Rp 123.333,333", arrayList);
     }
 
     private void initView(View view) {
@@ -79,7 +100,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         });
     }
 
-    private void initialVar() {
+    private void initVar() {
 
     }
 
@@ -100,5 +121,32 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     }
 
+    private void loadDataToView(){
+        if (viewModel != null) {
+            if (viewModel.getTokopediaBalance() != null || !viewModel.getTokopediaBalance().equalsIgnoreCase("null")) {
+                tokopediaBalanceLayout.setVisibility(View.VISIBLE);
+                tokopediaBalanceValue.setText(viewModel.getTokopediaBalance());
+            } else {
+                tokopediaBalanceLayout.setVisibility(View.GONE);
+            }
+
+            if (viewModel.getTokocash() != null || !viewModel.getTokocash().equalsIgnoreCase("null")) {
+                tokocashLayout.setVisibility(View.VISIBLE);
+                tokocashValue.setText(viewModel.getTokocash());
+            } else {
+                tokocashLayout.setVisibility(View.GONE);
+            }
+
+            populateRecyclerView();
+        }
+    }
+
+    private void populateRecyclerView(){
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        warningRecyclerView.setLayoutManager(mLayoutManager);
+
+        WarningListAdapter adapter = new WarningListAdapter(viewModel.getWarningList());
+        warningRecyclerView.setAdapter(adapter);
+    }
 
 }
