@@ -71,6 +71,10 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
 
     private ActionListener actionListener;
 
+    public interface ActionListener {
+        void onOperatorItemSelected(Operator operator);
+    }
+
     public static Fragment newInstance(String categoryId, String operatorStyleView,
                                         String operatorLabel, String categoryName) {
         Bundle bundle = new Bundle();
@@ -156,25 +160,20 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     @Override
     protected void initView(View view) {
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        if (operators.size() > 10) {
-            fieldSearch.setHint(getResources().getString(R.string.action_search_with_suffix, operatorLabel));
-            fieldSearch.setOnFocusChangeListener(onAnalyticsFocusChangedListener());
-            fieldSearch.addTextChangedListener(onSearchTextChange());
-            fieldSearch.clearFocus();
-            rvOperatorList.requestFocus();
-        }
-        else fieldSearch.setVisibility(View.GONE);
     }
 
     @Override
     protected void setViewListener() {
-        rvOperatorList.setAdapter(operatorChooserAdapter);
+        fieldSearch.setOnFocusChangeListener(onAnalyticsFocusChangedListener());
+        fieldSearch.addTextChangedListener(onSearchTextChange());
     }
 
     @Override
     protected void initialVar() {
         operatorChooserAdapter = new OperatorChooserAdapter(this, operators,
                 actionListener);
+
+        rvOperatorList.setAdapter(operatorChooserAdapter);
     }
 
     @Override
@@ -187,10 +186,15 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
         this.operators.clear();
         this.operators.addAll(operators);
         operatorChooserAdapter.notifyDataSetChanged();
-    }
 
-    public interface ActionListener {
-        void onOperatorItemSelected(Operator operator);
+        if (operators.size() > 10) {
+            fieldSearch.setHint(getResources().getString(R.string.action_search_with_suffix, operatorLabel));
+            fieldSearch.clearFocus();
+            fieldSearch.setVisibility(View.VISIBLE);
+            rvOperatorList.requestFocus();
+        } else {
+            fieldSearch.setVisibility(View.GONE);
+        }
     }
 
     private void fiterData(String query) {

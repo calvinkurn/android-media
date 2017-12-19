@@ -8,6 +8,7 @@
     <EditText
         android:id="@+id/field_search"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="@dimen/img_thumb_l"
         android:layout_margin="@dimen/small_dp"
         android:background="@color/digital_operator_search_bar_color"
