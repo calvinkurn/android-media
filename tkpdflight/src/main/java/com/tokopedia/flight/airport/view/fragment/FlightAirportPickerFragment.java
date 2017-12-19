@@ -8,15 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.fragment.BaseSearchListV2Fragment;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
 import com.tokopedia.flight.airport.service.GetAirportListService;
-import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapter;
+import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
+import com.tokopedia.flight.airport.view.adapter.FlightAirportViewHolder;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerView;
 import com.tokopedia.flight.common.di.component.FlightComponent;
@@ -29,7 +30,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB> implements FlightAirportPickerView, BaseListAdapter.OnBaseListV2AdapterListener<FlightAirportDB> {
+public class FlightAirportPickerFragment extends BaseSearchListV2Fragment<FlightAirportDB> implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
     public static final String FLIGHT_AIRPORT = "flight_airport";
@@ -39,7 +40,6 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     @Inject
     FlightAirportPickerPresenter flightAirportPickerPresenter;
 
-    private FlightAirportAdapter flightAirportAdapter;
 
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
@@ -60,6 +60,16 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
+    protected void setInitialActionVar() {
+        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
+    }
+
+    @Override
+    protected BaseListAdapterTypeFactory getAdapterTypeFactory() {
+        return new FlightAirportAdapterTypeFactory(this);
+    }
+
+    @Override
     protected void initInjector() {
         DaggerFlightAirportComponent.builder()
                 .flightAirportModule(new FlightAirportModule())
@@ -67,18 +77,6 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
                 .build()
                 .inject(this);
         flightAirportPickerPresenter.attachView(this);
-    }
-
-    @Override
-    protected BaseListAdapter<FlightAirportDB> getNewAdapter() {
-        flightAirportAdapter =  new FlightAirportAdapter(getContext(), this);
-        return flightAirportAdapter;
-    }
-
-    @Override
-    public void loadData(int page, int currentDataSize, int rowPerPage) {
-        showLoading();
-        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
     }
 
     @Override
@@ -90,9 +88,12 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
+    public void onSearchSubmitted(String text) {
+        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
+    }
+
+    @Override
     public void onSearchTextChanged(String text) {
-        super.onSearchTextChanged(text);
-        flightAirportAdapter.setFilterText(text);
         flightAirportPickerPresenter.getAirportList(text);
     }
 
@@ -115,5 +116,10 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public String getFilterText() {
+        return searchInputView.getSearchText();
     }
 }

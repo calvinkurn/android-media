@@ -1,7 +1,5 @@
 package com.tokopedia.flight.airport.view.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase;
@@ -68,13 +66,13 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
             @Override
             public void onError(Throwable e) {
                 if(isViewAttached()){
-                    getView().onLoadSearchError(e);
+                    getView().showGetListError();
                 }
             }
 
             @Override
             public void onNext(List<FlightAirportDB> flightAirportDBs) {
-                getView().onSearchLoaded(flightAirportDBs, flightAirportDBs.size());
+                getView().renderList(flightAirportDBs);
             }
         };
     }
