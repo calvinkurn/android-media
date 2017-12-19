@@ -66,7 +66,7 @@ public class ShopEditorActivity extends TActivity implements
     FrameLayout container;
     private String onBack;
 
-    @DeepLink(Constants.Applinks.CREATE_SHOP)
+    /*@DeepLink(Constants.Applinks.CREATE_SHOP)
     public static Intent getCallingApplinkCreateShopIntent(Context context, Bundle extras) {
         if (SessionHandler.isV4Login(context)
                 && !SessionHandler.isUserHasShop(context)) {
@@ -77,7 +77,7 @@ public class ShopEditorActivity extends TActivity implements
         } else {
             return HomeRouter.getHomeActivityInterfaceRouter(context);
         }
-    }
+    }*/
 
     @Inject
     DeleteShopInfoUseCase deleteShopInfoUseCase;

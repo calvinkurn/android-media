@@ -40,4 +40,10 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
             }
         });
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getLogisticAvailableUseCase.unsubscribe();
+    }
 }

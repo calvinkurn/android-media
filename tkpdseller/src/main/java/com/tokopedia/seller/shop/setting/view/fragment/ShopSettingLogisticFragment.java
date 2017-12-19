@@ -2,12 +2,15 @@ package com.tokopedia.seller.shop.setting.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
@@ -25,13 +28,13 @@ import javax.inject.Inject;
 
 public class ShopSettingLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView {
 
-    public static final String TAG = "ShopSettingLogistic";
     public static final int UNSELECTED_DISTRICT_VIEW = -1;
 
     @Inject
     public ShopSettingLogisticPresenter presenter;
-    private ShopSetingLogisticComponent component;
     private int districtCode = UNSELECTED_DISTRICT_VIEW;
+    private LoadingStateView loadingStateView;
+    private boolean needRefreshData;
 
     public static ShopSettingLogisticFragment getInstance() {
         return new ShopSettingLogisticFragment();
@@ -39,7 +42,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
 
     @Override
     protected void initInjector() {
-        component = DaggerShopSetingLogisticComponent
+        ShopSetingLogisticComponent component = DaggerShopSetingLogisticComponent
                 .builder()
                 .shopSetingLogisticModule(new ShopSetingLogisticModule())
                 .shopSettingComponent(getComponent(ShopSettingComponent.class))
@@ -47,52 +50,89 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
         component.inject(this);
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        needRefreshData = true;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_setting_logistic, container, false);
-        changeDistrictCode(4528);
-        updateLogistic();
+        loadingStateView = view.findViewById(R.id.vg_root);
+        // changeDistrictCode(4528);
         return view;
     }
 
     public void changeDistrictCode(int districtCode) {
-        this.districtCode = districtCode;
+        if (districtCode!= this.districtCode) {
+            this.districtCode = districtCode;
+            needRefreshData = true;
+        }
     }
 
-    private void updateLogistic() throws RuntimeException {
-        if (districtCode != UNSELECTED_DISTRICT_VIEW) {
-            presenter.updateLogistic(districtCode);
-        } else {
-            throw new RuntimeException("District code must be selected");
+    public void updateLogistic() {
+        showLoading();
+        //presenter.updateLogistic(districtCode);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.attachView(this);
+        if (needRefreshData) {
+            updateLogistic();
         }
     }
 
     @Override
-    public void onSuccessLoadLogistic(LogisticAvailableDomainModel logisticAvailableDomainModel) {
+    public void onPause() {
+        super.onPause();
+        presenter.detachView();
+    }
 
+    private void showLoading() {
+        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+    }
+
+    private void hideLoading() {
+        loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+    }
+
+    @Override
+    public void onSuccessLoadLogistic(LogisticAvailableDomainModel logisticAvailableDomainModel) {
+        hideLoading();
+        needRefreshData = false;
+        //TODO on Success
     }
 
     @Override
     public void onErrorLoadLogistic(Throwable t) {
-
+        hideLoading();
+        needRefreshData = false;
+        String message = ErrorHandler.getErrorMessage(t);
+        if (!TextUtils.isEmpty(message)) {
+            showMessageError(message);
+        }
     }
 
-    private void showMessageError(String string) {
-        NetworkErrorHelper.showSnackbar(getActivity(), string);
+    private void showMessageError(String messsage) {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                        loadingStateView, messsage,
+                        new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                updateLogistic();
+                            }
+                        }
+                );
     }
-
-//    private void onSelected() {
-//        try {
-//            updateLogistic();
-//        } catch (Exception e) {
-//            showMessageError(getString(R.string.shop_setting_city_not_filled));
-//            listener.goBackToLocation();
-//        }
-//    }
 
     @Override
     protected String getScreenName() {
         return null;
     }
+
+
 }

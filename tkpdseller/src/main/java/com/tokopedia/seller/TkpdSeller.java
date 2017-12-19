@@ -17,9 +17,17 @@ import com.tokopedia.seller.shopsettings.ManageShopActivity;
 
 public class TkpdSeller {
     public static Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack){
-        Intent intent;
+        Intent intent;  
         if (isCreate) {
+            //TODO change to latest
             intent = ShopOpenDomainActivity.getIntent(context,logOutOnBack);
+//            intent = new Intent(context, ShopEditorActivity.class);
+//            intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+//            if (logOutOnBack) {
+//                intent.putExtra(ShopSettingView.ON_BACK, ShopSettingView.LOG_OUT);
+//            } else {
+//                intent.putExtra(ShopSettingView.ON_BACK, ShopSettingView.FINISH);
+//            }
         } else {
             intent = new Intent(context, ShopEditorActivity.class);
             intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
