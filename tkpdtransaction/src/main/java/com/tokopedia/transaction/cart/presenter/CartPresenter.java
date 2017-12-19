@@ -385,6 +385,7 @@ public class CartPresenter implements ICartPresenter {
                             e.printStackTrace();
                         }
                         switchInsurancePrice(cartItemEditable, useInsurance);
+                        processRenderViewCartData(cartData);
                     }
                 });
     }
@@ -568,7 +569,7 @@ public class CartPresenter implements ICartPresenter {
         /*
             Branch.io block
          */
-        BranchSdkUtils.sendCommerceEvent(locaProducts,revenue,totalShipping);
+        BranchSdkUtils.sendCommerceEvent(locaProducts, revenue, totalShipping);
 
     }
 
@@ -580,10 +581,10 @@ public class CartPresenter implements ICartPresenter {
     }
 
     private void trackCanceledCart(CartItem canceledCartItem) {
-        if(canceledCartItem != null
+        if (canceledCartItem != null
                 && canceledCartItem.getCartProducts() != null
                 && !canceledCartItem.getCartProducts().isEmpty()) {
-            for(CartProduct cartProduct : canceledCartItem.getCartProducts()) {
+            for (CartProduct cartProduct : canceledCartItem.getCartProducts()) {
                 trackCanceledProduct(canceledCartItem, cartProduct);
             }
         }
@@ -870,6 +871,9 @@ public class CartPresenter implements ICartPresenter {
                     courierPrices.setCartSubtotal(false);
                 }
                 courierPrices.setKeroValue(keroShipmentServices.get(i));
+                courierPrices.setCartInsuranceProd(cartRatesData.isInsuranced() ? 1 : 0);
+                courierPrices.setInsuranceUsedInfo(keroShipmentServices.get(i).getInsuranceUsedInfo());
+                courierPrices.setInsuranceUsedType(keroShipmentServices.get(i).getInsuranceUsedType());
             }
         }
 
