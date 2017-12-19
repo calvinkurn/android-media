@@ -458,13 +458,16 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(context,
                 DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
                         "ecommerce", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf(
-                                        "list", "hotlist"),
+                                "actionField", DataLayer.mapOf("list", "hotlist"),
                                 "impressions",
                                 DataLayer.listOf(
                                         hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
                         )
                 )
         );
+    }
+
+    public void event(String name, Map<String, Object> data) {
+        GTMDataLayer.pushEvent(context, name, data);
     }
 }
