@@ -2,18 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:context="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/action_response"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/tkpd_main_green"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/action_response"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_medium"
-        android:textStyle="bold" />
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/black_12"/>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        context:listitem="@layout/item_layout_button"/>
 </LinearLayout>

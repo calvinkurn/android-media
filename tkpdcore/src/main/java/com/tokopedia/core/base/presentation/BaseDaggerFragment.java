@@ -17,7 +17,6 @@ public abstract class BaseDaggerFragment extends TkpdBaseV4Fragment {
         initInjector();
     }
 
-    @SuppressWarnings("unchecked")
     protected <C> C getComponent(Class<C> componentType) {
         return componentType.cast(((HasComponent<C>) getActivity()).getComponent());
     }

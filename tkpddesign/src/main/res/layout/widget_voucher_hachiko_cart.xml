@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:paddingLeft="@dimen/padding_small"
+             android:paddingRight="@dimen/padding_small"
+             android:paddingTop="@dimen/padding_small">
+
+    <FrameLayout
+        android:id="@+id/layout_input_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/textview_voucher"
+            android:drawablePadding="@dimen/padding_ms"
+            android:drawableLeft="@drawable/ic_kupon"
+            android:drawableStart="@drawable/ic_kupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:gravity="center"
+            android:textColor="@color/tkpd_main_green"
+            android:text="@string/use_promo_code_or_coupon"
+            tools:text="Gunakan Kode Promo atau Kupon"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_used_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="gone"
+        style="@style/CardViewWidget.UsedVoucher"
+        android:padding="16dp"
+        android:gravity="start">
+
+        <TextView
+            android:id="@+id/label_promo_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:text="Kode Promo: "/>
+
+        <TextView
+            android:id="@+id/textview_promo_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/padding_vvs"
+            android:layout_marginStart="@dimen/padding_vvs"
+            android:layout_toStartOf="@+id/button_cancel"
+            android:layout_toLeftOf="@+id/button_cancel"
+            android:layout_toEndOf="@id/label_promo_code"
+            android:layout_toRightOf="@+id/label_promo_code"
+            android:textColor="@color/tkpd_main_orange"
+            android:layout_gravity="center"
+            tools:text="TOPEDONGKIR"/>
+
+        <TextView
+            android:id="@+id/textview_voucher_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_promo_code"
+            android:layout_gravity="center"
+            tools:text="Potensi mendapatkan potongan ongkos kirim Rp. 40.000"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_cancel"
+            android:src="@drawable/ic_ticker_action_close_12dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"/>
+
+    </RelativeLayout>
+
+</FrameLayout>

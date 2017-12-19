@@ -11,14 +11,18 @@ public class ListHistoryAction {
     private String resConvId;
     @SerializedName("actionBy")
     private int actionBy;
+    @SerializedName("createTime")
+    private CreateTimeResponse createTime;
     @SerializedName("actionByStr")
     private String actionByStr;
-    @SerializedName("createTime")
-    private String createTime;
-    @SerializedName("createTimeStr")
-    private String createTimeStr;
     @SerializedName("remark")
     private String remark;
+    @SerializedName("createTimestampStr")
+    private String createTimestampStr;
+    @SerializedName("month")
+    private String month;
+    @SerializedName("dateNumber")
+    private String dateNumber;
 
     public String getResConvId() {
         return resConvId;
@@ -44,20 +48,12 @@ public class ListHistoryAction {
         this.actionByStr = actionByStr;
     }
 
-    public String getCreateTime() {
+    public CreateTimeResponse getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(CreateTimeResponse createTime) {
         this.createTime = createTime;
-    }
-
-    public String getCreateTimeStr() {
-        return createTimeStr;
-    }
-
-    public void setCreateTimeStr(String createTimeStr) {
-        this.createTimeStr = createTimeStr;
     }
 
     public String getRemark() {
@@ -66,5 +62,29 @@ public class ListHistoryAction {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getCreateTimestampStr() {
+        return createTimestampStr;
+    }
+
+    public void setCreateTimestampStr(String createTimestampStr) {
+        this.createTimestampStr = createTimestampStr;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getDateNumber() {
+        return dateNumber;
+    }
+
+    public void setDateNumber(String dateNumber) {
+        this.dateNumber = dateNumber;
     }
 }

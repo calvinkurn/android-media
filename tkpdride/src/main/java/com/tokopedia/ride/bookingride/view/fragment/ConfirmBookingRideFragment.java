@@ -95,6 +95,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     private View paymentMethodLayout;
     private ImageView paymentMethodImage;
     private TextView paymentMethodTextView;
+    private TextView tokocashBalanceTextView;
 
     public interface OnFragmentInteractionListener {
         void actionChangeSeatCount(List<SeatViewModel> seatViewModels);
@@ -185,6 +186,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         paymentMethodLayout = (View) view.findViewById(R.id.layout_payment_method);
         paymentMethodImage = (ImageView) view.findViewById(R.id.img_payment_method);
         paymentMethodTextView = (TextView) view.findViewById(R.id.tv_payment_method);
+        tokocashBalanceTextView = (TextView) view.findViewById(R.id.tv_tokocash_balance);
     }
 
     @Override
@@ -632,5 +634,16 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void hidePaymentMethod() {
         paymentMethodLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showTokoCashBalance(String tokoCashBalance) {
+        tokocashBalanceTextView.setVisibility(View.VISIBLE);
+        tokocashBalanceTextView.setText(tokoCashBalance);
+    }
+
+    @Override
+    public void hideTokoCashBalance() {
+        tokocashBalanceTextView.setVisibility(View.GONE);
     }
 }

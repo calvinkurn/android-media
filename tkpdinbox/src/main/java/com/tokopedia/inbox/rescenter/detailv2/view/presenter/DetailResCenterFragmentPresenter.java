@@ -1,7 +1,5 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
 
-import android.app.Activity;
-
 /**
  * Created by hangnadi on 3/8/17.
  */

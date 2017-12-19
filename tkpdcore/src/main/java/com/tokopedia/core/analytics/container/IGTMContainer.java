@@ -109,4 +109,6 @@ public interface IGTMContainer {
     void eventClickHotlistProductFeatured(Hotlist hotlist);
 
     void eventImpressionHotlistProductFeatured(Hotlist hotlist);
+
+    void event(String name, Map<String, Object> data);
 }

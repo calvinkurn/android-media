@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/viewpager_banner_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/indicator_banner_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="left|bottom"
+        android:layout_margin="@dimen/margin_vs"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/margin_vs" />
+
+
+    <TextView
+        android:id="@+id/promo_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/bg_all_promo"
+        android:clickable="true"
+        android:focusableInTouchMode="false"
+        android:gravity="center_horizontal|center_vertical"
+        android:paddingRight="@dimen/margin_small"
+        android:paddingLeft="@dimen/margin_small"
+        android:text="@string/all_promo"
+        android:textColor="@color/white"
+        android:textSize="13sp" />
+
+</RelativeLayout>
