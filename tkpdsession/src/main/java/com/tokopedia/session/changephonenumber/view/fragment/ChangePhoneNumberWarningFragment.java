@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -19,6 +20,7 @@ import butterknife.Unbinder;
 
 public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment implements ChangePhoneNumberWarningFragmentListener.View {
 
+    private WarningViewModel viewModel;
     private Unbinder unbinder;
 
     public static ChangePhoneNumberWarningFragment newInstance() {
