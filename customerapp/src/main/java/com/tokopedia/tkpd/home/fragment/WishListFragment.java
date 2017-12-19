@@ -172,6 +172,9 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onResume() {
         super.onResume();
         wishList.onResume(getActivity());
+        if (searchEditText.getQuery().length() > 0) {
+            wishList.refreshDataOnSearch(searchEditText.getQuery());
+        }
     }
 
     @Override
