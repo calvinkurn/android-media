@@ -125,7 +125,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (SessionHandler.isV4Login(context)) {
             if (headerViewModel == null) {
                 headerViewModel = new HeaderViewModel();
-                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
+                headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
             }
             headerViewModel.setPendingTokocashChecked(false);
         }
@@ -145,18 +145,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletAction) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
-        } else {
-            headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
-            if (homeHeaderWalletAction == null)
-                headerViewModel.setType(HeaderViewModel.TYPE_TOKOPINT_ONLY);
-            if (headerViewModel.getTokoPointDrawerData() != null) {
-                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
-            } else {
-                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
-            }
-
+            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
         getView().updateHeaderItem(headerViewModel);
     }
 
@@ -164,11 +155,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHeaderTokoCashPendingData(CashBackData cashBackData) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
-        } else {
-            headerViewModel.setCashBackData(cashBackData);
-            headerViewModel.setPendingTokocashChecked(true);
+            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setCashBackData(cashBackData);
+        headerViewModel.setPendingTokocashChecked(true);
         getView().updateHeaderItem(headerViewModel);
     }
 
@@ -176,15 +166,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
-            headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
-        } else {
-            headerViewModel.setTokoPointDrawerData(tokoPointDrawerData);
-            if (tokoPointDrawerData == null)
-                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
-            if (headerViewModel.getHomeHeaderWalletActionData() == null) {
-                headerViewModel.setType(HeaderViewModel.TYPE_TOKOPINT_ONLY);
-            }
+            headerViewModel.setType(HeaderViewModel.TYPE_EMPTY);
         }
+        headerViewModel.setTokoPointDrawerData(tokoPointDrawerData);
         getView().updateHeaderItem(headerViewModel);
     }
 
