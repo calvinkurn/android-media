@@ -8,7 +8,7 @@ import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.O
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
+import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 
@@ -54,9 +54,9 @@ public class DistrictLogisticDataCloud {
     }
 
 
-    public Observable<OpenShopLogisticModel> getLogisticAvailable(int districtCode) {
+    public Observable<OpenShopCouriersModel> getAvailableCouriers(int districtCode) {
         return api.getLogisticAvailable(AuthUtil.generateParamsNetwork(context, getLogisticAvailableDataparams(districtCode)))
-                .map(new SimpleDataResponseMapper<OpenShopLogisticModel>());
+                .map(new SimpleDataResponseMapper<OpenShopCouriersModel>());
     }
 
     public TKPDMapParam<String, String> getLogisticAvailableDataparams(int districtCode) {

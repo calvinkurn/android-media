@@ -7,13 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
+import com.tokopedia.seller.shop.open.view.listener.OnShopStepperListener;
+import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
@@ -25,7 +26,8 @@ import java.util.List;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends BaseStepperActivity implements HasComponent<ShopSettingComponent> {
+public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel>
+        implements HasComponent<ShopSettingComponent>, OnShopStepperListener {
 
     public static final String EXTRA_LOGOUT_ON_BACK = "LOGOUT_ON_BACK";
 
@@ -49,6 +51,11 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements Ha
         }
         super.onCreate(savedInstanceState);
         initComponent();
+    }
+
+    @Override
+    public ShopOpenStepperModel createNewStepperModel() {
+        return new ShopOpenStepperModel();
     }
 
     protected void initComponent() {
