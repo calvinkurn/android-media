@@ -45,5 +45,13 @@
     <string name="toko_cash_title_page_date_range">Rentang Tanggal</string>
     <string name="toko_cash_tab_choose_date">Pilih Tanggal</string>
     <string name="toko_cash_tab_choose_date_range">Pilih Rentang Waktu</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
+
+    <!--home-->
+    <string name="format_btn_category_more">+%d Kategori Lainnya</string>
+    <string name="buka_toko">Buka Toko</string>
+    <string name="empty_shop_wording_subtitle">Nikmati transaksi yang mudah, aman, dan menguntungkan</string>
+    <string name="empty_shop_wording_title">Buka toko sekarang, banyak lebihnya!</string>
 
 </resources>

@@ -45,4 +45,6 @@
     <color name="solid_grey_200">#fff1f1f1</color>
     <color name="tkpd_secondary_orange">#FFF2EE</color>
 
+    <color name="grey_transparent_background">#28000000</color>
+
 </resources>
