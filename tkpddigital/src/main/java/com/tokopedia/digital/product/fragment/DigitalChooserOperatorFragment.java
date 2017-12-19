@@ -3,11 +3,14 @@ package com.tokopedia.digital.product.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -118,8 +121,19 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
         actionListener = (ActionListener) activity;
     }
 
+    public static int sizeAsParcel(@NonNull Bundle bundle) {
+        Parcel parcel = Parcel.obtain();
+        try {
+            parcel.writeBundle(bundle);
+            return parcel.dataSize();
+        } finally {
+            parcel.recycle();
+        }
+    }
+
     @Override
     protected void setupArguments(Bundle arguments) {
+        Log.d("DigitalChooserOperatorFragment", String.valueOf(sizeAsParcel(arguments)));
         this.operatorPassDataList = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
         this.operatorStyleView = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW);
         this.operatorLabel = arguments.getString(EXTRA_OPERATOR_LABEL);
