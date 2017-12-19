@@ -20,6 +20,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
@@ -99,7 +100,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
                 textInputDomainName.disableSuccessError();
                 buttonSubmit.setEnabled(false);
                 hideSnackBarRetry();
-                if (TextUtils.isEmpty(s)) {
+                if (TextUtils.isEmpty(editTextInputDomainName.getTextWithoutPrefix())) {
                     textInputDomainName.setError(getString(R.string.domain_name_must_be_filled));
                 } else if (s.toString().length() <= textInputDomainName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
@@ -169,7 +170,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Override
     public void onErrorCheckShopName(Throwable t) {
-        textInputShopName.setError(getString(R.string.shop_name_not_available));
+        textInputShopName.setError(ViewUtils.getErrorMessage(getActivity(), t));
     }
 
     @Override
@@ -184,7 +185,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Override
     public void onErrorCheckShopDomain(Throwable t) {
-        textInputDomainName.setError(getString(R.string.domain_name_not_available));
+        textInputDomainName.setError(ViewUtils.getErrorMessage(getActivity(), t));
     }
 
     @Override
