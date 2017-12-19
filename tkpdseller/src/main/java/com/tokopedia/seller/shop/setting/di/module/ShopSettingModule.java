@@ -1,12 +1,5 @@
 package com.tokopedia.seller.shop.setting.di.module;
 
-import com.tokopedia.core.network.apiservices.shipment.EditShippingService;
-import com.tokopedia.core.network.apiservices.shipment.EditShippingWebViewService;
-import com.tokopedia.core.network.apiservices.shipment.apis.EditShippingApi;
-import com.tokopedia.core.network.apiservices.shop.MyShopService;
-import com.tokopedia.core.network.apiservices.shop.MyShopShipmentActService;
-import com.tokopedia.core.network.apiservices.shop.apis.MyShopApi;
-import com.tokopedia.core.network.apiservices.shop.apis.MyShopShipmentActApi;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictLogisticDataRepositoryImpl;

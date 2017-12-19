@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tokopedia.design.loading.LoadingStateView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/vg_root"
     android:layout_width="match_parent"
@@ -8,6 +8,7 @@
     android:background="@color/white">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/vg_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -63,4 +64,7 @@
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
-</com.tokopedia.design.loading.LoadingStateView>
+
+    <include layout="@layout/widget_container_loading"
+        android:id="@+id/loading"/>
+</FrameLayout>

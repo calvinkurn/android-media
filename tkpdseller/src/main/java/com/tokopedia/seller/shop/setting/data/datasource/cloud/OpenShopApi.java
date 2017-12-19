@@ -1,9 +1,10 @@
 package com.tokopedia.seller.shop.setting.data.datasource.cloud;
 
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
-import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopLogisticServiceModel;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
 
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public interface OpenShopApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM)
-    Observable<Response<OpenShopLogisticServiceModel>> getLogisticAvailable(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<OpenShopLogisticModel>>> getLogisticAvailable(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Shop.PATH_MY_SHOP_SHIPMENT + TkpdBaseURL.Shop.PATH_GET_SHIPPING_INFO)
     Observable<Response<TkpdResponse>> getShippingList(@QueryMap Map<String, String> params);

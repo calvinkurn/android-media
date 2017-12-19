@@ -500,7 +500,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
     }
 
     private void sendRunningStatus(int type) {
-        /* Update UI: Product Service is running */
+        /* Update UI: Product CourierService is running */
         Bundle running = new Bundle();
         running.putInt(TYPE, type);
         receiver.send(STATUS_RUNNING, running);

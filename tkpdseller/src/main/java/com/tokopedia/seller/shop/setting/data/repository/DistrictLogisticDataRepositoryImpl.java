@@ -1,9 +1,9 @@
 package com.tokopedia.seller.shop.setting.data.repository;
 
+import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
 import com.tokopedia.seller.shop.setting.data.source.LogisticDataSource;
 import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
-import com.tokopedia.seller.shop.setting.domain.model.LogisticAvailableDomainModel;
 import com.tokopedia.seller.shop.setting.domain.model.RecomendationDistrictDomainModel;
 
 import rx.Observable;
@@ -33,7 +33,7 @@ public class DistrictLogisticDataRepositoryImpl implements DistrictLogisticDataR
     }
 
     @Override
-    public Observable<LogisticAvailableDomainModel> getLogisticAvailable(int districtCode) {
+    public Observable<OpenShopLogisticModel> getLogisticAvailable(int districtCode) {
         return logisticDataSource.getLogisticAvailable(districtCode);
     }
 }

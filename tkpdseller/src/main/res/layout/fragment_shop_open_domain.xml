@@ -84,18 +84,11 @@
                 android:inputType="textNoSuggestions|textMultiLine"/>
             ​
         </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
-        <TextView
-            android:layout_marginTop="@dimen/margin_med"
-            style="@style/TextView.Caption"
-            android:id="@+id/tv_terms_and_condition"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="@string/openshop_terms_and_conditions"
-            android:gravity="center"/>
+
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
-            android:text="@string/button_continue"
+            android:text="@string/title_open_shop"
             android:layout_marginTop="@dimen/margin_med"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
