@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.KeyboardHandler;
@@ -39,6 +40,7 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_MEALS = "EXTRA_MEALS";
     public static final String EXTRA_DEPARTURE = "EXTRA_DEPARTURE";
     public static final String EXTRA_RETURN = "EXTRA_RETURN";
+    public static final String EXTRA_AIR_ASIA = "EXTRA_AIR_ASIA";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
 
@@ -81,6 +84,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private OnFragmentInteractionListener interactionListener;
 
+    private boolean isAirAsiaAirlines = false;
+
     @Inject
     FlightBookingPassengerPresenter presenter;
 
@@ -88,11 +93,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                                                              String returnId,
                                                              FlightBookingPassengerViewModel viewModel,
                                                              List<FlightBookingAmenityMetaViewModel> luggageViewModels,
-                                                             List<FlightBookingAmenityMetaViewModel> mealViewModels) {
+                                                             List<FlightBookingAmenityMetaViewModel> mealViewModels,
+                                                             boolean isAirAsiaAirlines) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
         bundle.putString(EXTRA_RETURN, returnId);
+        bundle.putBoolean(EXTRA_AIR_ASIA, isAirAsiaAirlines);
         bundle.putParcelable(EXTRA_PASSENGER, viewModel);
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
@@ -104,10 +111,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static Fragment newInstance(String departureId,
                                        FlightBookingPassengerViewModel viewModel,
                                        List<FlightBookingAmenityMetaViewModel> luggageViewModels,
-                                       List<FlightBookingAmenityMetaViewModel> mealViewModels) {
+                                       List<FlightBookingAmenityMetaViewModel> mealViewModels,
+                                       boolean isAirAsiaAirlines) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
+        bundle.putBoolean(EXTRA_AIR_ASIA, isAirAsiaAirlines);
         bundle.putParcelable(EXTRA_PASSENGER, viewModel);
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
@@ -125,6 +134,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         viewModel = getArguments().getParcelable(EXTRA_PASSENGER);
         luggageViewModels = getArguments().getParcelableArrayList(EXTRA_LUGGAGES);
         mealViewModels = getArguments().getParcelableArrayList(EXTRA_MEALS);
+        isAirAsiaAirlines = getArguments().getBoolean(EXTRA_AIR_ASIA);
     }
 
     @Override
@@ -409,6 +419,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public boolean isAirAsiaAirline() {
+        return isAirAsiaAirlines;
+    }
+
+    @Override
     public String getPassengerLastName() {
         return etLastName.getText().toString().trim();
     }
@@ -436,14 +451,31 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 presenter.onBirthdateChange(year, month, dayOfMonth);
             }
-        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
+        datePicker.show();
+    }
+
+    @Override
+    public void showBirthdatePickerDialog(Date selectedDate, Date maxDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
+        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                presenter.onBirthdateChange(year, month, dayOfMonth);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
     }

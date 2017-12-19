@@ -52,6 +52,7 @@ import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -101,7 +102,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightBookingPassengerAdapter adapter;
     private FlightSimpleAdapter priceListAdapter;
     private ProgressDialog progressDialog;
-
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -218,17 +218,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
-        startActivityForResult(
-                FlightBookingPassengerActivity.getCallingIntent(
-                        getActivity(),
-                        getDepartureTripId(),
-                        getReturnTripId(),
-                        viewModel,
-                        flightBookingCartData.getLuggageViewModels(),
-                        flightBookingCartData.getMealViewModels()
-                ),
-                REQUEST_CODE_PASSENGER
-        );
+        presenter.onChangePassengerButtonClicked(viewModel, flightBookingCartData);
     }
 
     @Override
@@ -306,6 +296,22 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void showPassengerInfoNotFullfilled(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirlines) {
+        startActivityForResult(
+                FlightBookingPassengerActivity.getCallingIntent(
+                        getActivity(),
+                        getDepartureTripId(),
+                        getReturnTripId(),
+                        viewModel,
+                        flightBookingCartData.getLuggageViewModels(),
+                        flightBookingCartData.getMealViewModels(),
+                        isAirAsiaAirlines
+                ),
+                REQUEST_CODE_PASSENGER
+        );
     }
 
     @Override

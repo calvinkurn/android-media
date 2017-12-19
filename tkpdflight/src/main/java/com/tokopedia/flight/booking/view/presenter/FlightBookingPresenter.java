@@ -19,6 +19,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
@@ -54,6 +55,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
     private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
     private CompositeSubscription compositeSubscription;
+
+    private ArrayList<String> airAsiaFlightIds;
 
     @Inject
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
@@ -352,6 +355,11 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
+    public void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData) {
+        getView().navigateToPassengerInfoDetail(viewModel, isAirAsiaAirline(cartData));
+    }
+
+    @Override
     public void onRetryGetCartData() {
         processGetCartData();
     }
@@ -511,5 +519,39 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     protected void onCountDownTimestimeChanged(String timestamp) {
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
+    }
+
+    // Method untuk menambahkan Flight Id AirAsia, jadi seandainya nanti ada bertambah lagi, bisa langsung di tambah disini
+    private void initAirAsiaFlightId() {
+        if(this.airAsiaFlightIds == null) {
+            this.airAsiaFlightIds = new ArrayList<>();
+            this.airAsiaFlightIds.add("AK");
+            this.airAsiaFlightIds.add("FD");
+            this.airAsiaFlightIds.add("QZ");
+            this.airAsiaFlightIds.add("XJ");
+            this.airAsiaFlightIds.add("XT");
+        }
+    }
+
+    private boolean compareFlightIdWithAirAsia(String flightId) {
+        this.initAirAsiaFlightId();
+        return this.airAsiaFlightIds.contains(flightId);
+    }
+
+    private boolean isAirAsiaAirline(FlightBookingCartData flightBookingCartData) {
+
+        if(flightBookingCartData.getDepartureTrip() != null)
+            for(FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
+                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                    return true;
+            }
+
+        if(flightBookingCartData.getReturnTrip() != null)
+            for(FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
+                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                    return true;
+            }
+
+        return false;
     }
 }
