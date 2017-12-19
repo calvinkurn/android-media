@@ -65,6 +65,8 @@ public interface FlightBookingPassengerContract {
 
         void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
+        void showBirthdatePickerDialog(Date selectedDate, Date maxDate);
+
         void renderBirthdate(String birthdateStr);
 
         void renderPassengerName(String passengerName, String passengerLastName);

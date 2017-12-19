@@ -92,14 +92,13 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     @Override
     public void onBirthdateClicked() {
 
-        Date maxDate, minDate, selectedDate;
+        Date maxDate = null, minDate = null, selectedDate = null;
 
         if (isChildPassenger()) {
             minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
             maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
             selectedDate = maxDate;
         } else if(isAdultPassenger()) {
-            minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -100);
             maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
             selectedDate = maxDate;
         } else {
@@ -110,7 +109,12 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (getView().getPassengerBirthDate().length() > 0) {
             selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate());
         }
-        getView().showBirthdatePickerDialog(selectedDate, minDate, maxDate);
+
+        if(minDate != null) {
+            getView().showBirthdatePickerDialog(selectedDate, minDate, maxDate);
+        } else {
+            getView().showBirthdatePickerDialog(selectedDate, maxDate);
+        }
     }
 
     @Override

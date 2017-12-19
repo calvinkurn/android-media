@@ -40,6 +40,7 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -450,14 +451,31 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 presenter.onBirthdateChange(year, month, dayOfMonth);
             }
-        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
+        datePicker.show();
+    }
+
+    @Override
+    public void showBirthdatePickerDialog(Date selectedDate, Date maxDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(selectedDate);
+        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                presenter.onBirthdateChange(year, month, dayOfMonth);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+        DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
     }
