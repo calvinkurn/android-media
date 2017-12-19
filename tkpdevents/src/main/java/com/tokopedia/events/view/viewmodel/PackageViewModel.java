@@ -1,7 +1,12 @@
 
 package com.tokopedia.events.view.viewmodel;
 
-public class PackageViewModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.tokopedia.events.data.entity.response.Form;
+
+public class PackageViewModel implements Parcelable {
 
     private Integer id;
     private Integer productId;
@@ -9,7 +14,7 @@ public class PackageViewModel {
     private Integer productGroupId;
     private String providerScheduleId;
     private String providerTicketId;
-    private String name;
+    private String thumbnailApp;
     private String displayName;
     private String description;
     private String tnc;
@@ -23,18 +28,31 @@ public class PackageViewModel {
     private Integer available;
     private Integer minQty;
     private Integer maxQty;
-    private Integer status;
-    private String color;
-    private String icon;
-    private String providerMetaData;
     private String providerStatus;
-    private String venueDetail;
-    private Integer startDate;
-    private Integer endDate;
-    private String fetchSectionUrl;
-    private String createdAt;
+    private int selectedQuantity;
+    private String timeRange;
+    private String address;
 
-    private String updatedAt;
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    private Integer categoryId;
+
+    public Form getForm() {
+        return form;
+    }
+
+    public void setForm(Form form) {
+        this.form = form;
+    }
+
+    private Form form;
+
 
     public Integer getId() {
         return id;
@@ -82,14 +100,6 @@ public class PackageViewModel {
 
     public void setProviderTicketId(String providerTicketId) {
         this.providerTicketId = providerTicketId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDisplayName() {
@@ -196,37 +206,6 @@ public class PackageViewModel {
         this.maxQty = maxQty;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getProviderMetaData() {
-        return providerMetaData;
-    }
-
-    public void setProviderMetaData(String providerMetaData) {
-        this.providerMetaData = providerMetaData;
-    }
 
     public String getProviderStatus() {
         return providerStatus;
@@ -236,52 +215,117 @@ public class PackageViewModel {
         this.providerStatus = providerStatus;
     }
 
-    public String getVenueDetail() {
-        return venueDetail;
+
+    public int getSelectedQuantity() {
+        return selectedQuantity;
     }
 
-    public void setVenueDetail(String venueDetail) {
-        this.venueDetail = venueDetail;
+    public void setSelectedQuantity(int selectedQuantity) {
+        this.selectedQuantity = selectedQuantity;
     }
 
-    public Integer getStartDate() {
-        return startDate;
+    public String getThumbnailApp() {
+        return thumbnailApp;
     }
 
-    public void setStartDate(Integer startDate) {
-        this.startDate = startDate;
+    public void setThumbnailApp(String thumbnailApp) {
+        this.thumbnailApp = thumbnailApp;
     }
 
-    public Integer getEndDate() {
-        return endDate;
+    public String getTimeRange() {
+        return timeRange;
     }
 
-    public void setEndDate(Integer endDate) {
-        this.endDate = endDate;
+    public void setTimeRange(String timeRange) {
+        this.timeRange = timeRange;
     }
 
-    public String getFetchSectionUrl() {
-        return fetchSectionUrl;
+
+    public String getAddress() {
+        return address;
     }
 
-    public void setFetchSectionUrl(String fetchSectionUrl) {
-        this.fetchSectionUrl = fetchSectionUrl;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+
+    public PackageViewModel() {
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeValue(this.productId);
+        dest.writeValue(this.productScheduleId);
+        dest.writeValue(this.productGroupId);
+        dest.writeString(this.providerScheduleId);
+        dest.writeString(this.providerTicketId);
+        dest.writeString(this.thumbnailApp);
+        dest.writeString(this.displayName);
+        dest.writeString(this.description);
+        dest.writeString(this.tnc);
+        dest.writeValue(this.convenienceFee);
+        dest.writeValue(this.mrp);
+        dest.writeValue(this.commission);
+        dest.writeString(this.commissionType);
+        dest.writeValue(this.salesPrice);
+        dest.writeValue(this.sold);
+        dest.writeValue(this.booked);
+        dest.writeValue(this.available);
+        dest.writeValue(this.minQty);
+        dest.writeValue(this.maxQty);
+        dest.writeString(this.providerStatus);
+        dest.writeInt(this.selectedQuantity);
+        dest.writeString(this.timeRange);
+        dest.writeString(this.address);
+        dest.writeValue(this.categoryId);
+        dest.writeParcelable(this.form, flags);
     }
 
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    protected PackageViewModel(Parcel in) {
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.productId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.productScheduleId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.productGroupId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.providerScheduleId = in.readString();
+        this.providerTicketId = in.readString();
+        this.thumbnailApp = in.readString();
+        this.displayName = in.readString();
+        this.description = in.readString();
+        this.tnc = in.readString();
+        this.convenienceFee = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.mrp = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.commission = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.commissionType = in.readString();
+        this.salesPrice = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.sold = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.booked = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.available = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.minQty = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.maxQty = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.providerStatus = in.readString();
+        this.selectedQuantity = in.readInt();
+        this.timeRange = in.readString();
+        this.address = in.readString();
+        this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.form = in.readParcelable(Form.class.getClassLoader());
     }
 
+    public static final Creator<PackageViewModel> CREATOR = new Creator<PackageViewModel>() {
+        @Override
+        public PackageViewModel createFromParcel(Parcel source) {
+            return new PackageViewModel(source);
+        }
+
+        @Override
+        public PackageViewModel[] newArray(int size) {
+            return new PackageViewModel[size];
+        }
+    };
 }

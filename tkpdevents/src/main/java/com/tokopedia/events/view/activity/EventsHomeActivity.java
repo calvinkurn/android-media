@@ -19,6 +19,7 @@ import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
@@ -93,6 +94,7 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
                 .appComponent(getApplicationComponent())
+                .eventModule(new EventModule(this))
                 .build();
     }
 
@@ -293,32 +295,32 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
         return true;
     }
 
-    @Override
-    protected void setupToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.removeAllViews();
-        View view = getLayoutInflater().inflate(R.layout.custom_actionbar_search_view, null);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        view.setLayoutParams(params);
-        TextView tvCari = (TextView) view.findViewById(R.id.tv_cari);
-        final SearchInputView searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
-        searchInputView.setPadding(0,0,0,0);
-        searchInputView.setListener(this);
-        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
-        tvCari.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String searchText = searchInputView.getSearchText();
-                mPresenter.getEventsListBySearch(searchText);
-            }
-        });
-        toolbar.addView(view);
-        if (isLightToolbarThemes()) {
-            setLightToolbarStyle();
-        }
-        setSupportActionBar(toolbar);
-    }
+//    @Override
+//    protected void setupToolbar() {
+//        toolbar = (Toolbar) findViewById(R.id.app_bar);
+//        toolbar.removeAllViews();
+//        View view = getLayoutInflater().inflate(R.layout.custom_actionbar_search_view, null);
+//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        view.setLayoutParams(params);
+//        TextView tvCari = (TextView) view.findViewById(R.id.tv_cari);
+//        final SearchInputView searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
+//        searchInputView.setPadding(0,0,0,0);
+//        searchInputView.setListener(this);
+//        searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+//        tvCari.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String searchText = searchInputView.getSearchText();
+//                mPresenter.getEventsListBySearch(searchText);
+//            }
+//        });
+//        toolbar.addView(view);
+//        if (isLightToolbarThemes()) {
+//            setLightToolbarStyle();
+//        }
+//        setSupportActionBar(toolbar);
+//    }
 
     @Override
     public void onSearchTextChanged(String text) {

@@ -1,84 +1,52 @@
-
 package com.tokopedia.events.view.viewmodel;
 
-public class EventsDetailsViewModel {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    private Integer id;
-    private Integer parentId;
-    private Integer categoryId;
-    private String displayName;
+import com.tokopedia.events.data.entity.response.Form;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class EventsDetailsViewModel implements Parcelable {
+
+
     private String title;
     private String duration;
     private String url;
+    private String timeRange;
+    private String genre;
     private String imageApp;
     private String thumbnailApp;
     private String tnc;
     private String offerText;
-    private String shortDesc;
     private String longRichDesc;
-
-    private String searchTags;
+    private String displayTags;
     private String promotionText;
-    private String autocode;
     private Integer convenienceFee;
     private Integer mrp;
     private Integer salesPrice;
     private Integer seatChartTypeId;
     private Integer hasSeatLayout;
-    private Integer priority;
-    private Integer quantity;
-    private Integer soldQuantity;
-    private Integer sellRate;
     private Integer thumbsUp;
     private Integer thumbsDown;
     private Integer rating;
     private Integer isFeatured;
-    private Integer isPromo;
     private Integer isFoodAvailable;
-    private Integer status;
-    private Integer minStartDate;
-    private Integer maxEndDate;
-    private Integer saleStartDate;
-    private Integer saleEndDate;
-    private String customLabels;
-    private String minStartTime;
-    private String maxEndTime;
-    private String saleStartTime;
-    private String saleEndTime;
+
     private Boolean dateRange;
-    private String cityName;
+    private List<SchedulesViewModel> schedulesViewModels;
 
-    public Integer getId() {
-        return id;
+    public List<Form> getForms() {
+        return forms;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
     }
 
-    public Integer getParentId() {
-        return parentId;
-    }
+    private List<Form> forms;
 
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
 
     public String getTitle() {
         return title;
@@ -136,13 +104,6 @@ public class EventsDetailsViewModel {
         this.offerText = offerText;
     }
 
-    public String getShortDesc() {
-        return shortDesc;
-    }
-
-    public void setShortDesc(String shortDesc) {
-        this.shortDesc = shortDesc;
-    }
 
     public String getLongRichDesc() {
         return longRichDesc;
@@ -152,13 +113,6 @@ public class EventsDetailsViewModel {
         this.longRichDesc = longRichDesc;
     }
 
-    public String getSearchTags() {
-        return searchTags;
-    }
-
-    public void setSearchTags(String searchTags) {
-        this.searchTags = searchTags;
-    }
 
     public String getPromotionText() {
         return promotionText;
@@ -168,13 +122,6 @@ public class EventsDetailsViewModel {
         this.promotionText = promotionText;
     }
 
-    public String getAutocode() {
-        return autocode;
-    }
-
-    public void setAutocode(String autocode) {
-        this.autocode = autocode;
-    }
 
     public Integer getConvenienceFee() {
         return convenienceFee;
@@ -216,36 +163,40 @@ public class EventsDetailsViewModel {
         this.hasSeatLayout = hasSeatLayout;
     }
 
-    public Integer getPriority() {
-        return priority;
+
+    public Integer getRating() {
+        return rating;
     }
 
-    public void setPriority(Integer priority) {
-        this.priority = priority;
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+
+    public Integer getIsFoodAvailable() {
+        return isFoodAvailable;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setIsFoodAvailable(Integer isFoodAvailable) {
+        this.isFoodAvailable = isFoodAvailable;
     }
 
-    public Integer getSoldQuantity() {
-        return soldQuantity;
+
+    public String getTimeRange() {
+        return timeRange;
     }
 
-    public void setSoldQuantity(Integer soldQuantity) {
-        this.soldQuantity = soldQuantity;
+    public void setTimeRange(String timeRange) {
+        this.timeRange = timeRange;
     }
 
-    public Integer getSellRate() {
-        return sellRate;
+
+    public String getGenre() {
+        return genre;
     }
 
-    public void setSellRate(Integer sellRate) {
-        this.sellRate = sellRate;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public Integer getThumbsUp() {
@@ -264,116 +215,12 @@ public class EventsDetailsViewModel {
         this.thumbsDown = thumbsDown;
     }
 
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
     public Integer getIsFeatured() {
         return isFeatured;
     }
 
     public void setIsFeatured(Integer isFeatured) {
         this.isFeatured = isFeatured;
-    }
-
-    public Integer getIsPromo() {
-        return isPromo;
-    }
-
-    public void setIsPromo(Integer isPromo) {
-        this.isPromo = isPromo;
-    }
-
-    public Integer getIsFoodAvailable() {
-        return isFoodAvailable;
-    }
-
-    public void setIsFoodAvailable(Integer isFoodAvailable) {
-        this.isFoodAvailable = isFoodAvailable;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getMinStartDate() {
-        return minStartDate;
-    }
-
-    public void setMinStartDate(Integer minStartDate) {
-        this.minStartDate = minStartDate;
-    }
-
-    public Integer getMaxEndDate() {
-        return maxEndDate;
-    }
-
-    public void setMaxEndDate(Integer maxEndDate) {
-        this.maxEndDate = maxEndDate;
-    }
-
-    public Integer getSaleStartDate() {
-        return saleStartDate;
-    }
-
-    public void setSaleStartDate(Integer saleStartDate) {
-        this.saleStartDate = saleStartDate;
-    }
-
-    public Integer getSaleEndDate() {
-        return saleEndDate;
-    }
-
-    public void setSaleEndDate(Integer saleEndDate) {
-        this.saleEndDate = saleEndDate;
-    }
-
-    public String getCustomLabels() {
-        return customLabels;
-    }
-
-    public void setCustomLabels(String customLabels) {
-        this.customLabels = customLabels;
-    }
-
-    public String getMinStartTime() {
-        return minStartTime;
-    }
-
-    public void setMinStartTime(String minStartTime) {
-        this.minStartTime = minStartTime;
-    }
-
-    public String getMaxEndTime() {
-        return maxEndTime;
-    }
-
-    public void setMaxEndTime(String maxEndTime) {
-        this.maxEndTime = maxEndTime;
-    }
-
-    public String getSaleStartTime() {
-        return saleStartTime;
-    }
-
-    public void setSaleStartTime(String saleStartTime) {
-        this.saleStartTime = saleStartTime;
-    }
-
-    public String getSaleEndTime() {
-        return saleEndTime;
-    }
-
-    public void setSaleEndTime(String saleEndTime) {
-        this.saleEndTime = saleEndTime;
     }
 
     public Boolean getDateRange() {
@@ -384,12 +231,97 @@ public class EventsDetailsViewModel {
         this.dateRange = dateRange;
     }
 
-    public String getCityName() {
-        return cityName;
+    public List<SchedulesViewModel> getSchedulesViewModels() {
+        return schedulesViewModels;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setSchedulesViewModels(List<SchedulesViewModel> schedulesViewModels) {
+        this.schedulesViewModels = schedulesViewModels;
     }
 
-   }
+    public String getDisplayTags() {
+        return displayTags;
+    }
+
+    public void setDisplayTags(String displayTags) {
+        this.displayTags = displayTags;
+    }
+
+    public EventsDetailsViewModel() {
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeString(this.duration);
+        dest.writeString(this.url);
+        dest.writeString(this.timeRange);
+        dest.writeString(this.genre);
+        dest.writeString(this.imageApp);
+        dest.writeString(this.thumbnailApp);
+        dest.writeString(this.tnc);
+        dest.writeString(this.offerText);
+        dest.writeString(this.longRichDesc);
+        dest.writeString(this.displayTags);
+        dest.writeString(this.promotionText);
+        dest.writeValue(this.convenienceFee);
+        dest.writeValue(this.mrp);
+        dest.writeValue(this.salesPrice);
+        dest.writeValue(this.seatChartTypeId);
+        dest.writeValue(this.hasSeatLayout);
+        dest.writeValue(this.thumbsUp);
+        dest.writeValue(this.thumbsDown);
+        dest.writeValue(this.rating);
+        dest.writeValue(this.isFeatured);
+        dest.writeValue(this.isFoodAvailable);
+        dest.writeValue(this.dateRange);
+        dest.writeTypedList(this.schedulesViewModels);
+        dest.writeTypedList(this.forms);
+    }
+
+    protected EventsDetailsViewModel(Parcel in) {
+        this.title = in.readString();
+        this.duration = in.readString();
+        this.url = in.readString();
+        this.timeRange = in.readString();
+        this.genre = in.readString();
+        this.imageApp = in.readString();
+        this.thumbnailApp = in.readString();
+        this.tnc = in.readString();
+        this.offerText = in.readString();
+        this.longRichDesc = in.readString();
+        this.displayTags = in.readString();
+        this.promotionText = in.readString();
+        this.convenienceFee = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.mrp = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.salesPrice = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.seatChartTypeId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.hasSeatLayout = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.thumbsUp = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.thumbsDown = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.rating = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isFeatured = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isFoodAvailable = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.schedulesViewModels = in.createTypedArrayList(SchedulesViewModel.CREATOR);
+        this.forms = in.createTypedArrayList(Form.CREATOR);
+    }
+
+    public static final Creator<EventsDetailsViewModel> CREATOR = new Creator<EventsDetailsViewModel>() {
+        @Override
+        public EventsDetailsViewModel createFromParcel(Parcel source) {
+            return new EventsDetailsViewModel(source);
+        }
+
+        @Override
+        public EventsDetailsViewModel[] newArray(int size) {
+            return new EventsDetailsViewModel[size];
+        }
+    };
+}

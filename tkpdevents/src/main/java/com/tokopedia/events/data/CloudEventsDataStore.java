@@ -1,9 +1,16 @@
 package com.tokopedia.events.data;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.ValidateResponse;
+import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
+import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.data.source.EventsApi;
 
 import rx.Observable;
@@ -43,6 +50,23 @@ public class CloudEventsDataStore implements EventDataStore {
 
     @Override
     public Observable<EventsDetailsEntity> getEventDetails(String url) {
-        return null;
+        return eventsApi.getEventDetails(url);
     }
+
+    @Override
+    public Observable<ValidateResponse> validateShow(JsonObject requestBody) {
+        return eventsApi.validateShow(requestBody);
+    }
+
+    @Override
+    public Observable<VerifyCartResponse> verifyCart(JsonObject requestBody) {
+        return eventsApi.postCartVerify(requestBody,"true");
+    }
+
+    @Override
+    public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
+        return eventsApi.checkoutCart(requestBody);
+    }
+
+
 }

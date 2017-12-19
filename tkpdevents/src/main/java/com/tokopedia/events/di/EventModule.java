@@ -1,5 +1,7 @@
 package com.tokopedia.events.di;
 
+import android.content.Context;
+
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -9,15 +11,19 @@ import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.data.EventRepositoryData;
 import com.tokopedia.events.data.EventsDataStoreFactory;
 import com.tokopedia.events.data.source.EventsApi;
 import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.EventRepository;
+import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
+import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
+import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,8 +38,10 @@ import retrofit2.Retrofit;
 @Module
 public class EventModule {
 
-   public EventModule(){
+    Context thisContext;
 
+    public EventModule(Context context) {
+        thisContext = context;
     }
 
     @Provides
@@ -57,8 +65,8 @@ public class EventModule {
     @Provides
     @EventScope
     GetEventsListRequestUseCase provideGetEventsListRequestUseCase(ThreadExecutor threadExecutor,
-                                                              PostExecutionThread postExecutionThread,
-                                                              EventRepository eventRepository) {
+                                                                   PostExecutionThread postExecutionThread,
+                                                                   EventRepository eventRepository) {
         return new GetEventsListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 
@@ -89,11 +97,12 @@ public class EventModule {
 
     }
 
-    @Provides
+
     @EventScope
-    EventInerceptors provideEventInterCeptor() {
-        //String oAuthString = "Bearer " + SessionHandler.getAccessToken();
-        return new EventInerceptors();
+    @Provides
+    EventInerceptors provideEventInterCeptor(Context context) {
+        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
+        return new EventInerceptors(oAuthString, context);
     }
 
     @Provides
@@ -109,24 +118,56 @@ public class EventModule {
     @Provides
     @EventScope
     GetEventsLocationListRequestUseCase provideGetEventsLocationListRequestUseCase(ThreadExecutor threadExecutor,
-                                                                           PostExecutionThread postExecutionThread,
-                                                                           EventRepository eventRepository) {
+                                                                                   PostExecutionThread postExecutionThread,
+                                                                                   EventRepository eventRepository) {
         return new GetEventsLocationListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 
     @Provides
     @EventScope
     GetEventsListByLocationRequestUseCase provideGetEventsListByLocationRequestUseCase(ThreadExecutor threadExecutor,
-                                                                             PostExecutionThread postExecutionThread,
-                                                                             EventRepository eventRepository) {
+                                                                                       PostExecutionThread postExecutionThread,
+                                                                                       EventRepository eventRepository) {
         return new GetEventsListByLocationRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 
     @Provides
     @EventScope
+    GetEventDetailsRequestUseCase provideGetEventDetailsRequestUseCase(ThreadExecutor threadExecutor,
+                                                                       PostExecutionThread postExecutionThread,
+                                                                       EventRepository eventRepository) {
+        return new GetEventDetailsRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+    }
+
+    @Provides
+    @EventScope
     GetSearchEventsListRequestUseCase provideGetSearchEventsListRequestUseCase(ThreadExecutor threadExecutor,
-                                                                                   PostExecutionThread postExecutionThread,
-                                                                                   EventRepository eventRepository) {
+                                                                               PostExecutionThread postExecutionThread,
+                                                                               EventRepository eventRepository) {
         return new GetSearchEventsListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
+
+    @Provides
+    @EventScope
+    PostValidateShowUseCase providesPostValidateShowUseCase(ThreadExecutor threadExecutor,
+                                                            PostExecutionThread postExecutionThread,
+                                                            EventRepository eventRepository) {
+        return new PostValidateShowUseCase(threadExecutor, postExecutionThread, eventRepository);
+    }
+
+    @Provides
+    @EventScope
+    PostVerifyCartUseCase providesPostVerifyCartUseCase(ThreadExecutor threadExecutor,
+                                                        PostExecutionThread postExecutionThread,
+                                                        EventRepository eventRepository) {
+        return new PostVerifyCartUseCase(threadExecutor, postExecutionThread, eventRepository);
+    }
+
+    @Provides
+    @EventScope
+    Context getActivityContext() {
+        return thisContext;
+    }
+
+
 }

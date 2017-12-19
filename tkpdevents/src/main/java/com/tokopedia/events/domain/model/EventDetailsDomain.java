@@ -1,6 +1,8 @@
 
 package com.tokopedia.events.domain.model;
 
+import com.tokopedia.events.data.entity.response.Form;
+
 import java.util.List;
 
 public class EventDetailsDomain {
@@ -18,6 +20,8 @@ public class EventDetailsDomain {
     private String offerText;
     private String shortDesc;
     private String longRichDesc;
+    private String genre;
+    private String displayTags;
 
     private String searchTags;
     private String promotionText;
@@ -50,6 +54,16 @@ public class EventDetailsDomain {
     private Boolean dateRange;
     private String cityName;
     private List<ScheduleDomain> schedules = null;
+
+    public List<Form> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
+    }
+
+    private List<Form> forms = null;
 
     public Integer getId() {
         return id;
@@ -401,5 +415,21 @@ public class EventDetailsDomain {
 
     public void setSchedules(List<ScheduleDomain> schedules) {
         this.schedules = schedules;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getDisplayTags() {
+        return displayTags;
+    }
+
+    public void setDisplayTags(String displayTags) {
+        this.displayTags = displayTags;
     }
 }

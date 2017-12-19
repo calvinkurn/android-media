@@ -1,10 +1,13 @@
 
 package com.tokopedia.events.data.entity.response;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Form {
+public class Form implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -128,4 +131,52 @@ public class Form {
         this.status = status;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeValue(this.productId);
+        dest.writeString(this.name);
+        dest.writeString(this.title);
+        dest.writeString(this.value);
+        dest.writeString(this.elementType);
+        dest.writeString(this.helpText);
+        dest.writeValue(this.required);
+        dest.writeString(this.validatorRegex);
+        dest.writeString(this.errorMessage);
+        dest.writeValue(this.status);
+    }
+
+    public Form() {
+    }
+
+    protected Form(Parcel in) {
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.productId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.name = in.readString();
+        this.title = in.readString();
+        this.value = in.readString();
+        this.elementType = in.readString();
+        this.helpText = in.readString();
+        this.required = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.validatorRegex = in.readString();
+        this.errorMessage = in.readString();
+        this.status = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Form> CREATOR = new Parcelable.Creator<Form>() {
+        @Override
+        public Form createFromParcel(Parcel source) {
+            return new Form(source);
+        }
+
+        @Override
+        public Form[] newArray(int size) {
+            return new Form[size];
+        }
+    };
 }

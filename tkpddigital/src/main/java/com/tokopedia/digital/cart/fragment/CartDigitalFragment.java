@@ -61,6 +61,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter.PAYMENT_SUCCESS;
+
 /**
  * @author anggaprasetiyo on 2/21/17.
  */
@@ -696,7 +698,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                    getActivity().setResult(PAYMENT_SUCCESS);
                     closeView();
                     break;
                 case TopPayActivity.PAYMENT_FAILED:

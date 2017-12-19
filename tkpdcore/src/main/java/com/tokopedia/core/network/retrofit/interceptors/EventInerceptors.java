@@ -1,11 +1,14 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
+import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,10 +36,14 @@ public class EventInerceptors extends TkpdAuthInterceptor {
     private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
     private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
     private String authorizationString;
+    private Context mContext;
 
-    public EventInerceptors(){
+    public EventInerceptors(String oAuth,Context context) {
+        this.authorizationString = oAuth;
+        mContext = context;
 
     }
+
 
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
@@ -121,5 +128,38 @@ public class EventInerceptors extends TkpdAuthInterceptor {
         } catch (Error e) {
             throw new UnknownHostException("tidak ada koneksi internet");
         }
+    }
+
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        String chainURL = chain.request().url().url().toString();
+        if (chainURL.equals(TkpdBaseURL.EVENTS_DOMAIN+"v1/api/expresscart/verify?book=true")
+                ||chainURL.equals(TkpdBaseURL.EVENTS_DOMAIN+"v1/api/expresscart/checkout")) {
+            final Request originRequest = chain.request();
+            Request.Builder newRequest = chain.request().newBuilder();
+
+            generateHmacAuthRequest(originRequest, newRequest);
+            newRequest.removeHeader("Authorization")
+                    .addHeader("Authorization", authorizationString)
+                    .addHeader("Tkpd-UserId", SessionHandler.getLoginID(mContext));
+
+            final Request finalRequest = newRequest.build();
+            Response response = getResponse(chain, finalRequest);
+
+            if (isNeedRelogin(response)) {
+                doRelogin();
+                response = getResponse(chain, finalRequest);
+            }
+
+            if (!response.isSuccessful()) {
+                throwChainProcessCauseHttpError(response);
+            }
+
+            String bodyResponse = response.body().string();
+            checkResponse(bodyResponse, response);
+
+            return createNewResponse(response, bodyResponse);
+        } else
+            return super.intercept(chain);
     }
 }

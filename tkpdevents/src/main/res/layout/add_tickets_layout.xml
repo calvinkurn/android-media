@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/margin_default"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="@dimen/margin_default"
     android:layout_marginTop="@dimen/margin_default"
     android:orientation="horizontal"
+    android:background="@color/white"
     android:weightSum="2">
 
     <LinearLayout
@@ -20,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_default"
             android:text="FIRST CLASS"
-            android:textColor="@color/grey_800"
+            android:textColor="@color/black_38"
             android:textSize="18sp" />
 
         <TextView
@@ -29,14 +30,21 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_default"
             android:text="@string/rp_5980000"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="#ff5722" />
 
         <TextView
             android:id="@+id/ticket_sale_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_default"
+            android:textColor="@color/black_38"
             android:text="Rp 170000" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/black_38"
+            />
 
     </LinearLayout>
 
@@ -44,39 +52,40 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginStart="@dimen/margin_default"
         android:layout_weight="1"
+        android:orientation="horizontal"
         android:gravity="center">
 
         <ImageButton
             android:id="@+id/btn_decrement"
-            android:layout_width="@dimen/icon_size_large"
-            android:layout_height="@dimen/icon_size_large"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginEnd="@dimen/margin_default"
-            android:background="@android:color/transparent"
+            android:background="#00000000"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_remove_circle_outline_black_24dp"
-            android:tint="@color/colorPrimary" />
+            android:src="@drawable/ic_minus"
+            android:tint="#42b549" />
 
         <TextView
             android:id="@+id/tv_ticket_cnt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:gravity="center"
             android:text="0"
-            android:textColor="@android:color/black"
+            android:textColor="@color/black_38"
             android:textSize="20sp" />
 
         <ImageButton
             android:id="@+id/btn_increment"
-            android:layout_width="@dimen/icon_size_large"
-            android:layout_height="@dimen/icon_size_large"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginStart="@dimen/margin_default"
-            android:background="@android:color/transparent"
+            android:background="#00000000"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_add_circle_outline_black_24dp"
-            android:tint="@color/colorPrimary" />
+            android:src="@drawable/ic_plus"
+            android:tint="#42b549" />
     </LinearLayout>
 </LinearLayout>

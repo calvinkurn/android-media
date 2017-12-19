@@ -1,0 +1,39 @@
+package com.tokopedia.events.view.contractor;
+
+import android.app.Activity;
+import android.content.Intent;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.CustomerPresenter;
+import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.events.view.utils.ImageTextViewHolder;
+import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.events.view.viewmodel.PackageViewModel;
+
+/**
+ * Created by pranaymohapatra on 28/11/17.
+ */
+
+public class EventReviewTicketsContractor {
+
+    public interface EventReviewTicketsView extends CustomerView {
+        void showMessage(String message);
+
+        Activity getActivity();
+
+        void navigateToActivityRequest(Intent intent, int requestCode);
+
+        void renderFromPackageVM(PackageViewModel packageViewModel);
+
+        RequestParams getParams();
+    }
+
+    public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
+
+        void initialize();
+
+        void onDestroy();
+
+        void proceedToPayment();
+    }
+}

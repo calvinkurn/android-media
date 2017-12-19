@@ -4,6 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 
 import rx.Observable;
@@ -27,6 +29,10 @@ public class GetEventDetailsRequestUseCase extends UseCase<EventDetailsDomain> {
     }
 
     public void setUrl(String url){
-        this.url=url;
+        String substr = url.substring(0,4);
+        if(!substr.equals("http"))
+           this.url= TkpdBaseURL.EVENTS_DOMAIN+EventsUrl.EVENT_DETAIL+"/"+url;
+        else
+            this.url=url;
     }
 }

@@ -149,6 +149,13 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 CategoryItemsViewModel.setSalesPrice(categoryEntity.getSalesPrice());
                 CategoryItemsViewModel.setMinStartTime(categoryEntity.getMinStartTime());
                 CategoryItemsViewModel.setCityName(categoryEntity.getCityName());
+                CategoryItemsViewModel.setMinStartDate(categoryEntity.getMinStartDate());
+                CategoryItemsViewModel.setMaxEndDate(categoryEntity.getMaxEndDate());
+                CategoryItemsViewModel.setLongRichDesc(categoryEntity.getLongRichDesc());
+                CategoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
+                CategoryItemsViewModel.setTnc(categoryEntity.getTnc());
+                CategoryItemsViewModel.setHasSeatLayout(categoryEntity.getHasSeatLayout());
+                CategoryItemsViewModel.setUrl(categoryEntity.getUrl());
                 categoryItemsViewModelList.add(CategoryItemsViewModel);
             }
         }

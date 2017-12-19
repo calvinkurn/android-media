@@ -15,6 +15,7 @@ import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
+import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.adapter.EventLocationAdapter;
 import com.tokopedia.events.view.contractor.EventsLocationContract;
 import com.tokopedia.events.view.presenter.EventLocationsPresenter;
@@ -112,6 +113,7 @@ public class EventLocationActivity extends TActivity implements HasComponent<Eve
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
                 .appComponent(getApplicationComponent())
+                .eventModule(new EventModule(this))
                 .build();
     }
 

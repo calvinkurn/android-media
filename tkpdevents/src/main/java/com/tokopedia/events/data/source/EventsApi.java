@@ -1,12 +1,24 @@
 package com.tokopedia.events.data.source;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
+import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.ValidateResponse;
+import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
+import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 
 import java.util.Map;
 
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
@@ -30,4 +42,20 @@ public interface EventsApi {
 
     @GET()
     Observable<EventResponseEntity> getSearchEvents(@Url String url);
+
+    @GET()
+    Observable<EventsDetailsEntity> getEventDetails(@Url String url);
+
+    @POST(EventsUrl.EVENTS_VERIFY)
+    @Headers({"Content-Type: application/json"})
+    Observable<VerifyCartResponse> postCartVerify(@Body JsonObject requestBody, @Query("book") String value);
+
+    @POST(EventsUrl.EVENT_VALIDATE)
+    @Headers({"Content-Type: application/json"})
+    Observable<ValidateResponse> validateShow(@Body JsonObject requestBody);
+
+    @POST(EventsUrl.EVENTS_CHECKOUT)
+    @Headers({"Content-Type: application/json"})
+    Observable<CheckoutResponse> checkoutCart(@Body JsonObject requestBody);
+
 }

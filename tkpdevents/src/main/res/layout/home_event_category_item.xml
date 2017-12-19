@@ -5,7 +5,8 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
-    android:layout_margin="5dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
     card_view:cardCornerRadius="2dp">
 
     <LinearLayout
@@ -16,8 +17,8 @@
         <ImageView
             android:id="@+id/img_event"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:scaleType="center"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/background" />
 
 
@@ -38,27 +39,28 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/font_medium" />
 
-            <TextView
-                android:id="@+id/btn_bookticket"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/linearLayout2"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/rounded_filled_theme_bttn_orange"
-                android:paddingBottom="@dimen/padding_vs"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
-                android:paddingTop="@dimen/padding_vs"
-                android:text="Beli Ticket"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_small" />
+            <!--<TextView-->
+                <!--android:id="@+id/btn_bookticket"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignBottom="@+id/linearLayout2"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:background="@drawable/rounded_filled_theme_bttn_orange"-->
+                <!--android:paddingBottom="@dimen/padding_vs"-->
+                <!--android:paddingLeft="@dimen/padding_med"-->
+                <!--android:paddingRight="@dimen/padding_med"-->
+                <!--android:paddingTop="@dimen/padding_vs"-->
+                <!--android:text="Beli Ticket"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:textSize="@dimen/font_small" />-->
 
             <TextView
                 android:id="@+id/tv_event_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/place_layout"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
                 android:padding="@dimen/padding_small"
                 android:text="Rp 552.00"
                 android:textColor="@color/green_500"

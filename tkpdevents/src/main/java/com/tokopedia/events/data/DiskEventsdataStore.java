@@ -1,9 +1,15 @@
 package com.tokopedia.events.data;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.ValidateResponse;
+import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
+import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 
 import rx.Observable;
 
@@ -37,4 +43,21 @@ public class DiskEventsdataStore implements EventDataStore {
     public Observable<EventsDetailsEntity> getEventDetails(String url) {
         return null;
     }
+
+    @Override
+    public Observable<ValidateResponse> validateShow(JsonObject requestBody) {
+        return null;
+    }
+
+    @Override
+    public Observable<VerifyCartResponse> verifyCart(JsonObject requestBody) {
+        return null;
+    }
+
+    @Override
+    public Observable<CheckoutResponse> checkoutCart(JsonObject requestBody) {
+        return null;
+    }
+
+
 }
