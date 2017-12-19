@@ -71,7 +71,6 @@ public class FreeReturnView extends BaseView<FreeReturnData, DetailResCenterFrag
                     listener.setOnFreeReturnClicked();
                 }
             });
-        } else
-            setVisibility(GONE);
+        } else setVisibility(GONE);
     }
 }

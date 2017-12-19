@@ -98,8 +98,8 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
             } else if (currentStepStatus == STEP_AFTER_CURRENT) {
                 holder.ivIndicatorCircle.setVisibility(View.VISIBLE);
                 setTextStyle(holder.tvAction, false);
-                holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_next));
-                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_dotted));
+                holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_dotted));
+                holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_next));
                 holder.ivIndicatorArrow.setVisibility(nextStep == null ? View.GONE : View.VISIBLE);
             }
         }

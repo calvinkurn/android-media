@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -208,7 +207,6 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     public void successEditSolution(String message) {
         hideLoading();
-//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 

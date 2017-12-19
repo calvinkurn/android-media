@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:context="http://schemas.android.com/tools"
     android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_small"
     android:paddingTop="@dimen/padding_small"
@@ -75,7 +76,7 @@
             android:textIsSelectable="true"
             android:paddingBottom="@dimen/padding_small"
             android:gravity="center_vertical"
-            android:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
+            context:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
             android:textColor="@color/black_70"
             android:textSize="@dimen/fontvs"
             />
