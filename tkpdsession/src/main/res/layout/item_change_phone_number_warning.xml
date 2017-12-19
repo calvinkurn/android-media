@@ -25,6 +25,7 @@
             android:lineSpacingExtra="7sp"
             tools:text="Dana dari Tokocash sebelumnya tidak dapat dipindahkan ke Tokocash dengan nomor yang baru.*"
             android:layout_marginBottom="7sp"
+            android:id="@+id/warning"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -36,6 +37,7 @@
             android:lineSpacingExtra="7sp"
             tools:text="Disarankan untuk membelanjakan seluruh dana TokoCash terlebih dahulu, atau tetap login TokoCash dengan nomor lama."
             android:layout_marginBottom="7sp"
+            android:id="@+id/suggestion"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -46,12 +48,14 @@
             android:textColor="#4c000000"
             android:lineSpacingExtra="5sp"
             tools:text="*Pemindahan dana hanya bisa dilakukan untuk kasus-kasus tertentu"
+            android:id="@+id/note"
             />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/separator_color"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:id="@+id/separator"/>
     </LinearLayout>
 </LinearLayout>
