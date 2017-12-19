@@ -128,7 +128,7 @@
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/fl_button"
-            android:background="@color/grey"
+            android:background="@color/black_12"
             />
 
     </RelativeLayout>

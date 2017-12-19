@@ -72,6 +72,8 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
 
     @Override
     public void renderData(@NonNull DetailData detailData) {
+        btnGetHelp.setVisibility(GONE);
+        timeTickerView.setVisibility(GONE);
         long duration = getDuration(detailData.getResponseDeadline());
         if (duration > 0 && !MethodChecker.isTimezoneNotAutomatic()) {
             setVisibility(VISIBLE);
