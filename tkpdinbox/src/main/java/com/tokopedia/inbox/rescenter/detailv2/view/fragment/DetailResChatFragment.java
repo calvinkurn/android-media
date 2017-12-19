@@ -477,7 +477,7 @@ public class DetailResChatFragment
         return new ConversationDomain(
                 0,
                 null,
-                message,
+                message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
                 getConversationCreateTime(),
@@ -493,7 +493,7 @@ public class DetailResChatFragment
         return new ConversationDomain(
                 0,
                 null,
-                message,
+                message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
                 getConversationCreateTime(),
@@ -508,7 +508,7 @@ public class DetailResChatFragment
     private ConversationCreateTimeDomain getConversationCreateTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_RESO);
-        return new ConversationCreateTimeDomain(format.format(calendar.getTime()) + "WIB", "");
+        return new ConversationCreateTimeDomain(format.format(calendar.getTime()) + " WIB", "");
     }
 
     private List<ConversationAttachmentDomain> getConversationAttachmentTemp(List<AttachmentViewModel> attachmentList) {
