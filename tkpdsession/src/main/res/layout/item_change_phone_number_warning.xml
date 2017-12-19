@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_warning_triangle_yellow"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-medium"
+            android:textStyle="normal"
+            android:textColor="@color/black_70"
+            android:lineSpacingExtra="7sp"
+            tools:text="Dana dari Tokocash sebelumnya tidak dapat dipindahkan ke Tokocash dengan nomor yang baru.*"
+            android:layout_marginBottom="7sp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_54"
+            android:lineSpacingExtra="7sp"
+            tools:text="Disarankan untuk membelanjakan seluruh dana TokoCash terlebih dahulu, atau tetap login TokoCash dengan nomor lama."
+            android:layout_marginBottom="7sp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="italic"
+            android:textColor="#4c000000"
+            android:lineSpacingExtra="5sp"
+            tools:text="*Pemindahan dana hanya bisa dilakukan untuk kasus-kasus tertentu"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/separator_color"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+</LinearLayout>

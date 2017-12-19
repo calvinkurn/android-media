@@ -108,6 +108,7 @@ dependencies {
     compile getTkpdCore()
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     provided rootProject.ext.miscDependencies.javaxAnnotation

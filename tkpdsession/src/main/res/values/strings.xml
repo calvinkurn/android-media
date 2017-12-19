@@ -83,4 +83,9 @@
     <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
+
+    <!-- Change Phone Number strings -->
+    <string name="you_have">Anda memiliki:</string>
+    <string name="tokopedia_balance">Saldo Tokopedia</string>
+    <string name="if_you_change_phone_number_then">Apabila terjadi perubahan nomor ponsel maka:</string>
 </resources>

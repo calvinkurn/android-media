@@ -21,4 +21,7 @@
         <item>@color/green_90</item>
         <item>@color/green_100</item>
     </array>
+
+    <color name="grey_background">#f3f3f3</color>
+    <color name="separator_color">#e0e0e0</color>
 </resources>
