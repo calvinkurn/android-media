@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -69,8 +71,15 @@ public class DetailResChatActivity
         Intent destinationIntent = new Intent(context, DetailResChatActivity.class);
         String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
         destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
-        destinationIntent.putExtra(PARAM_USER_NAME, MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")));
-        destinationIntent.putExtra(PARAM_SHOP_NAME, MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")));
+        Spanned userName =  MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,""));
+        Spanned shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,""));
+        if (TextUtils.isEmpty(shopName.toString())) {
+            destinationIntent.putExtra(PARAM_USER_NAME, userName);
+            destinationIntent.putExtra(PARAM_IS_SELLER, false);
+        } else {
+            destinationIntent.putExtra(PARAM_SHOP_NAME, shopName);
+            destinationIntent.putExtra(PARAM_IS_SELLER,true);
+        }
         destinationIntent.putExtras(bundle);
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(destinationIntent);
