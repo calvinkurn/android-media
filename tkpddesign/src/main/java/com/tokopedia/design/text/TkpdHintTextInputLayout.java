@@ -38,6 +38,8 @@ import android.widget.TextView;
 import com.tokopedia.design.R;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 
+import java.util.Locale;
+
 public class TkpdHintTextInputLayout extends LinearLayout {
 
     private static final int INVALID_MAX_LENGTH = -1;
@@ -91,6 +93,8 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     private boolean mSuccessEnabled;
     private int mSuccessTextAppearance;
     private CharSequence mHelperText;
+
+    private int mPrefixLength;
 
     public TkpdHintTextInputLayout(Context context) {
         super(context);
@@ -218,6 +222,11 @@ public class TkpdHintTextInputLayout extends LinearLayout {
             mDisabledHintTextColor = a.getColorStateList(R.styleable.TextInputLayoutv2_disabledTextColorLabel);
         } else if (hasNormalValue) {
             mDisabledHintTextColor = mDefaultHintTextColor;
+        }
+        String prefixString = a.getString(R.styleable.TextInputLayoutv2_prefixString);
+        mPrefixLength = prefixString == null ? 0 : prefixString.length();
+        if (mCounterEnabled && mPrefixLength > 0) {
+            setCounterMaxLength(mCounterMaxLength + mPrefixLength);
         }
         a.recycle();
 
@@ -692,14 +701,36 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         }
     }
 
-    private void updateCounter(){
+    public boolean isCounterEnabled() {
+        return mCounterEnabled;
+    }
+
+    public int getCounterMaxLength() {
+        return mCounterMaxLength;
+    }
+
+    public void setCounterMaxLength(int maxLength) {
+        if (mCounterMaxLength != maxLength) {
+            if (maxLength > 0) {
+                mCounterMaxLength = maxLength;
+            } else {
+                mCounterMaxLength = INVALID_MAX_LENGTH;
+            }
+            if (mCounterEnabled) {
+                updateCounter();
+            }
+        }
+    }
+
+    private void updateCounter() {
         int length = 0;
         if (mEditText != null && !TextUtils.isEmpty(mEditText.getText())) {
             length = mEditText.getText().length();
         }
         boolean wasCounterOverflowed = mCounterOverflowed;
+        int currentLength = length > mPrefixLength ? length - mPrefixLength : length;
         if (mCounterMaxLength == INVALID_MAX_LENGTH) {
-            mTvCounter.setText(String.valueOf(length));
+            mTvCounter.setText(String.valueOf(currentLength - mPrefixLength));
             mCounterOverflowed = false;
         } else {
             mCounterOverflowed = length > mCounterMaxLength;
@@ -707,8 +738,8 @@ public class TkpdHintTextInputLayout extends LinearLayout {
                 TextViewCompat.setTextAppearance(mTvCounter, mCounterOverflowed
                         ? mCounterOverflowTextAppearance : mCounterTextAppearance);
             }
-            mTvCounter.setText(getContext().getString(R.string.counter_pattern,
-                    length, mCounterMaxLength));
+            mTvCounter.setText(String.format(Locale.US, "%1$d / %2$d",
+                    currentLength, mCounterMaxLength - mPrefixLength));
         }
         if (mEditText != null && wasCounterOverflowed != mCounterOverflowed) {
             updateLabelState(false);
