@@ -115,7 +115,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
 
     private void setIndicator(AddressViewHolder holder, HistoryAddressViewItem item, int position) {
-        holder.lineIndicator.setVisibility(position == (getArraylist().size() - 1) ?
+        holder.lineIndicator.setVisibility(position == (arraylist.size() - 1) ?
                         View.GONE : View.VISIBLE
         );
         if (isFinished) {

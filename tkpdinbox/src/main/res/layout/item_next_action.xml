@@ -40,8 +40,7 @@
             android:layout_below="@id/fl_icon"
             android:paddingRight="2dp"
             android:layout_height="match_parent"
-            android:tint="@color/black"
-            context:src="@drawable/arrow_down"/>
+            android:tint="@color/black"/>
     </RelativeLayout>
 
     <LinearLayout
