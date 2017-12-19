@@ -37,9 +37,9 @@ public interface FlightOrderListContract {
 
         String getSelectedFilter();
 
-        void showErrorGetOrderOnFilterChanged(String message);
+        void showErrorGetOrderOnFilterChanged(Throwable t);
 
-        void showErrorGetInitialOrders(String message);
+        void showErrorGetInitialOrders(Throwable t);
 
         void disableSwipeRefresh();
 
