@@ -77,10 +77,10 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements Ha
     protected void onResume() {
         super.onResume();
         //TODO uncomment this, bypass for testing purpose
-        if (!SessionHandler.isMsisdnVerified()) {
-            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
-            startActivity(intent);
-        }
+//        if (!SessionHandler.isMsisdnVerified()) {
+//            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
+//            startActivity(intent);
+//        }
     }
 
     private void updateFragmentLogistic(int districtCode) {
