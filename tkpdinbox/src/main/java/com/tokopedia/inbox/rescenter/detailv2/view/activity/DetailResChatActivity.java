@@ -38,7 +38,7 @@ public class DetailResChatActivity
     public static final String PARAM_USER_NAME = "buyerName";
     public static final String PARAM_IS_SELLER = "is_seller";
 
-    public static final String PARAM_APPLINK_SELLER = "sellerName";
+    public static final String PARAM_APPLINK_SELLER = "shopName";
     public static final String PARAM_APPLINK_BUYER = "buyerName";
 
     public static final int REQUEST_GO_DETAIL = 8888;
@@ -71,8 +71,8 @@ public class DetailResChatActivity
         Intent destinationIntent = new Intent(context, DetailResChatActivity.class);
         String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
         destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
-        Spanned userName =  MethodChecker.fromHtml(MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")).toString());
-        Spanned shopName = MethodChecker.fromHtml(MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")).toString());
+        String userName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")).toString().replaceAll("%20", "");
+        String shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")).toString().replaceAll("%20", "");
         if (TextUtils.isEmpty(shopName.toString())) {
             destinationIntent.putExtra(PARAM_USER_NAME, userName);
             destinationIntent.putExtra(PARAM_IS_SELLER, true);
