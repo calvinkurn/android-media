@@ -21,8 +21,6 @@ public interface IDigitalWidgetInteractor {
 
     void getOperatorAndProductsFromPrefix(Subscriber<Pair<Operator, List<Product>>> subscriber, int categoryId, String prefix);
 
-    void getOperatorAndProductsFromPrefix2(Subscriber<Pair<Operator, List<Product>>> subscriber, int categoryId, String prefix);
-
     void getOperatorAndProductsByOperatorId(Subscriber<Pair<Operator, List<Product>>> subscriber,
                                                   int categoryId, String operatorId);
 

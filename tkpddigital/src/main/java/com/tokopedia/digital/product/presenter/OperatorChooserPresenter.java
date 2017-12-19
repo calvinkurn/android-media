@@ -23,7 +23,7 @@ public class OperatorChooserPresenter implements IOperatorChooserPresenter {
     }
 
     public void getOperatorsByCategoryId(String categoryId) {
-        widgetInteractor.getOperatorsFromCategory(new Subscriber<List<Operator>>() {
+        widgetInteractor.getOperatorsByCategoryId(new Subscriber<List<Operator>>() {
             @Override
             public void onCompleted() {
 

@@ -186,12 +186,11 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     public void showOperators(List<Operator> operators) {
         this.operators.clear();
         this.operators.addAll(operators);
+        operatorChooserAdapter.notifyDataSetChanged();
     }
 
     public interface ActionListener {
         void onOperatorItemSelected(Operator operator);
-
-        void onOperatortItemChooserCanceled();
     }
 
     private void fiterData(String query) {

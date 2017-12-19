@@ -133,7 +133,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
     @Override
     public void getOperatorAndProductsByPrefix(String phonePrefix, int categoryId, boolean validatePrefix) {
-        widgetInteractor.getOperatorAndProductsFromPrefix2(operatorAndProductsSubscriber(), categoryId,
+        widgetInteractor.getOperatorAndProductsFromPrefix(operatorAndProductsSubscriber(), categoryId,
                 phonePrefix);
     }
 

@@ -120,7 +120,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !((fragment instanceof DigitalChooserOperatorFragment)
                 || (fragment instanceof DigitalChooserProductFragment))) {
-            if (!productListData.isEmpty() && categoryId == null) {
+            if (categoryId == null && !productListData.isEmpty()) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         DigitalChooserProductFragment.newInstance(
                                 productListData, productStyleView

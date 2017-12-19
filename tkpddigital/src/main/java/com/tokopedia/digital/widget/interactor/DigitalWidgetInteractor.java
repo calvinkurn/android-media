@@ -66,41 +66,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     public void getOperatorAndProductsFromPrefix(Subscriber<Pair<Operator, List<Product>>> subscriber,
                                                  final int categoryId, String prefix) {
         compositeSubscription.add(
-                Observable.zip(
-                        getOperatorByPrefix(prefix),
-                        digitalWidgetRepository.getObservableProducts(useCache)
-                                .map(productMapper)
-                                .doOnNext(
-                                        new Action1<List<Product>>() {
-                                            @Override
-                                            public void call(List<Product> products) {
-                                                if (products.size() == 0)
-                                                    throw new RuntimeException("kosong");
-                                            }
-                                        }
-                                ),
-                        new Func2<List<Operator>, List<Product>, Pair<Operator, List<Product>>>() {
-                            @Override
-                            public Pair<Operator, List<Product>> call(List<Operator> operators, List<Product> products) {
-                                List<Product> filteredProducts = Observable.from(products)
-                                        .filter(isProductValidToOperator(categoryId, operators.get(0).getId()))
-                                        .toList()
-                                        .toBlocking()
-                                        .single();
-
-                                return Pair.create(operators.get(0), filteredProducts);
-                            }
-                        })
-                        .unsubscribeOn(Schedulers.from(threadExecutor))
-                        .subscribeOn(Schedulers.from(threadExecutor))
-                        .observeOn(postExecutionThread.getScheduler())
-                        .subscribe(subscriber));
-    }
-
-    @Override
-    public void getOperatorAndProductsFromPrefix2(Subscriber<Pair<Operator, List<Product>>> subscriber,
-                                                  final int categoryId, String prefix) {
-        compositeSubscription.add(
                 getOperatorByPrefix(prefix)
                         .flatMap(new Func1<List<Operator>, Observable<Pair<Operator, List<Product>>>>() {
                             @Override

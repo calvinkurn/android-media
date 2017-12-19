@@ -37,7 +37,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -87,9 +86,7 @@ import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OperatorPassData;
 import com.tokopedia.digital.product.model.OrderClientNumber;
-import com.tokopedia.digital.product.model.PassDataSingleton;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.PulsaBalance;
 import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
