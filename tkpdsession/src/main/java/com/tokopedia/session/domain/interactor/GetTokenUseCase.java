@@ -69,4 +69,12 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
         params.putString(REDIRECT_URI, redirectUri);
         return params;
     }
+
+    public static RequestParams getParamLogin(String email, String password) {
+        RequestParams params = RequestParams.create();
+        params.putString(GRANT_TYPE, GRANT_PASSWORD);
+        params.putString(PASSWORD, password);
+        params.putString(USER_NAME, email);
+        return params;
+    }
 }

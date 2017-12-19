@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -15,6 +16,7 @@ import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
 import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
+
 import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
 import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
@@ -28,9 +30,12 @@ import com.tokopedia.session.data.source.CloudDiscoverDataSource;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
+import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
+import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 
 import javax.inject.Named;
@@ -51,6 +56,7 @@ SessionModule {
     private static final String BASIC_SERVICE = "BASIC_SERVICE";
     private static final String BEARER_SERVICE = "BEARER_SERVICE";
     private static final String WS_SERVICE = "WS_SERVICE";
+    public static final String LOGIN_CACHE = "LOGIN_CACHE";
 
     @SessionScope
     @Provides
@@ -164,6 +170,14 @@ SessionModule {
 
     @SessionScope
     @Provides
+    GetUserInfoUseCase provideGetUserInfoUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 ProfileRepository profileRepository) {
+        return new GetUserInfoUseCase(threadExecutor, postExecutionThread, profileRepository);
+    }
+
+    @SessionScope
+    @Provides
     MakeLoginDataSource provideMakeLoginDataSource(@Named(WS_SERVICE) AccountsService accountsService,
                                                    MakeLoginMapper makeLoginMapper,
                                                    SessionHandler sessionHandler) {
@@ -202,4 +216,12 @@ SessionModule {
                                                              CreatePasswordMapper createPasswordMapper) {
         return new CreatePasswordDataSource(accountsService, createPasswordMapper);
     }
+
+    @SessionScope
+    @Provides
+    @Named(LOGIN_CACHE)
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
+        return new LocalCacheHandler(context, LOGIN_CACHE);
+    }
+
 }

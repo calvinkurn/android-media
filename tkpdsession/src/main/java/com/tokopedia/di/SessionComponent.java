@@ -7,6 +7,7 @@ import com.tokopedia.otp.securityquestion.view.fragment.SecurityQuestionFragment
 import com.tokopedia.otp.tokocashotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.VerificationFragment;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
+import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.LoginPhoneNumberFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTokocashFragment;
@@ -22,6 +23,8 @@ import dagger.Component;
 @SessionScope
 @Component(modules = SessionModule.class, dependencies = AppComponent.class)
 public interface SessionComponent {
+
+    void inject(LoginFragment loginFragment);
 
     void inject(RegisterInitialFragment registerInitialFragment);
 

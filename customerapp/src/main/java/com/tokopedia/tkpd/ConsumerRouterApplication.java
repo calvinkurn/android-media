@@ -91,6 +91,7 @@ import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -521,7 +522,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginIntent(Context context) {
-        Intent intent = Login.getCallingIntent(context);
+        Intent intent = LoginActivity.getCallingIntent(context);
         return intent;
     }
 

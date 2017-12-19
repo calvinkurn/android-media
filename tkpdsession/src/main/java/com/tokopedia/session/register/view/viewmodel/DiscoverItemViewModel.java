@@ -11,6 +11,7 @@ public class DiscoverItemViewModel {
     private String url;
     private String image;
     private String color;
+    private int imageResource;
 
     public DiscoverItemViewModel(String id, String name, String url,
                                  String image, String color) {
@@ -19,6 +20,7 @@ public class DiscoverItemViewModel {
         this.url = url;
         this.image = image;
         this.color = color;
+        this.imageResource = 0;
     }
 
     public String getId() {
@@ -39,5 +41,13 @@ public class DiscoverItemViewModel {
 
     public String getColor() {
         return color;
+    }
+
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
+    }
+
+    public int getImageResource() {
+        return imageResource;
     }
 }

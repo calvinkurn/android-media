@@ -97,6 +97,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
+        <activity
+            android:name=".login.loginemail.view.activity.LoginActivity"
+            android:label="@string/login"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false"/>

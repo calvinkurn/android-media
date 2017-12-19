@@ -19,7 +19,6 @@ public class GetUserInfoUseCase extends UseCase<GetUserInfoDomainModel> {
 
     private final ProfileRepository profileRepository;
 
-    @Inject
     public GetUserInfoUseCase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
                               ProfileRepository profileRepository) {
