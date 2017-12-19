@@ -37,6 +37,10 @@ import com.tokopedia.core.util.SessionHandler;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
+import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 
 import rx.Subscriber;
@@ -632,8 +636,44 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
             app_installed = true;
         } catch (PackageManager.NameNotFoundException e) {
             app_installed = false;
+        } catch (Exception ignored) {
+            app_installed = appInstalledOrNotV2(uri);
         }
         return app_installed;
+    }
+
+    private static boolean appInstalledOrNotV2(final String uri) {
+        BufferedReader bufferedReader = null;
+        boolean app_installed = false;
+        try {
+            Process process = Runtime.getRuntime().exec("pm list packages");
+            bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                final String packageName = line.substring(line.indexOf(':') + 1);
+                if (uri != null && packageName.toLowerCase().contains(uri.toLowerCase())) {
+                    app_installed = true;
+                    break;
+                }
+            }
+            closeQuietly(bufferedReader);
+            process.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeQuietly(bufferedReader);
+        }
+        return app_installed;
+    }
+
+    private static void closeQuietly(final Closeable closeable) {
+        if (closeable == null)
+            return;
+        try {
+            closeable.close();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
