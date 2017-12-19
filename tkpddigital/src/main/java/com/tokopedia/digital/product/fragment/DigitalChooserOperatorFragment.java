@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -57,6 +58,8 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     RecyclerView rvOperatorList;
     @BindView(R2.id.field_search)
     EditText fieldSearch;
+    @BindView(R2.id.pb_main_loading)
+    ProgressBar pbMainLoading;
 
     private CompositeSubscription compositeSubscription;
 
@@ -194,6 +197,16 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
         } else {
             fieldSearch.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void showInitialProgressLoading() {
+        pbMainLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideInitialProgressLoading() {
+        pbMainLoading.setVisibility(View.GONE);
     }
 
     private void fiterData(String query) {

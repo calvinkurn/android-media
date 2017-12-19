@@ -24,6 +24,8 @@ public class OperatorChooserPresenter implements IOperatorChooserPresenter {
 
     @Override
     public void getOperatorsByCategoryId(String categoryId) {
+        view.showInitialProgressLoading();
+
         widgetInteractor.getOperatorsByCategoryId(new Subscriber<List<Operator>>() {
             @Override
             public void onCompleted() {
@@ -37,6 +39,8 @@ public class OperatorChooserPresenter implements IOperatorChooserPresenter {
 
             @Override
             public void onNext(List<Operator> operators) {
+                view.hideInitialProgressLoading();
+
                 if (!operators.isEmpty()) {
                     view.showOperators(operators);
                 }

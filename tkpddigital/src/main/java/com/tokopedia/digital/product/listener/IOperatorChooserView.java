@@ -1,5 +1,7 @@
 package com.tokopedia.digital.product.listener;
 
+import android.view.View;
+
 import com.tokopedia.digital.widget.model.operator.Operator;
 
 import java.util.List;
@@ -11,5 +13,9 @@ import java.util.List;
 public interface IOperatorChooserView {
 
     void showOperators(List<Operator> operators);
+
+    void showInitialProgressLoading();
+
+    void hideInitialProgressLoading();
 
 }
