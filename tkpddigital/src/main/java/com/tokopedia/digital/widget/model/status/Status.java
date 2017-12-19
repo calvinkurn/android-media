@@ -10,7 +10,6 @@ import android.os.Parcelable;
 public class Status implements Parcelable {
 
     private String type;
-//    private boolean useCache;
     private boolean isMaintenance;
     private int minimunAndroidBuild;
 
@@ -47,10 +46,6 @@ public class Status implements Parcelable {
         return isMaintenance;
     }
 
-//    public boolean isUseCache() {
-//        return useCache;
-//    }
-
     public String getType() {
         return type;
     }
@@ -62,10 +57,6 @@ public class Status implements Parcelable {
     public void setType(String type) {
         this.type = type;
     }
-
-//    public void setUseCache(boolean useCache) {
-//        this.useCache = useCache;
-//    }
 
     public void setMaintenance(boolean maintenance) {
         isMaintenance = maintenance;
