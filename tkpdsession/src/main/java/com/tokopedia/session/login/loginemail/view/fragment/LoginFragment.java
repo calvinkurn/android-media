@@ -234,14 +234,7 @@ public class LoginFragment extends BaseDaggerFragment
                 presenter.getLoginIdList());
         emailEditText.setAdapter(autoCompleteAdapter);
 
-        if (hasNoProvider()) presenter.discoverLogin();
-    }
-
-    private boolean hasNoProvider() {
-        if (loginLayout != null) {
-            return loginLayout.getChildCount() == 0;
-        }
-        return true;
+        presenter.discoverLogin();
     }
 
     private void goToRegisterInitial() {
