@@ -485,13 +485,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             switch (requestCode) {
                 case REQUEST_CODE_PICK_LUGGAGE:
                     if (data != null) {
-                        FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_LUGGAGE);
+                        FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES);
                         presenter.onLuggageDataChange(flightBookingLuggageMetaViewModel);
                     }
                     break;
                 case REQUEST_CODE_PICK_MEAL:
                     if (data != null) {
-                        FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_LUGGAGE);
+                        FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel = data.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES);
                         presenter.onMealDataChange(flightBookingLuggageMetaViewModel);
                     }
                     break;
