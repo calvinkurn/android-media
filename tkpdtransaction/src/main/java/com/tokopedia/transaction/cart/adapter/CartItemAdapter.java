@@ -184,9 +184,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentName()),
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentPackageName())));
         if (cartItemEditable.getCartCourierPrices() == null) {
-            holder.holderDetailCartToggle.setVisibility(View.GONE);
+            holder.totalPriceLayout.setVisibility(View.GONE);
+            holder.calculationLayout.setVisibility(View.GONE);
         } else {
-            holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
+            holder.totalPriceLayout.setVisibility(View.VISIBLE);
+            holder.calculationLayout.setVisibility(View.VISIBLE);
             holder.tvTotalPrice.setVisibility(View.VISIBLE);
             holder.tvShippingCost.setText(cartItemEditable.getCartCourierPrices()
                     .getShipmentPriceIdr());
@@ -360,7 +362,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.tvError1.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage1()));
             holder.tvError2.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage2()));
 
-            //TODO check changes
             holder.totalPriceLayout.setVisibility(View.GONE);
             holder.calculationLayout.setVisibility(View.GONE);
             holder.totalPriceProgressBar.setVisibility(View.GONE);
