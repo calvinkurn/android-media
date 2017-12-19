@@ -359,13 +359,14 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.holderError.setVisibility(View.VISIBLE);
             holder.tvError1.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage1()));
             holder.tvError2.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage2()));
+
+            //TODO check changes
             holder.totalPriceLayout.setVisibility(View.GONE);
-            holder.holderDetailCartToggle.setVisibility(View.GONE);
-            holder.holderDetailCart.collapse();
+            holder.calculationLayout.setVisibility(View.GONE);
             holder.totalPriceProgressBar.setVisibility(View.GONE);
         } else {
+            holder.calculationLayout.setVisibility(View.VISIBLE);
             holder.totalPriceLayout.setVisibility(View.VISIBLE);
-            holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
             holder.holderError.setVisibility(View.GONE);
         }
     }
@@ -748,6 +749,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.holder_container)
         LinearLayout holderContainer;
+        @BindView(R2.id.calculation_layout)
+        LinearLayout calculationLayout;
         @BindView(R2.id.tv_error_1)
         TextView tvError1;
         @BindView(R2.id.tv_error_2)
