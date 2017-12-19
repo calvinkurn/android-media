@@ -54,10 +54,9 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_MEALS = "EXTRA_MEALS";
     public static final String EXTRA_DEPARTURE = "EXTRA_DEPARTURE";
     public static final String EXTRA_RETURN = "EXTRA_RETURN";
+    public static final String EXTRA_AIR_ASIA = "EXTRA_AIR_ASIA";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
-
-    private ArrayList<String> airAsiaFlightIds;
 
     public interface OnFragmentInteractionListener {
         void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
@@ -84,6 +83,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private OnFragmentInteractionListener interactionListener;
 
+    private boolean isAirAsiaAirlines = false;
+
     @Inject
     FlightBookingPassengerPresenter presenter;
 
@@ -91,11 +92,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                                                              String returnId,
                                                              FlightBookingPassengerViewModel viewModel,
                                                              List<FlightBookingAmenityMetaViewModel> luggageViewModels,
-                                                             List<FlightBookingAmenityMetaViewModel> mealViewModels) {
+                                                             List<FlightBookingAmenityMetaViewModel> mealViewModels,
+                                                             boolean isAirAsiaAirlines) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
         bundle.putString(EXTRA_RETURN, returnId);
+        bundle.putBoolean(EXTRA_AIR_ASIA, isAirAsiaAirlines);
         bundle.putParcelable(EXTRA_PASSENGER, viewModel);
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
@@ -107,10 +110,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static Fragment newInstance(String departureId,
                                        FlightBookingPassengerViewModel viewModel,
                                        List<FlightBookingAmenityMetaViewModel> luggageViewModels,
-                                       List<FlightBookingAmenityMetaViewModel> mealViewModels) {
+                                       List<FlightBookingAmenityMetaViewModel> mealViewModels,
+                                       boolean isAirAsiaAirlines) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEPARTURE, departureId);
+        bundle.putBoolean(EXTRA_AIR_ASIA, isAirAsiaAirlines);
         bundle.putParcelable(EXTRA_PASSENGER, viewModel);
         bundle.putParcelableArrayList(EXTRA_LUGGAGES, (ArrayList<? extends Parcelable>) luggageViewModels);
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
@@ -128,6 +133,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         viewModel = getArguments().getParcelable(EXTRA_PASSENGER);
         luggageViewModels = getArguments().getParcelableArrayList(EXTRA_LUGGAGES);
         mealViewModels = getArguments().getParcelableArrayList(EXTRA_MEALS);
+        isAirAsiaAirlines = getArguments().getBoolean(EXTRA_AIR_ASIA);
     }
 
     @Override
@@ -413,11 +419,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public boolean isAirAsiaAirline() {
-        if (getReturnTripId() != null) {
-            return (compareFlightIdWithAirAsia(getDepartureId()) || compareFlightIdWithAirAsia(getReturnTripId()));
-        } else {
-            return compareFlightIdWithAirAsia(getDepartureId());
-        }
+        return isAirAsiaAirlines;
     }
 
     @Override
@@ -509,28 +511,5 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     break;
             }
         }
-    }
-
-    // Method untuk menambahkan Flight Id AirAsia, jadi seandainya nanti ada bertambah lagi, bisa langsung di tambah disini
-    private void initAirAsiaFlightId() {
-        if(this.airAsiaFlightIds == null) {
-            this.airAsiaFlightIds = new ArrayList<>();
-            this.airAsiaFlightIds.add("AK");
-            this.airAsiaFlightIds.add("FD");
-            this.airAsiaFlightIds.add("QZ");
-            this.airAsiaFlightIds.add("XJ");
-            this.airAsiaFlightIds.add("XT");
-        }
-    }
-
-    private boolean compareFlightIdWithAirAsia(String flightId) {
-        this.initAirAsiaFlightId();
-        for (String airAsiaId : this.airAsiaFlightIds) {
-            if (flightId.equals(airAsiaId)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

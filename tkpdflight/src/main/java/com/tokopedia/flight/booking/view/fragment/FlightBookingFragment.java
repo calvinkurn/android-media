@@ -51,6 +51,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -101,6 +102,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightSimpleAdapter priceListAdapter;
     private ProgressDialog progressDialog;
 
+    private ArrayList<String> airAsiaFlightIds;
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -224,7 +226,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                         getReturnTripId(),
                         viewModel,
                         flightBookingCartData.getLuggageViewModels(),
-                        flightBookingCartData.getMealViewModels()
+                        flightBookingCartData.getMealViewModels(),
+                        isAirAsiaAirline()
                 ),
                 REQUEST_CODE_PASSENGER
         );
@@ -553,5 +556,46 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                     }
                 }
         );
+    }
+
+
+    // Method untuk menambahkan Flight Id AirAsia, jadi seandainya nanti ada bertambah lagi, bisa langsung di tambah disini
+    private void initAirAsiaFlightId() {
+        if(this.airAsiaFlightIds == null) {
+            this.airAsiaFlightIds = new ArrayList<>();
+            this.airAsiaFlightIds.add("AK");
+            this.airAsiaFlightIds.add("FD");
+            this.airAsiaFlightIds.add("QZ");
+            this.airAsiaFlightIds.add("XJ");
+            this.airAsiaFlightIds.add("XT");
+        }
+    }
+
+    private boolean compareFlightIdWithAirAsia(String flightId) {
+        this.initAirAsiaFlightId();
+        for (String airAsiaId : this.airAsiaFlightIds) {
+            if (flightId.equals(airAsiaId)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isAirAsiaAirline() {
+
+        if(flightBookingCartData.getDepartureTrip() != null)
+            for(FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
+                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                    return true;
+            }
+
+        if(flightBookingCartData.getReturnTrip() != null)
+            for(FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
+                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                    return true;
+            }
+
+        return false;
     }
 }
