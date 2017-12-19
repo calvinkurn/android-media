@@ -75,6 +75,7 @@ public interface Constants {
         String PRODUCT_INFO = "tokopedia://product/{product_id}";
         String PRODUCT_ADD = "tokopedia://product/add";
         String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
+        String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
         String PURCHASE_ORDER = "tokopedia://buyer/order";
         String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
         String PURCHASE_HISTORY = "tokopedia://buyer/history";

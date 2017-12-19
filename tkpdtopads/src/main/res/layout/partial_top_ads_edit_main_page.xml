@@ -7,7 +7,6 @@
         android:id="@+id/cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:label_show_arrow="true"
         app:content_color="@color/tkpd_main_green"
         app:title="@string/top_ads_label_cost" />
 
@@ -17,7 +16,6 @@
         android:id="@+id/schedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:label_show_arrow="true"
         app:content_color="@color/tkpd_main_green"
         app:title="@string/top_ads_label_schedule_detail" />
 

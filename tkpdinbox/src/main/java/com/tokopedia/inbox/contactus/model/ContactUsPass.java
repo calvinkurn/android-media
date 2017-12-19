@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.contactus.model;
 
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 
 import org.json.JSONException;

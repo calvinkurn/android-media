@@ -47,12 +47,14 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     ProblemResult problemResult;
 
     ImageView ivProductImage, btnInfo, btnPlus, btnMinus;
-    TextView tvProductName, tvProductPrice, tvQty;
+    TextView tvProductName, tvProductPrice, tvQty, tvStatus;
     Button btnArrived, btnNotArrived, btnSaveAndChooseOther, btnSave, btnCancel;
     LinearLayout llFreeReturn;
     SpinnerTextView stvProblem;
     TkpdTextInputLayout tilComplainReason;
     EditText etComplainReason;
+    LinearLayout llButton;
+
 
     TimeTickerUtil timeTickerUtil;
 
@@ -131,6 +133,8 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         btnMinus = (ImageView) view.findViewById(R.id.btn_minus);
         btnInfo = (ImageView) view.findViewById(R.id.btn_info);
         llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
+        llButton = (LinearLayout) view.findViewById(R.id.ll_button);
+        tvStatus = (TextView) view.findViewById(R.id.tv_status);
 
         stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
         tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
@@ -243,6 +247,10 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             llFreeReturn.setVisibility(View.VISIBLE);
         } else {
             llFreeReturn.setVisibility(View.GONE);
+        }
+        if (productProblemViewModel.getStatusList().size() == 1) {
+            tvStatus.setVisibility(View.GONE);
+            llButton.setVisibility(View.GONE);
         }
     }
 

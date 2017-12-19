@@ -20,6 +20,9 @@ public class HotListBannerModel implements Parcelable {
     @SerializedName("disable_topads")
     public int disableTopads;
 
+    @SerializedName("promo_info")
+    public PromoInfo promoInfo;
+
     public static class Query implements Parcelable {
         @SerializedName("ob")
         public String ob;
@@ -225,4 +228,78 @@ public class HotListBannerModel implements Parcelable {
             return new HotListBannerModel[size];
         }
     };
+
+    public static class PromoInfo {
+
+        @SerializedName("promo_period")
+        private String promoPeriod;
+        @SerializedName("text")
+        private String text;
+        @SerializedName("id")
+        private String id;
+        @SerializedName("tc_applink")
+        private String tcApplink;
+        @SerializedName("min_tx")
+        private String minTx;
+        @SerializedName("voucher_code")
+        private String voucherCode;
+        @SerializedName("tc_link")
+        private String tcLink;
+
+        public String getPromoPeriod() {
+            return promoPeriod;
+        }
+
+        public void setPromoPeriod(String promoPeriod) {
+            this.promoPeriod = promoPeriod;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTcApplink() {
+            return tcApplink;
+        }
+
+        public void setTcApplink(String tcApplink) {
+            this.tcApplink = tcApplink;
+        }
+
+        public String getMinTx() {
+            return minTx;
+        }
+
+        public void setMinTx(String minTx) {
+            this.minTx = minTx;
+        }
+
+        public String getVoucherCode() {
+            return voucherCode;
+        }
+
+        public void setVoucherCode(String voucherCode) {
+            this.voucherCode = voucherCode;
+        }
+
+        public String getTcLink() {
+            return tcLink;
+        }
+
+        public void setTcLink(String tcLink) {
+            this.tcLink = tcLink;
+        }
+    }
 }

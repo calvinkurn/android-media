@@ -22,9 +22,7 @@ import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.model.mapper.StatusMapper;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.tkpd.home.customview.DigitalWidgetView;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
@@ -104,6 +102,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         }
         addTablayoutListener(rechargeViewPagerAdapter);
         viewPager.setOffscreenPageLimit(rechargeCategory.size());
+//        viewPager.setOffscreenPageLimit(1);
         setTabSelected(rechargeCategory.size());
         rechargeViewPagerAdapter.notifyDataSetChanged();
     }

@@ -11,8 +11,6 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;

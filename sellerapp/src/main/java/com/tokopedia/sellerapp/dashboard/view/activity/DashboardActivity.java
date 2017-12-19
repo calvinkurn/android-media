@@ -7,17 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.remoteconfig.RemoteConfigFetcher;
 
 //import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 //import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -45,8 +40,6 @@ public class DashboardActivity extends DrawerPresenterActivity
                     .replace(R.id.container, DashboardFragment.newInstance(), TAG)
                     .commit();
         }
-
-        new RemoteConfigFetcher(this).fetch(null);
     }
 
     @Override

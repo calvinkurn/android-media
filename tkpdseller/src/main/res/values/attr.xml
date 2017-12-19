@@ -20,7 +20,6 @@
         <attr name="lv_font_size" format="dimension" />
         <attr name="content_max_lines" format="integer" />
         <attr name="switch_enable" format="boolean" />
-        <attr name="label_show_arrow" format="boolean" />
         <attr name="lv_min_title_width" format="dimension" />
     </declare-styleable>
 
