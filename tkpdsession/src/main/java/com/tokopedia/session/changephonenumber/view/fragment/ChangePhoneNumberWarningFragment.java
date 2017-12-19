@@ -19,8 +19,6 @@ import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -62,10 +60,11 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         setViewListener();
         initVar();
         //TODO presenter.attachView(this);
+        provideDummyData();
         return parentView;
     }
 
-    private void provideDummyData(){
+    private void provideDummyData() {
         WarningItemViewModel item1 = new WarningItemViewModel(
                 "Saldo Tokopedia tidak dapat ditarik dan digunakan selama 3 hari setelah nomor berhasil diubah.",
                 "Disarankan untuk menarik Saldo Tokopedia sebelum melakukan perubahan",
@@ -80,6 +79,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         arrayList.add(item1);
         arrayList.add(item2);
         viewModel = new WarningViewModel("Rp 102.123.241,000", "Rp 123.333,333", arrayList);
+        loadDataToView();
     }
 
     private void initView(View view) {
@@ -121,7 +121,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     }
 
-    private void loadDataToView(){
+    private void loadDataToView() {
         if (viewModel != null) {
             if (viewModel.getTokopediaBalance() != null || !viewModel.getTokopediaBalance().equalsIgnoreCase("null")) {
                 tokopediaBalanceLayout.setVisibility(View.VISIBLE);
@@ -141,7 +141,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         }
     }
 
-    private void populateRecyclerView(){
+    private void populateRecyclerView() {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         warningRecyclerView.setLayoutManager(mLayoutManager);
 
