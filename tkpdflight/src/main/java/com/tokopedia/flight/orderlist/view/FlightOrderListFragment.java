@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
@@ -169,9 +170,9 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void showErrorGetOrderOnFilterChanged(String message) {
+    public void showErrorGetOrderOnFilterChanged(Throwable t) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), message,
+                getActivity(), getView(), FlightErrorUtil.getMessageFromException(getActivity(), t),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -182,9 +183,9 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void showErrorGetInitialOrders(String message) {
+    public void showErrorGetInitialOrders(Throwable t) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), message,
+                getActivity(), getView(), FlightErrorUtil.getMessageFromException(getActivity(), t),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {

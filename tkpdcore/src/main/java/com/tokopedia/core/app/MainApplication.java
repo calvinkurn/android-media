@@ -55,6 +55,7 @@ public abstract class MainApplication extends BaseMainApplication{
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
+    private static Context context;
 	private static Activity activity;
 	private static Boolean isResetNotification = false;
 	private static Boolean isResetDrawer = false;
@@ -110,6 +111,10 @@ public abstract class MainApplication extends BaseMainApplication{
         }
 
         return isInBackground;
+    }
+
+    public synchronized static Context getAppContext() {
+        return MainApplication.context;
     }
 
     /**
@@ -259,6 +264,7 @@ public abstract class MainApplication extends BaseMainApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
+        MainApplication.context = getApplicationContext();
         init();
         initFacebook();
         initCrashlytics();

@@ -109,7 +109,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
             public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().hideProgressDialog();
-                    getView().onErrorCheckVoucherCode(FlightErrorUtil.getMessageFromException(e));
+                    getView().onErrorCheckVoucherCode(e);
                 }
             }
 
