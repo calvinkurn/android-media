@@ -16,11 +16,7 @@ import java.net.UnknownHostException;
 
 public class ErrorHandler {
 
-    public static String getErrorMessage(Throwable e) {
-        return getErrorMessage(e, BaseMainApplication.getAppContext());
-    }
-
-    public static String getErrorMessage(Throwable e, final Context context) {
+    public static String getErrorMessage(final Context context, Throwable e) {
         if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {

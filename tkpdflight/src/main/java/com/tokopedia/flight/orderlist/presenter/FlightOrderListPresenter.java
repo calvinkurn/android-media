@@ -48,7 +48,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideGetInitialOrderDataLoading();
-                    getView().showErrorGetInitialOrders(FlightErrorUtil.getMessageFromException(e));
+                    getView().showErrorGetInitialOrders(e);
                 }
             }
 
@@ -79,7 +79,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideGetInitialOrderDataLoading();
-                    getView().showErrorGetOrderOnFilterChanged(FlightErrorUtil.getMessageFromException(e));
+                    getView().showErrorGetOrderOnFilterChanged(e);
                 }
             }
 

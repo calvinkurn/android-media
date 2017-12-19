@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.base.app;
 
-import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.multidex.MultiDexApplication;
 
@@ -15,24 +14,14 @@ import com.tokopedia.abstraction.utils.GlobalConfig;
  */
 
 public class BaseMainApplication extends MultiDexApplication{
-    protected static Context context;
 
     private BaseAppComponent baseAppComponent;
-
-    public synchronized static Context getAppContext() {
-        return context;
-    }
 
     @CallSuper
     @Override
     public void onCreate() {
         super.onCreate();
-        context = getApplicationContext();
         initStetho();
-    }
-
-    public BaseAppComponent getBaseApplicationComponent() {
-        return getBaseAppComponent();
     }
 
     public BaseAppComponent getBaseAppComponent(){
@@ -44,9 +33,9 @@ public class BaseMainApplication extends MultiDexApplication{
         return baseAppComponent;
     }
 
-    public void initStetho() {
+    private void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            Stetho.initializeWithDefaults(context);
+            Stetho.initializeWithDefaults(getApplicationContext());
         }
     }
 }
