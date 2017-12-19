@@ -2,7 +2,7 @@
     <shortcut
         android:shortcutId="shortcut_selling"
         android:enabled="true"
-        android:icon="@drawable/icon_penjualan"
+        android:icon="@drawable/ic_shortcut_selling"
         android:shortcutShortLabel="@string/title_activity_shop_transaction_new"
         android:shortcutLongLabel="@string/title_activity_shop_transaction_new"
         android:shortcutDisabledMessage="@string/title_activity_shop_transaction_new">
