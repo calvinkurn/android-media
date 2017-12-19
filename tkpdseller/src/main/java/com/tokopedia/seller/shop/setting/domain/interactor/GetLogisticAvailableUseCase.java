@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
 import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
-import com.tokopedia.seller.shop.setting.domain.model.LogisticAvailableDomainModel;
 
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ import rx.Observable;
  * @author by sebastianuskh on 3/27/17.
  */
 
-public class GetLogisticAvailableUseCase extends UseCase<LogisticAvailableDomainModel> {
+public class GetLogisticAvailableUseCase extends UseCase<OpenShopLogisticModel> {
 
     public static final String DISTRICT_CODE = "DISTRICT_CODE";
     public static final int UNSELECTED_DISTRICT = -1;
@@ -34,11 +34,8 @@ public class GetLogisticAvailableUseCase extends UseCase<LogisticAvailableDomain
     }
 
     @Override
-    public Observable<LogisticAvailableDomainModel> createObservable(RequestParams requestParams) {
+    public Observable<OpenShopLogisticModel> createObservable(RequestParams requestParams) {
         int districtCode = requestParams.getInt(DISTRICT_CODE, UNSELECTED_DISTRICT);
-        if (districtCode == UNSELECTED_DISTRICT) {
-            throw new RuntimeException("District Must Be Selected");
-        }
         return districLogisticDataRepository.getLogisticAvailable(districtCode);
     }
 }

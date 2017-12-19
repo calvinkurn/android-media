@@ -1,9 +1,8 @@
 package com.tokopedia.seller.shop.setting.data.source;
 
-import com.tokopedia.seller.shop.setting.data.mapper.LogisticDataDomainMapper;
+import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
 import com.tokopedia.seller.shop.setting.data.source.cloud.DistrictLogisticDataCloud;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
-import com.tokopedia.seller.shop.setting.domain.model.LogisticAvailableDomainModel;
 
 import javax.inject.Inject;
 
@@ -22,8 +21,7 @@ public class LogisticDataSource {
         this.districLogisticDataCloud = districLogisticDataCloud;
     }
 
-    public Observable<LogisticAvailableDomainModel> getLogisticAvailable(int districtCode) {
-        return districLogisticDataCloud.getLogisticAvailable(districtCode)
-                .map(new LogisticDataDomainMapper());
+    public Observable<OpenShopLogisticModel> getLogisticAvailable(int districtCode) {
+        return districLogisticDataCloud.getLogisticAvailable(districtCode);
     }
 }

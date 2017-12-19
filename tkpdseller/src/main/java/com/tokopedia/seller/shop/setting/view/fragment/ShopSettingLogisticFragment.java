@@ -10,13 +10,12 @@ import android.view.ViewGroup;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSetingLogisticModule;
-import com.tokopedia.seller.shop.setting.domain.model.LogisticAvailableDomainModel;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
 
@@ -29,11 +28,14 @@ import javax.inject.Inject;
 public class ShopSettingLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView {
 
     public static final int UNSELECTED_DISTRICT_VIEW = -1;
+    public static final String SAVED_NEED_REFRESH = "svd_need_refresh";
+    public static final String SAVED_DISTRICT_CODE = "svd_district_code";
 
     @Inject
     public ShopSettingLogisticPresenter presenter;
-    private int districtCode = UNSELECTED_DISTRICT_VIEW;
-    private LoadingStateView loadingStateView;
+    private int districtCode;
+    private View vContent;
+    private View vLoading;
     private boolean needRefreshData;
 
     public static ShopSettingLogisticFragment getInstance() {
@@ -53,14 +55,21 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        needRefreshData = true;
+        if (savedInstanceState == null) {
+            needRefreshData = true;
+            districtCode = UNSELECTED_DISTRICT_VIEW;
+        } else {
+            needRefreshData = savedInstanceState.getBoolean(SAVED_NEED_REFRESH);
+            districtCode = savedInstanceState.getInt(SAVED_DISTRICT_CODE);
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_setting_logistic, container, false);
-        loadingStateView = view.findViewById(R.id.vg_root);
+        vContent = view.findViewById(R.id.vg_content);
+        vLoading = view.findViewById(R.id.loading);
         // changeDistrictCode(4528);
         return view;
     }
@@ -74,7 +83,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
 
     public void updateLogistic() {
         showLoading();
-        //presenter.updateLogistic(districtCode);
+        presenter.updateLogistic(districtCode);
     }
 
     @Override
@@ -93,18 +102,19 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     }
 
     private void showLoading() {
-        loadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
+        vLoading.setVisibility(View.VISIBLE);
+        vContent.setVisibility(View.GONE);
     }
 
     private void hideLoading() {
-        loadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        vLoading.setVisibility(View.GONE);
+        vContent.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onSuccessLoadLogistic(LogisticAvailableDomainModel logisticAvailableDomainModel) {
+    public void onSuccessLoadLogistic(OpenShopLogisticModel openShopLogisticModel) {
         hideLoading();
         needRefreshData = false;
-        //TODO on Success
     }
 
     @Override
@@ -119,7 +129,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
 
     private void showMessageError(String messsage) {
         NetworkErrorHelper.showEmptyState(getActivity(),
-                        loadingStateView, messsage,
+                        getView().findViewById(R.id.vg_root), messsage,
                         new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {
@@ -134,5 +144,10 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
         return null;
     }
 
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_NEED_REFRESH, needRefreshData);
+        outState.putInt(SAVED_DISTRICT_CODE, districtCode);
+    }
 }

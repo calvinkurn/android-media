@@ -76,6 +76,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements Ha
     @Override
     protected void onResume() {
         super.onResume();
+        //TODO uncomment this, bypass for testing purpose
         if (!SessionHandler.isMsisdnVerified()) {
             Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
             startActivity(intent);
