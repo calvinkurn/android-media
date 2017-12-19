@@ -22,6 +22,7 @@ public class OperatorChooserPresenter implements IOperatorChooserPresenter {
         this.widgetInteractor = widgetInteractor;
     }
 
+    @Override
     public void getOperatorsByCategoryId(String categoryId) {
         widgetInteractor.getOperatorsByCategoryId(new Subscriber<List<Operator>>() {
             @Override
@@ -36,7 +37,9 @@ public class OperatorChooserPresenter implements IOperatorChooserPresenter {
 
             @Override
             public void onNext(List<Operator> operators) {
-                view.showOperators(operators);
+                if (!operators.isEmpty()) {
+                    view.showOperators(operators);
+                }
             }
         }, Integer.valueOf(categoryId));
     }

@@ -165,7 +165,6 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
                     if (!products.isEmpty()) {
                         view.renderDataProducts(products, operator.getAttributes().getRule().isShowPrice());
-                        widgetInteractor.setUseCacheToTrue();
                     } else {
                         view.renderEmptyProduct(context.getString(R.string.error_message_product));
                     }

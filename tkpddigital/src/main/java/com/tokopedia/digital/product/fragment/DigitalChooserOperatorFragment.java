@@ -122,8 +122,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
                 new ProductMapper(),
                 new OperatorMapper(),
                 new JobExecutor(),
-                new UIThread(),
-                true);
+                new UIThread());
 
         presenter = new OperatorChooserPresenter(this, digitalWidgetInteractor);
     }
