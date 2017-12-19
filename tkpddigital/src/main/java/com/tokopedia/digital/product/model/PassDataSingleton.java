@@ -1,11 +1,8 @@
 package com.tokopedia.digital.product.model;
 
-import java.util.List;
-
 /**
  * Created by Rizky on 12/18/17.
  */
-
 public class PassDataSingleton<T> {
 
     private static PassDataSingleton instance;

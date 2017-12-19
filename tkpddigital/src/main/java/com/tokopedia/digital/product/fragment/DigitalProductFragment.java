@@ -732,20 +732,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
         UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
 
-        List<OperatorPassData> operatorPassData = new ArrayList<>();
-        for (Operator operator : operatorListData) {
-            operatorPassData.add(new OperatorPassData(operator.getOperatorId(), operator.getImage(),
-                    operator.getName()));
-        }
-
-//        Gson gson = new Gson();
-//        String operatorPassDataJson = gson.toJson(operatorPassData);
-
-        int sync = PassDataSingleton.get().setLargeData(operatorPassData);
-
         startActivityForResult(
-                DigitalChooserActivity.newInstanceOperatorChooser4(
-                        getActivity(), sync, titleChooser,
+                DigitalChooserActivity.newInstanceOperatorChooser(
+                        getActivity(), categoryId, titleChooser,
                         categoryDataState.getOperatorLabel(),
                         categoryDataState.getName()
                 ),
@@ -854,7 +843,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackOperatorChooser(
-                            (OperatorPassData) data.getParcelableExtra(
+                            (com.tokopedia.digital.widget.model.operator.Operator) data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
                             )
                     );
@@ -1090,9 +1079,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         digitalProductView.renderUpdateProductSelected(product);
     }
 
-    private void handleCallBackOperatorChooser(OperatorPassData operatorPassData) {
+    private void handleCallBackOperatorChooser(com.tokopedia.digital.widget.model.operator.Operator operatorWidget) {
         for (Operator operator : categoryDataState.getOperatorList()) {
-            if (operator.getOperatorId().equals(operatorPassData.getOperatorId())) {
+            if (operator.getOperatorId().equals(String.valueOf(operatorWidget.getId()))) {
                 digitalProductView.renderUpdateOperatorSelected(operator);
             }
         }

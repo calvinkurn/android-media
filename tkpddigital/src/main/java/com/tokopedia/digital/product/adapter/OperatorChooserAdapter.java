@@ -12,8 +12,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.fragment.DigitalChooserOperatorFragment;
-import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OperatorPassData;
+import com.tokopedia.digital.widget.model.operator.Operator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +30,14 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             R.layout.view_holder_item_operator_name_image;
 
     private Fragment hostFragment;
-    private List<OperatorPassData> operatorList;
+    private List<Operator> operatorList;
     private DigitalChooserOperatorFragment.ActionListener actionListener;
 
     public OperatorChooserAdapter(Fragment hostFragment,
-                                  List<OperatorPassData> operatorList,
+                                  List<Operator> operatorList,
                                   DigitalChooserOperatorFragment.ActionListener operatorActionListener) {
         this.hostFragment = hostFragment;
-        this.operatorList = operatorList != null ? operatorList : new ArrayList<OperatorPassData>();
+        this.operatorList = operatorList != null ? operatorList : new ArrayList<Operator>();
         this.actionListener = operatorActionListener;
     }
 
@@ -51,11 +50,11 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final int type = getItemViewType(position);
-        final OperatorPassData operator = operatorList.get(position);
+        final Operator operator = operatorList.get(position);
         if (type == TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE) {
             ItemNameAndImageHolder itemNameAndImageHolder = (ItemNameAndImageHolder) holder;
-            ImageHandler.LoadImage(itemNameAndImageHolder.operatorImage, operator.getOperatorImage());
-            itemNameAndImageHolder.operatorName.setText(operator.getOperatorName());
+            ImageHandler.LoadImage(itemNameAndImageHolder.operatorImage, operator.getAttributes().getImage());
+            itemNameAndImageHolder.operatorName.setText(operator.getAttributes().getName());
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +87,7 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    public void setSearchResultData(List<OperatorPassData> operatorQuery) {
+    public void setSearchResultData(List<Operator> operatorQuery) {
         this.operatorList = operatorQuery;
     }
 }

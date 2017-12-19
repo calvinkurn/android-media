@@ -171,10 +171,10 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                                 }.getType());
                     }
                 })
-                .onErrorReturn(new Func1<Throwable, List<OperatorEntity>>() {
+                .onErrorResumeNext(new Func1<Throwable, Observable<List<OperatorEntity>>>() {
                     @Override
-                    public List<OperatorEntity> call(Throwable throwable) {
-                        return new ArrayList<>();
+                    public Observable<List<OperatorEntity>> call(Throwable throwable) {
+                        return getObservableOperatorsNetwork();
                     }
                 });
     }
