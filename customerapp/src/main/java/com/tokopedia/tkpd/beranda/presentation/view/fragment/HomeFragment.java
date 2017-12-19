@@ -755,6 +755,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR:
                     presenter.updateHeaderTokoCashData(null);
                     break;
+                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR:
+                    presenter.updateHeaderTokoPointData(null);
+                    break;
                 default:
                     break;
             }

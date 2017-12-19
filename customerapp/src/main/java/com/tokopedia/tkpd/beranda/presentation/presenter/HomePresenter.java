@@ -147,14 +147,15 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             headerViewModel = new HeaderViewModel();
             headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
         } else {
+            headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
+            if (homeHeaderWalletAction == null)
+                headerViewModel.setType(HeaderViewModel.TYPE_TOKOPINT_ONLY);
             if (headerViewModel.getTokoPointDrawerData() != null) {
                 headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
             } else {
                 headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
             }
-            headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
-            if (homeHeaderWalletAction == null)
-                headerViewModel.setType(HeaderViewModel.TYPE_TOKOPINT_ONLY);
+
         }
         getView().updateHeaderItem(headerViewModel);
     }
@@ -178,6 +179,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
         } else {
             headerViewModel.setTokoPointDrawerData(tokoPointDrawerData);
+            if (tokoPointDrawerData == null)
+                headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
             if (headerViewModel.getHomeHeaderWalletActionData() == null) {
                 headerViewModel.setType(HeaderViewModel.TYPE_TOKOPINT_ONLY);
             }
@@ -306,6 +309,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     public void getHeaderData(boolean initialStart) {
+        if (!SessionHandler.isV4Login(context)) return;
         Intent intentGetTokocash = new Intent(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION);
         intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
                 DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
