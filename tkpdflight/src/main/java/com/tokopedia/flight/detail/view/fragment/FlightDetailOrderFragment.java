@@ -219,7 +219,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void onErrorGetOrderDetail(Throwable e) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), FlightErrorUtil.getMessageFromException(e), new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), FlightErrorUtil.getMessageFromException(getActivity(), e), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);

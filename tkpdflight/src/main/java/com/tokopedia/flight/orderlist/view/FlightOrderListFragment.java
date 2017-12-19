@@ -183,9 +183,9 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void showErrorGetInitialOrders(Throwable t) {
+    public void showErrorGetInitialOrders(String errorMessage) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), FlightErrorUtil.getMessageFromException(getActivity(), t),
+                getActivity(), getView(), errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
