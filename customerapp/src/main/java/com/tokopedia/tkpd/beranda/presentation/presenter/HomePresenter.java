@@ -153,6 +153,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_ONLY);
             }
             headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
+            if (homeHeaderWalletAction == null)
+                headerViewModel.setType(HeaderViewModel.TYPE_TOKOPINT_ONLY);
         }
         getView().updateHeaderItem(headerViewModel);
     }
@@ -176,6 +178,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             headerViewModel.setType(HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT);
         } else {
             headerViewModel.setTokoPointDrawerData(tokoPointDrawerData);
+            if (headerViewModel.getHomeHeaderWalletActionData() == null) {
+                headerViewModel.setType(HeaderViewModel.TYPE_TOKOPINT_ONLY);
+            }
         }
         getView().updateHeaderItem(headerViewModel);
     }

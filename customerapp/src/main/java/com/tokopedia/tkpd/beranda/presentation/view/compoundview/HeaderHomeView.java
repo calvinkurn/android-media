@@ -44,6 +44,9 @@ public class HeaderHomeView extends BaseCustomView {
             case HeaderViewModel.TYPE_TOKOCASH_ONLY:
                 renderHeaderOnlyTokocash();
                 break;
+            case HeaderViewModel.TYPE_TOKOPINT_ONLY:
+                renderHeaderTokoPointOnly();
+                break;
             default:
                 if (headerViewModel.getTokoPointDrawerData() == null
                         || (headerViewModel.getTokoPointDrawerData() != null
@@ -55,6 +58,16 @@ public class HeaderHomeView extends BaseCustomView {
                 }
                 break;
         }
+    }
+
+    private void renderHeaderTokoPointOnly() {
+        View view = inflate(getContext(), R.layout.layout_item_header_home_no_tokocash, this);
+        tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
+        tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
+        ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
+
+        if (headerViewModel.getTokoPointDrawerData() != null) renderTokoPointLayoutListener();
+
     }
 
     private void renderHeaderTokocashWithTokopoint() {

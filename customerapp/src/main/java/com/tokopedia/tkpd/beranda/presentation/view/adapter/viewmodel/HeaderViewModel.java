@@ -15,6 +15,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFact
 
 public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     public static final int TYPE_TOKOCASH_ONLY = 1;
+    public static final int TYPE_TOKOPINT_ONLY = 3;
     public static final int TYPE_TOKOCASH_WITH_TOKOPOINT = 2;
 
     private HomeHeaderWalletAction homeHeaderWalletActionData;
