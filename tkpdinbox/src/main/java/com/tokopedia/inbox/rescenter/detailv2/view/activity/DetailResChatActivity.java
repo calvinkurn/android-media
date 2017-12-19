@@ -117,9 +117,9 @@ public class DetailResChatActivity
         resolutionId = extras.getString(PARAM_RESOLUTION_ID);
         isSeller = extras.getBoolean(PARAM_IS_SELLER);
         if (isSeller) {
-            userName = extras.getString(PARAM_USER_NAME);
+            userName = MethodChecker.fromHtml(extras.getString(PARAM_USER_NAME)).toString();
         } else {
-            shopName = extras.getString(PARAM_SHOP_NAME);
+            shopName = MethodChecker.fromHtml(extras.getString(PARAM_SHOP_NAME)).toString();
         }
     }
 
