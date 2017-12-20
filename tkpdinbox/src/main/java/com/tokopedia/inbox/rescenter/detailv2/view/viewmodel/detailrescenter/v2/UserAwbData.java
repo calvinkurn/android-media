@@ -11,17 +11,6 @@ import java.util.List;
  */
 public class UserAwbData implements Parcelable {
 
-    public static final Creator<UserAwbData> CREATOR = new Creator<UserAwbData>() {
-        @Override
-        public UserAwbData createFromParcel(Parcel source) {
-            return new UserAwbData(source);
-        }
-
-        @Override
-        public UserAwbData[] newArray(int size) {
-            return new UserAwbData[size];
-        }
-    };
     private int resConvId;
     private String awb;
     private ShippingData shipping;
@@ -29,9 +18,10 @@ public class UserAwbData implements Parcelable {
     private int trackable;
     private String createTime;
     private String createTimeStr;
+    private String createTimeFullStr;
     private List<AttachmentDataDomain> attachments;
 
-    public UserAwbData(int resConvId, String awb, ShippingData shipping, ByData by, int trackable, String createTime, String createTimeStr, List<AttachmentDataDomain> attachments) {
+    public UserAwbData(int resConvId, String awb, ShippingData shipping, ByData by, int trackable, String createTime, String createTimeStr, String createTimeFullStr, List<AttachmentDataDomain> attachments) {
         this.resConvId = resConvId;
         this.awb = awb;
         this.shipping = shipping;
@@ -39,18 +29,16 @@ public class UserAwbData implements Parcelable {
         this.trackable = trackable;
         this.createTime = createTime;
         this.createTimeStr = createTimeStr;
+        this.createTimeFullStr = createTimeFullStr;
         this.attachments = attachments;
     }
 
-    protected UserAwbData(Parcel in) {
-        this.resConvId = in.readInt();
-        this.awb = in.readString();
-        this.shipping = in.readParcelable(ShippingData.class.getClassLoader());
-        this.by = in.readParcelable(ByData.class.getClassLoader());
-        this.trackable = in.readInt();
-        this.createTime = in.readString();
-        this.createTimeStr = in.readString();
-        this.attachments = in.createTypedArrayList(AttachmentDataDomain.CREATOR);
+    public String getCreateTimeFullStr() {
+        return createTimeFullStr;
+    }
+
+    public void setCreateTimeFullStr(String createTimeFullStr) {
+        this.createTimeFullStr = createTimeFullStr;
     }
 
     public List<AttachmentDataDomain> getAttachments() {
@@ -131,6 +119,31 @@ public class UserAwbData implements Parcelable {
         dest.writeInt(this.trackable);
         dest.writeString(this.createTime);
         dest.writeString(this.createTimeStr);
+        dest.writeString(this.createTimeFullStr);
         dest.writeTypedList(this.attachments);
     }
+
+    protected UserAwbData(Parcel in) {
+        this.resConvId = in.readInt();
+        this.awb = in.readString();
+        this.shipping = in.readParcelable(ShippingData.class.getClassLoader());
+        this.by = in.readParcelable(ByData.class.getClassLoader());
+        this.trackable = in.readInt();
+        this.createTime = in.readString();
+        this.createTimeStr = in.readString();
+        this.createTimeFullStr = in.readString();
+        this.attachments = in.createTypedArrayList(AttachmentDataDomain.CREATOR);
+    }
+
+    public static final Creator<UserAwbData> CREATOR = new Creator<UserAwbData>() {
+        @Override
+        public UserAwbData createFromParcel(Parcel source) {
+            return new UserAwbData(source);
+        }
+
+        @Override
+        public UserAwbData[] newArray(int size) {
+            return new UserAwbData[size];
+        }
+    };
 }

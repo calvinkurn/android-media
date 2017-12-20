@@ -93,12 +93,11 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         void onQueryChanged(String query);
     }
 
-    public static WidgetStyle1RechargeFragment newInstance(Category category, int position, boolean useCache) {
+    public static WidgetStyle1RechargeFragment newInstance(Category category, int position) {
         WidgetStyle1RechargeFragment fragment = new WidgetStyle1RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         bundle.putInt(ARG_TAB_INDEX_POSITION, position);
-        bundle.putBoolean(ARG_USE_CACHE, useCache);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -113,8 +112,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 new ProductMapper(),
                 new OperatorMapper(),
                 new JobExecutor(),
-                new UIThread(),
-                useCache);
+                new UIThread());
 
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
     }

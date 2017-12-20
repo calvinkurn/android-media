@@ -731,7 +731,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser,
+                        getActivity(), categoryId, titleChooser,
                         categoryDataState.getOperatorLabel(),
                         categoryDataState.getName()
                 ),
@@ -840,7 +840,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackOperatorChooser(
-                            (Operator) data.getParcelableExtra(
+                            (com.tokopedia.digital.widget.model.operator.Operator) data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
                             )
                     );
@@ -1076,8 +1076,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         digitalProductView.renderUpdateProductSelected(product);
     }
 
-    private void handleCallBackOperatorChooser(Operator operator) {
-        digitalProductView.renderUpdateOperatorSelected(operator);
+    private void handleCallBackOperatorChooser(com.tokopedia.digital.widget.model.operator.Operator operatorWidget) {
+        for (Operator operator : categoryDataState.getOperatorList()) {
+            if (operator.getOperatorId().equals(String.valueOf(operatorWidget.getId()))) {
+                digitalProductView.renderUpdateOperatorSelected(operator);
+            }
+        }
     }
 
     @Override
