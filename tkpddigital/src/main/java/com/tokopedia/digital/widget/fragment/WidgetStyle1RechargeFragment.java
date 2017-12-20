@@ -274,7 +274,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                queryListener.onQueryChanged(s.toString());
+                if (queryListener != null) {
+                    queryListener.onQueryChanged(s.toString());
+                }
             }
 
             @Override
@@ -537,9 +539,16 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-            compositeSubscription.unsubscribe();
+//        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+//            compositeSubscription.unsubscribe();
         super.onDestroyView();
     }
 
+    @Override
+    public void onStop() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
+
+        super.onStop();
+    }
 }

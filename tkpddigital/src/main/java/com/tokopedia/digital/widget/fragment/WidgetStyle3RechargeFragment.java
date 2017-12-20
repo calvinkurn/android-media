@@ -482,9 +482,16 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetSpinnerOperator);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-            compositeSubscription.unsubscribe();
+//        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+//            compositeSubscription.unsubscribe();
         super.onDestroyView();
     }
 
+    @Override
+    public void onStop() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
+
+        super.onStop();
+    }
 }
