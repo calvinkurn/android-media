@@ -49,7 +49,6 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
                                 TopPicksResponseModel topPicksResponseModel,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
-        boolean isLogin = SessionHandler.isV4Login(context);
 
         if (homeBannerResponseModel.isSuccess()) {
             list.add(mappingBanner(homeBannerResponseModel));
@@ -75,7 +74,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
         }
-        if (isLogin || SessionHandler.isUserSeller(context)) {
+        if (SessionHandler.isUserSeller(context)) {
             list.add(mappingManageShop());
         } else {
             list.add(mappingOpenShop());
