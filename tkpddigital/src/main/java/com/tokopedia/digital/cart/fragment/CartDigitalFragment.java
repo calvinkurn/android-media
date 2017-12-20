@@ -48,6 +48,7 @@ import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.UserInputPriceDigital;
+import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
@@ -710,6 +711,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     String voucherMessage = bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "");
                     long voucherDiscountAmount = bundle.getLong(LoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
 
+                    VoucherDigital voucherDigital = new VoucherDigital();
+                    VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                    voucherAttributeDigital.setVoucherCode(voucherCode);
+                    voucherAttributeDigital.setDiscountAmountPlain(voucherDiscountAmount);
+                    voucherAttributeDigital.setMessage(voucherMessage);
+                    voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
+                    voucherDigitalState = voucherDigital;
+
                     voucherCartHachikoView.setVoucher(voucherCode, voucherMessage);
 
                     if (voucherDiscountAmount > 0) {
@@ -723,6 +733,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     String couponMessage = bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "");
                     String couponCode = bundle.getString(LoyaltyActivity.COUPON_CODE, "");
                     long couponDiscountAmount = bundle.getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+
+                    VoucherDigital voucherDigital = new VoucherDigital();
+                    VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+                    voucherAttributeDigital.setVoucherCode(couponCode);
+                    voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
+                    voucherAttributeDigital.setMessage(couponMessage);
+                    voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
+                    voucherDigitalState = voucherDigital;
 
                     voucherCartHachikoView.setCoupon(couponTitle, couponMessage, couponCode);
 
