@@ -2,8 +2,8 @@ package com.tokopedia.seller.shopsettings.shipping.presenter;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.EditShippingCouriers;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
@@ -40,6 +40,10 @@ public interface EditShippingPresenter {
     String SERVICE_ID = "service_id";
 
     String DISTRICT_ID = "shop_courier_origin";
+
+    String DISTRICT_AND_CITY = "district_and_city";
+
+    String SELECTED_ADDRESS = "selected_address";
 
     int MINIMUM_WEIGHT_POLICY_CHARACTER_SIZE = 0;
 

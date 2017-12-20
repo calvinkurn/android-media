@@ -1,6 +1,7 @@
 package com.tokopedia.seller.opportunity.adapter;
 
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -53,9 +54,10 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter {
             mainView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    list.get(getAdapterPosition()).setPosition(getAdapterPosition());
-                    listener.goToDetail(list.get(getAdapterPosition()));
-
+                    if (getAdapterPosition() >= 0 && getAdapterPosition() < list.size()) {
+                        list.get(getAdapterPosition()).setPosition(getAdapterPosition());
+                        listener.goToDetail(list.get(getAdapterPosition()));
+                    }
                 }
             });
 
@@ -111,8 +113,15 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter {
         holder.productPrice.setText(list.get(position).getOrderDetail().getDetailOpenAmountIdr());
         holder.deadline.setText(list.get(position).getOrderDeadline().getDeadlineProcess());
         String color = list.get(position).getOrderDeadline().getDeadlineColor();
-        if (color != null && !color.equals("")) {
-            holder.deadline.setBackgroundColor(Color.parseColor(color));
+
+        Drawable deadlineDrawable = holder.deadline.getBackground();
+        deadlineDrawable.clearColorFilter();
+        if (!TextUtils.isEmpty(color)) {
+            int colorInt = Color.parseColor(color);
+            ColorFilter cf = new
+                    PorterDuffColorFilter(colorInt, PorterDuff.Mode
+                    .MULTIPLY);
+            deadlineDrawable.setColorFilter(cf);
         }
 
         setReputationPoint(holder, list.get(position));
@@ -124,19 +133,17 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter {
                 && !TextUtils.isEmpty(opportunityItemViewModel.getReplacementMultiplierText())) {
             holder.reputationPoint.setVisibility(View.VISIBLE);
 
-            Drawable background = MethodChecker.getDrawable(MainApplication
-                    .getAppContext(), R.drawable.custom_rounded_corner_label);
+            String color = opportunityItemViewModel.getReplacementMultiplierColor();
+            int colorInt = Color.parseColor(color);
+            Drawable reputationDrawable = holder.reputationPoint.getBackground();
 
-            background.setColorFilter(new
-                    PorterDuffColorFilter(Color.parseColor(opportunityItemViewModel
-                    .getReplacementMultiplierColor()),
-                    PorterDuff.Mode
-                            .MULTIPLY));
+            ColorFilter cf = new
+                    PorterDuffColorFilter(colorInt, PorterDuff.Mode
+                    .MULTIPLY);
+            reputationDrawable.setColorFilter(cf);
 
-            MethodChecker.setBackground(holder.reputationPoint, background);
             holder.reputationPoint.setText(opportunityItemViewModel.getReplacementMultiplierText());
-            holder.reputationPoint.setTextColor(Color.parseColor(opportunityItemViewModel
-                    .getReplacementMultiplierColor()));
+            holder.reputationPoint.setTextColor(colorInt);
 
         } else {
             holder.reputationPoint.setVisibility(View.GONE);

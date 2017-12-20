@@ -37,7 +37,6 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView textCommentDate;
     private TextView textCommentMessage;
     private TextView textAllDiscussion;
-    private ImageView iconAllDiscussion;
     private View layoutComment;
 
     public LatestTalkView(Context context) {
@@ -83,7 +82,6 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
         textCommentDate = (TextView) findViewById(R.id.text_comment_date);
         textCommentMessage = (TextView) findViewById(R.id.text_comment_message);
         textAllDiscussion = (TextView) findViewById(R.id.text_all_discussion);
-        iconAllDiscussion = (ImageView) findViewById(R.id.avatar_all_discussion);
     }
 
     @Override
@@ -113,7 +111,6 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
             textAllDiscussion.setText(buttonFormat);
 
             textAllDiscussion.setOnClickListener(new DiscussionClick(productDetailData));
-            iconAllDiscussion.setOnClickListener(new DiscussionClick(productDetailData));
         } else {
             setVisibility(GONE);
         }

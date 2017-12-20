@@ -8,9 +8,11 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolution
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
-import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.
+        GetResCenterDetailV2Subscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.TrackAwbReturProductSubscriber;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
@@ -25,6 +27,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     private final DetailResCenterFragmentView fragmentView;
     private final GetResCenterDetailUseCase getResCenterDetailUseCase;
+    private final GetResCenterDetailV2UseCase getResCenterDetailV2UseCase;
     private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
     private final CancelResolutionUseCase cancelResolutionUseCase;
     private final AskHelpResolutionUseCase askHelpResolutionUseCase;
@@ -37,6 +40,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     @Inject
     public DetailResCenterFragmentImpl(DetailResCenterFragmentView fragmentView,
                                        GetResCenterDetailUseCase getResCenterDetailUseCase,
+                                       GetResCenterDetailV2UseCase getResCenterDetailV2UseCase,
                                        TrackAwbReturProductUseCase trackAwbReturProductUseCase,
                                        CancelResolutionUseCase cancelResolutionUseCase,
                                        AskHelpResolutionUseCase askHelpResolutionUseCase,
@@ -47,6 +51,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
                                        EditAddressUseCase editAddressUseCase) {
         this.fragmentView = fragmentView;
         this.getResCenterDetailUseCase = getResCenterDetailUseCase;
+        this.getResCenterDetailV2UseCase = getResCenterDetailV2UseCase;
         this.trackAwbReturProductUseCase = trackAwbReturProductUseCase;
         this.cancelResolutionUseCase = cancelResolutionUseCase;
         this.askHelpResolutionUseCase = askHelpResolutionUseCase;
@@ -60,8 +65,8 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     @Override
     public void setOnFirstTimeLaunch() {
         fragmentView.showLoading(true);
-        getResCenterDetailUseCase.execute(getInitResCenterDetailParam(),
-                new GetResCenterDetailSubscriber(fragmentView));
+        getResCenterDetailV2UseCase.execute(getInitResCenterDetailParam(),
+                new GetResCenterDetailV2Subscriber(fragmentView));
     }
 
     private RequestParams getInitResCenterDetailParam() {
@@ -202,17 +207,18 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         RequestParams params = RequestParams.create();
         params.putString(EditAddressUseCase.PARAM_ADDRESS_ID, addressId);
         params.putString(EditAddressUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
-        params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId );
+        params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId);
         return params;
     }
 
     @Override
     public void setOnDestroyView() {
-        unSubscibeObservable();
+        unsubscribeObservable();
     }
 
-    private void unSubscibeObservable() {
+    private void unsubscribeObservable() {
         getResCenterDetailUseCase.unsubscribe();
+        getResCenterDetailV2UseCase.unsubscribe();
         trackAwbReturProductUseCase.unsubscribe();
         cancelResolutionUseCase.unsubscribe();
         askHelpResolutionUseCase.unsubscribe();
@@ -220,6 +226,8 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         acceptAdminSolutionUseCase.unsubscribe();
         acceptSolutionUseCase.unsubscribe();
         inputAddressUseCase.unsubscribe();
+        editAddressUseCase.unsubscribe();
+
     }
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxmessage.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +13,20 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.domain.model.message.ListMessage;
+import com.tokopedia.inbox.inboxchat.domain.model.message.MessageAttributes;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageFragmentPresenter;
-import com.tokopedia.core.util.ToolTipUtils;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.view.View.Y;
 
 /**
  * Created by Nisie on 5/9/16.
@@ -40,8 +39,8 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
         @BindView(R2.id.user_name)
         TextView userName;
 
-        @BindView(R2.id.date)
-        TextView date;
+        @BindView(R2.id.time)
+        TextView time;
 
         @BindView(R2.id.user_ava)
         ImageView avatar;
@@ -52,33 +51,32 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
         @BindView(R2.id.main)
         View mainView;
 
-        @BindView(R2.id.hour)
-        TextView hour;
-
         @BindView(R2.id.label)
         TextView label;
 
-        @BindView(R2.id.reputation_view)
-        View viewReputation;
-
-        @BindView(R2.id.rep_rating)
-        TextView textPercentage;
-
-        @BindView(R2.id.rep_icon)
-        ImageView iconPercentage;
-
-        @BindView(R2.id.title)
-        TextView title;
+        TextView counterUnread;
+//        @BindView(R2.id.reputation_view)
+//        View viewReputation;
+//
+//        @BindView(R2.id.rep_rating)
+//        TextView textPercentage;
+//
+//        @BindView(R2.id.rep_icon)
+//        ImageView iconPercentage;
+//
+//        @BindView(R2.id.title)
+//        TextView title;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
+            counterUnread = (TextView) itemView.findViewById(R.id.counter_unread);
             ButterKnife.bind(this, itemView);
         }
     }
 
-    private ArrayList<InboxMessageItem> list;
-    private ArrayList<InboxMessageItem> listMove;
+    private ArrayList<ListMessage> list;
+    private ArrayList<ListMessage> listMove;
     private Context context;
     private InboxMessageFragmentPresenter presenter;
     private int selected = 0;
@@ -108,7 +106,7 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
         switch (viewType) {
             case VIEW_MESSAGE:
                 return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.listview_message_2, viewGroup, false));
+                        .inflate(R.layout.message_item, viewGroup, false));
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
@@ -150,29 +148,36 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
 
 
     private void bindMessage(ViewHolder holder, final int position) {
-        holder.title.setText(list.get(position).getMessageTitle());
-        holder.message.setText(list.get(position).getMessageReply());
-        holder.userName.setText(list.get(position).getUserFullName());
-        setDate(holder, position);
-        setHour(holder, position);
 
-        holder.textPercentage.setText(list.get(position).getUserReputation().getPositivePercentage());
-        setIconPercentage(holder, position);
-        setLabel(holder, position);
+        MessageAttributes item = list.get(position).getAttributes();
+
+//        holder.title.setText(list.get(position).getMessageTitle());
+        holder.message.setText(item.getLastReplyMsg());
+        holder.userName.setText(item.getContact().getAttributes().getName());
+        holder.userName.setMovementMethod(new ScrollingMovementMethod());
+        ImageHandler.loadImageCircle2(holder.avatar.getContext(), holder.avatar, item.getContact().getAttributes().getThumbnail());
+
+        setTime(holder, position);
+//        setDate(holder, position);
+//        setHour(holder, position);
+
+//        holder.textPercentage.setText(list.get(position).getUserReputation().getPositivePercentage());
+//        setIconPercentage(holder, position);
+        setLabel(holder, item.getContact().getAttributes().getTag());
 
         setSelectedStatus(holder, position);
         setReadStatus(holder, position);
 
-        holder.viewReputation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selected == 0)
-                    ToolTipUtils.showToolTip(setViewToolTip(position), view);
-            }
-        });
+//        holder.viewReputation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (selected == 0)
+//                    ToolTipUtils.showToolTip(setViewToolTip(position), view);
+//            }
+//        });
 
-        holder.avatar.setOnClickListener(onGoToProfile(list.get(position)));
-        holder.userName.setOnClickListener(onGoToProfile(list.get(position)));
+//        holder.avatar.setOnClickListener(onGoToProfile(list.get(position)));
+//        holder.userName.setOnClickListener(onGoToProfile(list.get(position)));
         holder.mainView.setOnClickListener(onMessageClicked(holder, position));
 
         if (isActionEnabled) {
@@ -191,79 +196,46 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
 
 
     private void setReadStatus(ViewHolder holder, int position) {
-        if (list.get(position).getMessageReadStatus() == STATE_NOT_READ)
-            setNotReadState(holder);
-        else if (list.get(position).getMessageReadStatus() == STATE_READ)
+        int readStatus = list.get(position).getAttributes().getReadStatus();
+        int counter = list.get(position).getAttributes().getUnreads();
+        if (readStatus == STATE_CHAT_UNREAD)
+            setNotReadState(holder, counter);
+        else if (readStatus == STATE_CHAT_READ)
             setReadState(holder);
     }
 
 
-    private void setLabel(ViewHolder holder, int position) {
-        holder.label.setText(list.get(position).getUserLabel());
-        if (list.get(position).getUserLabelId() == 1) {
-            try {
-                holder.label.setBackgroundResource(R.drawable.label_admin);
-            } catch (NoSuchMethodError e) {
-                holder.label.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.label_admin));
-            }
-        } else {
-            try {
-                holder.label.setBackgroundResource(R.drawable.label_user);
-            } catch (NoSuchMethodError e) {
-                holder.label.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.label_user));
-            }
-        }
+    private void setLabel(ViewHolder holder, String label) {
+        holder.label.setText(label);
     }
 
+    private void setTime(ViewHolder holder, int position) {
+//        InboxTimeConverter.generateTime(list.get(position).getMessageCreateTimeFmt());
+//        String time = android.text.format.DateFormat.getLongDateFormat(context).format(Long.parseLong(list.get(position).getAttributes().getLastReplyTime()));
+        String time = ChatTimeConverter.formatTimeStamp(Long.parseLong(list.get(position).getAttributes().getLastReplyTime()));
 
-    private void setDate(ViewHolder holder, int position) {
-        holder.date.setVisibility(View.VISIBLE);
-        try {
-
-            holder.date.setText(list.get(position).getMessageCreateDateFmt());
-
-            if (position != 0) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(sdf.parse(list.get(position).getMessageCreateTimeFmt()));
-                Calendar calBefore = Calendar.getInstance();
-                calBefore.setTime(sdf.parse(list.get(position - 1).getMessageCreateTimeFmt()));
-                if (cal.get(Calendar.DAY_OF_YEAR) == calBefore.get(Calendar.DAY_OF_YEAR)
-                        && cal.get(Calendar.YEAR) == calBefore.get(Calendar.YEAR)) {
-                    holder.date.setVisibility(View.GONE);
-                }
-            }
-        } catch (ParseException e) {
-            holder.date.setVisibility(View.GONE);
-        }
-    }
-
-    private void setHour(ViewHolder holder, int position) {
-        try {
-            SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-            holder.hour.setText(newSdf.format(sdf.parse(list.get(position).getMessageCreateTimeFmt())));
-        } catch (ParseException e) {
-            holder.hour.setVisibility(View.GONE);
-        }
+        holder.time.setVisibility(View.VISIBLE);
+        holder.time.setText(time);
     }
 
     private void setIconPercentage(ViewHolder holder, int position) {
-        if (list.get(position).getUserReputation().getNoReputation().equals("0")) {
-            setHasReputation(holder);
-        } else {
-            setNoReputation(holder);
-
-        }
+//        if (list.get(position).getUserReputation().getNoReputation().equals("0")) {
+//            setHasReputation(holder);
+//        } else {
+//            setNoReputation(holder);
+//
+//        }
     }
-
-    private void setHasReputation(ViewHolder holder) {
-        holder.iconPercentage.setImageResource(R.drawable.ic_icon_repsis_smile_active);
-        holder.textPercentage.setVisibility(View.VISIBLE);
-    }
-
-    private void setNoReputation(ViewHolder holder) {
-        holder.iconPercentage.setImageResource(R.drawable.ic_icon_repsis_smile);
-        holder.textPercentage.setVisibility(View.GONE);
-    }
+//
+//    private void setHasReputation(ViewHolder holder) {
+//        holder.iconPercentage.setImageResource(R.drawable.ic_icon_repsis_smile_active);
+//        holder.textPercentage.setVisibility(View.VISIBLE);
+//    }
+//
+//    private void setNoReputation(ViewHolder holder) {
+//        holder.iconPercentage.setImageResource(R.drawable.ic_icon_repsis_smile);
+//        holder.textPercentage.setVisibility(View.GONE);
+//    }
 
     private View.OnLongClickListener onLongClickListener(final ViewHolder holder, final int position) {
         return new View.OnLongClickListener() {
@@ -310,55 +282,52 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
         };
     }
 
-    private View setViewToolTip(final int pos) {
-        return ToolTipUtils.setToolTip(context, R.layout.view_tooltip_user, new ToolTipUtils.ToolTipListener() {
-            @Override
-            public void setView(View view) {
-                TextView smile = (TextView) view.findViewById(R.id.text_smile);
-                TextView netral = (TextView) view.findViewById(R.id.text_netral);
-                TextView bad = (TextView) view.findViewById(R.id.text_bad);
-                smile.setText("" + list.get(pos).getUserReputation().getPositive());
-                netral.setText("" + list.get(pos).getUserReputation().getNeutral());
-                bad.setText("" + list.get(pos).getUserReputation().getNegative());
-            }
-
-            @Override
-            public void setListener() {
-
-            }
-        });
-    }
+//    private View setViewToolTip(final int pos) {
+//        return ToolTipUtils.setToolTip(context, R.layout.view_tooltip_user, new ToolTipUtils.ToolTipListener() {
+//            @Override
+//            public void setView(View view) {
+//                TextView smile = (TextView) view.findViewById(R.id.text_smile);
+//                TextView netral = (TextView) view.findViewById(R.id.text_netral);
+//                TextView bad = (TextView) view.findViewById(R.id.text_bad);
+//                smile.setText("" + list.get(pos).getUserReputation().getPositive());
+//                netral.setText("" + list.get(pos).getUserReputation().getNeutral());
+//                bad.setText("" + list.get(pos).getUserReputation().getNegative());
+//            }
+//
+//            @Override
+//            public void setListener() {
+//
+//            }
+//        });
+//    }
 
     private void setSelectedState(ViewHolder holder) {
         ImageHandler.loadImageWithIdWithoutPlaceholder(holder.avatar, R.drawable.ic_check_circle_48dp);
     }
 
     private void setUnselectedState(ViewHolder holder, int position) {
-        ImageHandler.loadImageCircle2(context, holder.avatar, list.get(position).getUserImage());
+//        ImageHandler.loadImageCircle2(context, holder.avatar, list.get(position).getUserImage());
     }
 
     private void setReadState(ViewHolder holder) {
-        try {
-            holder.mainView.setBackgroundResource(R.drawable.inbox_read_message);
-        } catch (NoSuchMethodError e) {
-            holder.mainView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.inbox_read_message));
+        holder.counterUnread.setVisibility(View.GONE);
+    }
+
+    private void setNotReadState(ViewHolder holder, int counter) {
+        holder.counterUnread.setVisibility(View.VISIBLE);
+        if(counter > 0) {
+            holder.counterUnread.setText(String.valueOf(counter));
+        }else {
+            holder.counterUnread.setVisibility(View.GONE);
         }
     }
 
-    private void setNotReadState(ViewHolder holder) {
-        try {
-            holder.mainView.setBackgroundResource(R.drawable.inbox_unread_message);
-        } catch (NoSuchMethodError e) {
-            holder.mainView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.inbox_unread_message));
-        }
-    }
-
-    public void setList(List<InboxMessageItem> list) {
+    public void setList(List<ListMessage> list) {
         this.list.addAll(list);
         notifyDataSetChanged();
     }
 
-    public ArrayList<InboxMessageItem> getList() {
+    public ArrayList<ListMessage> getList() {
         return list;
     }
 
@@ -371,7 +340,7 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     public void clearSelection() {
-        for (InboxMessageItem message : list) {
+        for (ListMessage message : list) {
             message.setIsChecked(false);
         }
         listMove.clear();
@@ -379,7 +348,7 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     public void addChecked(int position) {
-        InboxMessageItem item = list.get(position);
+        ListMessage item = list.get(position);
         item.setPosition(position);
         listMove.add(item);
         list.get(position).setIsChecked(true);
@@ -395,9 +364,9 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     public void removeAllChecked() {
-        for (InboxMessageItem moveItem : listMove) {
-            for (InboxMessageItem inboxMessageItem : list) {
-                if (moveItem.getMessageId() == inboxMessageItem.getMessageId()) {
+        for (ListMessage moveItem : listMove) {
+            for (ListMessage inboxMessageItem : list) {
+                if (moveItem.getMsgId() == inboxMessageItem.getMsgId()) {
                     list.remove(inboxMessageItem);
                     break;
                 }
@@ -408,11 +377,11 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
         notifyDataSetChanged();
     }
 
-    public ArrayList<InboxMessageItem> getListMove() {
+    public ArrayList<ListMessage> getListMove() {
         return listMove;
     }
 
-    public void setListMove(ArrayList<InboxMessageItem> listMove) {
+    public void setListMove(ArrayList<ListMessage> listMove) {
         this.listMove.addAll(listMove);
         notifyDataSetChanged();
     }
@@ -422,43 +391,43 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
         notifyDataSetChanged();
     }
 
-    public void markAsRead() {
-        for (InboxMessageItem moveItem : listMove) {
-            for (InboxMessageItem inboxMessageItem : list) {
-                if (moveItem.getMessageId() == inboxMessageItem.getMessageId()) {
-                    inboxMessageItem.setMessageReadStatus(STATE_READ);
-                    break;
-                }
-            }
-        }
-
-        listMove.clear();
-        notifyDataSetChanged();
-    }
-
-    public void markAsUnread() {
-        for (InboxMessageItem moveItem : listMove) {
-            for (InboxMessageItem inboxMessageItem : list) {
-                if (moveItem.getMessageId() == inboxMessageItem.getMessageId()) {
-                    inboxMessageItem.setMessageReadStatus(STATE_NOT_READ);
-                    break;
-                }
-            }
-        }
-
-        listMove.clear();
-        notifyDataSetChanged();
-    }
+//    public void markAsRead() {
+//        for (InboxMessageItem moveItem : listMove) {
+//            for (InboxMessageItem inboxMessageItem : list) {
+//                if (moveItem.getMessageId() == inboxMessageItem.getMessageId()) {
+//                    inboxMessageItem.setMessageReadStatus(STATE_READ);
+//                    break;
+//                }
+//            }
+//        }
+//
+//        listMove.clear();
+//        notifyDataSetChanged();
+//    }
+//
+//    public void markAsUnread() {
+//        for (InboxMessageItem moveItem : listMove) {
+//            for (InboxMessageItem inboxMessageItem : list) {
+//                if (moveItem.getMessageId() == inboxMessageItem.getMessageId()) {
+//                    inboxMessageItem.setMessageReadStatus(STATE_NOT_READ);
+//                    break;
+//                }
+//            }
+//        }
+//
+//        listMove.clear();
+//        notifyDataSetChanged();
+//    }
 
     public int getChosenMessageStatus() {
         int statusRead = -1;
         int statusUnread = -1;
 
-        for (InboxMessageItem inboxMessageItem : listMove) {
-            if (inboxMessageItem.getMessageReadStatus() == STATE_READ)
+        for (ListMessage inboxMessageItem : listMove) {
+            if (inboxMessageItem.getAttributes().getReadStatus() == STATE_READ)
                 statusRead = STATE_READ;
 
-            if (inboxMessageItem.getMessageReadStatus() == STATE_NOT_READ) {
+            if (inboxMessageItem.getAttributes().getReadStatus() == STATE_NOT_READ) {
                 statusUnread = STATE_NOT_READ;
             }
         }

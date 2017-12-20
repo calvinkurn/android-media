@@ -1,13 +1,22 @@
 package com.tokopedia.digital.tokocash.entity;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by nabillasabbaha on 10/20/17.
  */
 
 public class WithdrawSaldoEntity {
 
+    @SerializedName("amount")
+    @Expose
     private long amount;
+    @SerializedName("dest_email")
+    @Expose
     private String dest_email;
+    @SerializedName("withdrawal_id")
+    @Expose
     private int withdrawal_id;
 
     public long getAmount() {

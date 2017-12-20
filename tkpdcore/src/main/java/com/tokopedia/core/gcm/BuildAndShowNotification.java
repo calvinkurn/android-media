@@ -47,10 +47,6 @@ public class BuildAndShowNotification {
         cacheManager = new FCMCacheManager(context);
     }
 
-    public interface OnGetFileListener {
-        void onFileReady(File file);
-    }
-
     public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass,
                                          NotificationConfiguration configuration) {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -292,7 +288,6 @@ public class BuildAndShowNotification {
         mNotificationManager.notify(configuration.getNotificationId(), notif);
     }
 
-
     private void saveIncomingNotification(String title, Bundle data) {
         NotificationEntity notificationEntity = new NotificationEntity();
         notificationEntity.setCode(String.valueOf(GCMUtils.getCode(data)));
@@ -415,8 +410,12 @@ public class BuildAndShowNotification {
 
     private int getDrawableIcon() {
         if (GlobalConfig.isSellerApp())
-            return R.drawable.ic_stat_notify2;
+            return R.drawable.ic_status_bar_toped_topseller;
         else
             return R.drawable.ic_stat_notify_white;
+    }
+
+    public interface OnGetFileListener {
+        void onFileReady(File file);
     }
 }

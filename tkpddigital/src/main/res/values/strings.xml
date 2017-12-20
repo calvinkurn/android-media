@@ -1,14 +1,5 @@
 <resources>
     <string name="app_name">tkpddigital</string>
-    <string name="notes_voucher">* Hanya berlaku untuk satu kali pembayaran.\n** Sisa nilai promo
-        tidak dapat dikembalikan (hangus) apabila
-        melewati masa kadaluarsa."</string>
-    <string name="kode_voucher">Kode Promo</string>
-    <string name="error_voucher">Kode promo tidak ditemukan</string>
-    <string name="empty_voucher">Masukkan kode promo terlebih dahulu</string>
-    <string name="cancel_voucher">Batalkan</string>
-    <string name="use_voucher">Gunakan</string>
-    <string name="title_detail_voucher">Anda mendapatkan promo:</string>
     <string name="link_lihat_detail">Lihat Detail</string>
     <string name="link_tutup">Tutup</string>
     <string name="user_price_info">Masukkan jumlah nominal yang akan dibayar, %1$s sampai
@@ -163,4 +154,8 @@
     <string name="tokocash_label_top_up">Top Up TokoCash</string>
     <string name="tokocash_label_balance">TokoCash Balance</string>
     <string name="tokocash_label_hold_balance">Dana Tertahan</string>
+
+    <string name="title_waiting_transaction_tokocash">Transaksi Menunggu</string>
+    <string name="back_to_top">Kembali ke Atas</string>
+
 </resources>

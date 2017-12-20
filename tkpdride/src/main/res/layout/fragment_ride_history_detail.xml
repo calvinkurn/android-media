@@ -53,7 +53,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_ride_start_time"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="4dp"
                         android:layout_marginEnd="150dp"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
                         android:layout_marginRight="150dp"
@@ -61,6 +61,20 @@
                         android:textColor="@color/grey_600"
                         android:textSize="12sp"
                         tools:text="Honda Amaze (XX 1234)" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/tv_trip_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_driver_car_display_name"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:textColor="@color/grey_600"
+                        android:textSize="12sp"
+                        tools:text="Trip ID: b8309a8f-22c6-4715-b781-ec76ed6717f0" />
 
 
                     <android.support.v7.widget.AppCompatTextView
@@ -321,28 +335,17 @@
                         android:paddingTop="8dp"
                         android:textColor="@color/black_full"
                         android:textSize="14sp"
+                        android:visibility="visible"
                         tools:text="-" />
-
-
-                    <View
-                        android:id="@+id/fare_sep"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@id/tv_label_discount"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/grey_300" />
 
                     <TextView
                         android:id="@+id/label_total_charged"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/fare_sep"
-                        android:drawableLeft="@drawable/ic_tokocash_icon"
-                        android:drawablePadding="10dp"
-                        android:drawableTint="@color/grey_800"
+                        android:layout_below="@id/tv_label_discount"
+                        android:layout_marginTop="8dp"
                         android:gravity="center"
-                        android:text="@string/complete_trip_tokocash_charged"
+                        android:text="@string/complete_trip_amount_charged"
                         android:textColor="@color/grey_800"
                         android:textSize="14sp" />
 
@@ -351,7 +354,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@id/fare_sep"
+                        android:layout_below="@id/tv_label_discount"
+                        android:layout_marginTop="8dp"
                         android:textColor="@color/black_full"
                         android:textSize="14sp"
                         tools:text="-" />
@@ -378,7 +382,55 @@
                         android:textSize="14sp"
                         tools:text="-" />
 
+                    <View
+                        android:id="@+id/fare_sep"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/tv_label_cashback"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/grey_300" />
+
+                    <TextView
+                        android:id="@+id/tv_label_pending_fare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/fare_sep"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/complete_trip_pending_fare"
+                        android:textColor="@color/grey_800"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_pending_fare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/fare_sep"
+                        android:paddingTop="8dp"
+                        android:textColor="@color/red_500"
+                        android:textSize="14sp"
+                        tools:text="-" />
+
+                    <TextView
+                        android:id="@+id/btn_pay_pending_fare"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_below="@id/tv_label_pending_fare"
+                        android:layout_marginLeft="@dimen/thirty_dp"
+                        android:layout_marginRight="@dimen/thirty_dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/rounded_filled_green_bttn"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:text="@string/complete_pay_pending_fare"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_small" />
+
                 </RelativeLayout>
+
 
                 <RelativeLayout
                     android:id="@+id/layout_rate"

@@ -1,0 +1,16 @@
+package com.tokopedia.core.router.loyaltytokopoint;
+
+import android.app.DialogFragment;
+
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+
+/**
+ * @author anggaprasetiyo on 08/12/17.
+ */
+
+public interface ILoyaltyRouter {
+    String LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG
+            = "LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG";
+
+    DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif);
+}

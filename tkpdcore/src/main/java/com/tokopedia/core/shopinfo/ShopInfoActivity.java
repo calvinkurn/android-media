@@ -12,7 +12,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -34,10 +33,10 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
@@ -70,6 +69,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.widgets.NonSwipeableViewPager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -105,7 +105,7 @@ public class ShopInfoActivity extends BaseActivity
     public final static int NAVIGATION_TO_INFO = 6;
 
     private class ViewHolder {
-        ViewPager pager;
+        NonSwipeableViewPager pager;
         TabLayout indicator;
         AppBarLayout appBarLayout;
         ImageView banner;
@@ -344,13 +344,14 @@ public class ShopInfoActivity extends BaseActivity
         return new ActionShopInfoRetrofit.OnActionToggleFavListener() {
             @Override
             public void onSuccess() {
+                TrackingUtils.sendMoEngageFavoriteEvent(shopModel);
                 if (shopModel.info.shopAlreadyFavorited == 1) {
-                    if(getApplication() instanceof IReactNativeRouter) {
+                    if (getApplication() instanceof IReactNativeRouter) {
                         IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
                         reactNativeRouter.sendRemoveFavoriteEmitter(String.valueOf(shopModel.info.shopId), SessionHandler.getLoginID(ShopInfoActivity.this));
                     }
                 } else {
-                    if(getApplication() instanceof IReactNativeRouter) {
+                    if (getApplication() instanceof IReactNativeRouter) {
                         IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
                         reactNativeRouter.sendAddFavoriteEmitter(String.valueOf(shopModel.info.shopId), SessionHandler.getLoginID(ShopInfoActivity.this));
                     }
@@ -493,7 +494,7 @@ public class ShopInfoActivity extends BaseActivity
 
     private void initView() {
         holder = new ViewHolder();
-        holder.pager = (ViewPager) findViewById(R.id.view_pager);
+        holder.pager = (NonSwipeableViewPager) findViewById(R.id.view_pager);
         holder.indicator = (TabLayout) findViewById(R.id.indicator);
         holder.banner = (ImageView) findViewById(R.id.banner);
         holder.shopName = (TextView) findViewById(R.id.shop_name);
@@ -573,7 +574,11 @@ public class ShopInfoActivity extends BaseActivity
     private void updateView() throws Exception {
         facadeAction.setShopModel(shopModel);
         if (shopModel.info.shopIsOfficial == 1) {
-            adapter.initOfficialShop(shopModel);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                adapter.initOfficialShop(shopModel);
+            } else {
+                adapter.initRegularShop(shopModel);
+            }
         } else {
             adapter.initRegularShop(shopModel);
         }
@@ -640,7 +645,7 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
-        if(data.badges != null) {
+        if (data.badges != null) {
             List<Badge> badges = data.badges;
             for (int i = 0; i < badges.size(); i++) {
                 Badge badge = badges.get(i);
@@ -762,7 +767,7 @@ public class ShopInfoActivity extends BaseActivity
                         .setUri(shopModel.info.shopUrl)
                         .setId(shopModel.info.shopId)
                         .build();
-                startActivity(ShareActivity.createIntent(ShopInfoActivity.this,shareData));
+                startActivity(ShareActivity.createIntent(ShopInfoActivity.this, shareData));
             }
         };
     }
@@ -823,7 +828,7 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (SessionHandler.isV4Login(ShopInfoActivity.this)){
+                if (SessionHandler.isV4Login(ShopInfoActivity.this)) {
                     holder.favorite.startAnimation(animateFav);
                     facadeAction.actionToggleFav();
                 } else {
@@ -856,11 +861,13 @@ public class ShopInfoActivity extends BaseActivity
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
             if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                UnifyTracking.eventShopSendChat();
                 intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                         .getAskSellerIntent(this,
                                 shopModel.info.shopId,
                                 shopModel.info.shopName,
-                                TkpdInboxRouter.SHOP);
+                                TkpdInboxRouter.SHOP,
+                                shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
         } else {
@@ -1031,14 +1038,22 @@ public class ShopInfoActivity extends BaseActivity
         if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
-        } if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+        }
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
             super.onBackPressed();
         } else if (isTaskRoot()) {
             startActivity(HomeRouter.getHomeActivity(this));
             super.onBackPressed();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
+
+    public void swipeAble(boolean able) {
+        if (holder != null && holder.pager != null) {
+            holder.pager.setSwipeAble(able);
+        }
+    }
+
 }

@@ -1,5 +1,8 @@
 package com.tokopedia.digital.tokocash.entity;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -8,10 +11,20 @@ import java.util.List;
 
 public class OAuthInfoEntity {
 
+    @SerializedName("account_list")
+    @Expose
     private List<AccountWalletListEntity> account_list;
+    @SerializedName("tokopedia_user_id")
+    @Expose
     private String tokopedia_user_id;
+    @SerializedName("email")
+    @Expose
     private String email;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("mobile")
+    @Expose
     private String mobile;
 
     public List<AccountWalletListEntity> getAccount_list() {
