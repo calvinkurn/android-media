@@ -215,4 +215,28 @@ public class DestinationViewModel {
     private String districtName;
     private String geoLocation;
     private String password;
+
+    @Override
+    public String toString() {
+        return "DestinationViewModel{" +
+                "longitude='" + longitude + '\'' +
+                ", countryName='" + countryName + '\'' +
+                ", cityId='" + cityId + '\'' +
+                ", districtId='" + districtId + '\'' +
+                ", provinceId='" + provinceId + '\'' +
+                ", receiverName='" + receiverName + '\'' +
+                ", addressName='" + addressName + '\'' +
+                ", addressId='" + addressId + '\'' +
+                ", receiverPhone='" + receiverPhone + '\'' +
+                ", provinceName='" + provinceName + '\'' +
+                ", addressStatus=" + addressStatus +
+                ", postalCode='" + postalCode + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", addressStreet='" + addressStreet + '\'' +
+                ", cityName='" + cityName + '\'' +
+                ", districtName='" + districtName + '\'' +
+                ", geoLocation='" + geoLocation + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

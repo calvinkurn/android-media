@@ -32,7 +32,6 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.LogisticRouter;
 import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -40,6 +39,7 @@ import com.tokopedia.core.router.TkpdSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.logistic.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -804,12 +804,14 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener onActivityResultListener){
-        return DestinationViewModel.convertFromBundle(
-                data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
-        );
-
+        if(onActivityResultListener != null){
+            onActivityResultListener.onActivityResult(DestinationViewModel.convertFromBundle(
+                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+            ));
+        }
 
     }
 }

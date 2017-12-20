@@ -5,20 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.router.LogisticRouter;
+import com.tokopedia.core.router.OnActivityResultListener;
+import com.tokopedia.core.router.logistic.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.ShopOpenStepperModel;
-import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
+ import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.holder.ShopOpenMandatoryLocationHeaderViewHolder;
+import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
 
 
 /**
@@ -30,6 +33,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     protected ShopOpenStepperModel stepperModel;
     protected StepperListener stepperListener;
     private LogisticRouter logisticRouter;
+    private static final String TAG = "ShopOpenMandatoryLocati";
 
     public static ShopOpenMandatoryLocationFragment getInstance(){
         return new ShopOpenMandatoryLocationFragment();
@@ -65,7 +69,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         if(resultCode == Activity.RESULT_OK && data != null){
             switch (requestCode){
                 case REQUEST_CODE_ADDRESS:
-                    logisticRouter.onActivityResult(requestCode, resultCode, data);
+                    logisticRouter.onActivityResultChooseAddress(requestCode, data, new OnActivityResultListener<DestinationViewModel>() {
+                        @Override
+                        public void onActivityResult(DestinationViewModel rawData) {
+                            Log.d(TAG, rawData.toString());
+                        }
+                    });
                     break;
                 default:
                     break;

@@ -26,7 +26,7 @@ public class ShopOpenMandatoryLocationHeaderViewHolder {
         });
     }
 
-    interface ViewHolderListener{
+    public interface ViewHolderListener{
         void navigateToChooseAddressActivityRequest();
     }
 }

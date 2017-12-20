@@ -12,5 +12,5 @@ import com.tokopedia.core.router.OnActivityResultListener;
 public interface LogisticRouter {
     void navigateToChooseAddressActivityRequest(Intent intent, int requestCode);
     void navigateToChooseAddressActivityRequest(Fragment fragment, Intent intent, int requestCode);
-    void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener onActivityResultListener);
+    void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener<?> onActivityResultListener);
 }
