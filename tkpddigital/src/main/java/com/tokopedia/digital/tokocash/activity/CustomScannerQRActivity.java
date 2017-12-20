@@ -1,12 +1,17 @@
 package com.tokopedia.digital.tokocash.activity;
 
-import android.app.Activity;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -17,6 +22,7 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.tokocash.compoundview.ScannerLaserView;
 
 import java.util.List;
 
@@ -28,7 +34,8 @@ public class CustomScannerQRActivity extends BasePresenterActivity {
 
     private DecoratedBarcodeView decoratedBarcodeView;
     private ToggleButton switchTorch;
-
+    private ScannerLaserView scannerLaser;
+    private boolean repeatUp;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -54,6 +61,42 @@ public class CustomScannerQRActivity extends BasePresenterActivity {
     protected void initView() {
         decoratedBarcodeView = (DecoratedBarcodeView) findViewById(R.id.zxing_barcode_scanner);
         switchTorch = (ToggleButton) findViewById(R.id.switch_flashlight);
+        scannerLaser = (ScannerLaserView) findViewById(R.id.scanner_laser_view);
+
+        TranslateAnimation mAnimation = new TranslateAnimation(
+                TranslateAnimation.ABSOLUTE, 0f,
+                TranslateAnimation.ABSOLUTE, 0f,
+                TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+                TranslateAnimation.RELATIVE_TO_PARENT, 1.0f);
+        mAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                if (repeatUp) {
+                    scannerLaser.setBackground(ContextCompat
+                            .getDrawable(getApplicationContext(), R.drawable.digital_gradient_green_down));
+                    repeatUp = false;
+                } else {
+                    scannerLaser.setBackground(ContextCompat
+                            .getDrawable(getApplicationContext(), R.drawable.digital_gradient_green_up));
+                    repeatUp = true;
+                }
+            }
+        });
+        mAnimation.setDuration(3000);
+        mAnimation.setRepeatCount(-1);
+        mAnimation.setRepeatMode(Animation.REVERSE);
+        mAnimation.setInterpolator(new LinearInterpolator());
+        scannerLaser.setAnimation(mAnimation);
 
         decoratedBarcodeView.decodeContinuous(getBarcodeCallback());
 
