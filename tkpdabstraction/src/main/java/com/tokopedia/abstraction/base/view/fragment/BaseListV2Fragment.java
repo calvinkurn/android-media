@@ -174,6 +174,7 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
             swipeToRefresh.setEnabled(true);
             swipeToRefresh.setRefreshing(false);
         }
+        adapter.hideLoading();
         hideSnackBarRetry();
     }
 

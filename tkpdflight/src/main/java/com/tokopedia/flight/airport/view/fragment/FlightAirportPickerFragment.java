@@ -114,6 +114,16 @@ public class FlightAirportPickerFragment extends BaseSearchListV2Fragment<Flight
     }
 
     @Override
+    public void showGetAirportListLoading() {
+        showLoading();
+    }
+
+    @Override
+    public void hideGetAirportListLoading() {
+        hideLoading();
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }

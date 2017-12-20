@@ -26,6 +26,7 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
 
     @Override
     public void getAirportList(String text) {
+        getView().showGetAirportListLoading();
         flightAirportPickerUseCase.execute(FlightAirportPickerUseCase.createRequestParams(text), getSubscriberGetAirportList());
     }
 
@@ -66,12 +67,14 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
             @Override
             public void onError(Throwable e) {
                 if(isViewAttached()){
+                    getView().hideGetAirportListLoading();
                     getView().showGetListError();
                 }
             }
 
             @Override
             public void onNext(List<FlightAirportDB> flightAirportDBs) {
+                getView().hideGetAirportListLoading();
                 getView().renderList(flightAirportDBs);
             }
         };

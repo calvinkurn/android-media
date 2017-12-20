@@ -24,6 +24,10 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
 
     private static final String EXTRA_DASHBOARD = "EXTRA_DASHBOARD";
 
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, FlightDashboardActivity.class);
+    }
+
     public static Intent getCallingIntent(Context context, FlightDashboardViewModel viewModel) {
         Intent intent = new Intent(context, FlightDashboardActivity.class);
         intent.putExtra(EXTRA_DASHBOARD, viewModel);
