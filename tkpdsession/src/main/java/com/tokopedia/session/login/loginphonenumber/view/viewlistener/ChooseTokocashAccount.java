@@ -29,6 +29,6 @@ public interface ChooseTokocashAccount {
 
         void loginWithTokocash(String accessToken, AccountTokocash accountTokocash);
 
-        void clearUserData();
+        void clearToken();
     }
 }

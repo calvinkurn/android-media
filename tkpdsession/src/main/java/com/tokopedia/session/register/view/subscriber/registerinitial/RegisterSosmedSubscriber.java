@@ -4,7 +4,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
-import com.tokopedia.session.register.domain.model.RegisterSosmedDomain;
+import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 
 import rx.Subscriber;
@@ -13,7 +13,7 @@ import rx.Subscriber;
  * @author by nisie on 10/12/17.
  */
 
-public class RegisterSosmedSubscriber extends Subscriber<RegisterSosmedDomain> {
+public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     private final RegisterInitial.View viewListener;
 
     public RegisterSosmedSubscriber(RegisterInitial.View viewListener) {
@@ -28,13 +28,11 @@ public class RegisterSosmedSubscriber extends Subscriber<RegisterSosmedDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.dismissProgressBar();
-
         viewListener.onErrorRegisterSosmed(ErrorHandler.getErrorMessage(e));
-        viewListener.clearToken();
     }
 
     @Override
-    public void onNext(RegisterSosmedDomain registerSosmedDomain) {
+    public void onNext(LoginSosmedDomain registerSosmedDomain) {
         viewListener.dismissProgressBar();
         if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
             viewListener.onGoToCreatePasswordPage(registerSosmedDomain.getInfo()

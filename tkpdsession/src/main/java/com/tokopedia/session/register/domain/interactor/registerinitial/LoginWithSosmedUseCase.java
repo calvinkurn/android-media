@@ -6,99 +6,113 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
-import com.tokopedia.session.register.domain.model.RegisterSosmedDomain;
+import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
  * @author by nisie on 10/11/17.
  */
 
-public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
+public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
 
     protected final GetTokenUseCase getTokenUseCase;
     protected final GetUserInfoUseCase getUserInfoUseCase;
     protected final MakeLoginUseCase makeLoginUseCase;
+    private final SessionHandler sessionHandler;
 
     @Inject
-    public RegisterWithSosmedUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     GetTokenUseCase getTokenUseCase,
-                                     GetUserInfoUseCase getUserInfoUseCase,
-                                     MakeLoginUseCase makeLoginUseCase) {
+    public LoginWithSosmedUseCase(ThreadExecutor threadExecutor,
+                                  PostExecutionThread postExecutionThread,
+                                  SessionHandler sessionHandler,
+                                  GetTokenUseCase getTokenUseCase,
+                                  GetUserInfoUseCase getUserInfoUseCase,
+                                  MakeLoginUseCase makeLoginUseCase) {
         super(threadExecutor, postExecutionThread);
+        this.sessionHandler = sessionHandler;
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
     }
 
     @Override
-    public Observable<RegisterSosmedDomain> createObservable(final RequestParams requestParams) {
-        RegisterSosmedDomain registerSosmedDomain = new RegisterSosmedDomain();
+    public Observable<LoginSosmedDomain> createObservable(final RequestParams requestParams) {
+        LoginSosmedDomain registerSosmedDomain = new LoginSosmedDomain();
         return getToken(registerSosmedDomain,
                 GetTokenUseCase.getParamThirdParty(
                         requestParams.getInt(GetTokenUseCase.SOCIAL_TYPE, -1),
                         requestParams.getString(GetTokenUseCase.ACCESS_TOKEN, "")
                 ))
-                .flatMap(new Func1<RegisterSosmedDomain, Observable<RegisterSosmedDomain>>() {
+                .flatMap(new Func1<LoginSosmedDomain, Observable<LoginSosmedDomain>>() {
                     @Override
-                    public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
+                    public Observable<LoginSosmedDomain> call(LoginSosmedDomain registerSosmedDomain) {
                         return getInfo(registerSosmedDomain);
                     }
                 })
-                .flatMap(new Func1<RegisterSosmedDomain, Observable<RegisterSosmedDomain>>() {
+                .flatMap(new Func1<LoginSosmedDomain, Observable<LoginSosmedDomain>>() {
                     @Override
-                    public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
+                    public Observable<LoginSosmedDomain> call(LoginSosmedDomain registerSosmedDomain) {
                         if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-                            return makeLogin(registerSosmedDomain, requestParams);
+                            return makeLogin(registerSosmedDomain);
                         } else {
                             return Observable.just(registerSosmedDomain);
                         }
                     }
-                });
+                })
+                .doOnError(clearToken());
     }
 
-    protected Observable<RegisterSosmedDomain> makeLogin(final RegisterSosmedDomain
-                                                                 registerSosmedDomain,
-                                                         RequestParams requestParams) {
+    private Action1<Throwable> clearToken() {
+        return new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                sessionHandler.clearToken();
+            }
+        };
+    }
+
+    protected Observable<LoginSosmedDomain> makeLogin(final LoginSosmedDomain
+                                                                 registerSosmedDomain) {
         return makeLoginUseCase.getExecuteObservable(MakeLoginUseCase.getParam(
-                requestParams.getString(MakeLoginUseCase.PARAM_USER_ID, "")
+                String.valueOf(registerSosmedDomain.getInfo().getGetUserInfoDomainData().getUserId())
         ))
-                .flatMap(new Func1<MakeLoginDomain, Observable<RegisterSosmedDomain>>() {
+                .flatMap(new Func1<MakeLoginDomain, Observable<LoginSosmedDomain>>() {
                     @Override
-                    public Observable<RegisterSosmedDomain> call(MakeLoginDomain makeLoginDomain) {
+                    public Observable<LoginSosmedDomain> call(MakeLoginDomain makeLoginDomain) {
                         registerSosmedDomain.setMakeLoginModel(makeLoginDomain);
                         return Observable.just(registerSosmedDomain);
                     }
                 });
     }
 
-    protected Observable<RegisterSosmedDomain> getInfo(final RegisterSosmedDomain
+    protected Observable<LoginSosmedDomain> getInfo(final LoginSosmedDomain
                                                                registerSosmedDomain) {
         return getUserInfoUseCase.createObservable(RequestParams.EMPTY)
-                .flatMap(new Func1<GetUserInfoDomainModel, Observable<RegisterSosmedDomain>>() {
+                .flatMap(new Func1<GetUserInfoDomainModel, Observable<LoginSosmedDomain>>() {
                     @Override
-                    public Observable<RegisterSosmedDomain> call(GetUserInfoDomainModel getUserInfoDomainModel) {
+                    public Observable<LoginSosmedDomain> call(GetUserInfoDomainModel getUserInfoDomainModel) {
                         registerSosmedDomain.setInfo(getUserInfoDomainModel);
                         return Observable.just(registerSosmedDomain);
                     }
                 });
     }
 
-    protected Observable<RegisterSosmedDomain> getToken(final RegisterSosmedDomain registerSosmedDomain,
-                                                        RequestParams params) {
+    protected Observable<LoginSosmedDomain> getToken(final LoginSosmedDomain registerSosmedDomain,
+                                                     RequestParams params) {
         return getTokenUseCase.createObservable(params)
-                .flatMap(new Func1<TokenViewModel, Observable<RegisterSosmedDomain>>() {
+                .flatMap(new Func1<TokenViewModel, Observable<LoginSosmedDomain>>() {
                     @Override
-                    public Observable<RegisterSosmedDomain> call(TokenViewModel tokenViewModel) {
+                    public Observable<LoginSosmedDomain> call(TokenViewModel tokenViewModel) {
                         registerSosmedDomain.setTokenModel(tokenViewModel);
                         return Observable.just(registerSosmedDomain);
                     }
@@ -106,30 +120,28 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
     }
 
 
-    private static RequestParams getParamRegisterThirdParty(int socialType, String accessToken) {
+    private static RequestParams getParamThirdParty(int socialType, String accessToken) {
         return GetTokenUseCase.getParamThirdParty(
                 socialType,
                 accessToken
         );
     }
 
-    public static RequestParams getParamFacebook(AccessToken accessToken, String tempUserId) {
+    public static RequestParams getParamFacebook(AccessToken accessToken) {
         RequestParams params = RequestParams.create();
         params.putAll(
-                getParamRegisterThirdParty(GetTokenUseCase.SOCIAL_TYPE_FACEBOOK,
+                getParamThirdParty(GetTokenUseCase.SOCIAL_TYPE_FACEBOOK,
                         accessToken.getToken())
                         .getParameters());
-        params.putString(MakeLoginUseCase.PARAM_USER_ID, tempUserId);
         return params;
     }
 
-    public static RequestParams getParamGoogle(String accessToken, String tempUserId) {
+    public static RequestParams getParamGoogle(String accessToken) {
         RequestParams params = RequestParams.create();
         params.putAll(
-                getParamRegisterThirdParty(GetTokenUseCase.SOCIAL_TYPE_GPLUS,
+                getParamThirdParty(GetTokenUseCase.SOCIAL_TYPE_GPLUS,
                         accessToken)
                         .getParameters());
-        params.putString(MakeLoginUseCase.PARAM_USER_ID, tempUserId);
         return params;
     }
 

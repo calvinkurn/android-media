@@ -9,19 +9,24 @@ import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
  */
 
 public class GetFacebookCredentialSubscriber {
-    private final RegisterInitial.View viewListener;
 
-    public GetFacebookCredentialSubscriber(RegisterInitial.View viewListener) {
+    public interface GetFacebookCredentialListener {
+        void onErrorGetFacebookCredential(String errorMessage);
+
+        void onSuccessGetFacebookCredential(AccessToken accessToken);
+    }
+
+    private final GetFacebookCredentialListener viewListener;
+
+    public GetFacebookCredentialSubscriber(GetFacebookCredentialListener viewListener) {
         this.viewListener = viewListener;
     }
 
     public void onError(Exception e) {
-        viewListener.dismissProgressBar();
         viewListener.onErrorGetFacebookCredential(ErrorHandler.getErrorMessage(e));
     }
 
     public void onSuccess(AccessToken accessToken) {
-        viewListener.dismissProgressBar();
         viewListener.onSuccessGetFacebookCredential(accessToken);
     }
 }

@@ -9,8 +9,8 @@ import com.facebook.CallbackManager;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
-import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
+import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 
 import java.util.ArrayList;
@@ -32,10 +32,6 @@ public interface RegisterInitial {
 
         void showProgressBar();
 
-        void onErrorGetFacebookCredential(String errorMessage);
-
-        void onSuccessGetFacebookCredential(AccessToken accessToken);
-
         void dismissProgressBar();
 
         void onErrorRegisterSosmed(String errorMessage);
@@ -49,13 +45,15 @@ public interface RegisterInitial {
         void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone);
 
         void onGoToPhoneVerification();
+
+        GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getProvider();
 
-        void registerWebview(FragmentActivity activity, Intent data);
+        void registerWebview(Intent data);
 
         void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
 
@@ -63,6 +61,6 @@ public interface RegisterInitial {
 
         void clearToken();
 
-        void registerGoogle(LoginGoogleModel model);
+        void registerGoogle(String model);
     }
 }

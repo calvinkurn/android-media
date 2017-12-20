@@ -153,11 +153,33 @@ public class SessionHandler {
         MethodChecker.removeAllCookies(context);
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
-
         clearFeedCache();
         AppWidgetUtil.sendBroadcastToAppWidget(context);
 
         deleteCacheBalanceTokoCash();
+    }
+
+
+    public void clearToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(LOGIN_ID, null);
+        editor.putString(FULL_NAME, null);
+        editor.putString(SHOP_ID, null);
+        editor.putBoolean(IS_LOGIN, false);
+        editor.putBoolean(IS_MSISDN_VERIFIED, false);
+        editor.putString(PHONE_NUMBER, null);
+        editor.putString(USER_DATA, null);
+        editor.putString(REFRESH_TOKEN, null);
+        editor.putString(ACCESS_TOKEN_TOKOCASH, null);
+        editor.putString(TOKEN_TYPE, null);
+        editor.putString(ACCESS_TOKEN, null);
+        editor.apply();
+
+        LocalCacheHandler.clearCache(context, MSISDN_SESSION);
+        LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
+        LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
+
     }
 
     private static void deleteCacheBalanceTokoCash() {

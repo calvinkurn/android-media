@@ -8,7 +8,7 @@ import com.tokopedia.session.domain.pojo.token.TokenViewModel;
  * @author by nisie on 10/11/17.
  */
 
-public class RegisterSosmedDomain {
+public class LoginSosmedDomain {
     private TokenViewModel tokenModel;
     private GetUserInfoDomainModel info;
     private MakeLoginDomain makeLoginModel;

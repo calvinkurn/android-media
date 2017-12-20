@@ -60,7 +60,7 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        sessionHandler.clearUserData(MainApplication.getAppContext());
+                        sessionHandler.clearToken();
                     }
                 });
     }

@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -34,17 +33,17 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
-import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
-import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
+import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
@@ -54,7 +53,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
 import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
@@ -65,7 +63,7 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 public class RegisterInitialFragment extends BaseDaggerFragment
         implements RegisterInitial.View {
 
-    private static final int REQUEST_LOGIN_WEBVIEW = 100;
+    private static final int REQUEST_REGISTER_WEBVIEW = 100;
     private static final int REQUEST_REGISTER_EMAIL = 101;
     private static final int REQUEST_LOGIN = 102;
     private static final int REQUEST_CREATE_PASSWORD = 103;
@@ -198,40 +196,31 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_LOGIN_WEBVIEW) {
+        if (requestCode == REQUEST_REGISTER_WEBVIEW) {
             handleRegisterWebview(resultCode, data);
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        } else if (requestCode == RC_SIGN_IN_GOOGLE) {
-            if (data != null) {
-                GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
-                String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+        } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
+            String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
 
-                LoginGoogleModel model = new LoginGoogleModel();
-                model.setFullName(googleSignInAccount.getDisplayName());
-                model.setGoogleId(googleSignInAccount.getId());
-                model.setEmail(googleSignInAccount.getEmail());
-                model.setAccessToken(accessToken);
+            UnifyTracking.eventMoRegistrationStart(
+                    AppEventTracking.GTMCacheValue.GMAIL);
 
-                UnifyTracking.eventMoRegistrationStart(
-                        AppEventTracking.GTMCacheValue.GMAIL);
-
-                presenter.registerGoogle(model);
-            }
+            presenter.registerGoogle(accessToken);
         } else if (requestCode == REQUEST_PHONE_VERIF) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        } else if ((requestCode == REQUEST_SECURITY_QUESTION
-                || requestCode == REQUEST_CREATE_PASSWORD)
-                && resultCode == Activity
-                .RESULT_CANCELED) {
+        } else {
             presenter.clearToken();
         }
     }
@@ -240,7 +229,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         if (resultCode == Activity.RESULT_CANCELED) {
             KeyboardHandler.DropKeyboard(getActivity(), getView());
         } else {
-            presenter.registerWebview(getActivity(), data);
+            presenter.registerWebview(data);
         }
     }
 
@@ -356,7 +345,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private void onRegisterWebviewClick(DiscoverItemViewModel discoverItemViewModel) {
         WebViewLoginFragment newFragment = WebViewLoginFragment
                 .createInstance(discoverItemViewModel.getUrl());
-        newFragment.setTargetFragment(RegisterInitialFragment.this, REQUEST_LOGIN_WEBVIEW);
+        newFragment.setTargetFragment(RegisterInitialFragment.this, REQUEST_REGISTER_WEBVIEW);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         newFragment.show(fragmentTransaction, WebViewLoginFragment.class.getSimpleName());
         getActivity().getWindow().setSoftInputMode(
@@ -382,16 +371,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             container.setVisibility(View.GONE);
         if (loginButton != null)
             loginButton.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onErrorGetFacebookCredential(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
-    public void onSuccessGetFacebookCredential(AccessToken accessToken) {
-        presenter.registerFacebook(accessToken);
     }
 
     @Override
@@ -424,7 +403,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         userInfoDomainData.getBdayYear(),
                         userInfoDomainData.getBdayMonth(),
                         userInfoDomainData.getBdayDay(),
-                        userInfoDomainData.getCreatePasswordList())),
+                        userInfoDomainData.getCreatePasswordList(),
+                        String.valueOf(userInfoDomainData.getUserId()))),
                 REQUEST_CREATE_PASSWORD);
     }
 
@@ -450,6 +430,21 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         startActivityForResult(PhoneVerificationActivationActivity.getCallingIntent(
                 getActivity()),
                 REQUEST_PHONE_VERIF);
+    }
+
+    @Override
+    public GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener() {
+        return new GetFacebookCredentialSubscriber.GetFacebookCredentialListener() {
+            @Override
+            public void onErrorGetFacebookCredential(String errorMessage) {
+                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            }
+
+            @Override
+            public void onSuccessGetFacebookCredential(AccessToken accessToken) {
+                presenter.registerFacebook(accessToken);
+            }
+        };
     }
 
     @Override

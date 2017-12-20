@@ -1,8 +1,15 @@
 package com.tokopedia.session.login.loginemail.view.viewlistener;
 
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.session.login.loginemail.domain.model.LoginEmailDomain;
+import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.session.data.viewmodel.SecurityDomain;
+import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 
 import java.util.ArrayList;
@@ -25,8 +32,6 @@ public interface Login {
 
         void dismissLoadingLogin();
 
-        void goToSecurityQuestion(LoginEmailDomain loginResult);
-
         void onSuccessLogin();
 
         void onErrorLogin(String errorMessage);
@@ -40,6 +45,22 @@ public interface Login {
         void onErrorDiscoverLogin(String errorMessage);
 
         void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> providers);
+
+        GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
+
+        void onGoToCreatePasswordPage(GetUserInfoDomainData getUserInfoDomainData);
+
+        void onGoToPhoneVerification();
+
+        void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone);
+
+        void setSmartLock();
+
+        void resetToken();
+
+        void onErrorLogin(String errorMessage, int codeError);
+
+        void onGoToActivationPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -52,10 +73,14 @@ public interface Login {
 
         void discoverLogin();
 
-        void loginWebview();
+        void loginWebview(Intent data);
 
-        void loginGoogle();
+        void loginGoogle(String accessToken);
 
-        void loginFacebook();
+        void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
+
+        void loginFacebook(AccessToken accessToken);
+
+        void resetToken();
     }
 }

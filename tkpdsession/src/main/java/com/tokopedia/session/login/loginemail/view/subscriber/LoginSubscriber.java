@@ -13,6 +13,7 @@ import rx.Subscriber;
  */
 
 public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
+    private static final String NOT_ACTIVATED = "belum diaktivasi";
     private final Login.View view;
 
     public LoginSubscriber(Login.View view) {
@@ -27,17 +28,27 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingLogin();
-        view.onErrorLogin(ErrorHandler.getErrorMessage(e));
+        if (e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)) {
+            view.onGoToActivationPage();
+        } else {
+            view.onErrorLogin(ErrorHandler.getErrorMessage(e));
+        }
     }
 
     @Override
     public void onNext(LoginEmailDomain loginEmailDomain) {
         view.dismissLoadingLogin();
         if (goToSecurityQuestion(loginEmailDomain.getLoginResult())) {
-            view.goToSecurityQuestion(loginEmailDomain);
+            view.setSmartLock();
+            view.onGoToSecurityQuestion(loginEmailDomain.getLoginResult().getSecurityDomain(),
+                    loginEmailDomain.getInfo().getGetUserInfoDomainData().getFullName(),
+                    loginEmailDomain.getInfo().getGetUserInfoDomainData().getEmail(),
+                    loginEmailDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else if (loginEmailDomain.getLoginResult().isLogin()) {
+            view.setSmartLock();
             view.onSuccessLogin();
         } else {
+            view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }

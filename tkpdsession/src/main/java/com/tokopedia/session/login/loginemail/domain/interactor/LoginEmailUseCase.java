@@ -54,11 +54,11 @@ public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
                 .doOnError(resetToken());
     }
 
-    private Action1<? super Throwable> resetToken() {
+    private Action1<Throwable> resetToken() {
         return new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-                sessionHandler.clearUserData(MainApplication.getAppContext());
+                sessionHandler.clearToken();
             }
         };
     }

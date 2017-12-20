@@ -22,17 +22,19 @@ public class CreatePasswordViewModel implements Parcelable {
     private String confirmPass;
     private String registerTos;
     private String dateText;
+    private String loginId;
     private List<String> allowedFieldList;
 
     public CreatePasswordViewModel(String email, String fullName,
                                    int bdayYear, int bdayMonth, int bdayDay,
-                                   List<String> allowedFieldList) {
+                                   List<String> allowedFieldList, String loginId) {
         this.email = email;
         this.bdayDay = bdayDay;
         this.bdayMonth = bdayMonth;
         this.bdayYear = bdayYear;
         this.fullName = fullName;
         this.allowedFieldList = allowedFieldList;
+        this.loginId = loginId;
     }
 
     public String getEmail() {
@@ -162,6 +164,7 @@ public class CreatePasswordViewModel implements Parcelable {
         registerTos = in.readString();
         dateText = in.readString();
         allowedFieldList = in.createStringArrayList();
+        loginId = in.readString();
     }
 
     @Override
@@ -178,6 +181,10 @@ public class CreatePasswordViewModel implements Parcelable {
         dest.writeString(registerTos);
         dest.writeString(dateText);
         dest.writeStringList(allowedFieldList);
+        dest.writeString(loginId);
     }
 
+    public String getLoginId() {
+        return loginId;
+    }
 }

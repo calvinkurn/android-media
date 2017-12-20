@@ -3,10 +3,11 @@ package com.tokopedia.session.register.domain.interactor.registerinitial;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
-import com.tokopedia.session.register.domain.model.RegisterSosmedDomain;
+import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
 
 import javax.inject.Inject;
 
@@ -17,36 +18,38 @@ import rx.functions.Func1;
  * @author by nisie on 10/16/17.
  */
 
-public class RegisterWebviewUseCase extends RegisterWithSosmedUseCase {
+public class LoginWebviewUseCase extends LoginWithSosmedUseCase {
 
     @Inject
-    public RegisterWebviewUseCase(ThreadExecutor threadExecutor,
-                                  PostExecutionThread postExecutionThread,
-                                  GetTokenUseCase getTokenUseCase,
-                                  GetUserInfoUseCase getUserInfoUseCase,
-                                  MakeLoginUseCase makeLoginUseCase) {
-        super(threadExecutor, postExecutionThread, getTokenUseCase, getUserInfoUseCase, makeLoginUseCase);
+    public LoginWebviewUseCase(ThreadExecutor threadExecutor,
+                               PostExecutionThread postExecutionThread,
+                               SessionHandler sessionHandler,
+                               GetTokenUseCase getTokenUseCase,
+                               GetUserInfoUseCase getUserInfoUseCase,
+                               MakeLoginUseCase makeLoginUseCase) {
+        super(threadExecutor, postExecutionThread, sessionHandler, getTokenUseCase,
+                getUserInfoUseCase, makeLoginUseCase);
     }
 
     @Override
-    public Observable<RegisterSosmedDomain> createObservable(final RequestParams requestParams) {
-        RegisterSosmedDomain registerSosmedDomain = new RegisterSosmedDomain();
+    public Observable<LoginSosmedDomain> createObservable(final RequestParams requestParams) {
+        LoginSosmedDomain registerSosmedDomain = new LoginSosmedDomain();
         return getToken(registerSosmedDomain,
                 GetTokenUseCase.getParamRegisterWebview(
                         requestParams.getString(GetTokenUseCase.CODE, ""),
                         requestParams.getString(GetTokenUseCase.REDIRECT_URI, "")
                 ))
-                .flatMap(new Func1<RegisterSosmedDomain, Observable<RegisterSosmedDomain>>() {
+                .flatMap(new Func1<LoginSosmedDomain, Observable<LoginSosmedDomain>>() {
                     @Override
-                    public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
+                    public Observable<LoginSosmedDomain> call(LoginSosmedDomain registerSosmedDomain) {
                         return getInfo(registerSosmedDomain);
                     }
                 })
-                .flatMap(new Func1<RegisterSosmedDomain, Observable<RegisterSosmedDomain>>() {
+                .flatMap(new Func1<LoginSosmedDomain, Observable<LoginSosmedDomain>>() {
                     @Override
-                    public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
+                    public Observable<LoginSosmedDomain> call(LoginSosmedDomain registerSosmedDomain) {
                         if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-                            return makeLogin(registerSosmedDomain, requestParams);
+                            return makeLogin(registerSosmedDomain);
                         } else {
                             return Observable.just(registerSosmedDomain);
                         }
@@ -54,10 +57,9 @@ public class RegisterWebviewUseCase extends RegisterWithSosmedUseCase {
                 });
     }
 
-    public static RequestParams getParamWebview(String code, String redirectUri, String tempLoginSession) {
+    public static RequestParams getParamWebview(String code, String redirectUri) {
         RequestParams params = RequestParams.create();
         params.putAll(GetTokenUseCase.getParamRegisterWebview(code, redirectUri).getParameters());
-        params.putString(MakeLoginUseCase.PARAM_USER_ID, tempLoginSession);
         return params;
     }
 }

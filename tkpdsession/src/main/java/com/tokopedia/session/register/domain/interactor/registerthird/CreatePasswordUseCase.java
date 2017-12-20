@@ -46,13 +46,9 @@ public class CreatePasswordUseCase extends UseCase<CreatePasswordDomain> {
 
     public static RequestParams getParam(String fullName, int bdayDay, int bdayMonth,
                                          int bdayYear, String newPass, String confirmPass,
-                                         String msisdn, String registerTos, String tempUserId) {
+                                         String msisdn, String registerTos, String userId) {
 
         RequestParams params = RequestParams.create();
-
-        params.getParameters().putAll(AuthUtil.generateParamsNetwork2(MainApplication
-                        .getAppContext(),
-                params.getParameters()));
         params.putString(FULLNAME, fullName);
         params.putInt(BIRTHDAY, bdayDay);
         params.putInt(BIRTHMONTH, bdayMonth);
@@ -61,7 +57,10 @@ public class CreatePasswordUseCase extends UseCase<CreatePasswordDomain> {
         params.putString(CONFIRM_PASSWORD, confirmPass);
         params.putString(MSISDN, msisdn);
         params.putString(REGISTER_TOS, registerTos);
-        params.putString(USER_ID, tempUserId);
+        params.putString(USER_ID, userId);
+        params.getParameters().putAll(AuthUtil.generateParamsNetworkObject(MainApplication
+                        .getAppContext(),
+                params.getParameters(), userId));
         return params;
     }
 }

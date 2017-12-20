@@ -60,7 +60,7 @@ public class CreatePasswordPresenter extends BaseDaggerPresenter<CreatePassword.
                             model.getConfirmPass(),
                             model.getMsisdn(),
                             model.getRegisterTos(),
-                            sessionHandler.getTempLoginSession(MainApplication.getAppContext())
+                            model.getLoginId()
                     ),
                     new CreatePasswordSubscriber(viewListener));
         }

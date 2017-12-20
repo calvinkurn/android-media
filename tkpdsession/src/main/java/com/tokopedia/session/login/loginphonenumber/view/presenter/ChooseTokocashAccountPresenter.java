@@ -45,7 +45,7 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
     }
 
     @Override
-    public void clearUserData() {
-        sessionHandler.clearUserData(MainApplication.getAppContext());
+    public void clearToken() {
+        sessionHandler.clearToken();
     }
 }

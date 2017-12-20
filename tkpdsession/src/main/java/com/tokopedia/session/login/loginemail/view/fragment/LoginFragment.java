@@ -21,15 +21,17 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -40,23 +42,37 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.activation.view.activity.ActivationActivity;
+import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.domain.model.LoginEmailDomain;
 import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
+import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
+import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.session.session.fragment.WebViewLoginFragment;
+import com.tokopedia.session.session.model.LoginModel;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
+import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * @author by nisie on 12/18/17.
@@ -74,6 +90,10 @@ public class LoginFragment extends BaseDaggerFragment
     private static final int REQUEST_SECURITY_QUESTION = 102;
     private static final int REQUEST_SMART_LOCK = 103;
     private static final int REQUEST_SAVE_SMART_LOCK = 104;
+    private static final int REQUEST_CREATE_PASSWORD = 105;
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 106;
+    private static final int REQUEST_LOGIN_WEBVIEW = 107;
+    private static final int REQUEST_ACTIVATE_ACCOUNT = 108;
 
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
@@ -87,6 +107,7 @@ public class LoginFragment extends BaseDaggerFragment
     TextInputLayout wrapperPassword;
 
     ArrayAdapter<String> autoCompleteAdapter;
+    CallbackManager callbackManager;
 
     @Inject
     LoginPresenter presenter;
@@ -125,6 +146,7 @@ public class LoginFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UserAuthenticationAnalytics.setActiveLogin();
+        callbackManager = CallbackManager.Factory.create();
 
     }
 
@@ -313,20 +335,6 @@ public class LoginFragment extends BaseDaggerFragment
         UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
     }
 
-    @Override
-    public void goToSecurityQuestion(LoginEmailDomain loginDomain) {
-        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
-                emailEditText.getText().toString(),
-                passwordEditText.getText().toString());
-
-        Intent intent = SecurityQuestionActivity.getCallingIntent(getActivity(),
-                loginDomain.getLoginResult().getSecurityDomain(),
-                loginDomain.getInfo().getGetUserInfoDomainData().getName(),
-                loginDomain.getInfo().getGetUserInfoDomainData().getEmail(),
-                loginDomain.getInfo().getGetUserInfoDomainData().getPhone());
-        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
-    }
-
     private void saveSmartLock(int state, String email, String password) {
         Intent intent = new Intent(getActivity(), SmartLockActivity.class);
         Bundle bundle = new Bundle();
@@ -414,7 +422,78 @@ public class LoginFragment extends BaseDaggerFragment
         }
     }
 
-    private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel, LoginTextView tv) {
+    @Override
+    public GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener() {
+        return new GetFacebookCredentialSubscriber.GetFacebookCredentialListener() {
+            @Override
+            public void onErrorGetFacebookCredential(String errorMessage) {
+                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            }
+
+            @Override
+            public void onSuccessGetFacebookCredential(AccessToken accessToken) {
+                presenter.loginFacebook(accessToken);
+            }
+        };
+    }
+
+    @Override
+    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
+        startActivityForResult(CreatePasswordActivity.getCallingIntent(getActivity(),
+                new CreatePasswordViewModel(
+                        userInfoDomainData.getEmail(),
+                        userInfoDomainData.getFullName(),
+                        userInfoDomainData.getBdayYear(),
+                        userInfoDomainData.getBdayMonth(),
+                        userInfoDomainData.getBdayDay(),
+                        userInfoDomainData.getCreatePasswordList(),
+                        String.valueOf(userInfoDomainData.getUserId()))),
+                REQUEST_CREATE_PASSWORD);
+    }
+
+    @Override
+    public void onGoToPhoneVerification() {
+        startActivityForResult(
+                PhoneVerificationActivationActivity.getCallingIntent(getActivity()),
+                REQUEST_VERIFY_PHONE_NUMBER);
+    }
+
+    @Override
+    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
+                                       String email, String phone) {
+
+        startActivityForResult(
+                SecurityQuestionActivity.getCallingIntent(getActivity(),
+                        securityDomain,
+                        fullName, email, phone),
+                REQUEST_SECURITY_QUESTION);
+    }
+
+    @Override
+    public void setSmartLock() {
+        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+                emailEditText.getText().toString(),
+                passwordEditText.getText().toString());
+    }
+
+    @Override
+    public void resetToken() {
+        presenter.resetToken();
+    }
+
+    @Override
+    public void onErrorLogin(String errorMessage, int codeError) {
+        onErrorLogin(errorMessage + getString(R.string.code_error) + " " + codeError);
+    }
+
+    @Override
+    public void onGoToActivationPage() {
+        startActivity(ActivationActivity.getCallingIntent(getActivity(),
+                emailEditText.getText().toString()));
+    }
+
+    private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel,
+                                     LoginTextView tv) {
         if (discoverItemViewModel.getId().equalsIgnoreCase(FACEBOOK)) {
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -448,7 +527,14 @@ public class LoginFragment extends BaseDaggerFragment
 
     private void onLoginWebviewClick(DiscoverItemViewModel discoverItemViewModel) {
         UnifyTracking.eventCTAAction(discoverItemViewModel.getName());
-        presenter.loginWebview();
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(discoverItemViewModel.getName());
+
+        WebViewLoginFragment newFragment = WebViewLoginFragment
+                .createInstance(discoverItemViewModel.getUrl());
+        newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW);
+        newFragment.show(getFragmentManager().beginTransaction(), "dialog");
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     private void onLoginPhoneNumberClick() {
@@ -459,12 +545,16 @@ public class LoginFragment extends BaseDaggerFragment
 
     private void onLoginGoogleClick() {
         UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
-        presenter.loginGoogle();
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
+
+        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
     private void onLoginFacebookClick() {
         UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-        presenter.loginFacebook();
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
+        presenter.getFacebookCredential(this, callbackManager);
     }
 
     private DiscoverItemViewModel getLoginPhoneNumberBean() {
@@ -531,7 +621,22 @@ public class LoginFragment extends BaseDaggerFragment
             //TODO : FIX SMART LOCK ERROR STATE
 //            onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode
 //                    .SMART_LOCK_FAILED_TO_GET_CREDENTIALS));
+        } else if (requestCode == REQUEST_CREATE_PASSWORD
+                && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER
+                && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
+            String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+            presenter.loginGoogle(accessToken);
+        } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
+            presenter.loginWebview(data);
         } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+            presenter.resetToken();
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
