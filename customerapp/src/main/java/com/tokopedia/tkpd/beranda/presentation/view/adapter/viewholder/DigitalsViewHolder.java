@@ -81,7 +81,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     }
 
     @Override
-    public void renderDataRechargeCategory(List<Category> rechargeCategory, boolean bool) {
+    public void renderDataRechargeCategory(List<Category> rechargeCategory) {
         List<Integer> newRechargePositions = new ArrayList<>();
 
         if (rechargeCategory.size() == 0) {
@@ -95,7 +95,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         setModeScrollerWidget(rechargeCategory.size());
 
         if (rechargeViewPagerAdapter == null) {
-            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, rechargeCategory, bool);
+            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, rechargeCategory);
             viewPager.setAdapter(rechargeViewPagerAdapter);
         } else {
             rechargeViewPagerAdapter.addFragments(rechargeCategory);
