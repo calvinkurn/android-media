@@ -52,7 +52,6 @@ import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -218,7 +217,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
-        presenter.onChangePassengerButtonClicked(viewModel, flightBookingCartData);
+        presenter.onChangePassengerButtonClicked(viewModel, flightBookingCartData, paramViewModel.getSearchParam().getDepartureDate());
     }
 
     @Override
@@ -309,7 +308,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirlines) {
+    public void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirlines, String departureDate) {
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         getActivity(),
@@ -318,7 +317,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                         viewModel,
                         flightBookingCartData.getLuggageViewModels(),
                         flightBookingCartData.getMealViewModels(),
-                        isAirAsiaAirlines
+                        isAirAsiaAirlines,
+                        departureDate
                 ),
                 REQUEST_CODE_PASSENGER
         );

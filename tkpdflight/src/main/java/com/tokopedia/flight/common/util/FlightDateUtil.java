@@ -107,4 +107,11 @@ public class FlightDateUtil {
                 .add(field, value);
         return now.getTime();
     }
+
+    public static Date addTimeToSpesificDate(Date date, int field, int value) {
+        Calendar now = getCurrentCalendar();
+        now.setTime(date);
+        now.add(field, value);
+        return now.getTime();
+    }
 }

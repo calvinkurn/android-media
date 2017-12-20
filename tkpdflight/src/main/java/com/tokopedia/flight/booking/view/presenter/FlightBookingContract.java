@@ -89,7 +89,7 @@ public interface FlightBookingContract {
 
         void showPassengerInfoNotFullfilled(@StringRes int resId);
 
-        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirline);
+        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirline, String departureDate);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -116,6 +116,6 @@ public interface FlightBookingContract {
 
         void onPause();
 
-        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData);
+        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate);
     }
 }
