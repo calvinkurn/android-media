@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
@@ -71,8 +72,10 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
 
     @Override
     public void renderData(@NonNull DetailData detailData) {
+        btnGetHelp.setVisibility(GONE);
+        timeTickerView.setVisibility(GONE);
         long duration = getDuration(detailData.getResponseDeadline());
-        if (duration > 0) {
+        if (duration > 0 && !MethodChecker.isTimezoneNotAutomatic()) {
             setVisibility(VISIBLE);
             timeTickerView.setVisibility(VISIBLE);
             if (timeTickerUtil == null) {
@@ -80,6 +83,9 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
                         getTimeTickerListener());
             }
             timeTickerUtil.startTimer(duration);
+        } else if (MethodChecker.isTimezoneNotAutomatic()) {
+            setVisibility(GONE);
+            ServerErrorHandler.showTimezoneErrorSnackbar();
         } else if (detailData.isCanAskHelp()) {
             setVisibility(VISIBLE);
             btnGetHelp.setVisibility(VISIBLE);
@@ -97,6 +103,8 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
     }
 
     private void refreshMainPage() {
+        timeTickerView.setVisibility(GONE);
+        btnGetHelp.setVisibility(VISIBLE);
         listener.hideTimeTicker();
     }
 

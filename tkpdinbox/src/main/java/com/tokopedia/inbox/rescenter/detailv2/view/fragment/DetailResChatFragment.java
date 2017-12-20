@@ -337,8 +337,6 @@ public class DetailResChatFragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                //define FAB position
-                resetFABPosition();
 
                 //hide FAB when reach bottom
                 int visibleItemCount = linearLayoutManager.getChildCount();
@@ -365,33 +363,6 @@ public class DetailResChatFragment
         };
     }
 
-    private void resetFABPosition() {
-        RelativeLayout.LayoutParams params = getButtonInitParams();
-        if (rvAttachment.getVisibility() == View.VISIBLE) {
-            params.addRule(RelativeLayout.ABOVE, R.id.rv_attachment);
-        } else if (actionButtonLayout.getVisibility() == View.VISIBLE) {
-            params.addRule(RelativeLayout.ABOVE, R.id.layout_action);
-        } else if (ffChat.getVisibility() == View.VISIBLE) {
-            params.addRule(RelativeLayout.ABOVE, R.id.ff_chat);
-        } else {
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        }
-        fabChat.setLayoutParams(params);
-    }
-
-    private RelativeLayout.LayoutParams getButtonInitParams() {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics()));
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        params.setMargins(
-                0,
-                0,
-                (int) getResources().getDimension(R.dimen.margin_small),
-                (int) getResources().getDimension(R.dimen.margin_small));
-        return params;
-    }
-
     private AttachmentAdapter.ProductImageListener getAttachmentAdapterListener() {
         return new AttachmentAdapter.ProductImageListener() {
             @Override
@@ -410,7 +381,6 @@ public class DetailResChatFragment
                             initActionButton(detailResChatDomain.getButton());
                         }
                         attachmentAdapter.notifyDataSetChanged();
-                        resetFABPosition();
                     }
                 };
             }
@@ -445,20 +415,8 @@ public class DetailResChatFragment
         ivSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConversationDomain conversationDomain;
-                if (attachmentAdapter.getList().size() == 0) {
-                    conversationDomain = getTempConversationDomain(etChat.getText().toString());
-                } else {
-                    conversationDomain = getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
-                }
 
-                chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
-                chatAdapter.notifyDataSetChanged();
-                scrollChatToBottom(false);
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
-                etChat.setText("");
-                rvAttachment.setVisibility(View.GONE);
-                initActionButton(detailResChatDomain.getButton());
             }
         });
 
@@ -497,6 +455,20 @@ public class DetailResChatFragment
         });
     }
 
+    @Override
+    public void showDummyText() {
+        ConversationDomain conversationDomain;
+        if (attachmentAdapter.getList().size() == 0) {
+            conversationDomain = getTempConversationDomain(etChat.getText().toString());
+        } else {
+            conversationDomain = getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
+        }
+
+        chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
+        chatAdapter.notifyDataSetChanged();
+        scrollChatToBottom(false);
+    }
+
     private void scrollChatToBottom(boolean isInitChat) {
         rvChat.scrollToPosition(chatAdapter.getItemCount() - 1);
     }
@@ -505,7 +477,7 @@ public class DetailResChatFragment
         return new ConversationDomain(
                 0,
                 null,
-                message,
+                message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
                 getConversationCreateTime(),
@@ -521,7 +493,7 @@ public class DetailResChatFragment
         return new ConversationDomain(
                 0,
                 null,
-                message,
+                message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
                 getConversationCreateTime(),
@@ -535,8 +507,8 @@ public class DetailResChatFragment
 
     private ConversationCreateTimeDomain getConversationCreateTime() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_T_Z);
-        return new ConversationCreateTimeDomain(format.format(calendar.getTime()), "");
+        SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_RESO);
+        return new ConversationCreateTimeDomain(format.format(calendar.getTime()) + " WIB", "");
     }
 
     private List<ConversationAttachmentDomain> getConversationAttachmentTemp(List<AttachmentViewModel> attachmentList) {
@@ -580,7 +552,7 @@ public class DetailResChatFragment
     @Override
     public void errorInputMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
-        chatAdapter.deleteLastItem();
+//        chatAdapter.deleteLastItem();
     }
 
     @Override
@@ -783,9 +755,8 @@ public class DetailResChatFragment
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            showAcceptActionDialog(buttonDomain.getAcceptLabel(),
+                            showActionDialog(buttonDomain.getAcceptLabel(),
                                     buttonDomain.getAcceptTextLite(),
-                                    detailResChatDomain.getLast().getSolution().getName(),
                                     new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -865,37 +836,6 @@ public class DetailResChatFragment
         resCenterDialog.show();
     }
 
-    private void showAcceptActionDialog(String title, String solutionTitle, String solution, View.OnClickListener action) {
-        resCenterDialog = new Dialog(getActivity());
-        resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        resCenterDialog.setContentView(R.layout.layout_rescenter_accept_dialog);
-        TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
-        TextView tvSolutionTitle = resCenterDialog.findViewById(R.id.tv_solution_title);
-        TextView tvSolution = resCenterDialog.findViewById(R.id.tv_solution);
-        ImageView ivClose = resCenterDialog.findViewById(R.id.iv_close);
-        Button btnBack = resCenterDialog.findViewById(R.id.btn_back);
-        Button btnAccept = resCenterDialog.findViewById(R.id.btn_yes);
-        String newTitle = title + "?";
-        tvTitle.setText(newTitle);
-        tvSolution.setText(MethodChecker.fromHtml(solution));
-        tvSolutionTitle.setText(MethodChecker.fromHtml(solutionTitle));
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        btnAccept.setOnClickListener(action);
-        resCenterDialog.show();
-    }
-
-
     private void doInputAWB() {
         startActivityForResult(
                 InputShippingActivity.createNewPageIntent(getActivity(), resolutionId),
@@ -935,7 +875,7 @@ public class DetailResChatFragment
     }
 
     @Override
-    public void showSnackBarError(String message) {
+    public void showSnackBar(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
@@ -947,7 +887,6 @@ public class DetailResChatFragment
             actionButtonLayout.setVisibility(View.GONE);
         }
         attachmentAdapter.notifyDataSetChanged();
-        resetFABPosition();
     }
 
     @Override
@@ -974,6 +913,7 @@ public class DetailResChatFragment
     @Override
     public void successAcceptSolution() {
         dismissProgressBar();
+        showSnackBar(getActivity().getString(R.string.string_success_accept));
         initView();
     }
 
@@ -986,7 +926,9 @@ public class DetailResChatFragment
     @Override
     public void successCancelComplaint() {
         dismissProgressBar();
+        showSnackBar(getActivity().getString(R.string.string_success_cancel));
         initView();
+        ffChat.setVisibility(View.GONE);
     }
 
     @Override
@@ -998,6 +940,7 @@ public class DetailResChatFragment
     @Override
     public void successAskHelp() {
         dismissProgressBar();
+        showSnackBar(getActivity().getString(R.string.string_success_help));
         initView();
     }
 
@@ -1034,7 +977,9 @@ public class DetailResChatFragment
     @Override
     public void successFinishResolution() {
         dismissProgressBar();
+        showSnackBar(getActivity().getString(R.string.string_success_finish));
         initView();
+        ffChat.setVisibility(View.GONE);
     }
 
     @Override
@@ -1083,18 +1028,22 @@ public class DetailResChatFragment
                 break;
             case REQUEST_EDIT_SOLUTION:
                 if (resultCode == Activity.RESULT_OK)
+                    showSnackBar(getActivity().getString(R.string.string_success_edit_solution));
                     initView();
                 break;
             case REQUEST_APPEAL_SOLUTION:
                 if (resultCode == Activity.RESULT_OK)
+                    showSnackBar(getActivity().getString(R.string.string_success_appeal));
                     initView();
                 break;
             case REQUEST_INPUT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK)
+                    showSnackBar(getActivity().getString(R.string.string_success_input_awb));
                     initView();
                 break;
             case REQUEST_EDIT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_edit_awb));
                     initView();
                 }
                 break;
