@@ -376,7 +376,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
             } else {
                 timeView.setVisibility(View.GONE);
             }
-            timeView.invalidate();
             if (getViewData().getDetailData().getResolutionStatus() == STATUS_FINISHED
                     || getViewData().getDetailData().getResolutionStatus() == STATUS_CANCEL) {
                 ivNextStepStatic.setVisibility(View.VISIBLE);
