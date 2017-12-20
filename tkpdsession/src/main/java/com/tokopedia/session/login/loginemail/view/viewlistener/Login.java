@@ -50,8 +50,6 @@ public interface Login {
 
         ArrayList<String> getLoginIdList();
 
-        void clearRememberMe();
-
         void discoverLogin();
 
         void loginWebview();

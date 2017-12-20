@@ -40,6 +40,9 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
@@ -48,8 +51,8 @@ import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
+import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
-import com.tokopedia.di.DaggerSessionComponent;
 
 import java.util.ArrayList;
 
@@ -69,6 +72,8 @@ public class LoginFragment extends BaseDaggerFragment
 
     private static final int REQUEST_PHONE_NUMBER = 101;
     private static final int REQUEST_SECURITY_QUESTION = 102;
+    private static final int REQUEST_SMART_LOCK = 103;
+    private static final int REQUEST_SAVE_SMART_LOCK = 104;
 
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
@@ -80,7 +85,6 @@ public class LoginFragment extends BaseDaggerFragment
     TextView loginButton;
     TextInputLayout wrapperEmail;
     TextInputLayout wrapperPassword;
-    CheckBox rememberAccountCheck;
 
     ArrayAdapter<String> autoCompleteAdapter;
 
@@ -139,7 +143,6 @@ public class LoginFragment extends BaseDaggerFragment
         loginButton = view.findViewById(R.id.accounts_sign_in);
         wrapperEmail = view.findViewById(R.id.wrapper_email);
         wrapperPassword = view.findViewById(R.id.wrapper_password);
-        rememberAccountCheck = view.findViewById(R.id.remember_account);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -183,7 +186,7 @@ public class LoginFragment extends BaseDaggerFragment
                     public boolean onEditorAction(TextView textView, int id,
                                                   KeyEvent keyEvent) {
                         if (id == com.tokopedia.core.R.id.login || id == EditorInfo.IME_NULL) {
-                            presenter.login(emailEditText.getText().toString(),
+                            presenter.login(emailEditText.getText().toString().trim(),
                                     passwordEditText.getText().toString());
                             return true;
                         } else {
@@ -200,7 +203,7 @@ public class LoginFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 KeyboardHandler.hideSoftKeyboard(getActivity());
                 presenter.saveLoginEmail(emailEditText.getText().toString());
-                presenter.login(emailEditText.getText().toString(),
+                presenter.login(emailEditText.getText().toString().trim(),
                         passwordEditText.getText().toString());
                 UnifyTracking.eventCTAAction();
             }
@@ -216,15 +219,6 @@ public class LoginFragment extends BaseDaggerFragment
                         .toString()));
             }
         });
-
-        rememberAccountCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
-                if (!state) {
-                    presenter.clearRememberMe();
-                }
-            }
-        });
     }
 
     @Override
@@ -235,7 +229,17 @@ public class LoginFragment extends BaseDaggerFragment
         emailEditText.setAdapter(autoCompleteAdapter);
 
         presenter.discoverLogin();
+        showSmartLock();
     }
+
+    private void showSmartLock() {
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_SMART_LOCK);
+    }
+
 
     private void goToRegisterInitial() {
         startActivity(RegisterInitialActivity.getCallingIntent(getActivity()));
@@ -245,7 +249,8 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void resetError() {
-
+        setWrapperError(wrapperEmail, null);
+        setWrapperError(wrapperPassword, null);
     }
 
     @Override
@@ -310,12 +315,28 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void goToSecurityQuestion(LoginEmailDomain loginDomain) {
+        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+                emailEditText.getText().toString(),
+                passwordEditText.getText().toString());
+
         Intent intent = SecurityQuestionActivity.getCallingIntent(getActivity(),
                 loginDomain.getLoginResult().getSecurityDomain(),
                 loginDomain.getInfo().getGetUserInfoDomainData().getName(),
                 loginDomain.getInfo().getGetUserInfoDomainData().getEmail(),
                 loginDomain.getInfo().getGetUserInfoDomainData().getPhone());
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+    }
+
+    private void saveSmartLock(int state, String email, String password) {
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, state);
+        if (state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE) {
+            bundle.putString(SmartLockActivity.USERNAME, email);
+            bundle.putString(SmartLockActivity.PASSWORD, password);
+        }
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_SAVE_SMART_LOCK);
     }
 
     @Override
@@ -439,7 +460,6 @@ public class LoginFragment extends BaseDaggerFragment
     private void onLoginGoogleClick() {
         UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
         presenter.loginGoogle();
-//        LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(com.tokopedia.session.session.fragment.LoginFragment.this);
     }
 
     private void onLoginFacebookClick() {
@@ -491,6 +511,29 @@ public class LoginFragment extends BaseDaggerFragment
                 }
             }
         };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+            onSuccessLogin();
+        } else if (requestCode == REQUEST_SMART_LOCK
+                && resultCode == Activity.RESULT_OK
+                && data != null
+                && data.getExtras() != null
+                && data.getExtras().getString(SmartLockActivity.USERNAME) != null
+                && data.getExtras().getString(SmartLockActivity.PASSWORD) != null) {
+            emailEditText.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
+            passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
+            presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
+                    data.getExtras().getString(SmartLockActivity.PASSWORD));
+        } else if (requestCode == REQUEST_SMART_LOCK && resultCode == SmartLockActivity.RESULT_CANCELED) {
+            //TODO : FIX SMART LOCK ERROR STATE
+//            onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode
+//                    .SMART_LOCK_FAILED_TO_GET_CREDENTIALS));
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

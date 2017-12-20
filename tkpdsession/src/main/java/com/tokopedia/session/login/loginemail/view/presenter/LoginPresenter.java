@@ -28,8 +28,6 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
         implements Login.Presenter {
 
     private static final String LOGIN_CACHE_KEY = "LOGIN_ID";
-    private static final String REMEMBER_ACC_STATE = "REMEMBER_ACC_STATE";
-    private static final String REMEMBER_ACC_INFO = "REMEMBER_ACC_INFO";
 
     private final LoginEmailUseCase loginEmailUseCase;
     private final LocalCacheHandler loginCache;
@@ -49,6 +47,7 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     public void detachView() {
         super.detachView();
         loginEmailUseCase.unsubscribe();
+        discoverUseCase.unsubscribe();
     }
 
     @Override
@@ -56,8 +55,8 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
         getView().resetError();
         if (isValid(email, password)) {
             getView().showLoadingLogin();
-            loginEmailUseCase.execute(LoginEmailUseCase.getParam(email, password), new
-                    LoginSubscriber(getView()));
+            loginEmailUseCase.execute(LoginEmailUseCase.getParam(email, password),
+                    new LoginSubscriber(getView()));
         }
     }
 
@@ -97,12 +96,6 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     @Override
     public ArrayList<String> getLoginIdList() {
         return loginCache.getArrayListString(LOGIN_CACHE_KEY);
-    }
-
-    @Override
-    public void clearRememberMe() {
-        LocalCacheHandler.clearCache(MainApplication.getAppContext(), REMEMBER_ACC_INFO);
-        LocalCacheHandler.clearCache(MainApplication.getAppContext(), REMEMBER_ACC_STATE);
     }
 
     @Override
