@@ -346,6 +346,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     private void renderData() {
+        timeView.setVisibility(View.GONE);
         glowingView.setVisibility(View.GONE);
         ivNextStepStatic.setVisibility(View.GONE);
         cvNextStep.setVisibility(View.VISIBLE);
