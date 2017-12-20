@@ -454,7 +454,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         if (getView().getContactName().length() == 0) {
             isValid = false;
             getView().showContactNameEmptyError(R.string.flight_booking_contact_name_empty_error);
-        } else if (getView().getContactName().length() > 96) {
+        } else if (getView().getContactName().length() > 48) {
             isValid = false;
             getView().showContactNameInvalidError(R.string.flight_booking_contact_name_max_length_error);
         } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
