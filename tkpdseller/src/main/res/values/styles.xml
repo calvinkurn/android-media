@@ -262,4 +262,23 @@
         <item name="android:textSize">12sp</item>
         <!--other parameters that you want to change -->
     </style>
+
+    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="successTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="HintTextInputLayout" parent="TextInputLayout">
+        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
+    </style>
+
+    <style name="HintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
+        <item name="android:textColorHint">@color/grey_300</item>
+    </style>
 </resources>

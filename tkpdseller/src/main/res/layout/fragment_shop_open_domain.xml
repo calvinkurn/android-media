@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
     <LinearLayout
         android:orientation="vertical"
@@ -10,16 +11,25 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_horizontal_margin">
 
+        <ImageView
+            android:layout_width="@dimen/image_width_xxxl"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_openshop"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center_horizontal"/>
+
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_hello"
             style="@style/TextView.Headline"
-            android:text="@string/hello_blank_name"/>
+            android:layout_gravity="center"
+            tools:text="@string/hello_x"/>
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Subheading"
-            android:text="@string/fill_domain_and_shop"/>
+            android:text="@string/fill_domain_and_shop"
+            android:layout_gravity="center"/>
 
-        <com.tokopedia.seller.lib.widget.TkpdTextInputLayout
+        <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/text_input_shop_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,18 +37,32 @@
             app:counterMaxLength="@integer/max_shop_name"
             android:layout_marginTop="@dimen/margin_med"
             android:hint="@string/shop_name"
-            style="@style/TextInputLayout">
+            style="@style/HintTextInputLayout">
 
             ​<android.support.v7.widget.AppCompatEditText
-            android:id="@+id/edit_text_shop_name"
+                android:id="@+id/edit_text_shop_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions"
+                style="@style/EditText"/>
+            ​
+        </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textNoSuggestions"
-            style="@style/EditText"/>
-            ​
-        </com.tokopedia.seller.lib.widget.TkpdTextInputLayout>
+            style="@style/TextView.Caption.BlackDisabled"
+            android:text="@string/shop_domain"
+            android:layout_marginTop="@dimen/padding_vs"
+            android:layout_marginBottom="@dimen/padding_vs"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Caption.BlackDisabled"
+            android:text="@string/shop_domain_definition"
+            android:layout_marginBottom="@dimen/padding_vs"/>
 
-        <com.tokopedia.seller.lib.widget.TkpdTextInputLayout
+        <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/text_input_domain_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +71,7 @@
             app:prefixString="@string/domain_short"
             android:hint="@string/domain_name"
             android:layout_marginTop="@dimen/margin_small"
-            style="@style/TextInputLayout">
+            style="@style/HintTextInputLayout">
 
             ​<com.tokopedia.seller.common.widget.PrefixEditText
                 android:id="@+id/edit_text_domain_name"
@@ -59,7 +83,7 @@
                 android:maxLines="2"
                 android:inputType="textNoSuggestions|textMultiLine"/>
             ​
-        </com.tokopedia.seller.lib.widget.TkpdTextInputLayout>
+        </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
         <Button
             android:id="@+id/button_submit"
@@ -67,7 +91,8 @@
             android:text="@string/title_open_shop"
             android:layout_marginTop="@dimen/margin_med"
             android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"/>
+            android:layout_marginRight="0dp"
+            android:foreground="?attr/selectableItemBackground"/>
     </LinearLayout>
 </ScrollView>
 

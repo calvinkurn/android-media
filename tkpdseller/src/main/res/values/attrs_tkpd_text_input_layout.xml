@@ -1,8 +1,0 @@
-<resources>
-    <declare-styleable name="TkpdTextInputLayout">
-        <attr name="successFocusColor" format="color" />
-        <attr name="successLeaveColor" format="color" />
-        <attr name="successTextAppearance" format="reference" />
-        <attr name="prefixString" format="string" />
-    </declare-styleable>
-</resources>

@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shop.setting.di.module;
 
-import com.tokopedia.core.network.apiservices.shop.MyShopService;
-import com.tokopedia.core.network.apiservices.shop.apis.MyShopApi;
+import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictLogisticDataRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.repository.ShopSettingSaveInfoRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
@@ -15,6 +15,7 @@ import com.tokopedia.seller.shop.setting.domain.ShopSettingSaveInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * @author sebastianuskh on 3/20/17.
@@ -31,8 +32,8 @@ public class ShopSettingModule {
 
     @Provides
     @ShopSettingScope
-    public MyShopApi provideMyShopApi() {
-        return new MyShopService().getApi();
+    public OpenShopApi provideOpenShopApi(@WsV4Qualifier Retrofit retrofit) {
+        return retrofit.create(OpenShopApi.class);
     }
 
     @Provides

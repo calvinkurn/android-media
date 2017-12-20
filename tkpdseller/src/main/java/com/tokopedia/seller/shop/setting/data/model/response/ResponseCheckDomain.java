@@ -13,7 +13,7 @@ public class ResponseCheckDomain {
     @Expose
     private String domainName = null;
 
-    @SerializedName("domain_status")
+    @SerializedName("shop_domain_status")
     @Expose
     private String domainStatus = null;
 

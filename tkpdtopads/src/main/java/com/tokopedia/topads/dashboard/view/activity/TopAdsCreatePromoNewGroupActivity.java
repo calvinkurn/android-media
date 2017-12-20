@@ -25,7 +25,7 @@ import java.util.List;
  * Created by zulfikarrahman on 8/7/17.
  */
 
-public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity implements HasComponent<AppComponent> {
+public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity<TopAdsCreatePromoNewGroupModel> implements HasComponent<AppComponent> {
     private List<Fragment> fragmentList;
 
     @NonNull
@@ -44,6 +44,11 @@ public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity imple
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public TopAdsCreatePromoNewGroupModel createNewStepperModel() {
         String name = null;
         String itemIdToAdd = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
@@ -53,8 +58,9 @@ public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity imple
         stepperModel = new TopAdsCreatePromoNewGroupModel();
         ((TopAdsCreatePromoNewGroupModel)stepperModel).setGroupName(name);
         ((TopAdsCreatePromoNewGroupModel)stepperModel).setIdToAdd(itemIdToAdd);
-        super.onCreate(savedInstanceState);
+        return stepperModel;
     }
+
 
     public static Intent createIntent(Context context, String name, String itemIdToAdd){
         Intent intent = new Intent(context, TopAdsCreatePromoNewGroupActivity.class);

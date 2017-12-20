@@ -170,7 +170,10 @@
     <!-- Open Shop -->
     <string name="shop_name">Nama Toko</string>
     <string name="domain_name">Nama Domain</string>
-    <string name="fill_domain_and_shop">Isi nama domain dan toko</string>
+    <string name="fill_domain_and_shop">Isi nama dan domain toko!</string>
+    <string name="hello_x">Halo, <![CDATA[<b>%1$s</b>]]></string>
+    <string name="openshop_terms_and_conditions">Dengan menekan Lanjut, Anda telah menyetujui\n
+        Syarat dan Ketentuan serta Kebijakan Privasi Tokopedia.</string>
 
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
@@ -186,8 +189,8 @@
     <string name="label_shop_setting_browse_file">Browse File</string>
     <string name="label_shop_setting_error_slogan_should_fill">Slogan toko harus diisi</string>
     <string name="label_shop_setting_error_desc_should_fill">Deskripsi toko harus diisi</string>
-    <string name="title_shop_setting_logistic">Layanan Jasa Pengiriman</string>
-    <string name="description_shop_setting_logistic">Aktifkan pilihan kurir yang tersedia</string>
+    <string name="title_shop_setting_logistic">Layanan Kurir</string>
+    <string name="description_shop_setting_logistic">Aktifkan kurir yang tersedia, beri pembeli lebih banyak pilihan pengiriman.</string>
     <string name="open_shop_title_shop_information">Informasi Toko</string>
     <string name="open_shop_title_shop_location">Lokasi Toko</string>
     <string name="open_shop_title_shop_shipping">Atur Pengiriman</string>
@@ -215,4 +218,10 @@
     <string name="write_address_text">Tulis jalan, nomor rumah, gedung/landmark</string>
     <string name="fill_width_address_desc">Isi dengan jalan, nomor rumah, kecamatan, nama gedung, landmark dekat lokasi dan detail lainnya.</string>
     <string name="title_next_and_continue_later">Simpan dan lanjutkan Nanti</string>
+    <string name="shop_name_must_be_filled">Nama Toko harus diisi</string>
+    <string name="domain_name_must_be_filled">Nama domain harus diisi</string>
+    <string name="loading_reserve_shop_name_domain">Mereservasi nama toko dan domain</string>
+    <string name="shop_name_or_domain_has_been_reserved">Nama atau domain toko sudah terpakai</string>
+    <string name="shop_domain">Domain Toko</string>
+    <string name="shop_domain_definition">Domain Toko adalah nama unik untuk membedakan toko Anda dengan toko lainnya.</string>
 </resources>

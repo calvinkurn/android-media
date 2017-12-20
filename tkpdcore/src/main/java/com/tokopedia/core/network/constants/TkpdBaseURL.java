@@ -291,14 +291,17 @@ public class TkpdBaseURL {
         public static final String URL_MY_SHOP_ORDER_ACTION = BASE_DOMAIN + "v4/action/myshop-order/";
         public static final String URL_MY_SHOP_PAYMENT = BASE_DOMAIN + "v4/myshop-payment/";
         public static final String URL_MY_SHOP_PAYMENT_ACTION = BASE_DOMAIN + "v4/action/myshop-payment/";
-        public static final String URL_MY_SHOP_SHIPMENT = BASE_DOMAIN + "v4/myshop-shipment/";
-        public static final String URL_MY_SHOP_SHIPMENT_ACTION = BASE_DOMAIN + "v4/action/myshop-shipment/";
+        public static final String PATH_MY_SHOP_SHIPMENT = "v4/myshop-shipment/";
+        public static final String URL_MY_SHOP_SHIPMENT = BASE_DOMAIN + PATH_MY_SHOP_SHIPMENT;
+        public static final String PATH_MY_SHOP_SHIPMENT_ACTION = "v4/action/myshop-shipment/";
+        public static final String URL_MY_SHOP_SHIPMENT_ACTION = BASE_DOMAIN + PATH_MY_SHOP_SHIPMENT_ACTION;
         public static final String URL_NOTES = BASE_DOMAIN + "v4/notes/";
         public static final String URL_REPUTATION_ACTION = BASE_DOMAIN + "v4/action/reputation/";
         public static final String PATH_SHOP = "v4/shop/";
         public static final String PATH_SHOP_TOME = "v1/web-service/shop/get_shop_info";
         public static final String URL_SHOP = BASE_DOMAIN + PATH_SHOP;
-        public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + "v4/web-view/";
+        public static final String PATH_SHIPPING_WEBVIEW = "v4/web-view/";
+        public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + PATH_SHIPPING_WEBVIEW;
         public static final String URL_ACTION_SHOP_ORDER = "v4/myshop-order/";
 
         public static final String PATH_CHECK_DOMAIN = "check_domain.pl";

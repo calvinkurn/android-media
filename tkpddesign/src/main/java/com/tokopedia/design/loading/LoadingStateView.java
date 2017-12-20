@@ -26,7 +26,7 @@ public class LoadingStateView extends FrameLayout {
     public static final int VIEW_CONTENT = 3;
 
     @LayoutRes
-    public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
+    public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_container_loading;
 
     private FrameLayout frameLayout;
 

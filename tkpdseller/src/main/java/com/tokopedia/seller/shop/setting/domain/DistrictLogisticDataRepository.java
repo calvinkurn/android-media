@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shop.setting.domain;
 
-import com.tokopedia.seller.shop.setting.domain.model.LogisticAvailableDomainModel;
+import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.setting.domain.model.RecomendationDistrictDomainModel;
 
 import rx.Observable;
@@ -14,5 +14,5 @@ public interface DistrictLogisticDataRepository {
 
     Observable<RecomendationDistrictDomainModel> getRecommendationLocationDistrict(String stringTyped);
 
-    Observable<LogisticAvailableDomainModel> getLogisticAvailable(int districtCode);
+    Observable<OpenShopCouriersModel> getAvailableCouriers(int districtCode);
 }

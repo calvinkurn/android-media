@@ -7,7 +7,9 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
@@ -35,4 +37,7 @@ public interface ShopComponent {
     Retrofit tomeRetrofit();
 
     TomeApi tomeApi();
+
+    @WsV4Qualifier
+    Retrofit baseDomainRetrofit();
 }
