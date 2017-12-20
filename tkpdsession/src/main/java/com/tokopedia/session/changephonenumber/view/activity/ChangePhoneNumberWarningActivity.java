@@ -27,7 +27,7 @@ public class ChangePhoneNumberWarningActivity extends BasePresenterActivity impl
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_change_phone_number_warning;
+        return R.layout.activity_simple_fragment;
     }
 
     @Override
