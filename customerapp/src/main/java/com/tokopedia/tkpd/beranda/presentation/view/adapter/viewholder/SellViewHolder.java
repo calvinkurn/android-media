@@ -6,8 +6,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -16,21 +15,21 @@ import butterknife.OnClick;
  * Created by errysuprayogi on 12/5/17.
  */
 
-public class EmptyShopViewHolder extends AbstractViewHolder<EmptyShopViewModel>  {
+public class SellViewHolder extends AbstractViewHolder<SellViewModel>  {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_empty_shop;
+    public static final int LAYOUT = R.layout.layout_sell;
 
     private HomeCategoryListener listener;
 
-    public EmptyShopViewHolder(View itemView, HomeCategoryListener listener) {
+    public SellViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         this.listener = listener;
         ButterKnife.bind(this, itemView);
     }
 
     @Override
-    public void bind(EmptyShopViewModel element) {
+    public void bind(SellViewModel element) {
 
     }
 

@@ -328,7 +328,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void focusView(String title) {
         if (title.equalsIgnoreCase("Jual")) {
-            onGoToSell();
+            recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
         } else {
             for (int i = 0; i < adapter.getItemCount(); i++) {
                 Visitable visitable = adapter.getItem(i);
