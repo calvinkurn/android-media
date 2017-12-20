@@ -33,12 +33,34 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
     @Override
     public void onBindViewHolder(WarningListViewHolder warningListViewHolder, int i) {
         WarningItemViewModel warningItemViewModel = warningList.get(i);
-        warningListViewHolder.warning.setText(warningItemViewModel.getWarning());
-        warningListViewHolder.suggestion.setText(warningItemViewModel.getSuggestion());
-        warningListViewHolder.note.setText(warningItemViewModel.getNote());
+        if (!isNullOrEmpty(warningItemViewModel.getWarning())) {
+            warningListViewHolder.warning.setText(warningItemViewModel.getWarning());
+            warningListViewHolder.warning.setVisibility(View.VISIBLE);
+        } else {
+            warningListViewHolder.warning.setVisibility(View.GONE);
+        }
+
+        if (!isNullOrEmpty(warningItemViewModel.getSuggestion())) {
+            warningListViewHolder.suggestion.setText(warningItemViewModel.getSuggestion());
+            warningListViewHolder.suggestion.setVisibility(View.VISIBLE);
+        } else {
+            warningListViewHolder.suggestion.setVisibility(View.GONE);
+        }
+
+        if (!isNullOrEmpty(warningItemViewModel.getNote())) {
+            warningListViewHolder.note.setText(warningItemViewModel.getNote());
+            warningListViewHolder.note.setVisibility(View.VISIBLE);
+        } else {
+            warningListViewHolder.note.setVisibility(View.GONE);
+        }
+
         if (i == getItemCount() - 1) {
             warningListViewHolder.separator.setVisibility(View.GONE);
         }
+    }
+
+    private boolean isNullOrEmpty(String string) {
+        return (string == null || string.equalsIgnoreCase("null") || string.isEmpty());
     }
 
     @Override
