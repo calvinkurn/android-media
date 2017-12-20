@@ -90,7 +90,10 @@
         <activity
             android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"
             android:label=""
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".changephonenumber.view.activity.ChangePhoneNumberInputActivity"
+            android:label="@string/change_phone_number"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
