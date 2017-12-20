@@ -110,6 +110,10 @@ public interface DetailResChatFragmentListener {
         void openVideoPlayer(String videoUrl);
 
         void showDummyText();
+
+        void enableIvSend();
+
+        void disableIvSend();
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {

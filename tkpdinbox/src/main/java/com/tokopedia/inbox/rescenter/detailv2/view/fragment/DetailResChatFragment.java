@@ -416,9 +416,6 @@ public class DetailResChatFragment
             @Override
             public void onClick(View view) {
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
-                ivSend.setClickable(false);
-                ivSend.setEnabled(false);
-                showSnackBar(getResources().getString(R.string.string_sending_message));
             }
         });
 
@@ -554,8 +551,7 @@ public class DetailResChatFragment
     @Override
     public void errorInputMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
-        ivSend.setEnabled(true);
-        ivSend.setClickable(true);
+        enableIvSend();
     }
 
     @Override
@@ -904,8 +900,7 @@ public class DetailResChatFragment
         rvAttachment.setVisibility(View.GONE);
         initActionButton(detailResChatDomain.getButton());
         etChat.setText("");
-        ivSend.setClickable(true);
-        ivSend.setEnabled(true);
+        enableIvSend();
     }
 
     @Override
@@ -913,7 +908,7 @@ public class DetailResChatFragment
         showErrorWithRefresh(error);
         chatAdapter.deleteLastItem();
         etChat.requestFocus();
-        ivSend.setEnabled(true);
+        enableIvSend();
     }
 
     @Override
@@ -1172,6 +1167,18 @@ public class DetailResChatFragment
         bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, videoUrl);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void enableIvSend() {
+        ivSend.setClickable(true);
+        ivSend.setEnabled(true);
+    }
+
+    @Override
+    public void disableIvSend() {
+        ivSend.setClickable(false);
+        ivSend.setEnabled(false);
     }
 
     @Override
