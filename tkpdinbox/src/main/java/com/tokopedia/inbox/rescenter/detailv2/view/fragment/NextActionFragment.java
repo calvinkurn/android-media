@@ -150,6 +150,12 @@ public class NextActionFragment
         tvProblem.setText(nextActionDomain.getProblem());
         tvSolution.setText(nextActionDomain.getDetail().getSolution());
         adapter.populateAdapter(nextActionDomain.getDetail().getStep(), resolutionStatus);
-        scrollView.scrollTo(0,0);
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+
+                scrollView.fullScroll(NestedScrollView.FOCUS_UP);
+            }
+        });
     }
 }
