@@ -1,5 +1,7 @@
 package com.tokopedia.session.changephonenumber.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -9,6 +11,12 @@ import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberIn
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputActivityListener;
 
 public class ChangePhoneNumberInputActivity extends BasePresenterActivity implements ChangePhoneNumberInputActivityListener.View {
+
+    public static Intent newInstance(Context context) {
+        Intent intent = new Intent(context, ChangePhoneNumberInputActivity.class);
+        //TODO intent.putExtra(PARAM_SOMETHING, something);
+        return intent;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

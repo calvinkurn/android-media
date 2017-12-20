@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
@@ -97,7 +98,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(ChangePhoneNumberInputActivity.newInstance(getContext()));
             }
         });
     }
