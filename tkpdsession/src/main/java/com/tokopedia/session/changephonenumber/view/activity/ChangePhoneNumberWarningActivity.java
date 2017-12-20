@@ -66,4 +66,9 @@ public class ChangePhoneNumberWarningActivity extends BasePresenterActivity impl
                     .commit();
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

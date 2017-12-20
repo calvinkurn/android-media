@@ -87,7 +87,10 @@
             android:name=".google.GoogleSignInActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" />
-        <activity android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"></activity>
+        <activity
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"
+            android:label=""
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

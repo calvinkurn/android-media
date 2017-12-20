@@ -54,9 +54,7 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
             warningListViewHolder.note.setVisibility(View.GONE);
         }
 
-        if (i == getItemCount() - 1) {
-            warningListViewHolder.separator.setVisibility(View.GONE);
-        }
+        warningListViewHolder.separator.setVisibility((i == getItemCount() - 1) ? View.GONE : View.VISIBLE);
     }
 
     private boolean isNullOrEmpty(String string) {

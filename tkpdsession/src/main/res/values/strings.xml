@@ -89,4 +89,5 @@
     <string name="tokopedia_balance">Saldo Tokopedia</string>
     <string name="if_you_change_phone_number_then">Apabila terjadi perubahan nomor ponsel maka:</string>
     <string name="change_phone_number">Ubah Nomor Ponsel</string>
+    <string name="are_you_sure_change_phone_number">Yakin ingin mengubah nomor ponsel?</string>
 </resources>

@@ -78,6 +78,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         ArrayList<WarningItemViewModel> arrayList = new ArrayList<>();
         arrayList.add(item1);
         arrayList.add(item2);
+        arrayList.add(item1);
+        arrayList.add(item2);
         viewModel = new WarningViewModel("Rp 102.123.241,000", "Rp 123.333,333", arrayList);
         loadDataToView();
     }
