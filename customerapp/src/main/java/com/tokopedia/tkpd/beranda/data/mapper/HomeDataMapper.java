@@ -50,7 +50,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
 
-        if (homeBannerResponseModel.isSuccess()) {
+        if (homeBannerResponseModel.isSuccess() && homeBannerResponseModel.getData().getSlides().size() > 0) {
             list.add(mappingBanner(homeBannerResponseModel));
         }
 
