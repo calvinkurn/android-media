@@ -182,7 +182,10 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
 
             if (!TextUtils.isEmpty(product.getPrice())) {
+                tvProductTotalPrice.setVisibility(View.VISIBLE);
                 tvProductTotalPrice.setText(product.getPrice());
+            } else {
+                tvProductTotalPrice.setVisibility(View.GONE);
             }
 
             if (!TextUtils.isEmpty(product.getDetail())) {
