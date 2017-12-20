@@ -124,7 +124,7 @@ public class RequestPermissionUtil {
                 Toast.makeText(context, R.string.permission_send_sms_neverask, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.CALL_PHONE:
-                Toast.makeText(context, R.string.permission_sms_neverask, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.permission_phone_neverask, Toast.LENGTH_LONG).show();
                 break;
             default:
                 Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();

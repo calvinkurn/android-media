@@ -554,6 +554,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         List<Operator> selectedOperatorList = new ArrayList<>();
         String simOperatorName = DeviceUtil.getOperatorName(view.getActivity(), selectedSim);
         CategoryData categoryData = view.getCategoryDataState();
+        if(categoryData !=null && categoryData.getOperatorList() != null)
         for (Operator operator : categoryData.getOperatorList()) {
             if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
                 selectedOperatorList.add(operator);

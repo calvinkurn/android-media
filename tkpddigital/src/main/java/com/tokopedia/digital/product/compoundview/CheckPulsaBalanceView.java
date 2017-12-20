@@ -33,10 +33,13 @@ public class CheckPulsaBalanceView extends LinearLayout {
     LinearLayout checkBalanceWaitLayout;
     @BindView(R2.id.check_balance_progressbar)
     ProgressBar checkBalanceProgressbar;
+    @BindView(R2.id.tv_error_operator)
+    TextView errorOperator;
 
     private ActionListener actionListener;
     private Context context;
     private String mobileNumber;
+    private String operatorName;
 
     public CheckPulsaBalanceView(Context context) {
         super(context);
@@ -75,17 +78,34 @@ public class CheckPulsaBalanceView extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderData(int simPosition, String ussdCode, String phoneNumber) {
-        this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked(simPosition, ussdCode));
+    public void renderData(int simPosition, String ussdCode, String phoneNumber,String error) {
         if (phoneNumber != null && !"".equalsIgnoreCase(phoneNumber.trim()))
             tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + phoneNumber);
         else
             tvPhoneNumber.setText("SIM" + (simPosition + 1));
         this.mobileNumber = phoneNumber;
-    }
+       if(error == null){
+           this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked(simPosition, ussdCode));
+           errorOperator.setVisibility(GONE);
+       }else{
+           btnCheckBalance.setBackgroundColor(context.getResources().getColor(R.color.grey_hint));
+           errorOperator.setVisibility(VISIBLE);
+           errorOperator.setText(error);
+           if(operatorName !=null){
+               tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + operatorName);
+
+           }
+       }
+
+
+       }
 
     public String getPhoneNumberText() {
         return this.mobileNumber;
+    }
+
+    public void setOperatorName(String operatorName ){
+        this.operatorName = operatorName;
     }
 
     @NonNull
