@@ -203,4 +203,16 @@
     <string name="crop_image_menu_watermark">watermark</string>
     <string name="crop_image_watermark_cannot_be_changed">*Watermark tidak dapat diubah setelah disimpan.</string>
     <string name="getting_shop_step">Mengambil Informasi Toko</string>
+    <string name="shipping_location_text">Lokasi Pengiriman</string>
+    <string name="shipping_location_text_desc">Lengkapi informasi lokasi pengiriman untuk memilih kurir yang tersedia di lokasi Anda.</string>
+    <string name="shipping_location_text_choose_desc">Pilih dari Daftar Alamat jika alamat pengiriman sama dengan alamat pembelian yang pernah Anda isi</string>
+    <string name="choose_from_address_list">Pilih dari Daftar Alamat</string>
+    <string name="optional_pinpoint_location_text">Pinpoint Lokasi (Opsional)</string>
+    <string name="pin_pickup_location_text">Tandai lokasi pickup dalam peta jika Anda menggunakan kurir Express (seperti Go-Send) atau Cargo Service.</string>
+    <string name="pin_location_pickup">Tandai Lokasi Pickup</string>
+    <string name="default_address_text">Wisma 77 Tower 2, Jalan Letjen S. Parman, Palmerah, 11410. Gunakan Alamat Ini</string>
+    <string name="pickup_location">Alamat Pick Up</string>
+    <string name="write_address_text">Tulis jalan, nomor rumah, gedung/landmark</string>
+    <string name="fill_width_address_desc">Isi dengan jalan, nomor rumah, kecamatan, nama gedung, landmark dekat lokasi dan detail lainnya.</string>
+    <string name="title_next_and_continue_later">Simpan dan lanjutkan Nanti</string>
 </resources>

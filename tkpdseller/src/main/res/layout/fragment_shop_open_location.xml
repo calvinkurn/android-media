@@ -12,66 +12,7 @@
         android:orientation="vertical"
         >
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/imageView2"
-            android:layout_width="25dp"
-            android:layout_height="33dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_location_icon"
-            android:layout_marginTop="24dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:fontFamily="sans-serif-medium"
-            android:layout_gravity="center_horizontal"
-            android:textStyle="normal"
-            android:textColor="#b2000000"
-            android:gravity="center_horizontal"
-            tools:text="Lokasi Pengiriman"
-            android:layout_marginTop="24dp"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:textColor="#b2000000"
-            android:lineSpacingExtra="6sp"
-            android:gravity="center_horizontal"
-            tools:text="Lengkapi informasi lokasi pengiriman untuk memilih kurir yang tersedia di lokasi Anda."
-            android:layout_marginTop="16dp"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:textColor="#89000000"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            tools:text="Pilih dari Daftar Alamat jika alamat pengiriman sama dengan alamat pembelian yang pernah Anda isi"
-            />
-
-        <Button
-            android:id="@+id/btn_choose_from_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:textColor="#89000000"
-            android:lineSpacingExtra="7sp"
-            android:gravity="center"
-            tools:text="Pilih dari Daftar Alamat"
-            android:background="@drawable/bg_rect_gray_round"
-            android:layout_marginTop="10dp"
-            />
+        <include layout="@layout/shop_open_location_header" />
 
         <View
             android:layout_width="match_parent"
@@ -90,8 +31,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_marginTop="32dp"/>
+            android:background="@color/grey"/>
 
         <com.tokopedia.seller.common.widget.LabelView
             android:layout_width="match_parent"
@@ -104,8 +44,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_marginTop="32dp"/>
+            android:background="@color/grey"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -125,7 +64,7 @@
                     android:textStyle="normal"
                     android:textColor="@color/black_38"
                     android:lineSpacingExtra="10sp"
-                    tools:text="Pinpoint Lokasi (Opsional)"
+                    android:text="@string/optional_pinpoint_location_text"
                     />
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -144,7 +83,7 @@
                         android:textColor="#89000000"
                         android:lineSpacingExtra="5sp"
                         android:gravity="center_horizontal"
-                        tools:text="Tandai lokasi pickup dalam peta jika Anda menggunakan kurir Express (seperti Go-Send) atau Cargo Service."
+                        android:text="@string/pin_pickup_location_text"
                         />
                     <TextView
                         android:layout_width="wrap_content"
@@ -155,7 +94,7 @@
                         android:textColor="#89000000"
                         android:lineSpacingExtra="8sp"
                         android:gravity="center_horizontal"
-                        tools:text="Tandai Lokasi Pickup"
+                        android:text="@string/pin_location_pickup"
                         android:layout_gravity="bottom|center_horizontal"
                         android:layout_marginBottom="15.2dp"
                         />
@@ -183,7 +122,7 @@
                         android:fontFamily="sans-serif"
                         android:textStyle="normal"
                         android:lineSpacingExtra="6sp"
-                        tools:text="Wisma 77 Tower 2, Jalan Letjen S. Parman, Palmerah, 11410. Gunakan Alamat Ini "
+                        android:text="@string/default_address_text"
                         />
                 </LinearLayout>
 
@@ -199,7 +138,7 @@
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/black_38"
-            tools:text="Alamat Pick Up"
+            android:text="@string/pickup_location"
             android:layout_marginTop="32.3dp"
             />
         
@@ -211,7 +150,7 @@
             android:textStyle="normal"
             android:textColor="@color/black_38"
             android:lineSpacingExtra="6sp"
-            tools:text="Tulis jalan, nomor rumah, gedung/landmark" />
+            android:text="@string/write_address_text" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -221,18 +160,18 @@
             android:textStyle="normal"
             android:textColor="@color/black_38"
             android:lineSpacingExtra="5sp"
-            tools:text="Isi dengan jalan, nomor rumah, kecamatan, nama gedung, landmark dekat lokasi dan detail lainnya."
+            android:text="@string/fill_width_address_desc"
             />
 
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
-            android:text="Selanjutnya" />
+            android:text="@string/title_next" />
 
         <Button
             android:id="@+id/button_submit_and_later"
             style="@style/Button.Submit.Green"
-            android:text="Simpan dan lanjutkan Nanti" />
+            android:text="@string/title_next_and_continue_later" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
