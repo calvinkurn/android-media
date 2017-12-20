@@ -25,6 +25,8 @@ public interface FlightBookingContract {
 
         void showContactNameEmptyError(@StringRes int resId);
 
+        void showContactNameInvalidError(@StringRes int resId);
+
         String getContactEmail();
 
         void showContactEmailEmptyError(@StringRes int resId);
@@ -34,6 +36,8 @@ public interface FlightBookingContract {
         String getContactPhoneNumber();
 
         void showContactPhoneNumberEmptyError(@StringRes int resId);
+
+        void showContactPhoneNumberInvalidError(@StringRes int resId);
 
         FlightBookingParamViewModel getCurrentBookingParamViewModel();
 
