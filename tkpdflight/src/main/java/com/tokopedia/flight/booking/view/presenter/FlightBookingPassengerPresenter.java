@@ -92,8 +92,8 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     @Override
     public void onBirthdateClicked(String departureDateString) {
 
-        Date maxDate = null, minDate = null, selectedDate = null;
-        Date departureDate = FlightDateUtil.addTimeToSpesificDate(FlightDateUtil.stringToDate(departureDateString), Calendar.DATE, -1);
+        Date maxDate, minDate = null, selectedDate;
+        Date departureDate = FlightDateUtil.stringToDate(departureDateString);
 
         if (isChildPassenger()) {
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
@@ -103,8 +103,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
             selectedDate = maxDate;
         } else {
+            // minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
-            maxDate = departureDate;
+            maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, -1);
             selectedDate = maxDate;
         }
         if (getView().getPassengerBirthDate().length() > 0) {
