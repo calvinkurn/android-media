@@ -6,7 +6,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
  * Created by milhamj on 20/12/17.
  */
 
-public class ChangePhoneNumberInputFragmentListener {
+public interface ChangePhoneNumberInputFragmentListener {
     public interface View extends CustomerView {
 
     }
