@@ -412,35 +412,46 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCheckPulsaBalanceData() {
-        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this);
+       // DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this);
+        renderCheckPulsaBalance();
     }
 
-    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
+    //@NeedsPermission(Manifest.permission.READ_PHONE_STATE)
     public void renderCheckPulsaBalance() {
         holderCheckBalance.removeAllViews();
-        for (int i = 0; i < 2; i++) {
-            Operator operator = presenter.getSelectedUssdOperator(i);
-            if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
-                continue;
-            }
-            String phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
-            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
-                    operator, phoneNumber)) {
-                phoneNumber = presenter.getDeviceMobileNumber(i);
+        if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+
+
+            for (int i = 0; i < 2; i++) {
+                Operator operator = presenter.getSelectedUssdOperator(i);
+                if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
+                    continue;
+                }
+                String phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
                 if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                         operator, phoneNumber)) {
-                    phoneNumber = "";
+                    phoneNumber = presenter.getDeviceMobileNumber(i);
+                    if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                            operator, phoneNumber)) {
+                        phoneNumber = "";
+                    }
+                }
+
+                String ussdCode = operator.getUssdCode();
+                if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
+                    CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
+                    checkPulsaBalanceView.setActionListener(this);
+                    checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber);
+                    holderCheckBalance.addView(checkPulsaBalanceView);
+                    startShowCaseUSSD();
                 }
             }
-
-            String ussdCode = operator.getUssdCode();
-            if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
-                CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
-                checkPulsaBalanceView.setActionListener(this);
-                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber);
-                holderCheckBalance.addView(checkPulsaBalanceView);
-                startShowCaseUSSD();
-            }
+        }else{
+            CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
+            checkPulsaBalanceView.setActionListener(this);
+            checkPulsaBalanceView.renderData(0, "", "");
+            holderCheckBalance.addView(checkPulsaBalanceView);
+            startShowCaseUSSD();
         }
     }
 
