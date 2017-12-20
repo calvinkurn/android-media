@@ -2,6 +2,7 @@ package com.tokopedia.seller.shop.setting.di.component;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
@@ -24,4 +25,5 @@ public interface ShopSettingComponent {
     PostExecutionThread getPostExecutionThread();
 
     ShopSettingSaveInfoRepository getSaveInfoRepository();
+
 }

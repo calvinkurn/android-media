@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.setting.data.repository;
 
-import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
 import com.tokopedia.seller.shop.setting.data.source.LogisticDataSource;
 import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
@@ -16,7 +17,8 @@ public class DistrictLogisticDataRepositoryImpl implements DistrictLogisticDataR
     private final DistrictDataSource districtDataSource;
     private final LogisticDataSource logisticDataSource;
 
-    public DistrictLogisticDataRepositoryImpl(DistrictDataSource districtDataSource, LogisticDataSource logisticDataSource) {
+    public DistrictLogisticDataRepositoryImpl(DistrictDataSource districtDataSource,
+                                              LogisticDataSource logisticDataSource) {
         this.districtDataSource = districtDataSource;
         this.logisticDataSource = logisticDataSource;
     }
@@ -33,7 +35,7 @@ public class DistrictLogisticDataRepositoryImpl implements DistrictLogisticDataR
     }
 
     @Override
-    public Observable<OpenShopLogisticModel> getLogisticAvailable(int districtCode) {
-        return logisticDataSource.getLogisticAvailable(districtCode);
+    public Observable<OpenShopCouriersModel> getAvailableCouriers(int districtCode) {
+        return logisticDataSource.getAvailableCouriers(districtCode);
     }
 }

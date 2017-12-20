@@ -9,7 +9,7 @@ import java.util.List;
  * Created by nakama on 19/12/17.
  */
 
-public class OpenShopLogisticModel {
+public class OpenShopCouriersModel {
 
     @SerializedName("courier")
     @Expose

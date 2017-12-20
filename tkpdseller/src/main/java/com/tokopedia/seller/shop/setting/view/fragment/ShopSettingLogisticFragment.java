@@ -1,7 +1,14 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +18,9 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
+import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.shop.open.view.adapter.ShopCourierAdapter;
+import com.tokopedia.seller.shop.open.view.listener.OnShopStepperListener;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
@@ -25,18 +34,16 @@ import javax.inject.Inject;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopSettingLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView {
+public class ShopSettingLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView{
 
-    public static final int UNSELECTED_DISTRICT_VIEW = -1;
-    public static final String SAVED_NEED_REFRESH = "svd_need_refresh";
-    public static final String SAVED_DISTRICT_CODE = "svd_district_code";
+    private OnShopStepperListener onShopStepperListener;
 
     @Inject
     public ShopSettingLogisticPresenter presenter;
-    private int districtCode;
     private View vContent;
     private View vLoading;
-    private boolean needRefreshData;
+
+    private ShopCourierAdapter shopCourierAdapter;
 
     public static ShopSettingLogisticFragment getInstance() {
         return new ShopSettingLogisticFragment();
@@ -55,13 +62,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            needRefreshData = true;
-            districtCode = UNSELECTED_DISTRICT_VIEW;
-        } else {
-            needRefreshData = savedInstanceState.getBoolean(SAVED_NEED_REFRESH);
-            districtCode = savedInstanceState.getInt(SAVED_DISTRICT_CODE);
-        }
+        shopCourierAdapter = new ShopCourierAdapter(null);
     }
 
     @Nullable
@@ -70,29 +71,34 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
         View view = inflater.inflate(R.layout.fragment_shop_setting_logistic, container, false);
         vContent = view.findViewById(R.id.vg_content);
         vLoading = view.findViewById(R.id.loading);
+
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof DefaultItemAnimator) {
+            ((DefaultItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(shopCourierAdapter);
+
         // changeDistrictCode(4528);
         return view;
     }
 
-    public void changeDistrictCode(int districtCode) {
-        if (districtCode!= this.districtCode) {
-            this.districtCode = districtCode;
-            needRefreshData = true;
-        }
-    }
-
     public void updateLogistic() {
         showLoading();
-        presenter.updateLogistic(districtCode);
+        presenter.getCouriers(getDistrictId());
+    }
+
+    private int getDistrictId(){
+        return onShopStepperListener.getStepperModel().getDistrictID();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         presenter.attachView(this);
-        if (needRefreshData) {
-            updateLogistic();
-        }
+        updateLogistic();
     }
 
     @Override
@@ -112,15 +118,16 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     }
 
     @Override
-    public void onSuccessLoadLogistic(OpenShopLogisticModel openShopLogisticModel) {
+    public void onSuccessLoadLogistic(OpenShopCouriersModel openShopCouriersModel) {
         hideLoading();
-        needRefreshData = false;
+        shopCourierAdapter.setData(openShopCouriersModel.getCourier());
+        shopCourierAdapter.notifyDataSetChanged();
+        // TODO in Success
     }
 
     @Override
     public void onErrorLoadLogistic(Throwable t) {
         hideLoading();
-        needRefreshData = false;
         String message = ErrorHandler.getErrorMessage(t);
         if (!TextUtils.isEmpty(message)) {
             showMessageError(message);
@@ -144,10 +151,23 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(SAVED_NEED_REFRESH, needRefreshData);
-        outState.putInt(SAVED_DISTRICT_CODE, districtCode);
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachListener(activity);
+        }
+    }
+
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachListener(context);
+    }
+
+    protected void onAttachListener(Context context){
+        onShopStepperListener = (OnShopStepperListener) context;
     }
 }

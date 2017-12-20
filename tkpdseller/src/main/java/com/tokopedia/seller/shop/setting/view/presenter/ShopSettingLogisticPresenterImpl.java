@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.shop.open.data.model.OpenShopLogisticModel;
+import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.setting.domain.interactor.GetLogisticAvailableUseCase;
 
 import rx.Subscriber;
@@ -19,9 +19,9 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
     }
 
     @Override
-    public void updateLogistic(int districtCode) {
+    public void getCouriers(int districtCode) {
         RequestParams requestParam = GetLogisticAvailableUseCase.generateParams(districtCode);
-        getLogisticAvailableUseCase.execute(requestParam, new Subscriber<OpenShopLogisticModel>() {
+        getLogisticAvailableUseCase.execute(requestParam, new Subscriber<OpenShopCouriersModel>() {
             @Override
             public void onCompleted() {
 
@@ -35,8 +35,8 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
             }
 
             @Override
-            public void onNext(OpenShopLogisticModel openShopLogisticModel) {
-                getView().onSuccessLoadLogistic(openShopLogisticModel);
+            public void onNext(OpenShopCouriersModel openShopCouriersModel) {
+                getView().onSuccessLoadLogistic(openShopCouriersModel);
             }
         });
     }

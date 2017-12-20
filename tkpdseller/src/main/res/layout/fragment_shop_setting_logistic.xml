@@ -8,7 +8,7 @@
     android:background="@color/white">
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/vg_content"
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -45,26 +45,37 @@
                 android:text="@string/description_shop_setting_logistic"
                 android:textAlignment="center" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/padding_vs"
-                android:paddingLeft="@dimen/margin_sm"
-                android:paddingRight="@dimen/margin_sm"
-                android:paddingTop="@dimen/padding_vs" />
+                android:minWidth="@dimen/image_width_xxxl">
+                <LinearLayout
+                    android:id="@+id/vg_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:paddingBottom="@dimen/padding_vs"
+                        android:paddingLeft="@dimen/margin_sm"
+                        android:paddingRight="@dimen/margin_sm"
+                        android:paddingTop="@dimen/padding_vs"/>
 
-            <Button
-                android:id="@+id/continue_button"
-                style="@style/Button.Submit.Green"
-                android:layout_marginTop="@dimen/margin_sm"
-                android:text="@string/title_next" />
+                    <Button
+                        android:id="@+id/continue_button"
+                        style="@style/Button.Submit.Green"
+                        android:layout_marginTop="@dimen/margin_sm"
+                        android:text="@string/title_next" />
+                </LinearLayout>
+                <include layout="@layout/widget_container_loading"
+                    android:id="@+id/loading"/>
+            </FrameLayout>
 
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
-    <include layout="@layout/widget_container_loading"
-        android:id="@+id/loading"/>
 </FrameLayout>
