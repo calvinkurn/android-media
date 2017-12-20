@@ -12,4 +12,17 @@
             android:targetClass="com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
+    <shortcut
+        android:shortcutId="shortcut_manage_product"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_product"
+        android:shortcutShortLabel="@string/title_activity_manage_product"
+        android:shortcutLongLabel="@string/title_activity_manage_product"
+        android:shortcutDisabledMessage="@string/title_activity_manage_product">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.tokopedia.sellerapp"
+            android:targetClass="com.tokopedia.seller.product.manage.view.activity.ProductManageActivity" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
 </shortcuts>
