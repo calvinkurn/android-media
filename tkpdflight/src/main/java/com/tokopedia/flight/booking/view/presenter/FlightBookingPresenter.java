@@ -469,6 +469,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         } else if (getView().getContactPhoneNumber().length() == 0) {
             isValid = false;
             getView().showContactPhoneNumberEmptyError(R.string.flight_booking_contact_phone_empty_error);
+        } else if (getView().getContactPhoneNumber().length() > 0 && !isNumericOnly(getView().getContactPhoneNumber())) {
+            isValid = false;
+            getView().showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_invalid_error);
         } else if (!isAllPassengerFilled(getView().getCurrentBookingParamViewModel().getPassengerViewModels())) {
             isValid = false;
             getView().showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error);
@@ -485,6 +488,18 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             }
         }
         return isvalid;
+    }
+
+    private boolean isNumericOnly(String expression) {
+        Pattern pattern = Pattern.compile(new String("^[0-9\\s]*$"));
+        Matcher matcher = pattern.matcher(expression);
+        return matcher.matches();
+    }
+
+    private boolean isAlphabetAndSpaceOnly(String expression) {
+        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]*$"));
+        Matcher matcher = pattern.matcher(expression);
+        return matcher.matches();
     }
 
     private boolean isValidEmail(String contactEmail) {
@@ -527,12 +542,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     protected void onCountDownTimestimeChanged(String timestamp) {
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
-    }
-
-    private boolean isAlphabetAndSpaceOnly(String expression) {
-        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]*$"));
-        Matcher matcher = pattern.matcher(expression);
-        return matcher.matches();
     }
 
     // Method untuk menambahkan Flight Id AirAsia, jadi seandainya nanti ada bertambah lagi, bisa langsung di tambah disini

@@ -114,6 +114,7 @@
     <string name="flight_booking_contact_email_empty_error">Email kontak tidak boleh kosong</string>
     <string name="flight_booking_contact_email_invalid_error">Email kontak tidak valid</string>
     <string name="flight_booking_contact_phone_empty_error">Telepon Kontak tidak boleh kosong</string>
+    <string name="flight_booking_contact_phone_invalid_error">Telepon Kontak tidak valid</string>
     <string name="flight_booking_prefix_passenger">Penumpang</string>
     <string name="flight_booking_postfix_adult_passenger">Dewasa</string>
     <string name="flight_booking_postfix_children_passenger">Anak</string>

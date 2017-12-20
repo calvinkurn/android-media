@@ -37,6 +37,8 @@ public interface FlightBookingContract {
 
         void showContactPhoneNumberEmptyError(@StringRes int resId);
 
+        void showContactPhoneNumberInvalidError(@StringRes int resId);
+
         FlightBookingParamViewModel getCurrentBookingParamViewModel();
 
         void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip);

@@ -298,6 +298,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void showContactPhoneNumberInvalidError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public void showPassengerInfoNotFullfilled(int resId) {
         showMessageErrorInSnackBar(resId);
     }
