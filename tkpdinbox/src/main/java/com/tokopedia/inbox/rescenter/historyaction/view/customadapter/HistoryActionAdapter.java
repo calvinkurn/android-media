@@ -118,6 +118,7 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         final HistoryActionAdapterModel model = arraylist.get(position);
         renderData(holder, model);
         renderView(holder, model);
+        holder.lineIndicator.setVisibility(arraylist.size() == 1 ? View.VISIBLE : View.GONE);
     }
 
     private void renderData(ActionViewHolder holder, HistoryActionAdapterModel model) {

@@ -78,9 +78,11 @@ public class DetailResChatActivity
         if (TextUtils.isEmpty(shopName)) {
             destinationIntent.putExtra(PARAM_USER_NAME, userNameSpanned);
             destinationIntent.putExtra(PARAM_IS_SELLER, true);
+            bundle.putString(PARAM_USER_NAME, userNameSpanned);
         } else {
             destinationIntent.putExtra(PARAM_SHOP_NAME, shopNameSpanned);
             destinationIntent.putExtra(PARAM_IS_SELLER,false);
+            bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
         }
         destinationIntent.putExtras(bundle);
         taskStackBuilder.addNextIntent(parentIntent);
