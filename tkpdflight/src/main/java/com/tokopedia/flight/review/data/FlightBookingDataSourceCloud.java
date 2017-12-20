@@ -2,6 +2,8 @@ package com.tokopedia.flight.review.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
+import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 
@@ -30,6 +32,16 @@ public class FlightBookingDataSourceCloud {
                     @Override
                     public Observable<DataResponseVerify> call(Response<DataResponse<DataResponseVerify>> dataResponseResponse) {
                         return Observable.just(dataResponseResponse.body().getData());
+                    }
+                });
+    }
+
+    public Observable<FlightCheckoutEntity> checkout(FlightCheckoutRequest request) {
+        return flightApi.checkout(request)
+                .map(new Func1<Response<DataResponse<FlightCheckoutEntity>>, FlightCheckoutEntity>() {
+                    @Override
+                    public FlightCheckoutEntity call(Response<DataResponse<FlightCheckoutEntity>> dataResponseResponse) {
+                        return dataResponseResponse.body().getData();
                     }
                 });
     }
