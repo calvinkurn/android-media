@@ -104,8 +104,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        displayLoading(true);
-        requestFromCache();
+        if (getUserVisibleHint()) {
+            displayLoading(true);
+            requestFromCache();
+        }
     }
 
     @Override
@@ -222,6 +224,15 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
             if (!isVisibleToUser) {
                 snackbarRetry.pauseRetrySnackbar();
             }
+        }
+
+        if (isVisibleToUser
+                && adapter != null
+                && adapter.getData() != null
+                && adapter.getData().isEmpty()
+                && (snackbarRetry == null || (snackbarRetry != null && !snackbarRetry.isShown()))) {
+            displayLoading(true);
+            requestFromCache();
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
