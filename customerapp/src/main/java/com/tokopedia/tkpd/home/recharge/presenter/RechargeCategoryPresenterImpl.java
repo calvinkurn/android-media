@@ -91,7 +91,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
         };
     }
 
-
     private boolean isVersionMatch(Status status) {
         try {
             int minApiSupport = status.getMinimunAndroidBuild();
