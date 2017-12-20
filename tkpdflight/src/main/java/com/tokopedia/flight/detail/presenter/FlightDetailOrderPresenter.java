@@ -53,6 +53,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideProgressDialog();
                     getView().onErrorGetOrderDetail(e);
@@ -62,7 +63,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             @Override
             public void onNext(FlightOrder flightOrder) {
                 getView().hideProgressDialog();
-                getView().updateFlightList(filterFlightJourneys(flightOrder.getJourneys(), flightOrderDetailPassData));
+                getView().updateFlightList(filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData));
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(), countTotalPrice(flightOrder.getTotalAdultNumeric(),
                         flightOrder.getTotalChildNumeric(), flightOrder.getTotalInfantNumeric()));
@@ -120,14 +121,14 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
     }
 
-    private List<FlightOrderJourney> filterFlightJourneys(List<FlightOrderJourney> journeys, FlightOrderDetailPassData flightOrderDetailPassData) {
+    private List<FlightOrderJourney> filterFlightJourneys(int status, List<FlightOrderJourney> journeys, FlightOrderDetailPassData flightOrderDetailPassData) {
         List<FlightOrderJourney> journeyList;
         if (!TextUtils.isEmpty(flightOrderDetailPassData.getDepartureAiportId())) {
             journeyList = new ArrayList<>();
             for (FlightOrderJourney flightOrderJourney : journeys) {
                 if (flightOrderJourney.getDepartureAiportId().equals(flightOrderDetailPassData.getDepartureAiportId()) &&
                         flightOrderJourney.getArrivalAirportId().equals(flightOrderDetailPassData.getArrivalAirportId()) &&
-                        flightOrderJourney.getStatus().equals(String.valueOf(flightOrderDetailPassData.getStatus())) &&
+                        status == flightOrderDetailPassData.getStatus() &&
                         flightOrderJourney.getDepartureTime().equals(flightOrderDetailPassData.getDepartureTime())) {
                     journeyList.add(flightOrderJourney);
                 }

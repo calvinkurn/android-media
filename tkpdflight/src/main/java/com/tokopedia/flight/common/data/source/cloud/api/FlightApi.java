@@ -64,7 +64,7 @@ public interface FlightApi {
     Observable<Response<DataResponse<List<OrderEntity>>>> getOrders(@QueryMap Map<String, Object> paramsAllValueInString);
 
     @GET(FlightUrl.FLIGHT_ORDER)
-    Observable<Response<DataResponse<OrderEntity>>> getOrder(@Path("id") int id);
+    Observable<Response<DataResponse<OrderEntity>>> getOrder(@Path("id") String id);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)

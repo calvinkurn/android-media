@@ -84,7 +84,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     protected void initInjector() {
         getComponent(FlightOrderComponent.class)
                 .inject(this);
-        flightDetailOrderPresenter.attachView(this);
     }
 
     @Override
@@ -126,9 +125,14 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
         orderId.setText(flightOrderDetailPassData.getOrderId());
-
-        flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        flightDetailOrderPresenter.attachView(this);
+        flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
     }
 
     void setViewClickListener() {

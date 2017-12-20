@@ -20,7 +20,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:background="@color/filter_order_orange" />
+                android:background="@color/filter_order_yellow" />
 
             <include layout="@layout/partial_flight_order_header_detail" />
 
