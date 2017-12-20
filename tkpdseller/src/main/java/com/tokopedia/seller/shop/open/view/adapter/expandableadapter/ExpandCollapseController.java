@@ -1,16 +1,15 @@
 package com.tokopedia.seller.shop.open.view.adapter.expandableadapter;
 
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.listeners.ExpandCollapseListener;
-import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models.ExpandableGroup;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models.ExpandableList;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models.ExpandableListPosition;
 
-public class ExpandCollapseController {
+public class ExpandCollapseController<T> {
 
-    private ExpandCollapseListener listener;
-    private ExpandableList expandableList;
+    private ExpandCollapseListener<T> listener;
+    private ExpandableList<T> expandableList;
 
-    public ExpandCollapseController(ExpandableList expandableList, ExpandCollapseListener listener) {
+    public ExpandCollapseController(ExpandableList<T> expandableList, ExpandCollapseListener<T> listener) {
         this.expandableList = expandableList;
         this.listener = listener;
     }
@@ -24,7 +23,7 @@ public class ExpandCollapseController {
         expandableList.expandedGroupIndexes[listPosition.groupPos] = false;
         if (listener != null) {
             listener.onGroupCollapsed(expandableList.getFlattenedGroupIndex(listPosition) + 1,
-                    ((ExpandableGroup)expandableList.groups.get(listPosition.groupPos)).getChildItemCount());
+                    listener.getChildCount(expandableList.groups.get(listPosition.groupPos)));
         }
     }
 
@@ -37,7 +36,7 @@ public class ExpandCollapseController {
         expandableList.expandedGroupIndexes[listPosition.groupPos] = true;
         if (listener != null) {
             listener.onGroupExpanded(expandableList.getFlattenedGroupIndex(listPosition) + 1,
-                    ((ExpandableGroup)expandableList.groups.get(listPosition.groupPos)).getChildItemCount());
+                    listener.getChildCount(expandableList.groups.get(listPosition.groupPos)));
         }
     }
 
@@ -45,7 +44,7 @@ public class ExpandCollapseController {
      * @param group the ExpandableGroup being checked for its collapsed state
      * @return true if {@code group} is expanded, false if it is collapsed
      */
-    public boolean isGroupExpanded(ExpandableGroup group) {
+    public boolean isGroupExpanded(T group) {
         int groupIndex = expandableList.groups.indexOf(group);
         return expandableList.expandedGroupIndexes[groupIndex];
     }
@@ -74,7 +73,7 @@ public class ExpandCollapseController {
         return expanded;
     }
 
-    public boolean toggleGroup(ExpandableGroup group) {
+    public boolean toggleGroup(T group) {
         ExpandableListPosition listPos =
                 expandableList.getUnflattenedPosition(expandableList.getFlattenedGroupIndex(group));
         boolean expanded = expandableList.expandedGroupIndexes[listPos.groupPos];

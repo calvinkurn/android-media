@@ -9,28 +9,29 @@ import android.view.ViewGroup;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.listeners.ExpandCollapseListener;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.listeners.GroupExpandCollapseListener;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.listeners.OnGroupClickListener;
-import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models.ExpandableGroup;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models.ExpandableList;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models.ExpandableListPosition;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.viewholders.GroupViewHolder;
 
 import java.util.List;
 
-public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, GVH extends GroupViewHolder, CVH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter implements ExpandCollapseListener, OnGroupClickListener {
+public abstract class ExpandableRecyclerViewAdapter<T , GVH extends GroupViewHolder, CVH extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter implements ExpandCollapseListener<T>, OnGroupClickListener {
 
     private static final String EXPAND_STATE_MAP = "expandable_recyclerview_adapter_expand_state_map";
 
     private ExpandableList<T> expandableList;
-    private ExpandCollapseController expandCollapseController;
+    private ExpandCollapseController<T> expandCollapseController;
 
     private OnGroupClickListener groupClickListener;
-    private GroupExpandCollapseListener expandCollapseListener;
+    private GroupExpandCollapseListener<T> expandCollapseListener;
 
     public ExpandableRecyclerViewAdapter(List<T> groups) {
-        this.expandableList = new ExpandableList<>(groups);
-        this.expandCollapseController = new ExpandCollapseController(expandableList, this);
+        this.expandableList = new ExpandableList<>(groups, this);
+        this.expandCollapseController = new ExpandCollapseController<>(expandableList, this);
     }
+
+    public abstract int getChildCount(T group);
 
     /**
      * Implementation of Adapter.onCreateViewHolder(ViewGroup, int)
@@ -62,9 +63,7 @@ public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, G
     /**
      * Implementation of Adapter.onBindViewHolder(RecyclerView.ViewHolder, int)
      * that determines if the list item is a group or a child and calls through
-     * to the appropriate implementation of either {@link #onBindGroupViewHolder(GroupViewHolder,
-     * int,
-     * ExpandableGroup)}
+     * to the appropriate implementation of either onBindGroupViewHolder(GroupViewHolder,int, T}
      * or {onBindChildViewHolder(ChildViewHolder, int, ExpandableGroup, int)}.
      *
      * @param holder   Either the GroupViewHolder or the ChildViewHolder to bind data to
@@ -116,8 +115,8 @@ public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, G
     /**
      * Called when a group is expanded
      *
-     * @param positionStart the flat position of the first child in the {@link ExpandableGroup}
-     * @param itemCount     the total number of children in the {@link ExpandableGroup}
+     * @param positionStart the flat position of the first child in the T
+     * @param itemCount     the total number of children in the T
      */
     @Override
     public void onGroupExpanded(int positionStart, int itemCount) {
@@ -138,8 +137,8 @@ public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, G
     /**
      * Called when a group is collapsed
      *
-     * @param positionStart the flat position of the first child in the {@link ExpandableGroup}
-     * @param itemCount     the total number of children in the {@link ExpandableGroup}
+     * @param positionStart the flat position of the first child in the ExpandableGroup
+     * @param itemCount     the total number of children in the ExpandableGroup
      */
     @Override
     public void onGroupCollapsed(int positionStart, int itemCount) {
@@ -181,7 +180,7 @@ public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, G
     }
 
     /**
-     * @param group the {@link ExpandableGroup} being toggled
+     * @param group the ExpandableGroup being toggled
      * @return true if the group is expanded, *after* the toggle, false if the group is now collapsed
      */
     public boolean toggleGroup(T group) {
@@ -197,7 +196,7 @@ public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, G
     }
 
     /**
-     * @param group the {@link ExpandableGroup} being checked for its collapsed state
+     * @param group the ExpandableGroup being checked for its collapsed state
      * @return true if {@code group} is expanded, false if it is collapsed
      */
     public boolean isGroupExpanded(T group) {
@@ -244,14 +243,14 @@ public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, G
         groupClickListener = listener;
     }
 
-    public void setOnGroupExpandCollapseListener(GroupExpandCollapseListener listener) {
+    public void setOnGroupExpandCollapseListener(GroupExpandCollapseListener<T> listener) {
         expandCollapseListener = listener;
     }
 
     /**
-     * The full list of {@link ExpandableGroup} backing this RecyclerView
+     * The full list of ExpandableGroup backing this RecyclerView
      *
-     * @return the list of {@link ExpandableGroup} that this object was instantiated with
+     * @return the list of ExpandableGroup that this object was instantiated with
      */
     public List<T> getGroups() {
         return expandableList.groups;
@@ -283,8 +282,8 @@ public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, G
      *
      * @param holder       The {@code CVH} to bind data to
      * @param flatPosition the flat position (raw index) in the list at which to bind the child
-     * @param group        The {@link ExpandableGroup} that the the child list item belongs to
-     * @param childIndex   the index of this child within it's {@link ExpandableGroup}
+     * @param group        The T that the the child list item belongs to
+     * @param childIndex   the index of this child within it's T
      */
     public abstract void onBindChildViewHolder(CVH holder, int flatPosition, T group,
                                                int childIndex);
@@ -297,7 +296,7 @@ public abstract class ExpandableRecyclerViewAdapter<T extends ExpandableGroup, G
      *
      * @param holder       The {@code GVH} to bind data to
      * @param flatPosition the flat position (raw index) in the list at which to bind the group
-     * @param group        The {@link ExpandableGroup} to be used to bind data to this {@link GVH}
+     * @param group        The T to be used to bind data to this {@link GVH}
      */
     public abstract void onBindGroupViewHolder(GVH holder, int flatPosition, T group);
 }

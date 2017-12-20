@@ -2,7 +2,6 @@ package com.tokopedia.seller.shop.open.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models.ExpandableGroup;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * Created by nakama on 19/12/17.
  */
 
-public class Courier implements ExpandableGroup<CourierService> {
+public class Courier {
     @Expose
     private String name;
     @SerializedName("weight_policy")
@@ -90,13 +89,4 @@ public class Courier implements ExpandableGroup<CourierService> {
         return urlAdditionalOption;
     }
 
-    @Override
-    public List<CourierService> getChildItems() {
-        return services;
-    }
-
-    @Override
-    public int getChildItemCount() {
-        return services == null ? 0 : services.size();
-    }
 }

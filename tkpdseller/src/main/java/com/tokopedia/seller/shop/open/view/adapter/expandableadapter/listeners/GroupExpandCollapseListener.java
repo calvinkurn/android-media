@@ -1,10 +1,8 @@
 package com.tokopedia.seller.shop.open.view.adapter.expandableadapter.listeners;
 
-import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models.ExpandableGroup;
+public interface GroupExpandCollapseListener<T> {
 
-public interface GroupExpandCollapseListener {
+  void onGroupExpanded(T group);
 
-  void onGroupExpanded(ExpandableGroup group);
-
-  void onGroupCollapsed(ExpandableGroup group);
+  void onGroupCollapsed(T group);
 }

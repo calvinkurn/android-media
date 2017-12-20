@@ -3,6 +3,7 @@ package com.tokopedia.seller.shop.open.view.adapter;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.shop.open.data.model.Courier;
+import com.tokopedia.seller.shop.open.data.model.CourierService;
 import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.ExpandableRecyclerViewAdapter;
 
 import java.util.List;
@@ -16,6 +17,12 @@ public class ShopCourierAdapter extends ExpandableRecyclerViewAdapter<Courier, C
 
     public ShopCourierAdapter(List<Courier> courierList) {
         super(courierList);
+    }
+
+    @Override
+    public int getChildCount(Courier group) {
+        List<CourierService> courierServices = group.getServices();
+        return courierServices == null? 0: courierServices.size();
     }
 
     public void setData(List<Courier> courierList){

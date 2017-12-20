@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.open.view.adapter.expandableadapter.models;
 
+import com.tokopedia.seller.shop.open.view.adapter.expandableadapter.listeners.ExpandCollapseListener;
+
 import java.util.List;
 
 /*
@@ -13,13 +15,16 @@ import java.util.List;
  * This class acts as a translator between the flat list position - i.e. what groups
  * and children you see on the screen - to and from the full backing list of groups & their children
  */
-public class ExpandableList<T extends ExpandableGroup> {
+public class ExpandableList<T> {
 
     public List<T> groups;
     public boolean[] expandedGroupIndexes;
 
-    public ExpandableList(List<T> groups) {
+    private ExpandCollapseListener<T> listener;
+
+    public ExpandableList(List<T> groups, ExpandCollapseListener<T> listener) {
         this.groups = groups;
+        this.listener = listener;
 
         expandedGroupIndexes = new boolean[groups.size()];
         for (int i = 0; i < groups.size(); i++) {
@@ -28,14 +33,14 @@ public class ExpandableList<T extends ExpandableGroup> {
     }
 
     /**
-     * @param group the index of the {@link ExpandableGroup} in the full collection {@link #groups}
+     * @param group the index of the T in the full collection {@link #groups}
      * @return the number of visible row items for the particular group. If the group is collapsed,
      * return 1 for the group header. If the group is expanded return total number of children in the
      * group + 1 for the group header
      */
     private int numberOfVisibleItemsInGroup(int group) {
         if (expandedGroupIndexes[group]) {
-            return groups.get(group).getChildItemCount() + 1;
+            return listener.getChildCount(groups.get(group)) + 1;
         } else {
             return 1;
         }
@@ -107,7 +112,7 @@ public class ExpandableList<T extends ExpandableGroup> {
     }
 
     /**
-     * @param group an {@link ExpandableGroup} within {@link #groups}
+     * @param group an T within {@link #groups}
      * @return the index of a group within the {@link #getVisibleItemCount()} or 0 if the
      * groups.indexOf cannot find the group
      */
@@ -155,7 +160,7 @@ public class ExpandableList<T extends ExpandableGroup> {
      * Converts the details of a child's position to a flat list position.
      *
      * @param groupIndex The index of a group within {@link #groups}
-     * @param childIndex the index of a child within it's {@link ExpandableGroup}
+     * @param childIndex the index of a child within it's T
      * @return The flat list position for the given child
      */
     public int getFlattenedChildIndex(int groupIndex, int childIndex) {
@@ -189,17 +194,17 @@ public class ExpandableList<T extends ExpandableGroup> {
      * @return the total number of children within the group associated with the @param listPosition
      */
     public int getExpandableGroupItemCount(ExpandableListPosition listPosition) {
-        return groups.get(listPosition.groupPos).getChildItemCount();
+        return listener.getChildCount(groups.get(listPosition.groupPos));
     }
 
     /**
-     * Translates either a group pos or a child pos to an {@link ExpandableGroup}.
-     * If the {@link ExpandableListPosition} is a child position, it returns the {@link
-     * ExpandableGroup} it belongs to
+     * Translates either a group pos or a child pos to an T.
+     * If the {@link ExpandableListPosition} is a child position, it returns the
+     * T it belongs to
      *
      * @param listPosition a {@link ExpandableListPosition} representing either a group position
      *                     or child position
-     * @return the {@link ExpandableGroup} object that contains the listPosition
+     * @return the T object that contains the listPosition
      */
     public T getExpandableGroup(ExpandableListPosition listPosition) {
         return (T) groups.get(listPosition.groupPos);
