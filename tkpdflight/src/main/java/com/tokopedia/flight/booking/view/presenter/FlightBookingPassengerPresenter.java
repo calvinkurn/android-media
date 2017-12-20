@@ -103,7 +103,6 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
             selectedDate = maxDate;
         } else {
-            // minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
             maxDate = departureDate;
             selectedDate = maxDate;
