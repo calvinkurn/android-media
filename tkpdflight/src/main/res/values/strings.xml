@@ -226,6 +226,7 @@
     <string name="flight_booking_dialog_price_change_another_flights_label">Cari Penerbangan Lain</string>
     <string name="flight_booking_passenger_first_name_max_error">Nama depan tidak boleh lebih dari 48 karakter</string>
     <string name="flight_booking_passenger_last_name_max_error">Nama belakang tidak boleh melebihi 48 karakter</string>
+    <string name="flight_booking_passenger_first_last_name_max_error">Nama depan dan belakang tidak boleh melebihi 48 karakter</string>
     <string name="flight_booking_passenger_last_name_single_word_error">Nama belakang harus satu kata</string>
     <string name="flight_booking_passenger_first_name_alpha_space_error">Nama depan harus terdiri alfabet dan space</string>
     <string name="flight_booking_passenger_last_name_alpha_space_error">Nama belakang hanya alfabet dan spasi</string>
