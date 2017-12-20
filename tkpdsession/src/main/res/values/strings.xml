@@ -93,4 +93,8 @@
     <string name="for_your_safety">Demi keamanan, pengguna diharuskan memperbarui nomor ponsel yang bisa dihubungi secara berkala.</string>
     <string name="old_phone_number">Nomor Ponsel Lama</string>
     <string name="new_phone_number">Nomor Ponsel Baru</string>
+    <string name="back_to_setting">Kembali ke Pengaturan</string>
+    <string name="please_check_email">Silakan Cek Email Anda</string>
+    <string name="please_check_email_to_continue">Silahkan cek email Anda untuk melakukan ke tahap selanjutnya.</string>
+    <string name="emaiL_has_been_sent_to">Email konfirmasi untuk mengubah nomor ponsel sudah dikirim ke</string>
 </resources>

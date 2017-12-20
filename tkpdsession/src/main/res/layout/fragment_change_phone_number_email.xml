@@ -1,12 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp">
 
+        <ImageView
+            android:layout_width="142dp"
+            android:layout_height="96dp"
+            android:background="@drawable/ic_aktivasi"
+            android:contentDescription="@string/please_check_email"
+            android:layout_marginLeft="49dp"
+            android:layout_marginRight="49dp"
+            android:layout_marginTop="61.5dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:textColor="@color/black_70"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="@string/please_check_email" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="5sp"
+            android:textColor="#61000000"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            android:text="@string/emaiL_has_been_sent_to" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="5sp"
+            android:textColor="@color/black_70"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            tools:text="thomas.putra@tokopedia.com."
+            android:id="@+id/email_value"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="5sp"
+            android:textColor="#61000000"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            android:text="@string/please_check_email_to_continue"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/back_button"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/green_button_rounded_unify"
+            android:clickable="true"
+            android:enabled="true"
+            android:focusable="true"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:text="@string/back_to_setting"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
