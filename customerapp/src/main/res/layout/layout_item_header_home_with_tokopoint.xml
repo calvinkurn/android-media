@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/container"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/white"
@@ -10,6 +9,7 @@
               android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/container_tokocash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -53,6 +53,7 @@
                 android:lineSpacingExtra="4sp"
                 android:textColor="@color/black_70"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 tools:text="TokoCash"
                 tools:visibility="visible"/>
@@ -72,6 +73,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/container_tokopoint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -120,6 +122,7 @@
                 android:lineSpacingExtra="4sp"
                 android:textColor="@color/black_70"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 tools:text="90 Poin"
                 tools:visibility="visible"/>
