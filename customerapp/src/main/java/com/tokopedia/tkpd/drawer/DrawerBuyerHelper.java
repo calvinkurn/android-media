@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -586,6 +588,14 @@ public class DrawerBuyerHelper extends DrawerHelper
         );
     }
 
+    @Override
+    public void onTokoPointActionClicked(String mainPageUrl, String title) {
+        if (TextUtils.isEmpty(title))
+            context.startActivity(BannerWebView.getCallingIntent(context, mainPageUrl));
+        else
+            context.startActivity(BannerWebView.getCallingIntentWithTitle(context, mainPageUrl, title));
+    }
+
     private void onGoToCreateShop() {
         Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
         intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
@@ -602,7 +612,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void showAppShareButton(ArrayList<DrawerItem> data) {
-        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_APP_SHARE_BUTTON)) {
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_APP_SHARE_BUTTON)) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
                     R.drawable.share_ke_teman,
                     TkpdState.DrawerPosition.APPSHARE,

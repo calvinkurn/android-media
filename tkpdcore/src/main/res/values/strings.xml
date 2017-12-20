@@ -793,6 +793,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="msg_tokopedia_indomaret_fee">"Tambahan biaya Rp 2.500,-"</string>
     <string name="title_admin_fee">Biaya administrasi</string>
     <string name="title_gratis">GRATIS</string>
+    <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
+    <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
     <!-- Strings related to add to cart -->
 
 
@@ -1317,6 +1319,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
     <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
     <string name="error_code_truecaller">Kode Error %1$d</string>
+    <string name="email_otp_error">Terjadi kesalahan. Silakan coba kembali. Kode Error: 1005</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
     <string name="title_credit_value">Nominal Pulsa</string>
