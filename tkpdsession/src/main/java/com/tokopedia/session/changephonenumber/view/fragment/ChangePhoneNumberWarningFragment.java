@@ -78,9 +78,9 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         ArrayList<WarningItemViewModel> arrayList = new ArrayList<>();
         arrayList.add(item1);
         arrayList.add(item2);
-        arrayList.add(item1);
         arrayList.add(item2);
-        viewModel = new WarningViewModel("Rp 102.123.241,000", "Rp 123.333,333", arrayList);
+        arrayList.add(item1);
+        viewModel = new WarningViewModel("Rp 123.333,333", "Rp 123.333,333", arrayList);
         loadDataToView();
     }
 
@@ -125,18 +125,18 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     private void loadDataToView() {
         if (viewModel != null) {
-            if (viewModel.getTokopediaBalance() != null || !viewModel.getTokopediaBalance().equalsIgnoreCase("null")) {
+            if (viewModel.getTokopediaBalance() == null || viewModel.getTokopediaBalance().equalsIgnoreCase("null")) {
+                tokopediaBalanceLayout.setVisibility(View.GONE);
+            } else {
                 tokopediaBalanceLayout.setVisibility(View.VISIBLE);
                 tokopediaBalanceValue.setText(viewModel.getTokopediaBalance());
-            } else {
-                tokopediaBalanceLayout.setVisibility(View.GONE);
             }
 
-            if (viewModel.getTokocash() != null || !viewModel.getTokocash().equalsIgnoreCase("null")) {
+            if (viewModel.getTokocash() == null || viewModel.getTokocash().equalsIgnoreCase("null")) {
+                tokocashLayout.setVisibility(View.GONE);
+            } else {
                 tokocashLayout.setVisibility(View.VISIBLE);
                 tokocashValue.setText(viewModel.getTokocash());
-            } else {
-                tokocashLayout.setVisibility(View.GONE);
             }
 
             populateRecyclerView();
@@ -144,7 +144,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     private void populateRecyclerView() {
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         warningRecyclerView.setLayoutManager(mLayoutManager);
 
         WarningListAdapter adapter = new WarningListAdapter(viewModel.getWarningList());
