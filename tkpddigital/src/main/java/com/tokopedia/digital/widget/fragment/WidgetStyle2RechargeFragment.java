@@ -192,12 +192,10 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                             clearHolder(holderWidgetWrapperBuy);
                             holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
                         }
-                    } else {
-                        if (selectedProduct != null) {
-                            selectedProduct = null;
-                            clearHolder(holderWidgetSpinnerProduct);
-                            clearHolder(holderWidgetWrapperBuy);
-                        }
+                    } else if (selectedProduct != null) {
+                        selectedProduct = null;
+                        clearHolder(holderWidgetSpinnerProduct);
+                        clearHolder(holderWidgetWrapperBuy);
                     }
                 }  else {
                     widgetClientNumberView.setEmptyString();
@@ -473,8 +471,9 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     public void onStop() {
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
+        }
 
         super.onStop();
     }

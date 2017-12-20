@@ -487,8 +487,9 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     public void onStop() {
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
+        }
 
         super.onStop();
     }
