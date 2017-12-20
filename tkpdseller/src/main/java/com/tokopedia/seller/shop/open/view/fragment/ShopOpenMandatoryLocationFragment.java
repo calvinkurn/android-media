@@ -22,6 +22,7 @@ import com.tokopedia.seller.shop.open.view.ShopOpenStepperModel;
  import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.holder.ShopOpenMandatoryLocationHeaderViewHolder;
 import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
+import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
 
 
 /**
@@ -34,6 +35,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     protected StepperListener stepperListener;
     private LogisticRouter logisticRouter;
     private static final String TAG = "ShopOpenMandatoryLocati";
+    private ShippingHeaderLayout fragmentShippingHeader;
 
     public static ShopOpenMandatoryLocationFragment getInstance(){
         return new ShopOpenMandatoryLocationFragment();
@@ -61,6 +63,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                 );
             }
         });
+
+        fragmentShippingHeader = root.findViewById(R.id.fragment_shipping_header);
     }
 
     @Override
@@ -73,6 +77,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                         @Override
                         public void onActivityResult(DestinationViewModel rawData) {
                             Log.d(TAG, rawData.toString());
+                            fragmentShippingHeader.updateLocationData(
+                                    rawData.getProvinceName(),
+                                    rawData.getCityName(),
+                                    rawData.getDistrictName());
                         }
                     });
                     break;

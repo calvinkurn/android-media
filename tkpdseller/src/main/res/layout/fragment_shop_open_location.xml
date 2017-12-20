@@ -14,37 +14,42 @@
 
         <include layout="@layout/shop_open_location_header" />
 
-        <View
+        <com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout
+            android:id="@+id/fragment_shipping_header"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_marginTop="32dp"/>
+            android:layout_height="wrap_content" />
 
-        <com.tokopedia.seller.common.widget.LabelView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:content="@string/product_label_choose"
-            app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
-            app:title="Kota Asal" />
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/grey"-->
+            <!--android:layout_marginTop="32dp"/>-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey"/>
+        <!--<com.tokopedia.seller.common.widget.LabelView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:content="@string/product_label_choose"-->
+            <!--app:content_color="@color/tkpd_main_green"-->
+            <!--app:label_show_arrow="true"-->
+            <!--app:title="Kota Asal" />-->
 
-        <com.tokopedia.seller.common.widget.LabelView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:content="@string/product_label_choose"
-            app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
-            app:title="Kode Pos" />
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/grey"/>-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey"/>
+        <!--<com.tokopedia.seller.common.widget.LabelView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:content="@string/product_label_choose"-->
+            <!--app:content_color="@color/tkpd_main_green"-->
+            <!--app:label_show_arrow="true"-->
+            <!--app:title="Kode Pos" />-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/grey"/>-->
 
         <LinearLayout
             android:layout_width="match_parent"
