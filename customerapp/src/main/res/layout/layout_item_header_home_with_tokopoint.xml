@@ -53,6 +53,7 @@
                 android:lineSpacingExtra="4sp"
                 android:textColor="@color/black_70"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 tools:text="TokoCash"
                 tools:visibility="visible"/>
@@ -121,6 +122,7 @@
                 android:lineSpacingExtra="4sp"
                 android:textColor="@color/black_70"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 tools:text="90 Poin"
                 tools:visibility="visible"/>
