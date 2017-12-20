@@ -75,7 +75,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
         }
-        if (!isLogin || !SessionHandler.isUserSeller(context)) {
+        if (isLogin || SessionHandler.isUserSeller(context)) {
             list.add(mappingManageShop());
         } else {
             list.add(mappingOpenShop());
