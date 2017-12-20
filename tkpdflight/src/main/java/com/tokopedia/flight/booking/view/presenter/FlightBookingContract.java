@@ -25,6 +25,8 @@ public interface FlightBookingContract {
 
         void showContactNameEmptyError(@StringRes int resId);
 
+        void showContactNameInvalidError(@StringRes int resId);
+
         String getContactEmail();
 
         void showContactEmailEmptyError(@StringRes int resId);

@@ -268,6 +268,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void showContactNameInvalidError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public String getContactEmail() {
         return etContactEmail.getText().toString().trim();
     }
