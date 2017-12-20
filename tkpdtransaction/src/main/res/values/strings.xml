@@ -165,4 +165,6 @@
     <string name="cancel_search_replacement">Batalkan Pencarian</string>
     <string name="title_detail_transaction">Detil Transaksi</string>
 
+    <string name="title_term_and_condition">Syarat dan Ketentuan</string>
+    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
 </resources>
