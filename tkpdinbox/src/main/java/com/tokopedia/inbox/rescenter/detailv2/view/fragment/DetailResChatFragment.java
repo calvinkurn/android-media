@@ -418,6 +418,7 @@ public class DetailResChatFragment
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
                 ivSend.setClickable(false);
                 ivSend.setEnabled(false);
+                showSnackBar(getResources().getString(R.string.string_sending_message));
             }
         });
 
@@ -553,7 +554,8 @@ public class DetailResChatFragment
     @Override
     public void errorInputMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
-//        chatAdapter.deleteLastItem();
+        ivSend.setEnabled(true);
+        ivSend.setClickable(true);
     }
 
     @Override
