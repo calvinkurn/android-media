@@ -102,7 +102,7 @@ public interface FlightBookingPassengerContract {
 
         void onSaveButtonClicked();
 
-        void onBirthdateClicked();
+        void onBirthdateClicked(String departureDate);
 
         void onBirthdateChange(int year, int month, int date);
 

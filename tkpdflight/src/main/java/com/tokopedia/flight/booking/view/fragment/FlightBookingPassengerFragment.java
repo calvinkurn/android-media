@@ -171,7 +171,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         etBirthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onBirthdateClicked();
+                presenter.onBirthdateClicked(departureDate);
             }
         });
         return view;
