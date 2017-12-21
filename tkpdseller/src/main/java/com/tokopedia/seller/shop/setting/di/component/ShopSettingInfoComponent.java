@@ -1,16 +1,38 @@
 package com.tokopedia.seller.shop.setting.di.component;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
+import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingInfoScope;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingInfoFragment;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 /**
  * Created by zulfikarrahman on 3/23/17.
  */
 @ShopSettingInfoScope
-@Component(modules = ShopSettingInfoModule.class, dependencies = ShopSettingComponent.class)
+@Component(modules = ShopSettingInfoModule.class, dependencies = ShopOpenDomainComponent.class)
 public interface ShopSettingInfoComponent {
     void inject(ShopSettingInfoFragment shopSettingInfoFragment);
+
+    TomeApi getTomeApi();
+
+    Retrofit.Builder retrofitBuilder();
+
+    @DefaultAuthWithErrorHandler
+    OkHttpClient okHttpClient();
+
+    @ApplicationContext
+    Context context();
+
+    @WsV4QualifierWithErrorHander
+    Retrofit retrofitWsV4();
 }

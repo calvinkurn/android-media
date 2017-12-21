@@ -5,6 +5,7 @@ import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckDomain
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckShop;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseSaveShopDesc;
 
 import java.util.Map;
 
@@ -40,4 +41,8 @@ public interface TomeApi {
     @GET(ShopOpenNetworkConstant.PATH_IS_RESERVE_DOMAIN)
     Observable<Response<ResponseIsReserveDomain>> isReserveDomain();
 
+
+    @FormUrlEncoded
+    @POST(ShopOpenNetworkConstant.PATH_RESERVE_SHOP_DESC_INFO)
+    Observable<Response<ResponseSaveShopDesc>> reserveShopDescInfo(@FieldMap Map<String, String> params);
 }

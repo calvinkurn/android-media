@@ -3,6 +3,8 @@ package com.tokopedia.seller.shop.setting.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  * Created by zulfikarrahman on 3/22/17.
  */
 
-public class UploadShopImageModel {
+public class UploadShopImageModel{
 
     @SerializedName("data")
     @Expose
@@ -27,7 +29,6 @@ public class UploadShopImageModel {
     @SerializedName("result")
     @Expose
     String result;
-
 
     /**
      * @return The data

@@ -1,7 +1,5 @@
 package com.tokopedia.seller.shop.setting.data.repository;
 
-import com.tokopedia.seller.shop.setting.data.model.GenerateHostModel;
-import com.tokopedia.seller.shop.setting.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.setting.data.source.ShopSettingInfoDataSource;
 import com.tokopedia.seller.shop.setting.domain.ShopSettingSaveInfoRepository;
 
@@ -19,17 +17,7 @@ public class ShopSettingSaveInfoRepositoryImpl implements ShopSettingSaveInfoRep
     }
 
     @Override
-    public Observable<Boolean> saveShopSetting(String imageUrl, String shopDescription, String tagLine) {
-        return shopSettingInfoDataSource.saveShopSetting();
-    }
-
-    @Override
-    public Observable<GenerateHostModel.GenerateHost> generateHost() {
-        return shopSettingInfoDataSource.generateHost();
-    }
-
-    @Override
-    public Observable<UploadShopImageModel.Data> uploadImage(GenerateHostModel.GenerateHost generateHost, String pathFileImage) {
-        return shopSettingInfoDataSource.uploadImage(generateHost, pathFileImage);
+    public Observable<Boolean> saveShopSetting(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
+        return shopSettingInfoDataSource.saveShopSetting(logo, serverId, photoObj, shopDescription, tagLine, stepInfo1);
     }
 }

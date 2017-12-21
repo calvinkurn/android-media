@@ -5,6 +5,7 @@ import com.tokopedia.seller.shop.open.domain.interactor.CheckDomainNameUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.CheckShopNameUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ReserveShopNameDomainUseCase;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +20,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
         implements ShopOpenDomainPresenter {
 
     private static final int DELAY_DEBOUNCE = 700; // ms
+    public static final String SUCCESS = "1";
 
     private final CheckDomainNameUseCase checkDomainNameUseCase;
     private final CheckShopNameUseCase checkShopNameUseCase;
@@ -99,8 +101,8 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
                 });
     }
 
-    private Subscriber<Boolean> getReserveShopSubscriber() {
-        return new Subscriber<Boolean>() {
+    private Subscriber<ResponseReserveDomain> getReserveShopSubscriber() {
+        return new Subscriber<ResponseReserveDomain>() {
             @Override
             public void onCompleted() {
 
@@ -114,9 +116,10 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             }
 
             @Override
-            public void onNext(Boolean success) {
-                if (success) {
-                    getView().onSuccessReserveShop();
+            public void onNext(ResponseReserveDomain responseReserveDomain) {
+                if (SUCCESS.equals( responseReserveDomain.getShopDomainStatus()) &&
+                        SUCCESS.equals( responseReserveDomain.getShopNameStatus())) {
+                    getView().onSuccessReserveShop(responseReserveDomain.getShopName(), responseReserveDomain.getShopDomain());
                 } else {
                     getView().onFailedReserveShop();
                 }

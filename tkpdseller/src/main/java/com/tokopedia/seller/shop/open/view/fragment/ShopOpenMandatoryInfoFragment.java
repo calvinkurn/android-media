@@ -10,8 +10,8 @@ import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingInfoFragment;
 public class ShopOpenMandatoryInfoFragment extends ShopSettingInfoFragment {
 
     @Override
-//    public void onSuccessSaveInfoShop() {
-    public void onNextButtonClicked() {
+    public void onSuccessSaveInfoShop() {
+        super.onSuccessSaveInfoShop();
         if (getActivity() instanceof StepperListener) {
             ((StepperListener) getActivity()).goToNextPage(null);
         }

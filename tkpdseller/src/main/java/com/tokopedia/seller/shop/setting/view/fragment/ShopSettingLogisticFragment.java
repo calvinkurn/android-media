@@ -18,8 +18,11 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
-import com.tokopedia.seller.shop.open.view.listener.OnShopStepperListener;
+import com.tokopedia.seller.shop.open.view.adapter.ShopCourierAdapter;
+import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
@@ -35,7 +38,7 @@ import javax.inject.Inject;
 
 public class ShopSettingLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView{
 
-    private OnShopStepperListener onShopStepperListener;
+    private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     @Inject
     public ShopSettingLogisticPresenter presenter;
@@ -167,6 +170,6 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     }
 
     protected void onAttachListener(Context context){
-        onShopStepperListener = (OnShopStepperListener) context;
+        onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
     }
 }
