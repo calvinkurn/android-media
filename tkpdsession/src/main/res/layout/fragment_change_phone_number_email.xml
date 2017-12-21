@@ -15,7 +15,7 @@
         <ImageView
             android:layout_width="142dp"
             android:layout_height="96dp"
-            android:background="@drawable/ic_aktivasi"
+            android:background="@drawable/check_email"
             android:contentDescription="@string/please_check_email"
             android:layout_marginLeft="49dp"
             android:layout_marginRight="49dp"
