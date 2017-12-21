@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -23,10 +23,10 @@ import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
 
 import java.util.List;
 
-public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDaggerFragment
+public abstract class BaseListV2Fragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseDaggerFragment
         implements BaseListViewListener2<T>, BaseListAdapterV2.OnAdapterInteractionListener<T> {
 
-    private BaseListAdapterV2<T> adapter;
+    private BaseListAdapterV2<T, F> adapter;
     private SwipeRefreshLayout swipeToRefresh;
     private SnackbarRetry snackBarRetry;
     private boolean isLoadMoreState;
@@ -108,7 +108,7 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
                 LinearLayoutManager.VERTICAL, false);
     }
 
-    protected abstract BaseListAdapterTypeFactory getAdapterTypeFactory();
+    protected abstract F getAdapterTypeFactory();
 
     protected void showLoading() {
         adapter.showLoading();
@@ -119,7 +119,7 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
         adapter.clearData();
     }
 
-    public final BaseListAdapterV2<T> getAdapter() {
+    public final BaseListAdapterV2<T, F> getAdapter() {
         return adapter;
     }
 
@@ -133,7 +133,7 @@ public abstract class BaseListV2Fragment<T extends Visitable> extends BaseDagger
         }
     }
 
-    private Visitable getEmptyDataViewModel() {
+    protected Visitable getEmptyDataViewModel() {
         return new EmptyModel();
     }
 

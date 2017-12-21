@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.view.adapter.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.design.text.SearchInputView;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @author normansyahputa on 5/17/17.
  */
 
-public abstract class BaseSearchListV2Fragment<T extends Visitable> extends BaseListV2Fragment<T> implements SearchInputView.Listener {
+public abstract class BaseSearchListV2Fragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseListV2Fragment<T, F> implements SearchInputView.Listener {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
 

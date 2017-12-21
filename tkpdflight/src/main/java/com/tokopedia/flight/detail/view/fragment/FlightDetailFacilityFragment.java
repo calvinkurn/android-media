@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailFacilityAdapterTypeFactory;
@@ -17,7 +16,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailFacilityFragment extends BaseListV2Fragment<FlightDetailRouteViewModel> {
+public class FlightDetailFacilityFragment extends BaseListV2Fragment<FlightDetailRouteViewModel, FlightDetailFacilityAdapterTypeFactory> {
 
     public static final String EXTRA_FLIGHT_DETAIL_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
 
@@ -43,7 +42,7 @@ public class FlightDetailFacilityFragment extends BaseListV2Fragment<FlightDetai
     }
 
     @Override
-    protected BaseListAdapterTypeFactory getAdapterTypeFactory() {
+    protected FlightDetailFacilityAdapterTypeFactory getAdapterTypeFactory() {
         return new FlightDetailFacilityAdapterTypeFactory();
     }
 

@@ -3,7 +3,6 @@ package com.tokopedia.flight.booking.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListV2Fragment;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingNationalityAdapterTypeFactory;
@@ -17,8 +16,7 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingNationalityFragment extends BaseSearchListV2Fragment<FlightBookingPhoneCodeViewModel> implements
-        FlightBookingPhoneCodeView {
+public class FlightBookingNationalityFragment extends BaseSearchListV2Fragment<FlightBookingPhoneCodeViewModel, FlightBookingNationalityAdapterTypeFactory> implements FlightBookingPhoneCodeView {
 
     public static final String EXTRA_SELECTED_COUNTRY = "EXTRA_SELECTED_COUNTRY";
 
@@ -44,7 +42,7 @@ public class FlightBookingNationalityFragment extends BaseSearchListV2Fragment<F
     }
 
     @Override
-    protected BaseListAdapterTypeFactory getAdapterTypeFactory() {
+    protected FlightBookingNationalityAdapterTypeFactory getAdapterTypeFactory() {
         return new FlightBookingNationalityAdapterTypeFactory();
     }
 
