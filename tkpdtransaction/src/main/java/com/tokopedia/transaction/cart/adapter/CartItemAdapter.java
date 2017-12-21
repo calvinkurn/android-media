@@ -189,6 +189,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else {
             holder.totalPriceLayout.setVisibility(View.VISIBLE);
             holder.calculationLayout.setVisibility(View.VISIBLE);
+            holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
             holder.tvTotalPrice.setVisibility(View.VISIBLE);
             holder.tvShippingCost.setText(cartItemEditable.getCartCourierPrices()
                     .getShipmentPriceIdr());
