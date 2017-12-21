@@ -78,7 +78,7 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
         departureAirportDesc.setText(route.getDepartureAirportName());
         flightTime.setText(route.getDuration());
         arrivalTime.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getArrivalTimestamp()));
-        arrivalDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getArrivalTimestamp()));
+        arrivalDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.getArrivalTimestamp()));
         arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
         arrivalAirportDesc.setText(route.getArrivalAirportName());
         transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
