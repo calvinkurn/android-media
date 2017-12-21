@@ -46,11 +46,16 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     }
 
     public int getType() {
-        if (homeHeaderWalletActionData == null && tokoPointDrawerData != null) {
+        if (homeHeaderWalletActionData == null && tokoPointDrawerData != null
+                && tokoPointDrawerData.getOffFlag() == 0) {
             return TYPE_TOKOPINT_ONLY;
         } else if (homeHeaderWalletActionData != null && tokoPointDrawerData == null) {
             return TYPE_TOKOCASH_ONLY;
-        } else if (homeHeaderWalletActionData != null) {
+        } else if (homeHeaderWalletActionData != null && tokoPointDrawerData != null
+                && tokoPointDrawerData.getOffFlag() == 1) {
+            return TYPE_TOKOCASH_ONLY;
+        } else if (homeHeaderWalletActionData != null && tokoPointDrawerData != null
+                && tokoPointDrawerData.getOffFlag() == 0) {
             return TYPE_TOKOCASH_WITH_TOKOPOINT;
         } else {
             return TYPE_EMPTY;
