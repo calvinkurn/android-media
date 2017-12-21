@@ -19,6 +19,7 @@
         android:text="@string/optional_pinpoint_location_text" />
 
     <FrameLayout
+        android:id="@+id/empty_map_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -55,6 +56,7 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/mapview_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
