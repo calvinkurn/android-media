@@ -26,7 +26,8 @@
         <android.support.v7.widget.AppCompatImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_empty_state_kaktus" />
+            android:src="@drawable/ic_empty_map"
+            android:scaleType="fitXY"/>
 
         <TextView
             android:layout_margin="15.2dp"
