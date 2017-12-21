@@ -216,7 +216,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holder.tvShippingAddress.setEnabled(true);
                 holder.tvShipment.setEnabled(true);
             }
-        }
+        } else holder.tvTotalPrice.setVisibility(View.GONE);
     }
 
     private void renderHolderViewListener(final ViewHolder holder, final CartItem cartData,
