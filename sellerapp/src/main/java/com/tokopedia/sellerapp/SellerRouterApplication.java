@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,8 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.widget.ArrayAdapter;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -24,10 +29,15 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.geolocation.activity.GeolocationActivity;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.address.activity.DistrictRecommendationActivity;
+import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -93,6 +103,12 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
+import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
+import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
+import com.tokopedia.seller.shopsettings.shipping.interactor.EditShippingInteractorImpl;
+import com.tokopedia.seller.shopsettings.shipping.interactor.EditShippingRetrofitInteractor;
+import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -115,6 +131,7 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.core.router.OnActivityResultListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -122,6 +139,9 @@ import rx.Observable;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment.REQUEST_CODE_ADDRESS;
+import static com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment.REQUEST_CODE_GOOGLE_MAP;
+import static com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment.REQUEST_CODE__EDIT_ADDRESS;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -807,11 +827,154 @@ public abstract class SellerRouterApplication extends MainApplication
     @SuppressWarnings("unchecked")
     @Override
     public void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener onActivityResultListener){
+
         if(onActivityResultListener != null){
-            onActivityResultListener.onActivityResult(DestinationViewModel.convertFromBundle(
-                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
-            ));
+            switch (requestCode){
+                case REQUEST_CODE_ADDRESS:
+                    if(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS) != null) {
+                        onActivityResultListener.onActivityResult(DestinationViewModel.convertFromBundle(
+                                data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                        ));
+                    }
+                    break;
+                case REQUEST_CODE__EDIT_ADDRESS:
+                    Address address = data.getParcelableExtra(DistrictRecomendationFragmentView.Constant.INTENT_DATA_ADDRESS);
+                    if(address != null){
+                        LocationViewModel locationViewModel = new LocationViewModel();
+                        locationViewModel.setDistrictId(address.getDistrictId());
+                        locationViewModel.setDistrictName(address.getDistrictName());
+                        locationViewModel.setCityId(address.getCityId());
+                        locationViewModel.setCityName(address.getCityName());
+                        locationViewModel.setProvinceId(address.getProvinceId());
+                        locationViewModel.setProvinceName(address.getProvinceName());
+                        locationViewModel.setZipCodes(address.getZipCodes());
+
+                        onActivityResultListener.onActivityResult(locationViewModel);
+                    }
+                    break;
+                case REQUEST_CODE_GOOGLE_MAP:
+                    LocationPass locationPass = data.getParcelableExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                    if(locationPass != null && locationPass.getLatitude() != null) {
+                        model.getShopShipping().setShopLatitude(locationPass.getLatitude());
+                        model.getShopShipping().setShopLongitude(locationPass.getLongitude());
+
+                        GoogleLocationViewModel locationViewModel = new GoogleLocationViewModel();
+                        locationViewModel.setGeneratedAddress(locationPass.getGeneratedAddress());
+                        locationViewModel.setLatitude(locationPass.getLatitude());
+                        locationViewModel.setLongitude(locationPass.getLongitude());
+
+                        onActivityResultListener.onActivityResult(locationViewModel);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
+    }
+
+
+
+    private OpenShopData model = null;
+    private LocationPass locationPass = null;
+
+    @Override
+    public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode) {
+        if(model != null){
+            fragment.startActivityForResult(DistrictRecommendationActivity.createInstance(fragment.getActivity(),
+                    model.getToken()),
+                    requestCode);
+
+            return;
+        }
+
+        EditShippingInteractorImpl editShippingInteractor = new EditShippingInteractorImpl();
+        editShippingInteractor.getOpenShopData(fragment.getActivity(), new HashMap<String, String>(), new EditShippingRetrofitInteractor.getOpenShopDataListener() {
+            @Override
+            public void onSuccess(OpenShopData model) {
+                SellerRouterApplication.this.model = model;
+
+                fragment.startActivityForResult(DistrictRecommendationActivity.createInstance(fragment.getActivity(),
+                        model.getToken()),
+                        requestCode);
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+
+            @Override
+            public void onTimeout() {
+
+            }
+
+            @Override
+            public void onNoConnection() {
+
+            }
+        });
+    }
+
+    @Override
+    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress) {
+        if(model != null){
+            if (!model.getShopShipping().getShopLatitude().isEmpty()
+                    && !model.getShopShipping().getShopLongitude().isEmpty()) {
+                locationPass = new LocationPass();
+                locationPass.setLatitude(model.getShopShipping().getShopLatitude());
+                locationPass.setLongitude(model.getShopShipping().getShopLongitude());
+                locationPass.setGeneratedAddress(generatedAddress);
+            }
+
+            Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
+            fragment.startActivityForResult(intent, requestCode);
+            return;
+        }
+
+        GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+
+        int resultCode = availability.isGooglePlayServicesAvailable(fragment.getActivity());
+
+        if (ConnectionResult.SUCCESS != resultCode) {
+            CommonUtils.dumper("Google play services unavailable");
+            Dialog dialog = availability.getErrorDialog(fragment.getActivity(), resultCode, 0);
+            dialog.show();
+        }
+
+
+        EditShippingInteractorImpl editShippingInteractor = new EditShippingInteractorImpl();
+        editShippingInteractor.getOpenShopData(fragment.getActivity(), new HashMap<String, String>(), new EditShippingRetrofitInteractor.getOpenShopDataListener() {
+            @Override
+            public void onSuccess(OpenShopData model) {
+                SellerRouterApplication.this.model = model;
+
+                if (!model.getShopShipping().getShopLatitude().isEmpty()
+                        && !model.getShopShipping().getShopLongitude().isEmpty()) {
+                    locationPass = new LocationPass();
+                    locationPass.setLatitude(model.getShopShipping().getShopLatitude());
+                    locationPass.setLongitude(model.getShopShipping().getShopLongitude());
+                    locationPass.setGeneratedAddress(generatedAddress);
+                }
+
+                Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
+                fragment.startActivityForResult(intent, requestCode);
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+
+            @Override
+            public void onTimeout() {
+
+            }
+
+            @Override
+            public void onNoConnection() {
+
+            }
+        });
     }
 }

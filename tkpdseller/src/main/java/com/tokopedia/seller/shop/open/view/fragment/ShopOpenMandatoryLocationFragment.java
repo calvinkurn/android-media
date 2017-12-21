@@ -20,8 +20,12 @@ import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.ShopOpenStepperModel;
  import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.view.holder.ShopOpenMandatoryLocationHeaderViewHolder;
+import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
+import com.tokopedia.seller.shop.open.view.holder.LocationMapViewHolder;
+import com.tokopedia.seller.shop.open.view.holder.LocationShippingViewHolder;
 import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
+import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
+import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
 
 
@@ -31,11 +35,17 @@ import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayou
 public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
 
     public static final int REQUEST_CODE_ADDRESS = 1234;
+    public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
+    public static final int REQUEST_CODE_GOOGLE_MAP = 1236;
+
     protected ShopOpenStepperModel stepperModel;
     protected StepperListener stepperListener;
     private LogisticRouter logisticRouter;
     private static final String TAG = "ShopOpenMandatoryLocati";
-    private ShippingHeaderLayout fragmentShippingHeader;
+    private LocationHeaderViewHolder locationHeaderViewHolder;
+    private LocationShippingViewHolder locationShippingViewHolder;
+    private LocationMapViewHolder locationMapViewHolder;
+
 
     public static ShopOpenMandatoryLocationFragment getInstance(){
         return new ShopOpenMandatoryLocationFragment();
@@ -50,7 +60,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     }
 
     private void initView(View root){
-        new ShopOpenMandatoryLocationHeaderViewHolder(root, new ShopOpenMandatoryLocationHeaderViewHolder.ViewHolderListener() {
+        locationHeaderViewHolder = new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
             public void navigateToChooseAddressActivityRequest() {
                 if(logisticRouter == null)
@@ -63,8 +73,32 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                 );
             }
         });
+        locationShippingViewHolder = new LocationShippingViewHolder(root, new LocationShippingViewHolder.ViewHolderListener2() {
+            @Override
+            public void navigateToEditAddressActivityRequest() {
+                if(logisticRouter == null)
+                    return;
 
-        fragmentShippingHeader = root.findViewById(R.id.fragment_shipping_header);
+                logisticRouter.navigateToEditAddressActivityRequest(
+                        ShopOpenMandatoryLocationFragment.this,
+                        REQUEST_CODE__EDIT_ADDRESS
+                );
+            }
+        });
+
+        locationMapViewHolder = new LocationMapViewHolder(root, new LocationMapViewHolder.ViewHolderListener3() {
+            @Override
+            public void navigateToGeoLocationActivityRequest(String generatedMap) {
+                if(logisticRouter == null)
+                    return;
+
+                logisticRouter.navigateToGeoLocationActivityRequest(
+                        ShopOpenMandatoryLocationFragment.this,
+                        REQUEST_CODE_GOOGLE_MAP,
+                        generatedMap
+                );
+            }
+        });
     }
 
     @Override
@@ -73,14 +107,30 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         if(resultCode == Activity.RESULT_OK && data != null){
             switch (requestCode){
                 case REQUEST_CODE_ADDRESS:
-                    logisticRouter.onActivityResultChooseAddress(requestCode, data, new OnActivityResultListener<DestinationViewModel>() {
+                case REQUEST_CODE__EDIT_ADDRESS:
+                case REQUEST_CODE_GOOGLE_MAP:
+                    logisticRouter.onActivityResultChooseAddress(requestCode, data, new OnActivityResultListener() {
                         @Override
-                        public void onActivityResult(DestinationViewModel rawData) {
+                        public void onActivityResult(Object rawData) {
                             Log.d(TAG, rawData.toString());
-                            fragmentShippingHeader.updateLocationData(
-                                    rawData.getProvinceName(),
-                                    rawData.getCityName(),
-                                    rawData.getDistrictName());
+                            if(rawData instanceof DestinationViewModel){
+                                DestinationViewModel address = (DestinationViewModel)rawData;
+                                locationShippingViewHolder.updateLocationData(
+                                        address.getProvinceName(),
+                                        address.getCityName(),
+                                        address.getDistrictName());
+                            }else if(rawData instanceof LocationViewModel){
+                                LocationViewModel locationViewModel = (LocationViewModel) rawData;
+                                locationShippingViewHolder.initializeZipCodes(locationViewModel.getZipCodes());
+                                locationShippingViewHolder.updateLocationData(
+                                        locationViewModel.getProvinceName(),
+                                        locationViewModel.getCityName(),
+                                        locationViewModel.getDistrictName()
+                                );
+                            }else if(rawData instanceof GoogleLocationViewModel){
+                                GoogleLocationViewModel googleLocationViewModel = (GoogleLocationViewModel) rawData;
+                                locationMapViewHolder.setLocationText(googleLocationViewModel);
+                            }
                         }
                     });
                     break;
