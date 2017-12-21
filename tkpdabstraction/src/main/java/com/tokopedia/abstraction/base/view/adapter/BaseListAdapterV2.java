@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class BaseListAdapterV2<T extends Visitable, F extends AdapterTypeFactory> extends BaseAdapter {
 
+    protected OnAdapterInteractionListener onAdapterInteractionListener;
     private F baseListAdapterTypeFactory;
-    private OnAdapterInteractionListener onAdapterInteractionListener;
 
     public BaseListAdapterV2(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, new ArrayList<Visitable>());

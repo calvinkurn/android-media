@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 public abstract class CheckableBaseViewHolder<T extends ItemType> extends BaseViewHolder<T> implements CompoundButton.OnCheckedChangeListener {
 
     private BaseListCheckableAdapter<T> baseListCheckableV2Adapter;
+
     public CheckableBaseViewHolder(View itemView, BaseListCheckableAdapter<T> baseListCheckableV2Adapter) {
         super(itemView);
         this.baseListCheckableV2Adapter = baseListCheckableV2Adapter;
@@ -28,8 +29,8 @@ public abstract class CheckableBaseViewHolder<T extends ItemType> extends BaseVi
     @CallSuper
     public void bindObject(T u, boolean isChecked) {
         CompoundButton checkable = getCheckable();
-        if (checkable!= null) {
-            checkable.setOnCheckedChangeListener (null);
+        if (checkable != null) {
+            checkable.setOnCheckedChangeListener(null);
             checkable.setChecked(isChecked);
             checkable.setOnCheckedChangeListener(this);
         }
@@ -40,19 +41,19 @@ public abstract class CheckableBaseViewHolder<T extends ItemType> extends BaseVi
         setChecked(isChecked);
     }
 
-    public void toggle(){
+    public void toggle() {
         boolean becomeChecked = !isChecked();
         setChecked(becomeChecked);
     }
 
-    public boolean isChecked(){
+    public boolean isChecked() {
         return baseListCheckableV2Adapter.isChecked(getAdapterPosition());
     }
 
-    public void setChecked(boolean checked){
+    public void setChecked(boolean checked) {
         if (checked != isChecked()) {
             baseListCheckableV2Adapter.updateListByCheck(checked, getAdapterPosition());
-            if (getCheckable()!=null) {
+            if (getCheckable() != null) {
                 getCheckable().setChecked(checked);
             }
         }

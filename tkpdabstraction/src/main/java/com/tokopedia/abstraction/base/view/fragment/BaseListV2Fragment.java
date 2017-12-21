@@ -36,7 +36,12 @@ public abstract class BaseListV2Fragment<T extends Visitable, F extends AdapterT
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new BaseListAdapterV2<>(getAdapterTypeFactory());
+        adapter = createAdapterInstance();
+    }
+
+    @NonNull
+    protected BaseListAdapterV2<T, F> createAdapterInstance() {
+        return new BaseListAdapterV2<>(getAdapterTypeFactory());
     }
 
     @Nullable
