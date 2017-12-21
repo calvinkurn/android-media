@@ -74,9 +74,6 @@ public class FlightSearchActivity extends BaseFlightActivity
     }
 
     private void setupFlightToolbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(0);
-        }
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.tkpd_dark_gray));
         String title = getDepartureAirport().getCityName() + " ➝ " + getArrivalAirport().getCityName();

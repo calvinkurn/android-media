@@ -37,4 +37,8 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
 
     void hideHorizontalProgress();
 
+    void removeToolbarElevation();
+
+    void addToolbarElevation();
+
 }
