@@ -107,4 +107,5 @@ public interface TkpdCoreRouter {
 
     Intent getInboxReputationIntent(Context context);
 
+    Intent getResolutionCenterIntent(Context context);
 }

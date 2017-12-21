@@ -133,7 +133,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
     @Override
     public void getOperatorAndProductsByPrefix(String phonePrefix, int categoryId, boolean validatePrefix) {
-        widgetInteractor.getOperatorAndProductsFromPrefix2(operatorAndProductsSubscriber(), categoryId,
+        widgetInteractor.getOperatorAndProductsFromPrefix(operatorAndProductsSubscriber(), categoryId,
                 phonePrefix);
     }
 
@@ -165,7 +165,6 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
                     if (!products.isEmpty()) {
                         view.renderDataProducts(products, operator.getAttributes().getRule().isShowPrice());
-                        widgetInteractor.setUseCacheToTrue();
                     } else {
                         view.renderEmptyProduct(context.getString(R.string.error_message_product));
                     }

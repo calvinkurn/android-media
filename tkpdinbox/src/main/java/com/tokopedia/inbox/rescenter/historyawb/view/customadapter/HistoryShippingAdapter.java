@@ -140,7 +140,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     private void renderData(ShippingViewHolder holder, HistoryAwbViewItem item) {
         holder.date.setText(
                 context.getString(R.string.template_history_additional_information, item.getActionByText(),
-                        DateFormatUtils.formatDateForResoChatV2(item.getCreateTimestamp()))
+                        item.getCreateTimestamp())
         );
         holder.history.setText(item.getRemark().concat(" - ").concat(item.getShippingRefNumber()));
     }
@@ -212,5 +212,12 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public int getItemCount() {
         return getArraylist().size() + super.getItemCount();
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof ShippingViewHolder) {
+            ((ShippingViewHolder)holder).glowingView.renderData(new Object());
+        }
     }
 }
