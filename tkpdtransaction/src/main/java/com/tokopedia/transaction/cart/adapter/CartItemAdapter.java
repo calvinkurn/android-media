@@ -183,13 +183,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentName()),
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentPackageName())));
-        if (cartItemEditable.getCartCourierPrices() == null) {
-            holder.totalPriceLayout.setVisibility(View.GONE);
-            holder.calculationLayout.setVisibility(View.GONE);
-        } else {
-            holder.totalPriceLayout.setVisibility(View.VISIBLE);
-            holder.calculationLayout.setVisibility(View.VISIBLE);
-            holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
+        if (cartItemEditable.getCartCourierPrices() != null) {
             holder.tvTotalPrice.setVisibility(View.VISIBLE);
             holder.tvShippingCost.setText(cartItemEditable.getCartCourierPrices()
                     .getShipmentPriceIdr());
@@ -197,13 +191,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .getCartProductPriceIdr());
             holder.tvTotalPrice.setText(cartItemEditable.getCartCourierPrices()
                     .getCartSubtotalIdr());
-            if(cartItemEditable.isUseInsurance())
+            if (cartItemEditable.isUseInsurance())
                 holder.tvAdditionalCost.setText(cartItemEditable.getCartCourierPrices()
                         .getSumAdditionFeeInsuranceIdr());
-            else  holder.tvAdditionalCost.setText(cartItemEditable.getCartCourierPrices()
+            else holder.tvAdditionalCost.setText(cartItemEditable.getCartCourierPrices()
                     .getAdditionFeeIdr());
             holder.totalPriceProgressBar.setVisibility(View.GONE);
-            if(unEditable(cartData)) {
+            if (unEditable(cartData)) {
                 holder.tvShippingAddress.setText(MethodChecker
                         .fromHtml(cartData.getCartDestination().getReceiverName()));
                 holder.tvShipment.setText(String.format("%s - %s",
