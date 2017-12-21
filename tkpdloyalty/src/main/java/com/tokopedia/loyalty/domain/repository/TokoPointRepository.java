@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -172,9 +171,9 @@ public class TokoPointRepository implements ITokoPointRepository {
     }
 
     @Override
-    public Observable<VoucherViewModel> checkVoucherValidity(TKPDMapParam<String, String> param,
+    public Observable<VoucherViewModel> checkVoucherValidity(String gAdsId, TKPDMapParam<String, String> param,
                                                              final String voucherCode) {
-        return txVoucherService.getApi().checkVoucherCode(param).map(new Func1<Response<TkpdResponse>, VoucherViewModel>() {
+        return txVoucherService.getApi().checkVoucherCode(gAdsId, param).map(new Func1<Response<TkpdResponse>, VoucherViewModel>() {
             @Override
             public VoucherViewModel call(Response<TkpdResponse> networkResponse) {
                 VoucherResponse voucherResponse = new Gson().fromJson(
@@ -190,10 +189,11 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     @Override
     public Observable<CouponViewModel> checkCouponValidity(
+            String gAdsId,
             TKPDMapParam<String, String> param,
             final String voucherCode, final String couponTitle
     ) {
-        return txVoucherService.getApi().checkVoucherCode(param)
+        return txVoucherService.getApi().checkVoucherCode(gAdsId, param)
                 .map(new Func1<Response<TkpdResponse>, CouponViewModel>() {
                     @Override
                     public CouponViewModel call(Response<TkpdResponse> networkResponse) {

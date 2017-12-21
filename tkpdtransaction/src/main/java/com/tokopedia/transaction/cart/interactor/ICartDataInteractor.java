@@ -50,7 +50,7 @@ public interface ICartDataInteractor {
                              TKPDMapParam<String, String> paramCart,
                              Subscriber<ResponseTransform<CartData>> subscriber);
 
-    void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
+    void getParameterTopPay(String adsId, TKPDMapParam<String, String> params, Scheduler schedulers,
                             Subscriber<TopPayParameterData> subscriber);
 
     void getThanksTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,

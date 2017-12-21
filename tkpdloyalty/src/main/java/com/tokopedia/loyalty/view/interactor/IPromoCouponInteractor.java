@@ -17,7 +17,8 @@ import rx.Subscriber;
 public interface IPromoCouponInteractor {
     void getCouponList(TKPDMapParam<String, String> param, Subscriber<List<CouponData>> subscriber);
 
-    void submitVoucher(String couponTitle,
+    void submitVoucher(String gAdsId,
+                       String couponTitle,
                        String voucherCode,
                        TKPDMapParam<String, String> param,
                        Subscriber<CouponViewModel> subscriber);

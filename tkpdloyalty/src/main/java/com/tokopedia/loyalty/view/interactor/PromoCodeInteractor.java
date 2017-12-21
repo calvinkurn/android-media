@@ -28,11 +28,11 @@ public class PromoCodeInteractor implements IPromoCodeInteractor {
     }
 
     @Override
-    public void submitVoucher(String voucherCode,
+    public void submitVoucher(String gAdsId, String voucherCode,
                               TKPDMapParam<String, String> params,
                               Subscriber<VoucherViewModel> subscriber) {
         compositeSubscription.add(
-                tokoplusRepositoy.checkVoucherValidity(params, voucherCode)
+                tokoplusRepositoy.checkVoucherValidity(gAdsId, params, voucherCode)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

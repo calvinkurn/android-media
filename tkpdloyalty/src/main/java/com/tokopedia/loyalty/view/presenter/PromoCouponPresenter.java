@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -120,7 +121,10 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(VOUCHER_CODE, couponData.getCode());
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+
         promoCouponInteractor.submitVoucher(
+                analHandler.getAdsId(),
                 couponData.getTitle(),
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param

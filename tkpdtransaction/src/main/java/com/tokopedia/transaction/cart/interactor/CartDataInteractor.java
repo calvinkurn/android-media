@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
@@ -150,10 +149,10 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler scheduler,
+    public void getParameterTopPay(String adsId, TKPDMapParam<String, String> params, Scheduler scheduler,
                                    Subscriber<TopPayParameterData> subscriber) {
         Observable<Response<TkpdResponse>> observable
-                = txActService.getApi().getParameterDynamicPayment(params);
+                = txActService.getApi().getParameterDynamicPayment(adsId, params);
         compositeSubscription.add(observable
                 .flatMap(new Func1<Response<TkpdResponse>, Observable<TopPayParameterData>>() {
                     @Override

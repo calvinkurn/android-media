@@ -45,12 +45,13 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     }
 
     @Override
-    public void submitVoucher(String couponTitle,
+    public void submitVoucher(String gAdsId,
+                              String couponTitle,
                               String couponCode,
                               TKPDMapParam<String, String> param,
                               Subscriber<CouponViewModel> subscriber) {
         compositeSubscription.add(
-                tokoplusRepository.checkCouponValidity(param, couponCode, couponTitle)
+                tokoplusRepository.checkCouponValidity(gAdsId, param, couponCode, couponTitle)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

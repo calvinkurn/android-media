@@ -11,7 +11,7 @@ import rx.Subscriber;
 public interface IPromoCodeInteractor {
 
     void submitVoucher(
-            String voucherCode,
+            String gAdsId, String voucherCode,
             TKPDMapParam<String, String> param, Subscriber<VoucherViewModel> subscriber);
 
     void submitDigitalVoucher(

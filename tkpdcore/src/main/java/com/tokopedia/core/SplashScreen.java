@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
@@ -99,6 +98,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     protected void onStart() {
         super.onStart();
         handleBranchDefferedDeeplink();
+
+        TrackingUtils.setAdsId();
+
     }
 
     private void moveToHome() {

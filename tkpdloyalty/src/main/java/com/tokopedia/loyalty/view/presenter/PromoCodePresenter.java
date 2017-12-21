@@ -2,6 +2,7 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -35,7 +36,10 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("voucher_code", voucherCode);
-        promoCodeInteractor.submitVoucher(voucherCode,
+
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+
+        promoCodeInteractor.submitVoucher(analHandler.getAdsId(), voucherCode,
                 AuthUtil.generateParamsNetwork(context, param),
                 makeVoucherViewModel());
     }

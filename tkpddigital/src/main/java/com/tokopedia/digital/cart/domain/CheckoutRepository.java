@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
@@ -38,7 +39,10 @@ public class CheckoutRepository implements ICheckoutRepository {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyCheckout));
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
-        return digitalEndpointService.getApi().checkout(requestBody)
+
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+
+        return digitalEndpointService.getApi().checkout(analHandler.getAdsId(), requestBody)
                 .map(getFuncResponseToCheckoutDigitalData());
     }
 
@@ -49,7 +53,10 @@ public class CheckoutRepository implements ICheckoutRepository {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyCheckout));
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
-        return digitalEndpointService.getApi().checkout(requestBody)
+
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+
+        return digitalEndpointService.getApi().checkout(analHandler.getAdsId(), requestBody)
                 .map(getFuncResponseToInstantCheckoutData());
     }
 

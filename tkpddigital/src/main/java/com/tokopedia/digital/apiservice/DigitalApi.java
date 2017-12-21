@@ -71,7 +71,7 @@ public interface DigitalApi {
 
     @POST(TkpdBaseURL.DigitalApi.PATH_CHECKOUT)
     @Headers({"Content-Type: application/json"})
-    Observable<Response<TkpdDigitalResponse>> checkout(@Body JsonObject requestBody);
+    Observable<Response<TkpdDigitalResponse>> checkout(@Header("X-GA-ID") String gAdsId, @Body JsonObject requestBody);
 
     @POST(TkpdBaseURL.DigitalApi.PATH_USSD)
     @Headers({"Content-Type: application/json"})
