@@ -65,6 +65,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
 
         emptyMapView.setVisibility(View.GONE);
         mapViewContainer.setVisibility(View.VISIBLE);
+        generatedLocationOpenShop.setVisibility(View.VISIBLE);
         generatedLocationOpenShop.setText(getReverseGeocode(googleLocationViewModel));
         generatedLocationOpenShop.setOnClickListener(new View.OnClickListener() {
             @Override

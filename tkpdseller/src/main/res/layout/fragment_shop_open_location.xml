@@ -16,7 +16,6 @@
 
         <include layout="@layout/edit_shipping_location_seller" />
 
-
         <include layout="@layout/google_map_location_view" />
 
         <include layout="@layout/shop_open_map_address_location" />

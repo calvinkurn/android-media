@@ -21,13 +21,14 @@
     <FrameLayout
         android:id="@+id/empty_map_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="117.9dp">
 
         <android.support.v7.widget.AppCompatImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:src="@drawable/ic_empty_map"
-            android:scaleType="fitXY"/>
+            android:scaleType="fitXY"
+            />
 
         <TextView
             android:layout_margin="15.2dp"
@@ -59,7 +60,7 @@
     <LinearLayout
         android:id="@+id/mapview_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="117.9dp"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -71,16 +72,17 @@
             app:liteMode="true"
             app:mapType="normal"
             app:cameraZoom="15" />
-
-        <TextView
-            android:id="@+id/generated_location_open_shop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:lineSpacingExtra="6sp"
-            android:text="@string/default_address_text" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/generated_location_open_shop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:lineSpacingExtra="6sp"
+        android:text="@string/default_address_text"
+        android:visibility="gone"/>
 
 </LinearLayout>
