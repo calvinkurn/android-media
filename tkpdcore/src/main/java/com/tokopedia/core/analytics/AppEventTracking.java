@@ -421,9 +421,9 @@ public interface AppEventTracking {
 
     interface ImageEditor{
         String NO_ACTION = "no action";
-        String ROTATE_ONLY = "rotate only";
-        String CROP_ONLY = "crop only";
-        String ROTATE_AND_CROP = "rotate and crop";
+        String ROTATE = "rotate";
+        String CROP = "crop";
+        String WATERMARK = "watermark";
     }
 
     interface EventLabel {
