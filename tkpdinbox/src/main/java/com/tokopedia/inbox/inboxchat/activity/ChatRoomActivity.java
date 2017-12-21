@@ -122,7 +122,7 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
+        return AppScreen.SCREEN_CHAT_DETAIL;
     }
 
     @Override

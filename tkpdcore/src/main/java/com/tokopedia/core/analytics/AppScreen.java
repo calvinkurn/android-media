@@ -263,6 +263,8 @@ public final class AppScreen {
     public static final String SCREEN_ONBOARDING = "Screen OnBoarding ";
     public static final String SCREEN_KOL_COMMENTS = "Kol Comments Page";
     public static final String SCREEN_DISCOVERY_PAGE = "Discovery Page";
+    public static final String SCREEN_CHAT = "inbox-chat";
+    public static final String SCREEN_CHAT_DETAIL = "chat detail";
 
     private AppScreen() {
 
