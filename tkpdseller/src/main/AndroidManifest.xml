@@ -17,9 +17,13 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".shop.open.view.activity.ShopOpenRoutingActivity"
+            android:label="@string/title_open_shop"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".shop.open.view.activity.ShopOpenDomainActivity"
             android:label="@string/title_open_shop"
-            android:exported="true"
             android:screenOrientation="portrait" />
 
         <activity

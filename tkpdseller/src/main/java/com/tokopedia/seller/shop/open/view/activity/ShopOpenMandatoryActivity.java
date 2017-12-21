@@ -31,25 +31,19 @@ import java.util.List;
 
 public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent>, OnShopStepperListener {
 
-    public static final String EXTRA_LOGOUT_ON_BACK = "LOGOUT_ON_BACK";
 
     private List<Fragment> fragmentList;
     private ShopOpenDomainComponent component;
 
     boolean isLogoutOnBack = false;
 
-    public static Intent getIntent(Context context, boolean isLogoutOnBack) {
+    public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
-        intent.putExtra(EXTRA_LOGOUT_ON_BACK, isLogoutOnBack);
         return intent;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_LOGOUT_ON_BACK)) {
-            isLogoutOnBack = getIntent().getBooleanExtra(EXTRA_LOGOUT_ON_BACK, false);
-        }
         super.onCreate(savedInstanceState);
         initComponent();
     }

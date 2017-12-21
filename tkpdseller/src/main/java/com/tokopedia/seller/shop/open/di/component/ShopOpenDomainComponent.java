@@ -6,6 +6,7 @@ import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenRoutingFragment;
 
 import dagger.Component;
 
@@ -15,8 +16,10 @@ import dagger.Component;
 @ShopOpenDomainScope
 @Component(modules = ShopOpenDomainModule.class, dependencies = ShopComponent.class)
 public interface ShopOpenDomainComponent {
+
+	void inject(ShopOpenRoutingFragment shopOpenRoutingFragment);
+
     void inject(ShopOpenDomainFragment shopOpenDomainFragment);
-    void inject(ShopOpenDomainActivity shopOpenDomainActivity);
 
     void inject(ShopOpenMandatoryLocationFragment shopOpenMandatoryLocationFragment);
 }
