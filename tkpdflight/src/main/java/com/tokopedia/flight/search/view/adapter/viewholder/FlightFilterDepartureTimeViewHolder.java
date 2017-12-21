@@ -9,20 +9,20 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder2;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.view.model.resultstatistics.RefundableStat;
+import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
 
 /**
  * Created by alvarisi on 12/21/17.
  */
 
-public class FlightFilterRefundableViewHolder extends CheckableBaseViewHolder2<RefundableStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class FlightFilterDepartureTimeViewHolder extends CheckableBaseViewHolder2<DepartureStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     @LayoutRes
     public static final int LAYOUT = R.layout.item_flight_general_filter;
     TextView tvTitle;
     TextView tvDesc;
     CheckBox checkBox;
 
-    public FlightFilterRefundableViewHolder(View itemView, CheckableInteractionListener checkableInteractionListener) {
+    public FlightFilterDepartureTimeViewHolder(View itemView, CheckableInteractionListener checkableInteractionListener) {
         super(itemView, checkableInteractionListener);
         tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         tvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
@@ -30,10 +30,10 @@ public class FlightFilterRefundableViewHolder extends CheckableBaseViewHolder2<R
     }
 
     @Override
-    public void bind(RefundableStat refundableStat) {
-        super.bind(refundableStat);
-        tvTitle.setText(refundableStat.getRefundableEnum().getValueRes());
-        tvDesc.setText(getString(R.string.start_from_x, refundableStat.getMinPriceString()));
+    public void bind(DepartureStat departureStat) {
+        super.bind(departureStat);
+        tvTitle.setText(departureStat.getDepartureTime().getValueRes());
+        tvDesc.setText(getString(R.string.start_from_x, departureStat.getMinPriceString()));
         itemView.setOnClickListener(this);
     }
 
