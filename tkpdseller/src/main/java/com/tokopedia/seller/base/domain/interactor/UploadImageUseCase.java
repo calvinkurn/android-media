@@ -95,8 +95,6 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
 
         File file = new File(pathFile);
 
-        networkCalculator.setIdentity().compileAllParam().finish();
-
         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.USER_ID));
         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.DEVICE_ID));
         RequestBody hash = RequestBody.create(MediaType.parse("text/plain"), networkCalculator.getContent().get(NetworkCalculator.HASH));

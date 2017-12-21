@@ -90,6 +90,6 @@ public class ShopSettingInfoModule {
     @Provides
     @ShopSettingInfoScope
     NetworkCalculator provideNetworkCalculator(@ApplicationContext Context context){
-        return new NetworkCalculator(NetworkConfig.POST, context, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL);
+        return new NetworkCalculator(NetworkConfig.POST, context, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL).setIdentity().compileAllParam().finish();
     }
 }

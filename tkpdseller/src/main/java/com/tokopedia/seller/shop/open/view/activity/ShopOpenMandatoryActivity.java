@@ -28,7 +28,7 @@ import java.util.List;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent>, OnShopStepperListener {
+public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent>{
 
     public static final String EXTRA_SHOP_NAME = "EXTRA_SHOP_NAME";
     public static final String EXTRA_SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
@@ -37,6 +37,11 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     private ShopOpenDomainComponent component;
 
     boolean isLogoutOnBack = false;
+
+    public static Intent getIntent(Context context) {
+        Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
+        return intent;
+    }
 
     public static Intent getIntent(Context context, String shopName, String shopDomain) {
         Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);

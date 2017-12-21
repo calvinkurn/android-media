@@ -52,7 +52,7 @@ public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(final RequestParams requestParams) {
-        return uploadImageUseCase.getExecuteObservableAsync(uploadImageUseCase.createRequestParams(ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH,
+        return uploadImageUseCase.getExecuteObservable(uploadImageUseCase.createRequestParams(ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH,
                 requestParams.getString(PATH_FILE_IMAGE, "")))
                 .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>, Observable<Boolean>>() {
                     @Override

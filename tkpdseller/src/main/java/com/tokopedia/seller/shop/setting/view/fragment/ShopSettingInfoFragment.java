@@ -29,9 +29,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
+import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingInfoComponent;
-import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingInfoView;
@@ -76,7 +76,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
         component = DaggerShopSettingInfoComponent
                 .builder()
                 .shopSettingInfoModule(new ShopSettingInfoModule())
-                .shopSettingComponent(getComponent(ShopSettingComponent.class))
+                .shopOpenDomainComponent(getComponent(ShopOpenDomainComponent.class))
                 .build();
         component.inject(this);
     }

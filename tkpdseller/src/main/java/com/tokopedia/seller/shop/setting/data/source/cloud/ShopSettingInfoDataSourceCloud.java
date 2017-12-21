@@ -37,7 +37,7 @@ public class ShopSettingInfoDataSourceCloud {
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
-                        if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getMessageStatus().equals(SUCCESS)){
+                        if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
                             return Observable.just(true);
                         }else{
                             return Observable.just(false);

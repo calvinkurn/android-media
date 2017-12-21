@@ -212,9 +212,9 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     }
 
     @Override
-    public void onSuccessReserveShop() {
+    public void onSuccessReserveShop(String shopName, String shopDomain) {
         hideSubmitLoading();
-        goToShopOpenMandatory();
+        goToShopOpenMandatory(shopName, shopDomain);
     }
 
     private void checkEnableSubmit() {
@@ -228,8 +228,8 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
                 textInputDomainName.isSuccessShown() && textInputShopName.isSuccessShown();
     }
 
-    private void goToShopOpenMandatory() {
-        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity());
+    private void goToShopOpenMandatory(String shopName, String shopDomain) {
+        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity(), shopName, shopDomain);
         startActivity(intent);
         getActivity().finish();
     }
