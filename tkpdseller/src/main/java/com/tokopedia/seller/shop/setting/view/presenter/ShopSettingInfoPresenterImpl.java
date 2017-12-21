@@ -36,6 +36,7 @@ public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
 
             @Override
             public void onNext(Boolean isSuccess) {
+                getView().dismissProgressDialog();
                 if (isSuccess) {
                     getView().onSuccessSaveInfoShop();
                 } else {

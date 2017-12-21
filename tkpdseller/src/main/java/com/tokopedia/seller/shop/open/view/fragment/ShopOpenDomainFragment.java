@@ -47,7 +47,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     private OnShopOpenDomainFragmentListener onShopOpenDomainFragmentListener;
     public interface OnShopOpenDomainFragmentListener{
-        void onSuccessReserveShop();
+        void onSuccessReserveShop(String shopName, String shopDomain);
     }
 
     public static ShopOpenDomainFragment newInstance() {
@@ -215,9 +215,9 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     }
 
     @Override
-    public void onSuccessReserveShop() {
+    public void onSuccessReserveShop(String shopName, String shopDomain) {
         hideSubmitLoading();
-        onShopOpenDomainFragmentListener.onSuccessReserveShop();
+        onShopOpenDomainFragmentListener.onSuccessReserveShop(shopName, shopDomain);
     }
 
     private void checkEnableSubmit() {

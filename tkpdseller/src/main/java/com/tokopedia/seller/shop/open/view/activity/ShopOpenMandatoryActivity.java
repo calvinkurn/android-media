@@ -13,7 +13,6 @@ import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
-import com.tokopedia.seller.shop.open.view.listener.OnShopStepperListener;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
@@ -27,9 +26,11 @@ import java.util.List;
  */
 
 public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel>
-        implements HasComponent<ShopSettingComponent>, OnShopStepperListener {
+        implements HasComponent<ShopSettingComponent>{
 
     public static final String EXTRA_LOGOUT_ON_BACK = "LOGOUT_ON_BACK";
+    public static final String EXTRA_SHOP_NAME = "EXTRA_SHOP_NAME";
+    public static final String EXTRA_SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
 
     private ShopSettingComponent component;
 
@@ -37,19 +38,27 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
 
     boolean isLogoutOnBack = false;
 
-    public static Intent getIntent(Context context, boolean isLogoutOnBack) {
+    public static Intent getIntent(Context context, boolean isLogoutOnBack, String shopName, String shopDomain) {
         Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
         intent.putExtra(EXTRA_LOGOUT_ON_BACK, isLogoutOnBack);
+        intent.putExtra(EXTRA_SHOP_NAME, shopName);
+        intent.putExtra(EXTRA_SHOP_DOMAIN, shopDomain);
         return intent;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_LOGOUT_ON_BACK)) {
             isLogoutOnBack = getIntent().getBooleanExtra(EXTRA_LOGOUT_ON_BACK, false);
         }
-        super.onCreate(savedInstanceState);
+        if (intent.hasExtra(EXTRA_SHOP_NAME)) {
+            stepperModel.setShopName(getIntent().getStringExtra(EXTRA_SHOP_NAME));
+        }
+        if (intent.hasExtra(EXTRA_SHOP_DOMAIN)) {
+            stepperModel.setShopDomain(getIntent().getStringExtra(EXTRA_SHOP_DOMAIN));
+        }
         initComponent();
     }
 

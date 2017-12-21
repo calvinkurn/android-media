@@ -1,11 +1,13 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,9 +19,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GallerySelectedFragment;
+import com.tokopedia.core.gallery.GalleryType;
+import com.tokopedia.core.gallery.MediaItem;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
+import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingInfoComponent;
@@ -27,7 +37,7 @@ import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingInfoView;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoPresenter;
 
-import java.util.ArrayList;
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -38,21 +48,24 @@ import javax.inject.Inject;
 public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopSettingInfoView {
 
     public static final int MAX_SELECTION_PICK_IMAGE = 1;
+    public static final int REQUEST_CODE_IMAGE_PICKER = 532;
 
     @Inject
     public ShopSettingInfoPresenter presenter;
-    private TextInputLayout shopDescTextInputLayout;
+    private TkpdHintTextInputLayout shopDescTextInputLayout;
     private EditText shopDescEditText;
-    private TextInputLayout shopSloganTextInputLayout;
+    private TkpdHintTextInputLayout shopSloganTextInputLayout;
     private EditText shopSloganEditText;
     private View containerBrowseFile;
     private View containerImagePicker;
     private ImageView imagePicker;
     private TextView errorImageEmpty;
+    private TextView welcomeText;
     private Button buttonNext;
     private ProgressDialog progressDialog;
     private String uriPathImage = "";
     private ShopSettingInfoComponent component;
+    private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     public static ShopSettingInfoFragment createInstance() {
         return new ShopSettingInfoFragment();
@@ -79,17 +92,22 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     }
 
     private void initView(View view) {
-        shopDescTextInputLayout = (TextInputLayout) view.findViewById(R.id.shop_desc_input_layout);
+        shopDescTextInputLayout =  view.findViewById(R.id.shop_desc_input_layout);
         shopDescEditText = (EditText) view.findViewById(R.id.shop_desc_input_text);
-        shopSloganTextInputLayout = (TextInputLayout) view.findViewById(R.id.shop_slogan_input_layout);
+        shopSloganTextInputLayout = view.findViewById(R.id.shop_slogan_input_layout);
         shopSloganEditText = (EditText) view.findViewById(R.id.shop_slogan_input_text);
         containerBrowseFile = view.findViewById(R.id.container_browse_file);
         containerImagePicker = view.findViewById(R.id.image_picker_container);
         imagePicker = (ImageView) view.findViewById(R.id.image_picker);
         buttonNext = (Button) view.findViewById(R.id.button_next);
         errorImageEmpty = (TextView) view.findViewById(R.id.error_image_empty);
+        welcomeText = view.findViewById(R.id.welcome_shop_label);
+
+        String helloName = getString(R.string.hello_x, onShopStepperListener.getStepperModel().getShopName());
+        welcomeText.setText(MethodChecker.fromHtml(helloName));
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+
     }
 
     private void setActionVar() {
@@ -156,6 +174,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     private boolean isSloganFieldValid(boolean showError) {
         if (TextUtils.isEmpty(shopSloganEditText.getText().toString())) {
             if (showError) {
+                shopSloganTextInputLayout.requestFocus();
                 shopSloganTextInputLayout.setError(getString(R.string.label_shop_setting_error_slogan_should_fill));
             }
             return false;
@@ -167,6 +186,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     private boolean isDescriptionFieldValid(boolean showError) {
         if (TextUtils.isEmpty(shopDescEditText.getText().toString())) {
             if (showError) {
+                shopDescTextInputLayout.requestFocus();
                 shopDescTextInputLayout.setError(getString(R.string.label_shop_setting_error_desc_should_fill));
             }
             return false;
@@ -178,6 +198,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     private boolean isShopImageValid(boolean showError) {
         if (TextUtils.isEmpty(uriPathImage)) {
             if (showError) {
+                errorImageEmpty.requestFocus();
                 errorImageEmpty.setVisibility(View.VISIBLE);
             }
             return false;
@@ -187,7 +208,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     }
 
     private boolean isFormValid() {
-        if (isSloganFieldValid(true) & isDescriptionFieldValid(true) & isShopImageValid(true)) {
+        if (isSloganFieldValid(true) && isDescriptionFieldValid(true) && isShopImageValid(true)) {
             return true;
         }
         return false;
@@ -213,50 +234,46 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
 
     }
 
-//    @Override
-//    public void onImageReady(String uriPathImage) {
-//        this.uriPathImage = uriPathImage;
-//        imagePicker.setImageDrawable(Drawable.createFromPath(uriPathImage));
-//    }
-
     private void onClickBrowseImage() {
-
+        startActivityForResult(GalleryActivity.createIntent(getActivity(), GalleryType.ofImageOnly()), REQUEST_CODE_IMAGE_PICKER);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK){
+            switch (requestCode){
+                case REQUEST_CODE_IMAGE_PICKER:
+                    if (data != null && data.getParcelableExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION) != null) {
+                        MediaItem item = data.getParcelableExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION);
+                        uriPathImage = item.getRealPath();
+                        ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(item.getRealPath()));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
-        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-            @Override
-            public void onSuccess(ArrayList<String> imageUrls) {
-//                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(imageUrls.get(0)));
-//                if (listenerOnImagePickerReady != null) {
-//                    listenerOnImagePickerReady.onImageReady(file.getPath());
-//                }
-            }
+    }
 
-            @Override
-            public void onSuccess(String path) {
+    @SuppressWarnings("deprecation")
+    @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachListener(activity);
+        }
+    }
 
-            }
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachListener(context);
+    }
 
-            public void onSuccess(String path, int position) {
-//                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
-//                if (listenerOnImagePickerReady != null) {
-//                    listenerOnImagePickerReady.onImageReady(file.getPath());
-//                }
-            }
-
-            @Override
-            public void onFailed(String message) {
-
-            }
-
-            @Override
-            public Context getContext() {
-                return getActivity();
-            }
-        }, requestCode, resultCode, data);
+    protected void onAttachListener(Context context){
+        onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
     }
 
     @Override

@@ -212,4 +212,6 @@
     <string name="shop_name_or_domain_has_been_reserved">Nama atau domain toko sudah terpakai</string>
     <string name="shop_domain">Domain Toko</string>
     <string name="shop_domain_definition">Domain Toko adalah nama unik untuk membedakan toko Anda dengan toko lainnya.</string>
+    <string name="shop_open_label_save_and_continue_later">Simpan dan Lanjutkan Nanti</string>
+    <string name="shop_open_label_description_info">Ceritakan secara singkat mengenai toko Anda, produk apa yang Anda jual, dan lain-lain.</string>
 </resources>

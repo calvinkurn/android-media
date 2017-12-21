@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Menu;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -17,14 +16,12 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.listener.ShopCheckDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopCheckIsReservePresenterImpl;
-import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 
 import javax.inject.Inject;
@@ -92,14 +89,14 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
         hideLoading();
         boolean isReservingDomain = responseIsReserveDomain.isDomainAlreadyReserved();
         if (isReservingDomain) {
-            goToShopOpenMandatory();
+            goToShopOpenMandatory(responseIsReserveDomain.getResponseUserData().getShopName(), responseIsReserveDomain.getResponseUserData().getDomain());
         } else {
             inflateFragment();
         }
     }
 
-    private void goToShopOpenMandatory() {
-        Intent intent = ShopOpenMandatoryActivity.getIntent(this,isLogoutOnBack);
+    private void goToShopOpenMandatory(String shopName, String shopDomain) {
+        Intent intent = ShopOpenMandatoryActivity.getIntent(this,isLogoutOnBack, shopName, shopDomain);
         startActivity(intent);
         this.finish();
     }
@@ -160,8 +157,8 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void onSuccessReserveShop() {
-        goToShopOpenMandatory();
+    public void onSuccessReserveShop(String shopName, String shopDomain) {
+        goToShopOpenMandatory(shopName, shopDomain);
     }
 
     @Override
