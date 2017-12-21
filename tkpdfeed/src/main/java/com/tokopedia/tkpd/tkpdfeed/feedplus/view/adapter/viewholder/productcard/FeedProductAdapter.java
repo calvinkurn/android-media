@@ -125,6 +125,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                             list.get(position).getImageSourceSingle(),
                             list.get(position).getName(),
                             list.get(position).getPrice(),
+                            list.get(position).getPriceInt(),
                             list.get(position).getUrl());
                 }
             });
@@ -140,6 +141,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                             list.get(position).getImageSourceSingle(),
                             list.get(position).getName(),
                             list.get(position).getPrice(),
+                            list.get(position).getPriceInt(),
                             list.get(position).getUrl());
                 }
             });

@@ -13,6 +13,7 @@ import java.util.List;
 
 public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
+    private static final String TAG = "hangnadi";
     private String title;
     protected ArrayList<InspirationProductViewModel> listProduct;
     private int rowNumber;
@@ -76,7 +77,7 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
         this.userId = userId;
     }
 
-    public List<Object> getListProductAsObjectDataLayer(String eventLabel, String userId) {
+    public List<Object> getListProductAsObjectDataLayer(String eventLabel, String userId, int positionFeedCard) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < getListProduct().size(); i++) {
             InspirationProductViewModel viewModel = getListProduct().get(i);
@@ -84,11 +85,11 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
                     DataLayer.mapOf(
                             "name", viewModel.getName(),
                             "id", viewModel.getProductId(),
-                            "price", viewModel.getPrice(),
+                            "price", viewModel.getPriceInt(),
                             "brand", "",
                             "category", "",
                             "variant", "",
-                            "list", String.format("feed - product %d - %s", i, eventLabel),
+                            "list", String.format("feed - product %d - %s", positionFeedCard, eventLabel),
                             "position", i,
                             "userId", getUserId()
                     )

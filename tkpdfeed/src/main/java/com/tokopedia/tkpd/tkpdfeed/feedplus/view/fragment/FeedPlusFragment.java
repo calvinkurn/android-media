@@ -418,8 +418,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetailFromProductUpload(int rowNumber, int page, int itemPosition,
                                                      String productId, String imageSourceSingle, String name,
-                                                     String price, String productUrl) {
-        FeedTracking.trackEventClickProductUploadEnhanced(name, productId, price, productUrl,
+                                                     String price, String priceInt, String productUrl) {
+        FeedTracking.trackEventClickProductUploadEnhanced(name, productId, priceInt, productUrl,
                 rowNumber, itemPosition, SessionHandler.getLoginID(getContext()));
         goToProductDetail(productId, imageSourceSingle, name, price);
     }
@@ -435,10 +435,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetailFromInspiration(int page, int rowNumber,
                                                    String productId, String imageSource,
-                                                   String name, String price,
+                                                   String name, String price, String priceInt,
                                                    String productUrl, String source,
                                                    int itemPosition) {
-        FeedTracking.trackEventClickInspirationEnhanced(name, productId, price,
+        FeedTracking.trackEventClickInspirationEnhanced(name, productId, priceInt,
                 productUrl, rowNumber, itemPosition, source, SessionHandler.getLoginID(getContext()));
         goToProductDetail(productId, imageSource, name, price);
         UnifyTracking.eventR3Product(productId, AppEventTracking.Action.CLICK,

@@ -12,6 +12,7 @@ import java.util.List;
 
 public class ActivityCardViewModel extends ProductCardViewModel {
 
+    private static final String TAG = "hangnadi";
     private final int totalProduct;
     private final int page;
     private ProductCardHeaderViewModel productCardHeaderViewModel;
@@ -119,7 +120,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
         return rowNumber;
     }
 
-    public List<Object> getListProductAsObjectDataLayer(String eventLabel, String userId) {
+    public List<Object> getListProductAsObjectDataLayer(String eventLabel, String userId, int positionFeedCard) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < getListProduct().size(); i++) {
             ProductFeedViewModel viewModel = getListProduct().get(i);
@@ -127,11 +128,11 @@ public class ActivityCardViewModel extends ProductCardViewModel {
                     DataLayer.mapOf(
                             "name", viewModel.getName(),
                             "id", viewModel.getProductId(),
-                            "price", viewModel.getPrice(),
+                            "price", viewModel.getPriceInt(),
                             "brand", "",
                             "category", "",
                             "variant", "",
-                            "list", String.format("feed - product %d - %s", i, eventLabel),
+                            "list", String.format("feed - product %d - %s", positionFeedCard, eventLabel),
                             "position", i,
                             "userId", userId
                     )

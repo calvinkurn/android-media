@@ -58,6 +58,7 @@ import rx.Subscriber;
 public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private static final String FREE_RETURN = "Free Return";
+    private static final String TAG = "hangnadi";
     protected final FeedPlus.View viewListener;
     private static final String TYPE_OS_BRANDS = "official_store_brand";
     private static final String TYPE_OS_CAMPAIGN = "official_store_campaign";
@@ -205,7 +206,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
         if (listFeedDomain != null)
-            for (DataFeedDomain domain : listFeedDomain) {
+            for (int positionFeedCard = 0; positionFeedCard < listFeedDomain.size(); positionFeedCard++) {
+                DataFeedDomain domain = listFeedDomain.get(positionFeedCard);
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
                     case TYPE_OS_CAMPAIGN:
                         if (domain.getContent().getOfficialStores() != null
@@ -230,7 +232,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(model);
                             String eventLabel = String.format("%s - %s", "product", "");
                             FeedTracking.eventImpressionFeedUploadedProduct(
-                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity())),
+                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard),
                                     eventLabel
                             );
                         }
@@ -254,7 +256,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                             String eventLabel = String.format("%s - %s", TYPE_INSPIRATION, inspirationViewModel.getSource());
                             FeedTracking.eventImpressionFeedInspiration(
-                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity())),
+                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard),
                                     eventLabel
                             );
                         }
@@ -502,7 +504,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 recommendationDomain.getPrice(),
                 recommendationDomain.getImageUrl(),
                 recommendationDomain.getUrl(),
-                page);
+                page,
+                recommendationDomain.getPriceInt());
     }
 
     protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain) {
@@ -545,6 +548,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             dataFeedDomain.getSource().getShop().getName(),
                             dataFeedDomain.getSource().getShop().getAvatar(),
                             domain.getWishlist(),
+                            domain.getPriceInt(),
                             page));
         }
         return listProduct;
