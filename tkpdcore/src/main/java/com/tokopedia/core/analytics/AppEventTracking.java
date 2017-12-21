@@ -258,7 +258,7 @@ public interface AppEventTracking {
         String SHOP_PAGE = "shop page";
         String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
-        String SELLER_INFO_HOMEPAGE = "click hamburger icon";
+        String SELLER_INFO_HOMEPAGE = "seller info-homepage";
         String HOMEPAGE_UNIFY = "homepage tab";
         String EVENT_TOP_NAV = "top nav";
         String CATEGORY_HOTLIST = "hotlist";

@@ -231,6 +231,8 @@ yang ditemukan</string>
     <string name="string_reason">Alasan:</string>
     <string name="string_awb_format">Nomor Resi: %1$s (%2$s)</string>
     <string name="string_common_chat_title">%1$s:</string>
+    <string name="string_sending_message">Sedang mengirim</string>
+
 
     <!--Track Shipping-->
     <string name="title_track_shipping">Lacak Paket</string>
