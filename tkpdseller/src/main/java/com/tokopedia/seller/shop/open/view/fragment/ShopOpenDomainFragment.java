@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -20,7 +21,9 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
 import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
@@ -43,11 +46,6 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
-
-    private OnShopOpenDomainFragmentListener onShopOpenDomainFragmentListener;
-    public interface OnShopOpenDomainFragmentListener{
-        void onSuccessReserveShop();
-    }
 
     public static ShopOpenDomainFragment newInstance() {
         return new ShopOpenDomainFragment();
@@ -99,7 +97,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
                 textInputDomainName.disableSuccessError();
                 buttonSubmit.setEnabled(false);
                 hideSnackBarRetry();
-                if (TextUtils.isEmpty(s)) {
+                if (TextUtils.isEmpty(editTextInputDomainName.getTextWithoutPrefix())) {
                     textInputDomainName.setError(getString(R.string.domain_name_must_be_filled));
                 } else if (s.toString().length() <= textInputDomainName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
@@ -115,27 +113,27 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
         return view;
     }
 
-    private void hideSnackBarRetry(){
-        if (snackbarRetry!= null && snackbarRetry.isShown()) {
+    private void hideSnackBarRetry() {
+        if (snackbarRetry != null && snackbarRetry.isShown()) {
             snackbarRetry.hideRetrySnackbar();
         }
     }
 
-    private void hideSubmitLoading(){
-        if (tkpdProgressDialog!= null) {
+    private void hideSubmitLoading() {
+        if (tkpdProgressDialog != null) {
             tkpdProgressDialog.dismiss();
         }
     }
 
-    private void showSubmitLoading(){
-        if (tkpdProgressDialog== null) {
+    private void showSubmitLoading() {
+        if (tkpdProgressDialog == null) {
             tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
                     getString(R.string.title_loading));
         }
         tkpdProgressDialog.showDialog();
     }
 
-    private void onButtonSubmitClicked(){
+    private void onButtonSubmitClicked() {
         if (!isShopNameDomainValid()) {
             return;
         }
@@ -169,7 +167,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Override
     public void onErrorCheckShopName(Throwable t) {
-        textInputShopName.setError(getString(R.string.shop_name_not_available));
+        textInputShopName.setError(ViewUtils.getErrorMessage(getActivity(), t));
     }
 
     @Override
@@ -184,7 +182,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Override
     public void onErrorCheckShopDomain(Throwable t) {
-        textInputDomainName.setError(getString(R.string.domain_name_not_available));
+        textInputDomainName.setError(ViewUtils.getErrorMessage(getActivity(), t));
     }
 
     @Override
@@ -192,11 +190,11 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
         hideSubmitLoading();
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onButtonSubmitClicked();
-            }
-        });
+                    @Override
+                    public void onRetryClicked() {
+                        onButtonSubmitClicked();
+                    }
+                });
         snackbarRetry.showRetrySnackbar();
     }
 
@@ -216,7 +214,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onSuccessReserveShop() {
         hideSubmitLoading();
-        onShopOpenDomainFragmentListener.onSuccessReserveShop();
+        goToShopOpenMandatory();
     }
 
     private void checkEnableSubmit() {
@@ -225,14 +223,14 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
         }
     }
 
-    private boolean isShopNameDomainValid(){
+    private boolean isShopNameDomainValid() {
         return isShopNameInValidRange() && isShopDomainInValidRange() &&
                 textInputDomainName.isSuccessShown() && textInputShopName.isSuccessShown();
     }
 
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        onShopOpenDomainFragmentListener = (OnShopOpenDomainFragmentListener) context;
+    private void goToShopOpenMandatory() {
+        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity());
+        startActivity(intent);
+        getActivity().finish();
     }
 }
