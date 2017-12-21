@@ -374,7 +374,7 @@ public class ImageHandler {
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(context)
+            Glide.with(imageview.getContext())
                     .load(url)
                     .asBitmap()
                     .dontAnimate()
@@ -538,6 +538,13 @@ public class ImageHandler {
                 .load(url)
                 .override(width, height)
                 .fitCenter()
+                .into(imageView);
+    }
+
+    public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
+        Glide.with(imageView.getContext()).load(gifDrawable)
+                .asGif()
+                .placeholder(placeholder)
                 .into(imageView);
     }
 }

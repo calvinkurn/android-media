@@ -68,6 +68,9 @@
     <dimen name="height_widget_ticker">90dp</dimen>
     <dimen name="image_medal_size">20dp</dimen>
 
+    <dimen name="height_button_voucher">44dp</dimen>
+    <dimen name="font_small_caption_voucher">10dp</dimen>
+
     <dimen name="image_smiley_size">35dp</dimen>
 
     <dimen name="price_seekbar_button_size">30dp</dimen>
@@ -83,4 +86,8 @@
     <dimen name="alphabetical_sidebar_magnifier_padding">10dp</dimen>
     <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
     <dimen name="alphabetical_section_header_padding">16dp</dimen>
+
+    <dimen name="medal_size">20dp</dimen>
+    <dimen name="smiley_reputation_size">24dp</dimen>
+    <dimen name="reputation_view_smiley">14dp</dimen>
 </resources>

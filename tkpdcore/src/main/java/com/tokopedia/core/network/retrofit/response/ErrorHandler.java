@@ -2,15 +2,29 @@ package com.tokopedia.core.network.retrofit.response;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+
+import retrofit2.Response;
 
 /**
  * Created by Angga.Prasetiyo on 01/12/2015.
@@ -22,6 +36,7 @@ public class ErrorHandler {
     private static final String BAD_REQUEST_INFO = "Network Bad Request";
     private static final String UNKNOWN_INFO = "Network Error";
     private static final String TIMEOUT_INFO = "Network Timeout";
+    private static final String ERROR_MESSAGE = "message_error";
 
     public ErrorHandler(@NonNull ErrorListener listener, int code) {
         switch (code) {
@@ -36,6 +51,7 @@ public class ErrorHandler {
             case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                 Log.d(TAG, getErrorInfo(code, SERVER_INFO);
                 listener.onServerError(;
+
                 break;
             case ResponseStatus.SC_FORBIDDEN:
                 Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO);
@@ -111,7 +127,7 @@ public class ErrorHandler {
                             context.getString(R.string.default_request_error_unknown);
             }
         } else if (e instanceof ErrorMessageException
-                && e.getLocalizedMessage() != null) {
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
             return e.getLocalizedMessage();
         } else {
             return context.getString(R.string.default_request_error_unknown);
@@ -162,10 +178,51 @@ public class ErrorHandler {
                             context.getString(R.string.default_request_error_unknown);
             }
         } else if (e instanceof ErrorMessageException
-                && e.getLocalizedMessage() != null) {
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
+            return e.getLocalizedMessage();
+        } else if (BuildConfig.DEBUG) {
+            return e.getLocalizedMessage();
+        } else if (e instanceof MessageErrorException) {
             return e.getLocalizedMessage();
         } else {
             return context.getString(R.string.default_request_error_unknown);
         }
+    }
+
+
+    public static String getErrorMessage(Response<TkpdResponse> response) {
+
+            JsonElement jsonElement = new JsonParser().parse(response.errorBody().toString());
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+
+            if (hasErrorMessage(jsonObject)) {
+                JsonArray jsonArray = jsonObject.getAsJsonArray(ERROR_MESSAGE);
+                return getErrorMessageJoined(jsonArray);
+            } else {
+                return "";
+            }
+
+    }
+
+
+    private static boolean hasErrorMessage(JsonObject jsonObject) {
+        return jsonObject.has(ERROR_MESSAGE);
+    }
+
+    public static String getErrorMessageJoined(JsonArray errorMessages) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        if (errorMessages.size() != 0) {
+            for (int i = 0, statusMessagesSize = errorMessages.size(); i < statusMessagesSize; i++) {
+                String string = String.valueOf(errorMessages.get(i));
+                stringBuilder.append(string);
+                if (i != errorMessages.size() - 1
+                        && !errorMessages.get(i).equals("")
+                        && !errorMessages.get(i + 1).equals("")) {
+                    stringBuilder.append("\n");
+                }
+            }
+        }
+        return stringBuilder.toString();
     }
 }

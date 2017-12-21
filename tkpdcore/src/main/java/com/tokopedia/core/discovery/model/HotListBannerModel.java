@@ -17,6 +17,12 @@ public class HotListBannerModel implements Parcelable {
     @SerializedName("info")
     public Info info;
 
+    @SerializedName("disable_topads")
+    public int disableTopads;
+
+    @SerializedName("promo_info")
+    public PromoInfo promoInfo;
+
     public static class Query implements Parcelable {
         @SerializedName("ob")
         public String ob;
@@ -190,6 +196,9 @@ public class HotListBannerModel implements Parcelable {
     }
 
 
+    public HotListBannerModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -199,19 +208,16 @@ public class HotListBannerModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.query, flags);
         dest.writeParcelable(this.info, flags);
-    }
-
-    public HotListBannerModel() {
+        dest.writeInt(this.disableTopads);
     }
 
     protected HotListBannerModel(Parcel in) {
         this.query = in.readParcelable(Query.class.getClassLoader());
         this.info = in.readParcelable(Info.class.getClassLoader());
+        this.disableTopads = in.readInt();
     }
 
-    public static final Parcelable.Creator<HotListBannerModel> CREATOR
-            = new Parcelable.Creator<HotListBannerModel>() {
-
+    public static final Creator<HotListBannerModel> CREATOR = new Creator<HotListBannerModel>() {
         @Override
         public HotListBannerModel createFromParcel(Parcel source) {
             return new HotListBannerModel(source);
@@ -222,4 +228,78 @@ public class HotListBannerModel implements Parcelable {
             return new HotListBannerModel[size];
         }
     };
+
+    public static class PromoInfo {
+
+        @SerializedName("promo_period")
+        private String promoPeriod;
+        @SerializedName("text")
+        private String text;
+        @SerializedName("id")
+        private String id;
+        @SerializedName("tc_applink")
+        private String tcApplink;
+        @SerializedName("min_tx")
+        private String minTx;
+        @SerializedName("voucher_code")
+        private String voucherCode;
+        @SerializedName("tc_link")
+        private String tcLink;
+
+        public String getPromoPeriod() {
+            return promoPeriod;
+        }
+
+        public void setPromoPeriod(String promoPeriod) {
+            this.promoPeriod = promoPeriod;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTcApplink() {
+            return tcApplink;
+        }
+
+        public void setTcApplink(String tcApplink) {
+            this.tcApplink = tcApplink;
+        }
+
+        public String getMinTx() {
+            return minTx;
+        }
+
+        public void setMinTx(String minTx) {
+            this.minTx = minTx;
+        }
+
+        public String getVoucherCode() {
+            return voucherCode;
+        }
+
+        public void setVoucherCode(String voucherCode) {
+            this.voucherCode = voucherCode;
+        }
+
+        public String getTcLink() {
+            return tcLink;
+        }
+
+        public void setTcLink(String tcLink) {
+            this.tcLink = tcLink;
+        }
+    }
 }

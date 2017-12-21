@@ -28,6 +28,8 @@ import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
+import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
@@ -48,8 +50,10 @@ import io.branch.referral.Branch;
         RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
-        FeedDeeplinkModule.class
+        FeedDeeplinkModule.class,
+        ReputationApplinkModule.class
 })
+
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
@@ -64,7 +68,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new RideDeeplinkModuleLoader(),
                 new DiscoveryApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
-                new FeedDeeplinkModuleLoader()
+                new FeedDeeplinkModuleLoader(),
+                new ReputationApplinkModuleLoader()
         );
     }
 
@@ -82,7 +87,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
             presenter.processUTM(applink);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
-                deepLinkDelegate.dispatchFrom(this, intent);
+                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, applink.toString());
+                startActivity(homeIntent);
             } else {
                 Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);

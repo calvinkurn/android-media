@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -23,7 +22,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -62,13 +60,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void generateConsumerAppBaseUrl() {
         TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
         TkpdBaseURL.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
         TkpdBaseURL.CLOVER_DOMAIN = ConsumerAppBaseUrl.BASE_CLOVER_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = ConsumerAppBaseUrl.BASE_HADES_DOMAIN;
-        TkpdBaseURL.RECHARGE_API_DOMAIN = ConsumerAppBaseUrl.BASE_RECHARGE_API_DOMAIN;
         TkpdBaseURL.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         TkpdBaseURL.INBOX_DOMAIN = ConsumerAppBaseUrl.BASE_INBOX_DOMAIN;
         TkpdBaseURL.JS_DOMAIN = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
@@ -89,9 +87,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = ConsumerAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
         TkpdBaseURL.PAYMENT_DOMAIN = ConsumerAppBaseUrl.PAYMENT_DOMAIN;
         TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
+        TkpdBaseURL.CHAT_DOMAIN = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         TkpdBaseURL.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
+        TkpdBaseURL.TOKOPOINT_API_DOMAIN = ConsumerAppBaseUrl.TOKOPOINT_API_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {

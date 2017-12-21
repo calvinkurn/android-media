@@ -11,19 +11,26 @@
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/tkpd_main_green"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/AppBarTheme"
-            app:elevation="0dp"
-            app:layout_collapseMode="pin"
-            app:subtitleTextAppearance="@style/ToolbarSubtitleText"
-            app:titleTextAppearance="@style/ToolbarText" />
+            android:layout_height="wrap_content"
+            android:background="@android:color/white">
 
-        <include layout="@layout/partial_base_tab_white_indicator" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:background="@color/tkpd_main_green"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="@style/AppBarTheme"
+                app:elevation="0dp"
+                app:layout_collapseMode="pin"
+                app:subtitleTextAppearance="@style/ToolbarSubtitleText"
+                app:titleTextAppearance="@style/ToolbarText" />
+
+            <include layout="@layout/partial_base_tab_layout_white" />
+        </android.support.design.widget.AppBarLayout>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
