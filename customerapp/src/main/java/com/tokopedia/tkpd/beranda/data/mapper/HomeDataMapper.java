@@ -20,7 +20,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
@@ -37,8 +37,8 @@ import rx.functions.Func5;
 public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         BrandsOfficialStoreResponseModel, TopPicksResponseModel,
         HomeCategoryResponseModel, List<Visitable>> {
+    public static final int DIGITAL_ID = 22;
     private final Context context;
-
     public HomeDataMapper(Context context) {
         this.context = context;
     }
@@ -49,12 +49,15 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
                                 TopPicksResponseModel topPicksResponseModel,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
-        if (ticker.getData().getTickers().size() > 0) {
-            list.add(mappingTicker(ticker.getData().getTickers()));
-        }
-        if (homeBannerResponseModel.isSuccess()) {
+
+        if (homeBannerResponseModel.isSuccess() && homeBannerResponseModel.getData().getSlides().size() > 0) {
             list.add(mappingBanner(homeBannerResponseModel));
         }
+
+        if (ticker != null && ticker.getData().getTickers().size() > 0) {
+            list.add(mappingTicker(ticker.getData().getTickers()));
+        }
+
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.add(mappingCategorySection());
         }
@@ -71,20 +74,39 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
         }
-        if(!SessionHandler.isV4Login(context) || !SessionHandler.isUserSeller(context)){
-            list.add(new EmptyShopViewModel());
+        if (SessionHandler.isUserSeller(context)) {
+            list.add(mappingManageShop());
+        } else {
+            list.add(mappingOpenShop());
         }
-        return rearrangeList(list);
+        return swapList(list);
     }
 
-    private List<Visitable> rearrangeList(List<Visitable> list) {
+    private Visitable mappingOpenShop() {
+        SellViewModel model = new SellViewModel();
+        model.setTitle(context.getString(R.string.empty_shop_wording_title));
+        model.setSubtitle(context.getString(R.string.empty_shop_wording_subtitle));
+        model.setBtn_title(context.getString(R.string.buka_toko));
+        return model;
+    }
+
+    private Visitable mappingManageShop() {
+        SellViewModel model = new SellViewModel();
+        model.setTitle(context.getString(R.string.open_shop_wording_title));
+        model.setSubtitle(context.getString(R.string.manage_shop_wording_subtitle));
+        model.setBtn_title(context.getString(R.string.manage_toko));
+        return model;
+    }
+
+    private List<Visitable> swapList(List<Visitable> list) {
         int brandIndex = 0;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof BrandsViewModel) {
                 brandIndex = i;
             }
         }
-        Collections.swap(list, brandIndex, (brandIndex + 1));
+        if (brandIndex > 0)
+            Collections.swap(list, brandIndex, (brandIndex + 1));
         return list;
     }
 
@@ -110,7 +132,7 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         List<Visitable> list = new ArrayList<>();
         for (int i = 0; i < layoutSections.size(); i++) {
             CategoryLayoutSectionsModel sections = layoutSections.get(i);
-            if (sections.getId() == 22) { //Id 22 == Digitals
+            if (sections.getId() == DIGITAL_ID) { //Id 22 == Digitals
                 list.add(new DigitalsViewModel(sections.getTitle(), i));
             } else {
                 CategoryItemViewModel viewModel = new CategoryItemViewModel();
@@ -141,4 +163,5 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         viewModel.setSlides(homeBannerResponseModel.getData().getSlides());
         return viewModel;
     }
+
 }

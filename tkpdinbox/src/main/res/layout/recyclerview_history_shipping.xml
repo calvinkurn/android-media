@@ -1,123 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:context="http://schemas.android.com/tools"
     android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_small"
-    android:background="@color/white">
-
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/indicator_container"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:text="@string/template_history_additional_information"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_small"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/tv_history_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_date"
-        android:layout_toRightOf="@id/indicator_container"
-        android:gravity="center_vertical"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
-        android:textColor="@color/label_text_color"
-        android:textSize="@dimen/fontvs"
-        />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/attachment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_below="@id/tv_history_text"
-        android:layout_toRightOf="@id/indicator_container">
-
-    </android.support.v7.widget.RecyclerView>
-
-    <LinearLayout
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_below="@id/attachment"
-        android:layout_toRightOf="@id/indicator_container"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/action_track"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_small"
-            android:paddingBottom="@dimen/padding_small"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:background="@color/tkpd_main_green"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/action_track"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_small"
-            />
-
-        <TextView
-            android:id="@+id/action_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:paddingTop="@dimen/padding_small"
-            android:paddingBottom="@dimen/padding_small"
-            android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"
-            android:background="@drawable/btn_transparent_disable"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/action_edit"
-            android:textSize="@dimen/font_small"
-            />
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_small"
-        android:layout_below="@id/button"
-        />
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/margin_small">
 
     <RelativeLayout
         android:id="@+id/indicator_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_alignTop="@id/tv_date"
-        android:layout_alignBottom="@id/separator">
+        android:layout_marginEnd="@dimen/margin_small">
 
-        <ImageView
-            android:id="@+id/indicator"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:src="@drawable/ic_check_circle_48dp"
-            />
+        <FrameLayout
+            android:id="@+id/fl_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp">
+
+            <ImageView
+                android:id="@+id/indicator"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:src="@drawable/bg_circle_green"
+                />
+
+            <com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView
+                android:id="@+id/view_glowing"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"/>
+        </FrameLayout>
 
         <View
             android:id="@+id/line_indicator"
             android:layout_width="1dp"
             android:layout_height="match_parent"
+            android:layout_below="@id/fl_button"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/indicator"
-            android:background="@color/grey"
+            android:layout_marginTop="2dp"
+            android:background="@color/black_12"
             />
 
     </RelativeLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/margin_vs">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/indicator_container"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:text="@string/template_history_additional_information"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/font_small"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/tv_history_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_date"
+            android:layout_toRightOf="@id/indicator_container"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:ellipsize="end"
+            context:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
+            android:textColor="@color/label_text_color"
+            android:textSize="@dimen/fontvs"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/attachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_below="@id/tv_history_text"
+            android:layout_toRightOf="@id/indicator_container">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_below="@id/attachment"
+            android:layout_toRightOf="@id/indicator_container"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/action_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med"
+                android:background="@color/tkpd_main_green"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/action_track"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_small"
+                />
+
+            <TextView
+                android:id="@+id/action_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med"
+                android:background="@drawable/btn_transparent_disable"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/action_edit"
+                android:textSize="@dimen/font_small"
+                />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

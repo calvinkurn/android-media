@@ -17,7 +17,7 @@ import java.util.List;
  * Created by hangnadi on 3/16/17.
  */
 
-public class TrackAwbReturProductSubscriber extends rx.Subscriber<TrackingAwbReturProduct>{
+public class TrackAwbReturProductSubscriber extends rx.Subscriber<TrackingAwbReturProduct> {
 
     private final DetailResCenterFragmentView fragmentView;
 

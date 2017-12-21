@@ -11,7 +11,8 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.BrandsVie
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.CategoryItemViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.CategorySectionViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.EmptyShopViewHolder;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.SellViewHolder;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.SaldoViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.TopPicksViewHolder;
@@ -20,7 +21,8 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
@@ -70,8 +72,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
-    public int type(EmptyShopViewModel emptyShopViewModel) {
-        return EmptyShopViewHolder.LAYOUT;
+    public int type(SellViewModel sellViewModel) {
+        return SellViewHolder.LAYOUT;
     }
 
     @Override
@@ -82,6 +84,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     @Override
     public int type(SaldoViewModel saldoViewModel) {
         return SaldoViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(HeaderViewModel headerViewModel) {
+        return HeaderViewHolder.LAYOUT;
     }
 
     @Override
@@ -101,10 +108,12 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new CategorySectionViewHolder(view, listener);
         else if (type == CategoryItemViewHolder.LAYOUT)
             viewHolder = new CategoryItemViewHolder(view, listener);
-        else if (type == EmptyShopViewHolder.LAYOUT)
-            viewHolder = new EmptyShopViewHolder(view, listener);
+        else if (type == SellViewHolder.LAYOUT)
+            viewHolder = new SellViewHolder(view, listener);
         else if (type == SaldoViewHolder.LAYOUT)
             viewHolder = new SaldoViewHolder(view, listener);
+        else if(type == HeaderViewHolder.LAYOUT)
+            viewHolder = new HeaderViewHolder(view, listener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

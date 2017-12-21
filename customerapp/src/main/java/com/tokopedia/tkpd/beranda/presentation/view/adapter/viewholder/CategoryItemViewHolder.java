@@ -67,28 +67,27 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
     @Override
     public void bind(final CategoryItemViewModel element) {
         titleTxt.setText(element.getTitle());
-        if(rowModelList.isEmpty()) {
-            if (element.getItemList().size() > limitItem) {
-                for (int i = 0; i < limitItem; i++) {
-                    rowModelList.add(element.getItemList().get(i));
-                }
-                seeMoreBtn.setVisibility(View.VISIBLE);
-                int count = element.getItemList().size() - rowModelList.size();
-                seeMoreBtn.setText(String.format(context.getString(R.string.format_btn_category_more), count));
-            } else {
-                seeMoreBtn.setVisibility(View.GONE);
-                rowModelList.addAll(element.getItemList());
+        rowModelList.clear();
+        if (element.getItemList().size() > limitItem) {
+            for (int i = 0; i < limitItem; i++) {
+                rowModelList.add(element.getItemList().get(i));
             }
-            adapter.setData(rowModelList);
-            seeMoreBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    rowModelList = element.getItemList();
-                    adapter.setData(rowModelList);
-                    seeMoreBtn.setVisibility(View.GONE);
-                }
-            });
+            seeMoreBtn.setVisibility(View.VISIBLE);
+            int count = element.getItemList().size() - rowModelList.size();
+            seeMoreBtn.setText(String.format(context.getString(R.string.format_btn_category_more), count));
+        } else {
+            seeMoreBtn.setVisibility(View.GONE);
+            rowModelList.addAll(element.getItemList());
         }
+        adapter.setData(rowModelList);
+        seeMoreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rowModelList = new ArrayList<>(element.getItemList());
+                adapter.setData(rowModelList);
+                seeMoreBtn.setVisibility(View.GONE);
+            }
+        });
     }
 
 

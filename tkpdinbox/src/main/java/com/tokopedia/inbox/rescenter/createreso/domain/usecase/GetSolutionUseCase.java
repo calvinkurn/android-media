@@ -18,6 +18,7 @@ import rx.Observable;
 
 public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
     public static final String ORDER_ID = "order_id";
+    public static final String PARAM_RESOLUTION_ID = "resolutionID";
     public static final String PARAM_PROBLEM = "problem";
 
     private SolutionRepository solutionRepository;
@@ -38,9 +39,13 @@ public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
         JSONObject problemObject = new JSONObject();
         try {
             problemObject.put(PARAM_PROBLEM, resultViewModel.getProblemArray());
+            if (resultViewModel.resolutionId != null) {
+                problemObject.put(PARAM_RESOLUTION_ID, Integer.valueOf(resultViewModel.resolutionId));
+            }
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, resultViewModel.orderId);
             params.putString(PARAM_PROBLEM, problemObject.toString());
+
             return params;
         } catch (Exception e) {
             e.printStackTrace();

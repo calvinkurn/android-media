@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
+    android:layout_marginBottom="@dimen/padding_small"
     android:padding="@dimen/padding_small" >
 
     <View
@@ -31,6 +32,12 @@
             />
 
     </RelativeLayout>
+
+    <com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView
+        android:id="@+id/view_hotlist_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 
     <HorizontalScrollView
         android:id="@+id/hashtag_scroll_view"

@@ -70,7 +70,7 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         return ReactNativeActivity.createDiscoveryPageReactNativeActivity(
                 context, ReactConst.Screen.DISCOVERY_PAGE,
                 "",
-                bundle.getString("page_id")
+                bundle.getString(PAGE_ID)
         ).putExtras(bundle);
     }
 

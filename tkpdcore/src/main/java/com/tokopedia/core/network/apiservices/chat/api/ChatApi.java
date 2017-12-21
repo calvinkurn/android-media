@@ -62,4 +62,7 @@ public interface ChatApi {
 
     @GET(TkpdBaseURL.Chat.GET_TOPCHAT_NOTIFICATION)
     Observable<Response<TkpdResponse>> getNotification(@QueryMap Map<String, Object> params);
+
+    @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
+    Observable<Response<TkpdResponse>> getTemplate(@QueryMap Map<String, Object> parameters);
 }

@@ -11,7 +11,6 @@ import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksResponseModel;
-
 import rx.Observable;
 
 /**

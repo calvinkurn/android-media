@@ -130,6 +130,7 @@ public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 listener.onFailure();
             }
 

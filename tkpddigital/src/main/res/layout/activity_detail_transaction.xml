@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white">
-
-    <TextView
-        android:id="@+id/header_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@drawable/digital_gradient_black" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,13 +25,14 @@
             android:id="@+id/title_item_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/icon_item_history"
-            android:layout_alignTop="@+id/icon_item_history"
             android:layout_toRightOf="@+id/icon_item_history"
             android:gravity="center_vertical"
-            android:text="Admin Fee"
+            android:text="Admin Feed"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/fontm" />
+            android:textSize="@dimen/fontm"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginBottom="@dimen/margin_vs"/>
 
         <TextView
             android:id="@+id/desc_item_history"
@@ -44,10 +40,9 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/title_item_history"
             android:layout_below="@+id/title_item_history"
-            android:layout_marginTop="@dimen/margin_vs"
             android:layout_toLeftOf="@+id/price_item_history"
             android:layout_toStartOf="@+id/price_item_history"
-            android:text="Transfer to Bank is charged as much as 4% of the total transfer amount Rp 150.000."
+            android:text=""
             android:textColor="@color/black_38"
             android:textSize="@dimen/fontvs" />
 
@@ -60,7 +55,7 @@
             android:layout_marginTop="@dimen/margin_vs"
             android:layout_toLeftOf="@+id/price_item_history"
             android:layout_toStartOf="@+id/price_item_history"
-            android:text="Transfer to Bank is charged as much as 4% of the total transfer amount Rp 150.000."
+            android:text=""
             android:textColor="@color/black_38"
             android:textSize="@dimen/fontvs" />
 
@@ -91,7 +86,7 @@
             android:layout_below="@+id/separator1"
             android:layout_marginLeft="@dimen/padding_detail"
             android:gravity="center_vertical"
-            android:text="- Rp 150.000"
+            tools:text="- Rp 150.000"
             android:textColor="@color/red_500"
             android:textSize="@dimen/fonts"
             android:textStyle="bold" />
@@ -107,7 +102,7 @@
             android:background="@color/grey_300" />
 
         <TextView
-            android:id="@+id/transaction_id_history"
+            android:id="@+id/transaction_info_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/title_item_history"
@@ -115,19 +110,7 @@
             android:layout_marginBottom="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vs"
-            android:text="TokoCash TxID #9930517"
-            android:textColor="@color/black_36"
-            android:textSize="@dimen/fontvs" />
-
-        <TextView
-            android:id="@+id/date_item_history"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/separator2"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vs"
-            android:layout_toRightOf="@+id/transaction_id_history"
-            android:text="20 Agustus 2017"
+            tools:text="TokoCash TxID #99305dsadadasdadadadad17"
             android:textColor="@color/black_36"
             android:textSize="@dimen/fontvs" />
 
