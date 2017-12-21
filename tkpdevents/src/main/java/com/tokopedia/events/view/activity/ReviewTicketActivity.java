@@ -74,8 +74,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         setContentView(R.layout.review_booking_layout);
         ButterKnife.bind(this);
         executeInjector();
-        mPresenter.initialize();
         mPresenter.attachView(this);
+        mPresenter.initialize();
     }
 
     @Override
