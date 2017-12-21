@@ -19,7 +19,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
-import com.tokopedia.seller.shop.open.view.adapter.ShopCourierAdapter;
 import com.tokopedia.seller.shop.open.view.listener.OnShopStepperListener;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
@@ -43,7 +42,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     private View vContent;
     private View vLoading;
 
-    private ShopCourierAdapter shopCourierAdapter;
+    //private ShopCourierAdapter shopCourierAdapter;
 
     public static ShopSettingLogisticFragment getInstance() {
         return new ShopSettingLogisticFragment();
@@ -62,7 +61,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopCourierAdapter = new ShopCourierAdapter(null);
+        //shopCourierAdapter = new ShopCourierAdapter(null);
     }
 
     @Nullable
@@ -79,7 +78,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
         }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(shopCourierAdapter);
+        //recyclerView.setAdapter(shopCourierAdapter);
 
         // changeDistrictCode(4528);
         return view;
@@ -120,8 +119,8 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     @Override
     public void onSuccessLoadLogistic(OpenShopCouriersModel openShopCouriersModel) {
         hideLoading();
-        shopCourierAdapter.setData(openShopCouriersModel.getCourier());
-        shopCourierAdapter.notifyDataSetChanged();
+        //shopCourierAdapter.setData(openShopCouriersModel.getCourier());
+        //shopCourierAdapter.notifyDataSetChanged();
         // TODO in Success
     }
 
