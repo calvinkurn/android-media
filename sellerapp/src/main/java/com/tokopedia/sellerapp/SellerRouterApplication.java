@@ -26,6 +26,8 @@ import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -37,6 +39,7 @@ import com.tokopedia.core.router.TkpdSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.logistic.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -89,6 +92,7 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
+import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -106,7 +110,9 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.core.router.OnActivityResultListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +129,9 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, RemoteConfigRouter, TkpdSessionRouter {
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, RemoteConfigRouter, TkpdSessionRouter,
+        LogisticRouter
+{
 
     private DaggerProductComponent.Builder daggerProductBuilder;
     private ProductComponent productComponent;
@@ -782,5 +790,28 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private FirebaseRemoteConfig getFirebaseRemoteConfig() {
         return RemoteConfigFetcher.initRemoteConfig(this);
+    }
+
+    @Override
+    public void navigateToChooseAddressActivityRequest(Intent var1, int var2){
+
+    }
+
+    @Override
+    public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3){
+        Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
+        var1.startActivityForResult(instance, var3);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener onActivityResultListener){
+        if(onActivityResultListener != null){
+            onActivityResultListener.onActivityResult(DestinationViewModel.convertFromBundle(
+                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+            ));
+        }
+
     }
 }
