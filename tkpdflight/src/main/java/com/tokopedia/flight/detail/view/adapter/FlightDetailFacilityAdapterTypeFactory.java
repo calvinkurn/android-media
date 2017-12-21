@@ -10,7 +10,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
  * @author by alvarisi on 12/19/17.
  */
 
-public class FlightDetailFacilityAdapterTypeFactory extends BaseAdapterTypeFactory {
+public class FlightDetailFacilityAdapterTypeFactory extends BaseAdapterTypeFactory implements FlightDetailRouteTypeFactory {
     public FlightDetailFacilityAdapterTypeFactory() {
     }
 

@@ -3,15 +3,14 @@ package com.tokopedia.flight.detail.view.adapter;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
-import com.tokopedia.abstraction.utils.DateFormatUtils;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -21,7 +20,9 @@ import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteViewModel> {
+public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRouteViewModel> {
+    @LayoutRes
+    public static final int LAYOUT = R.layout.item_flight_detail;
 
     private ImageView imageAirline;
     private TextView airlineName;
@@ -42,8 +43,9 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
     private View containerPNR;
     private TextView pnrCode;
     private ImageView copyPnr;
+    private FlightDetailAdapterTypeFactory.OnFlightDetailListener onFlightDetailListener;
 
-    public FlightDetailViewHolder(View itemView) {
+    public FlightDetailViewHolder(View itemView, FlightDetailAdapterTypeFactory.OnFlightDetailListener onFlightDetailListener) {
         super(itemView);
         imageAirline = (ImageView) itemView.findViewById(R.id.airline_icon);
         airlineName = (TextView) itemView.findViewById(R.id.airline_name);
@@ -64,10 +66,11 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
         containerPNR = itemView.findViewById(R.id.container_pnr);
         pnrCode = itemView.findViewById(R.id.pnr_code);
         copyPnr = itemView.findViewById(R.id.copy_pnr);
+        this.onFlightDetailListener = onFlightDetailListener;
     }
 
     @Override
-    public void bindObject(FlightDetailRouteViewModel route) {
+    public void bind(FlightDetailRouteViewModel route) {
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
         setRefundableInfo(route);
@@ -84,10 +87,14 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
         transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
         setPNR(route.getPnr());
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(), R.drawable.ic_airline_default);
+        if (onFlightDetailListener != null) {
+            bindLastPosition(onFlightDetailListener.getItemCount() == getAdapterPosition());
+            bindTransitInfo(onFlightDetailListener.getItemCount());
+        }
     }
 
     private void setPNR(String pnr) {
-        if(!TextUtils.isEmpty(pnr)){
+        if (!TextUtils.isEmpty(pnr)) {
             containerPNR.setVisibility(View.VISIBLE);
             pnrCode.setText(pnr);
             copyPnr.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +111,7 @@ public class FlightDetailViewHolder extends BaseViewHolder<FlightDetailRouteView
                     });
                 }
             });
-        }else{
+        } else {
             containerPNR.setVisibility(View.GONE);
         }
     }

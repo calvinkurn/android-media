@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.KeyboardHandler;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
@@ -47,7 +48,8 @@ import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModelMapper;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
@@ -76,8 +78,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
-    @Inject
-    FlightDetailRouteViewModelMapper flightDetailRouteViewModelMapper;
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     FlightBookingReviewModel flightBookingReviewModel;
@@ -178,14 +178,28 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     void initView() {
-        FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(getContext());
-        departureFlightAdapter.addData(flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList());
+        FlightDetailRouteTypeFactory flightDetailRouteTypeFactory = new FlightDetailAdapterTypeFactory(new FlightDetailAdapterTypeFactory.OnFlightDetailListener() {
+            @Override
+            public int getItemCount() {
+                return flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList().size();
+            }
+        });
+        List<Visitable> departureRoute = new ArrayList<>();
+        departureRoute.addAll(flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList());
+        FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(flightDetailRouteTypeFactory, departureRoute);
         recyclerViewDepartureFlight.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDepartureFlight.setAdapter(departureFlightAdapter);
         if (flightBookingReviewModel.getDetailViewModelListReturn() != null &&
                 flightBookingReviewModel.getDetailViewModelListReturn().getRouteList().size() > 0) {
-            FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(getContext());
-            returnFlightAdapter.addData(flightBookingReviewModel.getDetailViewModelListReturn().getRouteList());
+            FlightDetailRouteTypeFactory arrivalFlightDetailRouteTypeFactory1 = new FlightDetailAdapterTypeFactory(new FlightDetailAdapterTypeFactory.OnFlightDetailListener() {
+                @Override
+                public int getItemCount() {
+                    return flightBookingReviewModel.getDetailViewModelListReturn().getRouteList().size();
+                }
+            });
+            List<Visitable> arrivalRoute = new ArrayList<>();
+            arrivalRoute.addAll(flightBookingReviewModel.getDetailViewModelListReturn().getRouteList());
+            FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(arrivalFlightDetailRouteTypeFactory1, arrivalRoute);
             recyclerViewReturnFlight.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerViewReturnFlight.setAdapter(returnFlightAdapter);
             containerFlightReturn.setVisibility(View.VISIBLE);
