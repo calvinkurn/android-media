@@ -55,6 +55,6 @@ public class SuccessPaymentQRActivity extends BasePresenterActivity {
 
     @Override
     protected void setActionVar() {
-        view.startAnimation(decelerateAnimation);
+//        view.startAnimation(decelerateAnimation);
     }
 }

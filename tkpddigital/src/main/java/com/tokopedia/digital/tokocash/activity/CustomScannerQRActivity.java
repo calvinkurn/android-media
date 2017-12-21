@@ -35,7 +35,7 @@ public class CustomScannerQRActivity extends BasePresenterActivity {
     private DecoratedBarcodeView decoratedBarcodeView;
     private ToggleButton switchTorch;
     private ScannerLaserView scannerLaser;
-    private boolean repeatUp;
+    private boolean repeatUp = true;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -63,10 +63,10 @@ public class CustomScannerQRActivity extends BasePresenterActivity {
         switchTorch = (ToggleButton) findViewById(R.id.switch_flashlight);
         scannerLaser = (ScannerLaserView) findViewById(R.id.scanner_laser_view);
 
-        TranslateAnimation mAnimation = new TranslateAnimation(
+        final TranslateAnimation mAnimation = new TranslateAnimation(
                 TranslateAnimation.ABSOLUTE, 0f,
                 TranslateAnimation.ABSOLUTE, 0f,
-                TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+                TranslateAnimation.RELATIVE_TO_PARENT, -1.0f,
                 TranslateAnimation.RELATIVE_TO_PARENT, 1.0f);
         mAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -81,18 +81,20 @@ public class CustomScannerQRActivity extends BasePresenterActivity {
 
             @Override
             public void onAnimationRepeat(Animation animation) {
+                mAnimation.setStartOffset(0);
                 if (repeatUp) {
                     scannerLaser.setBackground(ContextCompat
-                            .getDrawable(getApplicationContext(), R.drawable.digital_gradient_green_down));
+                            .getDrawable(getApplicationContext(), R.drawable.digital_gradient_green_up));
                     repeatUp = false;
                 } else {
                     scannerLaser.setBackground(ContextCompat
-                            .getDrawable(getApplicationContext(), R.drawable.digital_gradient_green_up));
+                            .getDrawable(getApplicationContext(), R.drawable.digital_gradient_green_down));
                     repeatUp = true;
                 }
             }
         });
-        mAnimation.setDuration(3000);
+        mAnimation.setFillAfter(true);
+        mAnimation.setDuration(1500);
         mAnimation.setRepeatCount(-1);
         mAnimation.setRepeatMode(Animation.REVERSE);
         mAnimation.setInterpolator(new LinearInterpolator());
