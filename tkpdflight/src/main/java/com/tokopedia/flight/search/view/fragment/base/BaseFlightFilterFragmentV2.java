@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapterV2;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder2;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
@@ -25,7 +26,7 @@ import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
  */
 
 public abstract class BaseFlightFilterFragmentV2<T extends Visitable, F extends BaseListCheckableTypeFactory<T>> extends BaseListV2Fragment<T, F>
-        implements OnFlightBaseFilterListener, BaseListCheckableAdapterV2.OnCheckableAdapterListener<T> {
+        implements OnFlightBaseFilterListener, BaseListCheckableAdapterV2.OnCheckableAdapterListener<T>, CheckableBaseViewHolder2.CheckableInteractionListener {
     public static final String SAVED_ORIGINAL_FILTER = "svd_ori_filter";
     protected OnFlightFilterListener listener;
     protected BaseListCheckableAdapterV2<T, F> adapter;

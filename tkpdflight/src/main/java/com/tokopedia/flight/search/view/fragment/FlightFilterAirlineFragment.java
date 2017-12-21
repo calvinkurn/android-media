@@ -3,7 +3,6 @@ package com.tokopedia.flight.search.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder2;
 import com.tokopedia.flight.search.view.adapter.FlightFilterAirlineAdapterTypeFactory;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragmentV2;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
@@ -17,8 +16,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 
-public class FlightFilterAirlineFragment extends BaseFlightFilterFragmentV2<AirlineStat, FlightFilterAirlineAdapterTypeFactory>
-        implements CheckableBaseViewHolder2.CheckableInteractionListener {
+public class FlightFilterAirlineFragment extends BaseFlightFilterFragmentV2<AirlineStat, FlightFilterAirlineAdapterTypeFactory> {
     public static final String TAG = FlightFilterAirlineFragment.class.getSimpleName();
 
     public static FlightFilterAirlineFragment newInstance() {
