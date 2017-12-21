@@ -9,12 +9,22 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputActivityListener;
+import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
+
+import java.util.ArrayList;
 
 public class ChangePhoneNumberInputActivity extends BasePresenterActivity implements ChangePhoneNumberInputActivityListener.View {
+    public static final String PARAM_WARNING_LIST = "warning_list";
+
+    private ArrayList<WarningItemViewModel> warningList;
 
     public static Intent newInstance(Context context) {
+        return new Intent(context, ChangePhoneNumberInputActivity.class);
+    }
+
+    public static Intent newInstance(Context context, ArrayList<WarningItemViewModel> viewModelList) {
         Intent intent = new Intent(context, ChangePhoneNumberInputActivity.class);
-        //TODO intent.putExtra(PARAM_SOMETHING, something);
+        intent.putExtra(PARAM_WARNING_LIST, viewModelList);
         return intent;
     }
 
@@ -25,7 +35,7 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity implem
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+        warningList = extras.getParcelableArrayList(PARAM_WARNING_LIST);
     }
 
     @Override
@@ -61,7 +71,7 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity implem
     @Override
     public void inflateFragment() {
         String TAG = ChangePhoneNumberInputFragment.class.getSimpleName();
-        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance();
+        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance(warningList);
 
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()

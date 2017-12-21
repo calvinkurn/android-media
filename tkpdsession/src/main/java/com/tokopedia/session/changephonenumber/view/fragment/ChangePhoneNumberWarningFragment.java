@@ -98,7 +98,10 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ChangePhoneNumberInputActivity.newInstance(getContext()));
+                startActivity(ChangePhoneNumberInputActivity.newInstance(
+                        getContext(),
+                        new ArrayList<>(viewModel.getWarningList()))
+                );
             }
         });
     }

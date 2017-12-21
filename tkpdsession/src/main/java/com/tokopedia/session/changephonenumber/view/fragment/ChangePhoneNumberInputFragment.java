@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
+import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -23,16 +26,19 @@ import butterknife.Unbinder;
  */
 
 public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implements ChangePhoneNumberInputFragmentListener.View {
+    public static final String PARAM_WARNING_LIST = "warning_list";
 
     private TextView oldPhoneNumber;
     private EditText newPhoneNumber;
     private TextView nextButton;
 
+    private ArrayList<WarningItemViewModel> warningList;
     private Unbinder unbinder;
 
-    public static ChangePhoneNumberInputFragment newInstance() {
+    public static ChangePhoneNumberInputFragment newInstance(ArrayList<WarningItemViewModel> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
         Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(PARAM_WARNING_LIST, warningList);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -46,7 +52,11 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         initView(parentView);
         setViewListener();
         initVar();
-        setHasOptionsMenu(true);
+
+        if (warningList != null)
+            if (warningList.size() > 0)
+                setHasOptionsMenu(true);
+
         //TODO presenter.attachView(this);
         return parentView;
     }
@@ -67,7 +77,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     private void initVar() {
-
+        warningList = getArguments().getParcelableArrayList(PARAM_WARNING_LIST);
     }
 
     @Override
