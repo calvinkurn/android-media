@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -103,7 +104,8 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             topSeparator.setVisibility(View.VISIBLE);
         }
 
-        ImageHandler.LoadImage(reviewImage, element.getKolImage());
+        MethodChecker.loadImageFitCenter(reviewImage, element.getKolImage());
+
         tooltip.setText(element.getProductTooltip());
 
         kolText.setText(getKolText(element));
@@ -113,6 +115,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             likeText.setText(String.valueOf(element.getTotalLike()));
             likeText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R.color
                     .tkpd_main_green));
+
         } else if (element.getTotalLike() > 0) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
             likeText.setText(String.valueOf(element.getTotalLike()));
