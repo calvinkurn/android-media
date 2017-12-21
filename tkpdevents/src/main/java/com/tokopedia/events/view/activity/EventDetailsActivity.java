@@ -3,10 +3,15 @@ package com.tokopedia.events.view.activity;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -114,6 +119,35 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         mPresenter.attachView(this);
         mPresenter.getEventDetails();
 
+        AppBarLayout appBarLayout = findViewById(R.id.appbarlayout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int offset)
+            {
+                Drawable upArrow = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_arrow_back_white, null);
+                if (offset < -200)
+                {
+                    upArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+                    getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+//                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.option_menu_icon);
+//                    drawable.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+//                    toolbar.setOverflowIcon(drawable);
+                }
+                else
+                {
+
+                    upArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                    getSupportActionBar().setHomeAsUpIndicator(upArrow);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+//                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.option_menu_icon);
+//                    drawable.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+//                    toolbar.setOverflowIcon(drawable);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -173,10 +207,17 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
             tvTncExpandable.setText(Html.fromHtml(homedata.getTnc()));
 
         }
-
-        tvDisplayTag.setText(homedata.getDisplayTags());
+        if(homedata.getDisplayTags().length()<3)
+            tvDisplayTag.setVisibility(View.GONE);
+        else
+            tvDisplayTag.setText(homedata.getDisplayTags());
         if (homedata.getHasSeatLayout() != 1)
             seatingLayoutCard.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderSeatLayout(String url) {
+        ImageHandler.loadImageCover2(imgvSeatingLayout,url);
     }
 
     @Override
@@ -232,17 +273,17 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
     }
 
-    @OnClick(R2.id.btn_show_seating)
-    void showHideSeating() {
-        if (imgvSeatingLayout.getVisibility() != View.VISIBLE) {
-            imgvSeatingLayout.setVisibility(View.VISIBLE);
-            ivArrowSeating.animate().rotation(180f);
-
-        } else {
-            ivArrowSeating.animate().rotation(0f);
-            imgvSeatingLayout.setVisibility(View.GONE);
-        }
-    }
+//    @OnClick(R2.id.btn_show_seating)
+//    void showHideSeating() {
+//        if (imgvSeatingLayout.getVisibility() != View.VISIBLE) {
+//            imgvSeatingLayout.setVisibility(View.VISIBLE);
+//            ivArrowSeating.animate().rotation(180f);
+//
+//        } else {
+//            ivArrowSeating.animate().rotation(0f);
+//            imgvSeatingLayout.setVisibility(View.GONE);
+//        }
+//    }
 
     @OnClick(R2.id.btn_terms_conditions)
     void showHideTnC() {

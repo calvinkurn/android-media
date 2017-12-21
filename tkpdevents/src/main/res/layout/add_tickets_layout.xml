@@ -64,6 +64,7 @@
             android:layout_marginEnd="@dimen/margin_default"
             android:background="#00000000"
             android:scaleType="fitXY"
+            android:visibility="invisible"
             android:src="@drawable/ic_minus"
             android:tint="#42b549" />
 

@@ -18,7 +18,6 @@ import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
-import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
@@ -84,15 +83,6 @@ public class EventReviewTicketPresenter
                 profileRepository
         );
 
-    }
-
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    public void proceedToPayment() {
         profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
             @Override
             public void onCompleted() {
@@ -107,12 +97,21 @@ public class EventReviewTicketPresenter
             @Override
             public void onNext(ProfileModel model) {
                 profileModel = model;
-                postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData));
-                verifyCart();
-
+                getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
             }
         });
 
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
+    public void proceedToPayment() {
+        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData));
+        verifyCart();
     }
 
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
@@ -191,17 +190,6 @@ public class EventReviewTicketPresenter
         CartItems cart = new CartItems();
         cart.setCartItems(cartItems);
         cart.setPromocode("");
-        Log.d("Session Handler", "AccessToken " + SessionHandler.getAccessToken());
-        Log.d("Session Handler", "GTM Login ID " + SessionHandler.getGTMLoginID(getView().getActivity()));
-        Log.d("Session Handler", "Login ID " + SessionHandler.getLoginID(getView().getActivity()));
-        Log.d("Session Handler", "Login Name " + SessionHandler.getLoginName(getView().getActivity()));
-        Log.d("Session Handler", "Phone Number " + SessionHandler.getPhoneNumber());
-        Log.d("Session Handler", "Temp Login Name " + SessionHandler.getTempLoginName(getView().getActivity()));
-        Log.d("Session Handler", "UUID " + SessionHandler.getUUID(getView().getActivity()));
-        Log.d("Session Handler", "Refresh Token " + SessionHandler.getRefreshToken(getView().getActivity()));
-        Log.d("Session Handler", "Temp Login Session " + SessionHandler.getTempLoginSession(getView().getActivity()));
-        Log.d("Session Handler", "Shop ID " + SessionHandler.getShopID(getView().getActivity()));
-        Log.d("Session Handler", "" + SessionHandler.getShopDomain(getView().getActivity()));
 
 //todo tax per quantity
         return cart;
@@ -213,6 +201,7 @@ public class EventReviewTicketPresenter
         Intent intent = view.getActivity().getIntent();
         this.checkoutData = intent.getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
         getView().renderFromPackageVM(checkoutData);
+
     }
 
     public void verifyCart() {
@@ -266,7 +255,7 @@ public class EventReviewTicketPresenter
                 PaymentPassData paymentPassData = new PaymentPassData();
                 paymentPassData.convertToPaymenPassData(checkoutResponse);
                 getView().navigateToActivityRequest(TopPayActivity.
-                        createInstance(getView().getActivity(),paymentPassData),TopPayActivity.REQUEST_CODE);
+                        createInstance(getView().getActivity(), paymentPassData), TopPayActivity.REQUEST_CODE);
 
             }
         });

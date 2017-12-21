@@ -1,10 +1,14 @@
 package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
+import com.tokopedia.events.domain.GetSeatLayoutUseCase;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
@@ -27,12 +31,15 @@ import rx.Subscriber;
 public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsContract.EventDetailsView> implements EventsDetailsContract.Presenter {
 
     GetEventDetailsRequestUseCase getEventDetailsRequestUseCase;
+    GetSeatLayoutUseCase getSeatLayoutUseCase;
     EventsDetailsViewModel eventsDetailsViewModel;
-    public static String EXTRA_EVENT_VIEWMODEL= "extraeventviewmodel";
+    public static String EXTRA_EVENT_VIEWMODEL = "extraeventviewmodel";
 
     @Inject
-    public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase) {
+    public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase,
+                                  GetSeatLayoutUseCase seatLayoutUseCase) {
         this.getEventDetailsRequestUseCase = eventDetailsRequestUseCase;
+        this.getSeatLayoutUseCase = seatLayoutUseCase;
     }
 
     @Override
@@ -86,6 +93,31 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         if (eventDetailsDomain != null) {
             EventDetailsViewModelMapper.mapDomainToViewModel(eventDetailsDomain, eventsDetailsViewModel);
         }
+        try {
+            if (eventsDetailsViewModel.getHasSeatLayout() == 1) {
+                getSeatLayoutUseCase.setUrl(eventsDetailsViewModel.getSchedulesViewModels().get(0).getPackages().get(0));
+                getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<SeatLayoutResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        CommonUtils.dumper("enter onCompleted seatlayout usecase");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        CommonUtils.dumper("enter error in seatlayout usecase");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(SeatLayoutResponse seatLayoutResponse) {
+                        getView().renderSeatLayout(seatLayoutResponse.getUrl());
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Log.d("EventDetailsPresenter","Catch in seatlayout usecase");
+            e.printStackTrace();
+        }
 
         return eventsDetailsViewModel;
     }
@@ -99,11 +131,10 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         return dateString;
     }
 
-    public void bookBtnClick(){
+    public void bookBtnClick() {
         Intent bookTicketIntent = new Intent(getView().getActivity(), EventBookTicketActivity.class);
-        bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL,eventsDetailsViewModel);
-        getView().navigateToActivityRequest(bookTicketIntent,100);
+        bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
+        getView().navigateToActivityRequest(bookTicketIntent, 100);
     }
-
 
 }

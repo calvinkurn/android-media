@@ -33,10 +33,13 @@
     <string name="rp_5980000"><strike>Rp 5980000</strike></string>
     <string name="total_tickets">%d Tiket</string>
     <string name="fare_breakup">Fare Breakup for %s</string>
-    <string name="pay_button">Pay %d</string>
+    <string name="pay_button">Pay Rp %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="monday_16_nov">Monday\n16 Nov</string>
+    <string name="and_others">%1$s and %2$d others</string>
+    <string name="x_type">%1$d x %2$s</string>
+    <string name="jumlah_tiket">Jumlah Tiket : %1$d</string>
 
     <!-- need to changed -->
 

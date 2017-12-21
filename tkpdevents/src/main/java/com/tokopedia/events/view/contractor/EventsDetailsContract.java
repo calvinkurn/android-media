@@ -26,6 +26,8 @@ public class EventsDetailsContract {
 
         void renderFromHome(CategoryItemsViewModel homedata);
 
+        void renderSeatLayout(String url);
+
         void renderFromCloud(EventsDetailsViewModel data);
 
         RequestParams getParams();
@@ -42,6 +44,7 @@ public class EventsDetailsContract {
 
 
         void getEventDetails();
+
 
     }
 

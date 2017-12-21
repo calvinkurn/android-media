@@ -26,6 +26,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
+import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
@@ -182,7 +183,8 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @Override
     public void showPayButton(int ticketQuantity, int price) {
-        buttonTextview.setText("Pay " + String.valueOf(ticketQuantity * price));
+        buttonTextview.setText(String.format(getString(R.string.pay_button),
+                CurrencyUtil.convertToCurrencyString(ticketQuantity * price)));
         buttonPayTickets.setVisibility(View.VISIBLE);
     }
 

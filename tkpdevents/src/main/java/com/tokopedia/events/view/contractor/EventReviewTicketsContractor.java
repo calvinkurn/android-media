@@ -25,6 +25,9 @@ public class EventReviewTicketsContractor {
 
         void renderFromPackageVM(PackageViewModel packageViewModel);
 
+        void setEmailID(String emailID);
+
+
         RequestParams getParams();
     }
 

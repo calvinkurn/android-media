@@ -52,7 +52,7 @@
 
                     <com.tokopedia.events.view.utils.CirclePageIndicator
                         android:id="@+id/pager_indicator"
-                        android:layout_width="match_parent"
+                        android:layout_width="100dp"
                         android:layout_height="10dp"
                         android:layout_alignParentBottom="true"
                         android:padding="2dp" />

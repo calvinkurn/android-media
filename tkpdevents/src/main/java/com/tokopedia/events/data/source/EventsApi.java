@@ -1,20 +1,18 @@
 package com.tokopedia.events.data.source;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
-import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
+import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 
 import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -57,5 +55,13 @@ public interface EventsApi {
     @POST(EventsUrl.EVENTS_CHECKOUT)
     @Headers({"Content-Type: application/json"})
     Observable<CheckoutResponse> checkoutCart(@Body JsonObject requestBody);
+
+    @GET(EventsUrl.EVENT_SEAT_LAYOUT)
+    Observable<SeatLayoutResponse> getSeatLayout(@Path("category_id") int category_id,
+                                                 @Path("product_id") int product_id,
+                                                 @Path("schedule_id") int schedule_id,
+                                                 @Path("group_id") int group_id,
+                                                 @Path("package_id") int package_id);
+
 
 }

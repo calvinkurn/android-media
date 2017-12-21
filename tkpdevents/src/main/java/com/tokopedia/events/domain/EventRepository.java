@@ -1,11 +1,10 @@
 package com.tokopedia.events.domain;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
-import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
+import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
@@ -36,6 +35,12 @@ public interface EventRepository {
     Observable<VerifyCartResponse> verifyCard(JsonObject requestBody);
 
     Observable<CheckoutResponse> checkoutCart(JsonObject requestBody);
+
+    Observable<SeatLayoutResponse> getSeatLayout(int category_id,
+                                                 int product_id,
+                                                 int schedule_id,
+                                                 int group_id,
+                                                 int package_id);
 
 
 }

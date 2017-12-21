@@ -28,7 +28,7 @@
                 android:id="@+id/event_detail_banner"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:src="@drawable/image_parallax"
                 app:layout_collapseMode="pin" />
 

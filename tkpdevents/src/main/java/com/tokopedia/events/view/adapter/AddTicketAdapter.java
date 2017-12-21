@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
+import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((TicketViewHolder) holder).setViewHolder(packageViewModelList.get(position),position);
+        ((TicketViewHolder) holder).setViewHolder(packageViewModelList.get(position), position);
     }
 
     @Override
@@ -77,44 +78,54 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public TicketViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this,view);
+            ButterKnife.bind(this, view);
         }
 
         void setViewHolder(PackageViewModel viewModel, int position) {
             this.holderViewModel = viewModel;
             this.index = position;
             tvTicketName.setText(viewModel.getDisplayName());
-            tvTicketMaxprice.setText(String.valueOf(viewModel.getMrp()));
-            ticketSalePrice.setText(String.valueOf(viewModel.getSalesPrice()));
+            tvTicketMaxprice.setText(CurrencyUtil.convertToCurrencyString(viewModel.getMrp()));
+            ticketSalePrice.setText(CurrencyUtil.convertToCurrencyString(viewModel.getSalesPrice()));
             tvTicketCnt.setText(String.valueOf(viewModel.getSelectedQuantity()));
+            if (holderViewModel.getSelectedQuantity() > 0)
+                btnDecrement.setVisibility(View.VISIBLE);
+            else
+                btnDecrement.setVisibility(View.INVISIBLE);
 
         }
 
         @OnClick(R2.id.btn_increment)
         void onClickIncrement() {
-            mPresenter.addTickets(index,holderViewModel,this);
-
-
+            mPresenter.addTickets(index, holderViewModel, this);
+            if (holderViewModel.getSelectedQuantity() > 0)
+                btnDecrement.setVisibility(View.VISIBLE);
+            else
+                btnDecrement.setVisibility(View.INVISIBLE);
         }
 
         @OnClick(R2.id.btn_decrement)
         void onClickDecrement() {
             mPresenter.removeTickets();
+            if (holderViewModel.getSelectedQuantity() > 0)
+                btnDecrement.setVisibility(View.VISIBLE);
+            else
+                btnDecrement.setVisibility(View.INVISIBLE);
         }
 
-        public void setTvTicketCnt(int count){
+        public void setTvTicketCnt(int count) {
             tvTicketCnt.setText(String.valueOf(count));
         }
 
-        public void setTvTicketNameColor(int color){
+        public void setTvTicketNameColor(int color) {
             tvTicketName.setTextColor(color);
         }
 
-        public void setTicketSalePriceColor(int color){
+        public void setTicketSalePriceColor(int color) {
             ticketSalePrice.setTextColor(color);
         }
 
-        public void setTvTicketCntColor(int color){
+        public void setTvTicketCntColor(int color) {
             tvTicketCnt.setTextColor(color);
         }
     }

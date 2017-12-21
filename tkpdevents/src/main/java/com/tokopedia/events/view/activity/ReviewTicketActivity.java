@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -21,9 +23,8 @@ import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
-import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
+import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
-import com.tokopedia.payment.activity.*;
 
 import javax.inject.Inject;
 
@@ -42,18 +43,14 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView eventTimeTv;
     @BindView(R2.id.event_address_tv)
     TextView eventAddressTv;
-    @BindView(R2.id.tv_month)
-    TextView tvMonth;
-    @BindView(R2.id.tv_date)
-    TextView tvDate;
-    @BindView(R2.id.tv_day)
-    TextView tvDay;
     @BindView(R2.id.event_total_tickets)
     TextView eventTotalTickets;
     @BindView(R2.id.tv_ticket_summary)
     TextView tvTicketSummary;
     @BindView(R2.id.tv_visitor_names)
-    TextView tvVisitorNames;
+    EditText tvVisitorNames;
+    @BindView(R2.id.tv_telephone)
+    EditText tvTelephone;
     @BindView(R2.id.tv_provider_name)
     TextView tvProviderName;
     @BindView(R2.id.tv_base_fare)
@@ -64,6 +61,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView buttonTextview;
     @BindView(R2.id.btn_go_to_payment)
     View btnGoToPayment;
+
 
     EventComponent eventComponent;
     @Inject
@@ -76,8 +74,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         setContentView(R.layout.review_booking_layout);
         ButterKnife.bind(this);
         executeInjector();
-        mPresenter.attachView(this);
         mPresenter.initialize();
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -93,30 +91,37 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
 
-        startActivityForResult(intent,requestCode);
+        startActivityForResult(intent, requestCode);
         //startActivity(intent);
 
     }
 
     @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel) {
+        String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
         eventNameTv.setText(packageViewModel.getDisplayName());
-        eventTimeTv.setText(packageViewModel.getTimeRange());
+        eventTimeTv.setText(timerange);
         eventAddressTv.setText(packageViewModel.getAddress());
-        eventTotalTickets.setText(String.format(getString(R.string.total_tickets),
+        eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
-        if(packageViewModel.getSelectedQuantity()==1)
-            tvVisitorNames.setText("Mad Max");
-        else if(packageViewModel.getSelectedQuantity()>1)
-            tvVisitorNames.setText("Mad Max and 2 others");
-        tvProviderName.setText(String.format(getString(R.string.fare_breakup),packageViewModel.getDisplayName()));
-        int baseFare = packageViewModel.getSelectedQuantity()*packageViewModel.getSalesPrice();
-        tvBaseFare.setText(String.valueOf(baseFare));
-        int convFees = packageViewModel.getConvenienceFee();
-        tvConvFees.setText(String.valueOf(convFees));
-        buttonTextview.setText(String.format(getString(R.string.pay_button),baseFare+convFees));
 
+        tvTelephone.setText(SessionHandler.getPhoneNumber());
+        tvProviderName.setText(String.format(getString(R.string.fare_breakup), packageViewModel.getDisplayName()));
+        int baseFare = packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice();
+        tvBaseFare.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare));
+        int convFees = packageViewModel.getConvenienceFee();
+        tvConvFees.setText("Rp " + CurrencyUtil.convertToCurrencyString(convFees));
+        buttonTextview.setText(String.format(getString(R.string.pay_button), CurrencyUtil.convertToCurrencyString(baseFare + convFees)));
+        tvTicketSummary.setText(String.format(getString(R.string.x_type),
+                packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
+
+
+    }
+
+    @Override
+    public void setEmailID(String emailID) {
+        tvVisitorNames.setText(emailID);
     }
 
     private void executeInjector() {
@@ -137,7 +142,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     }
 
     @OnClick(R2.id.btn_go_to_payment)
-    void clickPay(){
+    void clickPay() {
         mPresenter.proceedToPayment();
     }
 
