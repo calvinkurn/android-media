@@ -46,6 +46,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         initView(parentView);
         setViewListener();
         initVar();
+        setHasOptionsMenu(true);
         //TODO presenter.attachView(this);
         return parentView;
     }
