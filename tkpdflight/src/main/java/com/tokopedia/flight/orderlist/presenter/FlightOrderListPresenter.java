@@ -48,7 +48,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideGetInitialOrderDataLoading();
-                    getView().showErrorGetInitialOrders(FlightErrorUtil.getMessageFromException(e));
+                    getView().showErrorGetInitialOrders(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
                 }
             }
 
@@ -66,9 +66,9 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     }
 
     @Override
-    public void onFilterSelected(String typeFilter) {
+    public void onFilterSelected() {
         getView().showGetInitialOrderDataLoading();
-        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, typeFilter), new Subscriber<List<FlightOrder>>() {
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, getView().getSelectedFilter()), new Subscriber<List<FlightOrder>>() {
             @Override
             public void onCompleted() {
 
@@ -79,7 +79,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideGetInitialOrderDataLoading();
-                    getView().showErrorGetOrderOnFilterChanged(FlightErrorUtil.getMessageFromException(e));
+                    getView().showErrorGetOrderOnFilterChanged(e);
                 }
             }
 
@@ -123,6 +123,46 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         });
     }
 
+    @Override
+    public void onSwipeRefresh() {
+        getView().showGetInitialOrderDataLoading();
+        getView().disableSwipeRefresh();
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, getView().getSelectedFilter()), new Subscriber<List<FlightOrder>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    getView().enableSwipeRefresh();
+                    getView().hideGetInitialOrderDataLoading();
+                    getView().showErrorGetInitialOrders(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
+                }
+            }
+
+            @Override
+            public void onNext(List<FlightOrder> orderEntities) {
+                getView().enableSwipeRefresh();
+                buildAndRenderFilterList();
+                getView().hideGetInitialOrderDataLoading();
+                if (orderEntities.size() > 0) {
+                    getView().renderOrders(flightOrderViewModelMapper.transform(orderEntities));
+                } else {
+                    getView().showEmptyView();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        detachView();
+        flightGetOrdersUseCase.unsubscribe();
+    }
+
     private void buildAndRenderFilterList() {
         int[] colorBorder = new int[5];
         colorBorder[0] = R.color.filter_order_green;
@@ -132,11 +172,11 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         colorBorder[4] = R.color.filter_order_blue;
 
         Map<String, String> filtersMap = new HashMap<>();
-        filtersMap.put("700,800", getView().getString(R.string.flight_order_status_success_label));
-        filtersMap.put("0,600", getView().getString(R.string.flight_order_status_failed_label));
+        filtersMap.put("650", getView().getString(R.string.flight_order_status_refund_label));
         filtersMap.put("100,102", getView().getString(R.string.flight_order_status_waiting_for_payment_label));
         filtersMap.put("101,200,300", getView().getString(R.string.flight_order_status_in_progress_label));
-        filtersMap.put("650", getView().getString(R.string.flight_order_status_refund_label));
+        filtersMap.put("0,600", getView().getString(R.string.flight_order_status_failed_label));
+        filtersMap.put("700,800", getView().getString(R.string.flight_order_status_success_label));
 
         List<QuickFilterItem> filterItems = new ArrayList<>();
         int colorInd = 0;

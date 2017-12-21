@@ -5,6 +5,7 @@
         <attr name="defaultTextColorLabel" format="reference|color" />
         <attr name="focusedTextColorLabel" format="reference|color" />
         <attr name="disabledTextColorLabel" format="reference|color" />
+        <attr name="prefixString" format="reference|string" />
 
         <!-- Whether the layout is laid out as if an error will be displayed. -->
         <attr name="hintEnabled" format="boolean"/>

@@ -1,9 +1,10 @@
 package com.tokopedia.flight;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.flight.common.di.component.FlightComponent;
+import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
 public interface FlightModuleRouter {
 
@@ -12,4 +13,12 @@ public interface FlightModuleRouter {
     Intent getLoginIntent();
 
     void goToFlightActivity(Context context);
+
+    Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel);
+
+    int getTopPayPaymentSuccessCode();
+
+    int getTopPayPaymentFailedCode();
+
+    int getTopPayPaymentCancelCode();
 }

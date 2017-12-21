@@ -1,5 +1,7 @@
 package com.tokopedia.flight.orderlist.contract;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -37,17 +39,27 @@ public interface FlightOrderListContract {
 
         String getSelectedFilter();
 
-        void showErrorGetOrderOnFilterChanged(String message);
+        void showErrorGetOrderOnFilterChanged(Throwable t);
 
-        void showErrorGetInitialOrders(String message);
+        void showErrorGetInitialOrders(String errorMessage);
+
+        void disableSwipeRefresh();
+
+        void enableSwipeRefresh();
+
+        Context getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getInitialOrderData();
 
-        void onFilterSelected(String typeFilter);
+        void onFilterSelected();
 
         void onOrderLoadMore(String selectedFilter, int page);
+
+        void onSwipeRefresh();
+
+        void onDestroyView();
     }
 }

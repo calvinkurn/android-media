@@ -1,5 +1,7 @@
 package com.tokopedia.flight.orderlist.domain;
 
+import android.text.TextUtils;
+
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -146,7 +148,9 @@ public class FlightGetOrdersUseCase extends UseCase<List<FlightOrder>> {
     public RequestParams createRequestParam(int page, String status) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(PARAM_PAGE, page);
-        requestParams.putString(PARAM_STATUS, status);
+        if (!TextUtils.isEmpty(status)) {
+            requestParams.putString(PARAM_STATUS, status);
+        }
         requestParams.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE_VALUE);
         return requestParams;
     }

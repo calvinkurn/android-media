@@ -10,13 +10,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <com.tokopedia.flight.detail.view.adapter.FlightDetailRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_med"
             android:layout_marginBottom="@dimen/margin_small" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

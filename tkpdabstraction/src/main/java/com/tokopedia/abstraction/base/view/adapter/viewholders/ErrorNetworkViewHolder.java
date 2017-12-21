@@ -25,4 +25,5 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     public void bind(ErrorNetworkModel element) {
 
     }
+
 }

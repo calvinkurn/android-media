@@ -256,7 +256,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                         e.printStackTrace();
                         if (isViewAttached()) {
                             getView().hideFullPageLoading();
-                            getView().showGetCartDataErrorStateLayout(FlightErrorUtil.getMessageFromException(e));
+                            getView().showGetCartDataErrorStateLayout(e);
                         }
                     }
 

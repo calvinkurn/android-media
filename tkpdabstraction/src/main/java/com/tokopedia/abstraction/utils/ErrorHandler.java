@@ -1,15 +1,14 @@
 package com.tokopedia.abstraction.utils;
 
 import android.content.Context;
-import android.util.Log;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 /**
  * Created by User on 11/28/2017.
@@ -17,11 +16,7 @@ import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
 
 public class ErrorHandler {
 
-    public static String getErrorMessage(Throwable e) {
-        return getErrorMessage(e, BaseMainApplication.getAppContext());
-    }
-
-    public static String getErrorMessage(Throwable e, final Context context) {
+    public static String getErrorMessage(final Context context, Throwable e) {
         if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {

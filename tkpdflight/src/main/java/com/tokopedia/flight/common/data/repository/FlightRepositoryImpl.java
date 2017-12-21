@@ -19,6 +19,8 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
+import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
@@ -88,6 +90,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<FlightAirportDB>> getAirportList(String query) {
         return flightAirportDataListSource.getAirportList(query);
+    }
+
+    @Override
+    public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
+        return flightAirportDataListSource.getAirportList(query, idCountry);
     }
 
     @Override
@@ -226,6 +233,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<DataResponseVerify> verifyBooking(VerifyRequest verifyRequest) {
         return flightBookingDataSource.verifyBooking(verifyRequest);
+    }
+
+    @Override
+    public Observable<FlightCheckoutEntity> checkout(FlightCheckoutRequest request) {
+        return flightBookingDataSource.checkout(request);
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.BaseListTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemIdType;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
@@ -10,7 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingAmenityViewModel implements Parcelable, ItemType, ItemIdType {
+public class FlightBookingAmenityViewModel implements Parcelable, ItemType, ItemIdType, Visitable<BaseListTypeFactory<FlightBookingAmenityViewModel>> {
     public static final int TYPE = 532;
     private String id;
     private String title;
@@ -137,4 +139,9 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
             return new FlightBookingAmenityViewModel[size];
         }
     };
+
+    @Override
+    public int type(BaseListTypeFactory<FlightBookingAmenityViewModel> typeFactory) {
+        return typeFactory.type(this);
+    }
 }

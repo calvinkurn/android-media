@@ -33,7 +33,7 @@ public interface FlightBaseBookingContact {
 
         void renderFinishTimeCountDown(Date date);
 
-        void showUpdateDataErrorStateLayout(String messageFromException);
+        void showUpdateDataErrorStateLayout(Throwable t);
 
         void showExpireTransactionDialog();
     }

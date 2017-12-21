@@ -21,19 +21,19 @@ import java.util.List;
 public class FlightBookingAmenityActivity extends BaseSimpleActivity {
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
 
-    public static Intent createIntent(Context context, String title, List<FlightBookingAmenityViewModel> flightBookingLuggageViewModels,
+    public static Intent createIntent(Context context, String title, List<FlightBookingAmenityViewModel> flightBookingAmenityViewModels,
                                       FlightBookingAmenityMetaViewModel selectedLuggage) {
         Intent intent = new Intent(context, FlightBookingAmenityActivity.class);
-        intent.putParcelableArrayListExtra(FlightBookingAmenityFragment.EXTRA_LIST_LUGGAGE, (ArrayList<? extends Parcelable>) flightBookingLuggageViewModels);
-        intent.putExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_LUGGAGE, selectedLuggage);
+        intent.putParcelableArrayListExtra(FlightBookingAmenityFragment.EXTRA_LIST_AMENITIES, (ArrayList<? extends Parcelable>) flightBookingAmenityViewModels);
+        intent.putExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES, selectedLuggage);
         intent.putExtra(EXTRA_TITLE, title);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        FlightBookingAmenityMetaViewModel metaViewModel = getIntent().getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_LUGGAGE);
-        return FlightBookingAmenityFragment.createInstance(getIntent().<FlightBookingAmenityMetaViewModel>getParcelableArrayListExtra(FlightBookingAmenityFragment.EXTRA_LIST_LUGGAGE),
+        FlightBookingAmenityMetaViewModel metaViewModel = getIntent().getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES);
+        return FlightBookingAmenityFragment.createInstance(getIntent().<FlightBookingAmenityMetaViewModel>getParcelableArrayListExtra(FlightBookingAmenityFragment.EXTRA_LIST_AMENITIES),
                 metaViewModel);
     }
 

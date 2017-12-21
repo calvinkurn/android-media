@@ -15,6 +15,11 @@ public class FlightUrl {
     public static final String FLIGHT_CART_PATH = FLIGHT_PATH + "cart";
     public static final String FLIGHT_CHECK_VOUCHER_CODE = FLIGHT_PATH + "voucher/check";
     public static final String FLIGHT_VERIFY_BOOKING = "travel/v1/oms/verify";
+    public static final String FLIGHT_CHECKOUT_BOOKING = "travel/v1/oms/checkout";
     public static final String FLIGHT_ORDERS = FLIGHT_PATH + "order/list";
     public static final String FLIGHT_ORDER = FLIGHT_PATH + "order/{id}";
+
+    public static String getUrlPdf(String orderId){
+        return BASE_URL + FLIGHT_PATH + "pdf/generate?order_id="+ orderId +"&pdf=filename.pdf";
+    }
 }

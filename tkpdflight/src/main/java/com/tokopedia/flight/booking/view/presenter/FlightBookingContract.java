@@ -71,7 +71,7 @@ public interface FlightBookingContract {
 
         void renderTotalPrices(String totalPrice);
 
-        void showGetCartDataErrorStateLayout(String errorMessage);
+        void showGetCartDataErrorStateLayout(Throwable t);
 
         void renderFinishTimeCountDown(Date date);
 
@@ -85,7 +85,7 @@ public interface FlightBookingContract {
 
         void hideUpdatePriceLoading();
 
-        void showUpdateDataErrorStateLayout(String errorMessage);
+        void showUpdateDataErrorStateLayout(Throwable t);
 
         void showPassengerInfoNotFullfilled(@StringRes int resId);
 

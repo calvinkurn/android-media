@@ -4,8 +4,6 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 
-import java.util.Map;
-
 /**
  * Created by nathan on 10/16/17.
  */

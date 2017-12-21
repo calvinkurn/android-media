@@ -8,6 +8,8 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
 
@@ -15,7 +17,7 @@ import com.tokopedia.flight.common.database.TkpdFlightDatabase;
  * @author sebastianuskh on 4/13/17.
  */
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class FlightAirportDB extends BaseModel implements ItemType, Parcelable {
+public class FlightAirportDB extends BaseModel implements ItemType, Parcelable, Visitable<BaseListAdapterTypeFactory<FlightAirportDB>> {
 
     public static final int TYPE = 12345;
 
@@ -183,4 +185,9 @@ public class FlightAirportDB extends BaseModel implements ItemType, Parcelable {
             return new FlightAirportDB[size];
         }
     };
+
+    @Override
+    public int type(BaseListAdapterTypeFactory<FlightAirportDB> typeFactory) {
+        return typeFactory.type(this);
+    }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.flight.orderlist.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
@@ -99,6 +101,12 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
         filtersRecyclerView.setNestedScrollingEnabled(false);
         filtersRecyclerView.setAdapter(filterAdapter);
         filterAdapter.setListener(this);
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.onSwipeRefresh();
+            }
+        });
         return view;
     }
 
@@ -162,22 +170,22 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void showErrorGetOrderOnFilterChanged(String message) {
+    public void showErrorGetOrderOnFilterChanged(Throwable t) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), message,
+                getActivity(), getView(), FlightErrorUtil.getMessageFromException(getActivity(), t),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.onFilterSelected(selectedFilter);
+                        presenter.onFilterSelected();
                     }
                 }
         );
     }
 
     @Override
-    public void showErrorGetInitialOrders(String message) {
+    public void showErrorGetInitialOrders(String errorMessage) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), message,
+                getActivity(), getView(), errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -188,6 +196,16 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void disableSwipeRefresh() {
+        swipeToRefresh.setEnabled(false);
+    }
+
+    @Override
+    public void enableSwipeRefresh() {
+        swipeToRefresh.setEnabled(true);
+    }
+
+    @Override
     public void clearFilter() {
         selectedFilter = "";
         presenter.getInitialOrderData();
@@ -195,8 +213,8 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void selectFilter(String typeFilter) {
-        presenter.onFilterSelected(typeFilter);
         selectedFilter = typeFilter;
+        presenter.onFilterSelected();
         endlessRecyclerviewListener.resetState();
     }
 
@@ -215,6 +233,12 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onHelpOptionClicked(String orderId) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroyView();
+        super.onDestroyView();
     }
 
     @Override

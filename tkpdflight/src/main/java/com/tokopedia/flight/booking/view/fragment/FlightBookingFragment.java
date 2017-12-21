@@ -48,6 +48,7 @@ import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
@@ -446,9 +447,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showGetCartDataErrorStateLayout(String errorMessage) {
+    public void showGetCartDataErrorStateLayout(Throwable t) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), errorMessage,
+                getActivity(), getView(), FlightErrorUtil.getMessageFromException(getActivity(), t),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -559,9 +560,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showUpdateDataErrorStateLayout(String errorMessage) {
+    public void showUpdateDataErrorStateLayout(Throwable t) {
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), errorMessage,
+                getActivity(), getView(), FlightErrorUtil.getMessageFromException(getActivity(), t),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {

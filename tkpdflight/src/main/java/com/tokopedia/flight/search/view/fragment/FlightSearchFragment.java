@@ -535,7 +535,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     public void onLoadSearchError(Throwable t) {
         Log.i(TAG, t.toString());
         super.onLoadSearchError(t);
-        String message = FlightErrorUtil.getMessageFromException(t);
+        String message = FlightErrorUtil.getMessageFromException(getActivity(), t);
         flightSearchAdapter.setErrorMessage(message);
     }
 
@@ -641,7 +641,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onErrorGetFlightStatistic(Throwable throwable) {
-        String message = FlightErrorUtil.getMessageFromException(throwable);
+        String message = FlightErrorUtil.getMessageFromException(getActivity(), throwable);
         if (!TextUtils.isEmpty(message)) {
             NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
         }

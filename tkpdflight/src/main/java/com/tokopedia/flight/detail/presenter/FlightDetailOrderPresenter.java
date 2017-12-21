@@ -7,6 +7,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightAmenityType;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
@@ -52,6 +53,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideProgressDialog();
                     getView().onErrorGetOrderDetail(e);
@@ -61,15 +63,24 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             @Override
             public void onNext(FlightOrder flightOrder) {
                 getView().hideProgressDialog();
-                getView().updateFlightList(filterFlightJourneys(flightOrder.getJourneys(), flightOrderDetailPassData));
+                getView().updateFlightList(filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData));
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(), countTotalPrice(flightOrder.getTotalAdultNumeric(),
                         flightOrder.getTotalChildNumeric(), flightOrder.getTotalInfantNumeric()));
                 getView().updateOrderData(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
-                        FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()), "", "");
+                        FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
+                        generateTicketLink(flightOrder.getId()), generateInvoiceLink(flightOrder.getId()));
                 generateStatus(flightOrder.getStatus());
             }
         };
+    }
+
+    private String generateInvoiceLink(String orderId) {
+        return FlightUrl.getUrlPdf(orderId);
+    }
+
+    private String generateTicketLink(String orderId) {
+        return FlightUrl.getUrlPdf(orderId);
     }
 
 
@@ -110,14 +121,14 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
     }
 
-    private List<FlightOrderJourney> filterFlightJourneys(List<FlightOrderJourney> journeys, FlightOrderDetailPassData flightOrderDetailPassData) {
+    private List<FlightOrderJourney> filterFlightJourneys(int status, List<FlightOrderJourney> journeys, FlightOrderDetailPassData flightOrderDetailPassData) {
         List<FlightOrderJourney> journeyList;
         if (!TextUtils.isEmpty(flightOrderDetailPassData.getDepartureAiportId())) {
             journeyList = new ArrayList<>();
             for (FlightOrderJourney flightOrderJourney : journeys) {
                 if (flightOrderJourney.getDepartureAiportId().equals(flightOrderDetailPassData.getDepartureAiportId()) &&
                         flightOrderJourney.getArrivalAirportId().equals(flightOrderDetailPassData.getArrivalAirportId()) &&
-                        flightOrderJourney.getStatus().equals(String.valueOf(flightOrderDetailPassData.getStatus())) &&
+                        status == flightOrderDetailPassData.getStatus() &&
                         flightOrderJourney.getDepartureTime().equals(flightOrderDetailPassData.getDepartureTime())) {
                     journeyList.add(flightOrderJourney);
                 }

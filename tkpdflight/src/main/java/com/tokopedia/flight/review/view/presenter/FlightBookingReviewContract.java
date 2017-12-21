@@ -1,16 +1,13 @@
 package com.tokopedia.flight.review.view.presenter;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import android.support.annotation.StringRes;
+
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
 import java.util.List;
 
@@ -22,7 +19,7 @@ public interface FlightBookingReviewContract {
 
     interface View extends FlightBaseBookingContact.View{
 
-        void onErrorCheckVoucherCode(String e);
+        void onErrorCheckVoucherCode(Throwable t);
 
         void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher);
 
@@ -51,6 +48,16 @@ public interface FlightBookingReviewContract {
         boolean isRoundTrip();
 
         void onErrorVerifyCode(Throwable e);
+
+        void showCheckoutLoading();
+
+        void hideCheckoutLoading();
+
+        void navigateToTopPay(FlightCheckoutViewModel flightCheckoutViewModel);
+
+        void navigateToOrderList();
+
+        void showPaymentFailedErrorMessage(@StringRes int resId);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{
@@ -62,5 +69,11 @@ public interface FlightBookingReviewContract {
         void checkVoucherCode(String cartId, String voucherCode);
 
         void submitData();
+
+        void onPaymentSuccess();
+
+        void onPaymentFailed();
+
+        void onPaymentCancelled();
     }
 }

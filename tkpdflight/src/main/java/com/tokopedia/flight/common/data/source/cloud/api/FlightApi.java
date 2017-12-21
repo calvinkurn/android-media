@@ -10,6 +10,8 @@ import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
+import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.search.data.cloud.model.request.FlightSearchSingleRequestData;
@@ -27,7 +29,6 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -63,9 +64,13 @@ public interface FlightApi {
     Observable<Response<DataResponse<List<OrderEntity>>>> getOrders(@QueryMap Map<String, Object> paramsAllValueInString);
 
     @GET(FlightUrl.FLIGHT_ORDER)
-    Observable<Response<DataResponse<OrderEntity>>> getOrder(@Path("id") int id);
+    Observable<Response<DataResponse<OrderEntity>>> getOrder(@Path("id") String id);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)
     Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body VerifyRequest verifyRequest);
+
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)
+    Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest);
 }
