@@ -40,6 +40,12 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         tvDepartureCity = (AppCompatTextView) view.findViewById(R.id.tv_departure_city);
         tvArrivalCity = (AppCompatTextView) view.findViewById(R.id.tv_arrival_city);
         tvMainButton = (AppCompatTextView) view.findViewById(R.id.tv_main_button);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDetailOptionClicked();
+            }
+        });
     }
 
 
