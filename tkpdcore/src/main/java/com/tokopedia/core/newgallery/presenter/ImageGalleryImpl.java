@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import com.nytimes.android.external.cache.Stopwatch;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
 import com.tokopedia.core.newgallery.constant.Constants;

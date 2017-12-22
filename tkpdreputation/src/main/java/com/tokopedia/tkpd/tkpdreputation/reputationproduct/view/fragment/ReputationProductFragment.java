@@ -29,6 +29,7 @@ import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.ActReviewPass;
@@ -63,7 +64,6 @@ import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter.Reputa
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductDetailModel;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductModel;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;

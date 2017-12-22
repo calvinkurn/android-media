@@ -2,6 +2,7 @@ package com.tokopedia.ride.bookingride.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,14 +47,15 @@ public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
     public void bind(PaymentMethodViewModel element) {
         paymentMethodViewModel = element;
 
-        otherInfoTextView.setVisibility(View.VISIBLE);
+        otherInfoTextView.setTextColor(ContextCompat.getColor(context, R.color.grey_700));
         if (paymentMethodViewModel.getTokoCashBalance() != null && paymentMethodViewModel.getTokoCashBalance().length() > 0) {
-            otherInfoTextView.setText("(" + paymentMethodViewModel.getTokoCashBalance() + ")");
-        } else {
+            otherInfoTextView.setText(paymentMethodViewModel.getTokoCashBalance());
+        } else if (paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMode.CC)) {
             if (paymentMethodViewModel.isSaveWebView()) {
-                otherInfoTextView.setText("(Auto debit not allowed)");
+                otherInfoTextView.setText(context.getString(R.string.auto_debit_not_allowed));
+                otherInfoTextView.setTextColor(ContextCompat.getColor(context, R.color.red_500));
             } else {
-                otherInfoTextView.setVisibility(View.GONE);
+                otherInfoTextView.setText(context.getString(R.string.auto_debit_allowed));
             }
         }
 

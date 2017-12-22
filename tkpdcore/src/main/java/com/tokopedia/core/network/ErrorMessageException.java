@@ -9,6 +9,9 @@ import com.tokopedia.core.app.MainApplication;
 
 public class ErrorMessageException extends RuntimeException {
 
+    public static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
+    public static final String ERROR_MESSAGE = "message_error";
+
     public ErrorMessageException(String errorMessage) {
         super(errorMessage);
     }

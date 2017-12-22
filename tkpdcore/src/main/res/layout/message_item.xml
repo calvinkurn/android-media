@@ -61,60 +61,74 @@
             android:textColor="@color/black_38"
             android:layout_marginRight="@dimen/new_margin_med"/>
 
-
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_l_medium"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:textColor="@color/black_70"
-            android:lineSpacingExtra="8sp"
-            tools:text="Steven Fredian"
+        <LinearLayout
+            android:id="@+id/head"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/user_ava"
             android:layout_toEndOf="@+id/user_ava"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:scrollbars="horizontal"
-            android:layout_marginBottom="3dp"/>
-
-        <TextView
-            android:id="@+id/label"
+            android:layout_toRightOf="@+id/user_ava"
+            android:layout_toLeftOf="@id/time"
+            android:layout_toStartOf="@id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:ellipsize="end"
-            android:background="@drawable/label_user_chat"
-            android:textColor="@color/medium_green"
-            android:textSize="9sp"
-            tools:text="Penjual"
-            android:layout_marginLeft="7dp"
-            android:layout_marginStart="7dp"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/user_name"
-            android:layout_toEndOf="@+id/user_name" />
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:id="@+id/user_name"
+                android:maxWidth="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="8sp"
+                android:maxLines="1"
+                android:scrollbars="horizontal"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_l_medium"
+                android:textStyle="normal"
+                tools:text="Steven Frediannnnjnjnjnjnjnnjn"
+                android:singleLine="true"
+                android:fadingEdge="horizontal"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                />
+
+            <TextView
+                android:id="@+id/label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:ellipsize="end"
+                android:background="@drawable/label_user_chat"
+                android:textColor="@color/medium_green"
+                android:textSize="9sp"
+                tools:text="Penjual"
+                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
+                android:maxLines="1"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:layout_alignEnd="@+id/head"
+            android:layout_alignLeft="@+id/head"
+            android:layout_alignRight="@+id/head"
+            android:layout_alignStart="@+id/head"
+            android:layout_below="@+id/head"
             android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:textColor="@color/black_54"
             android:lineSpacingExtra="7sp"
-            tools:text="Barang sudah saya kirim balik y..."
-            android:layout_below="@+id/user_name"
-            android:layout_alignLeft="@+id/user_name"
-            android:layout_alignStart="@+id/user_name"
-            android:maxLines="1"
-            android:layout_toLeftOf="@+id/time"
-            android:layout_toStartOf="@+id/time" />
+            android:singleLine="true"
+            android:textColor="@color/black_54"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            tools:text="Barang sudah saya kirim balBarang sudah saya kirim balik y..." />
 
         <TextView
             android:id="@+id/counter_unread"

@@ -42,7 +42,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Lock lock = new ReentrantLock();
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(Chain chain) throws IOException{
         final Request originRequest = chain.request();
         Request.Builder newRequest = chain.request().newBuilder();
 
@@ -328,9 +328,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
+    }private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
         Request newest = chain.request();
         Request.Builder newestRequestBuilder = chain.request().newBuilder();
         generateHmacAuthRequest(newest, newestRequestBuilder);
