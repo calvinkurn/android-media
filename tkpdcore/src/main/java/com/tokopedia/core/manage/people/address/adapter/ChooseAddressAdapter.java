@@ -60,7 +60,7 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
         @Override
         public void onClick(View view) {
             Destination destination = list.get(getAdapterPosition());
-            presenter.setOnChooseAddressClick(context, destination);
+            if (view != null) presenter.setOnChooseAddressClick(context, destination);
         }
     }
 
