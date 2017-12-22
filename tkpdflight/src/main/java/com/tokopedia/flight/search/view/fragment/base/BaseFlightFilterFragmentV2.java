@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapterV2;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder2;
+import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
@@ -26,10 +26,10 @@ import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
  */
 
 public abstract class BaseFlightFilterFragmentV2<T extends Visitable, F extends BaseListCheckableTypeFactory<T>> extends BaseListV2Fragment<T, F>
-        implements OnFlightBaseFilterListener, BaseListCheckableAdapterV2.OnCheckableAdapterListener<T>, CheckableBaseViewHolder2.CheckableInteractionListener {
+        implements OnFlightBaseFilterListener, BaseListCheckableAdapter.OnCheckableAdapterListener<T>, CheckableBaseViewHolder.CheckableInteractionListener {
     public static final String SAVED_ORIGINAL_FILTER = "svd_ori_filter";
     protected OnFlightFilterListener listener;
-    protected BaseListCheckableAdapterV2<T, F> adapter;
+    protected BaseListCheckableAdapter<T, F> adapter;
     private FlightFilterModel originalFilterModel;
 
     @Override
@@ -45,7 +45,7 @@ public abstract class BaseFlightFilterFragmentV2<T extends Visitable, F extends 
     @NonNull
     @Override
     protected BaseListAdapterV2<T, F> createAdapterInstance() {
-        adapter = new BaseListCheckableAdapterV2<>(getAdapterTypeFactory(), this);
+        adapter = new BaseListCheckableAdapter<>(getAdapterTypeFactory(), this);
         return adapter;
     }
 
