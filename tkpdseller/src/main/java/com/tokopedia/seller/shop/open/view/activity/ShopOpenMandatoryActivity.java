@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
@@ -16,10 +15,7 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragmen
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
-import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
-import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +45,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_SHOP_NAME)) {
@@ -111,6 +107,9 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
 
     @Override
     public ShopOpenDomainComponent getComponent() {
+        if (component == null) {
+            initComponent();
+        }
         return component;
     }
 

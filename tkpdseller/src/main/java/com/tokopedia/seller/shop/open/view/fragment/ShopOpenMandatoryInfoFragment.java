@@ -12,8 +12,6 @@ public class ShopOpenMandatoryInfoFragment extends ShopSettingInfoFragment {
     @Override
     public void onSuccessSaveInfoShop() {
         super.onSuccessSaveInfoShop();
-        if (getActivity() instanceof StepperListener) {
-            ((StepperListener) getActivity()).goToNextPage(null);
-        }
+        onShopStepperListener.goToNextPage(null);
     }
 }

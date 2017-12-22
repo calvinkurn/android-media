@@ -30,9 +30,8 @@ public abstract class BaseStepperActivity<T extends StepperModel> extends BaseTo
     @NonNull
     protected abstract List<Fragment> getListFragment();
 
-    @CallSuper
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             stepperModel = createNewStepperModel();

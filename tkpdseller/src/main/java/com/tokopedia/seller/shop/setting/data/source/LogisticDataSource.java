@@ -19,7 +19,6 @@ import rx.functions.Func1;
  * @author sebastianuskh on 3/27/17.
  */
 
-@ShopSettingScope
 public class LogisticDataSource {
     private final DistrictLogisticDataCloud districLogisticDataCloud;
     private final DistrictLogisticDataCache districtLogisticDataCache;

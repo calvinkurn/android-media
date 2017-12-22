@@ -20,13 +20,10 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
-import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticComponent;
-import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
-import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
-import com.tokopedia.seller.shop.setting.di.module.ShopSetingLogisticModule;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
+import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenterImpl;
 
 import javax.inject.Inject;
 
@@ -39,7 +36,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     @Inject
-    public ShopSettingLogisticPresenter presenter;
+    public ShopSettingLogisticPresenterImpl presenter;
     private View vContent;
     private View vLoading;
 
@@ -51,12 +48,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
 
     @Override
     protected void initInjector() {
-        ShopSetingLogisticComponent component = DaggerShopSetingLogisticComponent
-                .builder()
-                .shopSetingLogisticModule(new ShopSetingLogisticModule())
-                .shopSettingComponent(getComponent(ShopSettingComponent.class))
-                .build();
-        component.inject(this);
+        getComponent(ShopOpenDomainComponent.class).inject(this);
     }
 
     @Override

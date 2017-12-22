@@ -65,7 +65,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     private ProgressDialog progressDialog;
     private String uriPathImage = "";
     private ShopSettingInfoComponent component;
-    private StepperListener<ShopOpenStepperModel> onShopStepperListener;
+    protected StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     public static ShopSettingInfoFragment createInstance() {
         return new ShopSettingInfoFragment();

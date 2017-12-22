@@ -4,6 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.setting.domain.interactor.GetLogisticAvailableUseCase;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -14,6 +16,7 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
 
     private final GetLogisticAvailableUseCase getLogisticAvailableUseCase;
 
+    @Inject
     public ShopSettingLogisticPresenterImpl(GetLogisticAvailableUseCase getLogisticAvailableUseCase) {
         this.getLogisticAvailableUseCase = getLogisticAvailableUseCase;
     }
