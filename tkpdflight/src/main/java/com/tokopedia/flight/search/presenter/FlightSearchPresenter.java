@@ -63,6 +63,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
                                     boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
                                     @FlightSortOption int sortOptionId) {
+        getView().removeToolbarElevation();
         if (isFromCache) {
             flightSearchWithSortUseCase.execute(FlightSearchUseCase.generateRequestParams(
                     flightSearchApiRequestModel,
@@ -80,6 +81,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void searchAndSortFlightWithDelay(final FlightSearchApiRequestModel flightSearchApiRequestModel,
                                              final boolean isReturning, int delayInSecond) {
+        getView().removeToolbarElevation();
         Subscription subscription = Observable.timer(delayInSecond, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -148,6 +150,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
                            @FlightSortOption int sortOptionId) {
+        getView().removeToolbarElevation();
         flightSortUseCase.withList(flightSearchViewModelList).execute(FlightSearchUseCase.generateRequestParams(
                 null,
                 false, true, null,
