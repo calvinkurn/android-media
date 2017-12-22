@@ -22,28 +22,24 @@ public class PickupPointModule {
 
     private static final int RETRY_COUNT = 0;
 
-    // Provide KeroAuthService
     @Provides
     @PickupPointScope
     KeroAuthService provideKeroAuthService() {
         return new KeroAuthService(RETRY_COUNT);
     }
 
-    // Provide Data Store
     @Provides
     @PickupPointScope
     PickupPointDataStore providePickupPointDataStore(KeroAuthService keroAuthService) {
         return new PickupPointDataStore(keroAuthService);
     }
 
-    // Provide EntityMapper
     @Provides
     @PickupPointScope
     PickupPointEntityMapper provideEntityMapper() {
         return new PickupPointEntityMapper();
     }
 
-    // Provide Repository
     @Provides
     @PickupPointScope
     PickupPointRepository providePickupPointRepository(
@@ -54,7 +50,6 @@ public class PickupPointModule {
                 pickupPointEntityMapper);
     }
 
-    // Provide Use Case
     @Provides
     @PickupPointScope
     GetPickupPointsUseCase provideGetPickupPointsUseCase(
@@ -65,7 +60,6 @@ public class PickupPointModule {
         return new GetPickupPointsUseCase(threadExecutor, postExecutionThread, pickupPointRepository);
     }
 
-    // Provide Presenter
     @Provides
     @PickupPointScope
     PickupPointContract.Presenter providePickupPointPresenter(
