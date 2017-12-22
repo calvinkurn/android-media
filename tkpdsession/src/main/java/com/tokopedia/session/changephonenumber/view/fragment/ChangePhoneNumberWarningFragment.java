@@ -1,6 +1,7 @@
 package com.tokopedia.session.changephonenumber.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +40,10 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private WarningViewModel viewModel;
     private Unbinder unbinder;
 
+    //TODO use DI
+//    @Inject
+//    public WarningListAdapter adapter;
+
     public static ChangePhoneNumberWarningFragment newInstance() {
         ChangePhoneNumberWarningFragment fragment = new ChangePhoneNumberWarningFragment();
         Bundle bundle = new Bundle();
@@ -65,6 +70,20 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         return parentView;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //TODO remove this delay. move loadData when API call is finished.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadDataToView();
+            }
+        }, 2000);
+    }
+
+    //TODO remove this function
     private void provideDummyData() {
         WarningItemViewModel item1 = new WarningItemViewModel(
                 "Saldo Tokopedia tidak dapat ditarik dan digunakan selama 3 hari setelah nomor berhasil diubah.",
@@ -82,7 +101,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         arrayList.add(item2);
         arrayList.add(item1);
         viewModel = new WarningViewModel("Rp 123.333,333", "Rp 123.333,333", arrayList);
-        loadDataToView();
     }
 
     private void initView(View view) {
@@ -148,11 +166,15 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     private void populateRecyclerView() {
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        warningRecyclerView.setLayoutManager(mLayoutManager);
+        if(viewModel != null) {
+             if (viewModel.getWarningList().size() > 0 ) {
+                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                 warningRecyclerView.setLayoutManager(mLayoutManager);
 
-        WarningListAdapter adapter = new WarningListAdapter(viewModel.getWarningList());
-        warningRecyclerView.setAdapter(adapter);
+                 WarningListAdapter adapter = new WarningListAdapter();
+                 adapter.addData(viewModel.getWarningList());
+                 warningRecyclerView.setAdapter(adapter);
+             }
+        }
     }
-
 }

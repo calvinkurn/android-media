@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.customview.BottomSheetInfo;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 
@@ -34,6 +35,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
     private ArrayList<WarningItemViewModel> warningList;
     private Unbinder unbinder;
+    private BottomSheetInfo bottomSheetInfo;
 
     public static ChangePhoneNumberInputFragment newInstance(ArrayList<WarningItemViewModel> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
@@ -53,9 +55,12 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         setViewListener();
         initVar();
 
-        if (warningList != null)
-            if (warningList.size() > 0)
+        if (warningList != null) {
+            if (warningList.size() > 0) {
                 setHasOptionsMenu(true);
+                createBottomSheetView();
+            }
+        }
 
         //TODO presenter.attachView(this);
         return parentView;
@@ -80,6 +85,10 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         warningList = getArguments().getParcelableArrayList(PARAM_WARNING_LIST);
     }
 
+    private void createBottomSheetView() {
+        bottomSheetInfo = new BottomSheetInfo(getContext(), warningList);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -89,7 +98,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_info) {
-
+            bottomSheetInfo.show();
         }
         return true;
     }

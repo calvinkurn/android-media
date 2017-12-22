@@ -1,6 +1,5 @@
 package com.tokopedia.session.changephonenumber.view.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,10 @@ import android.widget.TextView;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by milhamj on 19/12/17.
@@ -19,8 +21,9 @@ import java.util.List;
 public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.WarningListViewHolder> {
     private List<WarningItemViewModel> warningList;
 
-    public WarningListAdapter(List<WarningItemViewModel> warningList) {
-        this.warningList = warningList;
+    @Inject
+    public WarningListAdapter() {
+        warningList = new ArrayList<>();
     }
 
     @Override
@@ -59,6 +62,11 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
 
     private boolean isNullOrEmpty(String string) {
         return (string == null || string.equalsIgnoreCase("null") || string.isEmpty());
+    }
+
+    public void addData(List<WarningItemViewModel> warningList) {
+        this.warningList.addAll(warningList);
+        notifyItemRangeInserted(0, warningList.size());
     }
 
     @Override
