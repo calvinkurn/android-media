@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -69,6 +71,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     EditText edPromo;
     @BindView(R2.id.btn_go_to_payment)
     View btnGoToPayment;
+    @BindView(R2.id.promo_checkbox)
+    CheckBox promoCheckbox;
+    @BindView(R2.id.ed_promo_layout)
+    View edPromoLayout;
+
 
 
     EventComponent eventComponent;
@@ -84,6 +91,15 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         executeInjector();
         mPresenter.attachView(this);
         mPresenter.initialize();
+        promoCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    edPromoLayout.setVisibility(View.VISIBLE);
+                else
+                    edPromoLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
