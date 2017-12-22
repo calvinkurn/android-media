@@ -3,7 +3,9 @@ package com.tokopedia.flight.detail.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
 
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
  * @author alvarisi
  */
 
-public class FlightDetailRouteViewModel implements ItemType, Parcelable {
+public class FlightDetailRouteViewModel implements ItemType, Parcelable, Visitable<FlightDetailRouteTypeFactory> {
     private static final int TYPE = 12312;
     private String pnr;
     private String airlineName;
@@ -244,4 +246,9 @@ public class FlightDetailRouteViewModel implements ItemType, Parcelable {
             return new FlightDetailRouteViewModel[size];
         }
     };
+
+    @Override
+    public int type(FlightDetailRouteTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
 }

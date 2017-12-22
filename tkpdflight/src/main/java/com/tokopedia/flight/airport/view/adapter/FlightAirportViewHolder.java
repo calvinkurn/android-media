@@ -1,7 +1,7 @@
 package com.tokopedia.flight.airport.view.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -10,7 +10,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
@@ -18,7 +18,9 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightAirportViewHolder extends BaseViewHolder<FlightAirportDB> {
+public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportDB> {
+    @LayoutRes
+    public static int LAYOUT = R.layout.item_flight_airport;
 
     private TextView city;
     private TextView airport;
@@ -39,7 +41,7 @@ public class FlightAirportViewHolder extends BaseViewHolder<FlightAirportDB> {
     }
 
     @Override
-    public void bindObject(FlightAirportDB flightAirportDB) {
+    public void bind(FlightAirportDB flightAirportDB) {
         Context context = itemView.getContext();
         String filterText = filterTextListener.getFilterText();
 

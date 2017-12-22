@@ -3,6 +3,7 @@ package com.tokopedia.flight.review.view.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,21 +11,27 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.KeyboardHandler;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartView;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -39,14 +46,18 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
+import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModelMapper;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
-import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPriceAdapter;
+import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
+import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewContract;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewPresenter;
 
@@ -67,11 +78,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
-    @Inject
-    FlightDetailRouteViewModelMapper flightDetailRouteViewModelMapper;
+    private static final int REQUEST_CODE_TOPPAY = 100;
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     FlightBookingReviewModel flightBookingReviewModel;
+    private LinearLayout fullPageLoading;
+    private NestedScrollView containerFullPage;
     private CountdownTimeView reviewTime;
     private TextView reviewDetailDepartureFlight;
     private RecyclerView recyclerViewDepartureFlight;
@@ -84,7 +96,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private VoucherCartView voucherCartView;
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
-    private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
+    private FlightSimpleAdapter flightBookingReviewPriceAdapter;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
@@ -116,6 +128,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_review, container, false);
+        fullPageLoading = (LinearLayout) view.findViewById(R.id.full_page_loading);
+        containerFullPage = (NestedScrollView) view.findViewById(R.id.container_full_page);
         reviewTime = (CountdownTimeView) view.findViewById(R.id.countdown_finish_transaction);
         reviewDetailDepartureFlight = (TextView) view.findViewById(R.id.review_detail_departure_flight);
         recyclerViewDepartureFlight = (RecyclerView) view.findViewById(R.id.recycler_view_departure_flight);
@@ -128,7 +142,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         voucherCartView = view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
+        progressDialog.setMessage("");
         progressDialog.setCancelable(false);
 
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
@@ -165,26 +179,41 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     void initView() {
-        FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(getContext());
-        departureFlightAdapter.addData(flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList());
+        FlightDetailRouteTypeFactory flightDetailRouteTypeFactory = new FlightDetailAdapterTypeFactory(new FlightDetailAdapterTypeFactory.OnFlightDetailListener() {
+            @Override
+            public int getItemCount() {
+                return flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList().size();
+            }
+        });
+        List<Visitable> departureRoute = new ArrayList<>();
+        departureRoute.addAll(flightBookingReviewModel.getDetailViewModelListDeparture().getRouteList());
+        FlightDetailAdapter departureFlightAdapter = new FlightDetailAdapter(flightDetailRouteTypeFactory, departureRoute);
         recyclerViewDepartureFlight.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDepartureFlight.setAdapter(departureFlightAdapter);
         if (flightBookingReviewModel.getDetailViewModelListReturn() != null &&
                 flightBookingReviewModel.getDetailViewModelListReturn().getRouteList().size() > 0) {
-            FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(getContext());
-            returnFlightAdapter.addData(flightBookingReviewModel.getDetailViewModelListReturn().getRouteList());
+            FlightDetailRouteTypeFactory arrivalFlightDetailRouteTypeFactory1 = new FlightDetailAdapterTypeFactory(new FlightDetailAdapterTypeFactory.OnFlightDetailListener() {
+                @Override
+                public int getItemCount() {
+                    return flightBookingReviewModel.getDetailViewModelListReturn().getRouteList().size();
+                }
+            });
+            List<Visitable> arrivalRoute = new ArrayList<>();
+            arrivalRoute.addAll(flightBookingReviewModel.getDetailViewModelListReturn().getRouteList());
+            FlightDetailAdapter returnFlightAdapter = new FlightDetailAdapter(arrivalFlightDetailRouteTypeFactory1, arrivalRoute);
             recyclerViewReturnFlight.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerViewReturnFlight.setAdapter(returnFlightAdapter);
             containerFlightReturn.setVisibility(View.VISIBLE);
         } else {
             containerFlightReturn.setVisibility(View.GONE);
         }
-        FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(getContext());
-        flightBookingReviewPassengerAdapter.addData(flightBookingReviewModel.getDetailPassengers());
+        FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
+        FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter2 = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
+        flightBookingReviewPassengerAdapter2.addData(flightBookingReviewModel.getDetailPassengers());
         recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter);
-        flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter(getContext());
-        flightBookingReviewPriceAdapter.addData(flightBookingReviewModel.getFlightReviewFares());
+        recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter2);
+        flightBookingReviewPriceAdapter = new FlightSimpleAdapter();
+        flightBookingReviewPriceAdapter.setViewModels(flightBookingReviewModel.getFlightReviewFares());
         recyclerViewDetailPrice.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
 
@@ -210,6 +239,20 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                             getActivity().getIntent(),
                             FlightFlowConstant.PRICE_CHANGE
                     );
+                }
+                break;
+            case REQUEST_CODE_TOPPAY:
+                if (getActivity().getApplication() instanceof FlightModuleRouter) {
+                    int paymentSuccess = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentSuccessCode();
+                    int paymentFailed = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentFailedCode();
+                    int paymentCancel = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentCancelCode();
+                    if (resultCode == paymentSuccess) {
+                        flightBookingReviewPresenter.onPaymentSuccess();
+                    } else if (resultCode == paymentFailed) {
+                        flightBookingReviewPresenter.onPaymentFailed();
+                    } else if (resultCode == paymentCancel) {
+                        flightBookingReviewPresenter.onPaymentCancelled();
+                    }
                 }
                 break;
         }
@@ -360,8 +403,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void renderPriceListDetails(List<SimpleViewModel> simpleViewModels) {
         flightBookingReviewModel.setFlightReviewFares(simpleViewModels);
-        flightBookingReviewPriceAdapter.clearData();
-        flightBookingReviewPriceAdapter.addData(simpleViewModels);
+        flightBookingReviewPriceAdapter.setViewModels(simpleViewModels);
         flightBookingReviewPriceAdapter.notifyDataSetChanged();
     }
 
@@ -445,10 +487,46 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                     getActivity().finish();
                 }
             }
-        }else{
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity(), FlightErrorUtil.getMessageFromException(getActivity(), e));
         }
     }
+
+    @Override
+    public void showCheckoutLoading() {
+        fullPageLoading.setVisibility(View.VISIBLE);
+        containerFullPage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideCheckoutLoading() {
+        fullPageLoading.setVisibility(View.GONE);
+        containerFullPage.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void navigateToTopPay(FlightCheckoutViewModel flightCheckoutViewModel) {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel) != null) {
+            startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel), REQUEST_CODE_TOPPAY);
+        }
+    }
+
+    @Override
+    public void navigateToOrderList() {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+        Intent homepageFlight = FlightDashboardActivity.getCallingIntent(getActivity());
+        Intent ordersFlight = FlightOrderListActivity.getCallingIntent(getActivity());
+        taskStackBuilder.addNextIntent(homepageFlight);
+        taskStackBuilder.addNextIntent(ordersFlight);
+        taskStackBuilder.startActivities();
+    }
+
+    @Override
+    public void showPaymentFailedErrorMessage(int resId) {
+        Toast.makeText(getActivity(), resId, Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void onDestroy() {

@@ -1,66 +1,19 @@
 package com.tokopedia.abstraction.base.view.adapter;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * adapter that store the check position for each data.
- * limitation: only handle added data, if the data is removed, need to recalculate the position
- * Created by hendry on 11/24/16.
- */
-public abstract class BaseListCheckableAdapter<T extends ItemType> extends BaseListAdapter<T> {
+
+public class BaseListCheckableAdapter<T extends Visitable, F extends BaseListCheckableTypeFactory<T>> extends BaseListAdapterV2<T, F> {
 
     private HashSet<Integer> checkedPositionList = new HashSet<>();
 
     private OnCheckableAdapterListener<T> onCheckableAdapterListener;
 
-    public interface OnCheckableAdapterListener<T> {
-        void onItemChecked(T t, boolean isChecked);
-    }
-
-    public BaseListCheckableAdapter(Context context, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener) {
-        this(context, null, 0, onBaseListV2AdapterListener, null);
-    }
-
-    public BaseListCheckableAdapter(Context context, OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
-                                    OnCheckableAdapterListener<T> onCheckableAdapterListener) {
-        this(context, null, 0, onBaseListV2AdapterListener, onCheckableAdapterListener);
-    }
-
-    public BaseListCheckableAdapter(Context context, @Nullable List<T> data, int rowPerPage,
-                                    OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener,
-                                    OnCheckableAdapterListener<T> onCheckableAdapterListener) {
-        super(context, data, rowPerPage, onBaseListV2AdapterListener);
+    public BaseListCheckableAdapter(F baseListAdapterTypeFactory, OnCheckableAdapterListener<T> onCheckableAdapterListener) {
+        super(baseListAdapterTypeFactory);
         this.onCheckableAdapterListener = onCheckableAdapterListener;
-    }
-
-    @Override
-    public abstract CheckableBaseViewHolder<T> onCreateItemViewHolder(ViewGroup parent, int viewType);
-
-    protected void bindItemData(final int position, RecyclerView.ViewHolder viewHolder) {
-        final T t = getData().get(position);
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onBaseListV2AdapterListener != null) {
-                    onBaseListV2AdapterListener.onItemClicked(t);
-                }
-            }
-        });
-        if (viewHolder instanceof CheckableBaseViewHolder) {
-            boolean isChecked = isChecked(position);
-            ((CheckableBaseViewHolder<T>) viewHolder).bindObject(t, isChecked);
-        }
     }
 
     public void resetCheckedItemSet() {
@@ -74,29 +27,37 @@ public abstract class BaseListCheckableAdapter<T extends ItemType> extends BaseL
         return checkedPositionList.size();
     }
 
-    public List<T> getCheckedDataList(){
-        List<T> dataList = getData();
-        if (dataList == null || dataList.size() == 0) {
-            return new ArrayList<>();
-        }
+    public List<T> getCheckedDataList() {
         List<T> checkedDataList = new ArrayList<>();
-        for (int i = 0, sizei = dataList.size(); i<sizei; i++) {
-            if (isChecked(i)) {
-                checkedDataList.add(dataList.get(i));
+        try {
+            List<T> dataList = (List<T>) visitables;
+            if (dataList == null || dataList.size() == 0) {
+                return new ArrayList<>();
             }
+            for (int i = 0, sizei = dataList.size(); i < sizei; i++) {
+                if (isChecked(i)) {
+                    checkedDataList.add(dataList.get(i));
+                }
+            }
+        } catch (ClassCastException e) {
+            e.printStackTrace();
         }
         return checkedDataList;
     }
 
-    public void updateListByCheck(boolean isItemChecked, int position){
+    public void updateListByCheck(boolean isItemChecked, int position) {
         if (isItemChecked) {
             checkedPositionList.add(position);
         } else {
             checkedPositionList.remove(position);
         }
         notifyItemChanged(position);
-        if (onCheckableAdapterListener!= null) {
-            onCheckableAdapterListener.onItemChecked(getData().get(position), isItemChecked);
+        if (onCheckableAdapterListener != null) {
+            try {
+                onCheckableAdapterListener.onItemChecked((T) visitables.get(position), isItemChecked);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -106,6 +67,10 @@ public abstract class BaseListCheckableAdapter<T extends ItemType> extends BaseL
 
     public boolean isChecked(int position) {
         return checkedPositionList.contains(position);
+    }
+
+    public interface OnCheckableAdapterListener<T> {
+        void onItemChecked(T t, boolean isChecked);
     }
 
 }

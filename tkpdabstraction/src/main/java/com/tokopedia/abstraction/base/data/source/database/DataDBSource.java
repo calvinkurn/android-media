@@ -2,7 +2,6 @@ package com.tokopedia.abstraction.base.data.source.database;
 
 
 import java.util.HashMap;
-import java.util.List;
 
 import rx.Observable;
 

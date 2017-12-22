@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapter;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodeView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
@@ -20,8 +19,8 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<FlightBookingPhoneCodeViewModel> implements
-        FlightBookingPhoneCodeView, BaseListAdapter.OnBaseListV2AdapterListener<FlightBookingPhoneCodeViewModel> {
+public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<FlightBookingPhoneCodeViewModel, FlightBookingPhoneCodeAdapterTypeFactory> implements
+        FlightBookingPhoneCodeView {
 
     public static final String EXTRA_SELECTED_PHONE_CODE = "EXTRA_SELECTED_PHONE_CODE";
 
@@ -40,21 +39,11 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     }
 
     @Override
-    protected BaseListAdapter<FlightBookingPhoneCodeViewModel> getNewAdapter() {
-        return new FlightBookingPhoneCodeAdapter(getContext(), this);
-    }
-
-    @Override
     public void onItemClicked(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_SELECTED_PHONE_CODE, flightBookingPhoneCodeViewModel);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
-    }
-
-    @Override
-    public void loadData(int page, int currentDataSize, int rowPerPage) {
-        flightBookingPhoneCodePresenter.getPhoneCodeList();
     }
 
     @Override
@@ -64,8 +53,22 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     }
 
     @Override
+    protected void setInitialActionVar() {
+        flightBookingPhoneCodePresenter.getPhoneCodeList();
+    }
+
+    @Override
+    protected FlightBookingPhoneCodeAdapterTypeFactory getAdapterTypeFactory() {
+        return new FlightBookingPhoneCodeAdapterTypeFactory();
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+        flightBookingPhoneCodePresenter.getPhoneCodeList(text);
+    }
+
+    @Override
     public void onSearchTextChanged(String text) {
-        super.onSearchTextChanged(text);
         flightBookingPhoneCodePresenter.getPhoneCodeList(text);
     }
 

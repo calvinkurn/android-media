@@ -50,14 +50,14 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().onLoadSearchError(e);
+                    getView().showGetListError();
                 }
             }
 
             @Override
             public void onNext(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
                 if (isViewAttached()) {
-                    getView().onSearchLoaded(flightBookingPhoneCodeViewModels, flightBookingPhoneCodeViewModels.size());
+                    getView().renderList(flightBookingPhoneCodeViewModels);
                 }
             }
         };

@@ -19,6 +19,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -54,6 +57,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
     private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
     private CompositeSubscription compositeSubscription;
+
+    private ArrayList<String> airAsiaFlightIds;
 
     @Inject
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
@@ -352,6 +357,11 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
+    public void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate) {
+        getView().navigateToPassengerInfoDetail(viewModel, isAirAsiaAirline(cartData), departureDate);
+    }
+
+    @Override
     public void onRetryGetCartData() {
         processGetCartData();
     }
@@ -444,6 +454,12 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         if (getView().getContactName().length() == 0) {
             isValid = false;
             getView().showContactNameEmptyError(R.string.flight_booking_contact_name_empty_error);
+        } else if (getView().getContactName().length() > 48) {
+            isValid = false;
+            getView().showContactNameInvalidError(R.string.flight_booking_contact_name_max_length_error);
+        } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
+            isValid = false;
+            getView().showContactNameInvalidError(R.string.flight_booking_contact_name_alpha_space_error);
         } else if (getView().getContactEmail().length() == 0) {
             isValid = false;
             getView().showContactEmailEmptyError(R.string.flight_booking_contact_email_empty_error);
@@ -453,6 +469,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         } else if (getView().getContactPhoneNumber().length() == 0) {
             isValid = false;
             getView().showContactPhoneNumberEmptyError(R.string.flight_booking_contact_phone_empty_error);
+        } else if (getView().getContactPhoneNumber().length() > 0 && !isNumericOnly(getView().getContactPhoneNumber())) {
+            isValid = false;
+            getView().showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_invalid_error);
         } else if (!isAllPassengerFilled(getView().getCurrentBookingParamViewModel().getPassengerViewModels())) {
             isValid = false;
             getView().showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error);
@@ -469,6 +488,18 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             }
         }
         return isvalid;
+    }
+
+    private boolean isNumericOnly(String expression) {
+        Pattern pattern = Pattern.compile(new String("^[0-9\\s]*$"));
+        Matcher matcher = pattern.matcher(expression);
+        return matcher.matches();
+    }
+
+    private boolean isAlphabetAndSpaceOnly(String expression) {
+        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]*$"));
+        Matcher matcher = pattern.matcher(expression);
+        return matcher.matches();
     }
 
     private boolean isValidEmail(String contactEmail) {
@@ -511,5 +542,39 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     protected void onCountDownTimestimeChanged(String timestamp) {
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
+    }
+
+    // Method untuk menambahkan Flight Id AirAsia, jadi seandainya nanti ada bertambah lagi, bisa langsung di tambah disini
+    private void initAirAsiaFlightId() {
+        if(this.airAsiaFlightIds == null) {
+            this.airAsiaFlightIds = new ArrayList<>();
+            this.airAsiaFlightIds.add("AK");
+            this.airAsiaFlightIds.add("FD");
+            this.airAsiaFlightIds.add("QZ");
+            this.airAsiaFlightIds.add("XJ");
+            this.airAsiaFlightIds.add("XT");
+        }
+    }
+
+    private boolean compareFlightIdWithAirAsia(String flightId) {
+        this.initAirAsiaFlightId();
+        return this.airAsiaFlightIds.contains(flightId);
+    }
+
+    private boolean isAirAsiaAirline(FlightBookingCartData flightBookingCartData) {
+
+        if(flightBookingCartData.getDepartureTrip() != null)
+            for(FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
+                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                    return true;
+            }
+
+        if(flightBookingCartData.getReturnTrip() != null)
+            for(FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
+                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                    return true;
+            }
+
+        return false;
     }
 }

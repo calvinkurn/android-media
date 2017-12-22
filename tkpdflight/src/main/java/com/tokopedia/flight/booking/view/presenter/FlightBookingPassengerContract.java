@@ -65,6 +65,8 @@ public interface FlightBookingPassengerContract {
 
         void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
+        void showBirthdatePickerDialog(Date selectedDate, Date maxDate);
+
         void renderBirthdate(String birthdateStr);
 
         void renderPassengerName(String passengerName, String passengerLastName);
@@ -90,6 +92,8 @@ public interface FlightBookingPassengerContract {
         void showPassengerLastNameShouldAlphabetAndSpaceOnlyError(@StringRes int resId);
 
         void hideKeyboard();
+
+        boolean isAirAsiaAirline();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -98,7 +102,7 @@ public interface FlightBookingPassengerContract {
 
         void onSaveButtonClicked();
 
-        void onBirthdateClicked();
+        void onBirthdateClicked(String departureDate);
 
         void onBirthdateChange(int year, int month, int date);
 

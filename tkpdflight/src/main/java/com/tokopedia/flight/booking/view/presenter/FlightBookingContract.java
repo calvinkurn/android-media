@@ -25,6 +25,8 @@ public interface FlightBookingContract {
 
         void showContactNameEmptyError(@StringRes int resId);
 
+        void showContactNameInvalidError(@StringRes int resId);
+
         String getContactEmail();
 
         void showContactEmailEmptyError(@StringRes int resId);
@@ -34,6 +36,8 @@ public interface FlightBookingContract {
         String getContactPhoneNumber();
 
         void showContactPhoneNumberEmptyError(@StringRes int resId);
+
+        void showContactPhoneNumberInvalidError(@StringRes int resId);
 
         FlightBookingParamViewModel getCurrentBookingParamViewModel();
 
@@ -84,6 +88,8 @@ public interface FlightBookingContract {
         void showUpdateDataErrorStateLayout(Throwable t);
 
         void showPassengerInfoNotFullfilled(@StringRes int resId);
+
+        void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirline, String departureDate);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -109,5 +115,7 @@ public interface FlightBookingContract {
         void onFinishTransactionTimeReached();
 
         void onPause();
+
+        void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate);
     }
 }

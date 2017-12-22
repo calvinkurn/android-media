@@ -3,13 +3,13 @@ package com.tokopedia.abstraction.base.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+import com.tokopedia.abstraction.base.view.adapter.AdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.design.text.SearchInputView;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @author normansyahputa on 5/17/17.
  */
 
-public abstract class BaseSearchListFragment<T extends ItemType> extends BaseListFragment<T> implements SearchInputView.Listener {
+public abstract class BaseSearchListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseListV2Fragment<T, F> implements SearchInputView.Listener {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
 
@@ -49,9 +49,9 @@ public abstract class BaseSearchListFragment<T extends ItemType> extends BaseLis
     }
 
     @Override
-    public void onSearchLoaded(@NonNull List<T> list, int totalItem) {
-        super.onSearchLoaded(list, totalItem);
-        if (getAdapter().getDataSize() == 0 && !getAdapter().isInFilterMode()) {
+    public void renderAddList(@NonNull List<T> list) {
+        super.renderAddList(list);
+        if (list.size() == 0) {
             showSearchView(false);
         } else {
             showSearchView(true);
@@ -59,27 +59,18 @@ public abstract class BaseSearchListFragment<T extends ItemType> extends BaseLis
     }
 
     @Override
-    public void onLoadSearchError(Throwable t) {
-        super.onLoadSearchError(t);
-        if (getAdapter().getDataSize() > 0) {
+    public void renderList(@NonNull List<T> list) {
+        super.renderList(list);
+    }
+
+    @Override
+    public void showGetListError() {
+        super.showGetListError();
+        if (getAdapter().getItemCount() > 0) {
             showSearchView(true);
         } else {
             showSearchView(false);
         }
-    }
-
-    @Override
-    public void onSearchSubmitted(String text) {
-        updateSearchMode(text);
-    }
-
-    @Override
-    public void onSearchTextChanged(String text) {
-        updateSearchMode(text);
-    }
-
-    private void updateSearchMode(String text) {
-        getAdapter().setInFilterMode(!TextUtils.isEmpty(text));
     }
 
     private void showSearchView(boolean isVisible) {

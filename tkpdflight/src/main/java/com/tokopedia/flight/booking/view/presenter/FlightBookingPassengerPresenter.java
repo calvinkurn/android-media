@@ -37,8 +37,12 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
         if (isAdultPassenger()) {
             getView().renderHeaderSubtitle(R.string.flight_booking_passenger_adult_subtitle);
-            getView().hideBirthdayInputView();
             getView().renderSpinnerForAdult();
+            if(getView().isAirAsiaAirline()) {
+                getView().showBirthdayInputView();
+            } else {
+                getView().hideBirthdayInputView();
+            }
         } else {
             getView().renderSpinnerForChildAndInfant();
             getView().showBirthdayInputView();
@@ -86,23 +90,32 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onBirthdateClicked() {
+    public void onBirthdateClicked(String departureDateString) {
 
-        Date maxDate, minDate, selectedDate;
+        Date maxDate, minDate = null, selectedDate;
+        Date departureDate = FlightDateUtil.stringToDate(departureDateString);
 
         if (isChildPassenger()) {
-            minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -12);
-            maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
+            minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
+            maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
+            selectedDate = maxDate;
+        } else if(isAdultPassenger()) {
+            maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
             selectedDate = maxDate;
         } else {
-            minDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
-            maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, -1);
+            minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
+            maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, -1);
             selectedDate = maxDate;
         }
         if (getView().getPassengerBirthDate().length() > 0) {
             selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getView().getPassengerBirthDate());
         }
-        getView().showBirthdatePickerDialog(selectedDate, minDate, maxDate);
+
+        if(minDate != null) {
+            getView().showBirthdatePickerDialog(selectedDate, minDate, maxDate);
+        } else {
+            getView().showBirthdatePickerDialog(selectedDate, maxDate);
+        }
     }
 
     @Override
@@ -206,6 +219,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         } else if (getView().getPassengerLastName().length() > 48) {
             isValid = false;
             getView().showPassengerLastNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_last_name_max_error);
+        } else if ((getView().getPassengerFirstName().length() + getView().getPassengerLastName().length()) > 48) {
+            isValid = false;
+            getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_last_name_max_error);
         } else if (getView().getPassengerLastName().length() > 0 && !isSingleWord(getView().getPassengerLastName())) {
             isValid = false;
             getView().showPassengerLastNameShouldOneWordError(R.string.flight_booking_passenger_last_name_single_word_error);
@@ -216,6 +232,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             isValid = false;
             getView().showPassengerTitleEmptyError(R.string.flight_bookingpassenger_title_error);
         } else if ((isChildPassenger() || isInfantPassenger()) && getView().getPassengerBirthDate().length() == 0) {
+            isValid = false;
+            getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
+        } else if ((isAdultPassenger()) && getView().getPassengerBirthDate().length() == 0 && getView().isAirAsiaAirline()) {
             isValid = false;
             getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
         } else if (isChildPassenger() &&

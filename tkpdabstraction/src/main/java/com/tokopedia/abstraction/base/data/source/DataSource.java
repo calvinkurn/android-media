@@ -2,13 +2,9 @@ package com.tokopedia.abstraction.base.data.source;
 
 import com.tokopedia.abstraction.base.data.source.cache.DataCacheSource;
 import com.tokopedia.abstraction.base.data.source.cloud.DataCloudSource;
-import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.base.data.source.database.DataDBSource;
-import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;

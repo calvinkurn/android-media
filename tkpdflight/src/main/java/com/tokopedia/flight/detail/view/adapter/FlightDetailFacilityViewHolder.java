@@ -1,5 +1,6 @@
 package com.tokopedia.flight.detail.view.adapter;
 
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
@@ -23,7 +24,9 @@ import java.util.List;
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailFacilityViewHolder extends BaseViewHolder<FlightDetailRouteViewModel> {
+public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDetailRouteViewModel> {
+    @LayoutRes
+    public static int LAYOUT = R.layout.item_flight_detail_facility;
 
     public static final int NUMBER_OF_COLUMN_AMENITY = 3;
     private final ListInfoAdapter adapterInfo;
@@ -54,7 +57,7 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<FlightDetailR
     }
 
     @Override
-    public void bindObject(FlightDetailRouteViewModel route) {
+    public void bind(FlightDetailRouteViewModel route) {
         adapterInfo.addData(route.getInfos());
         setDefaultAmenities(route);
         airlineName.setText(route.getAirlineName());

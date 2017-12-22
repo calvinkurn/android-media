@@ -102,7 +102,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightSimpleAdapter priceListAdapter;
     private ProgressDialog progressDialog;
 
-
     public FlightBookingFragment() {
         // Required empty public constructor
     }
@@ -218,17 +217,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
-        startActivityForResult(
-                FlightBookingPassengerActivity.getCallingIntent(
-                        getActivity(),
-                        getDepartureTripId(),
-                        getReturnTripId(),
-                        viewModel,
-                        flightBookingCartData.getLuggageViewModels(),
-                        flightBookingCartData.getMealViewModels()
-                ),
-                REQUEST_CODE_PASSENGER
-        );
+        presenter.onChangePassengerButtonClicked(viewModel, flightBookingCartData, paramViewModel.getSearchParam().getDepartureDate());
     }
 
     @Override
@@ -279,6 +268,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void showContactNameInvalidError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public String getContactEmail() {
         return etContactEmail.getText().toString().trim();
     }
@@ -304,8 +298,30 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void showContactPhoneNumberInvalidError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public void showPassengerInfoNotFullfilled(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirlines, String departureDate) {
+        startActivityForResult(
+                FlightBookingPassengerActivity.getCallingIntent(
+                        getActivity(),
+                        getDepartureTripId(),
+                        getReturnTripId(),
+                        viewModel,
+                        flightBookingCartData.getLuggageViewModels(),
+                        flightBookingCartData.getMealViewModels(),
+                        isAirAsiaAirlines,
+                        departureDate
+                ),
+                REQUEST_CODE_PASSENGER
+        );
     }
 
     @Override
@@ -319,21 +335,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         returnInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
         returnInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
-        boolean isTransit = false;
+        String tripInfo = "";
         if (returnTrip.getRouteList().size() > 1) {
-            isTransit = true;
             airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
             airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         returnInfoView.setSubContent(airLineSection);
-
-        String tripInfo = "";
-        if (isTransit) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
-        } else {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_directly_trip_card));
-        }
         tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         returnInfoView.setSubContentInfo(tripInfo);
     }
@@ -344,21 +354,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         departureInfoView.setContent(returnTrip.getDepartureAirportCity() + "-" + returnTrip.getArrivalAirportCity());
         departureInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
         String airLineSection = "";
-        boolean isTransit = false;
+        String tripInfo = "";
         if (returnTrip.getRouteList().size() > 1) {
-            isTransit = true;
             airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
         } else {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
             airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         departureInfoView.setSubContent(airLineSection);
-
-        String tripInfo = "";
-        if (isTransit) {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
-        } else {
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_directly_trip_card));
-        }
         tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
         departureInfoView.setSubContentInfo(tripInfo);
     }

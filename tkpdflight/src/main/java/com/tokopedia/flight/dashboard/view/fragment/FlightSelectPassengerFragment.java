@@ -5,9 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
@@ -31,23 +28,17 @@ import javax.inject.Inject;
 public class FlightSelectPassengerFragment extends BaseDaggerFragment implements FlightSelectPassengerView {
 
     private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    @Inject
+    FlightSelectPassengerPresenterImpl presenter;
     private SelectPassengerView adultPassengerView;
     private SelectPassengerView childrenPassengerView;
     private SelectPassengerView infantPassengerView;
     private Button saveButton;
     private FlightPassengerViewModel passData;
-
-    @Inject
-    FlightSelectPassengerPresenterImpl presenter;
-
     private OnFragmentInteractionListener interactionListener;
 
     public FlightSelectPassengerFragment() {
         // Required empty public constructor
-    }
-
-    public interface OnFragmentInteractionListener {
-        void actionSavePassenger(FlightPassengerViewModel passData);
     }
 
     public static FlightSelectPassengerFragment newInstance(FlightPassengerViewModel passData) {
@@ -161,5 +152,9 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
         if (interactionListener != null) {
             interactionListener.actionSavePassenger(passData);
         }
+    }
+
+    public interface OnFragmentInteractionListener {
+        void actionSavePassenger(FlightPassengerViewModel passData);
     }
 }

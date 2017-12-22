@@ -1,11 +1,12 @@
 package com.tokopedia.flight.booking.view.adapter.viewholder;
 
+import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
@@ -13,7 +14,9 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
  * Created by zulfikarrahman on 11/7/17.
  */
 
-public class FlightBookingAmenityViewHolder extends BaseViewHolder<FlightBookingAmenityViewModel> {
+public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBookingAmenityViewModel> {
+    @LayoutRes
+    public static int LAYOUT = R.layout.item_flight_booking_amenity;
 
     public interface ListenerCheckedLuggage {
         boolean isItemChecked(FlightBookingAmenityViewModel selectedItem);
@@ -24,14 +27,15 @@ public class FlightBookingAmenityViewHolder extends BaseViewHolder<FlightBooking
     private TextView title;
     private ImageView imageChecked;
 
-    public FlightBookingAmenityViewHolder(View itemView) {
+    public FlightBookingAmenityViewHolder(View itemView, ListenerCheckedLuggage listenerCheckedLuggage) {
         super(itemView);
         title = (TextView) itemView.findViewById(R.id.tv_title);
         imageChecked = (ImageView) itemView.findViewById(R.id.image_checked);
+        this.listenerCheckedLuggage = listenerCheckedLuggage;
     }
 
     @Override
-    public void bindObject(FlightBookingAmenityViewModel flightBookingLuggageViewModel) {
+    public void bind(FlightBookingAmenityViewModel flightBookingLuggageViewModel) {
         boolean isItemChecked = false;
         if (listenerCheckedLuggage != null) {
             isItemChecked = listenerCheckedLuggage.isItemChecked(flightBookingLuggageViewModel);
@@ -45,9 +49,5 @@ public class FlightBookingAmenityViewHolder extends BaseViewHolder<FlightBooking
             imageChecked.setVisibility(View.INVISIBLE);
             title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black_seventy_percent_));
         }
-    }
-
-    public void setListenerCheckedLuggage(ListenerCheckedLuggage listenerCheckedLuggage) {
-        this.listenerCheckedLuggage = listenerCheckedLuggage;
     }
 }

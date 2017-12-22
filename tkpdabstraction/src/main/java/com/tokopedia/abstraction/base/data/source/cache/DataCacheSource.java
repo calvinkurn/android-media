@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.Subscriber;
 
@@ -21,13 +19,13 @@ public abstract class DataCacheSource {
 
     private SharedPreferences sharedPrefs;
 
-    protected abstract String getPrefKeyName();
-
-    protected abstract long getExpiredTimeInSec();
-
     public DataCacheSource(@ApplicationContext Context context) {
         sharedPrefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
+
+    protected abstract String getPrefKeyName();
+
+    protected abstract long getExpiredTimeInSec();
 
     public Observable<Boolean> isExpired() {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {

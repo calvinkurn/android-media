@@ -3,9 +3,7 @@ package com.tokopedia.flight.search.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.flight.search.view.adapter.FlightFilterAirlineAdapter;
+import com.tokopedia.flight.search.view.adapter.FlightFilterAirlineAdapterTypeFactory;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
@@ -18,27 +16,16 @@ import rx.Observable;
 import rx.functions.Func1;
 
 
-public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<AirlineStat>
-        implements BaseListAdapter.OnBaseListV2AdapterListener<AirlineStat>,
-        BaseListCheckableAdapter.OnCheckableAdapterListener<AirlineStat>{
+public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<AirlineStat, FlightFilterAirlineAdapterTypeFactory> {
     public static final String TAG = FlightFilterAirlineFragment.class.getSimpleName();
 
-    private FlightFilterAirlineAdapter adapter;
-
     public static FlightFilterAirlineFragment newInstance() {
-
         Bundle args = new Bundle();
-
         FlightFilterAirlineFragment fragment = new FlightFilterAirlineFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
-    protected BaseListAdapter<AirlineStat> getNewAdapter() {
-        adapter = new FlightFilterAirlineAdapter(getContext(), this, this);
-        return adapter;
-    }
 
     @Override
     public void onItemClicked(AirlineStat airlineStat) {
@@ -46,29 +33,20 @@ public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<Airlin
     }
 
     @Override
-    public void loadData(int page, int currentDataSize, int rowPerPage) {
-        List<AirlineStat> airlineStatList = listener.getFlightSearchStatisticModel().getAirlineStatList();
-        onSearchLoaded(airlineStatList, airlineStatList.size());
-    }
-
-    @Override
-    public void onSearchLoaded(@NonNull List<AirlineStat> list, int totalItem) {
-        super.onSearchLoaded(list, totalItem);
+    public void renderList(@NonNull List<AirlineStat> list) {
+        super.renderList(list);
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
         HashSet<Integer> checkedPositionList = new HashSet<>();
-        if (flightFilterModel!= null) {
+        if (flightFilterModel != null) {
             List<String> airlineList = flightFilterModel.getAirlineList();
-            if (airlineList!= null) {
+            if (airlineList != null) {
                 for (int i = 0, sizei = airlineList.size(); i < sizei; i++) {
                     String selectedAirline = airlineList.get(i);
-                    List<AirlineStat> airlineStatList = adapter.getData();
-                    if (airlineStatList != null) {
-                        for (int j = 0, sizej = airlineStatList.size(); j < sizej; j++) {
-                            AirlineStat airlineStat = airlineStatList.get(j);
-                            if (airlineStat.getAirlineDB().getId().equals(selectedAirline)) {
-                                checkedPositionList.add(j);
-                                break;
-                            }
+                    for (int j = 0, sizej = list.size(); j < sizej; j++) {
+                        AirlineStat airlineStat = list.get(j);
+                        if (airlineStat.getAirlineDB().getId().equals(selectedAirline)) {
+                            checkedPositionList.add(j);
+                            break;
                         }
                     }
                 }
@@ -99,5 +77,26 @@ public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<Airlin
         adapter.resetCheckedItemSet();
         adapter.notifyDataSetChanged();
         listener.onFilterModelChanged(flightFilterModel);
+    }
+
+    @Override
+    protected void setInitialActionVar() {
+        List<AirlineStat> airlineStatList = listener.getFlightSearchStatisticModel().getAirlineStatList();
+        renderList(airlineStatList);
+    }
+
+    @Override
+    protected FlightFilterAirlineAdapterTypeFactory getAdapterTypeFactory() {
+        return new FlightFilterAirlineAdapterTypeFactory(this);
+    }
+
+    @Override
+    public boolean isChecked(int position) {
+        return adapter.isChecked(position);
+    }
+
+    @Override
+    public void updateListByCheck(boolean isChecked, int position) {
+        adapter.updateListByCheck(isChecked, position);
     }
 }

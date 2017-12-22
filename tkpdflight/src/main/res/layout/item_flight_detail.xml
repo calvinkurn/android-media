@@ -132,13 +132,14 @@
         <TextView
             android:layout_marginTop="@dimen/margin_sm"
             android:id="@+id/transit_info"
-            android:padding="@dimen/padding_med"
+            android:padding="@dimen/padding_small"
             style="@style/TextView.Body1.BlackSecondary"
             android:layout_width="match_parent"
             android:layout_below="@+id/container_flight_info"
             android:background="@drawable/bg_stroke_dash_green_flight"
             android:visibility="gone"
             tools:text="Transit Selama 5 Jam 40 menit di Muscat (MCT)"
+            android:textSize="@dimen/font_caption"
             tools:visibility="visible" />
     </RelativeLayout>
 </LinearLayout>

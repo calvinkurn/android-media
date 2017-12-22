@@ -1,7 +1,5 @@
 package com.tokopedia.abstraction.common.network;
 
-import javax.inject.Inject;
-
 /**
  * Created by ricoharisin on 2/28/17.
  */

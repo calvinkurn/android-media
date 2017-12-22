@@ -1,15 +1,13 @@
 package com.tokopedia.flight.detail.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
-import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
+import com.tokopedia.abstraction.base.view.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 import java.util.List;
 
@@ -17,32 +15,31 @@ import java.util.List;
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailAdapter extends BaseListAdapter<FlightDetailRouteViewModel> {
-    public FlightDetailAdapter(Context context) {
-        super(context, null);
-    }
+public class FlightDetailAdapter extends BaseAdapter {
+    private FlightDetailRouteTypeFactory flightDetailRouteTypeFactory;
 
-    public FlightDetailAdapter(Context context, OnBaseListV2AdapterListener<FlightDetailRouteViewModel> onBaseListV2AdapterListener) {
-        super(context, onBaseListV2AdapterListener);
-    }
-
-    public FlightDetailAdapter(Context context, @Nullable List<FlightDetailRouteViewModel> data, int rowPerPage, OnBaseListV2AdapterListener<FlightDetailRouteViewModel> onBaseListV2AdapterListener) {
-        super(context, data, rowPerPage, onBaseListV2AdapterListener);
+    public FlightDetailAdapter(FlightDetailRouteTypeFactory adapterTypeFactory, List<Visitable> visitables) {
+        super(adapterTypeFactory, visitables);
+        flightDetailRouteTypeFactory = adapterTypeFactory;
     }
 
     @Override
-    public BaseViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-        View view = getLayoutView(parent, R.layout.item_flight_detail);
-        return new FlightDetailViewHolder(view);
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+        return flightDetailRouteTypeFactory.createViewHolder(view, viewType);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected void bindItemData(int position, RecyclerView.ViewHolder viewHolder) {
-        super.bindItemData(position, viewHolder);
-        if (viewHolder instanceof FlightDetailViewHolder) {
-            ((FlightDetailViewHolder) viewHolder).bindLastPosition(getDataSize() == position);
-            ((FlightDetailViewHolder) viewHolder).bindTransitInfo(getDataSize());
-        }
+    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        holder.bind(visitables.get(position));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public int getItemViewType(int position) {
+        return visitables.get(position).type(flightDetailRouteTypeFactory);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
+import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -14,4 +15,12 @@ public abstract class AbstractViewHolder<T> extends RecyclerView.ViewHolder {
     }
 
     public abstract void bind(T element);
+
+    protected String getString(@StringRes int stringRes) {
+        return itemView.getContext().getString(stringRes);
+    }
+
+    protected String getString(@StringRes int stringRes, String value) {
+        return itemView.getContext().getString(stringRes, value);
+    }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.base.view.adapter.binder;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,18 @@ public class BaseRetryDataBinder extends RetryDataBinder {
         this.errorDrawableRes = errorDrawableRes;
     }
 
+    @Override
+    public RetryDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_base_network_error, null);
+        ((ImageView) view.findViewById(R.id.image_error)).setImageResource(errorDrawableRes);
+        if (parent.getMeasuredHeight() < parent.getMeasuredWidth()) {
+            view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredWidth()));
+        } else {
+            view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredHeight()));
+        }
+        return new ViewHolder(view);
+    }
+
     public static class ViewHolder extends RetryDataBinder.ViewHolder {
         TextView retryDescription;
 
@@ -38,17 +49,5 @@ public class BaseRetryDataBinder extends RetryDataBinder {
         public TextView getRetryDescription() {
             return retryDescription;
         }
-    }
-
-    @Override
-    public RetryDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_base_network_error, null);
-        ((ImageView) view.findViewById(R.id.image_error)).setImageResource(errorDrawableRes);
-        if (parent.getMeasuredHeight() < parent.getMeasuredWidth()) {
-            view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredWidth()));
-        } else {
-            view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredHeight()));
-        }
-        return new ViewHolder(view);
     }
 }

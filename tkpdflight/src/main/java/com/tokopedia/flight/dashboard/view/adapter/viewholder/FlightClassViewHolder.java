@@ -4,7 +4,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 
@@ -12,32 +12,29 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewMod
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightClassViewHolder extends BaseViewHolder<FlightClassViewModel> {
+public class FlightClassViewHolder extends AbstractViewHolder<FlightClassViewModel> {
     public static final int LAYOUT = R.layout.item_flight_class;
     private AppCompatTextView titleTextView;
     private AppCompatImageView arrowImageView;
     private ListenerCheckedClass listenerCheckedClass;
 
-    public interface ListenerCheckedClass {
-        boolean isItemChecked(FlightClassViewModel selectedItem);
-    }
-
-    public FlightClassViewHolder(View itemView) {
+    public FlightClassViewHolder(View itemView, ListenerCheckedClass listenerCheckedClass) {
         super(itemView);
         titleTextView = (AppCompatTextView) itemView.findViewById(R.id.tv_title);
         arrowImageView = (AppCompatImageView) itemView.findViewById(R.id.iv_checked);
+        this.listenerCheckedClass = listenerCheckedClass;
     }
 
     @Override
-    public void bindObject(FlightClassViewModel flightClassViewModel) {
-        titleTextView.setText(String.valueOf(flightClassViewModel.getTitle()));
-        if (listenerCheckedClass != null && listenerCheckedClass.isItemChecked(flightClassViewModel))
+    public void bind(FlightClassViewModel element) {
+        titleTextView.setText(String.valueOf(element.getTitle()));
+        if (listenerCheckedClass != null && listenerCheckedClass.isItemChecked(element))
             arrowImageView.setVisibility(View.VISIBLE);
         else
             arrowImageView.setVisibility(View.GONE);
     }
 
-    public void setListenerCheckedClass(ListenerCheckedClass listenerCheckedClass) {
-        this.listenerCheckedClass = listenerCheckedClass;
+    public interface ListenerCheckedClass {
+        boolean isItemChecked(FlightClassViewModel selectedItem);
     }
 }

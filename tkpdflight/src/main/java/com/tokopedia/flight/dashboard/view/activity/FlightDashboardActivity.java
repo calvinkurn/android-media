@@ -1,19 +1,16 @@
 package com.tokopedia.flight.dashboard.view.activity;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatDelegate;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.di.component.HasComponent;
 import com.tokopedia.abstraction.utils.Constants;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
@@ -27,6 +24,10 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardVie
 public class FlightDashboardActivity extends BaseFlightActivity implements HasComponent<FlightDashboardComponent> {
 
     private static final String EXTRA_DASHBOARD = "EXTRA_DASHBOARD";
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, FlightDashboardActivity.class);
+    }
 
     public static Intent getCallingIntent(Context context, FlightDashboardViewModel viewModel) {
         Intent intent = new Intent(context, FlightDashboardActivity.class);
@@ -52,6 +53,7 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setContentInsetStartWithNavigation(0);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     @Override

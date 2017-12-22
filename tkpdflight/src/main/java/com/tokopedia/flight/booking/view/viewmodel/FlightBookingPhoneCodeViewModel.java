@@ -3,13 +3,15 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapterTypeFactory;
 
 /**
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingPhoneCodeViewModel implements ItemType, Parcelable {
+public class FlightBookingPhoneCodeViewModel implements ItemType, Parcelable, Visitable<FlightBookingPhoneCodeAdapterTypeFactory> {
 
     private String countryId;
     private String countryName;
@@ -78,4 +80,8 @@ public class FlightBookingPhoneCodeViewModel implements ItemType, Parcelable {
             return new FlightBookingPhoneCodeViewModel[size];
         }
     };
+
+    public int type(FlightBookingPhoneCodeAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
 }

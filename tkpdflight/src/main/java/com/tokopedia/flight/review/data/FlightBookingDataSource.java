@@ -1,5 +1,7 @@
 package com.tokopedia.flight.review.data;
 
+import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
+import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 
@@ -23,4 +25,10 @@ public class FlightBookingDataSource {
     public Observable<DataResponseVerify> verifyBooking(VerifyRequest verifyRequest) {
         return flightBookingDataSourceCloud.verifyBooking(verifyRequest);
     }
+
+    public Observable<FlightCheckoutEntity> checkout(FlightCheckoutRequest request) {
+        return flightBookingDataSourceCloud.checkout(request);
+    }
+
+
 }

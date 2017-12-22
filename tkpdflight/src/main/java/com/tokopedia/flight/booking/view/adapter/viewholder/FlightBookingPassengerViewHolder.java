@@ -116,4 +116,5 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
             headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_fill_data_label));
         }
     }
+
 }

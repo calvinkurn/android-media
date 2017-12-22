@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.utils.GlobalConfig;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
+import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
 import java.io.IOException;
 
@@ -126,5 +127,25 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
     @Override
     public void goToFlightActivity(Context context) {
         TkpdFlight.goToFlightActivity(context);
+    }
+
+    @Override
+    public Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel) {
+        return null;
+    }
+
+    @Override
+    public int getTopPayPaymentSuccessCode() {
+        return 0;
+    }
+
+    @Override
+    public int getTopPayPaymentFailedCode() {
+        return 0;
+    }
+
+    @Override
+    public int getTopPayPaymentCancelCode() {
+        return 0;
     }
 }

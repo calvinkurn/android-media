@@ -23,4 +23,5 @@ public class LoadingViewholder extends AbstractViewHolder<LoadingModel> {
     public void bind(LoadingModel element) {
 
     }
+
 }

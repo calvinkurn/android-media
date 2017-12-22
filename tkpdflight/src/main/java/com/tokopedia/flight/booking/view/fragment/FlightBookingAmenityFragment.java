@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingAmenityAdapter;
+import com.tokopedia.flight.booking.view.adapter.FlightAmenityAdapterTypeFactory;
+import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingAmenityViewHolder;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
@@ -23,27 +23,28 @@ import java.util.List;
  * Created by zulfikarrahman on 11/7/17.
  */
 
-public class FlightBookingAmenityFragment extends BaseListFragment<FlightBookingAmenityViewModel> implements BaseListAdapter.OnBaseListV2AdapterListener<FlightBookingAmenityViewModel> {
+public class FlightBookingAmenityFragment extends BaseListV2Fragment<FlightBookingAmenityViewModel, FlightAmenityAdapterTypeFactory>
+        implements FlightBookingAmenityViewHolder.ListenerCheckedLuggage {
 
-    public static final String EXTRA_SELECTED_LUGGAGE = "EXTRA_SELECTED_LUGGAGE";
-    public static final String EXTRA_LIST_LUGGAGE = "EXTRA_LIST_LUGGAGE";
-    private ArrayList<FlightBookingAmenityViewModel> flightBookingLuggageViewHolders;
-    private FlightBookingAmenityMetaViewModel selectedLuggage;
+    public static final String EXTRA_SELECTED_AMENITIES = "EXTRA_SELECTED_AMENITIES";
+    public static final String EXTRA_LIST_AMENITIES = "EXTRA_LIST_AMENITIES";
+    private ArrayList<FlightBookingAmenityViewModel> flightBookingAmenityViewModels;
+    private FlightBookingAmenityMetaViewModel selectedAmenity;
 
-    public static FlightBookingAmenityFragment createInstance(ArrayList<FlightBookingAmenityMetaViewModel> flightBookingLuggageViewModels,
-                                                              FlightBookingAmenityMetaViewModel selectedLuggage) {
+    public static FlightBookingAmenityFragment createInstance(ArrayList<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels,
+                                                              FlightBookingAmenityMetaViewModel selectedAmenity) {
         FlightBookingAmenityFragment flightBookingAmenityFragment = new FlightBookingAmenityFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(EXTRA_LIST_LUGGAGE, flightBookingLuggageViewModels);
-        bundle.putParcelable(EXTRA_SELECTED_LUGGAGE, selectedLuggage);
+        bundle.putParcelableArrayList(EXTRA_LIST_AMENITIES, flightBookingAmenityMetaViewModels);
+        bundle.putParcelable(EXTRA_SELECTED_AMENITIES, selectedAmenity);
         flightBookingAmenityFragment.setArguments(bundle);
         return flightBookingAmenityFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        flightBookingLuggageViewHolders = getArguments().getParcelableArrayList(EXTRA_LIST_LUGGAGE);
-        selectedLuggage = getArguments().getParcelable(EXTRA_SELECTED_LUGGAGE);
+        flightBookingAmenityViewModels = getArguments().getParcelableArrayList(EXTRA_LIST_AMENITIES);
+        selectedAmenity = getArguments().getParcelable(EXTRA_SELECTED_AMENITIES);
         super.onCreate(savedInstanceState);
     }
 
@@ -58,23 +59,10 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     }
 
     @Override
-    protected BaseListAdapter<FlightBookingAmenityViewModel> getNewAdapter() {
-        FlightBookingAmenityAdapter flightBookingAmenityAdapter = new FlightBookingAmenityAdapter(getActivity(), this);
-        flightBookingAmenityAdapter.setSelectedLuggage(selectedLuggage.getAmenities());
-        return flightBookingAmenityAdapter;
-    }
-
-    @Override
-    public void loadData(int page, int currentDataSize, int rowPerPage) {
-        onSearchLoaded(flightBookingLuggageViewHolders, flightBookingLuggageViewHolders.size());
-    }
-
-    @Override
     public void onItemClicked(FlightBookingAmenityViewModel flightBookingLuggageViewModel) {
         List<FlightBookingAmenityViewModel> viewModels = new ArrayList<>();
         viewModels.add(flightBookingLuggageViewModel);
-        selectedLuggage.setAmenities(viewModels);
-        ((FlightBookingAmenityAdapter) getAdapter()).setSelectedLuggage(selectedLuggage.getAmenities());
+        selectedAmenity.setAmenities(viewModels);
         getAdapter().notifyDataSetChanged();
     }
 
@@ -87,11 +75,26 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra(EXTRA_SELECTED_LUGGAGE, selectedLuggage);
+                intent.putExtra(EXTRA_SELECTED_AMENITIES, selectedAmenity);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
             }
         });
         return view;
+    }
+
+    @Override
+    protected void setInitialActionVar() {
+        getAdapter().addData(flightBookingAmenityViewModels);
+    }
+
+    @Override
+    protected FlightAmenityAdapterTypeFactory getAdapterTypeFactory() {
+        return new FlightAmenityAdapterTypeFactory(this);
+    }
+
+    @Override
+    public boolean isItemChecked(FlightBookingAmenityViewModel selectedItem) {
+        return selectedAmenity.getAmenities().contains(selectedItem);
     }
 }

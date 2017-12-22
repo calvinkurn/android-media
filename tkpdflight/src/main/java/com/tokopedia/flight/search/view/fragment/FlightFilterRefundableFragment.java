@@ -3,9 +3,7 @@ package com.tokopedia.flight.search.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.flight.search.view.adapter.FlightFilterRefundableAdapter;
+import com.tokopedia.flight.search.view.adapter.FlightFilterRefundableAdapterTypeFactory;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -19,12 +17,8 @@ import rx.Observable;
 import rx.functions.Func1;
 
 
-public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<RefundableStat>
-        implements BaseListAdapter.OnBaseListV2AdapterListener<RefundableStat>,
-        BaseListCheckableAdapter.OnCheckableAdapterListener<RefundableStat>{
+public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<RefundableStat, FlightFilterRefundableAdapterTypeFactory> {
     public static final String TAG = FlightFilterRefundableFragment.class.getSimpleName();
-
-    FlightFilterRefundableAdapter flightFilterRefundableAdapter;
 
     public static FlightFilterRefundableFragment newInstance() {
 
@@ -35,55 +29,39 @@ public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<Ref
         return fragment;
     }
 
-
-    @Override
-    protected BaseListAdapter<RefundableStat> getNewAdapter() {
-        flightFilterRefundableAdapter = new FlightFilterRefundableAdapter(getContext(), this, this);
-        return flightFilterRefundableAdapter;
-    }
-
     @Override
     public void onItemClicked(RefundableStat refundableStat) {
         // no op
     }
 
     @Override
-    public void loadData(int page, int currentDataSize, int rowPerPage) {
-        List<RefundableStat> refundableTypeStatList = listener.getFlightSearchStatisticModel().getRefundableTypeStatList();
-        onSearchLoaded(refundableTypeStatList, refundableTypeStatList.size());
-    }
-
-    @Override
-    public void onSearchLoaded(@NonNull List<RefundableStat> list, int totalItem) {
-        super.onSearchLoaded(list, totalItem);
+    public void renderList(@NonNull List<RefundableStat> list) {
+        super.renderList(list);
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
         HashSet<Integer> checkedPositionList = new HashSet<>();
-        if (flightFilterModel!= null) {
+        if (flightFilterModel != null) {
             List<RefundableEnum> refundableEnumList = flightFilterModel.getRefundableTypeList();
-            if (refundableEnumList!= null) {
+            if (refundableEnumList != null) {
                 for (int i = 0, sizei = refundableEnumList.size(); i < sizei; i++) {
                     RefundableEnum refundableEnum = refundableEnumList.get(i);
-                    List<RefundableStat> refundableEnumAdapterList = flightFilterRefundableAdapter.getData();
-                    if (refundableEnumAdapterList != null) {
-                        for (int j = 0, sizej = refundableEnumAdapterList.size(); j < sizej; j++) {
-                            RefundableStat refundableAdapterEnum = refundableEnumAdapterList.get(j);
-                            if (refundableAdapterEnum.getRefundableEnum().getId() == refundableEnum.getId()) {
-                                checkedPositionList.add(j);
-                                break;
-                            }
+                    for (int j = 0, sizej = list.size(); j < sizej; j++) {
+                        RefundableStat refundableAdapterEnum = list.get(j);
+                        if (refundableAdapterEnum.getRefundableEnum().getId() == refundableEnum.getId()) {
+                            checkedPositionList.add(j);
+                            break;
                         }
                     }
                 }
             }
         }
-        flightFilterRefundableAdapter.setCheckedPositionList(checkedPositionList);
-        flightFilterRefundableAdapter.notifyDataSetChanged();
+        adapter.setCheckedPositionList(checkedPositionList);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemChecked(RefundableStat refundableStat, boolean isChecked) {
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
-        List<RefundableStat> refundableStatList = flightFilterRefundableAdapter.getCheckedDataList();
+        List<RefundableStat> refundableStatList = adapter.getCheckedDataList();
 
         List<RefundableEnum> refundableEnumList = Observable.from(refundableStatList)
                 .map(new Func1<RefundableStat, RefundableEnum>() {
@@ -100,9 +78,29 @@ public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<Ref
     public void resetFilter() {
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
         flightFilterModel.setRefundableTypeList(new ArrayList<RefundableEnum>());
-        flightFilterRefundableAdapter.resetCheckedItemSet();
-        flightFilterRefundableAdapter.notifyDataSetChanged();
+        adapter.resetCheckedItemSet();
+        adapter.notifyDataSetChanged();
         listener.onFilterModelChanged(flightFilterModel);
     }
 
+    @Override
+    protected void setInitialActionVar() {
+        List<RefundableStat> airlineStatList = listener.getFlightSearchStatisticModel().getRefundableTypeStatList();
+        renderList(airlineStatList);
+    }
+
+    @Override
+    protected FlightFilterRefundableAdapterTypeFactory getAdapterTypeFactory() {
+        return new FlightFilterRefundableAdapterTypeFactory(this);
+    }
+
+    @Override
+    public boolean isChecked(int position) {
+        return adapter.isChecked(position);
+    }
+
+    @Override
+    public void updateListByCheck(boolean isChecked, int position) {
+        adapter.updateListByCheck(isChecked, position);
+    }
 }
