@@ -2,7 +2,6 @@ package com.tokopedia.flight.search.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -17,18 +16,18 @@ import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
+import com.tokopedia.flight.search.view.fragment.FlightSearchV2Fragment;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 
 public class FlightSearchActivity extends BaseFlightActivity
         implements FlightSearchFragment.OnFlightSearchFragmentListener {
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    private static final int REQUEST_CODE_BOOKING = 10;
+    private static final int REQUEST_CODE_RETURN = 11;
     protected String dateString;
     protected String passengerString;
     protected String classString;
-
-    private static final int REQUEST_CODE_BOOKING = 10;
-    private static final int REQUEST_CODE_RETURN = 11;
     protected FlightSearchPassDataViewModel passDataViewModel;
 
     public static void start(Context context, FlightSearchPassDataViewModel passDataViewModel) {
@@ -83,7 +82,7 @@ public class FlightSearchActivity extends BaseFlightActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightSearchFragment.newInstance(passDataViewModel);
+        return FlightSearchV2Fragment.newInstance(passDataViewModel);
     }
 
     protected String buildPassengerTextFormatted(FlightPassengerViewModel passData) {

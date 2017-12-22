@@ -13,6 +13,6 @@ public interface BaseListViewListener2<T> extends CustomerView {
 
     void renderAddList(@NonNull List<T> list);
 
-    void showGetListError();
+    void showGetListError(String message);
 
 }

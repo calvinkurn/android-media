@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
 
             @Override
             public void onNext(Boolean isShouldUpdate) {
-                if(isShouldUpdate){
+                if (isShouldUpdate) {
                     getView().updateAirportListOnBackground();
                 }
             }
@@ -66,9 +67,9 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideGetAirportListLoading();
-                    getView().showGetListError();
+                    getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
                 }
             }
 

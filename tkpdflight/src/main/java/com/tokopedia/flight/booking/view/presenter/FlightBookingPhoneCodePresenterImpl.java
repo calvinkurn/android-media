@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().showGetListError();
+                    getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
                 }
             }
 

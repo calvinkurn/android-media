@@ -56,6 +56,19 @@ public class BaseListAdapterV2<T extends Visitable, F extends AdapterTypeFactory
         notifyDataSetChanged();
     }
 
+    public List<T> getData() {
+        List<T> list = new ArrayList<>();
+        for (Visitable visitable : this.visitables) {
+            try {
+                T item = (T) visitable;
+                list.add(item);
+            } catch (ClassCastException exception) {
+                exception.printStackTrace();
+            }
+        }
+        return list;
+    }
+
     public interface OnAdapterInteractionListener<T> {
         void onItemClicked(T t);
     }
