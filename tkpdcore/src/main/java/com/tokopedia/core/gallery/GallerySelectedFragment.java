@@ -20,6 +20,7 @@ import java.io.File;
 public class GallerySelectedFragment extends Fragment implements AlbumMediaCollection.AlbumMediaCallbacks, AlbumMediaAdapter.OnMediaClickListener {
 
     private static final String ARG_PARAM_ALBUM = "ARG_PARAM_ALBUM";
+    public static final String EXTRA_RESULT_SELECTION = "EXTRA_RESULT_SELECTION";
 
     private AlbumItem albumItem;
     private RecyclerView recyclerview;
@@ -88,7 +89,7 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
         // this finish here
         getHeightAndWidth(item);
         Intent intent = new Intent();
-        intent.putExtra("EXTRA_RESULT_SELECTION", item);
+        intent.putExtra(EXTRA_RESULT_SELECTION, item);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

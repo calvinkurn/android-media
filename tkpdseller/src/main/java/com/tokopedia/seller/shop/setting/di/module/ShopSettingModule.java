@@ -2,13 +2,14 @@ package com.tokopedia.seller.shop.setting.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictLogisticDataRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.repository.ShopSettingSaveInfoRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
 import com.tokopedia.seller.shop.setting.data.source.LogisticDataSource;
 import com.tokopedia.seller.shop.setting.data.source.ShopSettingInfoDataSource;
-import com.tokopedia.seller.shop.setting.data.source.cloud.apiservice.GenerateHostApi;
-import com.tokopedia.seller.shop.setting.data.source.cloud.apiservice.GenerateHostService;
+import com.tokopedia.seller.shop.setting.di.scope.ShopSettingInfoScope;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
 import com.tokopedia.seller.shop.setting.domain.ShopSettingSaveInfoRepository;
@@ -34,17 +35,5 @@ public class ShopSettingModule {
     @ShopSettingScope
     public OpenShopApi provideOpenShopApi(@WsV4Qualifier Retrofit retrofit) {
         return retrofit.create(OpenShopApi.class);
-    }
-
-    @Provides
-    @ShopSettingScope
-    public ShopSettingSaveInfoRepository provideSaveInfoRepository(ShopSettingInfoDataSource shopSettingInfoDataSource) {
-        return new ShopSettingSaveInfoRepositoryImpl(shopSettingInfoDataSource);
-    }
-
-    @Provides
-    @ShopSettingScope
-    public GenerateHostApi provideGenerateHostApi() {
-        return new GenerateHostService().getApi();
     }
 }

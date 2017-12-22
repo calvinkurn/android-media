@@ -56,6 +56,6 @@ public class ShopOpenRoutingActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.setdisp
+//        toolbar.setdisp
     }
 }

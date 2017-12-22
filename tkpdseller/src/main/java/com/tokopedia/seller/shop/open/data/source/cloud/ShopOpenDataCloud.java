@@ -69,14 +69,13 @@ public class ShopOpenDataCloud {
         });
     }
 
-    public Observable<Boolean> reserveShopNameDomain(String shopName, String shopDomainName) {
-        return api.reserveDomain(shopName, shopDomainName).map(new Func1<Response<ResponseReserveDomain>, Boolean>() {
+    public Observable<ResponseReserveDomain> reserveShopNameDomain(String shopName, String shopDomainName) {
+        return api.reserveDomain(shopName, shopDomainName).map(new Func1<Response<ResponseReserveDomain>, ResponseReserveDomain>() {
             @Override
-            public Boolean call(Response<ResponseReserveDomain> responseReserveDomainResponse) {
+            public ResponseReserveDomain call(Response<ResponseReserveDomain> responseReserveDomainResponse) {
                 if (responseReserveDomainResponse.isSuccessful()
                         && responseReserveDomainResponse.body() != null) {
-                    return "1".equals( responseReserveDomainResponse.body().getShopDomainStatus()) &&
-                            "1".equals( responseReserveDomainResponse.body().getShopNameStatus());
+                    return responseReserveDomainResponse.body();
                 } else {
                     throw null;
                 }
