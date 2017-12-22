@@ -58,15 +58,13 @@
             android:label="@string/label_payment_setting" />
         <activity
             android:name=".insurance.view.InsuranceTnCActivity"
-            android:label="@string/title_term_and_condition"/>
-
+            android:label="@string/title_term_and_condition" />
         <activity
             android:name=".purchase.detail.activity.OrderDetailActivity"
-            android:label="@string/title_activity_people_tx_details"/>
-
+            android:label="@string/title_activity_people_tx_details" />
         <activity
             android:name=".purchase.detail.activity.OrderHistoryActivity"
-            android:label="@string/title_activity_people_tx_details"/>
+            android:label="@string/title_activity_people_tx_details" />
 
         <service
             android:name=".purchase.services.TxActionIntentService"
@@ -77,6 +75,8 @@
         <service
             android:name=".addtocart.services.ATCIntentService"
             android:exported="false" />
+
+        <activity android:name=".pickup.alfamart.view.PickupPointsActivity"></activity>
     </application>
 
 </manifest>
