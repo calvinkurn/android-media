@@ -13,12 +13,12 @@ import java.util.List;
 /**
  * @author alvarisi
  */
-public class BaseListAdapterV2<T extends Visitable> extends BaseAdapter {
+public class BaseListAdapterV2<T extends Visitable, F extends AdapterTypeFactory> extends BaseAdapter {
 
-    private BaseListAdapterTypeFactory baseListAdapterTypeFactory;
-    private OnAdapterInteractionListener onAdapterInteractionListener;
+    protected OnAdapterInteractionListener onAdapterInteractionListener;
+    private F baseListAdapterTypeFactory;
 
-    public BaseListAdapterV2(BaseListAdapterTypeFactory baseListAdapterTypeFactory) {
+    public BaseListAdapterV2(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, new ArrayList<Visitable>());
         this.baseListAdapterTypeFactory = baseListAdapterTypeFactory;
     }
@@ -36,15 +36,19 @@ public class BaseListAdapterV2<T extends Visitable> extends BaseAdapter {
 
     @Override
     public void onBindViewHolder(final AbstractViewHolder holder, int position) {
-        holder.bind(visitables.get(position));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (onAdapterInteractionListener != null) {
-                    onAdapterInteractionListener.onItemClicked(visitables.get(holder.getAdapterPosition()));
+                    try {
+                        onAdapterInteractionListener.onItemClicked(visitables.get(holder.getAdapterPosition()));
+                    } catch (ClassCastException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
+        holder.bind(visitables.get(position));
     }
 
     public void addData(List<T> visitables) {

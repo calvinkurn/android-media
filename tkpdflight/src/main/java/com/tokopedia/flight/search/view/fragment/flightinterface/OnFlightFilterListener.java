@@ -9,6 +9,8 @@ import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStati
 
 public interface OnFlightFilterListener {
     FlightSearchStatisticModel getFlightSearchStatisticModel();
+
     FlightFilterModel getFlightFilterModel();
+
     void onFilterModelChanged(FlightFilterModel flightFilterModel);
 }

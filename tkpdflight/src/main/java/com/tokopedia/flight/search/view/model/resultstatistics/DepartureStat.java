@@ -3,6 +3,8 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 
@@ -10,7 +12,18 @@ import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
  * Created by User on 11/1/2017.
  */
 
-public class DepartureStat implements Parcelable, ItemType {
+public class DepartureStat implements Parcelable, ItemType, Visitable<BaseListCheckableTypeFactory<DepartureStat>> {
+    public static final Parcelable.Creator<DepartureStat> CREATOR = new Parcelable.Creator<DepartureStat>() {
+        @Override
+        public DepartureStat createFromParcel(Parcel source) {
+            return new DepartureStat(source);
+        }
+
+        @Override
+        public DepartureStat[] newArray(int size) {
+            return new DepartureStat[size];
+        }
+    };
     private DepartureTimeEnum departureTimeEnum;
     private int minPrice;
     private String minPriceString;
@@ -19,6 +32,13 @@ public class DepartureStat implements Parcelable, ItemType {
         this.departureTimeEnum = departureTimeEnum;
         this.minPrice = minPrice;
         this.minPriceString = minPriceString;
+    }
+
+    protected DepartureStat(Parcel in) {
+        int tmpDepartureTimeEnum = in.readInt();
+        this.departureTimeEnum = tmpDepartureTimeEnum == -1 ? null : DepartureTimeEnum.values()[tmpDepartureTimeEnum];
+        this.minPrice = in.readInt();
+        this.minPriceString = in.readString();
     }
 
     public String getMinPriceString() {
@@ -53,27 +73,13 @@ public class DepartureStat implements Parcelable, ItemType {
         dest.writeString(this.minPriceString);
     }
 
-    protected DepartureStat(Parcel in) {
-        int tmpDepartureTimeEnum = in.readInt();
-        this.departureTimeEnum = tmpDepartureTimeEnum == -1 ? null : DepartureTimeEnum.values()[tmpDepartureTimeEnum];
-        this.minPrice = in.readInt();
-        this.minPriceString = in.readString();
-    }
-
-    public static final Parcelable.Creator<DepartureStat> CREATOR = new Parcelable.Creator<DepartureStat>() {
-        @Override
-        public DepartureStat createFromParcel(Parcel source) {
-            return new DepartureStat(source);
-        }
-
-        @Override
-        public DepartureStat[] newArray(int size) {
-            return new DepartureStat[size];
-        }
-    };
-
     @Override
     public int getType() {
         return 0;
+    }
+
+    @Override
+    public int type(BaseListCheckableTypeFactory<DepartureStat> typeFactory) {
+        return typeFactory.type(this);
     }
 }

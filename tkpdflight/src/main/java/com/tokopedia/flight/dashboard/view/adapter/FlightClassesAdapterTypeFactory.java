@@ -2,7 +2,7 @@ package com.tokopedia.flight.dashboard.view.adapter;
 
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -11,14 +11,13 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewMod
  * @author by alvarisi on 12/18/17.
  */
 
-public class FlightClassesAdapterTypeFactory extends BaseListAdapterTypeFactory<FlightClassViewModel> {
+public class FlightClassesAdapterTypeFactory extends BaseAdapterTypeFactory {
     private FlightClassViewHolder.ListenerCheckedClass listenerCheckedClass;
 
     public FlightClassesAdapterTypeFactory(FlightClassViewHolder.ListenerCheckedClass listenerCheckedClass) {
         this.listenerCheckedClass = listenerCheckedClass;
     }
 
-    @Override
     public int type(FlightClassViewModel viewModel) {
         return FlightClassViewHolder.LAYOUT;
     }

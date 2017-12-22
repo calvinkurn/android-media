@@ -3,16 +3,16 @@ package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapterTypeFactory;
 import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
 
 /**
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightClassViewModel implements ItemType, Visitable<BaseListTypeFactory<FlightClassViewModel>>, Parcelable {
+public class FlightClassViewModel implements ItemType, Visitable<FlightClassesAdapterTypeFactory>, Parcelable {
     public static final Creator<FlightClassViewModel> CREATOR = new Creator<FlightClassViewModel>() {
         @Override
         public FlightClassViewModel createFromParcel(Parcel in) {
@@ -68,7 +68,7 @@ public class FlightClassViewModel implements ItemType, Visitable<BaseListTypeFac
     }
 
     @Override
-    public int type(BaseListTypeFactory typeFactory) {
+    public int type(FlightClassesAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

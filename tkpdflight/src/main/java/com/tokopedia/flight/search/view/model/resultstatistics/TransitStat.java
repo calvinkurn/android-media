@@ -3,6 +3,8 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 
@@ -10,7 +12,18 @@ import com.tokopedia.flight.search.view.model.filter.TransitEnum;
  * Created by User on 11/1/2017.
  */
 
-public class TransitStat implements ItemType, Parcelable {
+public class TransitStat implements ItemType, Parcelable, Visitable<BaseListCheckableTypeFactory<TransitStat>> {
+    public static final Parcelable.Creator<TransitStat> CREATOR = new Parcelable.Creator<TransitStat>() {
+        @Override
+        public TransitStat createFromParcel(Parcel source) {
+            return new TransitStat(source);
+        }
+
+        @Override
+        public TransitStat[] newArray(int size) {
+            return new TransitStat[size];
+        }
+    };
     private TransitEnum transitType;
     private int minPrice;
     private String minPriceString;
@@ -19,6 +32,13 @@ public class TransitStat implements ItemType, Parcelable {
         this.transitType = transitType;
         this.minPrice = minPrice;
         this.minPriceString = minPriceString;
+    }
+
+    protected TransitStat(Parcel in) {
+        int tmpTransitType = in.readInt();
+        this.transitType = tmpTransitType == -1 ? null : TransitEnum.values()[tmpTransitType];
+        this.minPrice = in.readInt();
+        this.minPriceString = in.readString();
     }
 
     public String getMinPriceString() {
@@ -46,7 +66,6 @@ public class TransitStat implements ItemType, Parcelable {
         return 0;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -59,22 +78,8 @@ public class TransitStat implements ItemType, Parcelable {
         dest.writeString(this.minPriceString);
     }
 
-    protected TransitStat(Parcel in) {
-        int tmpTransitType = in.readInt();
-        this.transitType = tmpTransitType == -1 ? null : TransitEnum.values()[tmpTransitType];
-        this.minPrice = in.readInt();
-        this.minPriceString = in.readString();
+    @Override
+    public int type(BaseListCheckableTypeFactory<TransitStat> typeFactory) {
+        return typeFactory.type(this);
     }
-
-    public static final Parcelable.Creator<TransitStat> CREATOR = new Parcelable.Creator<TransitStat>() {
-        @Override
-        public TransitStat createFromParcel(Parcel source) {
-            return new TransitStat(source);
-        }
-
-        @Override
-        public TransitStat[] newArray(int size) {
-            return new TransitStat[size];
-        }
-    };
 }

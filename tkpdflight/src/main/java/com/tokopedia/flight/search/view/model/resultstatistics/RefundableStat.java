@@ -3,11 +3,23 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
-import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
-public class RefundableStat implements ItemType, Parcelable {
+public class RefundableStat implements ItemType, Parcelable, Visitable<BaseListCheckableTypeFactory<RefundableStat>> {
+    public static final Parcelable.Creator<RefundableStat> CREATOR = new Parcelable.Creator<RefundableStat>() {
+        @Override
+        public RefundableStat createFromParcel(Parcel source) {
+            return new RefundableStat(source);
+        }
+
+        @Override
+        public RefundableStat[] newArray(int size) {
+            return new RefundableStat[size];
+        }
+    };
     private RefundableEnum refundableEnum;
     private int minPrice;
     private String minPriceString;
@@ -16,6 +28,13 @@ public class RefundableStat implements ItemType, Parcelable {
         this.refundableEnum = refundableEnum;
         this.minPrice = minPrice;
         this.minPriceString = minPriceString;
+    }
+
+    protected RefundableStat(Parcel in) {
+        int tmpRefundableEnum = in.readInt();
+        this.refundableEnum = tmpRefundableEnum == -1 ? null : RefundableEnum.values()[tmpRefundableEnum];
+        this.minPrice = in.readInt();
+        this.minPriceString = in.readString();
     }
 
     public String getMinPriceString() {
@@ -55,22 +74,8 @@ public class RefundableStat implements ItemType, Parcelable {
         dest.writeString(this.minPriceString);
     }
 
-    protected RefundableStat(Parcel in) {
-        int tmpRefundableEnum = in.readInt();
-        this.refundableEnum = tmpRefundableEnum == -1 ? null : RefundableEnum.values()[tmpRefundableEnum];
-        this.minPrice = in.readInt();
-        this.minPriceString = in.readString();
+    @Override
+    public int type(BaseListCheckableTypeFactory<RefundableStat> typeFactory) {
+        return typeFactory.type(this);
     }
-
-    public static final Parcelable.Creator<RefundableStat> CREATOR = new Parcelable.Creator<RefundableStat>() {
-        @Override
-        public RefundableStat createFromParcel(Parcel source) {
-            return new RefundableStat(source);
-        }
-
-        @Override
-        public RefundableStat[] newArray(int size) {
-            return new RefundableStat[size];
-        }
-    };
 }

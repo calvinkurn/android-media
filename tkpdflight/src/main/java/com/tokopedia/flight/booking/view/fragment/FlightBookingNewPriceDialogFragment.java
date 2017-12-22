@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
 
 public class FlightBookingNewPriceDialogFragment extends DialogFragment {
@@ -85,7 +86,7 @@ public class FlightBookingNewPriceDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvOldPrice.setText(String.valueOf(getString(R.string.flight_booking_new_price_strike_label, oldPrice)));
+        tvOldPrice.setText(String.valueOf(MethodChecker.fromHtml(getString(R.string.flight_booking_new_price_strike_label, oldPrice))));
         tvNewPrice.setText(String.valueOf(newPrice));
     }
 

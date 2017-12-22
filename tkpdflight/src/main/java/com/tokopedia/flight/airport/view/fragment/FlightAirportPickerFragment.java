@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListV2Fragment;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -30,7 +29,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListV2Fragment<FlightAirportDB> implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
+public class FlightAirportPickerFragment extends BaseSearchListV2Fragment<FlightAirportDB, FlightAirportAdapterTypeFactory> implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
     public static final String FLIGHT_AIRPORT = "flight_airport";
@@ -65,7 +64,7 @@ public class FlightAirportPickerFragment extends BaseSearchListV2Fragment<Flight
     }
 
     @Override
-    protected BaseListAdapterTypeFactory getAdapterTypeFactory() {
+    protected FlightAirportAdapterTypeFactory getAdapterTypeFactory() {
         return new FlightAirportAdapterTypeFactory(this);
     }
 

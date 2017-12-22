@@ -2,7 +2,7 @@ package com.tokopedia.flight.booking.view.adapter;
 
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingPhoneCodeViewHolder;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
@@ -11,11 +11,10 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
  * Created by alvarisi on 12/19/17.
  */
 
-public class FlightBookingPhoneCodeAdapterTypeFactory extends BaseListAdapterTypeFactory<FlightBookingPhoneCodeViewModel> {
+public class FlightBookingPhoneCodeAdapterTypeFactory extends BaseAdapterTypeFactory {
     public FlightBookingPhoneCodeAdapterTypeFactory() {
     }
 
-    @Override
     public int type(FlightBookingPhoneCodeViewModel viewModel) {
         return FlightBookingPhoneCodeViewHolder.LAYOUT;
     }
