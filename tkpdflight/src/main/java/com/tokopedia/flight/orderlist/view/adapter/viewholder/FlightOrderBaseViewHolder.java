@@ -148,6 +148,7 @@ public abstract class FlightOrderBaseViewHolder<T> extends AbstractViewHolder<T>
             simpleViewModel.setDescription(null);
             departureSchedules.setTitleBold(false);
             departureSchedules.setArrowVisible(false);
+            departureSchedules.setTitleOnly(true);
             departureSchedules.setViewModel(simpleViewModel);
             departureSchedules.notifyDataSetChanged();
         } else {
