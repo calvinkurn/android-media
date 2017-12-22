@@ -306,6 +306,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 return false;
             }
         });
+
+        selectedCheckPulsaBalanceView = null;
+
     }
 
     @Override
@@ -419,6 +422,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     //@NeedsPermission(Manifest.permission.READ_PHONE_STATE)
     public void renderCheckPulsaBalance() {
         holderCheckBalance.removeAllViews();
+        if(categoryDataState ==null ||
+                categoryDataState.getOperatorList() == null ||
+                categoryDataState.getOperatorList().size() == 0){
+            return;
+        }
         boolean activeSim = true;
         String error = null;
         for (int i = 0; i < 2; i++) {
@@ -426,6 +434,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             checkPulsaBalanceView.setActionListener(this);
             if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
                 Operator operator = presenter.getSelectedUssdOperator(i);
+
                 String ussdCode = operator.getUssdCode();
                 if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
                     //if both sims inactive then show only one card
@@ -433,9 +442,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     activeSim = false;
                     String carrierName=DeviceUtil.getOperatorName(getActivity(), i);
                     if (carrierName == null){
-                        error = "No signals";
+                        error = "No Signals";
                     }else{
-                        error = "Operator not suported";
+                        error = "Operator tidak tersedia";
                         checkPulsaBalanceView.setOperatorName(carrierName);
                     }
 
@@ -1254,7 +1263,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onResume() {
         super.onResume();
-        restoreUssdData();
+        renderCheckPulsaBalance();
+       // restoreUssdData();
     }
 
     private void restoreUssdData() {
@@ -1268,11 +1278,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
             String error = null;
 
+
             if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
                 if (DeviceUtil.getOperatorName(getActivity(), selectedSimIndex) == null) {
                     error = "No signals";
                 } else {
-                    error = "Operator not suported";
+                    error = "Operator tidak tersedia";
+                    selectedCheckPulsaBalanceView.setOperatorName(DeviceUtil.getOperatorName(getActivity(),selectedSimIndex));
                 }
             }
             if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
