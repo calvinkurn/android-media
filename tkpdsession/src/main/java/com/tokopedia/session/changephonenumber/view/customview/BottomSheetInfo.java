@@ -9,7 +9,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ScrollView;
+import android.widget.Button;
 
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
@@ -43,13 +43,6 @@ public class BottomSheetInfo extends BottomSheetDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        populateRecyclerView();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mainScrollView.fullScroll(ScrollView.FOCUS_UP);
     }
 
     private void init() {
@@ -58,6 +51,9 @@ public class BottomSheetInfo extends BottomSheetDialog {
 
         warningRecyclerView = bottomSheetView.findViewById(R.id.warning_rv);
         mainScrollView = bottomSheetView.findViewById(R.id.bottom_sheet1);
+
+        warningRecyclerView.setFocusable(false);
+        populateRecyclerView();
     }
 
     private void populateRecyclerView() {
@@ -68,6 +64,4 @@ public class BottomSheetInfo extends BottomSheetDialog {
         adapter.addData(viewModelList);
         warningRecyclerView.setAdapter(adapter);
     }
-
-
 }

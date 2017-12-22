@@ -73,14 +73,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //TODO remove this delay. move loadData when API call is finished.
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadDataToView();
-            }
-        }, 2000);
+        loadDataToView();
     }
 
     //TODO remove this function
@@ -110,6 +103,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         tokocashValue = view.findViewById(R.id.tokocash_value);
         warningRecyclerView = view.findViewById(R.id.warning_rv);
         nextButton = view.findViewById(R.id.next_button);
+
+        warningRecyclerView.setFocusable(false);
     }
 
     private void setViewListener() {
@@ -166,15 +161,15 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     private void populateRecyclerView() {
-        if(viewModel != null) {
-             if (viewModel.getWarningList().size() > 0 ) {
-                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                 warningRecyclerView.setLayoutManager(mLayoutManager);
+        if (viewModel != null) {
+            if (viewModel.getWarningList().size() > 0) {
+                LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                warningRecyclerView.setLayoutManager(mLayoutManager);
 
-                 WarningListAdapter adapter = new WarningListAdapter();
-                 adapter.addData(viewModel.getWarningList());
-                 warningRecyclerView.setAdapter(adapter);
-             }
+                WarningListAdapter adapter = new WarningListAdapter();
+                adapter.addData(viewModel.getWarningList());
+                warningRecyclerView.setAdapter(adapter);
+            }
         }
     }
 }
