@@ -95,7 +95,7 @@ public abstract class FlightOrderBaseViewHolder<T> extends AbstractViewHolder<T>
         if (TextUtils.isEmpty(text)) {
             return text;
         }
-        text.setSpan(new RelativeSizeSpan(0.75f),
+        text.setSpan(new RelativeSizeSpan(0.6f),
                 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return text;
     }
@@ -106,7 +106,7 @@ public abstract class FlightOrderBaseViewHolder<T> extends AbstractViewHolder<T>
         }
         text.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        text.setSpan(new RelativeSizeSpan(1.25f),
+        text.setSpan(new RelativeSizeSpan(1.0f),
                 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         text.setSpan(
                 new ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)),
