@@ -20,15 +20,7 @@ public class ShopSettingInfoDataSource {
         this.shopSettingInfoDataSourceCloud = shopSettingInfoDataSourceCloud;
     }
 
-    public Observable<Boolean> saveShopSetting() {
-        return shopSettingInfoDataSourceCloud.saveShopSetting();
-    }
-
-    public Observable<GenerateHostModel.GenerateHost> generateHost() {
-        return shopSettingInfoDataSourceCloud.generateHost();
-    }
-
-    public Observable<UploadShopImageModel.Data> uploadImage(GenerateHostModel.GenerateHost generateHost, String pathFileImage) {
-        return shopSettingInfoDataSourceCloud.uploadImage(generateHost, pathFileImage);
+    public Observable<Boolean> saveShopSetting(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
+        return shopSettingInfoDataSourceCloud.saveShopSetting(logo, serverId, photoObj, shopDescription, tagLine, stepInfo1);
     }
 }

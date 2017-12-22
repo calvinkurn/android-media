@@ -1,13 +1,24 @@
 package com.tokopedia.seller.shop.open.di.component;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenRoutingFragment;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 /**
  * Created by sebastianuskh on 3/17/17.
@@ -15,8 +26,27 @@ import dagger.Component;
 @ShopOpenDomainScope
 @Component(modules = ShopOpenDomainModule.class, dependencies = ShopComponent.class)
 public interface ShopOpenDomainComponent {
+
+	void inject(ShopOpenRoutingFragment shopOpenRoutingFragment);
+
     void inject(ShopOpenDomainFragment shopOpenDomainFragment);
-    void inject(ShopOpenDomainActivity shopOpenDomainActivity);
 
     void inject(ShopOpenMandatoryLocationFragment shopOpenMandatoryLocationFragment);
+
+    ThreadExecutor getThreadExecutor();
+
+    PostExecutionThread getPostExecutionThread();
+
+    TomeApi getTomeApi();
+
+    Retrofit.Builder retrofitBuilder();
+
+    @DefaultAuthWithErrorHandler
+    OkHttpClient okHttpClient();
+
+    @ApplicationContext
+    Context context();
+
+    @WsV4QualifierWithErrorHander
+    Retrofit retrofitWsV4();
 }

@@ -15,7 +15,6 @@ import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
-import com.tokopedia.seller.shop.open.view.listener.OnShopStepperListener;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
@@ -29,28 +28,38 @@ import java.util.List;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent>, OnShopStepperListener {
+public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent>{
 
-    public static final String EXTRA_LOGOUT_ON_BACK = "LOGOUT_ON_BACK";
+    public static final String EXTRA_SHOP_NAME = "EXTRA_SHOP_NAME";
+    public static final String EXTRA_SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
 
     private List<Fragment> fragmentList;
     private ShopOpenDomainComponent component;
 
     boolean isLogoutOnBack = false;
 
-    public static Intent getIntent(Context context, boolean isLogoutOnBack) {
+    public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
-        intent.putExtra(EXTRA_LOGOUT_ON_BACK, isLogoutOnBack);
+        return intent;
+    }
+
+    public static Intent getIntent(Context context, String shopName, String shopDomain) {
+        Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
+        intent.putExtra(EXTRA_SHOP_NAME, shopName);
+        intent.putExtra(EXTRA_SHOP_DOMAIN, shopDomain);
         return intent;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_LOGOUT_ON_BACK)) {
-            isLogoutOnBack = getIntent().getBooleanExtra(EXTRA_LOGOUT_ON_BACK, false);
-        }
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_SHOP_NAME)) {
+            stepperModel.setShopName(getIntent().getStringExtra(EXTRA_SHOP_NAME));
+        }
+        if (intent.hasExtra(EXTRA_SHOP_DOMAIN)) {
+            stepperModel.setShopDomain(getIntent().getStringExtra(EXTRA_SHOP_DOMAIN));
+        }
         initComponent();
     }
 
@@ -74,9 +83,9 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-//            fragmentList.add(new ShopOpenMandatoryInfoFragment());
+            fragmentList.add(new ShopOpenMandatoryInfoFragment());
             fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
-//            fragmentList.add(new ShopOpenMandatoryLogisticFragment());
+            fragmentList.add(new ShopOpenMandatoryLogisticFragment());
             return fragmentList;
         } else {
             return fragmentList;

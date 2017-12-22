@@ -6,20 +6,19 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name">
-        <activity
-            android:name="com.tokopedia.seller.common.imageeditor.ImageEditorActivity"
-            android:label="@string/title_activity_image_edit"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat" />
 
         <activity
             android:name=".common.imageeditor.GalleryCropActivity"
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".shop.open.view.activity.ShopOpenRoutingActivity"
+            android:label="@string/title_open_shop"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".shop.open.view.activity.ShopOpenDomainActivity"
             android:label="@string/title_open_shop"
-            android:exported="true"
             android:screenOrientation="portrait" />
 
         <activity

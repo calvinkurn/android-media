@@ -10,11 +10,14 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 /**
@@ -36,7 +39,15 @@ public interface ShopComponent {
     @TomeQualifier
     Retrofit tomeRetrofit();
 
+    @WsV4QualifierWithErrorHander
+    Retrofit retrofitWsV4();
+
+    Retrofit.Builder getRetrofitBuilder();
+
     TomeApi tomeApi();
+
+    @DefaultAuthWithErrorHandler
+    OkHttpClient okHttpClient();
 
     @WsV4Qualifier
     Retrofit baseDomainRetrofit();

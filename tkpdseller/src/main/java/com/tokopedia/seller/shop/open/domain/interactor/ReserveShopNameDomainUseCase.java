@@ -7,6 +7,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shop.constant.ShopExtraConstant;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
 
 import javax.inject.Inject;
 
@@ -16,7 +17,7 @@ import rx.Observable;
  * Created by sebastianuskh on 3/20/17.
  */
 
-public class ReserveShopNameDomainUseCase extends UseCase<Boolean> {
+public class ReserveShopNameDomainUseCase extends UseCase<ResponseReserveDomain> {
     private final ShopOpenRepository shopOpenRepository;
 
     @Inject
@@ -28,7 +29,7 @@ public class ReserveShopNameDomainUseCase extends UseCase<Boolean> {
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<ResponseReserveDomain> createObservable(RequestParams requestParams) {
         String shopName = requestParams.getString(ShopExtraConstant.EXTRA_SHOP_NAME, "");
         String shopDomainName = requestParams.getString(ShopExtraConstant.EXTRA_DOMAIN_NAME, "");
         return shopOpenRepository.reserveShopNameDomain(shopName, shopDomainName);
