@@ -3,7 +3,7 @@ package com.tokopedia.transaction.pickup.alfamart.data.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Irfan Khoirul on 22/12/17.
@@ -12,7 +12,7 @@ import java.util.List;
 public class DataEntity {
     @SerializedName("list")
     @Expose
-    private List<StoreEntity> storeEntities;
+    private ArrayList<StoreEntity> storeEntities;
     @SerializedName("page")
     @Expose
     private int page;
@@ -23,11 +23,11 @@ public class DataEntity {
     @Expose
     private boolean nextPage;
 
-    public List<StoreEntity> getStoreEntities() {
+    public ArrayList<StoreEntity> getStoreEntities() {
         return storeEntities;
     }
 
-    public void setStoreEntities(List<StoreEntity> storeEntities) {
+    public void setStoreEntities(ArrayList<StoreEntity> storeEntities) {
         this.storeEntities = storeEntities;
     }
 

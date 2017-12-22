@@ -3,14 +3,14 @@ package com.tokopedia.transaction.pickup.alfamart.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Irfan Khoirul on 22/12/17.
  */
 
 public class Data implements Parcelable {
-    private List<Store> stores;
+    private ArrayList<Store> stores;
     private int page;
     private boolean prevPage;
     private boolean nextPage;
@@ -37,11 +37,11 @@ public class Data implements Parcelable {
         }
     };
 
-    public List<Store> getStores() {
+    public ArrayList<Store> getStores() {
         return stores;
     }
 
-    public void setStores(List<Store> stores) {
+    public void setStores(ArrayList<Store> stores) {
         this.stores = stores;
     }
 
