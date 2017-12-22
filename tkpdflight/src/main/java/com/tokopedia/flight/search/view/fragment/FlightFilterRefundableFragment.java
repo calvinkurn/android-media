@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.flight.search.view.adapter.FlightFilterRefundableAdapterTypeFactory;
-import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragmentV2;
+import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.RefundableStat;
@@ -17,7 +17,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 
-public class FlightFilterRefundableFragment extends BaseFlightFilterFragmentV2<RefundableStat, FlightFilterRefundableAdapterTypeFactory> {
+public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<RefundableStat, FlightFilterRefundableAdapterTypeFactory> {
     public static final String TAG = FlightFilterRefundableFragment.class.getSimpleName();
 
     public static FlightFilterRefundableFragment newInstance() {

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.flight.search.view.adapter.FlightFilterAirlineAdapterTypeFactory;
-import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragmentV2;
+import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
 
@@ -16,7 +16,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 
-public class FlightFilterAirlineFragment extends BaseFlightFilterFragmentV2<AirlineStat, FlightFilterAirlineAdapterTypeFactory> {
+public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<AirlineStat, FlightFilterAirlineAdapterTypeFactory> {
     public static final String TAG = FlightFilterAirlineFragment.class.getSimpleName();
 
     public static FlightFilterAirlineFragment newInstance() {

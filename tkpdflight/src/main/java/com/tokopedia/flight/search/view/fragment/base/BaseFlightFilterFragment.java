@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.view.fragment.base;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -9,23 +10,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
+import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 
 /**
  * Created by User on 11/17/2017.
  */
 
-public abstract class BaseFlightFilterFragment<T extends ItemType> extends BaseListFragment<T>
-    implements OnFlightBaseFilterListener {
-    protected OnFlightFilterListener listener;
-    private FlightFilterModel originalFilterModel;
-
+public abstract class BaseFlightFilterFragment<T extends Visitable, F extends BaseListCheckableTypeFactory<T>> extends BaseListV2Fragment<T, F>
+        implements OnFlightBaseFilterListener, BaseListCheckableAdapter.OnCheckableAdapterListener<T>, CheckableBaseViewHolder.CheckableInteractionListener {
     public static final String SAVED_ORIGINAL_FILTER = "svd_ori_filter";
+    protected OnFlightFilterListener listener;
+    protected BaseListCheckableAdapter<T, F> adapter;
+    private FlightFilterModel originalFilterModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,13 @@ public abstract class BaseFlightFilterFragment<T extends ItemType> extends BaseL
         } else {
             originalFilterModel = savedInstanceState.getParcelable(SAVED_ORIGINAL_FILTER);
         }
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapterV2<T, F> createAdapterInstance() {
+        adapter = new BaseListCheckableAdapter<>(getAdapterTypeFactory(), this);
+        return adapter;
     }
 
     @Override
