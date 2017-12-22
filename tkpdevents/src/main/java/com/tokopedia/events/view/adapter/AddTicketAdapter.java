@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
@@ -71,6 +72,10 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView tvTicketCnt;
         @BindView(R2.id.btn_increment)
         ImageButton btnIncrement;
+        @BindView(R2.id.iv_sold_out)
+        ImageView ivSoldOut;
+        @BindView(R2.id.button_layout)
+        View buttonLayout;
 
         PackageViewModel holderViewModel;
         int index;
@@ -92,6 +97,14 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 btnDecrement.setVisibility(View.VISIBLE);
             else
                 btnDecrement.setVisibility(View.INVISIBLE);
+            if(holderViewModel.getAvailable()>0) {
+                ivSoldOut.setVisibility(View.INVISIBLE);
+                buttonLayout.setVisibility(View.VISIBLE);
+            }
+            else {
+                ivSoldOut.setVisibility(View.VISIBLE);
+                buttonLayout.setVisibility(View.INVISIBLE);
+            }
 
         }
 

@@ -83,8 +83,13 @@ public class EventDetailsViewModelMapper {
                 pVM.setTimeRange(target.getTimeRange());
                 pVM.setThumbnailApp(target.getThumbnailApp());
                 pVM.setAddress(s.getaDdress());
-                pVM.setForm(target.getForms().get(0));
+                try {
+                    pVM.setForm(target.getForms().get(0));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 pVM.setCategoryId(source.getCategoryId());
+                pVM.setTitle(source.getTitle());
                 packageViewModels.add(pVM);
             }
 
@@ -97,7 +102,7 @@ public class EventDetailsViewModelMapper {
     }
 
     static String convertEpochToString(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy");
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Long epochTime = time * 1000L;
         Date date = new Date(epochTime);

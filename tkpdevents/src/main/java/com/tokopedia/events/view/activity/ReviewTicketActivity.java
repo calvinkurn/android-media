@@ -57,8 +57,16 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView tvBaseFare;
     @BindView(R2.id.tv_conv_fees)
     TextView tvConvFees;
+    @BindView(R2.id.tv_total_price)
+    TextView tvTotalPrice;
     @BindView(R2.id.button_textview)
     TextView buttonTextview;
+    @BindView(R2.id.base_fare_break)
+    TextView baseFareBreak;
+    @BindView(R2.id.update_promo)
+    TextView updatePromo;
+    @BindView(R2.id.ed_promo)
+    EditText edPromo;
     @BindView(R2.id.btn_go_to_payment)
     View btnGoToPayment;
 
@@ -107,14 +115,18 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 packageViewModel.getSelectedQuantity()));
 
         tvTelephone.setText(SessionHandler.getPhoneNumber());
-        tvProviderName.setText(String.format(getString(R.string.fare_breakup), packageViewModel.getDisplayName()));
+        tvProviderName.setText(String.format(getString(R.string.fare_breakup), packageViewModel.getTitle() + " " + packageViewModel.getDisplayName()));
         int baseFare = packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice();
         tvBaseFare.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare));
         int convFees = packageViewModel.getConvenienceFee();
         tvConvFees.setText("Rp " + CurrencyUtil.convertToCurrencyString(convFees));
+        tvTotalPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare + convFees));
         buttonTextview.setText(String.format(getString(R.string.pay_button), CurrencyUtil.convertToCurrencyString(baseFare + convFees)));
         tvTicketSummary.setText(String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
+        String baseBreak = String.format(getString(R.string.x_type),
+                packageViewModel.getSelectedQuantity(), packageViewModel.getSalesPrice().toString());
+        baseFareBreak.setText("(" + baseBreak + ")");
 
 
     }
@@ -144,6 +156,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
         mPresenter.proceedToPayment();
+    }
+
+    @OnClick(R2.id.update_promo)
+    void clickUpdatePromo() {
+        mPresenter.updatePromoCode(edPromo.getText().toString());
     }
 
     @Override

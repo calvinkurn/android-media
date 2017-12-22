@@ -38,5 +38,7 @@ public class EventReviewTicketsContractor {
         void onDestroy();
 
         void proceedToPayment();
+
+        void updatePromoCode(String code);
     }
 }

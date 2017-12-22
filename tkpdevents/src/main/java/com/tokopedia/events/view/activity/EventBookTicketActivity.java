@@ -42,8 +42,8 @@ import butterknife.OnClick;
 public class EventBookTicketActivity extends TActivity implements EventBookTicketContract.EventBookTicketView {
 
 
-    @BindView(R2.id.collasing_toolbar)
-    CollapsingToolbarLayout collasingToolbar;
+//    @BindView(R2.id.collasing_toolbar)
+//    CollapsingToolbarLayout collasingToolbar;
     @BindView(R2.id.tab_layout)
     TabLayout tabLayout;
 
@@ -53,16 +53,16 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     TextView buttonTextview;
     @BindView(R2.id.viewpager_book_ticket)
     ViewPager bookTicketViewPager;
-    @BindView(R2.id.event_address)
-    View addressView;
-    @BindView(R2.id.event_time)
-    View timeView;
+//    @BindView(R2.id.event_address)
+//    View addressView;
+//    @BindView(R2.id.event_time)
+//    View timeView;
 
-    @BindView(R2.id.banner_image)
-    ImageView bannerImage;
+//    @BindView(R2.id.banner_image)
+//    ImageView bannerImage;
 
-    ImageTextViewHolder addressHolder;
-    ImageTextViewHolder timeHolder;
+//    ImageTextViewHolder addressHolder;
+//    ImageTextViewHolder timeHolder;
 
     EventComponent eventComponent;
     @Inject
@@ -75,17 +75,17 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
         setContentView(R.layout.book_ticket_layout);
         ButterKnife.bind(this);
 
-        addressHolder = new ImageTextViewHolder();
-        timeHolder = new ImageTextViewHolder();
+//        addressHolder = new ImageTextViewHolder();
+//        timeHolder = new ImageTextViewHolder();
 
-        ButterKnife.bind(addressHolder, addressView);
-        ButterKnife.bind(timeHolder, timeView);
+//        ButterKnife.bind(addressHolder, addressView);
+//        ButterKnife.bind(timeHolder, timeView);
 
         setupToolbar();
         toolbar.setTitle("");
 
-        collasingToolbar.setExpandedTitleColor(Color.parseColor("#00ffffff"));
-        collasingToolbar.setCollapsedTitleTextColor(Color.parseColor("#ff000000"));
+//        collasingToolbar.setExpandedTitleColor(Color.parseColor("#00ffffff"));
+//        collasingToolbar.setCollapsedTitleTextColor(Color.parseColor("#ff000000"));
 
         executeInjector();
 
@@ -112,10 +112,11 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @Override
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
-        collasingToolbar.setTitle(detailsViewModel.getTitle());
-        ImageHandler.loadImageCover2(bannerImage, detailsViewModel.getImageApp());
-        setHolder(R.drawable.ic_time, detailsViewModel.getTimeRange(), timeHolder);
-        setHolder(R.drawable.ic_skyline, detailsViewModel.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
+        toolbar.setTitle(detailsViewModel.getTitle());
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
+//        ImageHandler.loadImageCover2(bannerImage, detailsViewModel.getImageApp());
+//        setHolder(R.drawable.ic_time, detailsViewModel.getTimeRange(), timeHolder);
+//        setHolder(R.drawable.ic_skyline, detailsViewModel.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
 
         AddTicketFragmentAdapter fragmentAdapter = new AddTicketFragmentAdapter(getSupportFragmentManager(),
                 detailsViewModel.getSchedulesViewModels());

@@ -55,6 +55,7 @@ public class EventReviewTicketPresenter
     PostPaymentUseCase postPaymentUseCase;
     ProfileUseCase profileUseCase;
     ProfileModel profileModel;
+    String promocode;
 
     @Inject
     public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment) {
@@ -112,6 +113,11 @@ public class EventReviewTicketPresenter
     public void proceedToPayment() {
         postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData));
         verifyCart();
+    }
+
+    @Override
+    public void updatePromoCode(String code) {
+        this.promocode = code;
     }
 
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
@@ -189,7 +195,7 @@ public class EventReviewTicketPresenter
         cartItems.add(cartItem);
         CartItems cart = new CartItems();
         cart.setCartItems(cartItems);
-        cart.setPromocode("");
+        cart.setPromocode(promocode);
 
 //todo tax per quantity
         return cart;

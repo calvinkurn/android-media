@@ -16,6 +16,7 @@ public class PackageViewModel implements Parcelable {
     private String providerTicketId;
     private String thumbnailApp;
     private String displayName;
+    private String title;
     private String description;
     private String tnc;
     private Integer convenienceFee;
@@ -32,6 +33,15 @@ public class PackageViewModel implements Parcelable {
     private int selectedQuantity;
     private String timeRange;
     private String address;
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public Integer getCategoryId() {
         return categoryId;
@@ -268,6 +278,7 @@ public class PackageViewModel implements Parcelable {
         dest.writeString(this.providerTicketId);
         dest.writeString(this.thumbnailApp);
         dest.writeString(this.displayName);
+        dest.writeString(this.title);
         dest.writeString(this.description);
         dest.writeString(this.tnc);
         dest.writeValue(this.convenienceFee);
@@ -297,6 +308,7 @@ public class PackageViewModel implements Parcelable {
         this.providerTicketId = in.readString();
         this.thumbnailApp = in.readString();
         this.displayName = in.readString();
+        this.title = in.readString();
         this.description = in.readString();
         this.tnc = in.readString();
         this.convenienceFee = (Integer) in.readValue(Integer.class.getClassLoader());

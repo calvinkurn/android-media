@@ -7,9 +7,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="50dp">
-
+        android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -199,6 +197,11 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <CheckBox
@@ -216,6 +219,31 @@
                         android:text="Gunakan Kode Promo Tokopedia"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
+                </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingBottom="8dp"
+                        android:visibility="gone">
+                        <EditText
+                            android:id="@+id/ed_promo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter PromoCode"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:id="@+id/update_promo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ubah"
+                            android:gravity="end"
+                            android:paddingEnd="@dimen/margin_default"
+                            android:paddingRight="@dimen/margin_default"
+                            android:textSize="16sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
@@ -259,6 +287,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/basefare"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingEnd="@dimen/margin_default"
@@ -278,6 +307,19 @@
                             android:paddingStart="@dimen/margin_default"
                             android:text="Rp 540000"
                             android:textColor="@color/grey_900" />
+                        <TextView
+                            android:id="@+id/base_fare_break"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginEnd="@dimen/margin_default"
+                            android:layout_marginRight="@dimen/margin_default"
+                            android:layout_marginBottom="4dp"
+                            android:paddingLeft="@dimen/margin_default"
+                            android:paddingStart="@dimen/margin_default"
+                            android:layout_below="@+id/basefare"
+                            android:text="@string/_2_x_rp100000"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -311,7 +353,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="54dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -348,5 +390,6 @@
         layout="@layout/btn_book_event"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:visibility="visible"
         android:layout_gravity="bottom" />
 </FrameLayout>

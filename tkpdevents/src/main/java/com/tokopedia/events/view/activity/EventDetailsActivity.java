@@ -171,7 +171,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         toolbar.setTitle(homedata.getTitle());
         ImageHandler.loadImageCover2(eventDetailBanner, homedata.getImageApp());
         String dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate())
-                + " " + mPresenter.convertEpochToString(homedata.getMaxEndDate());
+                + " - " + mPresenter.convertEpochToString(homedata.getMaxEndDate());
 
         setHolder(R.drawable.ic_time, dateRange, timeHolder);
         setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
@@ -184,20 +184,15 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
             tnc = tnc.replace("\n", "<br>").replace("\r" , "");
             String splitArray[] = tnc.split("~");
             int flag = 1;
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
-            StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-            StyleSpan italicSpan = new StyleSpan(Typeface.ITALIC);
 
             StringBuffer tncBuffer = new StringBuffer();
 
             for (String line : splitArray) {
                 if (flag == 1) {
                     tncBuffer.append("<i>" + line + "</i>");
-                    stringBuilder.append(line, italicSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     flag = 2;
                 } else {
                     tncBuffer.append("<b>" + line + "</b>");
-                    stringBuilder.append(line, boldSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     flag = 1;
                 }
 
@@ -205,7 +200,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
             tvTncExpandable.setText(Html.fromHtml(tncBuffer.toString()));
         } else {
             tvTncExpandable.setText(Html.fromHtml(homedata.getTnc()));
-
         }
         if(homedata.getDisplayTags().length()<3)
             tvDisplayTag.setVisibility(View.GONE);

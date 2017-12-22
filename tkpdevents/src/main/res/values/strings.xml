@@ -40,6 +40,7 @@
     <string name="and_others">%1$s and %2$d others</string>
     <string name="x_type">%1$d x %2$s</string>
     <string name="jumlah_tiket">Jumlah Tiket : %1$d</string>
+    <string name="_2_x_rp100000">(2 x Rp100000)</string>
 
     <!-- need to changed -->
 

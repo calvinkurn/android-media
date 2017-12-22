@@ -48,12 +48,24 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/iv_sold_out"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/sold_out"
+            android:visibility="invisible"/>
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/margin_default"
-        android:layout_weight="1"
         android:orientation="horizontal"
         android:gravity="center">
 
@@ -89,4 +101,5 @@
             android:src="@drawable/ic_plus"
             android:tint="#42b549" />
     </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
