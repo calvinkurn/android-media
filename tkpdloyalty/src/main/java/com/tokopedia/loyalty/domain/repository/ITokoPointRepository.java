@@ -43,15 +43,15 @@ public interface ITokoPointRepository {
     );
 
     Observable<CouponViewModel> checkCouponValidity(
-            String gAdsId,TKPDMapParam<String, String> param, String voucherCode, String couponTitle
+            String gAdsId, TKPDMapParam<String, String> param, String voucherCode, String couponTitle
     );
 
     Observable<VoucherViewModel> checkDigitalVoucherValidity(
-            TKPDMapParam<String, String> param, String voucherCode
+            String gAdsId, TKPDMapParam<String, String> param, String voucherCode
     );
 
     Observable<CouponViewModel> checkDigitalCouponValidity(
-            TKPDMapParam<String, String> param, String voucherCode, String couponTitle
+            String gAdsId, TKPDMapParam<String, String> param, String voucherCode, String couponTitle
     );
 
 }

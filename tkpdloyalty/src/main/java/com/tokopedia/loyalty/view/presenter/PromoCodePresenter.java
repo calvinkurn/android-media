@@ -53,7 +53,9 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("voucher_code", voucherCode);
         param.put("category_id", categoryId);
-        promoCodeInteractor.submitDigitalVoucher(voucherCode,
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+
+        promoCodeInteractor.submitDigitalVoucher(analHandler.getAdsId(), voucherCode,
                 AuthUtil.generateParamsNetwork(context, param),
                 makeDigitalVoucherViewModel());
     }

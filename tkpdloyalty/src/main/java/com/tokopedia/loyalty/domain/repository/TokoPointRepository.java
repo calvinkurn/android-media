@@ -211,9 +211,9 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     @Override
     public Observable<VoucherViewModel> checkDigitalVoucherValidity(
-            TKPDMapParam<String, String> param, final String voucherCode
+            String gAdsId, TKPDMapParam<String, String> param, final String voucherCode
     ) {
-        return digitalService.getApi().checkVoucher(param)
+        return digitalService.getApi().checkVoucher(gAdsId, param)
                 .map(new Func1<Response<TkpdDigitalResponse>, VoucherViewModel>() {
                     @Override
                     public VoucherViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
@@ -227,9 +227,9 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     @Override
     public Observable<CouponViewModel> checkDigitalCouponValidity(
-            TKPDMapParam<String, String> param, final String voucherCode, final String couponTitle
+            String gAdsId, TKPDMapParam<String, String> param, final String voucherCode, final String couponTitle
     ) {
-        return digitalService.getApi().checkVoucher(param).
+        return digitalService.getApi().checkVoucher(gAdsId, param).
                 map(new Func1<Response<TkpdDigitalResponse>, CouponViewModel>() {
                     @Override
                     public CouponViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
