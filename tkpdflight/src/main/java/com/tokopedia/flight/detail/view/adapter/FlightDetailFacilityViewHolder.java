@@ -50,10 +50,10 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         listInfo.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         adapterInfo = new ListInfoAdapter();
         listInfo.setAdapter(adapterInfo);
-        gridAmenity.setLayoutManager(new GridLayoutManager(itemView.getContext(), NUMBER_OF_COLUMN_AMENITY));
-        gridAmenity.addItemDecoration(new ItemGridDecorationDivider(itemView.getContext(), ItemGridDecorationDivider.GRID, NUMBER_OF_COLUMN_AMENITY));
         adapterAmenity = new AmenityAdapter();
         gridAmenity.setAdapter(adapterAmenity);
+//        gridAmenity.setLayoutManager(new GridLayoutManager(itemView.getContext(), NUMBER_OF_COLUMN_AMENITY));
+        gridAmenity.addItemDecoration(new ItemGridDecorationDivider(itemView.getContext(), ItemGridDecorationDivider.GRID, NUMBER_OF_COLUMN_AMENITY));
     }
 
     @Override
@@ -85,6 +85,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
                 flightDetailRouteViewModel.getAmenities().add(amenity);
             }
             adapterAmenity.addData(flightDetailRouteViewModel.getAmenities());
+            gridAmenity.setLayoutManager(new GridLayoutManager(itemView.getContext(), adapterAmenity.getItemCount()));
         }
     }
 
