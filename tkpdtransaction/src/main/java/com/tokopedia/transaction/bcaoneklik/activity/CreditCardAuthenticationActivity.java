@@ -1,14 +1,17 @@
 package com.tokopedia.transaction.bcaoneklik.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.adapter.autentication.AuthenticationListAdapter;
@@ -26,9 +29,24 @@ import javax.inject.Inject;
  */
 
 public class CreditCardAuthenticationActivity extends TActivity
-        implements CreditCardAuthenticationView{
+        implements CreditCardAuthenticationView {
+
+    private static final String EMAIL = "email";
+    private static final int DOUBLE_AUTHENTICATION_STATE = 0;
 
     private TkpdProgressDialog dialog;
+
+    @SuppressWarnings("unused")
+    @DeepLink(Constants.Applinks.CREDIT_CARD_AUTH_SETTING)
+    public static Intent getCallingIntentCreditCardAuthentication(Context context, Bundle extras) {
+        Intent intent = new Intent(context, CreditCardAuthenticationActivity.class);
+        AuthenticatorPageModel authenticatorPageModel = new AuthenticatorPageModel();
+        authenticatorPageModel.setState(DOUBLE_AUTHENTICATION_STATE);
+        authenticatorPageModel.setUserEmail(extras.getString(EMAIL));
+        intent.putExtra(CREDIT_CARD_STATUS_KEY, authenticatorPageModel);
+        intent.putExtras(extras);
+        return intent;
+    }
 
     @Inject
     CreditCardAuthenticationPresenterImpl presenter;

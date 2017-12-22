@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,8 +19,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -45,6 +44,9 @@ import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
+import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -87,6 +89,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             case DeepLinkChecker.HOT_LIST:
                 return false;
             case DeepLinkChecker.CATALOG:
+                return false;
+            case DeepLinkChecker.DISCOVERY_PAGE:
                 return false;
             case DeepLinkChecker.PRODUCT:
                 return false;
@@ -149,9 +153,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     sendCampaignGTM(uriData.toString(), screenName);
                     openHotProduct(linkSegment, uriData);
                     break;
+                case DeepLinkChecker.HOT_LIST:
+                    screenName = AppScreen.SCREEN_HOME_HOTLIST;
+                    sendCampaignGTM(uriData.toString(), screenName);
+                    openHomepageHot();
+                    break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_CATALOG;
+                    break;
+                case DeepLinkChecker.DISCOVERY_PAGE:
+                    openDiscoveryPage(uriData.toString());
+                    screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
                 case DeepLinkChecker.PRODUCT:
                     openDetailProduct(linkSegment, uriData);
@@ -204,6 +217,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             sendCampaignGTM(uriData.toString(), screenName);
         }
     }
+
 
     private void openPeluangPage() {
         Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
@@ -391,9 +405,25 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
+    private void openDiscoveryPage(String url) {
+      context.startActivity(ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+              context,
+              ReactConst.Screen.DISCOVERY_PAGE,
+              "",
+              DeepLinkChecker.getDiscoveryPageId(url)));
+    }
+
+    private void openHomepageHot() {
+        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
+        context.startActivity(intent);
+        context.finish();
+    }
+
     private void openCategory(String uriData) {
         URLParser urlParser = new URLParser(uriData);
-        if (urlParser.getParamKeyValueMap().size()>0) {
+        if (!urlParser.getParamKeyValueMap().isEmpty()) {
             CategoryActivity.moveTo(
                     context,
                     uriData
@@ -430,11 +460,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             context.startActivity(intent);
             context.finish();
         } else {
-            IntermediaryActivity.moveToClear(context,departmentId);
+            IntermediaryActivity.moveToClear(context, departmentId);
         }
     }
-
-
 
 
     private boolean isHotLink(List<String> linkSegment) {
@@ -468,6 +496,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !linkSegment.get(0).equals("iklan")
                 && !linkSegment.get(0).equals("newemail.pl")
                 && !linkSegment.get(0).equals("search")
+                && !linkSegment.get(0).equals("discovery")
                 && !linkSegment.get(0).equals("hot")
                 && !linkSegment.get(0).equals("blog")
                 && !linkSegment.get(0).equals("about")

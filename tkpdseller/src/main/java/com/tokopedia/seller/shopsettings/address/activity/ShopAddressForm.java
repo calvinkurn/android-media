@@ -136,10 +136,6 @@ public class ShopAddressForm extends TActivity {
             }
 
             @Override
-            public void setDepartments(List<CategoryDB> departments) {
-            }
-
-            @Override
             public void setShippingCity(List<District> districts) {
 
             }

@@ -202,16 +202,16 @@ public class ImageHandler {
      * @param url
      */
     public static void LoadImage(ImageView imageview, String url) {
-
-
         if (imageview.getContext() != null) {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .into(imageview);
+            try {
+                Glide.with(imageview.getContext())
+                        .load(url)
+                        .fitCenter()
+                        .dontAnimate()
+                        .placeholder(R.drawable.loading_page)
+                        .error(R.drawable.error_drawable)
+                        .into(imageview);
+            }catch (Exception e){}
         }
     }
 
@@ -374,7 +374,7 @@ public class ImageHandler {
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
-            Glide.with(context)
+            Glide.with(imageview.getContext())
                     .load(url)
                     .asBitmap()
                     .dontAnimate()

@@ -42,6 +42,9 @@ public class Attributes {
     @SerializedName("show_subscribe_flag")
     @Expose
     private boolean showSubscribeFlag;
+    @SerializedName("is_thankyou_native")
+    @Expose
+    private boolean isThankyouNative;
 
     public void setIdentifier(RequestBodyIdentifier identifier) {
         this.identifier = identifier;
@@ -81,5 +84,9 @@ public class Attributes {
 
     public void setShowSubscribeFlag(boolean showSubscribeFlag) {
         this.showSubscribeFlag = showSubscribeFlag;
+    }
+
+    public void setThankyouNative(boolean thankyouNative) {
+        isThankyouNative = thankyouNative;
     }
 }

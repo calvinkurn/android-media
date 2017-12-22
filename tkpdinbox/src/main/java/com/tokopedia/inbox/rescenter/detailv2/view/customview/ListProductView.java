@@ -66,7 +66,7 @@ public class ListProductView extends BaseView<ProductData, DetailResCenterFragme
         initRecyclerView(data);
         actionMore.setOnClickListener(new ListProductViewOnClickListener());
         actionMore.setVisibility(
-                data.getProductList() != null && data.getProductList().size() > 2 ?
+                data.getProductList() != null && data.getProductList().size() > 3 ?
                         VISIBLE : GONE
         );
         setVisibility(VISIBLE);

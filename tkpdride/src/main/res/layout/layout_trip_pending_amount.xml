@@ -68,14 +68,6 @@
         android:paddingBottom="@dimen/eight_dp">
 
         <TextView
-            android:id="@+id/tv_choose_tokocash_amount_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/complete_trip_choose_tokocash_amount"
-            android:textSize="@dimen/font_small"
-            android:visibility="gone" />
-
-        <TextView
             android:id="@+id/btn_pay_pending_fare"
             android:layout_width="match_parent"
             android:layout_height="42dp"

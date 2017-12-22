@@ -60,15 +60,6 @@
             android:text="@string/reputation_history_label_change_date"
             android:textColor="@color/tkpd_main_green"
             android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/calendar_arrow_icon"
-            android:layout_width="@dimen/image_width_xxxs"
-            android:layout_height="@dimen/image_width_xxs"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_arrow_right" />
     </LinearLayout>
 
 </RelativeLayout>

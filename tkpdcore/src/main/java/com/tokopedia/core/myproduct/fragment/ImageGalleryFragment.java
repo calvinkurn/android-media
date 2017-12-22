@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -158,7 +159,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            if (getArguments().getString(FRAGMENT_FOLDER_PATH, null) != null) {
+            if (!TextUtils.isEmpty(getArguments().getString(FRAGMENT_FOLDER_PATH, null))) {
                 folderPath = getArguments().getString(FRAGMENT_FOLDER_PATH, null);
             }
 
@@ -184,7 +185,7 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
         recyclerView.setAdapter(adapter);
         adapter.setCountTitle(this);
 
-        if (imageGalleryView != null && folderPath != null)
+        if (imageGalleryView != null && !TextUtils.isEmpty(folderPath))
             imageGalleryView.fetchImageFromDb(folderPath);
 
         return parentView;

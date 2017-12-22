@@ -34,7 +34,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
 import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
-import com.tokopedia.profilecompletion.view.util.TextDrawable;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
 
