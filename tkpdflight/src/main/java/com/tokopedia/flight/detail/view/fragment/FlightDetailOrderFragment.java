@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
@@ -33,7 +34,7 @@ import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
-import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPriceAdapter;
+import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.List;
@@ -66,7 +67,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter;
-    private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
+    private FlightSimpleAdapter flightBookingReviewPriceAdapter;
 
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
@@ -115,8 +116,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         setViewClickListener();
 
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(getActivity());
-        flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(getActivity());
-        flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter(getActivity());
+        FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
+        flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
+        flightBookingReviewPriceAdapter = new FlightSimpleAdapter();
 
         recyclerViewFlight.setAdapter(flightDetailOrderAdapter);
         recyclerViewPassenger.setAdapter(flightBookingReviewPassengerAdapter);
@@ -245,7 +247,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePrice(List<SimpleViewModel> priceList, String totalPrice) {
-        flightBookingReviewPriceAdapter.addData(priceList);
+        flightBookingReviewPriceAdapter.setViewModels(priceList);
         flightBookingReviewPriceAdapter.notifyDataSetChanged();
         this.totalPrice.setText(totalPrice);
     }

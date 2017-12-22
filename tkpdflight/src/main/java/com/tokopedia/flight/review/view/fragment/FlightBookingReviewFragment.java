@@ -31,6 +31,7 @@ import com.tokopedia.design.voucher.VoucherCartView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -54,7 +55,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
-import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPriceAdapter;
+import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewContract;
@@ -95,7 +96,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private VoucherCartView voucherCartView;
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
-    private FlightBookingReviewPriceAdapter flightBookingReviewPriceAdapter;
+    private FlightSimpleAdapter flightBookingReviewPriceAdapter;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
@@ -206,12 +207,13 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         } else {
             containerFlightReturn.setVisibility(View.GONE);
         }
-        FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(getContext());
-        flightBookingReviewPassengerAdapter.addData(flightBookingReviewModel.getDetailPassengers());
+        FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
+        FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter2 = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
+        flightBookingReviewPassengerAdapter2.addData(flightBookingReviewModel.getDetailPassengers());
         recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter);
-        flightBookingReviewPriceAdapter = new FlightBookingReviewPriceAdapter(getContext());
-        flightBookingReviewPriceAdapter.addData(flightBookingReviewModel.getFlightReviewFares());
+        recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter2);
+        flightBookingReviewPriceAdapter = new FlightSimpleAdapter();
+        flightBookingReviewPriceAdapter.setViewModels(flightBookingReviewModel.getFlightReviewFares());
         recyclerViewDetailPrice.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
 
@@ -401,8 +403,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void renderPriceListDetails(List<SimpleViewModel> simpleViewModels) {
         flightBookingReviewModel.setFlightReviewFares(simpleViewModels);
-        flightBookingReviewPriceAdapter.clearData();
-        flightBookingReviewPriceAdapter.addData(simpleViewModels);
+        flightBookingReviewPriceAdapter.setViewModels(simpleViewModels);
         flightBookingReviewPriceAdapter.notifyDataSetChanged();
     }
 
