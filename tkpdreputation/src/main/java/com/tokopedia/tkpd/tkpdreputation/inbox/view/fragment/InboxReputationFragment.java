@@ -232,10 +232,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                if (!adapter.isLoading())
-                    presenter.getNextPage(lastItemPosition, visibleItem, "",
-                            timeFilter, scoreFilter, getTab
-                                    ());
+                if (!adapter.isLoading() && !adapter.isEmpty())
+                    presenter.getNextPage(lastItemPosition, visibleItem,
+                            searchView.getQuery().toString(), timeFilter, scoreFilter, getTab());
             }
         };
     }
