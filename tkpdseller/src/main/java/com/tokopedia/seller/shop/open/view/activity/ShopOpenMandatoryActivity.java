@@ -36,8 +36,6 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     private List<Fragment> fragmentList;
     private ShopOpenDomainComponent component;
 
-    boolean isLogoutOnBack = false;
-
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
         return intent;
@@ -114,20 +112,6 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     @Override
     public ShopOpenDomainComponent getComponent() {
         return component;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (getCurrentPosition() > 1) {
-            super.onBackPressed();
-        } else {
-            if (isLogoutOnBack) {
-                SessionHandler session = new SessionHandler(this);
-                session.Logout(this);
-            } else {
-                super.onBackPressed();
-            }
-        }
     }
 
 }

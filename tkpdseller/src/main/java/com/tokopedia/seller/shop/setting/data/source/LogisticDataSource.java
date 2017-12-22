@@ -32,23 +32,24 @@ public class LogisticDataSource {
     }
 
     public Observable<OpenShopCouriersModel> getAvailableCouriers(final int districtCode) {
-        return districtLogisticDataCache.getAvailableCouriers(districtCode)
-                .flatMap(new Func1<OpenShopCouriersModel, Observable<OpenShopCouriersModel>>() {
-            @Override
-            public Observable<OpenShopCouriersModel> call(OpenShopCouriersModel openShopCouriersModel) {
-                if (openShopCouriersModel == null) {
-                    return districLogisticDataCloud.getAvailableCouriers(districtCode)
-                            .doOnNext(new Action1<OpenShopCouriersModel>() {
-                                @Override
-                                public void call(OpenShopCouriersModel openShopCouriersModel) {
-                                    districtLogisticDataCache.saveToDB(openShopCouriersModel, districtCode);
-                                }
-                            });
-                } else {
-                    return Observable.just(openShopCouriersModel);
-                }
-            };
-        });
+        return districLogisticDataCloud.getAvailableCouriers(districtCode);
+//        return districtLogisticDataCache.getAvailableCouriers(districtCode)
+//                .flatMap(new Func1<OpenShopCouriersModel, Observable<OpenShopCouriersModel>>() {
+//            @Override
+//            public Observable<OpenShopCouriersModel> call(OpenShopCouriersModel openShopCouriersModel) {
+//                if (openShopCouriersModel == null) {
+//                    return districLogisticDataCloud.getAvailableCouriers(districtCode)
+//                            .doOnNext(new Action1<OpenShopCouriersModel>() {
+//                                @Override
+//                                public void call(OpenShopCouriersModel openShopCouriersModel) {
+//                                    districtLogisticDataCache.saveToDB(openShopCouriersModel, districtCode);
+//                                }
+//                            });
+//                } else {
+//                    return Observable.just(openShopCouriersModel);
+//                }
+//            };
+//        });
     }
 
 
