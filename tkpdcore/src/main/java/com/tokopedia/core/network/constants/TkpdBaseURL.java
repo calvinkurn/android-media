@@ -545,6 +545,7 @@ public class TkpdBaseURL {
     public static class Shipment {
         public static final String PATH_RATES = "rates/v1";
         public static final String PATH_DISTRICT_RECOMMENDATION = "/v2/district-recommendation";
+        public static final String PATH_PICKUP_STORE = "/v2/store-location";
     }
 
     public static class Upload {

@@ -20,4 +20,7 @@ public interface KeroApi {
             @QueryMap TKPDMapParam<String, String> params
     );
 
+    @GET(TkpdBaseURL.Shipment.PATH_PICKUP_STORE)
+    Observable<Response<String>> getPickupStores(@QueryMap TKPDMapParam<String, String> params);
+
 }
