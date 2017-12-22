@@ -5,11 +5,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
@@ -25,7 +24,7 @@ public class BottomSheetInfo extends BottomSheetDialog {
     private Context context;
     private List<WarningItemViewModel> viewModelList;
     private RecyclerView warningRecyclerView;
-    private NestedScrollView mainScrollView;
+    private ImageView closeIcon;
 
     //TODO use DI
 //    @Inject
@@ -50,9 +49,15 @@ public class BottomSheetInfo extends BottomSheetDialog {
         setContentView(bottomSheetView);
 
         warningRecyclerView = bottomSheetView.findViewById(R.id.warning_rv);
-        mainScrollView = bottomSheetView.findViewById(R.id.bottom_sheet1);
+        closeIcon = bottomSheetView.findViewById(R.id.close_icon);
 
         warningRecyclerView.setFocusable(false);
+        closeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetInfo.this.dismiss();
+            }
+        });
         populateRecyclerView();
     }
 
