@@ -126,7 +126,8 @@
             android:layout_width="@dimen/image_width_m"
             android:layout_height="@dimen/image_width_m"
             android:layout_gravity="center"
-            android:src="@drawable/ic_flight_reverse_horizontal" />
+            android:rotation="90"
+            app:srcCompat="@drawable/ic_flight_reverse"/>
 
     </FrameLayout>
 

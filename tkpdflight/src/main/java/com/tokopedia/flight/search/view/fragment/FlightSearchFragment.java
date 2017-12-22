@@ -9,6 +9,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -266,6 +267,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    public void removeToolbarElevation() {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
+    }
+
+    @Override
+    public void addToolbarElevation() {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(getResources().getDimension(R.dimen.toolbar_elevation));
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -419,6 +430,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
         hideLoading();
+        addToolbarElevation();
         getAdapter().clearData();
         getAdapter().addData(flightSearchViewModelList, flightSearchViewModelList.size());
     }
@@ -436,6 +448,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB) {
+        this.addToolbarElevation();
         String depAirport = flightMetaDataDB.getDepartureAirport();
         String arrivalAirport = flightMetaDataDB.getArrivalAirport();
         FlightAirportCombineModel flightAirportCombineModel = airportCombineModelList.getData(depAirport, arrivalAirport);
@@ -534,6 +547,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onLoadSearchError(Throwable t) {
         Log.i(TAG, t.toString());
+        this.addToolbarElevation();
         super.onLoadSearchError(t);
         String message = FlightErrorUtil.getMessageFromException(getActivity(), t);
         flightSearchAdapter.setErrorMessage(message);
@@ -561,6 +575,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onSuccessGetStatistic(FlightSearchStatisticModel flightSearchStatisticModel) {
+        this.addToolbarElevation();
         this.flightSearchStatisticModel = flightSearchStatisticModel;
         startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
                 isReturning(),
