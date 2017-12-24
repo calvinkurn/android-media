@@ -41,7 +41,6 @@ import com.tokopedia.digital.widget.presenter.IDigitalWidgetStyle1Presenter;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 import butterknife.BindView;
 import rx.Observable;
