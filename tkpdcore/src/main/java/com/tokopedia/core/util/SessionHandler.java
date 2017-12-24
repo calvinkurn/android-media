@@ -168,6 +168,7 @@ public class SessionHandler {
 
 
     public void clearToken() {
+        Log.d("NISNIS", "CLEAR TOKEN");
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, null);
@@ -186,6 +187,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
+
 
     }
 

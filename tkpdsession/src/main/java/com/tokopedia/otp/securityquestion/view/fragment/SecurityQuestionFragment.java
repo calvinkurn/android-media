@@ -19,6 +19,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -441,6 +442,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorRequestOTP(String errorMessage) {
+        enableOtpButton();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -533,6 +535,8 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessValidateOtp() {
+        Log.d("NISNISLogin", "SQFragment " + sessionHandler.isV4Login());
+
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }

@@ -45,8 +45,6 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
 
     public static RequestParams getParam(int otpType, String otp, String userId) {
         RequestParams param = RequestParams.create();
-        param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
-                RequestParams.EMPTY.getParameters()));
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_CODE, otp);
         param.putString(PARAM_USER, userId);

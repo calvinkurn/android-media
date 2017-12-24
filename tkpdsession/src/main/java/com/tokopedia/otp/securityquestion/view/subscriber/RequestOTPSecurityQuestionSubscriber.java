@@ -25,16 +25,17 @@ public class RequestOTPSecurityQuestionSubscriber extends Subscriber<RequestOtpV
 
     @Override
     public void onCompleted() {
-        viewListener.dismissLoadingProgress();
     }
 
     @Override
     public void onError(Throwable e) {
+        viewListener.dismissLoadingProgress();
         viewListener.onErrorRequestOTP(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(RequestOtpViewModel requestOtpViewModel) {
+        viewListener.dismissLoadingProgress();
         if (requestOtpViewModel.isSuccess() && !TextUtils.isEmpty(requestOtpViewModel
                 .getMessageStatus()))
             viewListener.onSuccessRequestOTP(requestOtpViewModel.getMessageStatus());

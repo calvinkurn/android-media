@@ -58,23 +58,21 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
 
     public static RequestParams getParamBeforeLogin(String mode, int otpType, String tempUserId) {
         RequestParams param = RequestParams.create();
-        param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
-                RequestParams.EMPTY.getParameters()));
         param.putString(PARAM_MODE, mode);
         param.putInt(PARAM_OTP_TYPE, otpType);
-        param.putString(PARAM_USER_ID, tempUserId);
+        param.putAll(AuthUtil.generateParamsNetworkObject(MainApplication.getAppContext(),
+                RequestParams.EMPTY.getParameters(), tempUserId));
         return param;
     }
 
     public static RequestParams getParamEmailBeforeLogin(String mode, String email, int otpType,
                                                          String tempUserId) {
         RequestParams param = RequestParams.create();
-        param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
-                RequestParams.EMPTY.getParameters()));
         param.putString(PARAM_MODE, mode);
         param.putString(PARAM_EMAIL, email);
         param.putInt(PARAM_OTP_TYPE, otpType);
-        param.putString(PARAM_USER_ID, tempUserId);
+        param.putAll(AuthUtil.generateParamsNetworkObject(MainApplication.getAppContext(),
+                RequestParams.EMPTY.getParameters(), tempUserId));
         return param;
     }
 }
