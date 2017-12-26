@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +76,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     CheckBox promoCheckbox;
     @BindView(R2.id.ed_promo_layout)
     View edPromoLayout;
+    @BindView(R2.id.progress_bar_layout)
+    View progressBarLayout;
+    @BindView(R2.id.prog_bar)
+    ProgressBar progBar;
 
 
 
@@ -150,6 +155,18 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @Override
     public void setEmailID(String emailID) {
         tvVisitorNames.setText(emailID);
+    }
+
+    @Override
+    public void showProgressBar() {
+        progBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     private void executeInjector() {

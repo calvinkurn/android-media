@@ -6,8 +6,6 @@ import android.content.Intent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.events.view.utils.ImageTextViewHolder;
-import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 
 /**
@@ -26,6 +24,10 @@ public class EventReviewTicketsContractor {
         void renderFromPackageVM(PackageViewModel packageViewModel);
 
         void setEmailID(String emailID);
+
+        void showProgressBar();
+
+        void hideProgressBar();
 
 
         RequestParams getParams();

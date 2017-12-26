@@ -65,6 +65,7 @@ public class EventReviewTicketPresenter
 
     @Override
     public void initialize() {
+        getView().showProgressBar();
         GlobalCacheManager profileCache = new GlobalCacheManager();
 
         ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
@@ -99,6 +100,7 @@ public class EventReviewTicketPresenter
             public void onNext(ProfileModel model) {
                 profileModel = model;
                 getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
+                getView().hideProgressBar();
             }
         });
 
@@ -211,6 +213,7 @@ public class EventReviewTicketPresenter
     }
 
     public void verifyCart() {
+        getView().showProgressBar();
 
         postVerifyCartUseCase.execute(RequestParams.EMPTY, new Subscriber<VerifyCartResponse>() {
             @Override
@@ -262,6 +265,7 @@ public class EventReviewTicketPresenter
                 paymentPassData.convertToPaymenPassData(checkoutResponse);
                 getView().navigateToActivityRequest(TopPayActivity.
                         createInstance(getView().getActivity(), paymentPassData), TopPayActivity.REQUEST_CODE);
+                getView().hideProgressBar();
 
             }
         });
