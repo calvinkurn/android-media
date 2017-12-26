@@ -137,12 +137,13 @@
                 app:cardCornerRadius="2dp"
                 android:elevation="0dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="8dp"
@@ -153,14 +154,32 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/update_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/tv_telephone"
+                        android:layout_alignBottom="@+id/tv_telephone"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:paddingEnd="@dimen/margin_default"
+                        android:paddingRight="@dimen/margin_default"
+                        android:text="Ubah"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv2"
+                        android:layout_below="@id/tv1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/margin_default"
                         android:paddingStart="@dimen/margin_default"
                         android:text="E-mail"
+                        android:layout_marginBottom="-8dp"
                         android:textColor="@color/grey_900" />
 
                     <EditText
+                        android:layout_below="@id/tv2"
                         android:id="@+id/tv_visitor_names"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -171,14 +190,32 @@
                         android:textColor="@color/grey_700" />
 
                     <TextView
+                        android:id="@+id/update_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="end"
+                        android:paddingEnd="@dimen/margin_default"
+                        android:paddingRight="@dimen/margin_default"
+                        android:text="Ubah"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv3"
+                        android:layout_below="@id/tv_visitor_names"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/margin_default"
                         android:paddingStart="@dimen/margin_default"
                         android:text="No. Telepon"
+                        android:layout_marginBottom="-8dp"
+
                         android:textColor="@color/grey_900" />
 
                     <EditText
+                        android:layout_below="@id/tv3"
                         android:id="@+id/tv_telephone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -187,7 +224,7 @@
                         android:paddingStart="@dimen/margin_default"
                         android:text="Mad Max and 4 Others"
                         android:textColor="@color/grey_700" />
-                </LinearLayout>
+                </RelativeLayout>
 
             </android.support.v7.widget.CardView>
 
@@ -402,7 +439,8 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12">
+        android:background="@color/black_12"
+        android:visibility="gone">
     <ProgressBar
         android:id="@+id/prog_bar"
         android:layout_width="50dp"

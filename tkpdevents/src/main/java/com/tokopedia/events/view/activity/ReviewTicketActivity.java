@@ -80,6 +80,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     View progressBarLayout;
     @BindView(R2.id.prog_bar)
     ProgressBar progBar;
+    @BindView(R2.id.update_email)
+    View updateEmail;
+    @BindView(R2.id.update_number)
+    View updateNumber;
 
 
 
@@ -194,6 +198,16 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @OnClick(R2.id.update_promo)
     void clickUpdatePromo() {
         mPresenter.updatePromoCode(edPromo.getText().toString());
+    }
+
+    @OnClick(R2.id.update_email)
+    void updateEmail(){
+
+    }
+
+    @OnClick(R2.id.update_number)
+    void updateNumber(){
+
     }
 
     @Override
