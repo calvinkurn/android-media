@@ -1,6 +1,10 @@
 package com.tokopedia.digital.cart.model;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 
 import com.exotel.verification.ExotelVerification;
@@ -14,6 +18,8 @@ import com.exotel.verification.exceptions.InvalidConfigException;
 import com.exotel.verification.exceptions.PermissionNotGrantedException;
 import com.exotel.verification.exceptions.VerificationAlreadyInProgressException;
 import com.tokopedia.digital.utils.DeviceUtil;
+
+import java.util.List;
 
 /**
  * Created by sandeepgoyal on 04/12/17.
@@ -38,12 +44,24 @@ public class NOTPExotelVerification {
             verificationListener.onVerificationFail();
             return;
         }
-        phoneNo = DeviceUtil.validatePrefixClientNumber(phoneNo);
-        if(phoneNo.charAt(0) == '0') {
-            phoneNo = "+62" + phoneNo.substring(1);
-        }else {
-            phoneNo = "+62" + phoneNo;
+
+       /* Check if Truecaller installed
+       *  and If We have number information in phone then verify verification number and phone number are same
+       *
+       * */
+
+        if(istruecallerInstalled(context) || !isNumberExistInPhone((Activity) context,phoneNo)) {
+            verificationListener.onVerificationFail();
+            return;
         }
+
+        /* Check if Truecaller installed
+       *  and If We have number information in phone then verify verification number and phone number are same
+       *
+       * */
+
+
+        phoneNo = convertE164Fromat(phoneNo);
         ExotelVerification eVerification = new ExotelVerification();
         Config config = null;
         try {
@@ -84,7 +102,7 @@ public class NOTPExotelVerification {
             e.printStackTrace();
         }
         try {
-            eVerification.startVerification(new VerifyListener(), phoneNo,WAIT_SECONDS);
+            eVerification.startVerification(new VerifyListener(), "+919910166288",WAIT_SECONDS);
         } catch (VerificationAlreadyInProgressException e) {
             e.printStackTrace();
         }
@@ -93,6 +111,53 @@ public class NOTPExotelVerification {
     public interface NOTPVerificationListener {
         public void onVerificationSuccess();
         public void onVerificationFail();
+    }
+
+    private String convertE164Fromat(String phonNumber) {
+        phonNumber = DeviceUtil.validatePrefixClientNumber(phonNumber);
+        if(phonNumber.charAt(0) == '0') {
+            phonNumber = "+62" + phonNumber.substring(1);
+        }else {
+            phonNumber = "+62" + phonNumber;
+        }
+        return phonNumber;
+    }
+
+    private boolean isNumberExistInPhone(Activity context,String number) {
+        List<SubscriptionInfo> subscriptionInfos = null;
+        boolean result = true;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
+            subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
+            if (subscriptionInfos != null) {
+                for (int simIndex = 0; simIndex < subscriptionInfos.size(); simIndex++) {
+                    String phoneNumber = DeviceUtil.getMobileNumber(context, simIndex);
+                    if (phoneNumber != null) {
+                        result = false;
+                        if (phoneNumber.isEmpty() || convertE164Fromat(phoneNumber).equals(number)) {
+                            Log.e(TAG,"number exist or empty");
+                            result = true;
+                            break;
+                        }
+                    }else {
+                        result = true;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private boolean istruecallerInstalled(Context context) {
+        PackageManager pm = context.getPackageManager();
+        try {
+            pm.getPackageInfo("com.truecaller", PackageManager.GET_ACTIVITIES);
+            Log.e(TAG,"true caller installed");
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+
+        return false;
     }
 
 }

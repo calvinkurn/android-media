@@ -3,6 +3,8 @@ package com.tokopedia.digital.cart.presenter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -27,6 +29,7 @@ import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.model.VoucherDigital;
+import com.tokopedia.digital.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.net.ConnectException;
@@ -34,6 +37,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Subscriber;
 
@@ -50,6 +54,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                                 ICartDigitalInteractor iCartDigitalInteractor) {
         this.view = view;
         this.cartDigitalInteractor = iCartDigitalInteractor;
+        fetchRemoteConfig();
     }
 
     @Override
@@ -347,11 +352,40 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             }
         };
     }
+    FirebaseRemoteConfig firebaseRemoteConfig;
+
+    private void fetchRemoteConfig() {
+        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(view.getActivity());
+        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
+            @Override
+            public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
+                CartDigitalPresenter.this.firebaseRemoteConfig = firebaseRemoteConfig;
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+
+    private boolean isNOTPEnabled() {
+        // add here different conditions
+             return (firebaseRemoteConfig != null
+                    && firebaseRemoteConfig.getBoolean(RemoteConfigFetcher.NOTP_ENABLE));
+
+    }
 
 
     private void needToVerifyOTP() {
+        if (!isNOTPEnabled()) {
+            view.interruptRequestTokenVerification();
+            return;
+        }
         view.showProgressLoading();
-        NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getApplicationContext(), new NOTPExotelVerification.NOTPVerificationListener() {
+        NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getActivity(), new NOTPExotelVerification.NOTPVerificationListener() {
             @Override
             public void onVerificationSuccess() {
                 view.hideProgressLoading();

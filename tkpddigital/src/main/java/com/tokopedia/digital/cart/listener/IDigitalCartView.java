@@ -1,5 +1,6 @@
 package com.tokopedia.digital.cart.listener;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
@@ -104,6 +105,8 @@ public interface IDigitalCartView extends IBaseView {
     void checkCallPermissionForNOTP();
 
     Context getApplicationContext();
+
+    Activity getActivity();
 
 
 }
