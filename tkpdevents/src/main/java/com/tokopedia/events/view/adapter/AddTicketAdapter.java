@@ -90,13 +90,16 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.holderViewModel = viewModel;
             this.index = position;
             tvTicketName.setText(viewModel.getDisplayName());
-            tvTicketMaxprice.setText(CurrencyUtil.convertToCurrencyString(viewModel.getMrp()));
-            ticketSalePrice.setText(CurrencyUtil.convertToCurrencyString(viewModel.getSalesPrice()));
+            tvTicketMaxprice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getMrp()));
+            ticketSalePrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getSalesPrice()));
             tvTicketCnt.setText(String.valueOf(viewModel.getSelectedQuantity()));
-            if (holderViewModel.getSelectedQuantity() > 0)
-                btnDecrement.setVisibility(View.VISIBLE);
-            else
-                btnDecrement.setVisibility(View.INVISIBLE);
+            if (holderViewModel.getSelectedQuantity() > 0) {
+                btnDecrement.setAlpha(1.0f);
+                btnDecrement.setClickable(true);
+            } else {
+                btnDecrement.setAlpha(0.2f);
+                btnDecrement.setClickable(false);
+            }
             if(holderViewModel.getAvailable()>0) {
                 ivSoldOut.setVisibility(View.INVISIBLE);
                 buttonLayout.setVisibility(View.VISIBLE);
@@ -111,19 +114,27 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @OnClick(R2.id.btn_increment)
         void onClickIncrement() {
             mPresenter.addTickets(index, holderViewModel, this);
-            if (holderViewModel.getSelectedQuantity() > 0)
-                btnDecrement.setVisibility(View.VISIBLE);
-            else
-                btnDecrement.setVisibility(View.INVISIBLE);
+            if (holderViewModel.getSelectedQuantity() > 0) {
+                btnDecrement.setAlpha(1.0f);
+                btnDecrement.setClickable(true);
+            } else {
+                btnDecrement.setAlpha(0.2f);
+                btnDecrement.setClickable(false);
+            }
+            notifyDataSetChanged();
         }
 
         @OnClick(R2.id.btn_decrement)
         void onClickDecrement() {
             mPresenter.removeTickets();
-            if (holderViewModel.getSelectedQuantity() > 0)
-                btnDecrement.setVisibility(View.VISIBLE);
-            else
-                btnDecrement.setVisibility(View.INVISIBLE);
+            if (holderViewModel.getSelectedQuantity() > 0) {
+                btnDecrement.setAlpha(1.0f);
+                btnDecrement.setClickable(true);
+            } else {
+                btnDecrement.setAlpha(0.2f);
+                btnDecrement.setClickable(false);
+            }
+            notifyDataSetChanged();
         }
 
         public void setTvTicketCnt(int count) {

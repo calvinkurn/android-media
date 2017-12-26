@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/img_event"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="180dp"
             android:scaleType="centerCrop"
             android:src="@drawable/background" />
 
@@ -63,7 +63,7 @@
                 android:layout_alignParentRight="true"
                 android:padding="@dimen/padding_small"
                 android:text="Rp 552.00"
-                android:textColor="@color/green_500"
+                android:textColor="@color/orange"
                 android:textSize="12sp" />
 
             <LinearLayout
@@ -79,7 +79,7 @@
                     android:layout_height="16dp"
                     android:tint="@color/grey_500"
                     android:scaleType="centerCrop"
-                    android:background="@drawable/ic_time"
+                    android:background="@drawable/ic_placeholder"
                     />
                 <TextView
                     android:id="@+id/tv_location"
@@ -106,7 +106,7 @@
                     android:layout_height="16dp"
                     android:tint="@color/grey_500"
                     android:scaleType="centerCrop"
-                    android:background="@drawable/ic_placeholder"
+                    android:background="@drawable/ic_time"
                     />
                 <TextView
                     android:id="@+id/tv_time"

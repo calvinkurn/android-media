@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_ms"
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/card_corner_default"
     app:cardElevation="1dp">
@@ -14,45 +13,40 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/selectableItemBackground"
-            android:orientation="horizontal"
-            android:padding="@dimen/margin_default">
-
-            <ImageView
-                android:id="@+id/iv_arrow_tnc"
-                android:layout_width="@dimen/icon_size_small"
-                android:layout_height="@dimen/icon_size_small"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/margin_default"
-                android:text="@string/show_tnc"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <at.blogc.android.views.ExpandableTextView
-            android:id="@+id/tv_tnc_expandable"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/show_tnc"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="normal" />
+
+        <at.blogc.android.views.ExpandableTextView
+            android:id="@+id/tv_expandable_tnc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:maxLines="0"
-            android:paddingTop="@dimen/margin_default"
-            android:text="@string/bigcontent"
             android:textColor="@color/grey_700"
+            android:maxLines="3"
+            android:text="@string/bigcontent"
             android:textSize="14sp"
-            android:visibility="gone"
             app:animation_duration="300" />
+
+        <TextView
+            android:id="@+id/seemorebutton_tnc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/expand"
+            android:textColor="@color/link_color_green"
+            android:textSize="14sp" />
 
 
     </LinearLayout>

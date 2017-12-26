@@ -123,7 +123,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
     }
 
     public String convertEpochToString(int time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Long epochTime = time * 1000L;
         Date date = new Date(epochTime);

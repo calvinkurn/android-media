@@ -16,8 +16,11 @@ import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by ashwanityagi on 16/11/17.
@@ -82,9 +85,9 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.eventTitle.setText("" + categoryItems.get(position).getDisplayName());
-        holder.eventPrice.setText(CurrencyUtil.convertToCurrencyString(categoryItems.get(position).getSalesPrice()));
+        holder.eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(categoryItems.get(position).getSalesPrice()));
         holder.eventLocation.setText("" + categoryItems.get(position).getCityName());
-        holder.eventTime.setText("" + categoryItems.get(position).getMinStartTime());
+        holder.eventTime.setText("" + convertEpochToString(categoryItems.get(position).getMinStartDate()));
         holder.setIndex(position);
 
         ImageHandler.loadImageCover2(holder.eventImage, categoryItems.get(position).getImageApp());
@@ -108,5 +111,14 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             detailsIntent.putExtra("homedata",categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
         }
+    }
+
+    public String convertEpochToString(int time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        Long epochTime = time * 1000L;
+        Date date = new Date(epochTime);
+        String dateString = sdf.format(date);
+        return dateString;
     }
 }

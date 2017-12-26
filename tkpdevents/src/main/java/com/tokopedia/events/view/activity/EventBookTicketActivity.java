@@ -81,8 +81,6 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 //        ButterKnife.bind(addressHolder, addressView);
 //        ButterKnife.bind(timeHolder, timeView);
 
-        setupToolbar();
-        toolbar.setTitle("");
 
 //        collasingToolbar.setExpandedTitleColor(Color.parseColor("#00ffffff"));
 //        collasingToolbar.setCollapsedTitleTextColor(Color.parseColor("#ff000000"));
@@ -92,6 +90,9 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
         mPresenter.attachView(this);
 
         mPresenter.getTicketDetails();
+        setupToolbar();
+        toolbar.setTitle("Events");
+
     }
 
 
@@ -265,5 +266,10 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     @OnClick(R2.id.pay_tickets)
     void payTickets() {
         mPresenter.payTicketsClick();
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

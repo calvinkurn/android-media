@@ -61,16 +61,14 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     TextView seemorebutton;
     @BindView(R2.id.iv_arrow_seating)
     ImageView ivArrowSeating;
-    @BindView(R2.id.iv_arrow_tnc)
-    ImageView ivArrowTnc;
     @BindView(R2.id.btn_show_seating)
     LinearLayout btnShowSeating;
     @BindView(R2.id.imgv_seating_layout)
     ImageView imgvSeatingLayout;
-    @BindView(R2.id.tv_tnc_expandable)
-    ExpandableTextView tvTncExpandable;
-    @BindView(R2.id.btn_terms_conditions)
-    LinearLayout btnTermsConditions;
+    @BindView(R2.id.tv_expandable_tnc)
+    ExpandableTextView tvExpandableTermsNCondition;
+    @BindView(R2.id.seemorebutton_tnc)
+    TextView seemorebuttonTnC;
     @BindView(R2.id.app_bar)
     Toolbar appBar;
     @BindView(R2.id.event_time)
@@ -113,11 +111,15 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         ButterKnife.bind(addressHolder, addressView);
 
         tvExpandableDescription.setInterpolator(new OvershootInterpolator());
+        tvExpandableTermsNCondition.setInterpolator(new OvershootInterpolator());
 
-        setupToolbar();
+
 
         mPresenter.attachView(this);
         mPresenter.getEventDetails();
+
+        setupToolbar();
+        toolbar.setTitle("Events");
 
         AppBarLayout appBarLayout = findViewById(R.id.appbarlayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -137,7 +139,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
                 else
                 {
 
-                    upArrow.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.SRC_ATOP);
+                    upArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -170,8 +172,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public void renderFromHome(CategoryItemsViewModel homedata) {
         toolbar.setTitle(homedata.getTitle());
         ImageHandler.loadImageCover2(eventDetailBanner, homedata.getImageApp());
-        String dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate())
-                + " - " + mPresenter.convertEpochToString(homedata.getMaxEndDate());
+        String dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate());
 
         setHolder(R.drawable.ic_time, dateRange, timeHolder);
         setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
@@ -197,9 +198,9 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
                 }
 
             }
-            tvTncExpandable.setText(Html.fromHtml(tncBuffer.toString()));
+            tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
         } else {
-            tvTncExpandable.setText(Html.fromHtml(homedata.getTnc()));
+            tvExpandableTermsNCondition.setText(Html.fromHtml(homedata.getTnc()));
         }
         if(homedata.getDisplayTags().length()<3)
             tvDisplayTag.setVisibility(View.GONE);
@@ -279,22 +280,17 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 //        }
 //    }
 
-    @OnClick(R2.id.btn_terms_conditions)
-    void showHideTnC() {
-        if (tvTncExpandable.getVisibility() == View.GONE) {
-            tvTncExpandable.setVisibility(View.VISIBLE);
-            ivArrowTnc.animate().rotation(180f);
-        } else {
-            tvTncExpandable.setVisibility(View.GONE);
-            ivArrowTnc.animate().rotation(0f);
-        }
-        tvTncExpandable.toggle();
-    }
 
     @OnClick(R2.id.seemorebutton)
     void setSeemorebutton() {
-        seemorebutton.setText(tvExpandableDescription.isExpanded() ? R.string.expand : R.string.collapse);
-        tvExpandableDescription.toggle();
+        seemorebutton.setText(tvExpandableTermsNCondition.isExpanded() ? R.string.expand : R.string.collapse);
+        tvExpandableTermsNCondition.toggle();
+    }
+
+    @OnClick(R2.id.seemorebutton_tnc)
+    void setSeemorebuttontnc() {
+        seemorebuttonTnC.setText(tvExpandableTermsNCondition.isExpanded() ? R.string.expand : R.string.collapse);
+        tvExpandableTermsNCondition.toggle();
     }
 
     @OnClick(R2.id.btn_book)
@@ -321,5 +317,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         return eventComponent;
     }
 
-
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
