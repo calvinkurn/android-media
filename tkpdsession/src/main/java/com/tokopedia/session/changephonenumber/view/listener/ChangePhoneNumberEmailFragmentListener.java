@@ -1,5 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.listener;
 
+import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 
 /**
@@ -11,7 +12,7 @@ public interface ChangePhoneNumberEmailFragmentListener {
 
     }
 
-    public interface Presenter {
+    public interface Presenter extends CustomerPresenter<View> {
         void initView();
     }
 }
