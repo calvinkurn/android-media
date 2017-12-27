@@ -3,6 +3,7 @@ package com.tokopedia.transaction.addtocart.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -22,7 +25,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -178,6 +183,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     ImageView imgInsuranceInfo;
     @BindView(R2.id.tv_send_to_pick_up_booth)
     TextView tvSendToPickUpBooth;
+    @BindView(R2.id.tv_pick_up_booth_name)
+    TextView tvPickUpBoothName;
+    @BindView(R2.id.btn_cancel_pick_up)
+    ImageButton btnCancelPickUp;
+    @BindView(R2.id.tv_pick_up_booth_address)
+    TextView tvPickUpBoothAddress;
+    @BindView(R2.id.tv_edit_pick_up_booth)
+    TextView tvEditPickUpBooth;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -905,6 +918,23 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 showBuyError(getString(R.string.msg_no_connection));
                 break;
         }
+    }
+
+    private void showCancelPickupBoothDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Batalkan Pengiriman ke Gerai Pengambilan");
+        builder.setMessage("Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan");
+        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setNegativeButton(R.string.title_no, null);
+        AlertDialog alert = builder.create();
+        Button positiveButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setTextColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
+        alert.show();
     }
 
     @Override

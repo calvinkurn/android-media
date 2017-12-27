@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.transaction.pickup.alfamart.data.datastore.PickupPointDataStore;
-import com.tokopedia.transaction.pickup.alfamart.data.mapper.PickupPointEntityMapper;
+import com.tokopedia.transaction.pickup.alfamart.domain.mapper.PickupPointEntityMapper;
 import com.tokopedia.transaction.pickup.alfamart.data.repository.PickupPointRepository;
 import com.tokopedia.transaction.pickup.alfamart.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickup.alfamart.view.PickupPointContract;

@@ -67,7 +67,8 @@
             android:label="@string/title_activity_people_tx_details" />
         <activity
             android:name=".pickup.alfamart.view.PickupPointsActivity"
-            android:label="@string/title_send_to_pick_up_booth"/>
+            android:label="@string/title_send_to_pick_up_booth"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".purchase.services.TxActionIntentService"

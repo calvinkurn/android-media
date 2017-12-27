@@ -169,4 +169,6 @@
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="title_send_to_pick_up_booth">Gerai Pengambilan di aaaa bbbb cccc dddd eeee ffff</string>
     <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
+    <string name="label_edit_pickup">Edit</string>
+    <string name="label_pickup_booth">Gerai Pengambilan</string>
 </resources>

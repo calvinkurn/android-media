@@ -2,21 +2,40 @@ package com.tokopedia.transaction.pickup.alfamart.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Spinner;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 
 import java.util.HashMap;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.tokopedia.transaction.pickup.alfamart.view.PickupPointContract.Constant.INTENT_DATA_PARAMS;
 
 public class PickupPointsActivity extends BaseActivity {
+
+    @BindView(R2.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R2.id.toolbar_layout)
+    CollapsingToolbarLayout toolbarLayout;
+    @BindView(R2.id.app_bar)
+    AppBarLayout appBar;
+    @BindView(R2.id.sp_pickup_booth)
+    Spinner spPickupBooth;
+    @BindView(R2.id.search_view_pickup_booth)
+    SearchView searchViewPickupBooth;
+    @BindView(R2.id.rv_pickup_booth)
+    RecyclerView rvPickupBooth;
 
     public static Intent createInstance(Activity activity, HashMap<String, String> params) {
         Intent intent = new Intent(activity, PickupPointsActivity.class);
@@ -28,13 +47,14 @@ public class PickupPointsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup_point);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setElevation(0);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(
                     com.tokopedia.core.R.drawable.ic_webview_back_button
             );
@@ -49,4 +69,5 @@ public class PickupPointsActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

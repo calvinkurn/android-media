@@ -12,7 +12,5 @@
     <style name="TextAppearance.Title.Expanded" parent="android:TextAppearance">
         <item name="android:textColor">@color/black_70</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:lines">2</item>
-        <item name="android:maxLines">2</item>
     </style>
 </resources>

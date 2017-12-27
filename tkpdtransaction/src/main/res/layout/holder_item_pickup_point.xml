@@ -4,26 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/new_margin_med">
 
-        <TextView
-            android:id="@+id/tv_store_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            tools:text="Alfamart - Rawa Belong" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_store_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                tools:text="Alfamart - Rawa Belong" />
+
+            <ImageButton
+                android:id="@+id/btn_check"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/bg_circle_grey" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_store_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_store_name"
             android:fontFamily="sans-serif"
             android:textSize="14sp"
             android:textStyle="normal"
@@ -33,13 +46,15 @@
             android:id="@+id/tv_show_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_store_address"
             android:layout_marginTop="8dp"
+            android:drawableLeft="@drawable/ic_icon_location_grey"
+            android:drawablePadding="@dimen/padding_vs"
+            android:drawableStart="@drawable/ic_icon_location_grey"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/tkpd_main_green"
             android:textSize="14sp"
             android:textStyle="normal"
             tools:text="Lihat Peta" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

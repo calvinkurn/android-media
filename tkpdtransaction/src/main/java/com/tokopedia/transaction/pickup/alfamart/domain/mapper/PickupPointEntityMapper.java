@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.pickup.alfamart.data.mapper;
+package com.tokopedia.transaction.pickup.alfamart.domain.mapper;
 
 import com.tokopedia.transaction.pickup.alfamart.data.entity.DataEntity;
 import com.tokopedia.transaction.pickup.alfamart.data.entity.PickupPointResponseEntity;
@@ -8,7 +8,6 @@ import com.tokopedia.transaction.pickup.alfamart.domain.model.PickupPointRespons
 import com.tokopedia.transaction.pickup.alfamart.domain.model.Store;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Irfan Khoirul on 22/12/17.

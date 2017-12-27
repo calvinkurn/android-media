@@ -3,7 +3,7 @@ package com.tokopedia.transaction.pickup.alfamart.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.pickup.alfamart.data.datastore.PickupPointDataStore;
 import com.tokopedia.transaction.pickup.alfamart.data.entity.PickupPointResponseEntity;
-import com.tokopedia.transaction.pickup.alfamart.data.mapper.PickupPointEntityMapper;
+import com.tokopedia.transaction.pickup.alfamart.domain.mapper.PickupPointEntityMapper;
 import com.tokopedia.transaction.pickup.alfamart.domain.model.PickupPointResponse;
 
 import javax.inject.Inject;

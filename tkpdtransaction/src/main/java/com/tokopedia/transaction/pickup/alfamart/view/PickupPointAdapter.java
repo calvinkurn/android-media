@@ -4,12 +4,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.pickup.alfamart.domain.model.Store;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -36,6 +40,26 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
 
     @Override
     public void onBindViewHolder(PickupPointViewHolder holder, int position) {
+
+        Store store = stores.get(position);
+
+        holder.tvStoreName.setText(store.getStoreName());
+        holder.tvStoreAddress.setText(store.getAddress());
+
+        holder.tvShowMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        holder.tvShowMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
     @Override
@@ -48,6 +72,15 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
     }
 
     protected class PickupPointViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        @BindView(R2.id.btn_check)
+        ImageButton btnCheck;
+        @BindView(R2.id.tv_store_name)
+        TextView tvStoreName;
+        @BindView(R2.id.tv_store_address)
+        TextView tvStoreAddress;
+        @BindView(R2.id.tv_show_map)
+        TextView tvShowMap;
 
         PickupPointViewHolder(View itemView) {
             super(itemView);
