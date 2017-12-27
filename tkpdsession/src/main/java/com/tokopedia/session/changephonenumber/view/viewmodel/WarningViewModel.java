@@ -13,12 +13,10 @@ import java.util.List;
 public class WarningViewModel implements Parcelable {
     private String tokopediaBalance;
     private String tokocash;
-    private List<WarningItemViewModel> warningList;
+    private String action;
+    private List<String> warningList;
 
-    public WarningViewModel(String tokopediaBalance, String tokocash, List<WarningItemViewModel> warningList) {
-        this.tokopediaBalance = tokopediaBalance;
-        this.tokocash = tokocash;
-        this.warningList = warningList;
+    public WarningViewModel() {
     }
 
     public String getTokopediaBalance() {
@@ -37,11 +35,19 @@ public class WarningViewModel implements Parcelable {
         this.tokocash = tokocash;
     }
 
-    public List<WarningItemViewModel> getWarningList() {
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public List<String> getWarningList() {
         return warningList;
     }
 
-    public void setWarningList(List<WarningItemViewModel> warningList) {
+    public void setWarningList(List<String> warningList) {
         this.warningList = warningList;
     }
 
@@ -54,20 +60,18 @@ public class WarningViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.tokopediaBalance);
         dest.writeString(this.tokocash);
-        dest.writeList(this.warningList);
-    }
-
-    public WarningViewModel() {
+        dest.writeString(this.action);
+        dest.writeStringList(this.warningList);
     }
 
     protected WarningViewModel(Parcel in) {
         this.tokopediaBalance = in.readString();
         this.tokocash = in.readString();
-        this.warningList = new ArrayList<WarningItemViewModel>();
-        in.readList(this.warningList, WarningItemViewModel.class.getClassLoader());
+        this.action = in.readString();
+        this.warningList = in.createStringArrayList();
     }
 
-    public static final Parcelable.Creator<WarningViewModel> CREATOR = new Parcelable.Creator<WarningViewModel>() {
+    public static final Creator<WarningViewModel> CREATOR = new Creator<WarningViewModel>() {
         @Override
         public WarningViewModel createFromParcel(Parcel source) {
             return new WarningViewModel(source);

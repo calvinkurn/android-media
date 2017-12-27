@@ -1,7 +1,10 @@
 package com.tokopedia.session.changephonenumber.view.presenter;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.subscriber.GetWarningSubscriber;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -13,6 +16,12 @@ public class ChangePhoneNumberWarningPresenter
 
     ChangePhoneNumberWarningFragmentListener.View view;
 
+    private final GetWarningUseCase getWarningUseCase;
+
+    public ChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase) {
+        this.getWarningUseCase = getWarningUseCase;
+    }
+
     @Override
     public void attachView(ChangePhoneNumberWarningFragmentListener.View view) {
         this.view = view;
@@ -20,7 +29,19 @@ public class ChangePhoneNumberWarningPresenter
     }
 
     @Override
-    public void initView() {
+    public void detachView() {
+        getWarningUseCase.unsubscribe();
+        super.detachView();
+    }
 
+    @Override
+    public void initView() {
+        getWarning();
+    }
+
+    @Override
+    public void getWarning() {
+        getWarningUseCase.execute(RequestParams.create(),
+                new GetWarningSubscriber(view));
     }
 }

@@ -9,12 +9,8 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberInputComponent;
-import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberInputComponent;
-import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberInputModule;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputActivityListener;
-import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 
 import java.util.ArrayList;
 
@@ -22,15 +18,15 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
         implements ChangePhoneNumberInputActivityListener.View, HasComponent {
     public static final String PARAM_WARNING_LIST = "warning_list";
 
-    private ArrayList<WarningItemViewModel> warningList;
+    private ArrayList<String> warningList;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, ChangePhoneNumberInputActivity.class);
     }
 
-    public static Intent newInstance(Context context, ArrayList<WarningItemViewModel> viewModelList) {
+    public static Intent newInstance(Context context, ArrayList<String> warningList) {
         Intent intent = new Intent(context, ChangePhoneNumberInputActivity.class);
-        intent.putExtra(PARAM_WARNING_LIST, viewModelList);
+        intent.putExtra(PARAM_WARNING_LIST, warningList);
         return intent;
     }
 
@@ -41,7 +37,7 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        warningList = extras.getParcelableArrayList(PARAM_WARNING_LIST);
+        warningList = extras.getStringArrayList(PARAM_WARNING_LIST);
     }
 
     @Override

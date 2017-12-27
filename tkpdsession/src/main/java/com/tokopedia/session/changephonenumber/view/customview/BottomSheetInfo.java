@@ -12,9 +12,10 @@ import android.widget.ImageView;
 
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
-import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by milhamj on 21/12/17.
@@ -22,15 +23,14 @@ import java.util.List;
 
 public class BottomSheetInfo extends BottomSheetDialog {
     private Context context;
-    private List<WarningItemViewModel> viewModelList;
+    private List<String> viewModelList;
     private RecyclerView warningRecyclerView;
     private ImageView closeIcon;
 
-    //TODO use DI
-//    @Inject
-//    public WarningListAdapter adapter;
+    @Inject
+    WarningListAdapter adapter;
 
-    public BottomSheetInfo(@NonNull Context context, @NonNull List<WarningItemViewModel> viewModelList) {
+    public BottomSheetInfo(@NonNull Context context, @NonNull List<String> viewModelList) {
         super(context);
         if (viewModelList.size() < 1)
             throw new IllegalStateException("You have to provide the list of warnings!");

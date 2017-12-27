@@ -4,11 +4,13 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningActivityListener;
 
-public class ChangePhoneNumberWarningActivity extends BasePresenterActivity implements ChangePhoneNumberWarningActivityListener.View {
+public class ChangePhoneNumberWarningActivity extends BasePresenterActivity
+        implements ChangePhoneNumberWarningActivityListener.View, HasComponent {
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -70,5 +72,10 @@ public class ChangePhoneNumberWarningActivity extends BasePresenterActivity impl
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
     }
 }

@@ -23,8 +23,6 @@ import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNum
 import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberInputModule;
 import com.tokopedia.session.changephonenumber.view.customview.BottomSheetInfo;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
-import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
-import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 
 import java.util.ArrayList;
 
@@ -40,21 +38,19 @@ import butterknife.Unbinder;
 public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implements ChangePhoneNumberInputFragmentListener.View {
     public static final String PARAM_WARNING_LIST = "warning_list";
 
+    @Inject
+    ChangePhoneNumberInputFragmentListener.Presenter presenter;
     private TextView oldPhoneNumber;
     private EditText newPhoneNumber;
     private TextView nextButton;
-
-    private ArrayList<WarningItemViewModel> warningList;
+    private ArrayList<String> warningList;
     private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
 
-    @Inject
-    ChangePhoneNumberInputFragmentListener.Presenter presenter;
-
-    public static ChangePhoneNumberInputFragment newInstance(ArrayList<WarningItemViewModel> warningList) {
+    public static ChangePhoneNumberInputFragment newInstance(ArrayList<String> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(PARAM_WARNING_LIST, warningList);
+        bundle.putStringArrayList(PARAM_WARNING_LIST, warningList);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -114,7 +110,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     private void initVar() {
-        warningList = getArguments().getParcelableArrayList(PARAM_WARNING_LIST);
+        warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
     }
 
     private void createBottomSheetView() {

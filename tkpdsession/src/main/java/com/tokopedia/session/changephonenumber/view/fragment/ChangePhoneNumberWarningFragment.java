@@ -1,7 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,15 +10,21 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
+import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberInputComponent;
+import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberWarningComponent;
+import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberInputComponent;
+import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberWarningComponent;
+import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberInputModule;
+import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberWarningModule;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
-import java.util.ArrayList;
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -30,19 +35,18 @@ import butterknife.Unbinder;
 
 public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment implements ChangePhoneNumberWarningFragmentListener.View {
 
+    @Inject
+    WarningListAdapter adapter;
+    @Inject
+    ChangePhoneNumberWarningFragmentListener.Presenter presenter;
     private RelativeLayout tokopediaBalanceLayout;
     private RelativeLayout tokocashLayout;
     private TextView tokopediaBalanceValue;
     private TextView tokocashValue;
     private RecyclerView warningRecyclerView;
     private TextView nextButton;
-
     private WarningViewModel viewModel;
     private Unbinder unbinder;
-
-    //TODO use DI
-//    @Inject
-//    public WarningListAdapter adapter;
 
     public static ChangePhoneNumberWarningFragment newInstance() {
         ChangePhoneNumberWarningFragment fragment = new ChangePhoneNumberWarningFragment();
@@ -62,38 +66,11 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
         View parentView = inflater.inflate(R.layout.fragment_change_phone_number_warning, container, false);
         unbinder = ButterKnife.bind(this, parentView);
+        presenter.attachView(this);
         initView(parentView);
         setViewListener();
         initVar();
-        //TODO presenter.attachView(this);
-        provideDummyData();
         return parentView;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        loadDataToView();
-    }
-
-    //TODO remove this function
-    private void provideDummyData() {
-        WarningItemViewModel item1 = new WarningItemViewModel(
-                "Saldo Tokopedia tidak dapat ditarik dan digunakan selama 3 hari setelah nomor berhasil diubah.",
-                "Disarankan untuk menarik Saldo Tokopedia sebelum melakukan perubahan",
-                null
-        );
-        WarningItemViewModel item2 = new WarningItemViewModel(
-                "Dana dari Tokocash sebelumnya tidak dapat dipindahkan ke Tokocash dengan nomor yang baru.*",
-                "Disarankan untuk membelanjakan seluruh dana TokoCash terlebih dahulu, atau tetap login TokoCash dengan nomor lama.",
-                "*Pemindahan dana hanya bisa dilakukan untuk kasus-kasus tertentu"
-        );
-        ArrayList<WarningItemViewModel> arrayList = new ArrayList<>();
-        arrayList.add(item1);
-        arrayList.add(item2);
-        arrayList.add(item2);
-        arrayList.add(item1);
-        viewModel = new WarningViewModel("Rp 123.333,333", "Rp 123.333,333", arrayList);
     }
 
     private void initView(View view) {
@@ -105,18 +82,20 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         nextButton = view.findViewById(R.id.next_button);
 
         warningRecyclerView.setFocusable(false);
+
+        presenter.initView();
     }
 
     private void setViewListener() {
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(ChangePhoneNumberInputActivity.newInstance(
-                        getContext(),
-                        new ArrayList<>(viewModel.getWarningList()))
-                );
-            }
-        });
+//        nextButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(ChangePhoneNumberInputActivity.newInstance(
+//                        getContext(),
+//                        new ArrayList<>(viewModel.getWarningList()))
+//                );
+//            }
+//        });
     }
 
     private void initVar() {
@@ -127,7 +106,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        //TODO presenter.detachView(this);
+        presenter.detachView();
     }
 
     @Override
@@ -137,6 +116,28 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     @Override
     protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        ChangePhoneNumberWarningComponent resolutionDetailComponent =
+                DaggerChangePhoneNumberWarningComponent.builder()
+                        .appComponent(appComponent)
+                        .changePhoneNumberWarningModule(new ChangePhoneNumberWarningModule())
+                        .build();
+        resolutionDetailComponent.inject(this);
+    }
+
+    @Override
+    public void onGetWarningSuccess(WarningViewModel warningViewModel) {
+        this.viewModel = warningViewModel;
+        loadDataToView();
+    }
+
+    @Override
+    public void onGetWarningFailed() {
+        showEmptyState();
+    }
+
+    @Override
+    public void onGetWarningError(String errorMessage) {
 
     }
 
@@ -162,7 +163,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     private void populateRecyclerView() {
         if (viewModel != null) {
-            if (viewModel.getWarningList().size() > 0) {
+            if (viewModel.getWarningList() != null && viewModel.getWarningList().size() > 0) {
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                 warningRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -171,5 +172,17 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                 warningRecyclerView.setAdapter(adapter);
             }
         }
+    }
+
+
+    private void showEmptyState() {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                getView(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getWarning();
+                    }
+                });
     }
 }

@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,8 @@ import javax.inject.Inject;
  */
 
 public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.WarningListViewHolder> {
-    private List<WarningItemViewModel> warningList;
+    private boolean hasTokocash;
+    private List<String> warningList;
 
     @Inject
     public WarningListAdapter() {
@@ -35,28 +36,14 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
 
     @Override
     public void onBindViewHolder(WarningListViewHolder warningListViewHolder, int i) {
-        WarningItemViewModel warningItemViewModel = warningList.get(i);
-        if (!isNullOrEmpty(warningItemViewModel.getWarning())) {
-            warningListViewHolder.warning.setText(warningItemViewModel.getWarning());
+        String warning = warningList.get(i);
+        if (!isNullOrEmpty(warning)) {
+            warningListViewHolder.warning.setText(MethodChecker.fromHtml(warning));
             warningListViewHolder.warning.setVisibility(View.VISIBLE);
         } else {
             warningListViewHolder.warning.setVisibility(View.GONE);
         }
-
-        if (!isNullOrEmpty(warningItemViewModel.getSuggestion())) {
-            warningListViewHolder.suggestion.setText(warningItemViewModel.getSuggestion());
-            warningListViewHolder.suggestion.setVisibility(View.VISIBLE);
-        } else {
-            warningListViewHolder.suggestion.setVisibility(View.GONE);
-        }
-
-        if (!isNullOrEmpty(warningItemViewModel.getNote())) {
-            warningListViewHolder.note.setText(warningItemViewModel.getNote());
-            warningListViewHolder.note.setVisibility(View.VISIBLE);
-        } else {
-            warningListViewHolder.note.setVisibility(View.GONE);
-        }
-
+        warningListViewHolder.note.setVisibility(hasTokocash ? View.VISIBLE : View.GONE);
         warningListViewHolder.separator.setVisibility((i == getItemCount() - 1) ? View.GONE : View.VISIBLE);
     }
 
@@ -64,7 +51,13 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
         return (string == null || string.equalsIgnoreCase("null") || string.isEmpty());
     }
 
-    public void addData(List<WarningItemViewModel> warningList) {
+    public void addData(List<String> warningList) {
+        this.warningList.addAll(warningList);
+        notifyItemRangeInserted(0, warningList.size());
+    }
+
+    public void addData(boolean hasTokocash, List<String> warningList) {
+        this.hasTokocash = hasTokocash;
         this.warningList.addAll(warningList);
         notifyItemRangeInserted(0, warningList.size());
     }
@@ -76,14 +69,12 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
 
     public class WarningListViewHolder extends RecyclerView.ViewHolder {
         TextView warning;
-        TextView suggestion;
         TextView note;
         View separator;
 
         public WarningListViewHolder(View itemView) {
             super(itemView);
             warning = itemView.findViewById(R.id.warning);
-            suggestion = itemView.findViewById(R.id.suggestion);
             note = itemView.findViewById(R.id.note);
             separator = itemView.findViewById(R.id.separator);
         }

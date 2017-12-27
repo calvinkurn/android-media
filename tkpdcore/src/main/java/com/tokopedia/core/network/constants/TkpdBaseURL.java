@@ -728,6 +728,10 @@ public class TkpdBaseURL {
         public class Wallet {
             public static final String GET_BALANCE = "api/v1/wallet/balance";
         }
+
+        public class ChangeMSISDN {
+            public static final String GET_WARNING = "/api/v1/change-msisdn/get-warning";
+        }
     }
 
     public static class Home {
