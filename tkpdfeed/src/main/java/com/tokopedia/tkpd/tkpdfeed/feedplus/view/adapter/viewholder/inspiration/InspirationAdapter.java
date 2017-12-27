@@ -57,6 +57,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getPriceInt(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getUrl(),
                             inspirationViewModel.getSource(),
+                            inspirationViewModel.getPositionFeedCard(),
                             getAdapterPosition());
                 }
             });
@@ -74,6 +75,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getPriceInt(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getUrl(),
                             inspirationViewModel.getSource(),
+                            inspirationViewModel.getPositionFeedCard(),
                             getAdapterPosition());
                 }
             });

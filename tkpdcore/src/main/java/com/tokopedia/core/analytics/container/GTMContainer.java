@@ -482,11 +482,10 @@ public class GTMContainer implements IGTMContainer {
                         "eventAction", "feed - click card item",
                         "eventLabel", eventLabel,
                         "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField", actionField,
+                                DataLayer.mapOf("actionField", DataLayer.mapOf("list", actionField),
                                         "products", DataLayer.listOf(objects.toArray(new Object[objects.size()]))
                                 )
-                        ),
-                        "eventCallback", productUrl
+                        )
                 )
         );
     }

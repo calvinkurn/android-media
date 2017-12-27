@@ -15,6 +15,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
     private static final String TAG = "hangnadi";
     private final int totalProduct;
     private final int page;
+    private int positionFeedCard;
     private ProductCardHeaderViewModel productCardHeaderViewModel;
     private String shareUrl;
     private String actionText;
@@ -30,7 +31,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
                                  String actionText,
                                  String feedId,
                                  int totalProduct,
-                                 String cursor, int page) {
+                                 String cursor, int positionFeedCard, int page) {
         this.listProduct = listProduct;
         this.productCardHeaderViewModel = productCardHeaderViewModel;
         this.shareUrl = shareUrl;
@@ -39,6 +40,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
         this.feedId = feedId;
         this.totalProduct = totalProduct;
         this.cursor = cursor;
+        this.positionFeedCard = positionFeedCard;
         this.page = page;
     }
 
@@ -139,5 +141,14 @@ public class ActivityCardViewModel extends ProductCardViewModel {
             );
         }
         return list;
+    }
+
+
+    public void setPositionFeedCard(int positionFeedCard) {
+        this.positionFeedCard = positionFeedCard;
+    }
+
+    public int getPositionFeedCard() {
+        return positionFeedCard;
     }
 }

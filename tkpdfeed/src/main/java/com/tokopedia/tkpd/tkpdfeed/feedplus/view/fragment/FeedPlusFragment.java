@@ -97,7 +97,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 /**
@@ -416,11 +415,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetailFromProductUpload(int rowNumber, int page, int itemPosition,
+    public void onGoToProductDetailFromProductUpload(int rowNumber, int positionFeedCard, int page, int itemPosition,
                                                      String productId, String imageSourceSingle, String name,
                                                      String price, String priceInt, String productUrl) {
         FeedTracking.trackEventClickProductUploadEnhanced(name, productId, priceInt, productUrl,
-                rowNumber, itemPosition, SessionHandler.getLoginID(getContext()));
+                positionFeedCard + 1, itemPosition, SessionHandler.getLoginID(getContext()));
         goToProductDetail(productId, imageSourceSingle, name, price);
     }
 
@@ -437,9 +436,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                                    String productId, String imageSource,
                                                    String name, String price, String priceInt,
                                                    String productUrl, String source,
-                                                   int itemPosition) {
+                                                   int positionFeedCard, int itemPosition) {
         FeedTracking.trackEventClickInspirationEnhanced(name, productId, priceInt,
-                productUrl, rowNumber, itemPosition, source, SessionHandler.getLoginID(getContext()));
+                productUrl, positionFeedCard + 1, itemPosition, source, SessionHandler.getLoginID(getContext()));
+
         goToProductDetail(productId, imageSource, name, price);
         UnifyTracking.eventR3Product(productId, AppEventTracking.Action.CLICK,
                 getFeedAnalyticsHeader(page, rowNumber)

@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -76,7 +75,7 @@ public interface FeedPlus {
         void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
 
         void onGoToProductDetailFromProductUpload(
-                int rowNumber, int page, int itemPosition,
+                int rowNumber, int positionFeedCard, int page, int itemPosition,
                 String productId, String imageSourceSingle,
                 String name, String price, String priceInt, String productUrl);
 
@@ -84,7 +83,7 @@ public interface FeedPlus {
 
         void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId,
                                                 String imageSource, String name, String price, String priceInt,
-                                                String productUrl, String source, int itemPosition);
+                                                String productUrl, String source, int positionFeedCard, int itemPosition);
 
         void onGoToFeedDetail(int page, int rowNumber, String feedId);
 

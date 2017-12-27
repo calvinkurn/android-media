@@ -19,6 +19,7 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
     private int rowNumber;
     private String source;
     private String userId;
+    private int positionFeedCard;
 
     public InspirationViewModel(String title,
                                 ArrayList<InspirationProductViewModel> listProduct,
@@ -96,5 +97,13 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
             );
         }
         return list;
+    }
+
+    public void setPositionFeedCard(int positionFeedCard) {
+        this.positionFeedCard = positionFeedCard;
+    }
+
+    public int getPositionFeedCard() {
+        return positionFeedCard;
     }
 }

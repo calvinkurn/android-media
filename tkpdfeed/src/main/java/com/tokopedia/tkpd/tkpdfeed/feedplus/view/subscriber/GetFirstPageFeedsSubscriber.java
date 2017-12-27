@@ -227,7 +227,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         }
                         break;
                     case TYPE_NEW_PRODUCT:
-                        ActivityCardViewModel model = convertToActivityViewModel(domain);
+                        ActivityCardViewModel model = convertToActivityViewModel(domain, positionFeedCard);
                         if (model.getListProduct() != null && !model.getListProduct().isEmpty()) {
                             listFeedView.add(model);
                             String eventLabel = String.format("%s - %s", "product", "");
@@ -248,7 +248,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(toppicks);
                         break;
                     case TYPE_INSPIRATION:
-                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
+                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain, positionFeedCard);
                         if (inspirationViewModel != null
                                 && inspirationViewModel.getListProduct() != null
                                 && !inspirationViewModel.getListProduct().isEmpty()) {
@@ -467,7 +467,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         );
     }
 
-    private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain) {
+    private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain, int positionFeedCard) {
         if (domain.getContent() != null
                 && !domain.getContent().getInspirationDomains().isEmpty()) {
             InspirationViewModel viewModel = new InspirationViewModel();
@@ -481,6 +481,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     domain.getContent().getInspirationDomains().get(0).getSource()
             );
             viewModel.setUserId(SessionHandler.getLoginID(viewListener.getActivity()));
+            viewModel.setPositionFeedCard(positionFeedCard);
             return viewModel;
         } else {
             return null;
@@ -508,7 +509,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 recommendationDomain.getPriceInt());
     }
 
-    protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain) {
+    protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain, int positionFeedCard) {
         return new ActivityCardViewModel(
                 convertToProductCardHeaderViewModel(domain),
                 convertToProductListViewModel(domain),
@@ -518,6 +519,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 domain.getId(),
                 domain.getContent().getTotalProduct(),
                 domain.getCursor(),
+                positionFeedCard,
                 page);
     }
 
