@@ -26,6 +26,8 @@ public class LocationShippingViewHolder {
     TextInputLayout cityTextInputLayout;
     EditText textEditShippingCity;
     String hintTypePostalCode;
+    private String districtName;
+    private String districtId;
 
     public LocationShippingViewHolder(View root, final ViewHolderListener2 viewHolderListener2){
         this.root = root;
@@ -68,8 +70,29 @@ public class LocationShippingViewHolder {
         });
     }
 
+    public String getLocationComplete(){
+        return textEditShippingCity.getText().toString();
+    }
+
+    public String getPostalCode(){
+        return textEditPostalCode.getText().toString();
+    }
+
+    public String getDistrictName(){
+        return districtName;
+    }
+
     public void updateLocationData(String provinceName, String cityName, String districtName) {
+        this.districtName = districtName;
         textEditShippingCity.setText(provinceName + ", " + cityName + ", " + districtName);
+    }
+
+    public void updateDistrictId(String districtId){
+        this.districtId = districtId;
+    }
+
+    public String getDistrictId() {
+        return districtId;
     }
 
     public void initializeZipCodes(ArrayList<String> zipCodes) {
