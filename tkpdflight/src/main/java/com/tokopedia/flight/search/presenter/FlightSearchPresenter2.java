@@ -64,7 +64,8 @@ public class FlightSearchPresenter2 extends BaseDaggerPresenter<FlightSearchView
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
                                     boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
                                     @FlightSortOption int sortOptionId) {
-        getView().removeToolbarElevation();
+        if (isViewAttached())
+            getView().removeToolbarElevation();
         if (isFromCache) {
             flightSearchWithSortUseCase.execute(FlightSearchUseCase.generateRequestParams(
                     flightSearchApiRequestModel,

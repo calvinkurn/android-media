@@ -1,11 +1,12 @@
 package com.tokopedia.flight.detail.view.adapter;
 
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
@@ -17,8 +18,9 @@ import java.util.List;
  * Created by zulfikarrahman on 12/13/17.
  */
 
-public class FlightDetailOrderViewHolder extends BaseViewHolder<FlightOrderJourney> {
-
+public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJourney> {
+    @LayoutRes
+    public static final int LAYOUT = R.layout.item_flight_detail_order;
     private TextView flightCounter;
     private FlightExpandableOptionArrow journeyView;
     private RecyclerView recyclerViewFlightJourney;
@@ -45,7 +47,7 @@ public class FlightDetailOrderViewHolder extends BaseViewHolder<FlightOrderJourn
     }
 
     @Override
-    public void bindObject(FlightOrderJourney flightOrderJourney) {
+    public void bind(FlightOrderJourney flightOrderJourney) {
         this.flightOrderJourney = flightOrderJourney;
         flightCounter.setText(itemView.getContext().getString(R.string.flight_label_detail_counter, getAdapterPosition() + 1));
         journeyView.setTitleText(itemView.getContext().getString(R.string.flight_label_detail_format,
