@@ -433,7 +433,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
 
     public Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
         Bundle bundle = new Bundle();
-        bundle.putBoolean(AccountsService.IS_BASIC, true);
         final Map<String, String> params = new HashMap<>();
         Parcelable parcelable = accountsParameter.getParcelable();
 
@@ -464,7 +463,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 throw new RuntimeException("Invalid Observable to get Token");
         }
 
-        bundle.putBoolean(AccountsService.IS_BASIC, true);
         AccountsService accountService = new AccountsService(bundle);
         Observable<Response<String>> observable = accountService.getApi()
                 .getTokenOld(AuthUtil

@@ -9,6 +9,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.apiservices.accounts.AccountsBasicService;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -79,19 +80,6 @@ SessionModule {
     }
 
     /**
-     * @return https://accounts.tokopedia.com
-     * with Authorization : Basic
-     */
-    @SessionScope
-    @Named(BASIC_SERVICE)
-    @Provides
-    AccountsService provideBasicAccountsService() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(AccountsService.IS_BASIC, true);
-        return new AccountsService(bundle);
-    }
-
-    /**
      * @param context
      * @param sessionHandler
      * @return https://accounts.tokopedia.com
@@ -142,7 +130,7 @@ SessionModule {
 
     @SessionScope
     @Provides
-    GetTokenDataSource provideGetTokenDataSource(@Named(BASIC_SERVICE) AccountsService
+    GetTokenDataSource provideGetTokenDataSource(AccountsBasicService
                                                          accountsService,
                                                  TokenMapper tokenMapper,
                                                  SessionHandler sessionHandler) {

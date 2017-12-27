@@ -27,6 +27,7 @@ public class AccessTokenRefresh {
         Context context = MainApplication.getAppContext();
 
         SessionHandler sessionHandler = new SessionHandler(context);
+        sessionHandler.clearToken();
         Map<String, String> params = new HashMap<>();
 
         params.put("grant_type", "refresh_token");
@@ -54,7 +55,7 @@ public class AccessTokenRefresh {
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
-                .client(OkHttpFactory.create().buildClientAccountsAuth("", false, false, false))
+                .client(OkHttpFactory.create().buildClientAccountsAuth("", false, false))
                 .build();
     }
 }

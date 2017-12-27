@@ -57,8 +57,7 @@ public class SessionRefresh {
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.BASE_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
-                .client(OkHttpFactory.create().buildClientAccountsAuth(authKey, false, false,
-                        false))
+                .client(OkHttpFactory.create().buildClientAccountsAuth(authKey, false, false))
                 .build();
     }
 

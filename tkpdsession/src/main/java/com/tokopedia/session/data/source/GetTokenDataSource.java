@@ -2,6 +2,7 @@ package com.tokopedia.session.data.source;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.apiservices.accounts.AccountsBasicService;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.EncoderDecoder;
@@ -21,20 +22,20 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class GetTokenDataSource {
-    private final AccountsService accountsService;
+    private final AccountsBasicService basicService;
     private final TokenMapper tokenMapper;
     private final SessionHandler sessionHandler;
 
-    public GetTokenDataSource(AccountsService accountsService,
+    public GetTokenDataSource(AccountsBasicService basicService,
                               TokenMapper tokenMapper,
                               SessionHandler sessionHandler) {
-        this.accountsService = accountsService;
+        this.basicService = basicService;
         this.tokenMapper = tokenMapper;
         this.sessionHandler = sessionHandler;
     }
 
     public Observable<TokenViewModel> getAccessToken(RequestParams params) {
-        return accountsService.getApi()
+        return basicService.getApi()
                 .getToken(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
                         params.getParameters()))
                 .map(tokenMapper)
