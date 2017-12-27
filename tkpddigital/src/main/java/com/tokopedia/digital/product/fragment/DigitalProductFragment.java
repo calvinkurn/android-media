@@ -422,9 +422,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     //@NeedsPermission(Manifest.permission.READ_PHONE_STATE)
     public void renderCheckPulsaBalance() {
         holderCheckBalance.removeAllViews();
-        if(categoryDataState ==null ||
+        if (categoryDataState == null ||
                 categoryDataState.getOperatorList() == null ||
-                categoryDataState.getOperatorList().size() == 0){
+                categoryDataState.getOperatorList().size() == 0) {
             return;
         }
         boolean activeSim = true;
@@ -433,23 +433,27 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
             checkPulsaBalanceView.setActionListener(this);
             if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+
                 Operator operator = presenter.getSelectedUssdOperator(i);
 
                 String ussdCode = operator.getUssdCode();
-                if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
-                    //if both sims inactive then show only one card
-                    if (!activeSim && i == 1) return;
-                    activeSim = false;
-                    String carrierName=DeviceUtil.getOperatorName(getActivity(), i);
-                    if (carrierName == null){
+                if (ussdCode == null || "".equalsIgnoreCase(ussdCode.trim())) {
+
+                    String carrierName = DeviceUtil.getOperatorName(getActivity(), i);
+                    error = "Operator tidak tersedia";
+
+                    if (carrierName != null && carrierName.contains("No service")) {
                         error = "No Signals";
-                    }else{
-                        error = "Operator tidak tersedia";
-                        checkPulsaBalanceView.setOperatorName(carrierName);
+                        carrierName = error;
+                    } else {
+                        if (!activeSim && i == 1) return;
+                        activeSim = false;
                     }
 
+                    checkPulsaBalanceView.setOperatorName(carrierName);
 
                 }
+
 
                 String phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
                 if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
@@ -461,11 +465,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     }
                 }
 
-                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber, error);
+                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber, error,activeSim);
                 holderCheckBalance.addView(checkPulsaBalanceView);
                 error = null;
             } else {
-                checkPulsaBalanceView.renderData(0, "", "", error);
+                checkPulsaBalanceView.renderData(0, "", "", error,activeSim);
                 holderCheckBalance.addView(checkPulsaBalanceView);
                 return;
             }
@@ -1296,7 +1300,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     phoneNumber = "";
                 }
             }
-            selectedCheckPulsaBalanceView.renderData(selectedSimIndex, ussdCode, phoneNumber, error);
+            selectedCheckPulsaBalanceView.renderData(selectedSimIndex, ussdCode, phoneNumber, error,true);
         }
     }
 

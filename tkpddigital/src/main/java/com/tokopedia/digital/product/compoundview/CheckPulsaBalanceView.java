@@ -78,27 +78,30 @@ public class CheckPulsaBalanceView extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderData(int simPosition, String ussdCode, String phoneNumber,String error) {
+    public void renderData(int simPosition, String ussdCode, String phoneNumber,String error, Boolean activeSim) {
         if (phoneNumber != null && !"".equalsIgnoreCase(phoneNumber.trim()))
             tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + phoneNumber);
         else
             tvPhoneNumber.setText("SIM" + (simPosition + 1));
         this.mobileNumber = phoneNumber;
-       if(error == null){
-           this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked(simPosition, ussdCode));
-           errorOperator.setVisibility(GONE);
-       }else{
-           btnCheckBalance.setBackgroundColor(context.getResources().getColor(R.color.grey_hint));
-           errorOperator.setVisibility(VISIBLE);
-           errorOperator.setText(error);
-           if(operatorName !=null){
-               tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + operatorName);
+        if (activeSim) {
+            this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked(simPosition, ussdCode));
+            errorOperator.setVisibility(GONE);
+            if (error != null && operatorName != null) {
+                tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + operatorName);
 
-           }
-       }
+            }
+        } else {
+            btnCheckBalance.setBackgroundColor(context.getResources().getColor(R.color.grey_hint));
+            errorOperator.setVisibility(VISIBLE);
+            errorOperator.setText(error);
+            if (operatorName != null) {
+                tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + operatorName);
 
+            }
+        }
 
-       }
+    }
 
     public String getPhoneNumberText() {
         return this.mobileNumber;
