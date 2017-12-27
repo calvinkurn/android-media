@@ -152,8 +152,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         String baseBreak = String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getSalesPrice().toString());
         baseFareBreak.setText("(" + baseBreak + ")");
-
-
+        hideProgressBar();
     }
 
     @Override

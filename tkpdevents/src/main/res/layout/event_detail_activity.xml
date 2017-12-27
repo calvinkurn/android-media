@@ -78,7 +78,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="1px"
                     android:background="?android:attr/listDivider" />
 
                 <FrameLayout
@@ -92,7 +92,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="1px"
                     android:background="?android:attr/listDivider" />
 
                 <FrameLayout
@@ -114,4 +114,16 @@
             android:layout_height="50dp"
             android:layout_gravity="bottom" />
     </android.support.design.widget.CoordinatorLayout>
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"/>
+    </FrameLayout>
 </RelativeLayout>

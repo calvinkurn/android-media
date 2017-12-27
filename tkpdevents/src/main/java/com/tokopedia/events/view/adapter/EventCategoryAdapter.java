@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -43,6 +44,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         //public TextView btnBookticket;
         public TextView eventLocation;
         public TextView eventTime;
+        public LinearLayout eventTimeLayout;
         int index;
 
         public ViewHolder(View itemLayoutView) {
@@ -53,6 +55,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
             //btnBookticket = (TextView) itemView.findViewById(R.id.btn_bookticket);
             eventLocation = (TextView) itemView.findViewById(R.id.tv_location);
             eventTime = (TextView) itemView.findViewById(R.id.tv_time);
+            eventTimeLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout2);
 
         }
 
@@ -87,7 +90,11 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         holder.eventTitle.setText("" + categoryItems.get(position).getDisplayName());
         holder.eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(categoryItems.get(position).getSalesPrice()));
         holder.eventLocation.setText("" + categoryItems.get(position).getCityName());
-        holder.eventTime.setText("" + convertEpochToString(categoryItems.get(position).getMinStartDate()));
+        if (categoryItems.get(position).getMinStartDate() == 0) {
+            holder.eventTimeLayout.setVisibility(View.GONE);
+        } else {
+            holder.eventTime.setText("" + convertEpochToString(categoryItems.get(position).getMinStartDate()));
+        }
         holder.setIndex(position);
 
         ImageHandler.loadImageCover2(holder.eventImage, categoryItems.get(position).getImageApp());

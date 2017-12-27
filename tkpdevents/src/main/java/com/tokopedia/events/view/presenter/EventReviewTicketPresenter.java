@@ -206,6 +206,7 @@ public class EventReviewTicketPresenter
     @Override
     public void attachView(EventReviewTicketsContractor.EventReviewTicketsView view) {
         super.attachView(view);
+        getView().showProgressBar();
         Intent intent = view.getActivity().getIntent();
         this.checkoutData = intent.getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
         getView().renderFromPackageVM(checkoutData);

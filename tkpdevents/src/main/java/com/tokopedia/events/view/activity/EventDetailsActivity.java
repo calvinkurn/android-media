@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -85,6 +86,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     View seatingLayoutCard;
     @BindView(R2.id.btn_book)
     View btnBook;
+    @BindView(R2.id.progress_bar_layout)
+    View progressBarLayout;
+    @BindView(R2.id.prog_bar)
+    ProgressBar progBar;
 
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
@@ -164,6 +169,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
+        hideProgressBar();
         startActivity(intent);
 
     }
@@ -174,7 +180,11 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         ImageHandler.loadImageCover2(eventDetailBanner, homedata.getImageApp());
         String dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate());
 
-        setHolder(R.drawable.ic_time, dateRange, timeHolder);
+        if (homedata.getMinStartDate() == 0) {
+            timeView.setVisibility(View.GONE);
+        } else {
+            setHolder(R.drawable.ic_time, dateRange, timeHolder);
+        }
         setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
         setHolder(R.drawable.ic_skyline, homedata.getCityName(), addressHolder);
         textViewTitle.setText(homedata.getTitle());
@@ -233,6 +243,18 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     }
 
+    @Override
+    public void showProgressBar() {
+        progBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
+    }
+
     public class ToolbarElevationOffsetListener implements AppBarLayout.OnOffsetChangedListener {
         private final Toolbar mToolbar;
         private float mTargetElevation;
@@ -283,8 +305,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @OnClick(R2.id.seemorebutton)
     void setSeemorebutton() {
-        seemorebutton.setText(tvExpandableTermsNCondition.isExpanded() ? R.string.expand : R.string.collapse);
-        tvExpandableTermsNCondition.toggle();
+        seemorebutton.setText(tvExpandableDescription.isExpanded() ? R.string.expand : R.string.collapse);
+        tvExpandableDescription.toggle();
     }
 
     @OnClick(R2.id.seemorebutton_tnc)

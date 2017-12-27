@@ -32,6 +32,10 @@ public class EventBookTicketContract {
         void showPayButton(int ticketQuantity, int price);
         void hidePayButton();
 
+        void showProgressBar();
+
+        void hideProgressBar();
+
     }
 
     public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {

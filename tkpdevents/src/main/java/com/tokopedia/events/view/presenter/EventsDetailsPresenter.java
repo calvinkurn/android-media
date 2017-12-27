@@ -67,10 +67,12 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
 
     @Override
     public void getEventDetails() {
+        getView().showProgressBar();
         getEventDetailsRequestUseCase.execute(getView().getParams(), new Subscriber<EventDetailsDomain>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
+                getView().hideProgressBar();
             }
 
             @Override
@@ -111,6 +113,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
                     @Override
                     public void onNext(SeatLayoutResponse seatLayoutResponse) {
                         getView().renderSeatLayout(seatLayoutResponse.getUrl());
+                        getView().hideProgressBar();
                     }
                 });
             }
@@ -132,6 +135,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
     }
 
     public void bookBtnClick() {
+        getView().showProgressBar();
         Intent bookTicketIntent = new Intent(getView().getActivity(), EventBookTicketActivity.class);
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         getView().navigateToActivityRequest(bookTicketIntent, 100);

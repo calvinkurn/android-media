@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/card_corner_default"
-    app:cardElevation="1dp">
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:id="@+id/btn_terms_conditions"

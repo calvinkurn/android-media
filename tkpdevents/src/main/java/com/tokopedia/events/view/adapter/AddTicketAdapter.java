@@ -76,6 +76,8 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageView ivSoldOut;
         @BindView(R2.id.button_layout)
         View buttonLayout;
+        @BindView(R2.id.tv_ticket_description)
+        TextView tickeyDescriptionText;
 
         PackageViewModel holderViewModel;
         int index;
@@ -90,7 +92,8 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.holderViewModel = viewModel;
             this.index = position;
             tvTicketName.setText(viewModel.getDisplayName());
-            tvTicketMaxprice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getMrp()));
+//            tvTicketMaxprice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getMrp()));
+            tickeyDescriptionText.setText(viewModel.getDescription());
             ticketSalePrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getSalesPrice()));
             tvTicketCnt.setText(String.valueOf(viewModel.getSelectedQuantity()));
             if (holderViewModel.getSelectedQuantity() > 0) {

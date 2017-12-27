@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -75,6 +76,11 @@ public class FragmentAddTickets extends Fragment {
         RecyclerView scrollView = (RecyclerView) inflater.inflate(R.layout.fragment_add_tickets, container, false);
         scrollView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         scrollView.setAdapter(new AddTicketAdapter(getActivity(),mPackages,mPresenter));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recycler_view_divider));
+
+        scrollView.addItemDecoration(dividerItemDecoration);
 
         return scrollView;
     }

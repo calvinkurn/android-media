@@ -7,4 +7,5 @@
     android:background="@color/white"
     android:clipToPadding="false"
     android:paddingBottom="50dp">
+
 </android.support.v7.widget.RecyclerView>

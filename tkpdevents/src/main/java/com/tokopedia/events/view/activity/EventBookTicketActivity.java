@@ -10,9 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -53,6 +55,12 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     TextView buttonTextview;
     @BindView(R2.id.viewpager_book_ticket)
     ViewPager bookTicketViewPager;
+    @BindView(R2.id.progress_bar_layout)
+    View progressBarLayout;
+    @BindView(R2.id.prog_bar)
+    ProgressBar progBar;
+    @BindView(R2.id.app_bar)
+    Toolbar appBar;
 //    @BindView(R2.id.event_address)
 //    View addressView;
 //    @BindView(R2.id.event_time)
@@ -90,8 +98,13 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
         mPresenter.attachView(this);
 
         mPresenter.getTicketDetails();
-        setupToolbar();
-        toolbar.setTitle("Events");
+//        setupToolbar();
+
+        setSupportActionBar(appBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+//        toolbar.setTitle("Events");
 
     }
 
@@ -113,8 +126,8 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @Override
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
-        toolbar.setTitle(detailsViewModel.getTitle());
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
+        appBar.setTitle(detailsViewModel.getTitle());
+        appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
 //        ImageHandler.loadImageCover2(bannerImage, detailsViewModel.getImageApp());
 //        setHolder(R.drawable.ic_time, detailsViewModel.getTimeRange(), timeHolder);
 //        setHolder(R.drawable.ic_skyline, detailsViewModel.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
@@ -193,6 +206,18 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     @Override
     public void hidePayButton() {
         buttonPayTickets.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgressBar() {
+        progBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     public class AddTicketFragmentAdapter extends FragmentStatePagerAdapter {

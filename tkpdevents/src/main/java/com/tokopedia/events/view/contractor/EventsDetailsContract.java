@@ -34,6 +34,10 @@ public class EventsDetailsContract {
 
         void setHolder(int resID, String label, ImageTextViewHolder holder);
 
+        void showProgressBar();
+
+        void hideProgressBar();
+
     }
 
     public interface Presenter extends CustomerPresenter<EventDetailsView> {
