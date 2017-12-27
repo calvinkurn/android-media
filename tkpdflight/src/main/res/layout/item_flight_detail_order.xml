@@ -8,6 +8,7 @@
     <TextView
         android:id="@+id/counter_flight"
         style="@style/TextView.Title.Bold"
+        android:textSize="@dimen/font_subheading"
         android:text="Detail Penerbangan"/>
 
     <com.tokopedia.flight.common.view.FlightExpandableOptionArrow
