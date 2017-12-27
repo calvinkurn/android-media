@@ -15,13 +15,12 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
-import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchV2Fragment;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 
 public class FlightSearchActivity extends BaseFlightActivity
-        implements FlightSearchFragment.OnFlightSearchFragmentListener, FlightSearchV2Fragment.OnFlightSearchFragmentListener {
+        implements FlightSearchV2Fragment.OnFlightSearchFragmentListener {
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_BOOKING = 10;
     private static final int REQUEST_CODE_RETURN = 11;
@@ -125,8 +124,8 @@ public class FlightSearchActivity extends BaseFlightActivity
                     switch (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)) {
                         case FlightFlowConstant.PRICE_CHANGE:
                             Fragment fragment = getFragment();
-                            if (fragment instanceof FlightSearchFragment) {
-                                ((FlightSearchFragment) fragment).loadInitialData();
+                            if (fragment instanceof FlightSearchV2Fragment) {
+                                ((FlightSearchV2Fragment) fragment).loadInitialData();
                             }
                             break;
                         case FlightFlowConstant.EXPIRED_JOURNEY:
