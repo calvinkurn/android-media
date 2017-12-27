@@ -62,7 +62,7 @@ public class HotlistActivity extends DiscoveryActivity
     }
 
     private void inflateFragment() {
-        if (getSupportFragmentManager().findFragmentByTag(HotlistFragment.class.getSimpleName()) == null) {
+        if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, getHotlistFragment(), HotlistFragment.class.getSimpleName())
                     .commit();

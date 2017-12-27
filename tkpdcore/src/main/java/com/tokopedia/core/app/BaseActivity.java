@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.ForceUpdate;
@@ -23,21 +22,13 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
-import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
-import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
-import com.tokopedia.core.service.HadesBroadcastReceiver;
-import com.tokopedia.core.service.HadesService;
-import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -57,7 +48,6 @@ import rx.schedulers.Schedulers;
  */
 
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
-        HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
@@ -65,7 +55,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
-    private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
 
     protected SessionHandler sessionHandler;
@@ -74,9 +63,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
-    private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    private CategoryDatabaseManager categoryDatabaseManager;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
 
@@ -90,9 +77,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             startActivity(MaintenancePage.createIntent(this));
         }
         sessionHandler = new SessionHandler(getBaseContext());
-        categoryDatabaseManager = new CategoryDatabaseManager();
         gcmHandler = new GCMHandler(this);
-        hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
 
@@ -136,7 +121,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         initGTM();
         sendScreenAnalytics();
-        verifyFetchDepartment();// this code couldn't be mocked.
 
 
         registerForceLogoutReceiver();
@@ -147,47 +131,13 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         ScreenTracking.sendScreen(this, this);
     }
 
-    public boolean verifyFetchDepartment() {
-        CategoryVersioningHelper.checkVersionCategory(this, new CategoryVersioningHelperListener() {
-            @Override
-            public void doAfterChecking() {
-                if (categoryDatabaseManager == null) {
-                    categoryDatabaseManager = new CategoryDatabaseManager();
-                }
-                if (categoryDatabaseManager.isExpired(System.currentTimeMillis())) {
-                    if (!HadesService.getIsHadesRunning()) {
-                        fetchDepartment();
-                    } else {
-                        registerHadesReceiver();
-                    }
-                }
-            }
-        });
-        return false;
-    }
-
-    /**
-     * download department using intentservice, so that it will not affected UI
-     * {@link DownloadService#startDownload(Context, DownloadResultReceiver, Bundle, int)}
-     */
-    private void fetchDepartment() {
-        if (!HadesService.getIsHadesRunning()) {
-            Log.i(HADES, "START DOWNLOAAAD");
-            HadesService.startDownload(this, HadesConstant.STATE_DEPARTMENT);
-        }
-
-        registerHadesReceiver();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterHadesReceiver();
 
         HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
-        categoryDatabaseManager = null;
         gcmHandler = null;
         globalCacheManager = null;
         cache = null;
@@ -232,56 +182,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             startActivity(intent);
             AppWidgetUtil.sendBroadcastToAppWidget(this);
         }
-    }
-
-    @Override
-    public void onHadesRunning() {
-        Log.i(HADES, "LAGI JALAN NEEEEH");
-    }
-
-    @Override
-    public void onHadesComplete() {
-        Log.i(HADES, "UDAH KELAR NEEEEH");
-    }
-
-    @Override
-    public void onHadesNoConenction() {
-        Log.i(HADES, this.getClass().getSimpleName() + " " + getIsAllowFetchDepartmentView());
-        if (getIsAllowFetchDepartmentView() && !isDialogNotConnectionShown) {
-            DialogNoConnection.create(this, new DialogNoConnection.ActionListener() {
-                @Override
-                public void onRetryClicked() {
-                    fetchDepartment();
-                    isDialogNotConnectionShown = false;
-                }
-            }).show();
-            isDialogNotConnectionShown = true;
-        }
-    }
-
-    @Override
-    public void onHadesTimeout() {
-        Log.i(HADES, this.getClass().getSimpleName() + " " + getIsAllowFetchDepartmentView());
-        if (getIsAllowFetchDepartmentView() && !isDialogNotConnectionShown) {
-            DialogNoConnection.create(this, new DialogNoConnection.ActionListener() {
-                @Override
-                public void onRetryClicked() {
-                    fetchDepartment();
-                    isDialogNotConnectionShown = false;
-                }
-            }).show();
-            isDialogNotConnectionShown = true;
-        }
-    }
-
-    private void registerHadesReceiver() {
-        hadesBroadcastReceiver.setReceiver(this);
-        IntentFilter mStatusIntentFilter = new IntentFilter(HadesService.ACTION_FETCH_DEPARTMENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(hadesBroadcastReceiver, mStatusIntentFilter);
-    }
-
-    private void unregisterHadesReceiver() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(hadesBroadcastReceiver);
     }
 
     private void registerForceLogoutReceiver() {

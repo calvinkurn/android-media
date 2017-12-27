@@ -59,6 +59,11 @@ public class ScreenTracking extends TrackingUtils {
             authEvent.setShopID(SessionHandler.getShopID(activity));
             authEvent.setUserSeller(SessionHandler.isUserHasShop(activity) ? 1 : 0);
             authEvent.setAfUniqueId(getAfUniqueId() != null? getAfUniqueId() : AF_UNAVAILABLE_VALUE);
+
+            if(activity.getClass().getSimpleName().equals("ParentIndexHome")){
+                authEvent.setNetworkSpeed(TrackingUtils.getNetworkSpeed(activity));
+            }
+
         }
 
         public void execute() {

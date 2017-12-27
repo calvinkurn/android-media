@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.recharge.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -24,14 +25,14 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     private static final String TAG = RechargeCategoryPresenterImpl.class.getSimpleName();
 
-    private Activity activity;
+    private Context context;
     private RechargeCategoryView view;
     private RechargeNetworkInteractor rechargeNetworkInteractor;
     private List<Category> categoryList;
 
-    public RechargeCategoryPresenterImpl(Activity activity, RechargeCategoryView view,
+    public RechargeCategoryPresenterImpl(Context context, RechargeCategoryView view,
                                          RechargeNetworkInteractor rechargeNetworkInteractor) {
-        this.activity = activity;
+        this.context = context;
         this.view = view;
         this.rechargeNetworkInteractor = rechargeNetworkInteractor;
     }
@@ -63,15 +64,14 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
                     if (status.isMaintenance() || !isVersionMatch(status)) {
                         view.failedRenderDataRechargeCategory();
                     } else {
-                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber(status.isUseCache()),
-                                status.isUseCache());
+                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
                     }
                 }
             }
         };
     }
 
-    private Subscriber<List<Category>> getCategoryDataSubscriber(final boolean useCache) {
+    private Subscriber<List<Category>> getCategoryDataSubscriber() {
         return new Subscriber<List<Category>>() {
             @Override
             public void onCompleted() {
@@ -86,11 +86,10 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             @Override
             public void onNext(List<Category> data) {
                 categoryList = data;
-                finishPrepareRechargeModule(useCache);
+                finishPrepareRechargeModule();
             }
         };
     }
-
 
     private boolean isVersionMatch(Status status) {
         try {
@@ -103,10 +102,10 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
         }
     }
 
-    private void finishPrepareRechargeModule(boolean useCache) {
-        if (activity != null && view != null) {
+    private void finishPrepareRechargeModule() {
+        if (context != null && view != null) {
             if (categoryList != null) {
-                view.renderDataRechargeCategory(categoryList, useCache);
+                view.renderDataRechargeCategory(categoryList);
             } else {
                 view.failedRenderDataRechargeCategory();
             }
@@ -114,7 +113,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     }
 
     private int getVersionCode() throws PackageManager.NameNotFoundException {
-        PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+        PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
         return pInfo.versionCode;
     }
 

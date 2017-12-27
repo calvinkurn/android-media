@@ -97,5 +97,7 @@
 
     <dimen name="product_manage_width_menu_popup_window">220dp</dimen>
     <dimen name="margin_legacy_edittext_hint">4dp</dimen>
+    <dimen name="seller_info_radius_image_view">2dp</dimen>
+
 
 </resources>

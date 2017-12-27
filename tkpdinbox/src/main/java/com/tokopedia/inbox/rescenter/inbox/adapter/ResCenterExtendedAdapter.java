@@ -178,7 +178,17 @@ public abstract class ResCenterExtendedAdapter extends RecyclerView.Adapter<Recy
 
                 bindMainView((InboxViewHolder) holder, detailModel);
                 setViewByReadStatus((InboxViewHolder) holder, listModel.getResolutionReadStatus() == 1);
-                setListener((InboxViewHolder) holder, listModel.getResolutionDetail().getResolutionLast().getLastResolutionId());
+                if (listModel.getResolutionDetail().getResolutionBy().getBySeller() == 1) {
+                    setListener((InboxViewHolder) holder,
+                            listModel.getResolutionDetail().getResolutionLast().getLastResolutionId(),
+                            "",
+                            listModel.getResolutionDetail().getResolutionCustomer().getCustomerName());
+                } else if (listModel.getResolutionDetail().getResolutionBy().getByCustomer() == 1) {
+                    setListener((InboxViewHolder) holder,
+                            listModel.getResolutionDetail().getResolutionLast().getLastResolutionId(),
+                            listModel.getResolutionDetail().getResolutionShop().getShopName(),
+                            "");
+                }
                 break;
             case ResCenterInboxItem.TYPE_NO_RESULT:
                 bindNoresultView((NoResultViewHolder) holder);
@@ -201,7 +211,7 @@ public abstract class ResCenterExtendedAdapter extends RecyclerView.Adapter<Recy
 
     protected abstract void setHeaderVisibility(HeaderViewHolder holder, ResCenterHeader resCenterHeader);
 
-    protected abstract void setListener(InboxViewHolder holder, String resolutionID);
+    protected abstract void setListener(InboxViewHolder holder, String resolutionID, String shopName, String username);
 
     protected void bindLoadingView(LoadingViewHolder holder) {
         if (getItemCount() == 1) {

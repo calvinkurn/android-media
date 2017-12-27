@@ -69,11 +69,6 @@ public class GMStatisticDashboardActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public void onHadesTimeout() {
-        // no op
-    }
-
-    @Override
     protected int setDrawerPosition() {
         return TkpdState.DrawerPosition.SELLER_GM_STAT;
     }

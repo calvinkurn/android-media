@@ -41,6 +41,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
@@ -187,6 +188,10 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
+                TkpdState.DrawerPosition.SELLER_INFO,
+                drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
         return inboxMenu;
     }
 
@@ -404,6 +409,11 @@ public class DrawerSellerHelper extends DrawerHelper
                         showDialogActionGoToGMSubscribe();
                         isNeedToCloseActivity = false;
                     }
+                    break;
+                case TkpdState.DrawerPosition.SELLER_INFO:
+                    UnifyTracking.eventClickMenuSellerInfo();
+                    intent = new Intent(context, SellerInfoActivity.class);
+                    context.startActivity(intent);
                     break;
                 default:
                     super.onItemClicked(item);

@@ -47,9 +47,6 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
     @Override
     public void onNext(ChatRoomViewModel model) {
         view.setViewEnabled(true);
-        if(model!=null) {
-            view.setTextAreaReply(model.getTextAreaReply() == 1);
-        }
         view.setResult(model);
         view.finishLoading();
         presenter.finishRequest();
