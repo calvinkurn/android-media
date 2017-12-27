@@ -20,7 +20,7 @@ import retrofit2.Retrofit;
  * Created by zulfikarrahman on 3/23/17.
  */
 @ShopSettingInfoScope
-@Component(modules = ShopSettingInfoModule.class, dependencies = ShopOpenDomainComponent.class)
+@Component(dependencies = ShopOpenDomainComponent.class)
 public interface ShopSettingInfoComponent {
     void inject(ShopSettingInfoFragment shopSettingInfoFragment);
 

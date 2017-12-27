@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.setting.data.source;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.setting.data.model.GenerateHostModel;
 import com.tokopedia.seller.shop.setting.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.setting.data.source.cloud.ShopSettingInfoDataSourceCloud;
@@ -24,5 +25,9 @@ public class ShopSettingInfoDataSource {
 
     public Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest) {
         return shopSettingInfoDataSourceCloud.saveShopSetting(paramsRequest);
+    }
+
+    public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){
+        return shopSettingInfoDataSourceCloud.saveShopSettingStep2(requestParams);
     }
 }

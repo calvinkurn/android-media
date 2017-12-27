@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="24dp"
+    tools:showIn="@layout/fragment_shop_open_location">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/black_38"
+        android:lineSpacingExtra="10sp"
+        android:text="@string/optional_pinpoint_location_text" />
+
+    <FrameLayout
+        android:id="@+id/empty_map_view"
+        android:layout_width="match_parent"
+        android:layout_height="117.9dp">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_empty_map"
+            android:scaleType="fitXY"
+            />
+
+        <TextView
+            android:layout_margin="15.2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="#89000000"
+            android:lineSpacingExtra="5sp"
+            android:gravity="center_horizontal"
+            android:text="@string/pin_pickup_location_text" />
+
+        <TextView
+            android:id="@+id/pin_pickup_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:textColor="#89000000"
+            android:lineSpacingExtra="8sp"
+            android:gravity="center_horizontal"
+            android:text="@string/pin_location_pickup"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="15.2dp" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/mapview_container"
+        android:layout_width="match_parent"
+        android:layout_height="117.9dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:clickable="false"
+            app:liteMode="true"
+            app:mapType="normal"
+            app:cameraZoom="15" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/generated_location_open_shop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:lineSpacingExtra="6sp"
+        android:text="@string/default_address_text"
+        android:visibility="gone"/>
+
+</LinearLayout>

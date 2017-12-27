@@ -89,7 +89,6 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     protected void initInjector() {
         ShopSettingInfoComponent component = DaggerShopSettingInfoComponent
                 .builder()
-                .shopSettingInfoModule(new ShopSettingInfoModule())
                 .shopOpenDomainComponent(getComponent(ShopOpenDomainComponent.class))
                 .build();
         component.inject(this);

@@ -3,6 +3,8 @@ package com.tokopedia.seller.shop.setting.domain;
 
 import java.util.HashMap;
 
+import com.tokopedia.core.base.domain.RequestParams;
+
 import rx.Observable;
 
 /**
@@ -10,6 +12,6 @@ import rx.Observable;
  */
 
 public interface ShopSettingSaveInfoRepository {
-
     Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest);
+    Observable<Boolean> saveShopSettingStep2(RequestParams requestParams);
 }
