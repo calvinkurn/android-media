@@ -5,9 +5,12 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_card_with_action_main"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/padding_med"
     android:paddingBottom="@dimen/padding_med"
-    android:paddingLeft="@dimen/padding_med">
+    android:paddingEnd="@dimen/padding_vs"
+    android:paddingLeft="@dimen/padding_med"
+    android:paddingRight="@dimen/padding_vs"
+    android:paddingStart="@dimen/padding_med"
+    android:paddingTop="@dimen/padding_med">
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -91,13 +94,13 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_action"
+            style="@style/TextView.Body1.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAllCaps="true"
-            android:textColor="@color/widget_card_with_action_text_color"
 
-            style="@style/TextView.Body1.Bold"
+            android:textColor="@color/widget_card_with_action_text_color"
             tools:text="Detail" />
     </RelativeLayout>
 </LinearLayout>
