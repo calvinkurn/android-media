@@ -25,6 +25,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private boolean isArrowVisible;
     private boolean isClickable;
     private boolean isTitleBold;
+    private boolean isTitleOnly;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -35,6 +36,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isArrowVisible = false;
         isClickable = false;
         isTitleBold = false;
+        isTitleOnly = false;
     }
 
     @Override
@@ -77,6 +79,8 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         this.isTitleBold = isTitleBold;
     }
 
+    public void setTitleOnly(boolean isTitleOnly) { this.isTitleOnly = isTitleOnly; }
+
     public void setInteractionListener(OnAdapterInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
@@ -102,6 +106,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         public void bind(final SimpleViewModel viewModel) {
             titleTextView.setText(viewModel.getLabel());
             contentTextView.setText(viewModel.getDescription());
+            contentTextView.setVisibility(isTitleOnly ? View.GONE : View.VISIBLE);
             arrowImageView.setVisibility(isArrowVisible ? View.VISIBLE : View.GONE);
             if (contentColorValue != 0) {
                 contentTextView.setTextColor(contentColorValue);
