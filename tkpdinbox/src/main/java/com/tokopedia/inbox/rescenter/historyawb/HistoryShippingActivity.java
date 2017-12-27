@@ -134,4 +134,10 @@ public class HistoryShippingActivity extends BasePresenterActivity<HistoryShippi
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
 }

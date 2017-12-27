@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxticket.listener;
 
-import com.tokopedia.core.inboxreputation.model.actresult.ImageUploadResult;
+
+import com.tokopedia.inbox.contactus.model.ImageUploadResult;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Header;
@@ -26,7 +27,7 @@ public interface UploadImageTicketParam {
             @Part("device_id") RequestBody deviceId,
             @Part("hash") RequestBody hash,
             @Part("device_time") RequestBody deviceTime,
-            @Part("fileToUpload\"; filename=\"image.jpg")  RequestBody imageFile,
+            @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile,
             @Part("id") RequestBody imageId,
             @Part("web_service") RequestBody web_service
     );

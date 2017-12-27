@@ -59,5 +59,8 @@
     <color name="colorSheetDivider">#3f717171</color>
     <color name="colorStockEmpty">#fff7bc</color>
     <color name="bottom_sheet_item_text_color">#b3000000</color>
+    <color name="tkpd_secondary_orange">#FFF2EE</color>
+
+    <color name="grey_transparent_background">#28000000</color>
 
 </resources>

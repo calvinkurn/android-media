@@ -6,4 +6,8 @@ package com.tokopedia.core.base.presentation;
 @Deprecated
 public abstract class BaseDaggerFragment extends com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment {
 
+    protected <C> C getComponent(Class<C> componentType) {
+        return componentType.cast(((HasComponent<C>) getActivity()).getComponent());
+    }
+
 }

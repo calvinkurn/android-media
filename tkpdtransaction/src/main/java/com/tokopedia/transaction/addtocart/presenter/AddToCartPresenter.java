@@ -21,7 +21,7 @@ public interface AddToCartPresenter {
 
     void getCartKeroToken(@NonNull Context context, @NonNull ProductCartPass data, @NonNull Destination destination);
 
-    void calculateProduct(@NonNull Context context, @NonNull OrderData orderData);
+    void calculateProduct(@NonNull Context context, @NonNull OrderData orderData, boolean mustReCalculateAddressShipping);
 
     void calculateKeroRates(@NonNull Context context, @NonNull AtcFormData atcFormData);
 

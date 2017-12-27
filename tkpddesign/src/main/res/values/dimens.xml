@@ -90,6 +90,10 @@
     <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
     <dimen name="alphabetical_section_header_padding">16dp</dimen>
 
+    <dimen name="medal_size">20dp</dimen>
+    <dimen name="smiley_reputation_size">24dp</dimen>
+    <dimen name="reputation_view_smiley">14dp</dimen>
+
     <dimen name="lv_min_title_width">100dp</dimen>
 
     <dimen name="empty_min_width">200dp</dimen>

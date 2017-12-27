@@ -10,12 +10,6 @@
             <stroke
                 android:width="0.2dp"
                 android:color="@color/black_12" />
-
-            <padding
-                android:bottom="@dimen/padding_small"
-                android:left="@dimen/padding_small"
-                android:right="@dimen/padding_small"
-                android:top="@dimen/padding_small" />
         </shape>
     </item>
 

@@ -9,31 +9,36 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vs"
         android:paddingTop="@dimen/padding_small"
         android:paddingLeft="@dimen/padding_small"
         android:paddingRight="@dimen/padding_small"
         android:text="@string/title_section_history_resolution"
-        android:textColor="#868686"
-        android:textSize="@dimen/font_small"
-        android:textStyle="bold"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/text_size_s_medium"
         />
 
     <View
-        android:layout_width="50dp"
+        android:layout_width="20dp"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginBottom="@dimen/margin_small"
         android:background="@color/deep_orange_500"
         />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_history"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/recyclerview_rescenter_history_item">
+        android:layout_height="wrap_content">
 
     </android.support.v7.widget.RecyclerView>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_12"/>
 
     <TextView
         android:id="@+id/action_history_more"
@@ -42,9 +47,7 @@
         android:padding="@dimen/padding_small"
         android:gravity="center_vertical"
         android:text="@string/action_see_more_history"
-        android:drawableRight="@drawable/ic_chevron_right"
         android:textColor="@color/tkpd_main_green"
-        android:textSize="@dimen/font_small"
-        android:textStyle="bold"
-        />
+        android:fontFamily="sans-serif-medium"
+        android:textSize="@dimen/font_small" />
 </LinearLayout>

@@ -9,7 +9,7 @@ public interface OpportunityView {
 
     void onActionDeleteClicked();
 
-    void onActionConfirmClicked();
+    void onReputationLabelClicked();
 
     void onActionSeeDetailProduct(String productId);
 
