@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
@@ -35,4 +36,6 @@ public interface ShopSettingInfoComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit retrofitWsV4();
+
+    ShopOpenRepository provideShopOpenRepository();
 }

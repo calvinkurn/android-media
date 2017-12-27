@@ -35,11 +35,12 @@
             app:helperEnabled="true"
             app:helper="@string/shop_open_label_description_info"
             app:counterEnabled="true"
-            app:counterMaxLength="48">
+            app:counterMaxLength="@integer/open_shop_max_slogan_char">
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/shop_slogan_input_text"
                 style="@style/EditText.ShopSetting"
+                android:maxLength="@integer/open_shop_max_slogan_char"
                 android:layout_width="match_parent" />
             ​
         </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
@@ -52,11 +53,12 @@
             app:helperEnabled="true"
             app:helper="@string/shop_open_label_description_info"
             app:counterEnabled="true"
-            app:counterMaxLength="140">
+            app:counterMaxLength="@integer/open_shop_max_desc_char">
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/shop_desc_input_text"
                 style="@style/EditText.ShopSetting"
+                android:maxLength="@integer/open_shop_max_desc_char"
                 android:layout_width="match_parent" />
             ​
         </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
@@ -126,13 +128,8 @@
 
         <Button
             android:id="@+id/button_next"
-            style="@style/Button.Submit.Green"
+            style="@style/Button.Submit.Green.Full"
             android:text="@string/title_next" />
-
-        <Button
-            android:id="@+id/button_save_and_continue_later"
-            style="@style/Button.Submit.White.Border"
-            android:text="@string/shop_open_label_save_and_continue_later" />
 
     </LinearLayout>
 </ScrollView>

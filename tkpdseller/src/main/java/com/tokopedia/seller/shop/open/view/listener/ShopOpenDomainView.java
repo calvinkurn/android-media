@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
 
 /**
  * Created by sebastianuskh on 3/17/17.
@@ -20,10 +21,9 @@ public interface ShopOpenDomainView extends CustomerView {
 
     void onErrorCheckShopDomain(Throwable t);
 
-    void onSuccessReserveShop(String shopName, String shopDomain);
+    void onSuccessReserveShop();
 
     void onFailedReserveShop();
 
     void onErrorReserveShop(Throwable t);
-
 }

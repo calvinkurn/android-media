@@ -3,6 +3,7 @@ package com.tokopedia.seller.shop.open.view.model;
 import android.os.Parcel;
 
 import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 
 /**
  * Created by nakama on 19/12/17.
@@ -11,8 +12,7 @@ import com.tokopedia.seller.base.view.model.StepperModel;
 public class ShopOpenStepperModel implements StepperModel {
     private final int DEFAULT_UNSELECTED_DISTRICT_ID = -1;
     private int districtID = DEFAULT_UNSELECTED_DISTRICT_ID;
-    private String shopName;
-    private String shopDomain;
+    private ResponseIsReserveDomain responseIsReserveDomain;
 
     public int getDistrictID() {
         return districtID;
@@ -25,20 +25,12 @@ public class ShopOpenStepperModel implements StepperModel {
     public ShopOpenStepperModel() {
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
+    public ResponseIsReserveDomain getResponseIsReserveDomain() {
+        return responseIsReserveDomain;
     }
 
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopDomain(String shopDomain) {
-        this.shopDomain = shopDomain;
-    }
-
-    public String getShopDomain() {
-        return shopDomain;
+    public void setResponseIsReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
+        this.responseIsReserveDomain = responseIsReserveDomain;
     }
 
     @Override
@@ -49,14 +41,12 @@ public class ShopOpenStepperModel implements StepperModel {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.districtID);
-        dest.writeString(this.shopName);
-        dest.writeString(this.shopDomain);
+        dest.writeParcelable(this.responseIsReserveDomain, flags);
     }
 
     protected ShopOpenStepperModel(Parcel in) {
         this.districtID = in.readInt();
-        this.shopName = in.readString();
-        this.shopDomain = in.readString();
+        this.responseIsReserveDomain = in.readParcelable(ResponseIsReserveDomain.class.getClassLoader());
     }
 
     public static final Creator<ShopOpenStepperModel> CREATOR = new Creator<ShopOpenStepperModel>() {

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,12 +27,19 @@ import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gallery.MediaItem;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
+import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.setting.data.model.response.UserData;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
@@ -41,13 +50,20 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
+@RuntimePermissions
 public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopSettingInfoView {
 
-    public static final int MAX_SELECTION_PICK_IMAGE = 1;
     public static final int REQUEST_CODE_IMAGE_PICKER = 532;
 
     @Inject
@@ -64,7 +80,6 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     private Button buttonNext;
     private ProgressDialog progressDialog;
     private String uriPathImage = "";
-    private ShopSettingInfoComponent component;
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     public static ShopSettingInfoFragment createInstance() {
@@ -73,7 +88,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     protected void initInjector() {
-        component = DaggerShopSettingInfoComponent
+        ShopSettingInfoComponent component = DaggerShopSettingInfoComponent
                 .builder()
                 .shopSettingInfoModule(new ShopSettingInfoModule())
                 .shopOpenDomainComponent(getComponent(ShopOpenDomainComponent.class))
@@ -103,11 +118,26 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
         errorImageEmpty = (TextView) view.findViewById(R.id.error_image_empty);
         welcomeText = view.findViewById(R.id.welcome_shop_label);
 
-        String helloName = getString(R.string.hello_x, onShopStepperListener.getStepperModel().getShopName());
-        welcomeText.setText(MethodChecker.fromHtml(helloName));
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
 
+        if(onShopStepperListener != null ){
+            if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null){
+                presenter.getisReserveDomain();
+            }else{
+                if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+                    UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+                    if(userData.getShopName()!= null) {
+                        String helloName = getString(R.string.hello_x, userData.getShopName());
+                        welcomeText.setText(MethodChecker.fromHtml(helloName));
+                    }
+                    shopDescEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getShortDesc());
+                    shopSloganEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getTagLine());
+                    ImageHandler.loadImage(getActivity(), imagePicker,
+                            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getLogo(), R.drawable.ic_add_photo_box);
+                }
+            }
+        }
     }
 
     private void setActionVar() {
@@ -226,16 +256,35 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void onSuccessSaveInfoShop() {
-
+        if(onShopStepperListener != null) {
+            onShopStepperListener.goToNextPage(null);
+        }
     }
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), ErrorHandler.getErrorMessage(t, getActivity()), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                onNextButtonClicked();
+            }
+        });
+    }
 
+    @Override
+    public void onSuccessGetReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
+        if(onShopStepperListener != null) {
+            onShopStepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
+        }
+    }
+
+    @Override
+    public void onErrorGetReserveDomain(Throwable e) {
+        NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
     }
 
     private void onClickBrowseImage() {
-        startActivityForResult(GalleryActivity.createIntent(getActivity(), GalleryType.ofImageOnly()), REQUEST_CODE_IMAGE_PICKER);
+        ShopSettingInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopSettingInfoFragment.this);
     }
 
     @Override
@@ -256,6 +305,12 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public final void onAttach(Activity activity) {
@@ -271,6 +326,39 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
         super.onAttach(context);
         onAttachListener(context);
     }
+
+    // Permission part
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        ShopSettingInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @TargetApi(16)
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForExternalStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @TargetApi(16)
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForExternalStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @TargetApi(16)
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForExternalStorage(final PermissionRequest request) {
+        request.proceed();
+    }
+
+    @TargetApi(16)
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void goToGallery() {
+        startActivityForResult(GalleryActivity.createIntent(getActivity(), GalleryType.ofImageOnly()), REQUEST_CODE_IMAGE_PICKER);
+    }
+
 
     protected void onAttachListener(Context context){
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
