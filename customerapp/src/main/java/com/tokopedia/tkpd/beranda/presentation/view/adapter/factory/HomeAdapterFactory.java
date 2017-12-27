@@ -29,6 +29,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsProductViewHolder;
@@ -72,7 +73,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksView
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTypeFactory {
+public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTypeFactory, FeedPlusTypeFactory {
 
     private final HomeCategoryListener listener;
     private FeedPlus.View feedListener;

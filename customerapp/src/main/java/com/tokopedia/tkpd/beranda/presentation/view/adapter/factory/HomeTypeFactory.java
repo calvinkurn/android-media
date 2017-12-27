@@ -58,42 +58,6 @@ public interface HomeTypeFactory {
 
     int type(HeaderViewModel headerViewModel);
 
-    int type(ActivityCardViewModel viewModel);
-
-    int type(PromotedShopViewModel viewModel);
-
-    int type(PromoCardViewModel promoCardViewModel);
-
-    int type(OfficialStoreBrandsViewModel brandsViewModel);
-
-    int type(OfficialStoreCampaignViewModel officialStoreViewModel);
-
-    int type(InspirationViewModel inspirationViewModel);
-
-    int type(BlogViewModel viewModel);
-
-    int type(PromotedProductViewModel promotedProductViewModel);
-
-    int type(AddFeedModel addFeedModel);
-
-    int type(RecentViewViewModel recentViewViewModel);
-
-    int type(EmptyModel emptyModel);
-
-    int type(EmptyTopAdsModel emptyModel);
-
-    int type(EmptyTopAdsProductModel emptyModel);
-
-    int type(ToppicksViewModel toppicksViewModel);
-
-    int type(KolViewModel kolViewModel);
-
-    int type(KolRecommendationViewModel kolRecommendationViewModel);
-
-    int type(FeedTopAdsViewModel feedTopAdsViewModel);
-
-    int type(FavoriteCtaViewModel favoriteCtaViewModel);
-
     AbstractViewHolder createViewHolder(View view, int viewType);
 
 }
