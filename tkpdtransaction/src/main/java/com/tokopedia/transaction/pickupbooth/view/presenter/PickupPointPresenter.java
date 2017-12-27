@@ -1,7 +1,8 @@
-package com.tokopedia.transaction.pickup.alfamart.view;
+package com.tokopedia.transaction.pickupbooth.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.transaction.pickup.alfamart.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickupbooth.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract;
 
 import javax.inject.Inject;
 

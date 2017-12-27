@@ -71,11 +71,10 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
-import com.tokopedia.transaction.pickup.alfamart.view.PickupPointsActivity;
+import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointsActivity;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

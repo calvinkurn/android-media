@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.pickup.alfamart.view;
+package com.tokopedia.transaction.pickupbooth.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tokopedia.transaction.pickup.alfamart.view.PickupPointContract.Constant.INTENT_DATA_PARAMS;
+import static com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract.Constant.INTENT_DATA_PARAMS;
 
 public class PickupPointsActivity extends BaseActivity {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.pickup.alfamart.view;
+package com.tokopedia.transaction.pickupbooth.view.contract;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;

@@ -1,6 +1,6 @@
-package com.tokopedia.transaction.pickup.alfamart.view.model;
+package com.tokopedia.transaction.pickupbooth.view.model;
 
-import com.tokopedia.transaction.pickup.alfamart.domain.model.Store;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 
 /**
  * Created by Irfan Khoirul on 27/12/17.

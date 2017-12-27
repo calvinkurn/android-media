@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.pickup.alfamart.view;
+package com.tokopedia.transaction.pickupbooth.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.pickup.alfamart.domain.model.Store;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 
 import java.util.ArrayList;
 

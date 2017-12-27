@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.tokopedia.transaction.pickup.alfamart.view.PickupPointsActivity">
+    tools:context=".pickupbooth.view.activity.PickupPointsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.tokopedia.transaction.pickup.alfamart.view.PickupPointsActivity"
+        tools:context=".pickupbooth.view.activity.PickupPointsActivity"
         tools:showIn="@layout/activity_pickup_point">
 
         <LinearLayout
