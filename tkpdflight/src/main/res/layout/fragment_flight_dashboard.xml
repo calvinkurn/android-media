@@ -24,7 +24,26 @@
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/button_search_ticket"
                 style="@style/Button.Submit.Orange"
+                android:layout_marginTop="@dimen/margin_med"
                 android:text="@string/flight_search_search_ticket" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_med"
+                android:background="@color/background_apps"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_med">
+
+                <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Headline.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/flight_title_promo" />
+
+                <!--Banner disini-->
+
+            </LinearLayout>
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
