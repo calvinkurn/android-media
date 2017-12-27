@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.myproduct.utils.FileUtils;
@@ -120,6 +121,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
      */
     private ArrayList<String> imageUrlList;
     private Listener listener;
+    private View btnSave;
+    private View btnSaveAndAdd;
 
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
@@ -196,7 +199,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productScoreViewHolder.setListener(this);
         presenter.attachView(this);
         presenter.getShopInfo();
-        view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
+        btnSave = view.findViewById(R.id.button_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isDataValid()) {
@@ -204,7 +208,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 }
             }
         });
-        view.findViewById(R.id.button_save_and_add).setOnClickListener(new View.OnClickListener() {
+        btnSaveAndAdd = view.findViewById(R.id.button_save_and_add);
+        btnSaveAndAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isDataValid()) {
@@ -213,6 +218,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             }
         });
         saveDefaultModel();
+        view.requestFocus();
         return view;
     }
 
@@ -595,6 +601,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
             @Override
             public void clickImageEditor(int position) {
+                if (ProductAddFragment.this.getStatusUpload() == ProductStatus.ADD) {
+                    UnifyTracking.eventClickImageInAddProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
+                } else {
+                    UnifyTracking.eventClickImageInEditProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
+                }
                 String uriOrPath = productImageViewHolder.getImagesSelectView().getImageAt(position).getUriOrPath();
                 if (!TextUtils.isEmpty(uriOrPath)) {
                     onImageEditor(uriOrPath);

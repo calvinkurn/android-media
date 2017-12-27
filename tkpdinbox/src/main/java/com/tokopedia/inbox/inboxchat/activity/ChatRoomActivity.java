@@ -16,15 +16,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -102,8 +103,8 @@ public class ChatRoomActivity extends BasePresenterActivity
         Intent detailsIntent;
         Intent parentIntent;
 
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance() ).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
             detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
             parentIntent = new Intent(context, InboxChatActivity.class);
         } else {
@@ -121,7 +122,7 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;
+        return AppScreen.SCREEN_CHAT_DETAIL;
     }
 
     @Override

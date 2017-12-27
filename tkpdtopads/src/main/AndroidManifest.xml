@@ -109,7 +109,9 @@
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
             android:label="@string/top_ads_title_keyword_add_keyword"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="true"/>
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordDetailActivity"
             android:exported="true"

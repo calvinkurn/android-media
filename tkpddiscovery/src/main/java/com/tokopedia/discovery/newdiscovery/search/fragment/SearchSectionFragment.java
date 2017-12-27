@@ -252,7 +252,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         startActivity(intent);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -467,7 +466,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     }
 
-    @SuppressWarnings("unchecked")
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         setFilterData(savedInstanceState.<Filter>getParcelableArrayList(EXTRA_FILTER));

@@ -106,11 +106,6 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
                 }
 
                 @Override
-                public void setDepartments(List<CategoryDB> departments) {
-
-                }
-
-                @Override
                 public void setShippingCity(List<District> districts) {
 
                 }
