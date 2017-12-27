@@ -34,6 +34,17 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     }
 
     public void setHomeHeaderWalletActionData(HomeHeaderWalletAction homeHeaderWalletActionData) {
+        if (homeHeaderWalletActionData != null && tokoPointDrawerData != null
+                && tokoPointDrawerData.getOffFlag() == 0)
+            this.type = TYPE_TOKOCASH_WITH_TOKOPOINT;
+        if (homeHeaderWalletActionData == null && tokoPointDrawerData != null
+                && tokoPointDrawerData.getOffFlag() == 0)
+            this.type = TYPE_TOKOPINT_ONLY;
+        if (homeHeaderWalletActionData != null &&
+                (tokoPointDrawerData == null || tokoPointDrawerData.getOffFlag() == 1))
+            this.type = TYPE_TOKOCASH_ONLY;
+        if (homeHeaderWalletActionData == null && tokoPointDrawerData == null)
+            this.type = TYPE_EMPTY;
         this.homeHeaderWalletActionData = homeHeaderWalletActionData;
     }
 
@@ -42,25 +53,22 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     }
 
     public void setTokoPointDrawerData(TokoPointDrawerData tokoPointDrawerData) {
+        if (tokoPointDrawerData != null && tokoPointDrawerData.getOffFlag() == 0
+                && homeHeaderWalletActionData != null)
+            this.type = TYPE_TOKOCASH_WITH_TOKOPOINT;
+        if (tokoPointDrawerData != null && tokoPointDrawerData.getOffFlag() == 0
+                && homeHeaderWalletActionData == null)
+            this.type = TYPE_TOKOPINT_ONLY;
+        if ((tokoPointDrawerData == null || tokoPointDrawerData.getOffFlag() == 1)
+                && homeHeaderWalletActionData != null)
+            this.type = TYPE_TOKOCASH_ONLY;
+        if (tokoPointDrawerData == null && homeHeaderWalletActionData == null)
+            this.type = TYPE_EMPTY;
         this.tokoPointDrawerData = tokoPointDrawerData;
     }
 
     public int getType() {
-        if (homeHeaderWalletActionData != null && tokoPointDrawerData != null) {
-            switch (tokoPointDrawerData.getOffFlag()) {
-                case 0:
-                    return TYPE_TOKOCASH_WITH_TOKOPOINT;
-                case 1:
-                    return TYPE_TOKOCASH_ONLY;
-                default:
-                    return TYPE_TOKOCASH_ONLY;
-            }
-        } else {
-            if (tokoPointDrawerData == null)
-                return TYPE_TOKOCASH_ONLY;
-            else
-                return TYPE_TOKOPINT_ONLY;
-        }
+        return type;
     }
 
     public CashBackData getCashBackData() {
