@@ -11,6 +11,14 @@ public class ChangePhoneNumberInputPresenter
         extends BaseDaggerPresenter<ChangePhoneNumberInputFragmentListener.View>
         implements ChangePhoneNumberInputFragmentListener.Presenter {
 
+    ChangePhoneNumberInputFragmentListener.View view;
+
+    @Override
+    public void attachView(ChangePhoneNumberInputFragmentListener.View view) {
+        this.view = view;
+        super.attachView(view);
+    }
+
     @Override
     public void initView() {
 

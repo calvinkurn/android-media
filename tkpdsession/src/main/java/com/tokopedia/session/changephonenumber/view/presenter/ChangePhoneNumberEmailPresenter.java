@@ -11,6 +11,14 @@ public class ChangePhoneNumberEmailPresenter
         extends BaseDaggerPresenter<ChangePhoneNumberEmailFragmentListener.View>
         implements ChangePhoneNumberEmailFragmentListener.Presenter {
 
+    ChangePhoneNumberEmailFragmentListener.View view;
+
+    @Override
+    public void attachView(ChangePhoneNumberEmailFragmentListener.View view) {
+        this.view = view;
+        super.attachView(view);
+    }
+
     @Override
     public void initView() {
 

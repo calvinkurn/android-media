@@ -11,6 +11,14 @@ public class ChangePhoneNumberWarningPresenter
         extends BaseDaggerPresenter<ChangePhoneNumberWarningFragmentListener.View>
         implements ChangePhoneNumberWarningFragmentListener.Presenter {
 
+    ChangePhoneNumberWarningFragmentListener.View view;
+
+    @Override
+    public void attachView(ChangePhoneNumberWarningFragmentListener.View view) {
+        this.view = view;
+        super.attachView(view);
+    }
+
     @Override
     public void initView() {
 
