@@ -11,4 +11,7 @@
     <integer name="product_default_counter_minimum_order_text">1</integer>
     <integer name="product_default_counter_minimum_stock_text">1</integer>
     <integer name="min_crop_result_width">300</integer>
+
+    <integer name="open_shop_max_slogan_char">48</integer>
+    <integer name="open_shop_max_desc_char">140</integer>
 </resources>

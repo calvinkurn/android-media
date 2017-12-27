@@ -44,8 +44,8 @@ public class ShopSettingInfoDataSourceCloud {
         this.tomeApi = tomeApi;
     }
 
-    public Observable<Boolean> saveShopSetting(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
-        return tomeApi.reserveShopDescInfo(generateRequestMapParams(logo, serverId, photoObj, shopDescription, tagLine, stepInfo1))
+    public Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest) {
+        return tomeApi.reserveShopDescInfo(paramsRequest)
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
@@ -56,17 +56,6 @@ public class ShopSettingInfoDataSourceCloud {
                         }
                     }
                 });
-    }
-
-    private Map<String, String> generateRequestMapParams(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
-        Map<String, String> params = new HashMap<>();
-        params.put(LOGO, logo);
-        params.put(SERVER_ID, serverId);
-        params.put(PHOTO_OBJ, photoObj);
-        params.put(SHORT_DESC, shopDescription);
-        params.put(TAG_LINE, tagLine);
-        params.put(STEP, String.valueOf(stepInfo1));
-        return params;
     }
 
     public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){
@@ -81,15 +70,15 @@ public class ShopSettingInfoDataSourceCloud {
 
         return tomeApi.reserveShopDescInfo(values)
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
-                if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
-                    return Observable.just(true);
-                }else{
-                    return Observable.just(false);
-                }
-            }
-        });
+                    @Override
+                    public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
+                        if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
+                            return Observable.just(true);
+                        }else{
+                            return Observable.just(false);
+                        }
+                    }
+                });
     }
 
     private final Map<String, String> generateRequestMapParams(String longitude,

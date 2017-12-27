@@ -4,6 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.setting.data.source.ShopSettingInfoDataSource;
 import com.tokopedia.seller.shop.setting.domain.ShopSettingSaveInfoRepository;
 
+import java.util.HashMap;
+
 import rx.Observable;
 
 /**
@@ -18,8 +20,8 @@ public class ShopSettingSaveInfoRepositoryImpl implements ShopSettingSaveInfoRep
     }
 
     @Override
-    public Observable<Boolean> saveShopSetting(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
-        return shopSettingInfoDataSource.saveShopSetting(logo, serverId, photoObj, shopDescription, tagLine, stepInfo1);
+    public Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest) {
+        return shopSettingInfoDataSource.saveShopSetting(paramsRequest);
     }
 
     @Override

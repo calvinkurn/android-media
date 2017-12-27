@@ -179,9 +179,9 @@
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
     <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik</string>
-    <string name="label_shop_setting_slogan">Slogan Toko</string>
-    <string name="label_shop_setting_desc_shop">Deskripsi Toko</string>
-    <string name="label_shop_setting_logo">Logo</string>
+    <string name="label_shop_setting_slogan">Slogan Toko (Opsional)</string>
+    <string name="label_shop_setting_desc_shop">Deskripsi Toko (Opsional)</string>
+    <string name="label_shop_setting_logo">Logo (Opsional)</string>
     <string name="label_shop_setting_error_should_pick_image">Logo harus diisi</string>
     <string name="label_shop_setting_info_max_file_size">Besar file maksimum:</string>
     <string name="label_shop_setting_info_size_image">10 Megabytes (10 MB)</string>
@@ -241,4 +241,5 @@
     <string name="shop_domain_definition">Domain Toko adalah nama unik untuk membedakan toko Anda dengan toko lainnya.</string>
     <string name="shop_open_label_save_and_continue_later">Simpan dan Lanjutkan Nanti</string>
     <string name="shop_open_label_description_info">Ceritakan secara singkat mengenai toko Anda, produk apa yang Anda jual, dan lain-lain.</string>
+    <string name="shop_open_label_slogan_info">Tulis kalimat singkat yang mencerminkan toko Anda.</string>
 </resources>

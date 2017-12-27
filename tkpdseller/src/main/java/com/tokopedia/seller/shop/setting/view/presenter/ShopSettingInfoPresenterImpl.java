@@ -1,5 +1,8 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.setting.domain.interactor.ShopSettingSaveInfoUseCase;
 
 import rx.Subscriber;
@@ -10,10 +13,12 @@ import rx.Subscriber;
 
 public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
 
-    ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase;
+    private final ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase;
+    private final ShopIsReserveDomainUseCase shopIsReserveDomainUseCase;
 
-    public ShopSettingInfoPresenterImpl(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase) {
+    public ShopSettingInfoPresenterImpl(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
         this.shopSettingSaveInfoUseCase = shopSettingSaveInfoUseCase;
+        this.shopIsReserveDomainUseCase = shopIsReserveDomainUseCase;
     }
 
     @Override
@@ -44,5 +49,37 @@ public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
                 }
             }
         });
+    }
+
+    @Override
+    public void getisReserveDomain() {
+        getView().showProgressDialog();
+        shopIsReserveDomainUseCase.execute(RequestParams.EMPTY, new Subscriber<ResponseIsReserveDomain>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()){
+                    getView().dismissProgressDialog();
+                    getView().onErrorGetReserveDomain(e);
+                }
+            }
+
+            @Override
+            public void onNext(ResponseIsReserveDomain responseIsReserveDomain) {
+                getView().dismissProgressDialog();
+                getView().onSuccessGetReserveDomain(responseIsReserveDomain);
+            }
+        });
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        shopIsReserveDomainUseCase.unsubscribe();
+        shopSettingSaveInfoUseCase.unsubscribe();
     }
 }
