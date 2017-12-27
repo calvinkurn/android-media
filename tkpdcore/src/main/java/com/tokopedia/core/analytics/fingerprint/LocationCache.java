@@ -1,9 +1,12 @@
 package com.tokopedia.core.analytics.fingerprint;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 
 import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
@@ -19,24 +22,22 @@ public class LocationCache {
 
     }
 
-    public static void saveLocation(Location location){
-        new GlobalCacheManager()
-                .setKey(TkpdCache.Key.KEY_LOCATION)
-                .setValue(CacheUtil.convertModelToString(location,new TypeToken<Location>(){}.getType()))
-                .store();
+    public static void saveLocation(Context context, Location location){
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.Key.KEY_LOCATION);
+        localCacheHandler.putString(TkpdCache.Key.KEY_LOCATION_LAT, String.valueOf(location.getLatitude()));
+        localCacheHandler.putString(TkpdCache.Key.KEY_LOCATION_LONG, String.valueOf(location.getLongitude()));
+        localCacheHandler.applyEditor();
     }
 
-    public static boolean isLocationCached(){
-        return GlobalCacheManager.isAvailable(TkpdCache.Key.KEY_LOCATION);
+    public static String getLatitudeCache() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.Key.KEY_LOCATION);
+        return localCacheHandler.getString(TkpdCache.Key.KEY_LOCATION_LAT, String.valueOf(GoogleMapPresenter.DEFAULT_LATITUDE));
     }
 
-    public static Location getLocation(){
-        Location location = new Location(LocationManager.NETWORK_PROVIDER);
-        location.setLatitude(GoogleMapPresenter.DEFAULT_LATITUDE);
-        location.setLongitude(GoogleMapPresenter.DEFAULT_LONGITUDE);
-        if(isLocationCached())
-            return new GlobalCacheManager().getConvertObjData(TkpdCache.Key.KEY_LOCATION, Location.class);
-        else
-            return location;
+    public static String getLongitudeCache() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.Key.KEY_LOCATION);
+        return localCacheHandler.getString(TkpdCache.Key.KEY_LOCATION_LONG, String.valueOf(GoogleMapPresenter.DEFAULT_LONGITUDE));
     }
+
+
 }

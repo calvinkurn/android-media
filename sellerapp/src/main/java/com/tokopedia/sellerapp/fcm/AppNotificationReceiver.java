@@ -4,13 +4,14 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.sellerapp.SellerMainApplication;
 
 import rx.Observable;
 
@@ -48,13 +49,13 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
 
     @Override
     public void onMoengageNotificationReceived(RemoteMessage message) {
-        // @TODO kalo udah implementasi moengage di sellerapp
+        PushManager.getInstance().getPushHandler().handlePushPayload(SellerMainApplication.getAppContext(), message.getData());
     }
 
     private boolean isAllowedNotification(Bundle data) {
         return cacheManager.isAllowToHandleNotif(data)
                 && cacheManager.checkLocalNotificationAppSettings(
-                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
         );
     }
 }

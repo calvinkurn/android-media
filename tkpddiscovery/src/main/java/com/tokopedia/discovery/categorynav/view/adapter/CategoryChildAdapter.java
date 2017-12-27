@@ -25,6 +25,7 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
 
     private CategoryChildAdapter.OnItemClickListener clickListener;
     private int activePosition=0;
+    private String lastSelectedCategoryId;
 
     public CategoryChildAdapter(CategoryChildAdapter.OnItemClickListener itemListener) {
         super();
@@ -66,24 +67,32 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
         LinearLayout categoryContainer;
         TextView categoryName;
         ImageView dropdown;
+        int colorTextNormal;
+        int colorTextSelected;
 
         ItemRowHolder(View view) {
             super(view);
             this.categoryName = (TextView) view.findViewById(R.id.category_child_text);
             this.categoryContainer = (LinearLayout) view.findViewById(R.id.category_child_container);
             this.dropdown = (ImageView) view.findViewById(R.id.category_child_dropdown);
+            colorTextNormal = view.getContext().getResources().getColor(R.color.font_black_primary_70);
+            colorTextSelected = view.getContext().getResources().getColor(R.color.medium_green);
         }
 
         public void bindData(Category category) {
             this.categoryName.setText(category.getName());
             if (category.getChildren()!=null && category.getChildren().size()>0 && !category.isGroup()) {
+                categoryName.setTextColor(colorTextNormal);
                 dropdown.setImageResource(R.drawable.carret_up);
                 dropdown.setVisibility(View.VISIBLE);
             } else if (category.getHasChild() ) {
+                categoryName.setTextColor(colorTextNormal);
                 dropdown.setImageResource(R.drawable.carret_down);
                 dropdown.setVisibility(View.VISIBLE);
             } else {
                 dropdown.setVisibility(View.GONE);
+                categoryName.setTextColor(category.getId().equals(lastSelectedCategoryId) ?
+                        colorTextSelected : colorTextNormal);
             }
             int pad = getPaddingPixels(10);
             if (category.getIndentation()>2) {
@@ -130,6 +139,14 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
                }
             }
         }
+    }
+
+    public int getActivePosition() {
+        return activePosition;
+    }
+
+    public void setLastSelectedCategoryId(String lastSelectedCategoryId) {
+        this.lastSelectedCategoryId = lastSelectedCategoryId;
     }
 
     public interface OnItemClickListener {

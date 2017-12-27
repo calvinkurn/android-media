@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="@dimen/padding_small"
-    android:paddingTop="@dimen/padding_small">
+    android:padding="@dimen/padding_small">
 
     <TextView
         android:layout_width="match_parent"
@@ -18,14 +17,14 @@
         android:textColor="@color/black_70"
         android:textStyle="bold" />
 
-    <android.support.v4.view.ViewPager
+    <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@+id/view_pager_review"
-        android:layout_width="350dp"
-        android:layout_height="240dp"
+        android:layout_width="340dp"
+        android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/margin_sm"
-        android:layout_marginRight="@dimen/margin_sm"
-        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginBottom="@dimen/margin_vs"
         android:visibility="visible" />
 
     <com.tkpd.library.viewpagerindicator.CirclePageIndicator
@@ -47,6 +46,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_vs"
         android:padding="@dimen/padding_vs"
         android:layout_gravity="center_vertical"
         android:orientation="horizontal">
@@ -61,15 +62,6 @@
             android:text="@string/title_all_reviews"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/fontm" />
-
-        <ImageView
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginRight="@dimen/margin_sm"
-            android:layout_marginLeft="@dimen/margin_sm"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/icon_arrow_right" />
-
 
     </LinearLayout>
 

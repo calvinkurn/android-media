@@ -3,7 +3,7 @@ package com.tokopedia.profilecompletion.di;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -29,7 +29,7 @@ public class ProfileCompletionModule {
     @ProfileCompletionScope
     @Provides
     ProfileSourceFactory provideProfileCompletionFactory(
-            @ActivityContext Context context,
+            @ApplicationContext Context context,
             AccountsService accountsService,
             GetUserInfoMapper getUserInfoMapper,
             EditUserInfoMapper editUserInfoMapper) {
@@ -74,7 +74,7 @@ public class ProfileCompletionModule {
 
     @ProfileCompletionScope
     @Provides
-    Bundle provideAccountsBundle(@ActivityContext Context context,
+    Bundle provideAccountsBundle(@ApplicationContext Context context,
                                  SessionHandler sessionHandler) {
         Bundle bundle = new Bundle();
         String authKey = sessionHandler.getAccessToken(context);

@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -32,7 +31,6 @@ import com.tokopedia.core.shop.model.shopData.Data;
 import com.tokopedia.core.shop.model.shopData.Image;
 import com.tokopedia.core.shop.model.shopData.Info;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
@@ -160,9 +158,11 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
     public void onClickCloseShop(ShopEditorPresenter presenter) {
         FragmentTransaction ft = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
         ft.addToBackStack(null);
-        editScheduleDialog = ShopScheduleDialog.newInstance(modelShopData.getClosedDetail(), modelShopData.getClosedScheduleDetail());
-        editScheduleDialog.setShopEditorPresenter(presenter);
-        editScheduleDialog.show(ft, "edit_chedusle_dialog");
+        if (modelShopData != null && modelShopData != null) {
+            editScheduleDialog = ShopScheduleDialog.newInstance(modelShopData.getClosedDetail(), modelShopData.getClosedScheduleDetail());
+            editScheduleDialog.setShopEditorPresenter(presenter);
+            editScheduleDialog.show(ft, "edit_chedusle_dialog");
+        }
     }
 
     @Override
@@ -242,6 +242,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                                 view.finishActivity();
                             }
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                         }
                         break;
                     case ShopEditServiceConstant.UPDATE_SHOP_IMAGE:
@@ -251,6 +252,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                         }
                         if(updateShopImageModel.getData().getIs_success() == 1){
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                             ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, context);
                             cacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
                             shopEditorModel.setUploadingAvatar(false);
@@ -275,6 +277,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                                 getShopData();
                             }
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                         }
 
                         break;
@@ -335,6 +338,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                 break;
         }// end of status download service
     }
+
 
     @Override
     public void unSubscribe() {

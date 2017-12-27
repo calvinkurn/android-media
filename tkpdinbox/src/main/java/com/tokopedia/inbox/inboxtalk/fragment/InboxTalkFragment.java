@@ -54,13 +54,9 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     InboxTalkAdapter adapter;
     private InboxTalkFilterDialog dialog;
 
-    @BindView(R2.id.coordinator)
     CoordinatorLayout coordinatorLayout;
-    @BindView(R2.id.talk_list)
     RecyclerView recyclerView;
-    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
-    @BindView(R2.id.fab)
     FloatingActionButton floatingActionButton;
     SnackbarRetry snackbarRetry;
 
@@ -108,8 +104,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        displayLoading(true);
-        requestFromCache();
+        if (getUserVisibleHint()) {
+            displayLoading(true);
+            requestFromCache();
+        }
     }
 
     @Override
@@ -158,6 +156,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     protected void initView(View view) {
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
+        recyclerView = (RecyclerView) view.findViewById(R.id.talk_list);
+        progressBar = (ProgressBar) view.findViewById(R.id.include_loading);
+        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
         layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
         refresh = new RefreshHandler(getActivity(), view, onRefreshListener());
@@ -222,6 +224,15 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
             if (!isVisibleToUser) {
                 snackbarRetry.pauseRetrySnackbar();
             }
+        }
+
+        if (isVisibleToUser
+                && adapter != null
+                && adapter.getData() != null
+                && adapter.getData().isEmpty()
+                && (snackbarRetry == null || (snackbarRetry != null && !snackbarRetry.isShown()))) {
+            displayLoading(true);
+            requestFromCache();
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

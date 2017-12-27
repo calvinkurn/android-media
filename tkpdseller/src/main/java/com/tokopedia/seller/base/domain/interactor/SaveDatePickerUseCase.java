@@ -1,7 +1,7 @@
 package com.tokopedia.seller.base.domain.interactor;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.base.domain.DatePickerRepository;
@@ -16,7 +16,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 4/26/17.
  */
 
-public class SaveDatePickerUseCase extends CompositeUseCase<Boolean> {
+public class SaveDatePickerUseCase extends UseCase<Boolean> {
 
     private static final String DATE_PICKER_MODEL = "DATE_PICKER_MODEL";
 
@@ -31,14 +31,10 @@ public class SaveDatePickerUseCase extends CompositeUseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return Observable.just(
-                datePickerRepository.saveSetting(
-                        (DatePickerDomainModel) requestParams.getObject(DATE_PICKER_MODEL)
-                ).toBlocking().first()
-        );
+        return datePickerRepository.saveSetting((DatePickerDomainModel) requestParams.getObject(DATE_PICKER_MODEL));
     }
 
-    public static RequestParams createRequestParams(DatePickerViewModel datePickerViewModel){
+    public static RequestParams createRequestParams(DatePickerViewModel datePickerViewModel) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DATE_PICKER_MODEL, new DatePickerDomainModel(datePickerViewModel));
         return requestParams;

@@ -45,6 +45,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -55,9 +56,11 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -65,6 +68,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.model.LoginModel;
@@ -83,6 +87,10 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
+import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * @author m.normansyah
@@ -196,7 +204,7 @@ LoginFragment extends Fragment implements LoginView {
                 String name = getArguments().getString("name");
                 loginProvideOnClick(url, name);
             }
-        }else {
+        } else {
 
             setSmartLock(SmartLockActivity.RC_READ);
         }
@@ -208,7 +216,6 @@ LoginFragment extends Fragment implements LoginView {
         super.onResume();
         login.initData();
         ScreenTracking.screen(AppScreen.SCREEN_LOGIN);
-        UnifyTracking.eventViewLoginPage();
         mEmailView.addTextChangedListener(watcher(wrapperEmail));
         mPasswordView.addTextChangedListener(watcher(wrapperPassword));
     }
@@ -333,7 +340,7 @@ LoginFragment extends Fragment implements LoginView {
                     KeyboardHandler.DropKeyboard(mContext, mEmailView);
                     LoginViewModel model = new LoginViewModel();
                     if (mPasswordView != null && mEmailView != null) {
-                        model.setUsername(mEmailView.getText().toString());
+                        model.setUsername(mEmailView.getText().toString().replaceAll(" ", ""));
                         model.setPassword(mPasswordView.getText().toString());
                         model.setIsEmailClick(true);
                         login.sendDataFromInternet(LoginModel.EmailType, model);
@@ -482,7 +489,8 @@ LoginFragment extends Fragment implements LoginView {
 
         // Store values at the time of the login attempt.
         Log.d(TAG, messageTAG + " login : " + login);
-        String email = mEmailView.getText().toString();
+
+        String email = mEmailView.getText().toString().replaceAll(" ", "");
         String password = mPasswordView.getText().toString();
 
         FocusPair focusPair = new FocusPair();
@@ -644,7 +652,8 @@ LoginFragment extends Fragment implements LoginView {
     public void onGooglePlusClicked() {
         UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
         showProgress(true);
-        ((GoogleActivity) getActivity()).onSignInClicked();
+        Intent intent = GoogleSignInActivity.getSignInIntent(getActivity());
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
     @Override
@@ -688,6 +697,11 @@ LoginFragment extends Fragment implements LoginView {
         } else {
             login.clearSavedAccount();
         }
+    }
+
+    @Override
+    public void triggerClearCategoryData() {
+        ((TkpdCoreRouter) getActivity().getApplication()).invalidateCategoryMenuData();
     }
 
     private void loginProvideOnClick(final String url, final String name) {
@@ -768,40 +782,64 @@ LoginFragment extends Fragment implements LoginView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 100:
-                if (resultCode == Activity.RESULT_CANCELED) {
-                    KeyboardHandler.DropKeyboard(getActivity(), getView());
+        try {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+            switch (requestCode) {
+                case 100:
+                    if (resultCode == Activity.RESULT_CANCELED) {
+                        KeyboardHandler.DropKeyboard(getActivity(), getView());
+                        break;
+                    }
+                    Bundle bundle = data.getBundleExtra("bundle");
+                    if (bundle.getString("path").contains("error")) {
+                        snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    } else if (bundle.getString("path").contains("code")) {
+                        login.sendDataFromInternet(LoginModel.WebViewType, bundle);
+                    } else if (bundle.getString("path").contains("activation-social")) {
+                        Bundle lbundle = new Bundle();
+                        lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
+                        startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                        getActivity().finish();
+
+                    }
                     break;
-                }
-                Bundle bundle = data.getBundleExtra("bundle");
-                if (bundle.getString("path").contains("error")) {
-                    snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                } else if (bundle.getString("path").contains("code")) {
-                    login.sendDataFromInternet(LoginModel.WebViewType, bundle);
-                } else if (bundle.getString("path").contains("activation-social")) {
-                    Bundle lbundle = new Bundle();
-                    lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
-                    startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
-                    getActivity().finish();
+                case 200:
+                    if (resultCode == Activity.RESULT_OK) {
+                        mEmailView.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
+                        mPasswordView.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
+                        accountSignIn.performClick();
+                    } else if (resultCode == SmartLockActivity.RC_SAVE) {
+                        destroyActivity();
+                    } else if (resultCode == SmartLockActivity.RC_SAVE_SECURITY_QUESTION) {
 
-                }
-                break;
-            case 200:
-                if(resultCode == Activity.RESULT_OK){
-                    mEmailView.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
-                    mPasswordView.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
-                    accountSignIn.performClick();
-                } else if(resultCode == SmartLockActivity.RC_SAVE){
-                    destroyActivity();
-                } else if(resultCode == SmartLockActivity.RC_SAVE_SECURITY_QUESTION){
+                    }
+                    break;
 
-                }
-                break;
-            default:
-                break;
+                case RC_SIGN_IN_GOOGLE:
+                    if (data != null) {
+                        GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+                        String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+
+                        LoginGoogleModel model = new LoginGoogleModel();
+                        model.setFullName(googleSignInAccount.getDisplayName());
+                        model.setGoogleId(googleSignInAccount.getId());
+                        model.setEmail(googleSignInAccount.getEmail());
+                        model.setAccessToken(accessToken);
+
+                        startLoginWithGoogle(LoginModel.GoogleType, model);
+                    } else {
+                        showProgress(false);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
         }
     }
 
@@ -845,8 +883,8 @@ LoginFragment extends Fragment implements LoginView {
         Intent intent = new Intent(getActivity(), SmartLockActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(SmartLockActivity.STATE, state);
-        if(state == SmartLockActivity.RC_SAVE){
-            bundle.putString(SmartLockActivity.USERNAME, mEmailView.getText().toString());
+        if (state == SmartLockActivity.RC_SAVE) {
+            bundle.putString(SmartLockActivity.USERNAME, mEmailView.getText().toString().replaceAll(" ", ""));
             bundle.putString(SmartLockActivity.PASSWORD, mPasswordView.getText().toString());
         }
         intent.putExtras(bundle);
@@ -858,7 +896,7 @@ LoginFragment extends Fragment implements LoginView {
         Intent intent = new Intent(getActivity(), SmartLockActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(SmartLockActivity.STATE, state);
-        if(state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE){
+        if (state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE) {
             bundle.putString(SmartLockActivity.USERNAME, username);
             bundle.putString(SmartLockActivity.PASSWORD, password);
         }

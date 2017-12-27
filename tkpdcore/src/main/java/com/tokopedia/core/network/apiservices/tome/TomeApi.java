@@ -16,6 +16,7 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_GET_SHO
 import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_IS_FAVORITE_SHOP;
 import static com.tokopedia.core.network.constants.TkpdBaseURL.Tome.PATH_PRODUCT_VARIANT;
 
+
 /**
  * Created by HenryPri on 24/05/17.
  */

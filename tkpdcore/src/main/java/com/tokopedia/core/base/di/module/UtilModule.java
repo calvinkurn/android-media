@@ -2,11 +2,10 @@ package com.tokopedia.core.base.di.module;
 
 import android.content.Context;
 
+import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tkpd.library.utils.image.ImageHandler;
 
 import dagger.Module;
 import dagger.Provides;

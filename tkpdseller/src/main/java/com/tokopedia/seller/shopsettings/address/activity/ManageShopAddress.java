@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopAddressActService;
@@ -34,6 +34,9 @@ import com.tokopedia.core.shoplocation.model.getshopaddress.ShopAddress;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
+import com.tokopedia.seller.shop.di.component.DaggerDeleteCacheComponent;
+import com.tokopedia.seller.shop.di.component.DeleteCacheComponent;
 import com.tokopedia.seller.shopsettings.address.adapter.ListViewManageShopLocation;
 
 import org.json.JSONArray;
@@ -42,6 +45,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -75,6 +80,9 @@ public class ManageShopAddress extends TActivity {
     private SessionHandler session = new SessionHandler(this);
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
+    @Inject
+    DeleteShopInfoUseCase deleteShopInfoUseCase;
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_SHOP_ADDRESS_EDITOR;
@@ -100,6 +108,10 @@ public class ManageShopAddress extends TActivity {
         MainProgress.showDialog();
         mainView.setVisibility(View.GONE);
         CheckCache();
+
+        DeleteCacheComponent deleteCacheComponent =
+                DaggerDeleteCacheComponent.builder().appComponent(getApplicationComponent()).build();
+        deleteCacheComponent.inject(this);
     }
 
     @Override
@@ -157,6 +169,9 @@ public class ManageShopAddress extends TActivity {
                                                 try {
                                                     ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ADDRESS, ManageShopAddress.this);
                                                     ShopCache.DeleteCache(session.getShopID(), ManageShopAddress.this);
+                                                    if (deleteShopInfoUseCase!= null) {
+                                                        deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
+                                                    }
 
                                                     jsonObject = new JSONObject(response.getStringData());
                                                     Gson gson = new GsonBuilder().create();
@@ -242,6 +257,9 @@ public class ManageShopAddress extends TActivity {
         if (resultCode == RESULT_OK) {
             ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ADDRESS, ManageShopAddress.this);
             ShopCache.DeleteCache(session.getShopID(), ManageShopAddress.this);
+            if (deleteShopInfoUseCase!= null) {
+                deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
+            }
             GetShopLocationsV4();
         }
     }

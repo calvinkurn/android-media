@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.categorynav.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     public static final String TAG = "CATEGORY_NAVIGATION_FRAGMENT";
     private static final int DEFAULT_OFFSET = 170;
+    private static final String PARAM_CATEGORY_ID = "param_category_id";
     private String categoryId = "";
     private String rootCategoryId = "";
     private CategoryNavDomainModel categoryNavDomainModel;
@@ -56,8 +58,26 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     public static CategoryNavigationFragment createInstance(String departmentId) {
         CategoryNavigationFragment categoryNavigationFragment = new CategoryNavigationFragment();
-        categoryNavigationFragment.categoryId = departmentId;
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_CATEGORY_ID, departmentId);
+        categoryNavigationFragment.setArguments(bundle);
         return categoryNavigationFragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            categoryId = getArguments().getString(PARAM_CATEGORY_ID, "0");
+        } else {
+            categoryId = savedInstanceState.getString(PARAM_CATEGORY_ID, "0");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(PARAM_CATEGORY_ID, categoryId);
     }
 
     @Nullable
@@ -211,4 +231,11 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
             getActivity().finish();
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        presenter.setOnDestroyView();
+        super.onDestroyView();
+    }
+
 }

@@ -1,129 +1,99 @@
 package com.tokopedia.tkpd.home.recharge.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.recentNumber.RecentData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.status.Status;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractor;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractorImpl;
+import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.status.Status;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
-import com.tokopedia.tkpd.home.recharge.util.CategoryComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 
-import java.util.Collections;
+import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * @author kulomady 05 on 7/13/2016.
+ * Modify by Nabilla Sabbaha on 8/16/2017.
+ * Modified by rizkyfadillah at 10/6/17.
  */
-public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
-        RechargeInteractor.OnGetStatus,
-        RechargeNetworkInteractor.OnGetRecentNumbersListener,
-        RechargeNetworkInteractor.OnGetRecentOrderListener,
-        RechargeInteractor.OnGetCategory {
+public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter {
 
-    static final String RECHARGE_CACHE_KEY = "PrimaryRechargeCache";
-    final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
-    final static String KEY_STATUS = "RECHARGE_STATUS";
-    final static int STATE_CATEGORY_NON_ACTIVE = 2;
-    static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
     private static final String TAG = RechargeCategoryPresenterImpl.class.getSimpleName();
 
-    private Activity activity;
+    private Context context;
     private RechargeCategoryView view;
     private RechargeNetworkInteractor rechargeNetworkInteractor;
-    private RechargeInteractor rechargeDBInteractor;
-    private CategoryData categoryData;
-    private final LocalCacheHandler cacheHandler;
+    private List<Category> categoryList;
 
-    public RechargeCategoryPresenterImpl(Activity activity, RechargeCategoryView view) {
-        this.activity = activity;
+    public RechargeCategoryPresenterImpl(Context context, RechargeCategoryView view,
+                                         RechargeNetworkInteractor rechargeNetworkInteractor) {
+        this.context = context;
         this.view = view;
-        this.rechargeNetworkInteractor = new RechargeNetworkInteractorImpl();
-        this.rechargeDBInteractor = new RechargeInteractorImpl();
-        this.cacheHandler = new LocalCacheHandler(activity, RECHARGE_CACHE_KEY);
+        this.rechargeNetworkInteractor = rechargeNetworkInteractor;
     }
 
     @Override
-    public void fecthDataRechargeCategory() {
-        rechargeDBInteractor.getStatus(this);
+    public void fetchDataRechargeCategory() {
+        rechargeNetworkInteractor.getStatus(getStatusSubscriber());
     }
 
-    @Override
-    public void fetchStatusDigitalProductData() {
-        rechargeDBInteractor.getStatusOnResume(this);
+    private Subscriber<Status> getStatusSubscriber() {
+        return new Subscriber<Status>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e instanceof WidgetRuntimeException) {
+                    view.renderErrorMessage();
+                } else {
+                    view.renderErrorNetwork();
+                }
+            }
+
+            @Override
+            public void onNext(Status status) {
+                if (status != null) {
+                    if (status.isMaintenance() || !isVersionMatch(status)) {
+                        view.failedRenderDataRechargeCategory();
+                    } else {
+                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
+                    }
+                }
+            }
+        };
     }
 
-    @Override
-    public void fetchRecentNumberList() {
-        this.rechargeNetworkInteractor.getRecentNumbers(
-                AuthUtil.generateParams(activity), this
-        );
-    }
+    private Subscriber<List<Category>> getCategoryDataSubscriber() {
+        return new Subscriber<List<Category>>() {
+            @Override
+            public void onCompleted() {
 
-    @Override
-    public void fetchLastOrder() {
-        this.rechargeNetworkInteractor.getLastOrder(AuthUtil.generateParams(activity), this);
-    }
+            }
 
-    private boolean isAlreadyHaveDataOnCache(String key) {
-        return null != cacheHandler.getString(key);
-    }
+            @Override
+            public void onError(Throwable e) {
+                view.renderErrorMessage();
+            }
 
-    private void storeNewDataToCache(String key, String newData) {
-        cacheHandler.putString(key, newData);
-        cacheHandler.applyEditor();
-    }
-
-    private String getDataOnCache(String key) {
-        return cacheHandler.getString(key);
-    }
-
-    @Override
-    public void onSuccess(CategoryData data) {
-        categoryData = data;
-        finishPrepareRechargeModule();
-    }
-
-    @Override
-    public void onError(Throwable e) {
-
-    }
-
-    @Override
-    public void onEmpty() {
-
-    }
-
-    @Override
-    public void onSuccess(Status data) {
-        view.hideRechargeWidget();
-        if (SessionHandler.isV4Login(activity)) {
-            fetchRecentNumberList();
-        }
-        if (data.getData().getAttributes().getIsMaintenance()) {
-            view.failedRenderDataRechargeCategory();
-        } else if (!isVersionMatch(data)) {
-            view.failedRenderDataRechargeCategory();
-        } else {
-            getRechargeCategory();
-        }
+            @Override
+            public void onNext(List<Category> data) {
+                categoryList = data;
+                finishPrepareRechargeModule();
+            }
+        };
     }
 
     private boolean isVersionMatch(Status status) {
         try {
-            int minApiSupport = Integer.parseInt(
-                    status.getData().getAttributes().getVersion().getMinimumAndroidBuild()
-            );
+            int minApiSupport = status.getMinimunAndroidBuild();
             Log.d(TAG, "version code : " + getVersionCode());
             return getVersionCode() >= minApiSupport;
         } catch (PackageManager.NameNotFoundException e) {
@@ -132,32 +102,10 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
         }
     }
 
-    @Override
-    public void onGetRecentNumbersSuccess(RecentData recentNumber) {
-        this.rechargeDBInteractor.storeRecentData(recentNumber);
-    }
-
-    @Override
-    public void onGetLastOrderSuccess(LastOrder lastOrder) {
-        storeNewDataToCache(KEY_LAST_ORDER, CacheUtil.convertModelToString(lastOrder, LastOrder.class));
-    }
-
-    @Override
-    public void onNetworkError() {
-        Log.e(TAG, "onNetworkError: ");
-        this.view.renderErrorNetwork();
-    }
-
-    private void getRechargeCategory() {
-        rechargeDBInteractor.getCategoryData(this);
-    }
-
-
     private void finishPrepareRechargeModule() {
-        if (activity != null && view != null) {
-            if (categoryData != null) {
-                Collections.sort(categoryData.getData(), new CategoryComparator());
-                view.renderDataRechargeCategory(categoryData);
+        if (context != null && view != null) {
+            if (categoryList != null) {
+                view.renderDataRechargeCategory(categoryList);
             } else {
                 view.failedRenderDataRechargeCategory();
             }
@@ -165,7 +113,12 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
     }
 
     private int getVersionCode() throws PackageManager.NameNotFoundException {
-        PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+        PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
         return pInfo.versionCode;
+    }
+
+    @Override
+    public void onDestroy() {
+        rechargeNetworkInteractor.onDestroy();
     }
 }

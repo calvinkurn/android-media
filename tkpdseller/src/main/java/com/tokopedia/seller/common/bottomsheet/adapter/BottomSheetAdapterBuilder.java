@@ -85,8 +85,14 @@ public class BottomSheetAdapterBuilder {
                            int tintColor, int itemLayoutRes, BottomSheetItemClickListener itemClickListener) {
 
         if (mFromMenu) {
+            BottomSheetHeader tempFirstHeader = null; // this is just for 1st header
+            if (mItems.size() >= 1 && mItems.get(0) instanceof BottomSheetHeader) {
+                tempFirstHeader = (BottomSheetHeader) mItems.get(0);
+            }
             mItems = createAdapterItems(dividerBackground, titleTextColor,
                     itemTextColor, itemBackground, tintColor);
+            if (tempFirstHeader != null)
+                mItems.add(0, tempFirstHeader);
         }
 
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);

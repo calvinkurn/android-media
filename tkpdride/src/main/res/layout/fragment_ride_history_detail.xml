@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
                     android:layout_marginBottom="10dp"
-                    android:background="#F2F2E9"
+                    android:background="@color/grey_map_background"
                     android:scaleType="centerCrop" />
 
                 <RelativeLayout
@@ -41,33 +41,53 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:layout_marginLeft="16dp"
+                        android:layout_marginEnd="150dp"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
                         android:layout_marginRight="150dp"
-                        android:text="21/03/2017 09:00 AM"
-                        android:textColor="@color/black" />
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:textColor="@color/black"
+                        tools:text="21/03/2017 09:00 AM" />
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_driver_car_display_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_ride_start_time"
-                        android:layout_marginBottom="12dp"
-                        android:layout_marginLeft="16dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="150dp"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
                         android:layout_marginRight="150dp"
-                        android:text="Honda Amaze (XX 1234)"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
                         android:textColor="@color/grey_600"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:text="Honda Amaze (XX 1234)" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/tv_trip_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_driver_car_display_name"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:textColor="@color/grey_600"
+                        android:textSize="12sp"
+                        tools:text="Trip ID: b8309a8f-22c6-4715-b781-ec76ed6717f0" />
 
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_ride_fare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginBottom="4dp"
-                        android:layout_marginRight="16dp"
-                        android:text="IDR 9.500"
-                        android:textColor="@color/black" />
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:textColor="@color/black"
+                        tools:text="IDR 9.500" />
 
                     <TextView
                         android:id="@+id/tv_ride_status"
@@ -75,10 +95,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/tv_ride_start_time"
-                        android:layout_marginRight="16dp"
-                        android:text="Completed"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_small"
+                        tools:text="Completed" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -86,8 +107,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/top_header_container"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp">
+                    android:layout_marginLeft="@dimen/margin_small_sm"
+                    android:layout_marginRight="@dimen/margin_small_sm">
 
                     <ImageView
                         android:id="@+id/crux_cabs_src_dest_line"
@@ -107,7 +128,8 @@
                             android:layout_width="13dp"
                             android:layout_height="13dp"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="15dp"
+                            android:layout_marginLeft="@dimen/margin_sm"
+                            android:layout_marginStart="@dimen/margin_sm"
                             android:src="@drawable/cabs_source_ic" />
 
                         <android.support.v7.widget.AppCompatTextView
@@ -115,17 +137,21 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
+                            android:layout_toEndOf="@id/crux_cabs_source_icon"
                             android:layout_toRightOf="@id/crux_cabs_source_icon"
                             android:ellipsize="marquee"
-                            android:paddingBottom="12dp"
-                            android:paddingLeft="18dp"
-                            android:paddingRight="12dp"
+                            android:maxLines="1"
+                            android:paddingBottom="@dimen/margin_small_sm"
+                            android:paddingEnd="@dimen/margin_small_sm"
+                            android:paddingLeft="@dimen/margin_med"
+                            android:paddingRight="@dimen/margin_small_sm"
+                            android:paddingStart="@dimen/margin_med"
                             android:paddingTop="12dp"
                             android:singleLine="true"
-                            android:text="Loading..."
                             android:textColor="@color/black"
                             android:textColorHint="@color/pdp_rating_color_new"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            tools:text="Loading..." />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -145,7 +171,8 @@
                             android:layout_width="13dp"
                             android:layout_height="13dp"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="15dp"
+                            android:layout_marginLeft="@dimen/margin_sm"
+                            android:layout_marginStart="@dimen/margin_sm"
                             android:src="@drawable/cabs_dest_ic" />
 
                         <TextView
@@ -155,14 +182,15 @@
                             android:layout_centerVertical="true"
                             android:layout_toRightOf="@id/crux_cabs_destination_icon"
                             android:ellipsize="marquee"
-                            android:paddingBottom="12dp"
-                            android:paddingLeft="18dp"
-                            android:paddingTop="12dp"
+                            android:paddingBottom="@dimen/margin_small_sm"
+                            android:paddingLeft="@dimen/margin_med"
+                            android:paddingStart="@dimen/margin_med"
+                            android:paddingTop="@dimen/margin_small_sm"
                             android:singleLine="true"
-                            android:text="Loading..."
                             android:textColor="@color/black"
                             android:textColorHint="@color/pdp_rating_color_new"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            tools:text="Loading..." />
                     </RelativeLayout>
                 </RelativeLayout>
 
@@ -178,58 +206,73 @@
                     android:layout_marginTop="8dp"
                     android:background="@color/grey_300" />
 
-                <RelativeLayout
-                    android:id="@+id/rl_driver_detail_cpntainer"
+                <LinearLayout
+                    android:id="@+id/rl_driver_detail_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/v_line_above_driver"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
 
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/iv_driver_pict"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:src="@drawable/default_user_pic_light" />
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/tv_driver_name"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:layout_toEndOf="@+id/iv_driver_pict"
-                        android:layout_toRightOf="@+id/iv_driver_pict"
-                        android:text="Your trip with John"
-                        android:textColor="@color/black" />
+                        android:layout_weight="1">
 
-                    <RatingBar
-                        android:id="@+id/rb_rating_result"
-                        style="@style/avgRatingBarSmall"
-                        android:layout_width="wrap_content"
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/iv_driver_pict"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:src="@drawable/default_user_pic_light" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/tv_driver_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/margin_large"
+                            android:layout_marginStart="@dimen/margin_large"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:paddingLeft="@dimen/padding_small"
+                            android:paddingStart="@dimen/padding_small"
+                            android:textColor="@color/black"
+                            tools:text="Your trip with John Ferdinand van java de paris " />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="90dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_horizontal"
-                        android:clickable="false"
-                        android:isIndicator="true"
-                        android:numStars="5"
-                        android:rating="0"
-                        android:scaleX=".75"
-                        android:scaleY=".75"
-                        android:stepSize="1"
-                        android:visibility="gone"
-                        tools:rating="3" />
-                </RelativeLayout>
+                        android:layout_gravity="center">
+
+                        <RatingBar
+                            android:id="@+id/rb_rating_result"
+                            style="@style/avgRatingBarSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:clickable="false"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:rating="0"
+                            android:scaleX=".75"
+                            android:scaleY=".75"
+                            android:stepSize="1"
+                            android:visibility="gone"
+                            tools:rating="5"
+                            tools:visibility="visible" />
+                    </RelativeLayout>
+                </LinearLayout>
 
 
                 <RelativeLayout
                     android:id="@+id/rl_payment_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/rl_driver_detail_cpntainer"
+                    android:layout_below="@+id/rl_driver_detail_container"
                     android:layout_marginBottom="20dp"
                     android:layout_marginTop="20dp"
                     android:background="@color/grey_200"
@@ -268,9 +311,9 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/tv_payment_details"
-                        android:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="-" />
 
                     <TextView
                         android:id="@+id/tv_label_discount"
@@ -290,15 +333,38 @@
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/tv_label_total_fare"
                         android:paddingTop="8dp"
-                        android:text="-"
                         android:textColor="@color/black_full"
+                        android:textSize="14sp"
+                        android:visibility="visible"
+                        tools:text="-" />
+
+                    <TextView
+                        android:id="@+id/label_total_charged"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_label_discount"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/complete_trip_amount_charged"
+                        android:textColor="@color/grey_800"
                         android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_total_charged"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/tv_label_discount"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/black_full"
+                        android:textSize="14sp"
+                        tools:text="-" />
 
                     <TextView
                         android:id="@+id/tv_label_cashback"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_label_discount"
+                        android:layout_below="@id/label_total_charged"
                         android:layout_marginTop="8dp"
                         android:gravity="center"
                         android:text="@string/label_cashback"
@@ -310,45 +376,61 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@id/tv_label_discount"
+                        android:layout_below="@id/label_total_charged"
                         android:paddingTop="8dp"
-                        android:text="-"
                         android:textColor="@color/black_full"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="-" />
 
                     <View
                         android:id="@+id/fare_sep"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_below="@id/tv_label_cashback"
-                        android:layout_marginBottom="8dp"
                         android:layout_marginTop="8dp"
                         android:background="@color/grey_300" />
 
                     <TextView
-                        android:id="@+id/label_total_charged"
+                        android:id="@+id/tv_label_pending_fare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/fare_sep"
-                        android:drawableLeft="@drawable/ic_tokocash_icon"
-                        android:drawablePadding="10dp"
-                        android:drawableTint="@color/grey_800"
+                        android:layout_marginTop="8dp"
                         android:gravity="center"
-                        android:text="@string/complete_trip_tokocash_charged"
+                        android:text="@string/complete_trip_pending_fare"
                         android:textColor="@color/grey_800"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/tv_total_charged"
+                        android:id="@+id/tv_pending_fare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/fare_sep"
-                        android:text="-"
-                        android:textColor="@color/black_full"
-                        android:textSize="14sp" />
+                        android:paddingTop="8dp"
+                        android:textColor="@color/red_500"
+                        android:textSize="14sp"
+                        tools:text="-" />
+
+                    <TextView
+                        android:id="@+id/btn_pay_pending_fare"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_below="@id/tv_label_pending_fare"
+                        android:layout_marginLeft="@dimen/thirty_dp"
+                        android:layout_marginRight="@dimen/thirty_dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/rounded_filled_green_bttn"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:text="@string/complete_pay_pending_fare"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_small" />
 
                 </RelativeLayout>
+
 
                 <RelativeLayout
                     android:id="@+id/layout_rate"
@@ -383,7 +465,6 @@
                 android:id="@+id/layout_need_help"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
                 android:background="@color/grey_100"
                 android:foreground="?attr/selectableItemBackground"
                 android:gravity="center">
@@ -398,6 +479,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
+                    android:paddingStart="4dp"
                     android:text="@string/link_click_here"
                     android:textColor="@color/colorGreen" />
 

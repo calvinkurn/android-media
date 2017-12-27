@@ -3,7 +3,7 @@ package com.tokopedia.seller.transaction.neworder.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.core.base.common.util.GetData;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.transaction.neworder.data.NewOrderApi;
@@ -28,7 +28,7 @@ public class GetNewOrderCloud {
     private final Context context;
 
     @Inject
-    public GetNewOrderCloud(NewOrderApi newOrderApi, @ActivityContext Context context) {
+    public GetNewOrderCloud(NewOrderApi newOrderApi, @ApplicationContext Context context) {
         this.newOrderApi = newOrderApi;
         this.context = context;
     }

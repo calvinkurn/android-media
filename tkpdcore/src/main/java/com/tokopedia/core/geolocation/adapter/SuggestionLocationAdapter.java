@@ -3,7 +3,9 @@ package com.tokopedia.core.geolocation.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.text.Html;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -25,15 +28,38 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tkpd.library.utils.ToastNetworkHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.geolocation.domain.IMapsRepository;
+import com.tokopedia.core.geolocation.domain.MapsRepository;
+import com.tokopedia.core.geolocation.model.autocomplete.Data;
+import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.maps.MapService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hangnadi on 2/2/16.
  */
-public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePrediction>
+public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
         implements Filterable {
 
     private static final String TAG = "PlaceAutocompleteAdapter";
@@ -41,7 +67,15 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
     /**
      * Current results returned by this adapter.
      */
-    private ArrayList<AutocompletePrediction> mResultList;
+    private List<PredictionResult> mResultList;
+
+    private MapService mapService;
+
+    private CompositeSubscription compositeSubscription;
+
+    private OnQueryListener queryListener;
+
+    private IMapsRepository mapsRepository;
 
     /**
      * Handles autocomplete requests.
@@ -64,12 +98,36 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
      * @see android.widget.ArrayAdapter#ArrayAdapter(android.content.Context, int)
      */
     public SuggestionLocationAdapter(Context context, GoogleApiClient googleApiClient,
-                                        LatLngBounds bounds, AutocompleteFilter filter) {
+                                     LatLngBounds bounds, AutocompleteFilter filter,
+                                     MapService mapService,
+                                     CompositeSubscription compositeSubscription,
+                                     IMapsRepository repository) {
         super(context, R.layout.layout_autocomplete_search_location, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
         mPlaceFilter = filter;
         mResultList = new ArrayList<>();
+        this.mapsRepository = repository;
+        this.mapService = mapService;
+        this.compositeSubscription = compositeSubscription;
+        this.compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
+
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                queryListener = new OnQueryListener() {
+                    @Override
+                    public void onQuerySubmit(String query) {
+                        subscriber.onNext(String.valueOf(query));
+                    }
+                };
+            }
+        }).debounce(700, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.from(new JobExecutor()))
+                .observeOn(new UIThread().getScheduler()).subscribe(queryAutoCompleteSubscriber()));
+    }
+
+    private interface  OnQueryListener {
+        void onQuerySubmit(String query);
     }
 
     /**
@@ -91,10 +149,11 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
      * Returns an item from the last autocomplete query.
      */
     @Override
-    public AutocompletePrediction getItem(int position) {
+    public PredictionResult getItem(int position) {
         return mResultList.get(position);
     }
 
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = super.getView(position, convertView, parent);
@@ -103,12 +162,17 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
         // Note that getPrimaryText() and getSecondaryText() return a CharSequence that may contain
         // styling based on the given CharacterStyle.
 
-        AutocompletePrediction item = getItem(position);
+        PredictionResult item = getItem(position);
 
         TextView textView1 = (TextView) row.findViewById(android.R.id.text1);
         TextView textView2 = (TextView) row.findViewById(android.R.id.text2);
-        textView1.setText(item.getPrimaryText(STYLE_BOLD));
-        textView2.setText(item.getSecondaryText(STYLE_BOLD));
+        if (item != null) {
+            textView1.setText(Html.fromHtml(item.getMainTextFormatted()));
+        }
+        if (item != null) {
+            textView2.setText(Html.fromHtml(item.getSecondaryTextFormatted()));
+        }
+
 
         return row;
     }
@@ -126,11 +190,10 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
                 if (constraint != null) {
                     if (constraint.length() >= 3) {
                         // Query the autocomplete API for the (constraint) search string.
-                        mResultList = getAutocomplete(constraint);
-                        if (mResultList != null) {
-                            // The API successfully returned results.
-                            results.values = mResultList;
-                            results.count = mResultList.size();
+                        //TODO This is where listener is initiated
+                        CommonUtils.dumper("PORING Masuk get Filter cuy");
+                        if(queryListener != null) {
+                            queryListener.onQuerySubmit(constraint.toString());
                         }
                     }
                 }
@@ -139,6 +202,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
+                CommonUtils.dumper("PORING Publish Result");
                 if (results != null && results.count > 0) {
                     // The API returned at least one result, update the data.
                     notifyDataSetChanged();
@@ -152,8 +216,8 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
             public CharSequence convertResultToString(Object resultValue) {
                 // Override this method to display a readable result in the AutocompleteTextView
                 // when clicked.
-                if (resultValue instanceof AutocompletePrediction) {
-                    return ((AutocompletePrediction) resultValue).getFullText(null);
+                if (resultValue instanceof PredictionResult) {
+                    return ((PredictionResult) resultValue).getMainText();
                 } else {
                     return super.convertResultToString(resultValue);
                 }
@@ -216,4 +280,60 @@ public class SuggestionLocationAdapter extends ArrayAdapter<AutocompletePredicti
         CommonUtils.dumper("Google API client is not connected for autocomplete query.");
         return new ArrayList<>();
     }
+
+    private Subscriber<String> queryAutoCompleteSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String query) {
+                CommonUtils.dumper("PORING Kirim Data " + query);
+                TKPDMapParam<String, String> temp = new TKPDMapParam<>();
+                temp = AuthUtil.generateParamsNetwork(getContext(), temp);
+                TKPDMapParam<String, Object> params = new TKPDMapParam<>();
+                params.put("input", query);
+                params.putAll(temp);
+
+                compositeSubscription.add(mapsRepository
+                        .getAutoCompleteList(mapService, params, query)
+                       .subscribeOn(Schedulers.newThread())
+                       .observeOn(AndroidSchedulers.mainThread())
+                       .unsubscribeOn(Schedulers.newThread())
+                       .subscribe(new Subscriber<AutoCompleteViewModel>() {
+                           @Override
+                           public void onCompleted() {
+
+                           }
+
+                           @Override
+                           public void onError(Throwable e) {
+                               if(e instanceof RuntimeException) {
+                                   Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG)
+                                           .show();
+                               } else if(e instanceof UnknownHostException) {
+                                   Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG)
+                                           .show();
+                               }
+                           }
+
+                           @Override
+                           public void onNext(AutoCompleteViewModel response) {
+                               CommonUtils.dumper("PORING Terima Result");
+                               mResultList = response.getListOfPredictionResults();
+                               notifyDataSetChanged();
+                           }
+                       }));
+            }
+        };
+    }
+
+
 }

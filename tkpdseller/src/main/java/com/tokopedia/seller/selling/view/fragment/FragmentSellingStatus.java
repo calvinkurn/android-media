@@ -107,8 +107,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.STATUS);
         super.setUserVisibleHint(isVisibleToUser);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPINGSTATUS);
-        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_SHIPPINGSTATUS);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_SHIPPING_STATUS);
     }
 
@@ -525,7 +523,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onStartBarcodeScanner() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        startActivityForResult(CommonUtils.requestBarcodeScanner(getActivity()), REQUEST_CODE_BARCODE);
     }
 
     @Override

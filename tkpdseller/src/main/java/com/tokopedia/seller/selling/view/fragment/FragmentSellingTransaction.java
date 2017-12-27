@@ -35,7 +35,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
@@ -102,8 +101,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         initPresenter();
 
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.TRANSACTION);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
-        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -468,7 +465,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     @Override
     public void onResume() {
         super.onResume();
-        UnifyTracking.eventViewShopTransactionPage();
     }
 
     private void createEditRefDialog(final SellingStatusTxModel model) {
@@ -483,7 +479,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
             @Override
             public void onClick(View v) {
-                startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+                startActivityForResult(CommonUtils.requestBarcodeScanner(getActivity()), 0);
             }
         });
         ConfirmButton.setOnClickListener(new View.OnClickListener() {

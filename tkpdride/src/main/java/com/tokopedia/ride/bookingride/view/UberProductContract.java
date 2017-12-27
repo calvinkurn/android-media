@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
@@ -47,6 +48,13 @@ public interface UberProductContract {
 
         Context getActivity();
 
+        void showFareListHeader();
+
+        void hideFareListHeader();
+
+        PlacePassViewModel getSource();
+
+        void renderNearbyRides(NearbyRides nearbyRides);
     }
 
     interface Presenter extends CustomerPresenter<View> {

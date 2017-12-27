@@ -2,8 +2,10 @@ package com.tokopedia.core.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -11,7 +13,6 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -53,6 +54,10 @@ public abstract class TActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        if (isLightToolbarThemes()) {
+            setLightToolbarStyle();
+        }
     }
 
     @Override
@@ -68,8 +73,7 @@ public abstract class TActivity extends BaseActivity {
     }
 
     protected boolean onSearchOptionSelected() {
-        Intent intent = BrowseProductRouter
-                .getBrowseProductIntent(this, "0", TopAdsApi.SRC_BROWSE_PRODUCT);
+        Intent intent = BrowseProductRouter.getSearchProductIntent(this);
         startActivity(intent);
         return true;
     }
@@ -109,5 +113,32 @@ public abstract class TActivity extends BaseActivity {
 
     public void hideToolbar() {
         getSupportActionBar().hide();
+    }
+
+
+    private void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        }else {
+            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+        }
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(
+                    com.tokopedia.core.R.drawable.ic_webview_back_button
+            );
+
+
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+                .WebViewToolbarSubtitleText);
+    }
+
+    protected boolean isLightToolbarThemes() {
+        return false;
     }
 }

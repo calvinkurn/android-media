@@ -56,133 +56,98 @@ public class OpportunityList {
     @SerializedName("order_destination")
     @Expose
     private OrderDestination orderDestination;
+    @SerializedName("replacement_multiplier_value")
+    @Expose
+    private int replacementMultiplierValue;
+    @SerializedName("replacement_multiplier_value_str")
+    @Expose
+    private String replacementMultiplierValueStr;
+    @SerializedName("replacement_multiplier_color")
+    @Expose
+    private String replacementMultiplierColor;
+
+    // replacement URL for webview to show the terms and condition before the product being taken
+    @SerializedName("replacement_tnc")
+    @Expose
+    private String replacementTnc;
 
     public int getOrderReplacementId() {
         return orderReplacementId;
-    }
-
-    public void setOrderReplacementId(int orderReplacementId) {
-        this.orderReplacementId = orderReplacementId;
     }
 
     public int getOrderOrderId() {
         return orderOrderId;
     }
 
-    public void setOrderOrderId(int orderOrderId) {
-        this.orderOrderId = orderOrderId;
-    }
-
     public String getOrderPaymentAt() {
         return orderPaymentAt;
-    }
-
-    public void setOrderPaymentAt(String orderPaymentAt) {
-        this.orderPaymentAt = orderPaymentAt;
     }
 
     public String getOrderExpiredAt() {
         return orderExpiredAt;
     }
 
-    public void setOrderExpiredAt(String orderExpiredAt) {
-        this.orderExpiredAt = orderExpiredAt;
-    }
-
     public String getOrderCashbackIdr() {
         return orderCashbackIdr;
-    }
-
-    public void setOrderCashbackIdr(String orderCashbackIdr) {
-        this.orderCashbackIdr = orderCashbackIdr;
     }
 
     public String getOrderCashback() {
         return orderCashback;
     }
 
-    public void setOrderCashback(String orderCashback) {
-        this.orderCashback = orderCashback;
-    }
-
     public OrderCustomer getOrderCustomer() {
         return orderCustomer;
-    }
-
-    public void setOrderCustomer(OrderCustomer orderCustomer) {
-        this.orderCustomer = orderCustomer;
     }
 
     public OrderPayment getOrderPayment() {
         return orderPayment;
     }
 
-    public void setOrderPayment(OrderPayment orderPayment) {
-        this.orderPayment = orderPayment;
-    }
-
     public OrderDetail getOrderDetail() {
         return orderDetail;
-    }
-
-    public void setOrderDetail(OrderDetail orderDetail) {
-        this.orderDetail = orderDetail;
     }
 
     public OrderDeadline getOrderDeadline() {
         return orderDeadline;
     }
 
-    public void setOrderDeadline(OrderDeadline orderDeadline) {
-        this.orderDeadline = orderDeadline;
-    }
-
     public OrderShop getOrderShop() {
         return orderShop;
-    }
-
-    public void setOrderShop(OrderShop orderShop) {
-        this.orderShop = orderShop;
     }
 
     public java.util.List<OrderProduct> getOrderProducts() {
         return orderProducts;
     }
 
-    public void setOrderProducts(java.util.List<OrderProduct> orderProducts) {
-        this.orderProducts = orderProducts;
-    }
-
     public OrderShipment getOrderShipment() {
         return orderShipment;
-    }
-
-    public void setOrderShipment(OrderShipment orderShipment) {
-        this.orderShipment = orderShipment;
     }
 
     public OrderLast getOrderLast() {
         return orderLast;
     }
 
-    public void setOrderLast(OrderLast orderLast) {
-        this.orderLast = orderLast;
-    }
-
     public java.util.List<OrderHistory> getOrderHistory() {
         return orderHistory;
     }
 
-    public void setOrderHistory(java.util.List<OrderHistory> orderHistory) {
-        this.orderHistory = orderHistory;
+    public String getReplacementTnc() {
+        return replacementTnc;
     }
 
     public OrderDestination getOrderDestination() {
         return orderDestination;
     }
 
-    public void setOrderDestination(OrderDestination orderDestination) {
-        this.orderDestination = orderDestination;
+    public int getReplacementMultiplierValue() {
+        return replacementMultiplierValue;
     }
 
+    public String getReplacementMultiplierValueStr() {
+        return replacementMultiplierValueStr;
+    }
+
+    public String getReplacementMultiplierColor() {
+        return replacementMultiplierColor;
+    }
 }

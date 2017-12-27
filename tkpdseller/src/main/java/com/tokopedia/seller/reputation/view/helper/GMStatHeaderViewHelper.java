@@ -1,14 +1,13 @@
 package com.tokopedia.seller.reputation.view.helper;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +16,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.seller.reputation.util.DateHeaderFormatter;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationDatePickerActivity;
 
@@ -28,8 +28,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static com.tokopedia.seller.goldmerchant.statistic.utils.GoldMerchantDateUtils.getDateWithYear;
 
 /**
  * Created by normansyahputa on 11/21/16.
@@ -44,7 +42,6 @@ public class GMStatHeaderViewHelper {
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final Locale locale = new Locale("in", "ID");
     protected TextView calendarRange;
-    protected ImageView calendarArrowIcon;
     protected ImageView calendarIcon;
     protected View itemView;
     private String[] monthNamesAbrev;
@@ -74,13 +71,11 @@ public class GMStatHeaderViewHelper {
 
         calendarRange = (TextView) itemView.findViewById(R.id.calendar_range);
 
-        calendarArrowIcon = (ImageView) itemView.findViewById(R.id.calendar_arrow_icon);
-
         calendarIcon = (ImageView) itemView.findViewById(R.id.calendar_icon);
 
         gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
 
-        greenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
+        greenColor = ResourcesCompat.getColor(itemView.getResources(), R.color.tkpd_main_green, null);
     }
 
     public void resetToLoading() {
@@ -96,12 +91,12 @@ public class GMStatHeaderViewHelper {
         if (dateGraph == null || dateGraph.size() <= 0)
             return;
 
-        String startDate = getDateWithYear(dateGraph.get(0), monthNamesAbrev);
-        this.sDate = getDateWithYear(dateGraph.get(0));
+        String startDate = GoldMerchantDateUtils.getDateWithYear(dateGraph.get(0), monthNamesAbrev);
+        this.sDate = GoldMerchantDateUtils.getDateWithYear(dateGraph.get(0));
 
         int lastIndex = (dateGraph.size() > 7) ? 6 : dateGraph.size() - 1;
-        String endDate = getDateWithYear(dateGraph.get(lastIndex), monthNamesAbrev);
-        this.eDate = getDateWithYear(dateGraph.get(lastIndex));
+        String endDate = GoldMerchantDateUtils.getDateWithYear(dateGraph.get(lastIndex), monthNamesAbrev);
+        this.eDate = GoldMerchantDateUtils.getDateWithYear(dateGraph.get(lastIndex));
 
 
         calendarRange.setText(startDate + " - " + endDate);
@@ -112,17 +107,12 @@ public class GMStatHeaderViewHelper {
 
         if (!isGmStat) {
             calendarRange.setTextColor(gredyColor);
-            calendarArrowIcon.setVisibility(View.GONE);
         } else {
             calendarRange.setTextColor(greenColor);
-            calendarArrowIcon.setVisibility(View.VISIBLE);
         }
     }
 
     protected void setImageIcon() {
-        Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(itemView.getContext()
-                , R.drawable.ic_set_date_next);
-        calendarArrowIcon.setImageDrawable(setDateNext);
         calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
     }
 
@@ -174,7 +164,7 @@ public class GMStatHeaderViewHelper {
             cal.setTimeInMillis(sDate);
             DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
             startDate = dateFormat.format(cal.getTime());
-            startDate = getDateWithYear(Integer.parseInt(startDate), monthNamesAbrev);
+            startDate = GoldMerchantDateUtils.getDateWithYear(Integer.parseInt(startDate), monthNamesAbrev);
         }
 
         String endDate = null;
@@ -183,7 +173,7 @@ public class GMStatHeaderViewHelper {
             cal.setTimeInMillis(eDate);
             DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
             endDate = dateFormat.format(cal.getTime());
-            endDate = getDateWithYear(endDate, monthNamesAbrev);
+            endDate = GoldMerchantDateUtils.getDateWithYear(endDate, monthNamesAbrev);
         }
 
         calendarRange.setText(startDate + " - " + endDate);

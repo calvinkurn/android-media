@@ -9,8 +9,6 @@
     <TextView
         android:id="@+id/tv_subtitle"
         style="@style/TextView.Body1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:minWidth="100dp"
         tools:text="Total Pengeluaran TopAds" />
@@ -18,17 +16,17 @@
     <TextView
         android:id="@+id/tv_amount"
         style="@style/TextView.Display1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         tools:text="Rp900.000" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.tokopedia.seller.goldmerchant.statistic.view.widget.ArrowPercentageView
+
+        <com.tokopedia.gm.statistic.view.widget.ArrowPercentageView
             android:id="@+id/view_arrow_percentage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tv_percentage_description"
@@ -46,12 +44,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.tokopedia.seller.common.widget.GMDateRangeView
+        <com.tokopedia.gm.statistic.view.widget.GMDateRangeView
             android:id="@+id/gm_statistic_transaction_range_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.tokopedia.seller.common.widget.GMDateRangeView
+        <com.tokopedia.gm.statistic.view.widget.GMDateRangeView
             android:id="@+id/gm_statistic_transaction_range_compare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

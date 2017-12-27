@@ -7,8 +7,8 @@ import android.util.Log;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.ImageUpload;
-import com.tokopedia.core.inboxreputation.model.actresult.ImageUploadResult;
-import com.tokopedia.core.inboxreputation.model.param.GenerateHostPass;
+import com.tokopedia.inbox.contactus.model.GenerateHostPass;
+import com.tokopedia.inbox.contactus.model.ImageUploadResult;
 import com.tokopedia.inbox.inboxticket.listener.UploadImageTicketParam;
 import com.tokopedia.inbox.inboxticket.model.InboxTicketParam;
 import com.tokopedia.inbox.inboxticket.model.SendReplyResult;
@@ -584,4 +584,5 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
     public void unsubscribe() {
         compositeSubscription.unsubscribe();
     }
+
 }

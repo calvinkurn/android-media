@@ -11,7 +11,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.data.RegisterDeviceInteractor;
@@ -76,8 +75,6 @@ public class GCMHandler {
         CommonUtils.dumper("start mGoogleCloudMessaging get");
         if (gcmRegid.isEmpty()) {
             registerGCM();
-        } else {
-            Localytics.setPushRegistrationId(gcmRegid);
         }
     }
 
@@ -124,7 +121,6 @@ public class GCMHandler {
                             param.setStatusCode(REGISTRATION_STATUS_OK);
                             param.setStatusMessage("GCM :: Device registered, registration ID=" + gcmRegid);
                             CommonUtils.dumper("GCM :: Device registered, registration ID=" + gcmRegid);
-                            Localytics.setPushRegistrationId(gcmRegid);
 
                         } catch (IOException ex) {
                             param.setStatusCode(REGISTRATION_STATUS_ERROR);
@@ -203,7 +199,8 @@ public class GCMHandler {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(context);
         if (result != ConnectionResult.SUCCESS) {
-            if (googleAPI.isUserResolvableError(result)) {
+            Activity activity = (Activity) context;
+            if (!activity.isFinishing() && googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog((Activity) context, result,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             }

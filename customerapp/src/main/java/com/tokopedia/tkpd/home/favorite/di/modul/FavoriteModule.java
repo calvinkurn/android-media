@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -19,8 +19,8 @@ import com.tokopedia.tkpd.home.favorite.di.scope.FavoriteScope;
 import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.AddFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase;
 
@@ -37,7 +37,7 @@ public class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    FavoriteFactory provideFavoriteFactory(@ActivityContext Context context,
+    FavoriteFactory provideFavoriteFactory(@ApplicationContext Context context,
                                            Gson gson,
                                            ServiceV4 serviceVersion4,
                                            TopAdsService topAdsService,
@@ -74,7 +74,7 @@ public class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    GetAllDataFavoriteUseCase provideAllDataFavoriteUsecase(@ActivityContext Context context,
+    GetAllDataFavoriteUseCase provideAllDataFavoriteUsecase(@ApplicationContext Context context,
                                                             ThreadExecutor threadExecutor,
                                                             PostExecutionThread postExecutor,
                                                             GetFavoriteShopUsecase favUseCase,
@@ -96,7 +96,7 @@ public class FavoriteModule {
     @FavoriteScope
     @Provides
     GetInitialDataPageUsecase provideFavoriteWishlitUsecase(
-            @ActivityContext Context context,
+            @ApplicationContext Context context,
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             GetFavoriteShopUsecase getFavoriteShopUsecase,

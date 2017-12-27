@@ -23,7 +23,7 @@
             android:contentDescription="@string/image_product_desc"
             android:gravity="center"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_loading_toped"
+            android:src="@drawable/loading_page"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"

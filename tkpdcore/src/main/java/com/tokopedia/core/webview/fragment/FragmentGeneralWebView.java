@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
@@ -25,7 +24,10 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -51,6 +53,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
     private String url;
+    private static boolean isAlreadyFirstRedirect;
 
     /**
      * @deprecated Use {@link FragmentGeneralWebView#createInstance(String, boolean)} ()} instead.
@@ -131,11 +134,20 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "redirect url = " + url);
-            if (((IDigitalModuleRouter) getActivity().getApplication())
+            if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
                     .isSupportedDelegateDeepLink(url)) {
                 ((IDigitalModuleRouter) getActivity().getApplication())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                 return true;
+            } else if (getActivity() != null &&
+                    Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter &&
+                        (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
+
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .getApplinkUnsupported(getActivity())
+                            .showAndCheckApplinkUnsupported();
+                }
             }
             return overrideUrl(url);
         }
@@ -158,8 +170,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     private boolean overrideUrl(String url) {
-        if (((Uri.parse(url).getHost().contains("www.tokopedia.com"))
-                || Uri.parse(url).getHost().contains("m.tokopedia.com"))
+        if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+                || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                 && !url.endsWith(".pl")) {
             switch ((DeepLinkChecker.getDeepLinkType(url))) {
                 case DeepLinkChecker.CATEGORY:
@@ -196,7 +208,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement DetailFragmentInteractionListener");
+                    + " must implement FragmentGeneralWebView.OnFragmentInteractionListener");
         }
     }
 

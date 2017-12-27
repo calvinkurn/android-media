@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.retrofit.utils;
 
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tokopedia.core.MaintenancePage;
@@ -27,7 +28,7 @@ public class ServerErrorHandler {
     public static void showForceLogoutDialog() {
         Intent intent = new Intent();
         intent.setAction(ACTION_FORCE_LOGOUT);
-        MainApplication.getAppContext().sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
     }
 
     public static void sendForceLogoutAnalytics(String url) {
@@ -41,13 +42,13 @@ public class ServerErrorHandler {
     public static void showServerErrorSnackbar() {
         Intent intent = new Intent();
         intent.setAction(ACTION_SERVER_ERROR);
-        MainApplication.getAppContext().sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
     }
 
     public static void showTimezoneErrorSnackbar() {
         Intent intent = new Intent();
         intent.setAction(ACTION_TIMEZONE_ERROR);
-        MainApplication.getAppContext().sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
     }
 
 

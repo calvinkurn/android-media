@@ -2,16 +2,13 @@ package com.tokopedia.discovery.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
@@ -39,7 +36,6 @@ import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.old.HeaderHotAdapter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.helper.IndicatorViewHelper;
-import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
@@ -52,8 +48,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.Badge;
-import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -562,7 +556,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 if (bannerModels.size()>0) {
                     bannerHandler = new Handler();
                     incrementPage = runnableIncrement();
-                    bannerPagerAdapter = new BannerPagerAdapter(context,bannerModels);
+                    bannerPagerAdapter = new BannerPagerAdapter(context,bannerModels, categoryHeaderModel.getCategoryHeader().getId());
                     bannerViewPager.setAdapter(bannerPagerAdapter);
                     bannerViewPager.addOnPageChangeListener(onBannerChange());
                     bannerIndicator.setFillColor(ContextCompat.getColor(context, R.color.tkpd_dark_orange));
@@ -992,10 +986,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 title.setText(MethodChecker.fromHtml(data.name));
             price.setText(data.price);
-            if (data.getShopLocation() != null)
-                location.setText(MethodChecker.fromHtml(data.getShopLocation()));
-            else
-                location.setVisibility(View.INVISIBLE);
+            if (data.getShopLocation() != null) {
+                if (data.getOfficial()) {
+                    location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
+                } else {
+                    location.setText(MethodChecker.fromHtml(data.getShopLocation()));
+                }
+            } else location.setVisibility(View.INVISIBLE);
 
             if (data.getSpannedShop() != null)
                 shopName.setText(data.getSpannedShop());

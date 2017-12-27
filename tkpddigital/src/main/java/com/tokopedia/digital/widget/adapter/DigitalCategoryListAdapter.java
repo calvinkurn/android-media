@@ -14,6 +14,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemDataError;
+import com.tokopedia.digital.widget.model.DigitalCategoryItemHeader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +28,11 @@ import butterknife.ButterKnife;
 
 public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int TYPE_HOLDER_CATEGORY_ITEM =
+    public static final int TYPE_HOLDER_CATEGORY_ITEM =
             R.layout.view_holder_digital_category_item_digital_module;
-    private static final int TYPE_HOLDER_CATEGORY_ITEM_EMPTY =
+    public static final int TYPE_HOLDER_CATEGORY_ITEM_EMPTY =
             R.layout.view_holder_digital_category_item_empty_digital_module;
-    private static final int TYPE_HOLDER_CATEGORY_ITEM_ERROR =
+    public static final int TYPE_HOLDER_CATEGORY_ITEM_ERROR =
             R.layout.view_holder_item_empty;
 
 
@@ -59,6 +60,27 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
             for (int i = 0; i < countIncrement; i++) {
                 dataList.add(null);
             }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void addAllDataList(List<DigitalCategoryItemData> digitalCategoryItemDataList,
+                               List<DigitalCategoryItemHeader> digitalCategoryItemHeaderList) {
+        if (digitalCategoryItemHeaderList == null || digitalCategoryItemHeaderList.isEmpty())
+            return;
+        if (digitalCategoryItemDataList == null || digitalCategoryItemDataList.isEmpty())
+            return;
+        int countList = digitalCategoryItemDataList.size();
+        int countIncrement = column - (countList % column);
+        dataList.clear();
+        dataList.addAll(digitalCategoryItemDataList);
+        if (countIncrement < column) {
+            for (int i = 0; i < countIncrement; i++) {
+                dataList.add(null);
+            }
+        }
+        for (DigitalCategoryItemHeader data : digitalCategoryItemHeaderList) {
+            dataList.add(0, data);
         }
         notifyDataSetChanged();
     }

@@ -33,7 +33,7 @@ public class ImageLoader {
         cacheParams.setMemCacheSizePercent(0.25f);
         imageFetcher = new ImageFetcher(context,
                 context.getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size));
-        imageFetcher.setLoadingImage(R.drawable.ic_loading_toped);
+        imageFetcher.setLoadingImage(R.drawable.loading_page);
         imageFetcher.addImageCache(cacheParams);
     }
 

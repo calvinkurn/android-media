@@ -22,27 +22,15 @@ import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
 public class DigitalCategoryListActivity extends BasePresenterActivity {
 
+    @Override
+    public String getScreenName() {
+        return DigitalCategoryListActivity.class.getSimpleName();
+    }
+
     @SuppressWarnings("unused")
-    @DeepLink({Constants.Applinks.DIGITAL_CATEGORY})
-    public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-
-        if (extras != null && extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            Intent homeIntent;
-            if (GlobalConfig.isSellerApp()) {
-                homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-            } else {
-                homeIntent = HomeRouter.getHomeActivity(context);
-            }
-            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
-            taskStackBuilder.addNextIntent(homeIntent);
-        }
-
-        Intent destination = DigitalCategoryListActivity.newInstance(context);
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
+    @DeepLink({Constants.Applinks.DIGITAL_CATEGORY, Constants.Applinks.DIGITAL})
+    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
+        return DigitalCategoryListActivity.newInstance(context);
     }
 
     public static Intent newInstance(Context context) {
@@ -97,5 +85,10 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

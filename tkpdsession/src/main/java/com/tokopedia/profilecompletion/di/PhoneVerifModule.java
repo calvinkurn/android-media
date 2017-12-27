@@ -3,7 +3,7 @@ package com.tokopedia.profilecompletion.di;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -21,13 +21,6 @@ import com.tokopedia.otp.phoneverification.data.mapper.VerifyPhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.data.repository.MsisdnRepositoryImpl;
 import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
 import com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase;
-import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
-import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
-import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
-import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,13 +35,13 @@ public class PhoneVerifModule {
     @PhoneVerifScope
     @Provides
     OtpSourceFactory provideOtpFactory(
-            @ActivityContext Context context){
+            @ApplicationContext Context context) {
         return new OtpSourceFactory(context);
     }
     @PhoneVerifScope
     @Provides
     MsisdnSourceFactory provideMsisdnFactory(
-            @ActivityContext Context context,
+            @ApplicationContext Context context,
             AccountsService accountsService,
             ChangePhoneNumberMapper changePhoneNumberMapper,
             VerifyPhoneNumberMapper verifyPhoneNumberMapper){
@@ -120,7 +113,7 @@ public class PhoneVerifModule {
 
     @PhoneVerifScope
     @Provides
-    Bundle provideAccountsBundle(@ActivityContext Context context,
+    Bundle provideAccountsBundle(@ApplicationContext Context context,
                                  SessionHandler sessionHandler) {
         Bundle bundle = new Bundle();
         String authKey = sessionHandler.getAccessToken(context);

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 
 import butterknife.ButterKnife;
@@ -49,5 +50,9 @@ public abstract class BaseFragment extends Fragment {
     @SuppressWarnings("unchecked")
     protected <C> C getComponent(Class<C> componentType) {
         return componentType.cast(((HasComponent<C>) getActivity()).getComponent());
+    }
+
+    public String getScreenName() {
+        return ((BaseActivity) getActivity()).getScreenName();
     }
 }

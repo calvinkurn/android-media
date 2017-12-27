@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="medal_margin">1</integer>
     <integer name="product_max_counter_length">20</integer>
     <integer name="product_max_counter_int_length">9</integer>
+
+    <integer name="max_length_price_input">11</integer>
 </resources>

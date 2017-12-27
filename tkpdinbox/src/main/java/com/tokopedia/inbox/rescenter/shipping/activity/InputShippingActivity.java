@@ -97,6 +97,11 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     protected void setActionVar() {
 
     }
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+    }
 
     @Override
     public InputShippingParamsGetModel getParamsModel() {
@@ -116,5 +121,20 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     @Override
     public Uri getUriData() {
         return uriData;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    public void getBottomBackSheetActivityTransition() {
+        overridePendingTransition(R.anim.push_down, R.anim.pull_up);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getBottomBackSheetActivityTransition();
     }
 }

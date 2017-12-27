@@ -48,8 +48,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by noiz354 on 3/24/16.
@@ -158,11 +156,11 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
     private void requestAddWishList(final Context context, final Integer productId, final int itemPosition) {
         view.loadingWishList();
-        TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_WISHLIST);
         retrofitInteractor.addToWishList(context, productId,
                 new RetrofitInteractor.AddWishListListener() {
                     @Override
                     public void onSuccess() {
+                        view.actionSuccessAddToWishlist(productId);
                         view.finishLoadingWishList();
                         view.showDialog(createSuccessWishListDialog(context));
                         view.updateWishListStatus(true, itemPosition);
@@ -184,6 +182,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                 new RetrofitInteractor.RemoveWishListListener() {
                     @Override
                     public void onSuccess() {
+                        view.actionSuccessRemoveFromWishlist(productId);
                         view.finishLoadingWishList();
                         view.showToastMessage(context
                                 .getString(com.tokopedia.core.R.string.msg_remove_wishlist));

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
@@ -21,7 +21,7 @@ public interface AddToCartPresenter {
 
     void getCartKeroToken(@NonNull Context context, @NonNull ProductCartPass data, @NonNull Destination destination);
 
-    void calculateProduct(@NonNull Context context, @NonNull OrderData orderData);
+    void calculateProduct(@NonNull Context context, @NonNull OrderData orderData, boolean mustReCalculateAddressShipping);
 
     void calculateKeroRates(@NonNull Context context, @NonNull AtcFormData atcFormData);
 

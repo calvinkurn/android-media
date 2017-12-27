@@ -3,7 +3,6 @@ package com.tokopedia.seller.common.datepicker.view.model;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.seller.base.domain.model.DatePickerDomainModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 
 /**
  * Created by nathan on 7/13/17.

@@ -43,7 +43,7 @@ public interface BrowseView {
     void showFailedFetchAttribute();
     void showLoading(boolean isLoading);
     void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener);
-
+    void removeEmptyState();
     void setupShopItemsBottomBar(String source);
 
     void setupAllItemsBottomBar(String source);

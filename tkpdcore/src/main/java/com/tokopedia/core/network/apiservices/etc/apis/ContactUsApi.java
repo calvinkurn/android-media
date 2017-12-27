@@ -30,4 +30,8 @@ public interface ContactUsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.ContactUs.PATH_CREATE_STEP_1)
     Observable<Response<TkpdResponse>> createTicketValidation(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ContactUs.PATH_COMMENT_RATING)
+    Observable<Response<TkpdResponse>> commentRating(@FieldMap Map<String, String> params);
 }

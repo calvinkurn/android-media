@@ -18,10 +18,11 @@ import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,7 +33,7 @@ import java.util.List;
 public class InstopedActivity extends TActivity implements InstagramActivityListener {
 
     public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
-    private static final String MAX_RESULT = "MAX_R";
+    protected static final String MAX_RESULT = "MAX_R";
     private String FRAGMENT;
     private FragmentManager supportFragmentManager;
     private Toolbar toolbar;
@@ -47,12 +48,22 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
     }
 
     public static void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult){
-        Intent moveToProductActivity = new Intent(activity, InstopedActivity.class);
+        Intent moveToProductActivity = createIntent(activity, maxResult);
+        activity.startActivityForResult(moveToProductActivity, resultCode);
+    }
+
+    public static void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult){
+        Intent moveToProductActivity = createIntent(context, maxResult);
+        fragment.startActivityForResult(moveToProductActivity, resultCode);
+    }
+
+    private static Intent createIntent (Context context, int maxResult){
+        Intent moveToProductActivity = new Intent(context, InstopedActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         bundle.putInt(MAX_RESULT, maxResult);
         moveToProductActivity.putExtras(bundle);
-        activity.startActivityForResult(moveToProductActivity, resultCode);
+        return moveToProductActivity;
     }
 
     @Override
@@ -133,26 +144,40 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
 
                 // if activity has no caller, continue to build product soc med
                 if (getCallingActivity() == null) {
-                    selectedModel.size();
                     //[START] move to productSocMedActivity
                     Intent intent = new Intent(InstopedActivity.this, ProductAddActivity.class);
-                    intent.putExtra(GalleryActivity.PRODUCT_SOC_MED_DATA, Parcels.wrap(selectedModel)
+                    intent.putExtra(GalleryActivity.PRODUCT_SOC_MED_DATA, fromSparseArray(selectedModel)
                     );
                     InstopedActivity.this.startActivity(intent);
                     InstopedActivity.this.finish();
                     //[END] move to productSocMedActivity
                 }
                 else { // activity has caller, just finish it and return the bundle to the caller
-                    Intent socMedIntent = new Intent();
-                    socMedIntent.putExtra(
-                            GalleryActivity.PRODUCT_SOC_MED_DATA,
-                            Parcels.wrap(selectedModel)
-                    );
-                    InstopedActivity.this.setResult(Activity.RESULT_OK, socMedIntent);
-                    InstopedActivity.this.finish();
+                    setResultToCaller(fromSparseArray(selectedModel));
                 }
             }
-        };    }
+        };
+    }
+
+    protected void setResultToCaller(ArrayList<InstagramMediaModel> selectedModel){
+        Intent socMedIntent = new Intent();
+        socMedIntent.putParcelableArrayListExtra(
+                GalleryActivity.PRODUCT_SOC_MED_DATA,
+                selectedModel
+        );
+        InstopedActivity.this.setResult(Activity.RESULT_OK, socMedIntent);
+        InstopedActivity.this.finish();
+    }
+
+    private ArrayList<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data) {
+        ArrayList<InstagramMediaModel> modelList = new ArrayList<>();
+        for (int i = 0; i < data.size(); i++) {
+            InstagramMediaModel rawData = data.get(
+                    data.keyAt(i));
+            modelList.add(rawData);
+        }
+        return modelList;
+    }
 
     @Override
     public String getScreenName() {

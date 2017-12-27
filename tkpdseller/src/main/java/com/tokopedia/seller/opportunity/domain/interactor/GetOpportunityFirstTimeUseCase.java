@@ -25,10 +25,9 @@ public class GetOpportunityFirstTimeUseCase extends UseCase<OpportunityFirstTime
 
     public static final String PAGE = "page";
     public static final String QUERY = "search";
-    public static final String KEY_SORT = "key_sort";
-    public static final String SORT = "sort";
     public static final String LIST_FILTER = "list_filter";
     public static final String SHOP_ID = "shop_id";
+    public static final String ORDER_BY = "order_by";
 
 
     private final GetOpportunityUseCase getOpportunityUseCase;
@@ -60,8 +59,6 @@ public class GetOpportunityFirstTimeUseCase extends UseCase<OpportunityFirstTime
         return GetOpportunityUseCase.getRequestParam(
                 requestParams.getInt(PAGE, 1),
                 requestParams.getString(QUERY, ""),
-                requestParams.getString(KEY_SORT, null),
-                requestParams.getString(SORT, ""),
                 (ArrayList<FilterPass>) requestParams.getObject(LIST_FILTER)
         );
     }
@@ -72,18 +69,12 @@ public class GetOpportunityFirstTimeUseCase extends UseCase<OpportunityFirstTime
 
     public static RequestParams getRequestParam(int page,
                                                 @Nullable String query,
-                                                @Nullable String keySort,
-                                                @Nullable String sort,
                                                 @Nullable ArrayList<FilterPass> listFilter,
                                                 String shopId) {
         RequestParams params = RequestParams.create();
         params.putInt(PAGE, page);
         if (query != null)
             params.putString(QUERY, query);
-        if (keySort != null && sort != null) {
-            params.putString(KEY_SORT, keySort);
-            params.putString(SORT, sort);
-        }
         if (listFilter != null)
             params.putObject(LIST_FILTER, listFilter);
         params.putString(SHOP_ID, shopId);

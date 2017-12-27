@@ -5,10 +5,9 @@ import android.content.Context;
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -19,10 +18,16 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.WishlistFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.AddWishlistMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FavoriteShopMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FollowKolMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolDeleteCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolSendCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.LikeKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RemoveWishlistMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FavoriteShopRepository;
@@ -31,20 +36,26 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepositoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolCommentSource;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.DeleteKolCommentUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-
-import javax.inject.Named;
-
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.SendKolCommentUseCase;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -90,13 +101,15 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FeedRepository provideFeedRepository(FeedFactory feedFactory) {
-        return new FeedRepositoryImpl(feedFactory);
+    FeedRepository provideFeedRepository(FeedFactory feedFactory,
+                                         KolCommentSource kolCommentSource,
+                                         KolSource kolSource) {
+        return new FeedRepositoryImpl(feedFactory, kolCommentSource, kolSource);
     }
 
     @FeedPlusScope
     @Provides
-    FeedFactory provideFeedFactory(@ActivityContext Context context,
+    FeedFactory provideFeedFactory(@ApplicationContext Context context,
                                    ApolloClient apolloClient,
                                    FeedListMapper feedListMapper,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
@@ -104,7 +117,8 @@ public class FeedPlusModule {
                                    FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
-                                   RecentProductMapper recentProductMapper) {
+                                   RecentProductMapper recentProductMapper,
+                                   CheckNewFeedMapper checkNewFeedMapper) {
         return new FeedFactory(
                 context,
                 apolloClient,
@@ -114,7 +128,8 @@ public class FeedPlusModule {
                 globalCacheManager,
                 feedDetailListMapper,
                 mojitoService,
-                recentProductMapper
+                recentProductMapper,
+                checkNewFeedMapper
         );
     }
 
@@ -159,7 +174,7 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FavoriteShopFactory provideFavoriteShopFactory(@ActivityContext Context context,
+    FavoriteShopFactory provideFavoriteShopFactory(@ApplicationContext Context context,
                                                    FavoriteShopMapper mapper,
                                                    ActionService service) {
         return new FavoriteShopFactory(context, mapper, service);
@@ -204,7 +219,6 @@ public class FeedPlusModule {
     WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
         return new WishlistRepositoryImpl(wishlistFactory);
     }
-
 
 
     @FeedPlusScope
@@ -296,4 +310,121 @@ public class FeedPlusModule {
                 postExecutionThread,
                 feedRepository);
     }
+
+    @FeedPlusScope
+    @Provides
+    CheckNewFeedMapper provideCheckNewFeedMapper() {
+        return new CheckNewFeedMapper();
+    }
+
+    @FeedPlusScope
+    @Provides
+    CheckNewFeedUseCase provideCheckNewFeedUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   FeedRepository feedRepository) {
+        return new CheckNewFeedUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GetKolCommentsUseCase provideGetKolCommentsUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       FeedRepository feedRepository) {
+        return new GetKolCommentsUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    KolCommentSource provideKolCommentSource(ApolloClient apolloClient,
+                                             KolCommentMapper kolCommentMapper,
+                                             KolSendCommentMapper kolSendCommentMapper,
+                                             KolDeleteCommentMapper kolDeleteCommentMapper) {
+        return new KolCommentSource(apolloClient, kolCommentMapper,
+                kolSendCommentMapper, kolDeleteCommentMapper);
+    }
+
+    @FeedPlusScope
+    @Provides
+    KolCommentMapper provideKolCommentMapper() {
+        return new KolCommentMapper();
+    }
+
+    @FeedPlusScope
+    @Provides
+    SendKolCommentUseCase provideSendKolCommentUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       FeedRepository feedRepository) {
+        return new SendKolCommentUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    KolSendCommentMapper provideKolSendCommentMapper() {
+        return new KolSendCommentMapper();
+    }
+
+
+    @FeedPlusScope
+    @Provides
+    KolSource provideKolSource(ApolloClient apolloClient, LikeKolMapper likeKolMapper,
+                               FollowKolMapper followKolMapper) {
+        return new KolSource(apolloClient, likeKolMapper, followKolMapper);
+    }
+
+    @FeedPlusScope
+    @Provides
+    LikeKolPostUseCase provideLikeKolPostUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 FeedRepository feedRepository) {
+        return new LikeKolPostUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    LikeKolMapper provideLikeKolMapper() {
+        return new LikeKolMapper();
+    }
+
+    @FeedPlusScope
+    @Provides
+    FollowKolMapper provideFollowKolMapper() {
+        return new FollowKolMapper();
+    }
+
+
+    @FeedPlusScope
+    @Provides
+    FollowKolPostUseCase provideFollowKolPostUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     FeedRepository feedRepository) {
+        return new FollowKolPostUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    DeleteKolCommentUseCase provideDeleteKolCommentUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           FeedRepository feedRepository) {
+        return new DeleteKolCommentUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    KolDeleteCommentMapper provideKolDeleteCommentMapper() {
+        return new KolDeleteCommentMapper();
+    }
+
+
 }

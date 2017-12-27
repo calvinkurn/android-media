@@ -11,14 +11,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunitySortAdapter;
 import com.tokopedia.seller.opportunity.adapter.viewmodel.SimpleCheckListItemModel;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.core.network.v4.NetworkConfig.key;
 
 /**
  * Created by nisie on 3/6/17.
@@ -26,8 +32,7 @@ import java.util.List;
 
 public class OpportunitySortFragment extends BasePresenterFragment {
 
-    public static final String SELECTED_VALUE = "SELECTED_VALUE";
-    public static final String SELECTED_KEY = "SELECTED_KEY";
+    public static final String SELECTED_SORT = "SELECTED_SORT";
     public static final String SELECTED_POSITION = "SELECTED_POSITION";
     public static final String ARGS_LIST_SORT = "ARGS_LIST_SORT";
 
@@ -147,16 +152,25 @@ public class OpportunitySortFragment extends BasePresenterFragment {
     private OpportunitySortAdapter.SimpleCheckListListener onItemSelectedListener() {
         return new OpportunitySortAdapter.SimpleCheckListListener() {
             @Override
+            public void onItemSelected(int adapterPosition, SimpleCheckListItemModel item) {
 
-            public void onItemSelected(int position, String value, String key) {
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        item.getTitle()
+                );
 
                 Intent intent = new Intent();
-                intent.putExtra(SELECTED_VALUE, value);
-                intent.putExtra(SELECTED_KEY, key);
-                intent.putExtra(SELECTED_POSITION, position);
-
+                Bundle bundle = new Bundle();
+                FilterPass filterPass = new FilterPass(item.getKey(), item.getValue(), item
+                        .getTitle());
+                bundle.putParcelable(SELECTED_SORT, filterPass);
+                bundle.putInt(SELECTED_POSITION, adapterPosition);
+                intent.putExtras(bundle);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
+
             }
         };
     }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="324dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <android.support.v4.view.ViewPager
+    <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,7 +24,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="85dp"
         android:background="@drawable/cover_shadow_pdp">
 
     </RelativeLayout>

@@ -32,31 +32,32 @@ import rx.functions.Func3;
  * Created by alifa on 3/27/17.
  */
 
-public class IntermediaryCategoryMapper implements Func3<Response<CategoryHadesModel>,
+public class IntermediaryCategoryMapper implements Func3<CategoryHadesModel,
         Response<HotListResponse>, Response<MojitoBrandsModel>, IntermediaryCategoryDomainModel> {
 
     @Override
-    public IntermediaryCategoryDomainModel call(Response<CategoryHadesModel> categoryHadesModelResponse,
+    public IntermediaryCategoryDomainModel call(CategoryHadesModel categoryHadesModel,
                                                 Response<HotListResponse> hotListResponseResponse,
                                                 Response<MojitoBrandsModel> mojitoBrandsModelResponse) {
         IntermediaryCategoryDomainModel intermediaryCategoryDomainModel = new IntermediaryCategoryDomainModel();
 
-        if (categoryHadesModelResponse.body().getData().getIsIntermediary() &&
-                getIntermediaryTemplate(categoryHadesModelResponse.body(),intermediaryCategoryDomainModel)) {
+        if (categoryHadesModel.getData().getIsIntermediary() &&
+                getIntermediaryTemplate(categoryHadesModel)) {
             intermediaryCategoryDomainModel.setIntermediary(true);
-            intermediaryCategoryDomainModel.setDepartementId(categoryHadesModelResponse.body().getData().getId());
-            intermediaryCategoryDomainModel.setHeaderModel(mapHeaderModel(categoryHadesModelResponse.body()));
-            intermediaryCategoryDomainModel.setChildCategoryModelList(mapCategoryChildren(categoryHadesModelResponse.body()));
-            intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModelResponse.body()));
-            intermediaryCategoryDomainModel.setBannerModelList(mapBanner(categoryHadesModelResponse.body()));
-            if (categoryHadesModelResponse.body().getData().getVideo()!=null) {
-                intermediaryCategoryDomainModel.setVideoModel(mapVideo(categoryHadesModelResponse.body()));
+            intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModel));
+            if (categoryHadesModel.getData().getVideo()!=null) {
+                intermediaryCategoryDomainModel.setVideoModel(mapVideo(categoryHadesModel));
             }
             intermediaryCategoryDomainModel.setHotListModelList(mapHotList(hotListResponseResponse.body()));
             if (mojitoBrandsModelResponse!=null) {
                 intermediaryCategoryDomainModel.setBrandModelList(mapBrands(mojitoBrandsModelResponse.body()));
             }
         }
+        intermediaryCategoryDomainModel.setRevamp(categoryHadesModel.getData().getRevamp());
+        intermediaryCategoryDomainModel.setDepartementId(categoryHadesModel.getData().getId());
+        intermediaryCategoryDomainModel.setHeaderModel(mapHeaderModel(categoryHadesModel));
+        intermediaryCategoryDomainModel.setChildCategoryModelList(mapCategoryChildren(categoryHadesModel));
+        intermediaryCategoryDomainModel.setBannerModelList(mapBanner(categoryHadesModel));
         return  intermediaryCategoryDomainModel;
     }
 
@@ -170,6 +171,7 @@ public class IntermediaryCategoryMapper implements Func3<Response<CategoryHadesM
                 BrandModel brandModel = new BrandModel();
                 brandModel.setId(String.valueOf(brand.getShopId()));
                 brandModel.setImageUrl(brand.getLogoUrl());
+                brandModel.setBrandName(brand.getShopName());
                 brandModels.add(brandModel);
             }
         }
@@ -186,20 +188,18 @@ public class IntermediaryCategoryMapper implements Func3<Response<CategoryHadesM
         return  videoModel;
     }
 
-    private boolean getIntermediaryTemplate(CategoryHadesModel categoryHadesModel,
-                                            IntermediaryCategoryDomainModel intermediaryCategoryDomainModel) {
+    private boolean getIntermediaryTemplate(CategoryHadesModel categoryHadesModel) {
         if (categoryHadesModel.getData().getTemplate()==null) return false;
         switch (categoryHadesModel.getData().getTemplate()) {
             case IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE:
-                intermediaryCategoryDomainModel.setTemplate(IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE);
                 return true;
           /*  BELOW IS COMMENTED FOR NEXT RELEASE
 
-            case IntermediaryCategoryDomainModel.TECHNOLOGY_TEMPLATE:
-                intermediaryCategoryDomainModel.setTemplate(IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE);
+            case CategoryHeaderModel.TECHNOLOGY_TEMPLATE:
+                intermediaryCategoryDomainModel.setTemplate(CategoryHeaderModel.LIFESTYLE_TEMPLATE);
                 return true;
-            case IntermediaryCategoryDomainModel.DEFAULT_TEMPLATE:
-                intermediaryCategoryDomainModel.setTemplate(IntermediaryCategoryDomainModel.DEFAULT_TEMPLATE);
+            case CategoryHeaderModel.DEFAULT_TEMPLATE:
+                intermediaryCategoryDomainModel.setTemplate(CategoryHeaderModel.DEFAULT_TEMPLATE);
                 return true;*/
            default:
                return false;

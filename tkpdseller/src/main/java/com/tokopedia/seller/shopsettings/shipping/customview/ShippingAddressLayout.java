@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;

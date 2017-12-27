@@ -80,7 +80,6 @@
                 android:layout_below="@id/ratingBarQuality"
                 android:layout_toEndOf="@id/label_quality"
                 android:layout_toRightOf="@id/label_quality"
-                android:text="@string/rating_title_0"
                 android:textStyle="bold" />
 
             <TextView
@@ -140,7 +139,6 @@
                 android:layout_below="@id/ratingBarAccuracy"
                 android:layout_toEndOf="@id/label_accuracy"
                 android:layout_toRightOf="@id/label_accuracy"
-                android:text="@string/rating_title_0"
                 android:textStyle="bold" />
 
             <TextView

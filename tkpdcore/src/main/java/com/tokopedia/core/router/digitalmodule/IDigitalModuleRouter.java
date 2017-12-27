@@ -20,6 +20,7 @@ public interface IDigitalModuleRouter {
     int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     int REQUEST_CODE_CONTACT_PICKER = 219;
     int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
+    int REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 223;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     int PAYMENT_SUCCESS = 5;
@@ -41,7 +42,4 @@ public interface IDigitalModuleRouter {
     Intent getIntentDeepLinkHandlerActivity();
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
-
-    Intent instanceIntentTokoCashActivation();
-
 }

@@ -90,4 +90,9 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
         intent.putExtras(bundle);
         return intent;
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

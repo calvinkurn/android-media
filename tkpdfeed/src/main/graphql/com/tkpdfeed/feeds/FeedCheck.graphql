@@ -1,0 +1,11 @@
+query FeedCheck($userID: Int!, $cursor: String){
+    checkFeed(userID: $userID, cursor: $cursor){
+      data
+      meta{
+        total_data
+      }
+      links {
+        self
+      }
+    }
+}

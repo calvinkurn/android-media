@@ -36,13 +36,14 @@ public class AuthUtil {
     private static final String HEADER_REQUEST_METHOD = "Request-Method";
     private static final String HEADER_CONTENT_MD5 = "Content-MD5";
     private static final String HEADER_DATE = "Date";
-    private static final String HEADER_AUTHORIZATION = "Authorization";
+    public static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
-    private static final String HEADER_DEVICE = "X-Device";
+    public static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
+    private static final String HEADER_X_TKPD_PATH = "X-Tkpd-Path";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
     private static final String HEADER_PATH = "x-tkpd-path";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
@@ -59,10 +60,12 @@ public class AuthUtil {
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
     public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source";
     public static final String WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version";
+    public static final String WEBVIEW_FLAG_PARAM_OS_VERSION = "os_version";
 
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
+
 
     /**
      * default key is KEY_WSV$
@@ -72,6 +75,8 @@ public class AuthUtil {
         public static final String KEY_MOJITO = "mojito_api_v1";
         public static final String KEY_KEROPPI = "Keroppi";
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
+        public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
+        public static String ZEUS_WHITELIST = "abf49d067c9ca8585f3a1059464d22b9";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(
@@ -156,6 +161,17 @@ public class AuthUtil {
         return finalHeader;
     }
 
+    public static Map<String, String> generateHeadersWithPath(
+            String path, String strParam, String method, String authKey, String contentType
+    ) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
+                authKey, DATE_FORMAT
+        );
+        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_PATH, path);
+        return finalHeader;
+    }
 
     public static Map<String, String> generateHeaders(String path, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, "", method, CONTENT_TYPE_JSON, authKey, DATE_FORMAT);
@@ -334,7 +350,6 @@ public class AuthUtil {
         return params;
     }
 
-
     public static TKPDMapParam<String, String> generateParamsNetwork(String userId, String deviceId, TKPDMapParam<String, String> params) {
         String hash = md5(userId + "~" + deviceId);
         params.put(PARAM_USER_ID, userId);
@@ -369,7 +384,7 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        //      params.put(PARAM_X_TKPD_USER_ID, userId);
+//        params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
 

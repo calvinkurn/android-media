@@ -9,10 +9,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
-
-import java.util.Date;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -83,7 +81,7 @@ public class DatePeriodView extends BaseCustomView {
     public void setDate(long startDate, long endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
-        contentTextView.setText(DatePickerUtils.getRangeDateFormatted(contentTextView.getContext(), startDate, endDate));
+        contentTextView.setText(DateLabelUtils.getRangeDateFormatted(contentTextView.getContext(), startDate, endDate));
         invalidate();
         requestLayout();
     }

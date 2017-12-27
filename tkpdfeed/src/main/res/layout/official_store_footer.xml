@@ -6,21 +6,16 @@
               android:orientation="horizontal">
 
     <TextView
+        android:id="@+id/see_all_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_height="@dimen/header_official_store_height"
+        android:layout_gravity="end"
+        android:layout_marginRight="@dimen/margin_small"
+        android:clickable="true"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
         android:text="@string/see_all"
-        android:textColor="@color/green_500"
-        android:textSize="@dimen/text_size_medium"/>
-
-    <android.support.v4.widget.Space
-        android:layout_width="@dimen/margin_small"
-        android:layout_height="wrap_content"/>
-
-    <com.tokopedia.core.customwidget.SquareImageView
-        android:layout_width="@dimen/text_size_medium"
-        android:layout_height="@dimen/text_size_medium"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/chevron_thin_right"
-        android:tint="@color/green_500"/>
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/unify_font_normal"
+        android:textStyle="normal"/>
 </LinearLayout>

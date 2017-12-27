@@ -10,9 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.fragment.AboutFragment;
@@ -21,7 +19,6 @@ import com.tokopedia.core.fragment.SettingsFragment;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -60,7 +57,7 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
         String[] content;
         GeneralFragmentAdapter adapter = new GeneralFragmentAdapter(getFragmentManager());
         if (isUserDoesntHaveShop()) {
-            content = new String[]{getString(R.string.title_activity_manage_people),
+            content = new String[]{getString(R.string.title_activity_manage_people).toUpperCase(),
                     getString(R.string.title_activity_manage_general_desc),
                     getString(R.string.title_activity_manage_general_about)};
             adapter.addFragment(FragmentSettingPeople.newInstance());
@@ -148,34 +145,26 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     }
 
     @Override
+    public void onGetNotif(Bundle data) {
+
+    }
+
+    @Override
     protected void onResume() {
         //[START] this is for set current activity
         MainApplication.setCurrentActivity(this);
         //[END] this is for set current activity
         super.onResume();
-
-        //[END] init the ViewPager
-        sendNotifLocalyticsCallback();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback();
     }
 
     @Override
     public int getDrawerPosition() {
         return TkpdState.DrawerPosition.SETTINGS;
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
     }
 
 }

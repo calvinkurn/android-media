@@ -20,10 +20,12 @@ public class UnProcessableHttpException extends IOException {
 
     public UnProcessableHttpException() {
         super(DEFAULT_MESSAGE);
+        title = DEFAULT_MESSAGE;
     }
 
     public UnProcessableHttpException(String message, Throwable cause) {
         super(message, cause);
+        title = DEFAULT_MESSAGE;
     }
 
     public UnProcessableHttpException(String errorMessage) {

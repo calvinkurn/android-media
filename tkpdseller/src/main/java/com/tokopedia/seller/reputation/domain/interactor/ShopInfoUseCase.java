@@ -17,6 +17,7 @@ import rx.schedulers.Schedulers;
  * Created by normansyahputa on 3/17/17.
  */
 
+@Deprecated
 public class ShopInfoUseCase extends UseCase<ShopModel> {
     private ReputationReviewRepository reputationReviewRepository;
 
@@ -31,15 +32,6 @@ public class ShopInfoUseCase extends UseCase<ShopModel> {
     @Override
     public Observable<ShopModel> createObservable(RequestParams requestParams) {
         return reputationReviewRepository.getShopInfo(requestParams);
-    }
-
-    @Override
-    public void execute(RequestParams requestParams, Subscriber<ShopModel> subscriber) {
-        this.subscription = createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(subscriber);
     }
 
     public void execute(String userid, String deviceId,

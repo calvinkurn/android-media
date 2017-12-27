@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.localytics.android.Localytics;
 import com.tokopedia.core.R;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 
@@ -55,7 +54,6 @@ public abstract class TkpdActivity extends DrawerPresenterActivity implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Localytics.onNewIntent(this, intent);
     }
 
     @Override

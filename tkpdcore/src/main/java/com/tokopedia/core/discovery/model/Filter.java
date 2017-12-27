@@ -7,20 +7,30 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author kulomady on 12/22/16.
  */
-public class Filter implements Serializable, Parcelable {
-    public static final String TITLE_CATEGORY = "Kategori";
+public class Filter implements Parcelable {
 
+    public static final String TEMPLATE_NAME_LOCATION = "template_location";
+    
+    private static final String TEMPLATE_NAME_SEPARATOR = "template_separator";
+    private static final String TEMPLATE_NAME_RATING = "template_rating";
+    private static final String TEMPLATE_NAME_SIZE = "template_size";
+    private static final String TEMPLATE_NAME_CATEGORY = "template_category";
+    private static final String TEMPLATE_NAME_COLOR = "template_color";
+    private static final String TEMPLATE_NAME_PRICE = "template_price";
+    private static final String TEMPLATE_NAME_BRAND = "template_brand";
 
     @SerializedName("title")
     @Expose
     String title;
+    @SerializedName("template_name")
+    @Expose
+    String templateName;
     @SerializedName("search")
     @Expose
     Search search;
@@ -29,6 +39,43 @@ public class Filter implements Serializable, Parcelable {
     List<Option> options = new ArrayList<>();
 
     public Filter() {
+    }
+
+    public boolean isSeparator() {
+        return TEMPLATE_NAME_SEPARATOR.equals(templateName);
+    }
+
+    public boolean isCategoryFilter() {
+        return TEMPLATE_NAME_CATEGORY.equals(templateName);
+    }
+
+    public boolean isColorFilter() {
+        return TEMPLATE_NAME_COLOR.equals(templateName);
+    }
+
+    public boolean isPriceFilter() {
+        return TEMPLATE_NAME_PRICE.equals(templateName);
+    }
+
+    public boolean isRatingFilter() {
+        return TEMPLATE_NAME_RATING.equals(templateName);
+    }
+
+    public boolean isSizeFilter() {
+        return TEMPLATE_NAME_SIZE.equals(templateName);
+    }
+
+    public boolean isLocationFilter() {
+        return TEMPLATE_NAME_LOCATION.equals(templateName);
+    }
+
+    public boolean isBrandFilter() {
+        return TEMPLATE_NAME_BRAND.equals(templateName);
+    }
+
+    public boolean isExpandableFilter() {
+        return isCategoryFilter() || isColorFilter() || isRatingFilter()
+                || isSizeFilter() || isBrandFilter() || options.size() > 1;
     }
 
     /**
@@ -43,6 +90,14 @@ public class Filter implements Serializable, Parcelable {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 
     /**
@@ -78,51 +133,31 @@ public class Filter implements Serializable, Parcelable {
         return new Gson().toJson(this);
     }
 
-    public static Filter createCategory() {
-        Filter filter = new Filter();
-        filter.setTitle(TITLE_CATEGORY);
-        filter.setOptions(new ArrayList<Option>());
-        Search search = new Search();
-        search.setPlaceholder("");
-        search.setSearchable(0);
-        filter.setSearch(search);
-        return filter;
-    }
-
-    protected Filter(Parcel in) {
-        title = in.readString();
-        search = (Search) in.readValue(Search.class.getClassLoader());
-        if (in.readByte() == 0x01) {
-            options = new ArrayList<Option>();
-            in.readList(options, Option.class.getClassLoader());
-        } else {
-            options = null;
-        }
-    }
 
     @Override
     public int describeContents() {
         return 0;
     }
 
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeValue(search);
-        if (options == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(options);
-        }
+        dest.writeString(this.title);
+        dest.writeString(this.templateName);
+        dest.writeParcelable(this.search, flags);
+        dest.writeTypedList(this.options);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Filter> CREATOR = new Parcelable.Creator<Filter>() {
+    protected Filter(Parcel in) {
+        this.title = in.readString();
+        this.templateName = in.readString();
+        this.search = in.readParcelable(Search.class.getClassLoader());
+        this.options = in.createTypedArrayList(Option.CREATOR);
+    }
+
+    public static final Creator<Filter> CREATOR = new Creator<Filter>() {
         @Override
-        public Filter createFromParcel(Parcel in) {
-            return new Filter(in);
+        public Filter createFromParcel(Parcel source) {
+            return new Filter(source);
         }
 
         @Override

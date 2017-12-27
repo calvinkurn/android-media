@@ -25,18 +25,19 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.var.TkpdState;
-
-import java.net.URL;
 
 /**
  * Created by Nisie on 8/25/2015.
@@ -51,7 +52,7 @@ public class FragmentBannerWebView extends Fragment {
     private static final String LOGIN_TYPE = "login_type";
     private static final String QUERY_PARAM_PLUS = "plus";
     private static final int LOGIN_GPLUS = 123453;
-
+    private boolean isAlreadyFirstRedirect;
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -93,7 +94,6 @@ public class FragmentBannerWebView extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
 
-
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
@@ -101,7 +101,6 @@ public class FragmentBannerWebView extends Fragment {
         }
 
     }
-
 
     public FragmentBannerWebView() {
     }
@@ -121,20 +120,28 @@ public class FragmentBannerWebView extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if (getActivity() != null && getActivity().getApplication() != null)
-            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-                if (((IDigitalModuleRouter) getActivity().getApplication())
-                        .isSupportedDelegateDeepLink(url)) {
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            if (getActivity().getApplication() instanceof IDigitalModuleRouter && (((IDigitalModuleRouter) getActivity().getApplication())
+                        .isSupportedDelegateDeepLink(url))) {
                     ((IDigitalModuleRouter) getActivity().getApplication())
                             .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                     return true;
+            } else if (Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter &&
+                        (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
+
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .getApplinkUnsupported(getActivity())
+                            .showAndCheckApplinkUnsupported();
+                    return true;
                 }
             }
+        }
+
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
                 FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
-
-            if (((Uri.parse(url).getHost().contains("www.tokopedia.com"))
-                    || Uri.parse(url).getHost().contains("m.tokopedia.com"))
+            if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+                    || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                     && !url.endsWith(".pl")) {
                 switch ((DeepLinkChecker.getDeepLinkType(url))) {
                     case DeepLinkChecker.CATEGORY:
@@ -173,8 +180,8 @@ public class FragmentBannerWebView extends Fragment {
                 startActivityForResult(intent, LOGIN_GPLUS);
                 return true;
             }
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -236,7 +243,6 @@ public class FragmentBannerWebView extends Fragment {
         }
     }
 
-
     public WebView getWebview() {
         return webview;
     }
@@ -252,4 +258,5 @@ public class FragmentBannerWebView extends Fragment {
             webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
+
 }

@@ -91,4 +91,9 @@ public class CategoryNavigationPresenter extends BaseDaggerPresenter<CategoryNav
 
     }
 
+    @Override
+    public void setOnDestroyView() {
+        getCategoryChildrenUseCase.unsubscribe();
+        getCategoryParentUseCase.unsubscribe();
+    }
 }

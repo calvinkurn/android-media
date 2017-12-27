@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
@@ -12,7 +13,7 @@ import com.tokopedia.seller.R;
  * Use in reflection by SellerRouter
  * If you want to rename the class or refactor its package, rename also the route at SellerRouter
  */
-public class ManageShopActivity extends TkpdActivity {
+public class ManageShopActivity extends TActivity {
 
     @Override
     public String getScreenName() {
@@ -24,19 +25,5 @@ public class ManageShopActivity extends TkpdActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_manage_shop);
     }
-
-    @Override
-    public int getDrawerPosition() {
-        return TkpdState.DrawerPosition.MANAGE_SHOP;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        if (resultCode == RESULT_OK)
-            super.RefreshDrawer();
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
 
 }

@@ -6,11 +6,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
-import com.tokopedia.core.inboxreputation.model.actresult.ImageUploadResult;
-import com.tokopedia.core.inboxreputation.model.param.GenerateHostPass;
+import com.tokopedia.inbox.contactus.model.GenerateHostPass;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsService;
+import com.tokopedia.core.network.apiservices.etc.ContactUsWsService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
@@ -25,6 +24,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.UploadImageContactUsParam;
 import com.tokopedia.inbox.contactus.model.ContactUsPass;
 import com.tokopedia.inbox.contactus.model.CreateTicketResult;
+import com.tokopedia.inbox.contactus.model.ImageUpload;
+import com.tokopedia.inbox.contactus.model.ImageUploadResult;
 import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
 
 import org.json.JSONException;
@@ -35,6 +36,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -61,10 +63,12 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
     private static final String PARAM_IMAGE_ID = "id";
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_WEB_SERVICE = "web_service";
+    private final ContactUsWsService contactUsWService;
 
     public ContactUsRetrofitInteractorImpl() {
         this.compositeSubscription = new CompositeSubscription();
         this.contactUsService = new ContactUsService();
+        this.contactUsWService = new ContactUsWsService();
     }
 
     @Override
@@ -375,6 +379,84 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
     public void unsubscribe() {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
+
+    @Override
+    public void commentRating(@NonNull Context context, @NonNull Map<String, String> params, @NonNull final CommentRatingListener listener) {
+        Observable<Response<TkpdResponse>> observable = contactUsWService.getApi()
+                .commentRating(AuthUtil.generateParams(context, params));
+
+        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+                Log.e(TAG, e.toString());
+                if (e instanceof UnknownHostException) {
+                    listener.onNoConnectionError();
+                } else if (e instanceof SocketTimeoutException) {
+                    listener.onTimeout();
+                } else {
+                    listener.onError("Terjadi Kesalahan, " +
+                            "Mohon ulangi beberapa saat lagi");
+                }
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> response) {
+                if (response.isSuccessful()) {
+                    if (!response.body().isError() && response.body().getJsonData().optString("is_success").equals("1")) {
+                        listener.onSuccess(null);
+
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
+                    } else {
+                        if (response.body().isNullData()) listener.onNullData();
+                        else listener.onError(response.body().getErrorMessages().toString());
+                    }
+                } else {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            listener.onError("Terjadi Kesalahan, " +
+                                    "Mohon ulangi beberapa saat lagi");
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            listener.onTimeout();
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            listener.onError("Terjadi Kesalahan, " +
+                                    "Mohon ulangi beberapa saat lagi");
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            listener.onError("Terjadi Kesalahan, " +
+                                    "Mohon ulangi beberapa saat lagi");
+                        }
+
+                        @Override
+                        public void onForbidden() {
+                            listener.onError("Terjadi Kesalahan, " +
+                                    "Mohon ulangi beberapa saat lagi");
+                        }
+                    }, response.code());
+                }
+            }
+        };
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+    }
+
+
 
     @Override
     public void getSolution(@NonNull final Context context, @NonNull String id, @NonNull final GetSolutionListener listener) {

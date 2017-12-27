@@ -1,19 +1,14 @@
 package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-
-import com.appsflyer.SingleInstallBroadcastReceiver;
-import com.google.android.gms.analytics.CampaignTrackingReceiver;
 import com.google.android.gms.tagmanager.TagManager;
-import com.localytics.android.ReferralReceiver;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.InstallReceiver;
 
 import java.util.Map;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -33,7 +28,6 @@ public class GTMDataLayer {
 
         Observable.just(gtmBody)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<GTMBody, Boolean>() {
                     @Override
                     public Boolean call(GTMBody data) {
@@ -42,7 +36,22 @@ public class GTMDataLayer {
                     }
                 })
                 .unsubscribeOn(Schedulers.newThread())
-                .subscribe();
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                });
     }
 
     static void pushEvent(Context context, String eventName, Map<String, Object> values) {
@@ -55,7 +64,6 @@ public class GTMDataLayer {
 
         Observable.just(gtmBody)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<GTMBody, Boolean>() {
                     @Override
                     public Boolean call(GTMBody data) {
@@ -64,7 +72,22 @@ public class GTMDataLayer {
                     }
                 })
                 .unsubscribeOn(Schedulers.newThread())
-                .subscribe();
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                });
 
     }
 

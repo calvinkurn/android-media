@@ -4,9 +4,9 @@ import com.tokopedia.core.network.apiservices.payment.BcaOneClickService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickSuccessRegisterData;
-import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickSuccessRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.PaymentListModel;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 
 import retrofit2.Response;
@@ -78,7 +78,8 @@ public class BcaOneClickFormRepository implements IBcaOneClickFormRepository {
 
 
     @Override
-    public Observable<BcaOneClickSuccessRegisterData> registerBcaOneClickData(TKPDMapParam<String, String> bcaOneClickRegisterParam) {
+    public Observable<BcaOneClickSuccessRegisterData> registerBcaOneClickData(
+            TKPDMapParam<String, String> bcaOneClickRegisterParam) {
 
         return bcaOneClickService.getApi().registerBcaOneClickUserData(bcaOneClickRegisterParam)
                 .map(new Func1<Response<TkpdResponse>, BcaOneClickSuccessRegisterData>() {

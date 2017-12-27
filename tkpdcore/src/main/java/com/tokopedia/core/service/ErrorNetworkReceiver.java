@@ -9,7 +9,7 @@ import android.content.Intent;
  */
 public class ErrorNetworkReceiver extends BroadcastReceiver {
 
-    private static ErrorNetworkReceiver.ReceiveListener mReceiver;
+    private ReceiveListener mReceiver;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,7 +30,8 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
         void onTimezoneError();
     }
 
-    public void setReceiver(ErrorNetworkReceiver.ReceiveListener mReceiver) {
-        this.mReceiver = mReceiver;
+    public void setReceiver(ErrorNetworkReceiver.ReceiveListener receiver) {
+        this.mReceiver = receiver;
     }
+
 }

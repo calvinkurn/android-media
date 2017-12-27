@@ -14,7 +14,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -22,9 +21,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,8 +34,13 @@ import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractor;
 import com.tokopedia.core.geolocation.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.Prediction;
+import com.tokopedia.core.geolocation.model.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.core.geolocation.model.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**
  * Created by hangnadi on 1/31/16.
@@ -86,7 +87,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
             Location location = new Location(LocationManager.NETWORK_PROVIDER);
             location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
             location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
-            LocationCache.saveLocation(location);
+            LocationCache.saveLocation(context, location);
         }
     }
 
@@ -94,7 +95,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged");
         view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
-        LocationCache.saveLocation(location);
+        LocationCache.saveLocation(context, location);
         removeLocationUpdate();
     }
 
@@ -164,12 +165,12 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         try {
             if (isServiceConnected()) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-                LocationCache.saveLocation(location);
+                LocationCache.saveLocation(context, location);
                 return new LatLng(location.getLatitude(), location.getLongitude());
             } else {
                 return DEFAULT_LATLNG_JAKARTA;
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             return DEFAULT_LATLNG_JAKARTA;
         }
     }
@@ -297,7 +298,10 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     @Override
     public void prepareAutoCompleteView() {
-        view.initAutoCompleteAdapter(googleApiClient, setDefaultBoundsJakarta());
+        view.initAutoCompleteAdapter(retrofitInteractor.getCompositeSubscription(),
+                retrofitInteractor.getMapService(),
+                retrofitInteractor.getMapRepository(),
+                googleApiClient, setDefaultBoundsJakarta());
         view.setAutoCompleteAdaoter();
     }
 
@@ -330,31 +334,18 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
 
     @Override
     public void onSuggestionItemClick(AdapterView<?> adapter, int position) {
-        final AutocompletePrediction item = (AutocompletePrediction) adapter.getItemAtPosition(position);
+        final PredictionResult item = (PredictionResult) adapter.getItemAtPosition(position);
         final String placeID = item.getPlaceId();
-        final CharSequence primaryText = item.getPrimaryText(null);
+        final CharSequence primaryText = item.getMainText();
 
         Log.d(TAG, "AutoComplete item selected: " + primaryText);
 
-        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeID);
-
-        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-            @Override
-            public void onResult(PlaceBuffer places) {
-                if (!places.getStatus().isSuccess()) {
-
-                    Log.d(TAG, "Place query did not complete.\n" +
-                            "Error: " + places.getStatus().toString());
-
-                    view.toastMessage("ERROR GOOGLE API CONNECTION");
-                } else {
-
-                    Place place = places.get(0);
-                    view.moveMap(place.getLatLng());
-                }
-                places.release();
-            }
-        });
+        //TODO summon service di sini
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("placeid", placeID);
+        retrofitInteractor.generateLatLng(context,
+                AuthUtil.generateParamsNetwork(context, param),
+                latLongListener());
     }
 
     @Override
@@ -387,5 +378,19 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     @Override
     public void onDestroy() {
         retrofitInteractor.unSubscribe();
+    }
+
+    private RetrofitInteractor.GenerateLatLongListener latLongListener() {
+        return new RetrofitInteractor.GenerateLatLongListener() {
+            @Override
+            public void onSuccess(CoordinateViewModel model) {
+                view.moveMap(model.getCoordinate());
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        };
     }
 }

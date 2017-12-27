@@ -4,7 +4,6 @@ import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.digital.tokocash.errorhandle.ErrorHandleTokoCashUtil;
 import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;
 import com.tokopedia.digital.tokocash.interactor.ActivateTokoCashInteractor;
 import com.tokopedia.digital.tokocash.listener.RequestOTPWalletView;
@@ -92,7 +91,7 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
         } else if (e instanceof SocketTimeoutException) {
             view.onErrorOTPWallet(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
         } else if (e instanceof ResponseTokoCashRuntimeException) {
-            view.onErrorOTPWallet(ErrorHandleTokoCashUtil.handleError(e.getMessage()));
+            view.onErrorOTPWallet(e.getMessage());
         } else if (e instanceof ResponseDataNullException) {
             view.onErrorOTPWallet(e.getMessage());
         } else if (e instanceof HttpErrorException) {
@@ -102,10 +101,5 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
         } else {
             view.onErrorOTPWallet(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        activateTokoCashInteractor.onDestroy();
     }
 }

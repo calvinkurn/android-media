@@ -1,7 +1,6 @@
 package com.tokopedia.seller.common.datepicker.view.activity;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
@@ -43,8 +42,8 @@ public class DatePickerActivity extends BaseTabActivity {
     }
 
     @Override
-    protected void setupLayout() {
-        super.setupLayout();
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
         DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
         tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
@@ -95,6 +94,11 @@ public class DatePickerActivity extends BaseTabActivity {
             maxDateRange = extras.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
             periodRangeModelList = extras.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
         }
+    }
+
+    @Override
+    public boolean isToolbarWhite() {
+        return true;
     }
 
     @Override

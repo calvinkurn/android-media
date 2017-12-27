@@ -1,0 +1,195 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.digital.product.fragment.DigitalUssdFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_detail">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:maxLines="1"
+                    android:text="@string/label_ussd_pulsa_anda"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/fonts" />
+
+                <TextView
+                    android:id="@+id/tv_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fonts" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:maxLines="1"
+                    android:text="@string/label_ussd_no_handphone"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/fonts" />
+
+                <TextView
+                    android:id="@+id/tv_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:text="@string/label_ussd_unknown"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fonts"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_unknown_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:gravity="right"
+                android:text="@string/label_ussd_ubah_nomor_anda"
+                android:textColor="@color/green_800"
+                android:textSize="@dimen/fontvs" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:maxLines="1"
+                    android:text="@string/label_ussd_operator"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/fonts" />
+
+                <TextView
+                    android:id="@+id/tv_operator_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/fonts" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/digital_ussd_light_yellow_disclaimer_box"
+                android:focusableInTouchMode="true"
+                android:paddingBottom="@dimen/padding_detail"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med"
+                android:paddingTop="@dimen/padding_detail"
+                android:text="@string/msg_ussd_sim_balance"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/fontvs"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:animateLayoutChanges="true"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_detail">
+
+            <LinearLayout
+                android:id="@+id/holder_chooser_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/holder_additional_info_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/holder_price_info_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <RelativeLayout
+                android:id="@+id/layout_checkout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/digital_padding_16">
+
+                <CheckBox
+                    android:id="@+id/cb_instant_checkout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/label_instant_payment_digital"
+                    android:textColor="@color/checkbox_text"
+                    android:textSize="@dimen/fontvs" />
+
+                <ImageView
+                    android:id="@+id/tooltip_instant_checkout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:paddingRight="@dimen/margin_small"
+                    android:paddingLeft="@dimen/margin_small"
+                    android:layout_toRightOf="@+id/cb_instant_checkout"
+                    android:src="@drawable/info_icon" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/btn_buy_digital"
+                style="@style/DigitalButtonBuy"
+                android:layout_marginBottom="@dimen/padding_med"
+                android:layout_marginTop="@dimen/digital_padding_28"
+                android:text="@string/label_btn_buy_digital" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

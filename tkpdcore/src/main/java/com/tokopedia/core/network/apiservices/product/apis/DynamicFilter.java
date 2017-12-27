@@ -14,14 +14,16 @@ import rx.Observable;
  * DynamicFilter
  * Created by noiz354 on 7/11/16.
  */
+@Deprecated
 public interface DynamicFilter {
     String DEVICE_ID = "device_id";
     String DEVICE_TIME = "device_time";
     String HASH = "hash";
     String DEVICE = "device";
     String SOURCE = "source";
+    String QUERY = "q";
     String USER_ID = "user_id";
-    String V1_DYNAMIC_ATTRIBUTES = "v1/dynamic_attributes";
+    String V1_DYNAMIC_ATTRIBUTES = "v2/dynamic_attributes";
     String DYNAMIC_FILTER_URL = TkpdBaseURL.ACE_DOMAIN;
     String fullUrl = DYNAMIC_FILTER_URL + V1_DYNAMIC_ATTRIBUTES;
     String SC = "sc";

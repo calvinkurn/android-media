@@ -21,7 +21,7 @@ public class OpportunitySortAdapter extends RecyclerView.Adapter<OpportunitySort
     ArrayList<SimpleCheckListItemModel> list;
 
     public interface SimpleCheckListListener {
-        void onItemSelected(int position, String value, String key);
+        void onItemSelected(int adapterPosition, SimpleCheckListItemModel simpleCheckListItemModel);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,8 +44,7 @@ public class OpportunitySortAdapter extends RecyclerView.Adapter<OpportunitySort
                                 checkImage.getVisibility() == View.VISIBLE);
                         notifyItemChanged(getAdapterPosition());
                         listener.onItemSelected(getAdapterPosition(),
-                                list.get(getAdapterPosition()).getValue(),
-                                list.get(getAdapterPosition()).getKey());
+                                list.get(getAdapterPosition()));
                     }
                 }
             });

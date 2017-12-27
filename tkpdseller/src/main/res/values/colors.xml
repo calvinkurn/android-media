@@ -8,14 +8,21 @@
     <color name="low_score_value">#ffc200</color>
     <color name="medium_score_value">#cddc39</color>
     <color name="high_score_value">#8bc34a</color>
-    <color name="wholesale_color">#89000000</color>
     
     <color name="black_twenty_five_percent">#40000000</color>
-
+    <color name="tkpd_grey_text">#60000000</color>
+    <color name="tkpd_grey">#E0E0E0</color>
+    <color name="white_fifty_percent">#F8F8F8</color>
+    <color name="color_gray">#1f000000</color>
+    <color name="lighter_grey">#1e000000</color>
     <!-- tooltip statistic-->
     <color name="grey_title_topads_statistic">#a3a3a3</color>
 
     <color name="colorSheetText">#DE000000</color>
     <color name="colorSheetTitle">#8A000000</color>
     <color name="colorSheetDivider">#3f717171</color>
+    <color name="colorStockEmpty">#fff7bc</color>
+
+    <color name="redTransparant">#AAd50000</color>
+    <color name="watermark_text_color">#26DDDDDD</color>
 </resources>

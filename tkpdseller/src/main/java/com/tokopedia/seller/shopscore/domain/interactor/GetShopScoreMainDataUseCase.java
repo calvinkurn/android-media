@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -15,7 +17,9 @@ import rx.Observable;
 public class GetShopScoreMainDataUseCase extends UseCase<ShopScoreMainDomainModel> {
     private final ShopScoreRepository shopScoreRepository;
 
-    public GetShopScoreMainDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ShopScoreRepository shopScoreRepository) {
+    @Inject
+    public GetShopScoreMainDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                                       ShopScoreRepository shopScoreRepository) {
         super(threadExecutor, postExecutionThread);
         this.shopScoreRepository = shopScoreRepository;
     }

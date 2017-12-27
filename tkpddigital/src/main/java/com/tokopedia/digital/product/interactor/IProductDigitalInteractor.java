@@ -1,7 +1,9 @@
 package com.tokopedia.digital.product.interactor;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.model.ProductDigitalData;
+import com.tokopedia.digital.product.model.PulsaBalance;
 
 import rx.Subscriber;
 
@@ -19,4 +21,6 @@ public interface IProductDigitalInteractor {
             TKPDMapParam<String, String> paramQueryLastOrder,
             Subscriber<ProductDigitalData> subscriber
     );
+
+    void porcessPulsaUssdResponse(RequestBodyPulsaBalance requestBodyPulsaBalance, Subscriber<PulsaBalance> subscriber);
 }

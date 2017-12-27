@@ -137,7 +137,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        startActivityForResult(CommonUtils.requestBarcodeScanner(getActivity()), REQUEST_CODE_BARCODE);
     }
 
     public void requestRefNumDialog(final int pos) {
@@ -334,8 +334,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPING);
-        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_SHIPPING);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
     }
 

@@ -2,8 +2,8 @@ package com.tokopedia.transaction.bcaoneklik.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
-import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.PaymentListModel;
 
 import rx.Subscriber;
 

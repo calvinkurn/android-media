@@ -5,31 +5,24 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
+import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
+import com.tokopedia.core.common.category.data.source.CategoryDataSource;
+import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
+import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
+import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.core.common.category.domain.CategoryRepository;
+import com.tokopedia.core.common.category.domain.interactor.ClearCategoryCacheUseCase;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.seller.common.logout.di.scope.TkpdSellerLogoutScope;
-import com.tokopedia.seller.goldmerchant.statistic.data.repository.GMStatRepositoryImpl;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.GMStatDataSource;
-import com.tokopedia.seller.goldmerchant.statistic.data.source.cloud.api.GMStatApi;
-import com.tokopedia.seller.goldmerchant.statistic.domain.GMStatRepository;
-import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionStatDomainMapper;
-import com.tokopedia.seller.goldmerchant.statistic.domain.mapper.GMTransactionTableMapper;
-import com.tokopedia.seller.product.data.repository.CategoryRepositoryImpl;
-import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.seller.product.data.source.CategoryDataSource;
-import com.tokopedia.seller.product.data.source.CategoryVersionDataSource;
-import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
-import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.seller.product.domain.CategoryRepository;
-import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.domain.interactor.categorypicker.ClearCategoryCacheUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
+import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,8 +50,8 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource dataSource){
-        return new ProductDraftRepositoryImpl(dataSource);
+    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource dataSource, @ApplicationContext Context context){
+        return new ProductDraftRepositoryImpl(dataSource, context);
     }
 
     @TkpdSellerLogoutScope
@@ -75,24 +68,8 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    GMStatRepository provideGMStatRepository(GMStatDataSource gmStatDataSource,
-                                             GMTransactionStatDomainMapper gmTransactionStatDomainMapper,
-                                             GMTransactionTableMapper gmTransactionTableMapper,
-                                             ShopInfoRepository shopInfoRepository) {
-        return new GMStatRepositoryImpl(gmTransactionStatDomainMapper, gmStatDataSource, gmTransactionTableMapper,
-                shopInfoRepository);
-    }
-
-    @TkpdSellerLogoutScope
-    @Provides
     ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-    }
-
-    @TkpdSellerLogoutScope
-    @Provides
-    GMStatApi provideGmStatisticTransactionApi(@GoldMerchantQualifier Retrofit retrofit) {
-        return retrofit.create(GMStatApi.class);
     }
 
     @TkpdSellerLogoutScope

@@ -12,33 +12,36 @@ import com.tokopedia.tkpd.home.favorite.view.adapter.TopAdsShopAdapter;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
 
-import butterknife.BindView;
-
 /**
  * @author kulomady on 1/24/17.
  */
 
 public class TopAdsShopViewHolder extends AbstractViewHolder<TopAdsShopViewModel> {
+
     @LayoutRes
     public static final int LAYOUT = R.layout.child_favorite_rec_shop;
-    @BindView(R.id.rec_shop_recycler_view)
+    private final FavoriteClickListener favoriteClickListener;
+
     RecyclerView recShopRecyclerView;
+
     private Context context;
-    private TopAdsShopAdapter topAdsShopAdapter;
 
     public TopAdsShopViewHolder(View itemView, FavoriteClickListener favoriteClickListener) {
         super(itemView);
         context = itemView.getContext();
-        LinearLayoutManager linearLayoutManager
-                = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        recShopRecyclerView.setLayoutManager(linearLayoutManager);
-        recShopRecyclerView.setHasFixedSize(true);
-        topAdsShopAdapter = new TopAdsShopAdapter(favoriteClickListener);
-        recShopRecyclerView.setAdapter(topAdsShopAdapter);
+        this.recShopRecyclerView = (RecyclerView) itemView.findViewById(R.id.rec_shop_recycler_view);
+        this.favoriteClickListener = favoriteClickListener;
     }
 
     @Override
     public void bind(TopAdsShopViewModel element) {
+        TopAdsShopAdapter topAdsShopAdapter = new TopAdsShopAdapter(favoriteClickListener);
+        LinearLayoutManager linearLayoutManager
+                = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        recShopRecyclerView.setLayoutManager(linearLayoutManager);
+        recShopRecyclerView.setHasFixedSize(true);
+        recShopRecyclerView.setAdapter(topAdsShopAdapter);
+
         topAdsShopAdapter.setData(element.getAdsShopItems());
     }
 }

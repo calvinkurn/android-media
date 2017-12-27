@@ -9,8 +9,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickEditView;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickView;
 import com.tokopedia.transaction.bcaoneklik.domain.BcaOneClickFormRepository;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
-import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.PaymentListModel;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

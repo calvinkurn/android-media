@@ -15,10 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.signature.StringSignature;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -26,13 +26,11 @@ import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
-import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -76,7 +74,9 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         setShopCover(holder, shopItem.getShopCoverUrl(), shopItem.getShopCoverEcs());
         setFavorite(holder, shopItem);
         holder.mainContent.setOnClickListener(onShopClicked(shopItem));
-        holder.favButton.setOnClickListener(onFavClicked(holder, shopItem));
+        holder.favButton.setOnClickListener(
+                shopItem.isFav() ? null : onFavClicked(holder, shopItem)
+        );
     }
 
 
@@ -89,6 +89,9 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                     .dontAnimate()
                     .placeholder(com.tokopedia.core.R.drawable.loading_page)
                     .error(com.tokopedia.core.R.drawable.error_drawable)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .override(375, 97)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model,
@@ -108,7 +111,6 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                             return false;
                         }
                     })
-                    .centerCrop()
                     .into(holder.shopCover);
         }
     }
@@ -147,7 +149,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             public void onClick(View view) {
                 Context context = view.getContext();
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
-                UnifyTracking.eventFavoriteViewRecommendation(item.getShopName());
+                UnifyTracking.eventFavoriteViewRecommendation();
                 Intent intent = new Intent(context, ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(
                         item.getShopId(),
@@ -180,24 +182,24 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.main_content)
         LinearLayout mainContent;
-        @BindView(R.id.shop_cover)
         ImageView shopCover;
-        @BindView(R.id.shop_icon)
         ImageView shopIcon;
-        @BindView(R.id.shop_name)
         TextView shopName;
-        @BindView(R.id.shop_location)
         TextView shopLocation;
-        @BindView(R.id.shop_info)
         LinearLayout shopInfo;
-        @BindView(R.id.fav_button)
         ImageView favButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mainContent = (LinearLayout) itemView.findViewById(R.id.main_content);
+            shopCover = (ImageView) itemView.findViewById(R.id.shop_cover);
+            shopIcon = (ImageView) itemView.findViewById(R.id.shop_icon);
+            shopName = (TextView) itemView.findViewById(R.id.shop_name);
+            shopLocation = (TextView) itemView.findViewById(R.id.shop_location);
+            shopInfo = (LinearLayout) itemView.findViewById(R.id.shop_info);
+            favButton = (ImageView) itemView.findViewById(R.id.fav_button);
         }
 
         public Context getContext() {

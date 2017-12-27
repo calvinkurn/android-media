@@ -146,7 +146,7 @@ public class DecimalInputView extends BaseCustomView {
 
     public void setValue(double value) {
         DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
-        editText.setText(df.format(value));
+        editText.setText(String.valueOf(df.format(value)));
     }
 
     public EditText getEditText() {

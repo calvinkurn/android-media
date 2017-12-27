@@ -83,7 +83,7 @@ public class RideRequestEntityMapper {
 
     public Location transform(LocationEntity entity) {
         Location location = null;
-        if (entity != null) {
+        if (entity != null && entity.getLatitude() != 0 && entity.getLongitude() != 0) {
             location = new Location();
             location.setBearing(entity.getBearing());
             location.setLongitude(entity.getLongitude());

@@ -70,6 +70,7 @@ public interface Login {
     String CODE = "code";
     String REDIRECT_URI = "redirect_uri";
     String MSISDN = "msisdn";
+    String ACCESS_TOKEN = "access_token";
 
     String GRANT_PASSWORD = "password";
     String GRANT_SDK = "extension";

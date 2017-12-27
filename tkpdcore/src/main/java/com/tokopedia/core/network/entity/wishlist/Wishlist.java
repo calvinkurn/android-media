@@ -1,5 +1,8 @@
 package com.tokopedia.core.network.entity.wishlist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.var.Badge;
@@ -11,7 +14,7 @@ import java.util.List;
 /**
  * Created by ricoharisin on 4/15/16.
  */
-public class Wishlist {
+public class Wishlist implements Parcelable {
 
     @SerializedName("id")
     String Id;
@@ -167,4 +170,61 @@ public class Wishlist {
     public void setIsPreOrder(Boolean isPreOrder) {
         this.isPreOrder = isPreOrder;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.Id);
+        dest.writeString(this.Name);
+        dest.writeString(this.Url);
+        dest.writeString(this.ImageUrl);
+        dest.writeInt(this.Price);
+        dest.writeString(this.Condition);
+        dest.writeValue(this.isAvailable);
+        dest.writeString(this.Status);
+        dest.writeString(this.PriceFmt);
+        dest.writeInt(this.MinimumOrder);
+        dest.writeTypedList(this.Wholesale);
+        dest.writeParcelable(this.Shop, flags);
+        dest.writeValue(this.isPreOrder);
+        dest.writeTypedList(this.badges);
+        dest.writeTypedList(this.labels);
+    }
+
+    public Wishlist() {
+    }
+
+    protected Wishlist(Parcel in) {
+        this.Id = in.readString();
+        this.Name = in.readString();
+        this.Url = in.readString();
+        this.ImageUrl = in.readString();
+        this.Price = in.readInt();
+        this.Condition = in.readString();
+        this.isAvailable = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.Status = in.readString();
+        this.PriceFmt = in.readString();
+        this.MinimumOrder = in.readInt();
+        this.Wholesale = in.createTypedArrayList(WholesalePrice.CREATOR);
+        this.Shop = in.readParcelable(com.tokopedia.core.network.entity.wishlist.Shop.class.getClassLoader());
+        this.isPreOrder = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.badges = in.createTypedArrayList(Badge.CREATOR);
+        this.labels = in.createTypedArrayList(Label.CREATOR);
+    }
+
+    public static final Parcelable.Creator<Wishlist> CREATOR = new Parcelable.Creator<Wishlist>() {
+        @Override
+        public Wishlist createFromParcel(Parcel source) {
+            return new Wishlist(source);
+        }
+
+        @Override
+        public Wishlist[] newArray(int size) {
+            return new Wishlist[size];
+        }
+    };
 }

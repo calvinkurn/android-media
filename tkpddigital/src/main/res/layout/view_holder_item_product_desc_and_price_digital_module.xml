@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/digital_bg_chooser_operator_product_item"
-    android:minHeight="60dp"
     android:orientation="vertical"
     android:paddingTop="@dimen/padding_small">
 
@@ -14,51 +13,47 @@
 
         <TextView
             android:id="@+id/title_price"
-            style="@style/TextSubTitleMedium"
+            style="@style/TextProductName"
+            tools:text="Rp 25.000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:paddingBottom="3dp"
-            tools:text="Rp 1" />
+            android:paddingBottom="3dp"/>
 
         <TextView
             android:id="@+id/tv_price"
-            style="@style/TextSubTitleMedium"
+            style="@style/TextProductPrice"
+            tools:text="Rp. 20.000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/title_price"
             android:layout_marginBottom="@dimen/padding_vs"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:paddingTop="3dp"
-            android:textColor="@color/digital_item_title"
-            android:textSize="@dimen/font_small"
-            tools:text="Extra Combo 6GB" />
+            android:paddingTop="3dp"/>
 
         <TextView
             android:id="@+id/empty_stock_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tv_price"
+            android:layout_alignBaseline="@+id/title_price"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
-            android:background="@color/grey_400"
-            android:paddingBottom="@dimen/padding_vvs"
+            android:background="@drawable/digital_bg_out_of_stock"
             android:paddingEnd="@dimen/padding_small"
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"
             android:paddingStart="@dimen/padding_small"
-            android:paddingTop="@dimen/padding_vvs"
             android:text="@string/title_empty_stock"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="gone"
             tools:visibility="visible" />
-    </RelativeLayout>
 
+    </RelativeLayout>
 
     <View
         android:id="@+id/separator"
@@ -66,6 +61,5 @@
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/padding_vs"
         android:background="@color/digital_separator" />
-
 
 </LinearLayout>

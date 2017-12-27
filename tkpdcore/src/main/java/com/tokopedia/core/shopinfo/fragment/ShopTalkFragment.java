@@ -21,6 +21,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter;
 import com.tokopedia.core.shopinfo.listener.ShopTalkFragmentView;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
@@ -45,6 +46,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     private static final String PARAM_FROM = "from";
     private static final String PARAM_MODEL = "talk";
     private static final String PARAM_POSITION = "position";
+    private boolean isViewShown;
 
     public static Fragment createInstance() {
         return new ShopTalkFragment();
@@ -109,6 +111,10 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if(!isViewShown) {
+            fetchData();
+        }
     }
 
     @Override
@@ -255,9 +261,11 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && presenter != null && adapter != null) {
-            if (adapter.getList().isEmpty() && !adapter.isEmpty() && !presenter.isRequesting()) {
-                presenter.getShopTalk();
+        isViewShown = getView() != null;
+        if (isVisibleToUser) {
+            if (getActivity() != null &&
+                    getActivity() instanceof ShopInfoActivity) {
+                ((ShopInfoActivity) getActivity()).swipeAble(true);
             }
         }
     }
@@ -404,5 +412,15 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
                 break;
         }
 
+    }
+
+    private void fetchData() {
+        if (presenter != null
+                && adapter != null
+                && !adapter.isEmpty()
+                && adapter.getList().isEmpty()
+                && !presenter.isRequesting()) {
+            presenter.getShopTalk();
+        }
     }
 }

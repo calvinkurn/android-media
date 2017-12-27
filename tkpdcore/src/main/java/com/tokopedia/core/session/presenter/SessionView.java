@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.google.android.gms.plus.model.people.Person;
 import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.LoginGoogleModel;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public interface SessionView {
 
     void moveToRegister();
 
-    void updateUI(boolean isSignedIn);
+    void updateUI(boolean isSignedIn, LoginGoogleModel model);
 
     void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG, int type);
 

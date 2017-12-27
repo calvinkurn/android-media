@@ -11,8 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,6 +32,7 @@ import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.share.listener.ShareView;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
 import com.tokopedia.core.var.TkpdState;
@@ -47,7 +46,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.IS_ADD
  * Created by Angga.Prasetiyo on 11/12/2015.
  * Modified by Alvarisi on 17/12/2016
  */
-public class ProductShareFragment extends BasePresenterFragment<ProductSharePresenter> {
+public class ProductShareFragment extends BasePresenterFragment<ProductSharePresenter> implements ShareView {
     public static final String TAG = "ProductShareFragment";
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
 
@@ -102,10 +101,11 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
 
-    public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
+    public static ProductShareFragment newInstance(@NonNull ShareData shareData, boolean isAddingProduct) {
         ProductShareFragment fragment = new ProductShareFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARGS_SHARE_DATA, shareData);
+        args.putBoolean(IS_ADDING_PRODUCT, isAddingProduct);
         fragment.setArguments(args);
         return fragment;
     }
@@ -183,6 +183,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         loadingAddProduct.setVisibility(View.GONE);
         if (this.shareData != null) {
             if (shareData.getType() != null) {
+                subtitle.setText(R.string.product_share_subtitle);
                 switch (shareData.getType()) {
                     case ShareData.CATALOG_TYPE:
                         tvTitle.setText(R.string.product_share_catalog);
@@ -201,6 +202,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                         break;
                     case ShareData.RIDE_TYPE:
                         tvTitle.setText(R.string.product_share_ride_trip);
+                        break;
+                    case ShareData.APP_SHARE_TYPE:
+                        tvTitle.setText(R.string.product_share_app);
+                        subtitle.setText(R.string.product_share_app_subtitle);
                         break;
                 }
             }
@@ -224,7 +229,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         progressBar.setVisibility(View.GONE);
         errorImage.setVisibility(View.VISIBLE);
         loadingAddProduct.setText(messageError +
-                "\n" +getString(R.string.error_failed_add_product));
+                "\n" + getString(R.string.error_failed_add_product));
         loadingAddProduct.setVisibility(View.VISIBLE);
         setIconShareVisibility(View.GONE);
         setVisibilityTitle(View.GONE);
@@ -267,6 +272,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         if (StringUtils.isNotBlank(productUri)) {
             shareData.setUri(productUri);
         }
+        String productId = data.getString(TkpdState.ProductService.PRODUCT_ID);
+        if (StringUtils.isNotBlank(productId)) {
+            shareData.setId(productId);
+        }
     }
 
     public void addingProduct(boolean isAdding) {
@@ -291,7 +300,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
                 int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
-                switch (status){
+                switch (status) {
                     case TkpdState.ProductService.STATUS_DONE:
                         setData(bundle);
                         addingProduct(false);
@@ -316,17 +325,8 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.card_share_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_close) {
-            getActivity().onBackPressed();
-            return true;
-        } else if (item.getItemId() == R.id.home) {
+        if (item.getItemId() == R.id.home) {
             getFragmentManager().popBackStack();
             return true;
         }
@@ -395,7 +395,11 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void showDialogShareFb() {
+    @Override
+    public void showDialogShareFb(String shortUrl) {
+        if (!isAdded()) {
+            return;
+        }
         shareDialog = new ShareDialog(this);
         callbackManager = CallbackManager.Factory.create();
         shareDialog.registerCallback(callbackManager, new
@@ -420,14 +424,14 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 });
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
-            if (shareData != null && !TextUtils.isEmpty(shareData.getUri())) {
+            if (shareData != null && !TextUtils.isEmpty(shortUrl)) {
                 ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
-                        .setContentUrl(Uri.parse(shareData.getUri()));
+                        .setContentUrl(Uri.parse(shortUrl));
                 if (!TextUtils.isEmpty(shareData.getName())) {
                     linkBuilder.setContentTitle(shareData.getName());
                 }
-                if (!TextUtils.isEmpty(shareData.getTextContent())) {
-                    linkBuilder.setContentDescription(shareData.getTextContent());
+                if (!TextUtils.isEmpty(shareData.getTextContent(getActivity()))) {
+                    linkBuilder.setContentDescription(shareData.getTextContent(getActivity()));
                 }
                 if (!TextUtils.isEmpty(shareData.getDescription())) {
                     linkBuilder.setQuote(shareData.getDescription());

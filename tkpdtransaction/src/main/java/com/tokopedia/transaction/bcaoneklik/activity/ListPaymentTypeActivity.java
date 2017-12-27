@@ -2,142 +2,99 @@ package com.tokopedia.transaction.bcaoneklik.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickActivity;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickEditActivity;
-import com.tokopedia.transaction.bcaoneklik.adapter.BcaOneClickRecyclerAdapter;
+import com.tokopedia.transaction.bcaoneklik.adapter.PaymentSettingMainAdapter;
+import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
+import com.tokopedia.transaction.bcaoneklik.di.PaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.dialog.BcaOneClickDeleteDialog;
+import com.tokopedia.transaction.bcaoneklik.dialog.DeleteCreditCardDialog;
 import com.tokopedia.transaction.bcaoneklik.listener.BcaOneClickDeleteListener;
+import com.tokopedia.transaction.bcaoneklik.listener.CreditCardAuthenticationView;
 import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
-import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
-import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenter;
+import com.tokopedia.transaction.bcaoneklik.model.PaymentSettingModel;
+import com.tokopedia.transaction.bcaoneklik.model.creditcard.authenticator.AuthenticatorPageModel;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
-import com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 
-import rx.Subscriber;
-
-import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.ACCESS_TOKEN_EXTRAS;
-import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.ACCESS_XCOID_EXTRAS;
-import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.CREDENTIAL_NUMBER_EXTRAS;
-import static com.tokopedia.transaction.bcaoneklik.utils.BcaOneClickConstants.CREDENTIAL_TYPE_EXTRAS;
+import javax.inject.Inject;
 
 /**
  * Created by kris on 8/2/17. Tokopedia
  */
 
-public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTypePresenter>
-        implements ListPaymentTypeView, BcaOneClickDeleteListener{
-    public static final int REGISTER_BCA_ONE_CLICK_REQUEST_CODE = 1;
-    public static final int EDIT_BCA_ONE_CLICK_REQUEST_CODE = 2;
+public class ListPaymentTypeActivity extends TActivity
+        implements ListPaymentTypeView, BcaOneClickDeleteListener, DeleteCreditCardDialog.DeleteCreditCardDialogListener{
 
     private RelativeLayout rootView;
-
-    private RecyclerView bcaOneClickRecyclerView;
-
-    private BcaOneClickRecyclerAdapter bcaOneClickRecyclerAdapter;
-
-    private LinearLayout bcaOneClickRegisterLayout;
-
-    private TextView bcaOneClickRegistrationButton;
 
     private TkpdProgressDialog progressDialog;
 
     private TkpdProgressDialog mainProgressDialog;
 
-    private PaymentListModel paymentModels;
+    private RefreshHandler refreshHandler;
+
+    private PaymentSettingMainAdapter paymentSettingsAdapter;
+
+    @Inject
+    ListPaymentTypePresenterImpl presenter;
 
     @Override
-    protected void setupURIPass(Uri data) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inflateView(R.layout.payment_list_layout);
+        initInjector();
+        presenter.setViewListener(this);
+        initView();
 
     }
 
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
+    private void initInjector() {
+        PaymentOptionComponent component = DaggerPaymentOptionComponent
+                .builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        component.inject(this);
     }
 
-    @Override
-    protected void initialPresenter() {
-        presenter = new ListPaymentTypePresenterImpl(this);
-    }
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.payment_list_layout;
-    }
-
-    @Override
     protected void initView() {
         rootView = (RelativeLayout) findViewById(R.id.payment_list_root_view);
-        bcaOneClickRecyclerView = (RecyclerView) findViewById(R.id.bca_one_click_recycler_view);
-        bcaOneClickRegisterLayout = (LinearLayout) findViewById(R.id.bca_one_click_register_layout);
-        bcaOneClickRegistrationButton = (TextView) findViewById(R.id.bca_one_click_register_button);
-        bcaOneClickRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        bcaOneClickRecyclerView.setNestedScrollingEnabled(false);
+        RecyclerView paymentOptionMainRecyclerView = (RecyclerView)
+                findViewById(R.id.payment_option_main_recycler_view);
+        paymentSettingsAdapter = new PaymentSettingMainAdapter(presenter, this);
+        paymentOptionMainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        paymentOptionMainRecyclerView.setAdapter(paymentSettingsAdapter);
         progressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.NORMAL_PROGRESS);
         mainProgressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.MAIN_PROGRESS);
-        presenter.onGetPaymentList(paymentListModelSubscriber());
-        bcaOneClickRegistrationButton.setOnClickListener(new View.OnClickListener() {
+        refreshHandler = new RefreshHandler(this, rootView, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
-            public void onClick(View v) {
-                progressDialog.showDialog();
-                presenter.onRegisterOneClickBcaChosen(new Subscriber<BcaOneClickData>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        showErrorSnackbar(e);
-                        progressDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onNext(BcaOneClickData bcaOneClickData) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ACCESS_TOKEN_EXTRAS,
-                                bcaOneClickData.getToken().getAccessToken());
-                        Intent intent = new Intent(ListPaymentTypeActivity.this, BcaOneClickActivity.class);
-                        intent.putExtras(bundle);
-                        startActivityForResult(intent, REGISTER_BCA_ONE_CLICK_REQUEST_CODE);
-                        progressDialog.dismiss();
-                    }
-                });
+            public void onRefresh(View view) {
+                fetchData();
             }
         });
+        showMainDialog();
+        fetchData();
     }
 
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
+    private void fetchData() {
+        presenter.onGetAllPaymentList(this);
+        /*presenter.onGetCreditCardList(this);
+        presenter.onGetBcaOneClickList(paymentListModelSubscriber());*/
     }
 
     @Override
@@ -151,84 +108,127 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
     }
 
     @Override
+    public void dismissMainDialog() {
+        mainProgressDialog.dismiss();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void successDeleteCreditCard(String message) {
+        NetworkErrorHelper.showSnackbar(this, message);
+        refreshHandler.finishRefresh();
+        presenter.onGetAllPaymentList(this);
+    }
+
+    @Override
+    public void onLoadCreditCardError(String errorMessage) {
+        //TODO Later if Payment Team made Quick Payment Menu make Credit Card spesific error
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
+        refreshHandler.finishRefresh();
+        NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
+                            errorMessage,
+                            onLoadListRetryListener());
+        mainProgressDialog.dismiss();
+    }
+
+    @Override
+    public void onLoadAllError(String errorMessage) {
+        rootView.setVisibility(View.VISIBLE);
+        NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
+                errorMessage,
+                onLoadListRetryListener());
+    }
+
+    @Override
+    public void onDeleteCreditCardError(String errorMessage) {
+        refreshHandler.finishRefresh();
+        NetworkErrorHelper.createSnackbarWithAction(ListPaymentTypeActivity.this,
+                errorMessage,
+                onLoadListRetryListener());
+    }
+
+    @Override
+    public void showError(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void onShowDeleteBcaOneClickDialog(String tokenId,
+                                              String name,
+                                              String credentialNumber) {
+        BcaOneClickDeleteDialog bcaOneClickDeleteDialog =
+                BcaOneClickDeleteDialog.createDialog(tokenId, name, credentialNumber);
+        bcaOneClickDeleteDialog.show(getFragmentManager(), "delete_dialog");
+    }
+
+    @Override
+    public void showDeleteBcaOneClickError() {
+        NetworkErrorHelper.showSnackbar(this, ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+    }
+
+    @Override
+    public void onDeleteCreditCardClicked(String tokenId, String cardId) {
+        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.createDialog(tokenId,
+                cardId);
+        creditCardDialog.show(getFragmentManager(), "delete_credit_card_dialog");
+    }
+
+    @Override
+    public void onBcaOneClickSuccessGetToken(Bundle bundle) {
+        Intent intent = new Intent(ListPaymentTypeActivity.this,
+                BcaOneClickEditActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, EDIT_BCA_ONE_CLICK_REQUEST_CODE);
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onBcaOneClickSuccessGetRegisterToken(Bundle bundle) {
+        Intent intent = new Intent(ListPaymentTypeActivity.this,
+                BcaOneClickActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REGISTER_BCA_ONE_CLICK_REQUEST_CODE);
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onFetchDataComplete(PaymentSettingModel model) {
+        rootView.setVisibility(View.VISIBLE);
+        refreshHandler.finishRefresh();
+        paymentSettingsAdapter.updateData(model);
+    }
+
+    @Override
+    public void openAuthenticatorPage(AuthenticatorPageModel data) {
+        Intent intent = new Intent(this, CreditCardAuthenticationActivity.class);
+        intent.putExtra(CreditCardAuthenticationView.CREDIT_CARD_STATUS_KEY, data);
+        startActivityForResult(intent, EDIT_AUTHENTICATION_PAGE);
+    }
+
+    @Override
+    public void refreshList() {
+        refreshHandler.startRefresh();
+    }
+
+    @Override
+    public void onErrorGetBcaOneClickToken(Throwable e) {
+        showErrorSnackbar(e);
+        progressDialog.dismiss();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroyed();
-    }
-
-    private Subscriber<PaymentListModel> paymentListModelSubscriber() {
-        return new Subscriber<PaymentListModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                rootView.setVisibility(View.VISIBLE);
-                if(e instanceof ResponseRuntimeException) {
-                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
-                            e.getMessage(),
-                            onLoadListRetryListener());
-                } else {
-                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
-                            onLoadListRetryListener());
-                }
-                mainProgressDialog.dismiss();
-            }
-
-            @Override
-            public void onNext(PaymentListModel paymentListModel) {
-                rootView.setVisibility(View.VISIBLE);
-                mainProgressDialog.dismiss();
-                if(paymentListModel.getBcaOneClickUserModels() == null) {
-                    NetworkErrorHelper.showEmptyState(ListPaymentTypeActivity.this, rootView,
-                            "Layanan Belum Tersedia",
-                            "Sebentar lagi Anda akan dapat kelola pengaturan pembayaran di sini",
-                            "OK",
-                            R.drawable.emptystate_cactus,
-                            new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    rootView.setVisibility(View.GONE);
-                                    finish();
-                                }
-                            });
-                } else {
-                    paymentModels = paymentListModel;
-                    bcaOneClickRecyclerAdapter = new BcaOneClickRecyclerAdapter(
-                            paymentListModel.getBcaOneClickUserModels(),
-                            actionListener()
-                    );
-                    bcaOneClickRecyclerView.setAdapter(bcaOneClickRecyclerAdapter);
-                    bcaOneClickRecyclerAdapter.notifyDataSetChanged();
-                    if(paymentListModel.getBcaOneClickUserModels().size() < 3) {
-                        bcaOneClickRegisterLayout.setVisibility(View.VISIBLE);
-                    } else bcaOneClickRegisterLayout.setVisibility(View.GONE);
-                }
-            }
-        };
-    }
-
-    private Subscriber<PaymentListModel> deleteUserModelSubsriber() {
-        return new Subscriber<PaymentListModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                progressDialog.dismiss();
-                showErrorSnackbar(e);
-            }
-
-            @Override
-            public void onNext(PaymentListModel paymentListModel) {
-                progressDialog.dismiss();
-                presenter.onGetPaymentList(paymentListModelSubscriber());
-            }
-        };
     }
 
     private void showErrorSnackbar(Throwable e) {
@@ -247,77 +247,39 @@ public class ListPaymentTypeActivity extends BasePresenterActivity<ListPaymentTy
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REGISTER_BCA_ONE_CLICK_REQUEST_CODE:
-                presenter.onGetPaymentList(paymentListModelSubscriber());
+                refreshHandler.startRefresh();
                 break;
             case EDIT_BCA_ONE_CLICK_REQUEST_CODE:
-                presenter.onGetPaymentList(paymentListModelSubscriber());
+                refreshHandler.startRefresh();
+                break;
+            case EDIT_AUTHENTICATION_PAGE:
+                refreshHandler.startRefresh();
                 break;
         }
     }
 
-    private BcaOneClickRecyclerAdapter.ActionListener actionListener() {
-        return new BcaOneClickRecyclerAdapter.ActionListener() {
-            @Override
-            public void onDelete(String tokenId, String name, String credentialNumber) {
-                BcaOneClickDeleteDialog bcaOneClickDeleteDialog =
-                        BcaOneClickDeleteDialog.createDialog(tokenId, name, credentialNumber);
-                bcaOneClickDeleteDialog.show(getFragmentManager(), "delete_dialog");
-            }
-
-            @Override
-            public void onEdit(final String tokenId,
-                               final String credentialType,
-                               final String credentialNumber) {
-                progressDialog.showDialog();
-                presenter.onRegisterOneClickBcaChosen(new Subscriber<BcaOneClickData>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        showErrorSnackbar(e);
-                        progressDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onNext(BcaOneClickData bcaOneClickData) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ACCESS_TOKEN_EXTRAS,
-                                bcaOneClickData.getToken().getAccessToken());
-                        bundle.putString(ACCESS_XCOID_EXTRAS, tokenId);
-                        bundle.putString(CREDENTIAL_TYPE_EXTRAS, credentialType);
-                        bundle.putString(CREDENTIAL_NUMBER_EXTRAS, credentialNumber);
-                        Intent intent = new Intent(ListPaymentTypeActivity.this,
-                                BcaOneClickEditActivity.class);
-                        intent.putExtras(bundle);
-                        startActivityForResult(intent, EDIT_BCA_ONE_CLICK_REQUEST_CODE);
-                        progressDialog.dismiss();
-                    }
-                });
-            }
-
-            @Override
-            public String getUserLoginAccountName() {
-                return new SessionHandler(ListPaymentTypeActivity.this).getLoginName();
-            }
-        };
-    }
-
     @Override
     public void onDelete(String tokenId) {
-        progressDialog.showDialog();
-        presenter.onDeletePaymentList(deleteUserModelSubsriber(), tokenId);
+        presenter.onDeleteBcaOneClick(tokenId);
     }
 
     private NetworkErrorHelper.RetryClickedListener onLoadListRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                rootView.setVisibility(View.GONE);
-                presenter.onGetPaymentList(paymentListModelSubscriber());
+                refreshHandler.startRefresh();
             }
         };
+    }
+
+
+    @Override
+    public void onConfirmDelete(String tokenId) {
+        presenter.onCreditCardDeleted(this, tokenId);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

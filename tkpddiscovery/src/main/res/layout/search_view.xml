@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"
-                android:hint="@string/search_hint"
+                android:hint="@string/cari_produk_atau_toko"
                 android:imeOptions="actionSearch"
                 android:inputType="textNoSuggestions"
                 android:paddingLeft="@dimen/search_view_text_padding"
@@ -38,7 +38,7 @@
                 android:paddingRight="@dimen/search_view_text_padding"
                 android:singleLine="true"
                 android:textColor="#212121"
-                android:textColorHint="#4D727272"
+                android:textColorHint="@color/black_38"
                 android:textSize="16sp" />
 
             <ImageButton

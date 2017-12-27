@@ -18,20 +18,12 @@ import com.tokopedia.seller.R;
  */
 public abstract class BaseEmptyDataBinder extends NoResultDataBinder {
 
-    public interface Callback {
-
-        void onEmptyContentItemTextClicked();
-
-        void onEmptyButtonClicked();
-    }
-
-    private String emptyTitleText;
+    protected String emptyTitleText;
+    protected int errorDrawableRes;
     private String emptyContentText;
     private String emptyContentItemText;
     private String emptyButtonItemText;
     private Callback callback;
-
-    private int errorDrawableRes;
 
     public BaseEmptyDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
@@ -117,8 +109,15 @@ public abstract class BaseEmptyDataBinder extends NoResultDataBinder {
         }
     }
 
+    public interface Callback {
+
+        void onEmptyContentItemTextClicked();
+
+        void onEmptyButtonClicked();
+    }
+
     public static class EmptyViewHolder extends ViewHolder {
-        private TextView emptyTitleTextView;
+        public TextView emptyTitleTextView;
         private TextView emptyContentTextView;
         private TextView emptyContentItemTextView;
         private Button emptyButtonItemButton;

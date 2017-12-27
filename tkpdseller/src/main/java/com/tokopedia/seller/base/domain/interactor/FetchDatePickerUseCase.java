@@ -1,7 +1,7 @@
 package com.tokopedia.seller.base.domain.interactor;
 
-import com.tokopedia.core.base.domain.CompositeUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.base.domain.DatePickerRepository;
@@ -15,7 +15,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 4/26/17.
  */
 
-public class FetchDatePickerUseCase extends CompositeUseCase<DatePickerDomainModel> {
+public class FetchDatePickerUseCase extends UseCase<DatePickerDomainModel> {
     private DatePickerRepository datePickerRepository;
 
     @Inject
@@ -30,7 +30,7 @@ public class FetchDatePickerUseCase extends CompositeUseCase<DatePickerDomainMod
         return datePickerRepository.fetchSetting();
     }
 
-    public static RequestParams createRequestParams(){
+    public static RequestParams createRequestParams() {
         return RequestParams.EMPTY;
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.reputation.view.activity;
 
 import android.app.Fragment;
+import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 
@@ -19,8 +20,8 @@ public class SellerReputationDatePickerActivity extends DatePickerActivity {
     public static final int OFFSCREEN_PAGE_LIMIT = 1;
 
     @Override
-    protected void setupLayout() {
-        super.setupLayout();
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
         tabLayout.setVisibility(View.GONE);
     }
 

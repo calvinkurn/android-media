@@ -4,76 +4,71 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@drawable/digital_bg_chooser_operator_product_item"
-              android:minHeight="60dp"
               android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="55dp"
         android:paddingBottom="@dimen/digital_padding_6"
         android:paddingTop="@dimen/digital_padding_6">
 
         <TextView
             android:id="@+id/product_price_no_addition"
-            style="@style/TextSubTitleMedium"
+            style="@style/TextProductName"
+            tools:text="additional"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:paddingBottom="@dimen/digital_padding_2"
-            tools:text="additional"/>
+            android:paddingBottom="@dimen/digital_padding_2"/>
 
         <TextView
             android:id="@+id/product_plain_description"
-            style="@style/TextSubTitleMedium"
+            style="@style/TextProductDescription"
+            tools:text="plaim desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/product_price_no_addition"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:linksClickable="true"
+            android:layout_marginRight="@dimen/margin_ms"
+            android:layout_marginEnd="@dimen/margin_ms"
             android:paddingBottom="@dimen/digital_padding_2"
-            android:paddingTop="@dimen/digital_padding_2"
-            tools:text="plaim desc"
-            tools:visibility="visible"/>
+            android:paddingTop="@dimen/digital_padding_2"/>
 
         <TextView
             android:id="@+id/product_total_price"
-            style="@style/TextTitleMedium"
+            style="@style/TextProductPrice"
+            tools:text="Rp. 20.000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/product_plain_description"
             android:layout_marginBottom="@dimen/padding_vs"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:paddingTop="@dimen/digital_padding_2"
-            android:textColor="@color/black"
-            tools:text="price"/>
+            android:paddingTop="@dimen/digital_padding_2"/>
 
         <TextView
             android:id="@+id/empty_stock_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/product_total_price"
+            android:layout_alignBaseline="@+id/product_price_no_addition"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
-            android:background="@color/grey_400"
-            android:paddingBottom="@dimen/padding_vvs"
+            android:background="@drawable/digital_bg_out_of_stock"
             android:paddingEnd="@dimen/padding_small"
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"
             android:paddingStart="@dimen/padding_small"
-            android:paddingTop="@dimen/padding_vvs"
             android:text="@string/title_empty_stock"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="gone"
             tools:visibility="visible"/>
-    </RelativeLayout>
 
+    </RelativeLayout>
 
     <View
         android:id="@+id/separator"
@@ -81,6 +76,5 @@
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/padding_vs"
         android:background="@color/digital_separator"/>
-
 
 </LinearLayout>

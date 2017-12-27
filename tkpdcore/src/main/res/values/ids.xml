@@ -19,6 +19,7 @@
     <item name="view_main" type="id" />
     <item name="view_progress" type="id" />
     <item name="tv_buy" type="id" />
+    <item name="tv_promote_topads" type="id" />
     <item name="layout_desc" type="id" />
     <item name="tv_desc" type="id" />
     <item name="tv_description" type="id" />
@@ -193,6 +194,11 @@
     <item name="fab_detail" type="id" />
     <item name="view_price_simulation" type="id" />
     <item name="button_buy_container" type="id" />
+    <item name="button_use_topads" type="id" />
+    <item name="tv_promo_product" type="id" />
+    <item name="tv_promo_expired" type="id" />
+    <item name="toolbar_title" type="id" />
+    <item name="swipe_refresh_layout" type="id" />
 
 
 </resources>

@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 import static com.tokopedia.core.otp.domain.interactor.RequestOtpUseCase.PARAM_TYPE;
@@ -20,6 +22,7 @@ public class NotificationUseCase extends UseCase<NotificationModel> {
     private final NotificationRepository notificationRepository;
     private static final String PARAM_TYPE = "type";
 
+    @Inject
     public NotificationUseCase(ThreadExecutor threadExecutor,
                                PostExecutionThread postExecutionThread,
                                NotificationRepository notificationRepository) {

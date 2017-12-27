@@ -52,6 +52,7 @@ public class InstallmentActivity extends TActivity {
                     @Override
                     public void onClick(View v) {
                         finish();
+                        InstallmentActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
                     }
                 });
     }
@@ -99,6 +100,12 @@ public class InstallmentActivity extends TActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        InstallmentActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
     }
 
 }

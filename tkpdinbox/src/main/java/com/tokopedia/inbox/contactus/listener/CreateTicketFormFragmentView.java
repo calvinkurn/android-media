@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.inbox.contactus.model.ImageUpload;
 import com.tokopedia.inbox.contactus.model.solution.SolutionResult;
 
 import java.util.ArrayList;

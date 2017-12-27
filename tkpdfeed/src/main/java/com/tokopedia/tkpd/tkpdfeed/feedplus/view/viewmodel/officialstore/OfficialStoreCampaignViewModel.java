@@ -16,17 +16,20 @@ public class OfficialStoreCampaignViewModel implements Visitable<FeedPlusTypeFac
     private final String hexColor;
     private final String title;
     private final ArrayList<OfficialStoreCampaignProductViewModel> listProduct;
+    private final int page;
+    private int rowNumber;
 
     public OfficialStoreCampaignViewModel(String url,
                                           String redirectUrl,
                                           String hexColor,
                                           String title,
-                                          ArrayList<OfficialStoreCampaignProductViewModel> listProduct) {
+                                          ArrayList<OfficialStoreCampaignProductViewModel> listProduct, int page) {
         this.officialStoreHeaderImageUrl = url;
         this.redirectUrl = redirectUrl;
         this.hexColor = hexColor;
         this.listProduct = listProduct;
         this.title = title;
+        this.page = page;
     }
 
 
@@ -53,5 +56,17 @@ public class OfficialStoreCampaignViewModel implements Visitable<FeedPlusTypeFac
 
     public String getTitle() {
         return title;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
     }
 }

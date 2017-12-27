@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/padding_small">
+
+    <LinearLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_sm"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="#f8f8f8">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margin_small"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:id="@+id/iv_product_image"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small">
+
+                    <TextView
+                        android:id="@+id/tv_product_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:lineSpacingExtra="3sp"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_product_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:textColor="@color/orange_red"
+                        />
+
+                    <LinearLayout
+                        android:id="@+id/ll_free_return"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/icon_frs"/>
+
+                        <TextView
+                            android:layout_marginLeft="@dimen/margin_vs"
+                            android:id="@+id/tv_free_return"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textSize="@dimen/text_size_xsmall"
+                            android:textColor="@color/color_free_return_text"
+                            android:text="@string/string_support_free_return"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_sm"
+            android:textColor="@color/black_38"
+            android:lineSpacingExtra="4sp"
+            android:text="@string/string_product_status"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/margin_small_sm">
+
+            <Button
+                android:id="@+id/btn_arrived"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button_disable1"
+                android:textColor="@color/green_btn"
+                android:textAllCaps="false"
+                android:text="@string/string_product_arrived"/>
+
+            <Button
+                android:id="@+id/btn_not_arrived"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:background="@drawable/bg_button_disable1"
+                android:textColor="@color/green_btn"
+                android:textAllCaps="false"
+                android:text="@string/string_product_not_arrived"/>
+
+            <ImageView
+                android:id="@+id/btn_info"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_gravity="center"
+                android:src="@drawable/info_icon"/>
+
+        </LinearLayout>
+
+        <com.tokopedia.design.text.SpinnerTextView
+            android:id="@+id/stv_problem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"/>
+
+
+        <com.tokopedia.design.text.TkpdTextInputLayout
+            android:id="@+id/til_complain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            app:hintTextAppearance="@style/error_appearance">
+
+            <EditText
+                android:id="@+id/et_complain"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.tokopedia.design.text.TkpdTextInputLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textColor="#b3000000"
+                android:lineSpacingExtra="8sp"
+                android:text="@string/string_product_qty"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/btn_minus"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/ic_minus_disable"/>
+
+                <TextView
+                    android:id="@+id/tv_qty"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="@dimen/font_medium"
+                    />
+
+                <ImageView
+                    android:id="@+id/btn_plus"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/ic_plus_disable"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_save_and_choose_other"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_button_disable"
+            android:textColor="@color/black_54"
+            android:textAllCaps="false"
+            android:text="@string/string_button_save_choose"/>
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_button_disable"
+            android:textColor="@color/black_54"
+            android:textAllCaps="false"
+            android:text="@string/string_button_save"/>
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_button_disable1"
+            android:textColor="@color/black_54"
+            android:textAllCaps="false"
+            android:text="@string/string_button_cancel"
+            android:layout_marginBottom="@dimen/margin_sm"/>
+    </LinearLayout>
+
+
+</android.support.v4.widget.NestedScrollView>

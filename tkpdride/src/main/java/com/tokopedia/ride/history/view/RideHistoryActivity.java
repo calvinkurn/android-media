@@ -8,15 +8,18 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 public class RideHistoryActivity extends BaseActivity implements RideHistoryFragment.OnFragmentInteractionListener, HasComponent<RideComponent> {
 
+    private static final int REQUEST_CODE_TRIP_DETAIL = 101;
     private RideComponent rideComponent;
 
     public static Intent getCallingIntent(Activity activity) {
@@ -50,6 +53,11 @@ public class RideHistoryActivity extends BaseActivity implements RideHistoryFrag
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_HISTORY;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
@@ -61,9 +69,15 @@ public class RideHistoryActivity extends BaseActivity implements RideHistoryFrag
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        RideGATracking.eventBackPress(getScreenName());
+    }
+
+    @Override
     public void actionNavigateToDetail(RideHistoryViewModel rideHistory) {
         Intent intent = RideHistoryDetailActivity.getCallingIntent(this, rideHistory);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_TRIP_DETAIL);
     }
 
     @Override
@@ -76,5 +90,18 @@ public class RideHistoryActivity extends BaseActivity implements RideHistoryFrag
         rideComponent = DaggerRideComponent.builder()
                 .appComponent(getApplicationComponent())
                 .build();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_TRIP_DETAIL) {
+            if (resultCode == RESULT_OK) {
+                RideHistoryFragment fragment = (RideHistoryFragment) getFragmentManager().findFragmentById(R.id.fl_container);
+                if (fragment != null) {
+                    fragment.actionRefreshHistoriesData();
+                }
+            }
+        }
     }
 }

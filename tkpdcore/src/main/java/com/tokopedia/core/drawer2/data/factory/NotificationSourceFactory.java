@@ -3,7 +3,7 @@ package com.tokopedia.core.drawer2.data.factory;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
 import com.tokopedia.core.drawer2.data.source.CloudNotificationSource;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
@@ -22,7 +22,7 @@ public class NotificationSourceFactory {
     private LocalCacheHandler drawerCache;
 
     @Inject
-    public NotificationSourceFactory(@ActivityContext Context context,
+    public NotificationSourceFactory(@ApplicationContext Context context,
                                 NotificationService notificationService,
                                 NotificationMapper notificationMapper,
                                 LocalCacheHandler drawerCache) {

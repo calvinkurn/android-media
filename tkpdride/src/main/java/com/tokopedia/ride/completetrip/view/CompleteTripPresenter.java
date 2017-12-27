@@ -1,13 +1,22 @@
 package com.tokopedia.ride.completetrip.view;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.domain.model.PayPending;
+import com.tokopedia.ride.common.ride.domain.model.Receipt;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
-import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.completetrip.domain.SendTipUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
+
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import javax.inject.Inject;
 
@@ -23,16 +32,22 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
     private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
     private GiveDriverRatingUseCase giveDriverRatingUseCase;
     private GetSingleRideHistoryUseCase getSingleRideHistoryUseCase;
+    private GetPayPendingDataUseCase getPayPendingDataUseCase;
+    private SendTipUseCase sendTipUseCase;
 
     @Inject
     public CompleteTripPresenter(GetReceiptUseCase getReceiptUseCase,
                                  GetRideRequestDetailUseCase getRideRequestDetailUseCase,
                                  GiveDriverRatingUseCase giveDriverRatingUseCase,
-                                 GetSingleRideHistoryUseCase getSingleRideHistoryUseCase) {
+                                 GetSingleRideHistoryUseCase getSingleRideHistoryUseCase,
+                                 SendTipUseCase sendTipUseCase,
+                                 GetPayPendingDataUseCase getPayPendingDataUseCase) {
         this.getReceiptUseCase = getReceiptUseCase;
         this.getRideRequestDetailUseCase = getRideRequestDetailUseCase;
         this.giveDriverRatingUseCase = giveDriverRatingUseCase;
         this.getSingleRideHistoryUseCase = getSingleRideHistoryUseCase;
+        this.sendTipUseCase = sendTipUseCase;
+        this.getPayPendingDataUseCase = getPayPendingDataUseCase;
     }
 
     @Override
@@ -66,6 +81,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                     getView().renderReceipt(receipt, isPendingPaymentExists);
 
                     if (getView().isCameFromPushNotif() && !isPendingPaymentExists) {
+                        getView().hideRatingLayout();
                         actionCheckIfAlreadySendRating();
                     } else if (isPendingPaymentExists) {
                         getView().hideRatingLayout();
@@ -105,7 +121,22 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
     }
 
     @Override
-    public void actionSendRating() {
+    public void handleRatingStarClick(float rating) {
+        if (rating > 0) {
+            getView().enableRatingSubmitButton();
+            if (rating >= 4 && getView().getFormmattedTipList() != null && getView().getFormmattedTipList().size() > 0) {
+                getView().showTipLayout();
+            } else {
+                getView().hideTipLayout();
+            }
+
+        } else {
+            getView().disableRatingSubmitButton();
+        }
+    }
+
+    @Override
+    public void actionSubmitRatingAndDriverTip() {
         getView().showGetReceiptLoading();
         getView().hideReceiptLayout();
         giveDriverRatingUseCase.execute(getView().getRatingParam(), new Subscriber<String>() {
@@ -119,7 +150,55 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideGetReceiptLoading();
-                    getView().showRatingErrorLayout();
+                    getView().showReceiptLayout();
+
+                    String message = e.getMessage();
+                    if (e instanceof UnknownHostException || e instanceof ConnectException || e instanceof SocketTimeoutException) {
+                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                    }
+
+                    getView().showErrorInRating(message);
+                }
+            }
+
+            @Override
+            public void onNext(String s) {
+                if (isViewAttached()) {
+                    if (getView().getTipAmount() > 0) {
+                        sendTip(getView().getTipParam());
+                    } else {
+                        getView().showRatingResultLayout(Integer.parseInt(getView().getRateStars()));
+                        getView().hideGetReceiptLoading();
+                        getView().showReceiptLayout();
+                        getView().hideRatingLayout();
+                        getView().closePage();
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void sendTip(RequestParams tipParams) {
+        sendTipUseCase.execute(tipParams, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    getView().hideGetReceiptLoading();
+                    getView().showReceiptLayout();
+
+                    String message = e.getMessage();
+                    if (e instanceof UnknownHostException || e instanceof ConnectException || e instanceof SocketTimeoutException) {
+                        message = getView().getActivity().getResources().getString(R.string.error_internet_not_connected);
+                    }
+
+                    getView().showErrorInDriverTipping(message);
                 }
             }
 
@@ -132,6 +211,29 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                     getView().hideRatingLayout();
                     getView().closePage();
                 }
+            }
+        });
+    }
+
+    @Override
+    public void payPendingFare() {
+        getView().showProgressbar();
+        getPayPendingDataUseCase.execute(RequestParams.EMPTY, new Subscriber<PayPending>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgressbar();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(PayPending payPending) {
+                getView().hideProgressbar();
+                getView().openScroogePage(payPending.getUrl(), payPending.getPostData());
             }
         });
     }

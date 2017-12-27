@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -98,7 +99,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
 
     }
 
-    private View inflateFreeReturnView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected View inflateFreeReturnView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_onboarding_free_return, container, false);
         TextView d = (TextView) v.findViewById(R.id.description);
         ImageView i = (ImageView) v.findViewById(R.id.image);
@@ -115,7 +116,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
         return v;
     }
 
-    private View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_onboarding_intro_ending_seller, container, false);
         TextView t = (TextView) v.findViewById(R.id.title);
         TextView subTitleTextView = (TextView) v.findViewById(R.id.sub_title);
@@ -137,6 +138,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
             @Override
             public void onClick(View v) {
                 Intent intent;
+                UnifyTracking.eventClickCreateShopOnBoardingSellerApp();
                 if (SessionHandler.isMsisdnVerified()) {
                     intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
                     intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
@@ -156,7 +158,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
         return v;
     }
 
-    private View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_onboarding_intro_seller, container, false);
         TextView t = (TextView) v.findViewById(R.id.title);
         TextView subTitleTextView = (TextView) v.findViewById(R.id.sub_title);

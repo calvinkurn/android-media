@@ -83,6 +83,9 @@ public class ReceiptEntity {
     @SerializedName("pending_payment")
     @Expose
     PendingPaymentEntity pendingPayment;
+    @SerializedName("tip_list")
+    @Expose
+    TipListEntity tipList;
 
     public ReceiptEntity() {
     }
@@ -149,5 +152,9 @@ public class ReceiptEntity {
 
     public PendingPaymentEntity getPendingPayment() {
         return pendingPayment;
+    }
+
+    public TipListEntity getTipList() {
+        return tipList;
     }
 }

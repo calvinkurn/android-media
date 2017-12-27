@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="LabelView">
+        <attr name="title" format="string" />
+        <attr name="title_text_size" format="dimension" />
+        <attr name="lv_title_color" format="color" />
+        <attr name="content" format="string" />
+        <attr name="content_color" format="color" />
+        <attr name="content_text_size" format="dimension"/>
+        <attr name="title_textStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="content_textStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="lv_font_size" format="dimension" />
+        <attr name="content_max_lines" format="integer" />
+        <attr name="switch_enable" format="boolean" />
+        <attr name="lv_min_title_width" format="dimension" />
+    </declare-styleable>
+
     <declare-styleable name="DatePickerLabelView">
         <attr name="date_picker_title" format="string"/>
         <attr name="date_picker_content" format="string"/>

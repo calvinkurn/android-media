@@ -1,5 +1,6 @@
 package com.tokopedia.core.util;
 
+import android.content.ActivityNotFoundException;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -15,7 +16,7 @@ import android.widget.TextView;
  */
 public class SelectableSpannedMovementMethod extends LinkMovementMethod {
     @Override
-    public boolean canSelectArbitrarily () {
+    public boolean canSelectArbitrarily() {
         return true;
     }
 
@@ -59,7 +60,11 @@ public class SelectableSpannedMovementMethod extends LinkMovementMethod {
 
             if (link.length != 0) {
                 if (action == MotionEvent.ACTION_UP) {
-                    link[0].onClick(widget);
+                    try {
+                        link[0].onClick(widget);
+                    } catch (ActivityNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 } else if (action == MotionEvent.ACTION_DOWN) {
                     Selection.setSelection(buffer,
                             buffer.getSpanStart(link[0]),

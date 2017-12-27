@@ -13,10 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.localytics.android.Localytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -34,7 +32,6 @@ import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
@@ -125,7 +122,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void shareProductInfo(@NonNull ShareData shareData) {
-        replaceFragment(ProductShareFragment.newInstance(shareData),
+        replaceFragment(ProductShareFragment.newInstance(shareData,false),
                 ProductShareFragment.class.getSimpleName());
     }
 
@@ -250,24 +247,12 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             } else {
                 presenter.checkUriLogin(uriData);
                 if (presenter.isLandingPageWebView(uriData)) {
-                    CommonUtils.dumper("GAv4 Escape HADES webview");
                     presenter.processDeepLinkAction(uriData);
                 } else {
-                    if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                        CommonUtils.dumper("GAv4 Entering HADES");
-                        showProgressService();
-                    } else {
-                        CommonUtils.dumper("GAv4 Escape HADES non webview");
-                        presenter.processDeepLinkAction(uriData);
-                    }
+                    presenter.processDeepLinkAction(uriData);
                 }
             }
 
-        } else {
-            if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-                CommonUtils.dumper("GAv4 Entering HADES null Uri");
-                showProgressService();
-            }
         }
     }
 
@@ -292,7 +277,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public void onResume() {
         super.onResume();
         isAllowFetchDepartmentView = true;
-        sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
@@ -301,17 +285,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         CommonUtils.dumper("FCM onNewIntent " + intent.getData());
         if (intent.getData() != null) {
             uriData = intent.getData();
-        }
-        sendNotifLocalyticsCallback(intent);
-    }
-
-    private void sendNotifLocalyticsCallback(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-                Localytics.onNewIntent(this, intent);
-            }
         }
     }
 

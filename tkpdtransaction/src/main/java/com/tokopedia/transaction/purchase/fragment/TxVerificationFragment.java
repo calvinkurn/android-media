@@ -34,6 +34,7 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.transaction.purchase.adapter.TxVerAdapter;
+import com.tokopedia.transaction.purchase.dialog.CancelTransactionDialog;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.listener.TxVerViewListener;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
@@ -233,6 +234,14 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     }
 
     @Override
+    public void showCancelTransactionDialog(String message, String paymentId) {
+        CancelTransactionDialog dialog = CancelTransactionDialog.showCancelTransactionDialog(
+                message, paymentId
+        );
+        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+    }
+
+    @Override
     public void showNoConnectionLoadMoreData(String message) {
         isLoading = false;
         lvTXVerification.removeFooterView(loadMoreView);
@@ -314,6 +323,11 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
                 }
                 break;
         }
+    }
+
+    @Override
+    public void showSnackbarWithMessage(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override
@@ -444,6 +458,11 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         dialog.show();
     }
 
+    @Override
+    public void actionCancelTransaction(TxVerData data) {
+        presenter.processCancelTransaction(getActivity(), data);
+    }
+
     @SuppressLint("InlinedApi")
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onActionCamera() {
@@ -492,6 +511,10 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void confirmCancelPayment(String paymentId) {
+        presenter.confirmCancelTransaction(getActivity(), paymentId);
     }
 
     @Override

@@ -58,6 +58,7 @@ public class PreviewProductImageDetail extends TActivity {
 
     public static final String FILELOC = "fileloc";
     public static final String IMG_POSITION = "img_pos";
+    private static final String IMAGE_DESC = "image_desc";
     private TouchViewPager vpImage;
     private Button tvDownload;
     private ImageView closeButton;
@@ -248,7 +249,7 @@ public class PreviewProductImageDetail extends TActivity {
                 new NotificationCompat.Builder(PreviewProductImageDetail.this);
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(com.tokopedia.core.R.string.download_in_process))
-                .setSmallIcon(com.tokopedia.core.R.drawable.ic_stat_notify)
+                .setSmallIcon(com.tokopedia.core.R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), com.tokopedia.core.R.drawable.ic_stat_notify))
                 .setAutoCancel(true)
         ;
@@ -367,4 +368,14 @@ public class PreviewProductImageDetail extends TActivity {
         PreviewProductImageDetailPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
+    public static Intent getCallingIntent(Context context, ArrayList<String> images,
+                                          ArrayList<String> imageDesc, int position) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
+        bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
+        bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
+        intent.putExtras(bundle);
+        return intent;
+    }
 }

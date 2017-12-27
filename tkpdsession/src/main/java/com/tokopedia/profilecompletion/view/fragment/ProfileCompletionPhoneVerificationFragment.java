@@ -31,9 +31,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -45,7 +42,6 @@ import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivi
 import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.profilecompletion.di.DaggerPhoneVerifComponent;
-import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
@@ -77,41 +73,13 @@ import static android.view.View.GONE;
 public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragment
         implements ProfileCompletionPhoneVerificationContract.View, IncomingSmsReceiver.ReceiveSMSListener {
 
-    private static final String TOKOCASH = "TokoCash";
     public static final String TAG = "verif";
-    private Unbinder unbinder;
-    private ProfileCompletionViewModel data;
-    private ProfileCompletionContract.View parentView;
-    private ProfileCompletionContract.Presenter parentPresenter;
-    private View instruction;
-
-    @Inject
-    ProfileCompletionPhoneVerificationPresenter presenter;
-
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
-    protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .activityModule(new ActivityModule(getActivity()))
-                .build();
-        DaggerPhoneVerifComponent daggerPhoneVerifComponent
-                = (DaggerPhoneVerifComponent) DaggerPhoneVerifComponent.builder()
-                .appComponent(daggerAppComponent)
-                .build();
-        daggerPhoneVerifComponent.inject(this);
-    }
-
     protected static final String FORMAT = "%02d";
+    protected static final long COUNTDOWN_INTERVAL_SECOND = 1000;
+    private static final String TOKOCASH = "TokoCash";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
     private static final int DEFAULT_COUNTDOWN_TIMER_SECOND = 90;
-    protected static final long COUNTDOWN_INTERVAL_SECOND = 1000;
-
     protected TextView verifyButton;
     protected TextView skipButton;
     protected TextView phoneNumberEditText;
@@ -122,11 +90,25 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     protected View inputOtpView;
     protected EditText otpEditText;
     protected TextView tokocashText;
-
     protected CountDownTimer countDownTimer;
     protected IncomingSmsReceiver smsReceiver;
     protected TkpdProgressDialog progressDialog;
     protected LocalCacheHandler cacheHandler;
+    @Inject
+    ProfileCompletionPhoneVerificationPresenter presenter;
+    private Unbinder unbinder;
+    private ProfileCompletionViewModel data;
+    private ProfileCompletionContract.View parentView;
+    private ProfileCompletionContract.Presenter parentPresenter;
+    private View instruction;
+
+    public ProfileCompletionPhoneVerificationFragment(ProfileCompletionContract.View view) {
+        this.parentView = view;
+    }
+
+    public ProfileCompletionPhoneVerificationFragment() {
+
+    }
 
     public static ProfileCompletionPhoneVerificationFragment createInstance
             (ProfileCompletionContract.View view) {
@@ -134,8 +116,18 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
                 ProfileCompletionPhoneVerificationFragment(view);
     }
 
-    public ProfileCompletionPhoneVerificationFragment(ProfileCompletionContract.View view) {
-        this.parentView = view;
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerPhoneVerifComponent daggerPhoneVerifComponent
+                = (DaggerPhoneVerifComponent) DaggerPhoneVerifComponent.builder()
+                .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
+                .build();
+        daggerPhoneVerifComponent.inject(this);
     }
 
     @Nullable
@@ -149,10 +141,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         setViewListener();
         presenter.attachView(this);
         return parentView;
-    }
-
-    public ProfileCompletionPhoneVerificationFragment() {
-
     }
 
     protected void findView(View view) {
@@ -238,7 +226,16 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         parentView.canProceed(false);
 
         skipButton = (TextView) parentView.getView().findViewById(R.id.skip);
-        phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(data.getPhone()));
+
+        if(data.getPhone() != null) {
+            phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(data.getPhone()));
+        } else {
+            SnackbarManager.make(getActivity(),
+                    getString(R.string.please_fill_phone_number),
+                    Snackbar.LENGTH_LONG)
+                    .show();
+        }
+
 
         KeyboardHandler.DropKeyboard(getActivity(), getView());
 

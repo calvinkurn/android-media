@@ -57,7 +57,8 @@ public class ImageBlogViewHolder extends AbstractViewHolder<BlogViewModel> {
                         viewModel.getUrl(),
                         viewModel.getTitle(),
                         viewModel.getImageUrl(),
-                        viewModel.getContent());
+                        viewModel.getContent(),
+                        viewModel.getPage() + "." + viewModel.getRowNumber());
             }
         });
     }

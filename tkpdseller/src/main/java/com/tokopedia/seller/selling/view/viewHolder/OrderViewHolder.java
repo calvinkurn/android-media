@@ -23,7 +23,6 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
     TextView deadline;
     View deadlineView;
     TextView invoice;
-    TextView totalTransaksi;
     View mainView;
     TextView vOrderDate;
     TextView buyerRequestCancel;
@@ -36,7 +35,6 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
         deadline = (TextView) itemView.findViewById(R.id.deadline);
         deadlineView = itemView.findViewById(R.id.deadline_view);
         invoice = (TextView) itemView.findViewById(R.id.invoice);
-        totalTransaksi = (TextView) itemView.findViewById(R.id.bounty);
         mainView = itemView.findViewById(R.id.main_view);
         vOrderDate = (TextView) itemView.findViewById(R.id.order_date);
         buyerRequestCancel = (TextView) itemView.findViewById(R.id.buyer_request_cancel);
@@ -49,7 +47,6 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
         setDeadLine(model);
         invoice.setText(model.getOrderDetail().getDetailInvoice());
         vOrderDate.setText(model.getOrderDetail().getDetailOrderDate());
-        totalTransaksi.setText(model.getOrderPayment().getPaymentKomisi());
         ImageHandler.loadImageCircle2(context, userAvatar, model.getOrderCustomer().getCustomerImage());
         if(model.getOrderDetail().getDetailCancelRequest() != null && model.getOrderDetail().getDetailCancelRequest().getCancelRequest() == 1){
             buyerRequestCancel.setVisibility(View.VISIBLE);

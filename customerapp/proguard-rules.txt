@@ -304,5 +304,10 @@
 -keep class com.tkpdfeed.feeds.** { *; }
 # -- End of Feeds --
 
+# Fingerprint
+-keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
-
+-dontwarn android.content.pm.PackageManager
+-dontwarn com.crashlytics.android.answers.shim.**
+-dontwarn com.nimbusds.jwt.SignedJWT
+-dontwarn com.nimbusds.jwt.JWTClaimsSet

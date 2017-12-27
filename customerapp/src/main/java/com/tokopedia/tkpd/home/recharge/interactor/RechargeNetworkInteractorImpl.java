@@ -1,18 +1,13 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import android.util.Log;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
+import com.tokopedia.digital.widget.model.mapper.StatusMapper;
+import com.tokopedia.digital.widget.model.status.Status;
 
-import com.google.gson.Gson;
-import com.tokopedia.core.database.recharge.recentNumber.RecentData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
-import com.tokopedia.core.network.apiservices.recharge.RechargeService;
-import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import java.util.List;
 
-import java.util.Map;
-
-import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -21,139 +16,49 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author ricoharisin on 7/11/16.
  *         Modified by kulomady on 08/23/2016
+ *         Modified by Nabilla Sabbaha on 08/07/2017
+ *         Modified by rizkyfadillah at 10/6/17.
  */
 public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor {
-    private static final String TAG = RechargeNetworkInteractorImpl.class.getSimpleName();
 
     private CompositeSubscription compositeSubscription;
-    private RechargeService rechargeService;
-    private DigitalEndpointService digitalEndpointService;
+    private DigitalWidgetRepository repository;
+    private CategoryMapper categoryMapper;
+    private StatusMapper statusMapper;
 
-    public RechargeNetworkInteractorImpl() {
+    public RechargeNetworkInteractorImpl(DigitalWidgetRepository repository,
+                                         CategoryMapper categoryMapper,
+                                         StatusMapper statusMapper) {
         compositeSubscription = new CompositeSubscription();
-        rechargeService = new RechargeService();
-        digitalEndpointService = new DigitalEndpointService();
+        this.repository = repository;
+        this.categoryMapper = categoryMapper;
+        this.statusMapper = statusMapper;
     }
 
     @Override
-    public void getRecentNumbers(Map<String, String> params, final OnGetRecentNumbersListener listener) {
-//        compositeSubscription.add(rechargeService.getApi().getRecentNumbers(MapNulRemover.removeNull(params))
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.newThread())
-//                .subscribe(new Subscriber<Response<RecentData>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        listener.onNetworkError();
-//                    }
-//
-//                    @Override
-//                    public void onNext(Response<RecentData> recentNumberResponse) {
-//                        if (recentNumberResponse.isSuccessful()) {
-//                            listener.onGetRecentNumbersSuccess(recentNumberResponse.body());
-//                        } else {
-//                            listener.onNetworkError();
-//                        }
-//                    }
-//                }));
+    public void getCategoryData(Subscriber<List<Category>> subscriber) {
+        compositeSubscription.add(
+                repository.getObservableCategoryData()
+                        .map(categoryMapper)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber));
+    }
 
-        compositeSubscription.add(digitalEndpointService.getApi().getRecentNumber(MapNulRemover.removeNull(params))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Response<TkpdDigitalResponse>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        listener.onNetworkError();
-                    }
-
-                    @Override
-                    public void onNext(Response<TkpdDigitalResponse> recentNumberResponse) {
-                        if (recentNumberResponse.isSuccessful()) {
-                            RecentData recentData = new Gson().fromJson(
-                                    recentNumberResponse.body().getStrResponse(), RecentData.class
-                            );
-                            listener.onGetRecentNumbersSuccess(recentData);
-                        } else {
-                            listener.onNetworkError();
-                        }
-                    }
-                }));
+    public void getStatus(Subscriber<Status> subscriber) {
+        compositeSubscription.add(
+                repository.getObservableStatus()
+                        .map(statusMapper)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber));
     }
 
     @Override
-    public void getLastOrder(Map<String, String> params, final OnGetRecentOrderListener listener) {
-//        compositeSubscription.add(rechargeService.getApi().getLastOrder(MapNulRemover.removeNull(params))
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.newThread())
-//                .unsubscribeOn(Schedulers.newThread())
-//                .subscribe(new Subscriber<Response<LastOrder>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.e(TAG, "onError: " + e.getCause() + " message : " + e.getMessage());
-//                        e.printStackTrace();
-//                        listener.onNetworkError();
-//                    }
-//
-//                    @Override
-//                    public void onNext(Response<LastOrder> recentNumberResponse) {
-//                        if (recentNumberResponse.isSuccessful()) {
-//                            listener.onGetLastOrderSuccess(recentNumberResponse.body());
-//                        } else {
-//                            listener.onNetworkError();
-//                        }
-//                    }
-//                }));
-
-        compositeSubscription.add(digitalEndpointService.getApi()
-                .getLastOrder(MapNulRemover.removeNull(params))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Response<TkpdDigitalResponse>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError: " + e.getCause() + " message : " + e.getMessage());
-                        e.printStackTrace();
-                        listener.onNetworkError();
-                    }
-
-                    @Override
-                    public void onNext(Response<TkpdDigitalResponse> recentNumberResponse) {
-                        if (recentNumberResponse.isSuccessful()) {
-                            LastOrder lastOrder = new Gson().fromJson(
-                                    recentNumberResponse.body().getStrResponse(), LastOrder.class
-                            );
-                            listener.onGetLastOrderSuccess(lastOrder);
-                        } else {
-                            listener.onNetworkError();
-                        }
-                    }
-                }));
-    }
-
-    public void unsubscribe() {
-        compositeSubscription.unsubscribe();
+    public void onDestroy() {
+        if (compositeSubscription != null)
+            compositeSubscription.unsubscribe();
     }
 }

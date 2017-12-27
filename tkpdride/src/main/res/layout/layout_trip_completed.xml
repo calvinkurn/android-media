@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -28,7 +29,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-
                     android:paddingBottom="5dp"
                     android:paddingEnd="16dp"
                     android:paddingLeft="16dp"
@@ -65,9 +65,8 @@
                         android:paddingTop="20dp">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -96,19 +95,18 @@
                                 android:id="@+id/tv_driver_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:gravity="center"
                                 android:paddingTop="12dp"
-                                android:text="Jhon Doe"
                                 android:textColor="@color/black_400"
-                                android:textSize="14sp" />
+                                android:textSize="14sp"
+                                tools:text="John Doe" />
 
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="80dp"
-                            android:gravity="center"
+                            android:layout_marginLeft="20dp"
                             android:orientation="vertical">
 
                             <ImageView
@@ -134,8 +132,10 @@
                                 android:id="@+id/tv_vehicle_desc"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:paddingTop="12dp"
-                                android:text="Honda Brio"
+                                android:text="Toyota Prius"
                                 android:textColor="@color/black_400"
                                 android:textSize="14sp" />
                         </LinearLayout>
@@ -275,49 +275,16 @@
                         android:textSize="16sp"
                         android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/tv_label_cashback"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_label_discount"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center"
-                        android:text="@string/label_cashback"
-                        android:textColor="@color/grey_700"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/tv_cashback"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@id/tv_label_discount"
-                        android:paddingTop="8dp"
-                        android:text="-"
-                        android:textColor="@color/black_full"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
-                    <View
-                        android:id="@+id/fare_sep"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@id/tv_label_cashback"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/grey_200"
-                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/label_total_charged"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/fare_sep"
+                        android:layout_below="@id/tv_label_discount"
                         android:layout_marginTop="12dp"
                         android:drawablePadding="10dp"
                         android:gravity="center"
-                        android:text="@string/complete_trip_tokocash_charged"
+                        android:text="@string/complete_trip_amount_charged"
                         android:textColor="@color/grey_700"
                         android:textSize="12sp" />
 
@@ -326,11 +293,35 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@id/fare_sep"
+                        android:layout_below="@id/tv_label_discount"
                         android:layout_marginTop="12dp"
                         android:text="-"
                         android:textColor="@color/black_full"
                         android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_label_cashback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/label_total_charged"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/label_cashback"
+                        android:textColor="@color/grey_700"
+                        android:textSize="12sp"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tv_cashback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/label_total_charged"
+                        android:paddingTop="8dp"
+                        android:text="-"
+                        android:textColor="@color/black_full"
+                        android:textSize="12sp"
+                        android:visibility="visible" />
 
                 </RelativeLayout>
 
@@ -340,7 +331,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="35dp"
                     android:layout_marginTop="20dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <include
                         layout="@layout/layout_rate_trip"

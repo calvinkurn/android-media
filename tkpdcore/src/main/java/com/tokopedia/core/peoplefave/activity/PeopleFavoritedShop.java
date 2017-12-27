@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.peoplefave.listener.PeopleFavoritedShopView;
@@ -34,7 +33,6 @@ public class PeopleFavoritedShop extends BasePresenterActivity<PeopleFavoritedSh
 	@Override
 	protected void onResume() {
 		super.onResume();
-		UnifyTracking.eventViewFavStore();
 	}
 
 	@Override
@@ -91,5 +89,10 @@ public class PeopleFavoritedShop extends BasePresenterActivity<PeopleFavoritedSh
 					.commit();
 		}
 
+	}
+
+	@Override
+	protected boolean isLightToolbarThemes() {
+		return true;
 	}
 }

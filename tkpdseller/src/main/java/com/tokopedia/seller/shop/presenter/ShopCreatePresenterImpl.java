@@ -427,7 +427,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
                     @Override
                     public void onError(Throwable e) {
-
+                        UnifyTracking.eventCreateShopFillBiodataError();
                     }
 
                     @Override
@@ -446,7 +446,10 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                             return;
                         }
                         if (verifyData()) {
+                            UnifyTracking.eventCreateShopFillBiodata();
                             view.startOpenShopEditShippingActivity();
+                        }else{
+                            UnifyTracking.eventCreateShopFillBiodataError();
                         }
                     }
                 }));
@@ -495,6 +498,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
             case ShopEditServiceConstant.STATUS_RUNNING:
                 switch (type) {
                     case ShopEditServiceConstant.CREATE_SHOP:
+                        UnifyTracking.eventCreateShopFillLogistic();
                         view.showProgress(true);
                         break;
                     case ShopEditServiceConstant.CREATE_SHOP_WITHOUT_IMAGE:
@@ -503,6 +507,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                 break;
             case ShopEditService.STATUS_FINISHED:
                 UnifyTracking.eventCreateShopSuccess();
+                UnifyTracking.eventCreateShopFillLogistic();
                 switch (type) {
                     case ShopEditService.CREATE_SHOP:
                         view.showProgress(false);
@@ -517,6 +522,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                 break;
             case ShopEditService.STATUS_ERROR:
                 String errorMessage = resultData.getString(ShopEditServiceConstant.MESSAGE_ERROR_FLAG);
+                UnifyTracking.eventCreateShopFillLogisticError();
                 switch (type) {
                     case ShopEditService.CREATE_SHOP:
                         shopCreateParams.setShopImgAvatarSrc(resultData.getString(PIC_SRC));

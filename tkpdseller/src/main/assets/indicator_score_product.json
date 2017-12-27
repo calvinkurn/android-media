@@ -176,7 +176,7 @@
               },
               {
                 "min": 1,
-                "score": 15
+                "score": 12
               }
             ]
           }
@@ -207,6 +207,66 @@
               {
                 "min": 1,
                 "score": 5
+              }
+            ]
+          }
+        ],
+        "color_indicator": [
+          {
+            "min": 0,
+            "color": "low-score"
+          },
+          {
+            "min": 51,
+            "color": "high-score"
+          }
+        ]
+      },
+      {
+        "indicator_id": 6,
+        "name_indicator": "Varian Produk",
+        "value_indicator": [
+          {
+            "indicator_type": "use",
+            "indicator_desc": "Tambahkan Varian produk agar calon pembeli Anda lebih mudah mengetahui pilihan varian yang tersedia dari produk ini.\n*Fitur varian belum didukung pada kategori tertentu.",
+            "indicator_scoring": [
+              {
+                "min": 0,
+                "score": 0
+              },
+              {
+                "min": 1,
+                "score": 15
+              }
+            ]
+          }
+        ],
+        "color_indicator": [
+          {
+            "min": 0,
+            "color": "low-score"
+          },
+          {
+            "min": 51,
+            "color": "high-score"
+          }
+        ]
+      },
+      {
+        "indicator_id": 7,
+        "name_indicator": "Video Produk",
+        "value_indicator": [
+          {
+            "indicator_type": "use",
+            "indicator_desc": "Tambahkan video tentang produk Anda, maksimal hingga 3 video. Buat produk Anda semakin menarik dan lebih meyakinkan.",
+            "indicator_scoring": [
+              {
+                "min": 0,
+                "score": 0
+              },
+              {
+                "min": 1,
+                "score": 3
               }
             ]
           }

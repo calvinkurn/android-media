@@ -1,5 +1,6 @@
 package com.tokopedia.core.home;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -42,10 +43,24 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
             result += promoId;
         }
         result += FLAG_APP;
+        bundle.putString(BannerWebView.EXTRA_URL, result);
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, BannerWebView.class)
                 .setData(uri.build())
                 .putExtra(BannerWebView.EXTRA_URL, result);
+    }
+
+    public static Intent getCallingIntent(Activity activity, String url) {
+        Intent intent = new Intent(activity, BannerWebView.class);
+        intent.putExtra(EXTRA_URL, url);
+        return intent;
+    }
+
+    public static Intent getCallingIntentWithTitle(Activity activity, String url, String title) {
+        Intent intent = new Intent(activity, BannerWebView.class);
+        intent.putExtra(EXTRA_URL, url);
+        intent.putExtra(EXTRA_TITLE, title);
+        return intent;
     }
 
     @Override
@@ -57,7 +72,6 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_webview_container);
-
         String url = getIntent().getExtras().getString(EXTRA_URL);
         fragment = FragmentBannerWebView.createInstance(url);
         if (savedInstanceState == null) {
@@ -104,5 +118,10 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
         } catch (Exception e) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

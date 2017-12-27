@@ -1,16 +1,21 @@
 package com.tokopedia.ride.common.ride.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
+import com.tokopedia.ride.common.ride.domain.model.PayPending;
+import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.model.Receipt;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.domain.model.RideHistoryWrapper;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimePriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
-import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.domain.model.UpdateDestination;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 
 import java.util.List;
@@ -61,4 +66,20 @@ public interface BookingRideRepository {
     Observable<List<TimePriceEstimate>> getTimePriceEstimate(TKPDMapParam<String, Object> parameters);
 
     Observable<List<PriceEstimate>> getPriceEstimate(TKPDMapParam<String, Object> parameters);
+
+    Observable<UpdateDestination> updateRequest(TKPDMapParam<String, Object> parameters);
+
+    Observable<String> sendTip(TKPDMapParam<String, Object> parameters);
+
+    Observable<PaymentMethodList> getPaymentMethodList(TKPDMapParam<String, Object> parameters);
+
+    Observable<NearbyRides> getNearbyCars(TKPDMapParam<String, Object> parameters);
+
+    Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters);
+
+    Observable<PaymentMethodList> getPaymentMethodListFromCache();
+
+    Observable<PayPending> payPendingAmount();
+
+    Observable<GetPending> getPendingAmount();
 }

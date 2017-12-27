@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -131,8 +130,8 @@ public class Utilities {
         if (networkInfo != null) {
             if (networkInfo.isConnected()) {
                 if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                    final WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+                    WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    WifiInfo connectionInfo = wifiManager.getConnectionInfo();
                     if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.getSSID())) {
                         ssid = connectionInfo.getSSID();
                     }
@@ -152,7 +151,11 @@ public class Utilities {
         Calendar mCalendar = new GregorianCalendar();
         TimeZone mTimeZone = mCalendar.getTimeZone();
         int mGMTOffset = mTimeZone.getRawOffset();
-        return "GMT+"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+        long offset = TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+        if(offset<0)
+            return "GMT"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+        else
+            return "GMT+"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
     }
 
     public static String toBase64(String text, int mode) throws UnsupportedEncodingException {

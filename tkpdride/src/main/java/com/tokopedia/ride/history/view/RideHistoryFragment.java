@@ -25,6 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.model.Paging;
 import com.tokopedia.ride.bookingride.view.adapter.EndlessRecyclerViewScrollListener;
@@ -131,6 +132,7 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     @Override
     public void onHistoryClicked(RideHistoryViewModel viewModel) {
+        RideGATracking.eventClickReceipt(getScreenName(), viewModel.getRequestTime(), viewModel.getTotalFare(), viewModel.getStatus());//16
         mOnFragmentInteractionListener.actionNavigateToDetail(viewModel);
     }
 
@@ -274,6 +276,10 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
                 presenter.actionRefreshHistoriesData();
             }
         };
+    }
+
+    public void actionRefreshHistoriesData() {
+        presenter.actionRefreshHistoriesData();
     }
 
     public interface OnFragmentInteractionListener {

@@ -29,19 +29,19 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.utils.KMNumbers;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
+import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
+import com.tokopedia.seller.common.williamchart.config.GrossGraphChartConfig;
+import com.tokopedia.seller.common.williamchart.config.GrossGraphDataSetConfig;
 import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.common.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.common.williamchart.tooltip.Tooltip;
 import com.tokopedia.seller.common.williamchart.util.DataSetConfiguration;
 import com.tokopedia.seller.common.williamchart.util.DefaultTooltipConfiguration;
+import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
 import com.tokopedia.seller.common.williamchart.util.TooltipConfiguration;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.utils.BaseWilliamChartModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticUtil;
-import com.tokopedia.seller.goldmerchant.statistic.utils.KMNumbers;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphChartConfig;
-import com.tokopedia.seller.goldmerchant.statistic.view.widget.config.GrossGraphDataSetConfig;
 
 import java.util.List;
 
@@ -189,6 +189,6 @@ public class Tools {
 
     @LayoutRes
     private static int getTooltipResLayout() {
-        return R.layout.gm_stat_tooltip;
+        return R.layout.item_tooltip;
     }
 }

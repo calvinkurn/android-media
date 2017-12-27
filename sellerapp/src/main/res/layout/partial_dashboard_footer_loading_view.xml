@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/bg_line_separator"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small_sm"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/margin_ms">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/image_width_xs"
+            android:layout_height="@dimen/image_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
+            app:use_gradient="true" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_l"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+
+    </LinearLayout>
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+    </com.tokopedia.seller.common.widget.LabelView>
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+    </com.tokopedia.seller.common.widget.LabelView>
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+    </com.tokopedia.seller.common.widget.LabelView>
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+    </com.tokopedia.seller.common.widget.LabelView>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small_sm"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/margin_ms">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/image_width_xs"
+            android:layout_height="@dimen/image_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
+            app:use_gradient="true" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_l"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+
+    </LinearLayout>
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+    </com.tokopedia.seller.common.widget.LabelView>
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+    </com.tokopedia.seller.common.widget.LabelView>
+
+    <com.tokopedia.seller.common.widget.LabelView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/font_loading_width_xxl"
+            android:layout_height="@dimen/font_loading_width_xs"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
+            app:use_gradient="true" />
+    </com.tokopedia.seller.common.widget.LabelView>
+
+
+</LinearLayout>

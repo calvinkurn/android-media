@@ -1,9 +1,12 @@
 package com.tokopedia.seller.reputation.view.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.image.ImageHandler;
@@ -12,7 +15,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.reputation.view.listener.SellerReputationInterface;
-import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
 
 /**
  * @author normansyahputa on 3/30/16.
@@ -20,13 +22,12 @@ import com.tokopedia.seller.topads.dashboard.utils.ViewUtils;
 public class SellerReputationActivity extends BaseActivity implements SellerReputationInterface {
 
     ImageHandler imageHandler;
-    private AppComponent component;
     private boolean isFirstTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewUtils.setTranslucentStatusBar(getWindow());
+        setTranslucentStatusBar(getWindow());
         inject();
         setContentView(R.layout.activity_seller_repuation);
 
@@ -36,6 +37,22 @@ public class SellerReputationActivity extends BaseActivity implements SellerRepu
         } else {
             fetchSaveInstanceState(savedInstanceState);
         }
+    }
+
+    public void setTranslucentStatusBar(Window window) {
+        if (window == null) return;
+        int sdkInt = Build.VERSION.SDK_INT;
+        if (sdkInt >= Build.VERSION_CODES.LOLLIPOP) {
+            setTranslucentStatusBarLollipop(window);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setTranslucentStatusBarLollipop(Window window) {
+        window.setStatusBarColor(
+                window.getContext()
+                        .getResources()
+                        .getColor(R.color.green_600));
     }
 
     private void fetchSaveInstanceState(Bundle savedInstanceState) {
@@ -65,7 +82,7 @@ public class SellerReputationActivity extends BaseActivity implements SellerRepu
     }
 
     private void inflateNewFragment(@IdRes int containerId, Fragment fragment, String TAG) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(containerId, fragment, TAG);
         fragmentTransaction.commit();
     }

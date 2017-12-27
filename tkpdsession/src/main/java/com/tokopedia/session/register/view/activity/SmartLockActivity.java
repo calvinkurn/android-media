@@ -125,36 +125,41 @@ public class SmartLockActivity extends AppCompatActivity implements
                 .setAccountTypes(TOKOPEDIA_PROVIDER)
                 .setPasswordLoginSupported(true)
                 .build();
-
-        Auth.CredentialsApi.request(mGoogleApiClient, request).setResultCallback(
-                new ResultCallback<CredentialRequestResult>() {
-                    @Override
-                    public void onResult(CredentialRequestResult credentialRequestResult) {
-                        mIsRequesting = false;
-                        Status status = credentialRequestResult.getStatus();
-                        if (credentialRequestResult.getStatus().isSuccess()) {
-                            // Successfully read the credential without any user interaction, this
-                            // means there was only a single credential and the user has auto
-                            // sign-in enabled.
-                            Credential credential = credentialRequestResult.getCredential();
-                            processRetrievedCredential(credential);
-                        } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                            // This is most likely the case where the user has multiple saved
-                            // credentials and needs to pick one.
-                            resolveResult(status, RC_READ);
-                        } else if (status.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED) {
-                            // This is most likely the case where the user does not currently
-                            // have any saved credentials and thus needs to provide a username
-                            // and password xto sign in.
-                            Log.d(TAG, "Sign in required");
-                            goToContent();
-                        } else {
-                            Log.w(TAG, "Unrecognized status code: " + status.getStatusCode());
-                            goToContent();
+        if (mGoogleApiClient.isConnected()) {
+            Auth.CredentialsApi.request(mGoogleApiClient, request).setResultCallback(
+                    new ResultCallback<CredentialRequestResult>() {
+                        @Override
+                        public void onResult(CredentialRequestResult credentialRequestResult) {
+                            mIsRequesting = false;
+                            Status status = credentialRequestResult.getStatus();
+                            if (credentialRequestResult.getStatus().isSuccess()) {
+                                // Successfully read the credential without any user interaction, this
+                                // means there was only a single credential and the user has auto
+                                // sign-in enabled.
+                                Credential credential = credentialRequestResult.getCredential();
+                                processRetrievedCredential(credential);
+                            } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+                                // This is most likely the case where the user has multiple saved
+                                // credentials and needs to pick one.
+                                resolveResult(status, RC_READ);
+                            } else if (status.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED) {
+                                // This is most likely the case where the user does not currently
+                                // have any saved credentials and thus needs to provide a username
+                                // and password xto sign in.
+                                Log.d(TAG, "Sign in required");
+                                goToContent();
+                            } else {
+                                Log.w(TAG, "Unrecognized status code: " + status.getStatusCode());
+                                goToContent();
+                            }
                         }
                     }
-                }
-        );
+            );
+        } else {
+            mIsRequesting = false;
+            Log.d(TAG, "Google Api Client is not connected yet");
+            goToContent();
+        }
     }
 
     private void processRetrievedCredential(Credential credential) {
@@ -163,7 +168,9 @@ public class SmartLockActivity extends AppCompatActivity implements
             bundle.putString(SmartLockActivity.USERNAME, credential.getId());
             bundle.putString(SmartLockActivity.PASSWORD, credential.getPassword());
             setResult(RESULT_OK, new Intent().putExtras(bundle));
-            Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+            if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
+                Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+            }
             finish();
         } else {
             // This is likely due to the credential being changed outside of

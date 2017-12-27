@@ -7,8 +7,6 @@ import com.tokopedia.ride.common.ride.domain.model.PriceDetail;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.utils.RideUtils;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -49,7 +47,8 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
             rideProductViewModel.setCancellationFee(getCancellationCharges(product.getProduct().getPriceDetail()));
-            rideProductViewModel.setProductPriceFmt(getPricePerDistance(product.getProduct().getPriceDetail()));
+            rideProductViewModel.setProductPriceFmt(null);
+            rideProductViewModel.setDestinationSelected(false);
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
         }
         return rideProductViewModel;
@@ -141,6 +140,7 @@ public class RideProductViewModelMapper {
         RideProductViewModel rideProductViewModel = null;
         for (ProductEstimate productEstimate : productEstimateList) {
             rideProductViewModel = transformProductEstimate(productEstimate);
+            rideProductViewModel.setDestinationSelected(true);
             for (PriceEstimate priceEstimate : timePriceEstimates) {
                 if (productEstimate.getProduct().getProductId().equalsIgnoreCase(priceEstimate.getProductId())) {
                     rideProductViewModel = transformWithPriceEstimate(rideProductViewModel, priceEstimate);
@@ -169,7 +169,8 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
             rideProductViewModel.setCancellationFee(getCancellationCharges(product.getProduct().getPriceDetail()));
             rideProductViewModel.setEnabled(false);
-            rideProductViewModel.setProductPriceFmt(DEFAULT_DOUBLE_DASH);
+            rideProductViewModel.setProductPriceFmt(null);
+            rideProductViewModel.setDestinationSelected(false);
         }
         return rideProductViewModel;
     }
