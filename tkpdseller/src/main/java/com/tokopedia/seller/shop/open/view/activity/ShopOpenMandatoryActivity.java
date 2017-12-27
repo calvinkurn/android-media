@@ -11,8 +11,6 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
@@ -33,8 +31,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     private ShopOpenDomainComponent component;
 
     public static Intent getIntent(Context context) {
-        Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
-        return intent;
+        return new Intent(context, ShopOpenMandatoryActivity.class);
     }
 
     public static Intent getIntent(Context context, String shopName, String shopDomain) {
@@ -77,8 +74,8 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-            fragmentList.add(new ShopOpenMandatoryInfoFragment());
-            fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
+//            fragmentList.add(new ShopOpenMandatoryInfoFragment());
+//            fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
             fragmentList.add(new ShopOpenMandatoryLogisticFragment());
             return fragmentList;
         } else {

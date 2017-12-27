@@ -67,7 +67,7 @@ public abstract class BaseStepperActivity<T extends StepperModel> extends BaseTo
 
     @Override
     public void goToNextPage(T stepperModel) {
-        if (stepperModel!= null) {
+        if (stepperModel != null) {
             this.stepperModel = stepperModel;
         }
         currentPosition++;
@@ -80,9 +80,13 @@ public abstract class BaseStepperActivity<T extends StepperModel> extends BaseTo
     }
 
     private void goToPosition(int position) {
-        progressStepper.setProgress(position);
-        updateToolbarTitle(position);
-        setupFragment(null);
+        if (position > getListFragment().size()) {
+            finishPage();
+        } else {
+            progressStepper.setProgress(position);
+            updateToolbarTitle(position);
+            setupFragment(null);
+        }
     }
 
     @Override
