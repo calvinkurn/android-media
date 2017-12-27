@@ -236,7 +236,7 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
            // EventCategoryView eventCategoryView = new EventCategoryView(this);
             //eventCategoryView.renderData(categoryViewModel.getItems(), categoryViewModel.getTitle());
             if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
-                adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()));
+                adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()), categoryViewModel.getItems());
                 setViewPagerListener();
                 tabLayout.setViewPager(viewPager);
             } else {
