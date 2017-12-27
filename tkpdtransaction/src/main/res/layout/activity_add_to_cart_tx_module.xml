@@ -283,6 +283,17 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/tv_send_to_pick_up_booth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:drawableEnd="@drawable/ic_chevron_right"
+                        android:drawableRight="@drawable/ic_chevron_right"
+                        android:gravity="center_vertical"
+                        android:text="@string/label_send_to_pick_up_booth"
+                        android:textColor="@color/tkpd_main_green" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -32,7 +32,7 @@ public class PickupPointEntityMapper {
             data.setPage(entity.getPage());
             data.setNextPage(entity.isNextPage());
             data.setPrevPage(entity.isPrevPage());
-            List<Store> stores = new ArrayList<>();
+            ArrayList<Store> stores = new ArrayList<>();
             for (StoreEntity storeEntity : entity.getStoreEntities()) {
                 stores.add(transform(storeEntity));
             }

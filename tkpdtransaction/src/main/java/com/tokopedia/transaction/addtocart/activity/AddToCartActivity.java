@@ -66,9 +66,11 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
+import com.tokopedia.transaction.pickup.alfamart.view.PickupPointsActivity;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -174,6 +176,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     TextView descMaxHour;
     @BindView(R2.id.img_insurance_info)
     ImageView imgInsuranceInfo;
+    @BindView(R2.id.tv_send_to_pick_up_booth)
+    TextView tvSendToPickUpBooth;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -822,6 +826,11 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 .build());
 
         bottomSheetView.show();
+    }
+
+    @OnClick(R2.id.tv_send_to_pick_up_booth)
+    void sendToPickUpBooth() {
+        startActivityForResult(PickupPointsActivity.createInstance(this, presenter.getPickupPointParams()), 0);
     }
 
     private OrderData createFinalOrderData() {

@@ -28,6 +28,7 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.var.TkpdState;
@@ -63,7 +64,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
     private static final String GOJEK_ID = "10";
-    private int minimumNoInsuranceCount = 0;
+    private AtcFormData atcFormData;
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
@@ -82,6 +83,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 new AddToCartNetInteractor.OnGetCartFormListener() {
                     @Override
                     public void onSuccess(AtcFormData data) {
+                        AddToCartPresenterImpl.this.atcFormData = data;
                         viewListener.hideNetworkError();
                         viewListener.initialOrderData(data);
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
@@ -583,6 +585,19 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     public String calculateWeight(String initialWeight, String quantity) {
         return String.valueOf(CommonUtils.round((Double.parseDouble(initialWeight) *
                 Double.parseDouble(quantity)), 4));
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getPickupPointParams() {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("district_id", "");
+        params.put("page", "");
+        params.put("query", "");
+        params.put("zipcode", "");
+        params.put("token", atcFormData.getShop().getToken());
+        params.put("ut", String.valueOf(atcFormData.getShop().getUt()));
+
+        return params;
     }
 
 }

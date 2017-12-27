@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
@@ -67,4 +68,6 @@ public interface AddToCartPresenter {
     boolean isAllowKeroAccess(AtcFormData data);
 
     String calculateWeight(String initWeight, String quantity);
+
+    TKPDMapParam<String, String> getPickupPointParams();
 }
