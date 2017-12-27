@@ -102,7 +102,7 @@ public class NOTPExotelVerification {
             e.printStackTrace();
         }
         try {
-            eVerification.startVerification(new VerifyListener(), "+919910166288",WAIT_SECONDS);
+            eVerification.startVerification(new VerifyListener(), phoneNo,WAIT_SECONDS);
         } catch (VerificationAlreadyInProgressException e) {
             e.printStackTrace();
         }
