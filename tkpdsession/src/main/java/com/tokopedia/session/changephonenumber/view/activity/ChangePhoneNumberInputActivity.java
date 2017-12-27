@@ -6,14 +6,20 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberInputComponent;
+import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberInputComponent;
+import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberInputModule;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputActivityListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 
 import java.util.ArrayList;
 
-public class ChangePhoneNumberInputActivity extends BasePresenterActivity implements ChangePhoneNumberInputActivityListener.View {
+public class ChangePhoneNumberInputActivity extends BasePresenterActivity
+        implements ChangePhoneNumberInputActivityListener.View, HasComponent {
     public static final String PARAM_WARNING_LIST = "warning_list";
 
     private ArrayList<WarningItemViewModel> warningList;
@@ -89,5 +95,11 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity implem
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

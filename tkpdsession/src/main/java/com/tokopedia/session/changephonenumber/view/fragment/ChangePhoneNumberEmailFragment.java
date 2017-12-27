@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 
 import butterknife.ButterKnife;
@@ -17,7 +18,7 @@ import butterknife.Unbinder;
  * Created by milhamj on 20/12/17.
  */
 
-public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implements ChangePhoneNumberInputFragmentListener.View {
+public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implements ChangePhoneNumberEmailFragmentListener.View {
 
     private Unbinder unbinder;
 

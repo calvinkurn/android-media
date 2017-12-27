@@ -1,5 +1,7 @@
 package com.tokopedia.session.changephonenumber.view.listener;
 
+import android.text.Editable;
+
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 
@@ -9,10 +11,14 @@ import com.tokopedia.core.base.presentation.CustomerView;
 
 public interface ChangePhoneNumberInputFragmentListener {
     public interface View extends CustomerView {
+        void enableNextButton();
 
+        void disableNextButton();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
         void initView();
+
+        void onNewNumberTextChanged(Editable editable);
     }
 }

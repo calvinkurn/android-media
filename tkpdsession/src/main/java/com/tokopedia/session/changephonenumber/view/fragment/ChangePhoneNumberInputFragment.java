@@ -2,6 +2,9 @@ package com.tokopedia.session.changephonenumber.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,13 +14,21 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberInputComponent;
+import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberInputComponent;
+import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberInputModule;
 import com.tokopedia.session.changephonenumber.view.customview.BottomSheetInfo;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningItemViewModel;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -36,6 +47,9 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private ArrayList<WarningItemViewModel> warningList;
     private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
+
+    @Inject
+    ChangePhoneNumberInputFragmentListener.Presenter presenter;
 
     public static ChangePhoneNumberInputFragment newInstance(ArrayList<WarningItemViewModel> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
@@ -62,7 +76,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
             }
         }
 
-        //TODO presenter.attachView(this);
+        presenter.attachView(this);
         return parentView;
     }
 
@@ -73,10 +87,28 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     private void setViewListener() {
+        newPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.onNewNumberTextChanged(editable);
+            }
+        });
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //TODO do something here
+                Log.d("milhamj", "Halooooo");
             }
         });
     }
@@ -116,6 +148,28 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
     @Override
     protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        ChangePhoneNumberInputComponent resolutionDetailComponent =
+                DaggerChangePhoneNumberInputComponent.builder()
+                        .appComponent(appComponent)
+                        .changePhoneNumberInputModule(new ChangePhoneNumberInputModule(this))
+                        .build();
+        resolutionDetailComponent.inject(this);
+    }
 
+    @Override
+    public void enableNextButton() {
+        nextButton.setClickable(true);
+        nextButton.setEnabled(true);
+        nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.green_button_rounded_unify));
+        nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
+    }
+
+    @Override
+    public void disableNextButton() {
+        nextButton.setClickable(false);
+        nextButton.setEnabled(false);
+        nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.grey_button_rounded));
+        nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.black_12));
     }
 }
