@@ -19,7 +19,6 @@ import com.tokopedia.flight.R;
 
 public class CardWithActionView extends BaseCustomView {
 
-    private AppCompatTextView titleAppCompatTextView;
     private AppCompatTextView contentInfoAppCompatTextView;
     private AppCompatTextView contentAppCompatTextView;
     private AppCompatTextView subContentAppCompatTextView;
@@ -53,15 +52,11 @@ public class CardWithActionView extends BaseCustomView {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.CardWithActionView);
         try {
-            String title = styledAttributes.getString(R.styleable.CardWithActionView_cmv_title);
             String content = styledAttributes.getString(R.styleable.CardWithActionView_cmv_content);
             String contentInfo = styledAttributes.getString(R.styleable.CardWithActionView_cmv_content_info);
             String subContent = styledAttributes.getString(R.styleable.CardWithActionView_cmw_subcontent);
             String subContentInfo = styledAttributes.getString(R.styleable.CardWithActionView_cmw_subcontent_info);
             String actionLabel = styledAttributes.getString(R.styleable.CardWithActionView_cmw_action);
-            if (!TextUtils.isEmpty(title)) {
-                titleAppCompatTextView.setText(String.valueOf(title));
-            }
             if (!TextUtils.isEmpty(content)) {
                 contentAppCompatTextView.setText(String.valueOf(content));
             }
@@ -85,7 +80,6 @@ public class CardWithActionView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_card_with_action, this);
-        titleAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_content_title);
         contentAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_content_message);
         contentInfoAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_content_info);
         subContentAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_subcontent_message);
@@ -109,10 +103,6 @@ public class CardWithActionView extends BaseCustomView {
 
     public void setActionListener(ActionListener listener) {
         actionListener = listener;
-    }
-
-    public void setTitle(String title) {
-        titleAppCompatTextView.setText(String.valueOf(title));
     }
 
     public void setContent(String content) {
