@@ -21,7 +21,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 
 public class FlightSearchActivity extends BaseFlightActivity
-        implements FlightSearchFragment.OnFlightSearchFragmentListener {
+        implements FlightSearchFragment.OnFlightSearchFragmentListener, FlightSearchV2Fragment.OnFlightSearchFragmentListener {
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_BOOKING = 10;
     private static final int REQUEST_CODE_RETURN = 11;

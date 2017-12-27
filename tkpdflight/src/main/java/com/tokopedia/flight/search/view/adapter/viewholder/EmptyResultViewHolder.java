@@ -19,7 +19,7 @@ import com.tokopedia.flight.search.view.model.EmptyResultViewModel;
 public class EmptyResultViewHolder extends AbstractViewHolder<EmptyResultViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_base_network_error;
+    public static final int LAYOUT = R.layout.item_empty_list;
     public ImageView emptyIconImageView;
     public TextView emptyTitleTextView;
     private TextView emptyContentTextView;
@@ -43,7 +43,7 @@ public class EmptyResultViewHolder extends AbstractViewHolder<EmptyResultViewMod
         emptyContentTextView = (TextView) itemView.findViewById(R.id.text_view_empty_content_text);
         emptyContentItemTextView = (TextView) itemView.findViewById(R.id.text_view_empty_content_item_text);
         emptyButtonItemButton = (Button) itemView.findViewById(R.id.button_add_promo);
-        emptyIconImageView = (ImageView) itemView.findViewById(R.id.image_error);
+        emptyIconImageView = (ImageView) itemView.findViewById(R.id.no_result_image);
     }
 
     @Override

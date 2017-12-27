@@ -229,6 +229,7 @@ public class FlightSearchPresenter2 extends BaseDaggerPresenter<FlightSearchView
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
             }
 
@@ -250,6 +251,7 @@ public class FlightSearchPresenter2 extends BaseDaggerPresenter<FlightSearchView
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 getView().hideSortRouteLoading();
                 getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
             }
@@ -272,6 +274,7 @@ public class FlightSearchPresenter2 extends BaseDaggerPresenter<FlightSearchView
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
             }
 

@@ -182,6 +182,7 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
     @Override
     protected BaseListAdapterV2<FlightSearchViewModel, FilterSearchAdapterTypeFactory> createAdapterInstance() {
         adapter = new FlightSearchV2Adapter(getAdapterTypeFactory());
+        adapter.setOnBaseFlightSearchAdapterListener(this);
         return adapter;
     }
 
@@ -244,6 +245,12 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
             needRefreshFromCache = false;
         }
         loadInitialData();
+    }
+
+    @Override
+    public void loadInitialData() {
+        super.loadInitialData();
+        setInitialActionVar();
     }
 
     @Override
@@ -416,11 +423,18 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
     }
 
     @Override
-    public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
+    public void showNoResultFlight() {
         hideLoading();
         addToolbarElevation();
         getAdapter().clearData();
-        getAdapter().addData(flightSearchViewModelList);
+
+    }
+
+    @Override
+    public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
+        hideLoading();
+        addToolbarElevation();
+        renderList(flightSearchViewModelList);
     }
 
     @Override

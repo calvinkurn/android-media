@@ -44,4 +44,6 @@ public interface FlightSearchView2 extends BaseListViewListener2<FlightSearchVie
     void addToolbarElevation();
 
     Activity getActivity();
+
+    void showNoResultFlight();
 }
