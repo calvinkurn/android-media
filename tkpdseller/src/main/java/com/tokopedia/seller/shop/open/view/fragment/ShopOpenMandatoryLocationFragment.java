@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.router.OnActivityResultListener;
 import com.tokopedia.core.router.logistic.LogisticRouter;
@@ -31,6 +32,8 @@ import com.tokopedia.seller.shop.setting.domain.interactor.ShopOpenSaveLocationU
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 
 /**
@@ -109,7 +112,35 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         root.findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                GoogleLocationViewModel googleLocationViewModel = locationMapViewHolder.getGoogleLocationViewModel();
 
+                RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
+                        googleLocationViewModel == null ? "" : googleLocationViewModel.getLongitude(),
+                        googleLocationViewModel == null ? "" : googleLocationViewModel.getLatitude(),
+                        "",
+                        locationShippingViewHolder.getLocationComplete(),
+                        locationShippingViewHolder.getDistrictName(),
+                        locationMapViewHolder.getManualAddress(),
+                        locationShippingViewHolder.getPostalCode(),
+                        locationShippingViewHolder.getDistrictId()
+                );
+
+                shopOpenSaveLocationUseCase.execute(requestParams, new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "berhasilkah ? -> "+e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.d(TAG, "berhasilkah ? -> "+aBoolean);
+                    }
+                });
             }
         });
     }
@@ -128,6 +159,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                             Log.d(TAG, rawData.toString());
                             if(rawData instanceof DestinationViewModel){
                                 DestinationViewModel address = (DestinationViewModel)rawData;
+                                locationShippingViewHolder.updateDistrictId(address.getDistrictId()+"");
                                 locationShippingViewHolder.updateLocationData(
                                         address.getProvinceName(),
                                         address.getCityName(),
@@ -135,6 +167,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                             }else if(rawData instanceof LocationViewModel){
                                 LocationViewModel locationViewModel = (LocationViewModel) rawData;
                                 locationShippingViewHolder.initializeZipCodes(locationViewModel.getZipCodes());
+                                locationShippingViewHolder.updateDistrictId(locationViewModel.getDistrictId()+"");
                                 locationShippingViewHolder.updateLocationData(
                                         locationViewModel.getProvinceName(),
                                         locationViewModel.getCityName(),

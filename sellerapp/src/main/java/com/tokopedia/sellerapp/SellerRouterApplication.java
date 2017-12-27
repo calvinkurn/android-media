@@ -860,7 +860,7 @@ public abstract class SellerRouterApplication extends MainApplication
                     break;
                 case REQUEST_CODE__EDIT_ADDRESS:
                     Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
-                    if (address != null) {
+                    if(address != null){
                         LocationViewModel locationViewModel = new LocationViewModel();
                         locationViewModel.setDistrictId(address.getDistrictId());
                         locationViewModel.setDistrictName(address.getDistrictName());
