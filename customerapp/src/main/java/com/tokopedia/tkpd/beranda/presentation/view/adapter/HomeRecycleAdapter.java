@@ -3,11 +3,14 @@ package com.tokopedia.tkpd.beranda.presentation.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tokopedia.core.base.adapter.BaseAdapter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
+import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+
 import java.util.List;
 
 /**
@@ -18,11 +21,13 @@ public class HomeRecycleAdapter extends BaseAdapter {
 
     protected HomeAdapterFactory typeFactory;
     private EmptyModel emptyModel;
+    private RetryModel retryModel;
 
     public HomeRecycleAdapter(HomeAdapterFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
         this.typeFactory = adapterTypeFactory;
         this.emptyModel = new EmptyModel();
+        this.retryModel = new RetryModel();
     }
 
     @Override
@@ -73,5 +78,17 @@ public class HomeRecycleAdapter extends BaseAdapter {
 
     public void removeEmpty() {
         this.visitables.remove(emptyModel);
+    }
+
+    public void showRetry(){
+        int positionStart = getItemCount();
+        this.visitables.add(retryModel);
+        notifyItemRangeInserted(positionStart, 1);
+    }
+
+    public void removeRetry(){
+        int index = this.visitables.indexOf(retryModel);
+        this.visitables.remove(retryModel);
+        notifyItemRemoved(index);
     }
 }

@@ -28,6 +28,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
@@ -122,6 +123,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private VerticalSpaceItemDecoration spaceItemDecoration;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private String firstCursor = "";
+    private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
+    private LinearLayoutManager layoutManager;
 
     public static HomeFragment newInstance() {
 
@@ -191,6 +194,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initTabNavigation();
         initAdapter();
         initRefreshLayout();
+        initListener();
         fetchRemoteConfig();
     }
 
@@ -233,8 +237,26 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.setOnRefreshListener(this);
     }
 
+    private void initListener() {
+        feedLoadMoreTriggerListener = new EndlessRecyclerviewListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (isAllowLoadMore()) {
+                    adapter.showLoading();
+                    presenter.fetchNextPageFeed();
+                }
+            }
+        };
+    }
+
+    private boolean isAllowLoadMore() {
+        return getUserVisibleHint()
+                && !adapter.isLoading()
+                && !refreshLayout.isRefreshing();
+    }
+
     private void initAdapter() {
-        LinearLayoutManager layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
+        layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
         adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
@@ -701,6 +723,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
         adapter.addItems(listFeed);
         adapter.notifyDataSetChanged();
+        recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
     }
 
     @Override
@@ -750,7 +773,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSuccessGetFeed(ArrayList<Visitable> visitables) {
-
+        adapter.hideLoading();
+        int posStart = adapter.getItemCount();
+        adapter.addItems(visitables);
+        adapter.notifyItemRangeInserted(posStart, visitables.size());
     }
 
     @Override
@@ -766,12 +792,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRetryClicked() {
-
+        adapter.removeRetry();
+        adapter.showLoading();
+        recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
+        presenter.fetchCurrentPageFeed();
     }
 
     @Override
     public void onShowRetryGetFeed() {
-
+        recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
+        adapter.hideLoading();
+        adapter.showRetry();
     }
 
     @Override
@@ -786,7 +817,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void hideTopAdsAdapterLoading() {
-
+        adapter.hideLoading();
     }
 
     @Override
@@ -819,7 +850,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void unsetEndlessScroll() {
-
+        recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
     }
 
     @Override
