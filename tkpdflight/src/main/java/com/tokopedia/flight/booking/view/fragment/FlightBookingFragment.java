@@ -344,15 +344,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         returnInfoView.setSubContent(airLineSection);
-        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
         returnInfoView.setSubContentInfo(tripInfo);
     }
 
     @Override
     public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + "-" + returnTrip.getArrivalAirportCity());
-        departureInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
+        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
+        departureInfoView.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.getDepartureDate()) + ")");
         String airLineSection = "";
         String tripInfo = "";
         if (returnTrip.getRouteList().size() > 1) {
@@ -363,7 +363,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         departureInfoView.setSubContent(airLineSection);
-        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 

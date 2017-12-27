@@ -5,7 +5,12 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_card_with_action_main"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_small">
+    android:paddingBottom="@dimen/padding_med"
+    android:paddingEnd="@dimen/padding_vs"
+    android:paddingLeft="@dimen/padding_med"
+    android:paddingRight="@dimen/padding_vs"
+    android:paddingStart="@dimen/padding_med"
+    android:paddingTop="@dimen/padding_med">
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -15,19 +20,10 @@
         android:paddingEnd="@dimen/padding_small"
         android:paddingRight="@dimen/padding_small">
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tv_content_title"
-            style="@style/TextView.Body1.BlackSecondary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_ms"
-            tools:text="Penerbangan Pergi" />
-
         <LinearLayout
             android:id="@+id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_content_title"
             android:orientation="horizontal">
 
 
@@ -36,7 +32,7 @@
                 style="@style/TextView.Subheading.BlackPrimary.Bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/font_body1"
+                android:textSize="@dimen/font_subheading"
                 tools:text="Jakarta - Surabaya" />
 
             <android.support.v7.widget.AppCompatTextView
@@ -79,6 +75,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/content_layout"
+            android:textSize="@dimen/font_caption"
             tools:text="Air Asia" />
     </RelativeLayout>
 
@@ -97,13 +94,13 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_action"
+            style="@style/TextView.Body1.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAllCaps="true"
-            android:textColor="@color/widget_card_with_action_text_color"
 
-            style="@style/TextView.Body1.Bold"
+            android:textColor="@color/widget_card_with_action_text_color"
             tools:text="Detail" />
     </RelativeLayout>
 </LinearLayout>

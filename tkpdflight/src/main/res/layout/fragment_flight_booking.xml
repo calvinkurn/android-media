@@ -80,7 +80,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:cmv_title="@string/flight_booking_departure_trip_card_title"
                     app:cmw_action="Detail"
                     tools:visibility="visible" />
 
@@ -89,7 +88,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:cmv_title="@string/flight_booking_return_trip_card_title"
                     app:cmw_action="Detail"
                     tools:visibility="gone" />
 
