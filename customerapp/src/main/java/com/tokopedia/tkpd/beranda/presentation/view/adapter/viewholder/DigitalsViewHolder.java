@@ -83,6 +83,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     @Override
     public void renderDataRechargeCategory(List<Category> rechargeCategory) {
+        this.mRechargeCategory = rechargeCategory;
         List<Integer> newRechargePositions = new ArrayList<>();
         if (mRechargeCategory.size() == 0) {
             return;
