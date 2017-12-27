@@ -4,6 +4,8 @@ import com.tokopedia.seller.shop.setting.data.model.GenerateHostModel;
 import com.tokopedia.seller.shop.setting.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.setting.data.source.cloud.ShopSettingInfoDataSourceCloud;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -20,7 +22,7 @@ public class ShopSettingInfoDataSource {
         this.shopSettingInfoDataSourceCloud = shopSettingInfoDataSourceCloud;
     }
 
-    public Observable<Boolean> saveShopSetting(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
-        return shopSettingInfoDataSourceCloud.saveShopSetting(logo, serverId, photoObj, shopDescription, tagLine, stepInfo1);
+    public Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest) {
+        return shopSettingInfoDataSourceCloud.saveShopSetting(paramsRequest);
     }
 }

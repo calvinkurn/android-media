@@ -19,12 +19,6 @@ import rx.functions.Func1;
 public class ShopSettingInfoDataSourceCloud {
 
     public static final String SUCCESS = "1";
-    public static final String LOGO = "logo";
-    public static final String SERVER_ID = "server_id";
-    public static final String PHOTO_OBJ = "photo_obj";
-    public static final String SHORT_DESC = "short_desc";
-    public static final String TAG_LINE = "tag_line";
-    public static final String STEP = "step";
     private final TomeApi tomeApi;
 
     @Inject
@@ -32,8 +26,8 @@ public class ShopSettingInfoDataSourceCloud {
         this.tomeApi = tomeApi;
     }
 
-    public Observable<Boolean> saveShopSetting(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
-        return tomeApi.reserveShopDescInfo(generateRequestMapParams(logo, serverId, photoObj, shopDescription, tagLine, stepInfo1))
+    public Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest) {
+        return tomeApi.reserveShopDescInfo(paramsRequest)
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
@@ -44,16 +38,5 @@ public class ShopSettingInfoDataSourceCloud {
                         }
                     }
                 });
-    }
-
-    private Map<String, String> generateRequestMapParams(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
-        Map<String, String> params = new HashMap<>();
-        params.put(LOGO, logo);
-        params.put(SERVER_ID, serverId);
-        params.put(PHOTO_OBJ, photoObj);
-        params.put(SHORT_DESC, shopDescription);
-        params.put(TAG_LINE, tagLine);
-        params.put(STEP, String.valueOf(stepInfo1));
-        return params;
     }
 }

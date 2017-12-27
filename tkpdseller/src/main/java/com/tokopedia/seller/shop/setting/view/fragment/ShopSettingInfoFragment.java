@@ -75,7 +75,6 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     private View containerBrowseFile;
     private View containerImagePicker;
     private ImageView imagePicker;
-    private TextView errorImageEmpty;
     private TextView welcomeText;
     private Button buttonNext;
     private ProgressDialog progressDialog;
@@ -115,7 +114,6 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
         containerImagePicker = view.findViewById(R.id.image_picker_container);
         imagePicker = (ImageView) view.findViewById(R.id.image_picker);
         buttonNext = (Button) view.findViewById(R.id.button_next);
-        errorImageEmpty = (TextView) view.findViewById(R.id.error_image_empty);
         welcomeText = view.findViewById(R.id.welcome_shop_label);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -141,38 +139,6 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     }
 
     private void setActionVar() {
-        shopSloganEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                isSloganFieldValid(true);
-            }
-        });
-        shopDescEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                isDescriptionFieldValid(true);
-            }
-        });
         containerBrowseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -194,54 +160,8 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     }
 
     protected void onNextButtonClicked() {
-        if (!isFormValid()) {
-            return;
-        }
         presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
                 shopDescEditText.getText().toString());
-    }
-
-    private boolean isSloganFieldValid(boolean showError) {
-        if (TextUtils.isEmpty(shopSloganEditText.getText().toString())) {
-            if (showError) {
-                shopSloganTextInputLayout.requestFocus();
-                shopSloganTextInputLayout.setError(getString(R.string.label_shop_setting_error_slogan_should_fill));
-            }
-            return false;
-        }
-        shopSloganTextInputLayout.setError(null);
-        return true;
-    }
-
-    private boolean isDescriptionFieldValid(boolean showError) {
-        if (TextUtils.isEmpty(shopDescEditText.getText().toString())) {
-            if (showError) {
-                shopDescTextInputLayout.requestFocus();
-                shopDescTextInputLayout.setError(getString(R.string.label_shop_setting_error_desc_should_fill));
-            }
-            return false;
-        }
-        shopDescTextInputLayout.setError(null);
-        return true;
-    }
-
-    private boolean isShopImageValid(boolean showError) {
-        if (TextUtils.isEmpty(uriPathImage)) {
-            if (showError) {
-                errorImageEmpty.requestFocus();
-                errorImageEmpty.setVisibility(View.VISIBLE);
-            }
-            return false;
-        }
-        errorImageEmpty.setVisibility(View.GONE);
-        return true;
-    }
-
-    private boolean isFormValid() {
-        if (isSloganFieldValid(true) && isDescriptionFieldValid(true) && isShopImageValid(true)) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -358,7 +278,6 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     public void goToGallery() {
         startActivityForResult(GalleryActivity.createIntent(getActivity(), GalleryType.ofImageOnly()), REQUEST_CODE_IMAGE_PICKER);
     }
-
 
     protected void onAttachListener(Context context){
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
