@@ -95,7 +95,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         setModeScrollerWidget(mRechargeCategory.size());
 
         if (rechargeViewPagerAdapter == null) {
-            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, mRechargeCategory, bool);
+            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, mRechargeCategory);
             viewPager.setAdapter(rechargeViewPagerAdapter);
         } else {
             rechargeViewPagerAdapter.addFragments(mRechargeCategory);
