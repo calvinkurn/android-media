@@ -112,10 +112,11 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         root.findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                GoogleLocationViewModel googleLocationViewModel = locationMapViewHolder.getGoogleLocationViewModel();
 
                 RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
-                        locationMapViewHolder.getGoogleLocationViewModel().getLongitude(),
-                        locationMapViewHolder.getGoogleLocationViewModel().getLatitude(),
+                        googleLocationViewModel == null ? "" : googleLocationViewModel.getLongitude(),
+                        googleLocationViewModel == null ? "" : googleLocationViewModel.getLatitude(),
                         "",
                         locationShippingViewHolder.getLocationComplete(),
                         locationShippingViewHolder.getDistrictName(),
@@ -132,7 +133,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.d(TAG, "berhasilkah ? -> "+e);
                     }
 
                     @Override
@@ -158,6 +159,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                             Log.d(TAG, rawData.toString());
                             if(rawData instanceof DestinationViewModel){
                                 DestinationViewModel address = (DestinationViewModel)rawData;
+                                locationShippingViewHolder.updateDistrictId(address.getDistrictId()+"");
                                 locationShippingViewHolder.updateLocationData(
                                         address.getProvinceName(),
                                         address.getCityName(),
@@ -165,6 +167,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                             }else if(rawData instanceof LocationViewModel){
                                 LocationViewModel locationViewModel = (LocationViewModel) rawData;
                                 locationShippingViewHolder.initializeZipCodes(locationViewModel.getZipCodes());
+                                locationShippingViewHolder.updateDistrictId(locationViewModel.getDistrictId()+"");
                                 locationShippingViewHolder.updateLocationData(
                                         locationViewModel.getProvinceName(),
                                         locationViewModel.getCityName(),

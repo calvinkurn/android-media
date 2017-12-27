@@ -336,8 +336,8 @@ public class EditShippingInteractorImpl implements EditShippingRetrofitInteracto
             }
         };
 
-        compositeSubscription.add(observable.subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
     }
