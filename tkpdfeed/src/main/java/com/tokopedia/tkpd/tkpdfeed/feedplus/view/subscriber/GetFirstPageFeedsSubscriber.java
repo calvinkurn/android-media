@@ -232,7 +232,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(model);
                             String eventLabel = String.format("%s - %s", "product", "");
                             FeedTracking.eventImpressionFeedUploadedProduct(
-                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard),
+                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard + 1),
                                     eventLabel
                             );
                         }
@@ -256,7 +256,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                             String eventLabel = String.format("%s - %s", TYPE_INSPIRATION, inspirationViewModel.getSource());
                             FeedTracking.eventImpressionFeedInspiration(
-                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard),
+                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard + 1),
                                     eventLabel
                             );
                         }
