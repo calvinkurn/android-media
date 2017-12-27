@@ -54,7 +54,7 @@ import dagger.Provides;
  * @author by errysuprayogi on 11/28/17.
  */
 
-@Module(includes = {CategoryModule.class, BannerModule.class, BrandsModule.class, TopPicksModule.class, TickerModule.class, FeedPlusModule.class})
+@Module(includes = {CategoryModule.class, BannerModule.class, BrandsModule.class, TopPicksModule.class, TickerModule.class, HomeFeedModule.class})
 public class HomeModule {
 
     @HomeScope
