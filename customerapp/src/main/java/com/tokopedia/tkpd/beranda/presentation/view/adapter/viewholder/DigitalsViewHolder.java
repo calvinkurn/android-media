@@ -78,6 +78,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
                                 new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
                         new CategoryMapper(),
                         new StatusMapper()));
+        rechargeCategoryPresenter.fetchDataRechargeCategory();
     }
 
     @Override
