@@ -250,7 +250,7 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
     @Override
     public void loadInitialData() {
         super.loadInitialData();
-        setInitialActionVar();
+        actionFetchFlightSearchData();
     }
 
     @Override
@@ -288,6 +288,10 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
 
     @Override
     protected void setInitialActionVar() {
+
+    }
+
+    private void actionFetchFlightSearchData() {
         if (getAdapter().getItemCount() == 0) {
             showLoading();
         }
@@ -596,7 +600,7 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
     @Override
     public void onRetryClicked() {
         adapter.clearData();
-        setInitialActionVar();
+        actionFetchFlightSearchData();
     }
 
     @Override

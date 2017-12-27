@@ -3,6 +3,7 @@ package com.tokopedia.flight.review.domain;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.AmenityPassenger;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.AttributesData;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.CartItem;
@@ -80,7 +81,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         List<Passenger> passengers = new ArrayList<>();
         for(FlightBookingPassengerViewModel flightPassengerViewModel : flightPassengerViewModels){
             Passenger passenger = new Passenger();
-            passenger.setDob(flightPassengerViewModel.getPassengerBirthdate());
+            passenger.setDob(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.FORMAT_DATE_API, flightPassengerViewModel.getPassengerBirthdate()));
             passenger.setFirstName(flightPassengerViewModel.getPassengerFirstName());
             passenger.setLastName(flightPassengerViewModel.getPassengerLastName());
             passenger.setTitle(flightPassengerViewModel.getPassengerTitleId());

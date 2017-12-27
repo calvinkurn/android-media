@@ -1,9 +1,11 @@
 
 package com.tokopedia.flight.review.domain.verifybooking.model.request;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Passenger {
 
@@ -25,7 +27,7 @@ public class Passenger {
     @SerializedName("nationality")
     @Expose
     private String nationality;
-    @SerializedName("passport_no")
+    /*@SerializedName("passport_no")
     @Expose
     private String passportNo;
     @SerializedName("passport_country")
@@ -33,10 +35,10 @@ public class Passenger {
     private String passportCountry;
     @SerializedName("passport_expiry")
     @Expose
-    private String passportExpiry;
+    private String passportExpiry;*/
     @SerializedName("amenities")
     @Expose
-    private List<AmenityPassenger> amenities = null;
+    private List<AmenityPassenger> amenities = new ArrayList<>();
 
     public int getType() {
         return type;
@@ -86,7 +88,7 @@ public class Passenger {
         this.nationality = nationality;
     }
 
-    public String getPassportNo() {
+    /*public String getPassportNo() {
         return passportNo;
     }
 
@@ -108,7 +110,7 @@ public class Passenger {
 
     public void setPassportExpiry(String passportExpiry) {
         this.passportExpiry = passportExpiry;
-    }
+    }*/
 
     public List<AmenityPassenger> getAmenities() {
         return amenities;
