@@ -78,6 +78,12 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSect
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -95,7 +101,7 @@ import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant
 
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener,
-        TabLayout.OnTabSelectedListener, TokoCashUpdateListener {
+        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, FeedPlus.View {
 
     @Inject
     HomePresenter presenter;
@@ -115,6 +121,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private String[] tabSectionTitle;
     private VerticalSpaceItemDecoration spaceItemDecoration;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
+    private String firstCursor = "";
 
     public static HomeFragment newInstance() {
 
@@ -167,6 +174,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = (SectionContainer) view.findViewById(R.id.tab_container);
         root = (CoordinatorLayout) view.findViewById(R.id.root);
         presenter.attachView(this);
+        presenter.setFeedListener(this);
         return view;
     }
 
@@ -228,7 +236,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initAdapter() {
         LinearLayoutManager layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this);
+        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
         recyclerView.addItemDecoration(spaceItemDecoration);
@@ -612,6 +620,271 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (messageSnackbar != null && messageSnackbar.isShown()) {
             messageSnackbar.hideRetrySnackbar();
         }
+    }
+
+    @Override
+    public void loadFirstPageFeed() {
+        presenter.fetchFirstPageFeed();
+    }
+
+    @Override
+    public void showLoadingProgress() {
+
+    }
+
+    @Override
+    public void finishLoadingProgress() {
+
+    }
+
+    @Override
+    public void setFirstCursor(String firstCursor) {
+        this.firstCursor = firstCursor;
+    }
+
+    @Override
+    public void onShareButtonClicked(String shareUrl, String title, String imgUrl, String contentMessage, String pageRowNumber) {
+
+    }
+
+    @Override
+    public void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId) {
+
+    }
+
+    @Override
+    public void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price) {
+
+    }
+
+    @Override
+    public void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId, String imageSource, String name, String price) {
+
+    }
+
+    @Override
+    public void onGoToFeedDetail(int page, int rowNumber, String feedId) {
+
+    }
+
+    @Override
+    public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
+
+    }
+
+    @Override
+    public void onCopyClicked(int page, int rowNumber, String id, String s, String name) {
+
+    }
+
+    @Override
+    public void onGoToBlogWebView(String url) {
+
+    }
+
+    @Override
+    public void onOpenVideo(String videoUrl, String subtitle) {
+
+    }
+
+    @Override
+    public void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel) {
+
+    }
+
+    @Override
+    public void onInfoClicked() {
+
+    }
+
+    @Override
+    public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+        adapter.addItems(listFeed);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onErrorGetFeedFirstPage(String errorMessage) {
+
+    }
+
+    @Override
+    public void onSearchShopButtonClicked() {
+
+    }
+
+    @Override
+    public void onFavoritedClicked(int adapterPosition) {
+
+    }
+
+    @Override
+    public void showSnackbar(String s) {
+
+    }
+
+    @Override
+    public void updateFavorite(int adapterPosition) {
+
+    }
+
+    @Override
+    public void onViewMorePromoClicked(int page, int rowNumber) {
+
+    }
+
+    @Override
+    public void showRefresh() {
+
+    }
+
+    @Override
+    public void finishLoading() {
+
+    }
+
+    @Override
+    public void updateCursor(String currentCursor) {
+        presenter.setCursor(currentCursor);
+    }
+
+    @Override
+    public void onSuccessGetFeed(ArrayList<Visitable> visitables) {
+
+    }
+
+    @Override
+    public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
+        adapter.addItems(listFeed);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSeePromo(int page, int rowNumber, String id, String link, String name) {
+
+    }
+
+    @Override
+    public void onRetryClicked() {
+
+    }
+
+    @Override
+    public void onShowRetryGetFeed() {
+
+    }
+
+    @Override
+    public void onShowAddFeedMore() {
+
+    }
+
+    @Override
+    public void shouldLoadTopAds(boolean loadTopAds) {
+
+    }
+
+    @Override
+    public void hideTopAdsAdapterLoading() {
+
+    }
+
+    @Override
+    public int getColor(int black) {
+        return 0;
+    }
+
+    @Override
+    public void onSeeAllRecentView() {
+
+    }
+
+    @Override
+    public void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct, boolean canShowTopads) {
+        adapter.showEmpty();
+        adapter.addItems(recentProduct);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onShowEmpty(boolean canShowTopads) {
+        adapter.showEmpty();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void clearData() {
+
+    }
+
+    @Override
+    public void unsetEndlessScroll() {
+
+    }
+
+    @Override
+    public void onShowNewFeed(String totalData) {
+
+    }
+
+    @Override
+    public void onGoToPromoPageFromHeader(int page, int rowNumber) {
+
+    }
+
+    @Override
+    public void onHideNewFeed() {
+
+    }
+
+    @Override
+    public boolean hasFeed() {
+        return false;
+    }
+
+    @Override
+    public void updateFavoriteFromEmpty(String shopId) {
+
+    }
+
+    @Override
+    public void showTopAds(boolean isTopAdsShown) {
+
+    }
+
+    @Override
+    public void onEmptyOfficialStoreClicked() {
+
+    }
+
+    @Override
+    public void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel) {
+
+    }
+
+    @Override
+    public void onSeeAllOfficialStoresFromCampaign(int page, int rowNumber, String redirectUrl) {
+
+    }
+
+    @Override
+    public void onGoToCampaign(int page, int rowNumber, String redirectUrl, String title) {
+
+    }
+
+    @Override
+    public void onSeeAllOfficialStoresFromBrands(int page, int rowNumber) {
+
+    }
+
+    @Override
+    public void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId, String imageSourceSingle, String name, String price) {
+
+    }
+
+    @Override
+    public void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl) {
+
     }
 
     private void openActivity(String depID, String title) {

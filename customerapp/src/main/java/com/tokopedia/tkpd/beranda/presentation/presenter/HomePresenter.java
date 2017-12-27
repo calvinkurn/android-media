@@ -27,6 +27,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
@@ -46,6 +47,9 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryIt
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 
 import java.util.List;
 
@@ -80,11 +84,18 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetLocalHomeDataUseCase localHomeDataUseCase;
     @Inject
     HomeDataMapper homeDataMapper;
+    @Inject
+    GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
+    @Inject
+    SessionHandler sessionHandler;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
     private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
+    private String currentCursor = "";
+    private PagingHandler pagingHandler;
+    private FeedPlus.View feedListener;
 
     private HeaderViewModel headerViewModel;
 
@@ -92,6 +103,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         this.context = context;
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
+        this.pagingHandler = new PagingHandler();
     }
 
     @Override
@@ -311,6 +323,22 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
+    public void setFeedListener(FeedPlus.View feedListener) {
+        this.feedListener = feedListener;
+    }
+
+    public void fetchFirstPageFeed() {
+        pagingHandler.resetPage();
+        currentCursor = "";
+        getFirstPageFeedsUseCase.execute(
+                getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
+                new GetFirstPageFeedsSubscriber(feedListener, pagingHandler.getPage()));
+    }
+
+    public void setCursor(String currentCursor) {
+        this.currentCursor = currentCursor;
+    }
+
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
 
         public HomeDataSubscriber() {
@@ -348,6 +376,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 getView().setItems(visitables);
                 if (isDataValid(visitables)) {
                     getView().removeNetworkError();
+                    getView().loadFirstPageFeed();
                 } else {
                     getView().showNetworkError(context.getString(R.string.msg_network_error));
                 }
