@@ -79,12 +79,11 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     private List<Operator> operators;
 
-    public static WidgetStyle2RechargeFragment newInstance(Category category, int position, boolean useCache) {
+    public static WidgetStyle2RechargeFragment newInstance(Category category, int position) {
         WidgetStyle2RechargeFragment fragment = new WidgetStyle2RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         bundle.putInt(ARG_TAB_INDEX_POSITION, position);
-        bundle.putBoolean(ARG_USE_CACHE, useCache);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -127,8 +126,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 new ProductMapper(),
                 new OperatorMapper(),
                 new JobExecutor(),
-                new UIThread(),
-                useCache);
+                new UIThread());
 
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
     }
@@ -183,8 +181,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() >= selectedOperator.getAttributes().getMinimumLength()) {
-                    if (selectedOperator != null) {
+                if (selectedOperator != null) {
+                    if (s.length() >= selectedOperator.getAttributes().getMinimumLength()) {
                         if (selectedOperator.getAttributes().getRule().isShowProduct()) {
                             presenter.validateOperatorWithProducts(category.getId(),
                                     String.valueOf(selectedOperator.getId()));
@@ -192,15 +190,13 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                             clearHolder(holderWidgetWrapperBuy);
                             holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
                         }
-                    } else {
-                        widgetClientNumberView.setEmptyString();
-                    }
-                } else {
-                    if (selectedProduct != null) {
+                    } else if (selectedProduct != null) {
                         selectedProduct = null;
                         clearHolder(holderWidgetSpinnerProduct);
                         clearHolder(holderWidgetWrapperBuy);
                     }
+                }  else {
+                    widgetClientNumberView.setEmptyString();
                 }
             }
 
@@ -321,7 +317,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 widgetClientNumberView.setImgOperatorVisible();
                 widgetProductChooserView.setTitleProduct(rechargeOperatorModel.getAttributes().getRule().getProductText());
                 widgetProductChooserView.setVisibilityProduct(rechargeOperatorModel.getAttributes().getRule().isShowProduct());
-                renderView();
                 if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice())
                     showPrice = false;
             }
@@ -420,6 +415,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         widgetRadioChooserView.renderDataView(operators, lastOrder, lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetRadioChooserView);
 
+        renderView();
+
         if (category.getAttributes().getClientNumber().isShown()) {
             presenter.fetchNumberList(String.valueOf(category.getId()), showLastOrder);
         }
@@ -467,9 +464,15 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetSpinnerOperator);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-            compositeSubscription.unsubscribe();
         super.onDestroyView();
     }
 
+    @Override
+    public void onStop() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+
+        super.onStop();
+    }
 }

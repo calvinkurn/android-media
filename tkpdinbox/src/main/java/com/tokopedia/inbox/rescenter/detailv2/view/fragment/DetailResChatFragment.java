@@ -415,7 +415,6 @@ public class DetailResChatFragment
         ivSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
             }
         });
@@ -552,7 +551,7 @@ public class DetailResChatFragment
     @Override
     public void errorInputMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
-//        chatAdapter.deleteLastItem();
+        enableIvSend();
     }
 
     @Override
@@ -901,6 +900,7 @@ public class DetailResChatFragment
         rvAttachment.setVisibility(View.GONE);
         initActionButton(detailResChatDomain.getButton());
         etChat.setText("");
+        enableIvSend();
     }
 
     @Override
@@ -908,6 +908,7 @@ public class DetailResChatFragment
         showErrorWithRefresh(error);
         chatAdapter.deleteLastItem();
         etChat.requestFocus();
+        enableIvSend();
     }
 
     @Override
@@ -1166,6 +1167,18 @@ public class DetailResChatFragment
         bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, videoUrl);
         intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void enableIvSend() {
+        ivSend.setClickable(true);
+        ivSend.setEnabled(true);
+    }
+
+    @Override
+    public void disableIvSend() {
+        ivSend.setClickable(false);
+        ivSend.setEnabled(false);
     }
 
     @Override

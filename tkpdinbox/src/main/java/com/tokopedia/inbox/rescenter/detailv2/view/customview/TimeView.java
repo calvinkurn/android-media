@@ -82,6 +82,7 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
                 timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
                         getTimeTickerListener());
             }
+            tvTitle.setText(MethodChecker.fromHtml(getResources().getString(R.string.string_help_info)));
             timeTickerUtil.startTimer(duration);
         } else if (MethodChecker.isTimezoneNotAutomatic()) {
             setVisibility(GONE);
