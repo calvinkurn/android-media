@@ -5,6 +5,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -50,13 +51,19 @@ public abstract class BaseStepperActivity<T extends StepperModel> extends BaseTo
     protected void setupFragment(Bundle savedinstancestate) {
         if (getListFragment().size() >= currentPosition) {
             Fragment fragment = getListFragment().get(currentPosition - 1);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
-            fragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
-                    .commit();
+            String tag =  fragment.getClass().getSimpleName() + currentPosition;
+
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment f = fm.findFragmentByTag(tag);
+            if (f == null || !f.isAdded()) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
+                fragment.setArguments(bundle);
+                fm.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .replace(R.id.parent_view, fragment, tag)
+                        .commit();
+            }
         }
     }
 

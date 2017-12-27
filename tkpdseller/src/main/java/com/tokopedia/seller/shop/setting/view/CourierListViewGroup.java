@@ -9,10 +9,13 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.open.data.model.Courier;
+import com.tokopedia.seller.shop.open.view.model.CourierServiceId;
+import com.tokopedia.seller.shop.open.view.model.CourierServiceIdList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,7 @@ public class CourierListViewGroup extends LinearLayout {
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
     }
 
-    public void setCourierList(List<Courier> courierList, List<SparseArray<List<Integer>>> selectedCourierService) {
+    public void setCourierList(List<Courier> courierList, CourierServiceIdList selectedCourierService) {
         if (courierList == null) {
             this.courierList = new ArrayList<>();
         } else {
@@ -56,7 +59,7 @@ public class CourierListViewGroup extends LinearLayout {
         setUIBasedOnCourierList(selectedCourierService);
     }
 
-    private void setUIBasedOnCourierList( List<SparseArray<List<Integer>>> selectedCourierService) {
+    private void setUIBasedOnCourierList(CourierServiceIdList selectedCourierServiceList) {
         this.removeAllViews();
         for (int i = 0, sizei = courierList.size(); i < sizei; i++) {
             Courier courier = courierList.get(i);
@@ -66,11 +69,33 @@ public class CourierListViewGroup extends LinearLayout {
             shopCourierExpandableOption.setLogo(courier.getLogo());
             shopCourierExpandableOption.setEnabled(courier.isAvailable());
             shopCourierExpandableOption.setChild(courier.getServices());
-            //TODO change by selectedCourierService
-            shopCourierExpandableOption.setChecked(false);
+            if (selectedCourierServiceList != null && selectedCourierServiceList.contains(courier.getId())) {
+                shopCourierExpandableOption.setChecked(true);
+                shopCourierExpandableOption.setSelectedChild(
+                        selectedCourierServiceList.getCourierServiceIdList(courier.getId()));
+            } else {
+                shopCourierExpandableOption.setChecked(false);
+            }
             this.addView(shopCourierExpandableOption);
         }
 
+    }
+
+    //TODO save instance this
+    public CourierServiceIdList getSelectedCourierList() {
+        CourierServiceIdList courierServiceIdList = new CourierServiceIdList();
+        for (int i = 0, sizei = this.getChildCount(); i < sizei; i++) {
+            View child = this.getChildAt(i);
+            if (child instanceof ShopCourierExpandableOption) {
+                ShopCourierExpandableOption shopCourierExpandableOption = (ShopCourierExpandableOption) child;
+                boolean isChecked = shopCourierExpandableOption.isChecked();
+                if (isChecked) {
+                    courierServiceIdList.add(courierList.get(i).getId(),
+                            shopCourierExpandableOption.getSelectedChild());
+                }
+            }
+        }
+        return courierServiceIdList;
     }
 
 }

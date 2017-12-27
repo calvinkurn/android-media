@@ -9,8 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.SparseArray;
-import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -30,7 +28,7 @@ import java.util.List;
  * Created by nakama on 22/12/17.
  */
 
-public class ShopCourierExpandableOption extends BaseExpandableOption {
+public class ShopCourierExpandableOption extends BaseExpandableOption implements ShopServiceCourierAdapter.OnShopServiceCourierAdapterListener {
     private ImageView ivIcon;
     private TextView tvTitle;
     private TextView tvDesc;
@@ -38,8 +36,8 @@ public class ShopCourierExpandableOption extends BaseExpandableOption {
 
     private String logo;
 
-    private RecyclerView recyclerView;
     private ShopServiceCourierAdapter shopServiceCourierAdapter;
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
 
     public ShopCourierExpandableOption(Context context) {
         super(context);
@@ -61,7 +59,7 @@ public class ShopCourierExpandableOption extends BaseExpandableOption {
     protected void init() {
         setHeaderLayoutRes(R.layout.item_shop_courier_expandable_header);
         setFooterLayoutRes(R.layout.item_shop_courier_expandable_child);
-        shopServiceCourierAdapter = new ShopServiceCourierAdapter(getContext(), null);
+        shopServiceCourierAdapter = new ShopServiceCourierAdapter(getContext(), null, null, this);
         super.init();
     }
 
@@ -74,18 +72,29 @@ public class ShopCourierExpandableOption extends BaseExpandableOption {
         tvDesc = view.findViewById(R.id.tv_desc);
         switchCompat = view.findViewById(R.id.switch_button);
 
-        recyclerView = view.findViewById(R.id.recycler_view);
+        final RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(shopServiceCourierAdapter);
         recyclerView.setNestedScrollingEnabled(false);
 
-        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setExpand(isChecked);
-                //TODO make all child isChecked
+                if (isChecked) {
+                    checkedAllChild();
+                    setExpand(true);
+                } else {
+                    uncheckedAllChild();
+                    recyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setExpand(false);
+                        }
+                    },300);
+                }
             }
-        });
+        };
+        switchCompat.setOnCheckedChangeListener(onCheckedChangeListener);
 
         setChecked(isExpanded());
         setUITitle();
@@ -93,9 +102,39 @@ public class ShopCourierExpandableOption extends BaseExpandableOption {
         setUIDescription();
     }
 
+    private void checkedAllChild(){
+        shopServiceCourierAdapter.checkAll();
+    }
+
+    private void uncheckedAllChild(){
+        shopServiceCourierAdapter.unCheckAll();
+    }
+
     public void setChecked(boolean checked) {
         if (switchCompat!=null) {
             switchCompat.setChecked(checked);
+        }
+    }
+
+    public boolean isChecked(){
+        return switchCompat.isChecked();
+    }
+
+    @Override
+    public void checkGroupFromChild() {
+        if (!switchCompat.isChecked()) {
+            switchCompat.setOnCheckedChangeListener(null);
+            switchCompat.setChecked(true);
+            switchCompat.setOnCheckedChangeListener(onCheckedChangeListener);
+        }
+    }
+
+    @Override
+    public void unCheckGroupFromChild() {
+        if (switchCompat.isChecked()) {
+            switchCompat.setOnCheckedChangeListener(null);
+            switchCompat.setChecked(false);
+            switchCompat.setOnCheckedChangeListener(onCheckedChangeListener);
         }
     }
 
@@ -127,6 +166,15 @@ public class ShopCourierExpandableOption extends BaseExpandableOption {
     public void setChild(List<CourierServiceModel> courierServiceModelList) {
         shopServiceCourierAdapter.setCourierServiceModelList(courierServiceModelList);
         shopServiceCourierAdapter.notifyDataSetChanged();
+    }
+
+    public void setSelectedChild(List<String> selectedIds) {
+        shopServiceCourierAdapter.setSelectedIds(selectedIds);
+        shopServiceCourierAdapter.notifyDataSetChanged();
+    }
+
+    public List<String> getSelectedChild(){
+        return shopServiceCourierAdapter.getSelectedIds();
     }
 
     @Override
@@ -174,4 +222,5 @@ public class ShopCourierExpandableOption extends BaseExpandableOption {
             ivIcon.setVisibility(View.VISIBLE);
         }
     }
+
 }

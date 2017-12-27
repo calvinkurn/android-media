@@ -4,12 +4,10 @@ import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +19,12 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.view.model.CourierServiceIdList;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.view.CourierListViewGroup;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragment;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenterImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,8 +35,9 @@ import javax.inject.Inject;
 public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView {
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
-    //TODO save instance these!
-    private List<SparseArray<List<Integer>>> selectedCourierService = new ArrayList<SparseArray<List<Integer>>>();
+    private CourierServiceIdList selectedCourierServiceIdList;
+
+    public static final String SAVED_SELECTED_COURIER = "svd_sel_couriers";
 
     @Inject
     public ShopSettingLogisticPresenterImpl presenter;
@@ -60,6 +57,11 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            selectedCourierServiceIdList = onShopStepperListener.getStepperModel().getSelectedCourierServices();
+        } else {
+            selectedCourierServiceIdList = savedInstanceState.getParcelable(SAVED_SELECTED_COURIER);
+        }
     }
 
     @Nullable
@@ -73,7 +75,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
 
         courierListViewGroup = view.findViewById(R.id.vg_courier_list);
-        courierListViewGroup.setCourierList(null, selectedCourierService);
+        courierListViewGroup.setCourierList(null, selectedCourierServiceIdList);
 
         return view;
     }
@@ -115,8 +117,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onSuccessLoadLogistic(OpenShopCouriersModel openShopCouriersModel) {
         hideLoading();
-        courierListViewGroup.setCourierList(openShopCouriersModel.getCourier(), selectedCourierService);
-        // TODO in Success
+        courierListViewGroup.setCourierList(openShopCouriersModel.getCourier(), selectedCourierServiceIdList);
     }
 
     @Override
@@ -138,6 +139,12 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
                     }
                 }
         );
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_SELECTED_COURIER, courierListViewGroup.getSelectedCourierList());
     }
 
     @Override
