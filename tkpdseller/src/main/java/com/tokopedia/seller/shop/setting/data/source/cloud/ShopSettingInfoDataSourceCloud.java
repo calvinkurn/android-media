@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.setting.data.source.cloud;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseSaveShopDesc;
@@ -57,14 +59,16 @@ public class ShopSettingInfoDataSourceCloud {
     }
 
     public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){
-        return tomeApi.reserveShopDescInfo(generateRequestMapParams(requestParams.getString(LONGITUDE, null),
+        Map<String, String> values = generateRequestMapParams(requestParams.getString(LONGITUDE, null),
                 requestParams.getString(LATITUDE, null),
                 requestParams.getString(GEOLOCATION_CHECKSUM, null),
                 requestParams.getString(LOC_COMPLETE, null),
                 requestParams.getString(LOCATION, null),
                 requestParams.getString(ADDR_STREET, null),
                 requestParams.getString(POSTAL_CODE, null),
-                requestParams.getString(DISTRICT_ID, null)))
+                requestParams.getString(DISTRICT_ID, null));
+
+        return tomeApi.reserveShopDescInfo(values)
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
@@ -77,21 +81,32 @@ public class ShopSettingInfoDataSourceCloud {
                 });
     }
 
-    public Map<String, String> generateRequestMapParams(String longitude,
-                                                        String latitude,
-                                                        String geolocation_checksum,
-                                                        String loc_complete,
-                                                        String location,
-                                                        String addr_street,
-                                                        String postal_code,
-                                                        String district_id){
+    private final Map<String, String> generateRequestMapParams(String longitude,
+                                                         String latitude,
+                                                         String geolocation_checksum,
+                                                         String loc_complete,
+                                                         String location,
+                                                         String addr_street,
+                                                         String postal_code,
+                                                         String district_id){
         Map<String, String> params = new HashMap<>();
-        params.put(LONGITUDE, longitude);
-        params.put(LATITUDE, latitude);
-        params.put(GEOLOCATION_CHECKSUM, geolocation_checksum);
+
+        if(!TextUtils.isEmpty(longitude))
+            params.put(LONGITUDE, longitude);
+
+        if(!TextUtils.isEmpty(latitude))
+            params.put(LATITUDE, latitude);
+
+        if(!TextUtils.isEmpty(geolocation_checksum))
+            params.put(GEOLOCATION_CHECKSUM, geolocation_checksum);
+
+
         params.put(LOC_COMPLETE, loc_complete);
         params.put(LOCATION, location);
-        params.put(ADDR_STREET, String.valueOf(addr_street));
+
+        if(!TextUtils.isEmpty(addr_street))
+            params.put(ADDR_STREET, String.valueOf(addr_street));
+
         params.put(POSTAL_CODE, String.valueOf(postal_code));
         params.put(DISTRICT_ID, String.valueOf(district_id));
         params.put(STEP, Integer.toString(STEP_INFO_2));
