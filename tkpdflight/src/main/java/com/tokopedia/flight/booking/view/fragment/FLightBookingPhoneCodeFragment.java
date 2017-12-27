@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListV2Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FLightBookingPhoneCodeFragment extends BaseSearchListV2Fragment<FlightBookingPhoneCodeViewModel, FlightBookingPhoneCodeAdapterTypeFactory> implements
+public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<FlightBookingPhoneCodeViewModel, FlightBookingPhoneCodeAdapterTypeFactory> implements
         FlightBookingPhoneCodeView {
 
     public static final String EXTRA_SELECTED_PHONE_CODE = "EXTRA_SELECTED_PHONE_CODE";

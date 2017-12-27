@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.flight.search.view.adapter.FlightFilterDepartureTimeAdapterTypeFactory;
-import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragmentV2;
+import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
@@ -16,7 +16,7 @@ import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class FlightFilterDepartureFragment extends BaseFlightFilterFragmentV2<DepartureStat, FlightFilterDepartureTimeAdapterTypeFactory> {
+public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<DepartureStat, FlightFilterDepartureTimeAdapterTypeFactory> {
     public static final String TAG = FlightFilterDepartureFragment.class.getSimpleName();
 
     public static FlightFilterDepartureFragment newInstance() {
