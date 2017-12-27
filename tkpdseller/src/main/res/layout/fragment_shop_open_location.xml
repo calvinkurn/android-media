@@ -24,11 +24,6 @@
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
             android:text="@string/title_next" />
-
-        <Button
-            android:id="@+id/button_submit_and_later"
-            style="@style/Button.Submit.Green"
-            android:text="@string/title_next_and_continue_later" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

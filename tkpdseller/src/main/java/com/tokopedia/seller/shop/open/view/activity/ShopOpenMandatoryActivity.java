@@ -83,9 +83,9 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-            fragmentList.add(new ShopOpenMandatoryInfoFragment());
+//            fragmentList.add(new ShopOpenMandatoryInfoFragment());
             fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
-            fragmentList.add(new ShopOpenMandatoryLogisticFragment());
+//            fragmentList.add(new ShopOpenMandatoryLogisticFragment());
             return fragmentList;
         } else {
             return fragmentList;

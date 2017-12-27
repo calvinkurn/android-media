@@ -7,6 +7,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
@@ -15,6 +16,8 @@ import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenRoutingFragment;
+import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
+import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoPresenter;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -24,7 +27,7 @@ import retrofit2.Retrofit;
  * Created by sebastianuskh on 3/17/17.
  */
 @ShopOpenDomainScope
-@Component(modules = ShopOpenDomainModule.class, dependencies = ShopComponent.class)
+@Component(modules = {ShopOpenDomainModule.class, ShopSettingInfoModule.class}, dependencies = ShopComponent.class)
 public interface ShopOpenDomainComponent {
 
 	void inject(ShopOpenRoutingFragment shopOpenRoutingFragment);
@@ -49,4 +52,8 @@ public interface ShopOpenDomainComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit retrofitWsV4();
+
+    ShopSettingInfoPresenter shopSettingInfoPresenter();
+
+    NetworkCalculator networkCalculator();
 }

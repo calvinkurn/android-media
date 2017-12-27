@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.router.OnActivityResultListener;
@@ -26,7 +27,10 @@ import com.tokopedia.seller.shop.open.view.holder.LocationShippingViewHolder;
 import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
 import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
 import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
+import com.tokopedia.seller.shop.setting.domain.interactor.ShopOpenSaveLocationUseCase;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
+
+import javax.inject.Inject;
 
 
 /**
@@ -46,6 +50,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     private LocationShippingViewHolder locationShippingViewHolder;
     private LocationMapViewHolder locationMapViewHolder;
 
+    @Inject
+    ShopOpenSaveLocationUseCase shopOpenSaveLocationUseCase;
 
     public static ShopOpenMandatoryLocationFragment getInstance(){
         return new ShopOpenMandatoryLocationFragment();
@@ -97,6 +103,13 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                         REQUEST_CODE_GOOGLE_MAP,
                         generatedMap
                 );
+            }
+        });
+
+        root.findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }
