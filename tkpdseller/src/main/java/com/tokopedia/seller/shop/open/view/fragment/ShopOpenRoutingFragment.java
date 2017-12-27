@@ -65,7 +65,7 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopC
     public void onSuccessCheckReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
         boolean isReservingDomain = responseIsReserveDomain.isDomainAlreadyReserved();
         if (isReservingDomain) {
-            goToShopOpenMandatory(responseIsReserveDomain.getResponseUserData().getShopName(), responseIsReserveDomain.getResponseUserData().getDomain());
+            goToShopOpenMandatory(responseIsReserveDomain);
         } else {
             goToShopOpenDomain();
         }
@@ -87,8 +87,8 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopC
         getActivity().finish();
     }
 
-    private void goToShopOpenMandatory(String shopName, String domain) {
-        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity(), shopName, domain);
+    private void goToShopOpenMandatory(ResponseIsReserveDomain responseIsReserveDomain) {
+        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity(), responseIsReserveDomain);
         startActivity(intent);
         getActivity().finish();
     }

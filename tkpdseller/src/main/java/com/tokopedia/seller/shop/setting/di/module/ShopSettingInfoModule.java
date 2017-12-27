@@ -18,6 +18,7 @@ import com.tokopedia.seller.product.edit.data.repository.GenerateHostRepositoryI
 import com.tokopedia.seller.product.edit.data.source.GenerateHostDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
+import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.setting.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.setting.data.repository.ShopSettingSaveInfoRepositoryImpl;
@@ -42,8 +43,8 @@ public class ShopSettingInfoModule {
 
     @Provides
     @ShopOpenDomainScope
-    ShopSettingInfoPresenter providePresenter(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase) {
-        return new ShopSettingInfoPresenterImpl(shopSettingSaveInfoUseCase);
+    ShopSettingInfoPresenter providePresenter(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
+        return new ShopSettingInfoPresenterImpl(shopSettingSaveInfoUseCase, shopIsReserveDomainUseCase);
     }
 
     @Provides

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
@@ -16,6 +17,8 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragmen
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.setting.data.model.response.UserData;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
@@ -30,23 +33,19 @@ import java.util.List;
 
 public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent>{
 
-    public static final String EXTRA_SHOP_NAME = "EXTRA_SHOP_NAME";
-    public static final String EXTRA_SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
-
+    public static final String EXTRA_RESPONSE_IS_RESERVE_DOMAIN = "EXTRA_RESPONSE_IS_RESERVE_DOMAIN";
     private List<Fragment> fragmentList;
     private ShopOpenDomainComponent component;
 
     boolean isLogoutOnBack = false;
 
     public static Intent getIntent(Context context) {
-        Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
-        return intent;
+        return new Intent(context, ShopOpenMandatoryActivity.class);
     }
 
-    public static Intent getIntent(Context context, String shopName, String shopDomain) {
+    public static Intent getIntent(Context context, ResponseIsReserveDomain responseIsReserveDomain) {
         Intent intent = new Intent(context, ShopOpenMandatoryActivity.class);
-        intent.putExtra(EXTRA_SHOP_NAME, shopName);
-        intent.putExtra(EXTRA_SHOP_DOMAIN, shopDomain);
+        intent.putExtra(EXTRA_RESPONSE_IS_RESERVE_DOMAIN, responseIsReserveDomain);
         return intent;
     }
 
@@ -54,11 +53,8 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_SHOP_NAME)) {
-            stepperModel.setShopName(getIntent().getStringExtra(EXTRA_SHOP_NAME));
-        }
-        if (intent.hasExtra(EXTRA_SHOP_DOMAIN)) {
-            stepperModel.setShopDomain(getIntent().getStringExtra(EXTRA_SHOP_DOMAIN));
+        if (intent.hasExtra(EXTRA_RESPONSE_IS_RESERVE_DOMAIN)) {
+            stepperModel.setResponseIsReserveDomain((ResponseIsReserveDomain) getIntent().getParcelableExtra(EXTRA_RESPONSE_IS_RESERVE_DOMAIN));
         }
         initComponent();
     }
@@ -129,5 +125,4 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
             }
         }
     }
-
 }

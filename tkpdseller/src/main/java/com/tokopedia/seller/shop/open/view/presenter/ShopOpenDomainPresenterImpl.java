@@ -119,7 +119,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             public void onNext(ResponseReserveDomain responseReserveDomain) {
                 if (SUCCESS.equals( responseReserveDomain.getShopDomainStatus()) &&
                         SUCCESS.equals( responseReserveDomain.getShopNameStatus())) {
-                    getView().onSuccessReserveShop(responseReserveDomain.getShopName(), responseReserveDomain.getShopDomain());
+                    getView().onSuccessReserveShop();
                 } else {
                     getView().onFailedReserveShop();
                 }

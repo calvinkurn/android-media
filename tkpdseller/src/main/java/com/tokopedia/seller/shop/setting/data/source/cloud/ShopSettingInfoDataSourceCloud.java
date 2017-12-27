@@ -42,8 +42,8 @@ public class ShopSettingInfoDataSourceCloud {
         this.tomeApi = tomeApi;
     }
 
-    public Observable<Boolean> saveShopSetting(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
-        return tomeApi.reserveShopDescInfo(generateRequestMapParams(logo, serverId, photoObj, shopDescription, tagLine, stepInfo1))
+    public Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest) {
+        return tomeApi.reserveShopDescInfo(paramsRequest)
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
@@ -56,17 +56,6 @@ public class ShopSettingInfoDataSourceCloud {
                 });
     }
 
-    private Map<String, String> generateRequestMapParams(String logo, String serverId, String photoObj, String shopDescription, String tagLine, int stepInfo1) {
-        Map<String, String> params = new HashMap<>();
-        params.put(LOGO, logo);
-        params.put(SERVER_ID, serverId);
-        params.put(PHOTO_OBJ, photoObj);
-        params.put(SHORT_DESC, shopDescription);
-        params.put(TAG_LINE, tagLine);
-        params.put(STEP, String.valueOf(stepInfo1));
-        return params;
-    }
-
     public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){
         return tomeApi.reserveShopDescInfo(generateRequestMapParams(requestParams.getString(LONGITUDE, null),
                 requestParams.getString(LATITUDE, null),
@@ -77,25 +66,25 @@ public class ShopSettingInfoDataSourceCloud {
                 requestParams.getString(POSTAL_CODE, null),
                 requestParams.getString(DISTRICT_ID, null)))
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
-                if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
-                    return Observable.just(true);
-                }else{
-                    return Observable.just(false);
-                }
-            }
-        });
+                    @Override
+                    public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
+                        if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
+                            return Observable.just(true);
+                        }else{
+                            return Observable.just(false);
+                        }
+                    }
+                });
     }
 
     public Map<String, String> generateRequestMapParams(String longitude,
-                                               String latitude,
-                                               String geolocation_checksum,
-                                               String loc_complete,
-                                               String location,
-                                               String addr_street,
-                                               String postal_code,
-                                               String district_id){
+                                                        String latitude,
+                                                        String geolocation_checksum,
+                                                        String loc_complete,
+                                                        String location,
+                                                        String addr_street,
+                                                        String postal_code,
+                                                        String district_id){
         Map<String, String> params = new HashMap<>();
         params.put(LONGITUDE, longitude);
         params.put(LATITUDE, latitude);
