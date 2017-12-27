@@ -399,7 +399,6 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                 view.setShopReguler();
             }
         } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

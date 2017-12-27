@@ -4,9 +4,11 @@ import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdList;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.view.CourierListViewGroup;
+import com.tokopedia.seller.shop.setting.view.ShopCourierExpandableOption;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragment;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenterImpl;
@@ -32,7 +35,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/21/17.
  */
 
-public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView {
+public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnDisabledHeaderClickedListener {
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     private CourierServiceIdList selectedCourierServiceIdList;
@@ -76,6 +79,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
         courierListViewGroup = view.findViewById(R.id.vg_courier_list);
         courierListViewGroup.setCourierList(null, selectedCourierServiceIdList);
+        courierListViewGroup.setOnDisabledHeaderClickedListener(this);
 
         return view;
     }
@@ -87,7 +91,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     private int getDistrictId(){
         //TODO change from stepper model
-        return 2253;
+        return -1;
         //return onShopStepperListener.getStepperModel().getDistrictID();
     }
 
@@ -112,6 +116,21 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private void hideLoading() {
         vLoading.setVisibility(View.GONE);
         vContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDisabledHeaderClicked() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                .setTitle(getString(R.string.courier_cannot_activate_title))
+                .setMessage(getString(R.string.courier_cannot_activate_desc))
+                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // no op, just dismiss
+                    }
+                });
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
     }
 
     @Override
@@ -171,4 +190,5 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     protected void onAttachListener(Context context){
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
     }
+
 }

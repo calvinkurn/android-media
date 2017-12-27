@@ -20,8 +20,14 @@ import com.tokopedia.seller.shop.open.view.model.CourierServiceIdList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourierListViewGroup extends LinearLayout {
+public class CourierListViewGroup extends LinearLayout implements ShopCourierExpandableOption.OnDisabledHeaderClickedListener {
     private List<Courier> courierList;
+
+    private ShopCourierExpandableOption.OnDisabledHeaderClickedListener onDisabledHeaderClickedListener;
+    public void setOnDisabledHeaderClickedListener(ShopCourierExpandableOption.OnDisabledHeaderClickedListener
+                                                           onDisabledHeaderClickedListener) {
+        this.onDisabledHeaderClickedListener = onDisabledHeaderClickedListener;
+    }
 
     public CourierListViewGroup(Context context) {
         super(context);
@@ -69,6 +75,7 @@ public class CourierListViewGroup extends LinearLayout {
             shopCourierExpandableOption.setLogo(courier.getLogo());
             shopCourierExpandableOption.setEnabled(courier.isAvailable());
             shopCourierExpandableOption.setChild(courier.getServices());
+            shopCourierExpandableOption.setOnDisabledHeaderClickedListener(this);
             if (selectedCourierServiceList != null && selectedCourierServiceList.contains(courier.getId())) {
                 shopCourierExpandableOption.setChecked(true);
                 shopCourierExpandableOption.setSelectedChild(
@@ -81,7 +88,6 @@ public class CourierListViewGroup extends LinearLayout {
 
     }
 
-    //TODO save instance this
     public CourierServiceIdList getSelectedCourierList() {
         CourierServiceIdList courierServiceIdList = new CourierServiceIdList();
         for (int i = 0, sizei = this.getChildCount(); i < sizei; i++) {
@@ -98,4 +104,10 @@ public class CourierListViewGroup extends LinearLayout {
         return courierServiceIdList;
     }
 
+    @Override
+    public void onDisabledHeaderClicked() {
+        if (onDisabledHeaderClickedListener!= null) {
+            onDisabledHeaderClickedListener.onDisabledHeaderClicked();
+        }
+    }
 }

@@ -24,15 +24,23 @@ import com.tokopedia.seller.shop.setting.view.adapter.ShopServiceCourierAdapter;
 
 import java.util.List;
 
-/**
- * Created by nakama on 22/12/17.
- */
 
 public class ShopCourierExpandableOption extends BaseExpandableOption implements ShopServiceCourierAdapter.OnShopServiceCourierAdapterListener {
     private ImageView ivIcon;
     private TextView tvTitle;
     private TextView tvDesc;
     private SwitchCompat switchCompat;
+
+    private boolean mEnabled;
+
+    private OnDisabledHeaderClickedListener onDisabledHeaderClickedListener;
+    public interface OnDisabledHeaderClickedListener{
+        void onDisabledHeaderClicked();
+    }
+
+    public void setOnDisabledHeaderClickedListener(OnDisabledHeaderClickedListener onDisabledHeaderClickedListener) {
+        this.onDisabledHeaderClickedListener = onDisabledHeaderClickedListener;
+    }
 
     private String logo;
 
@@ -77,20 +85,22 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
         recyclerView.setAdapter(shopServiceCourierAdapter);
         recyclerView.setNestedScrollingEnabled(false);
 
+        final Runnable expandRunnable = new Runnable() {
+            @Override
+            public void run() {
+                setExpand(false);
+            }
+        };
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     checkedAllChild();
+                    recyclerView.removeCallbacks(expandRunnable);
                     setExpand(true);
                 } else {
                     uncheckedAllChild();
-                    recyclerView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setExpand(false);
-                        }
-                    },300);
+                    recyclerView.postDelayed(expandRunnable,300);
                 }
             }
         };
@@ -158,9 +168,25 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
 
     @Override
     public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
+        this.mEnabled = enabled;
         switchCompat.setEnabled(enabled);
         setUIDescription();
+        setUITitle();
+    }
+
+    @Override
+    protected void onHeaderClicked() {
+        if (mEnabled) {
+            super.onHeaderClicked();
+        } else {
+            onDisabledHeaderClicked();
+        }
+    }
+
+    private void onDisabledHeaderClicked(){
+        if (onDisabledHeaderClickedListener!= null) {
+            onDisabledHeaderClickedListener.onDisabledHeaderClicked();
+        }
     }
 
     public void setChild(List<CourierServiceModel> courierServiceModelList) {
@@ -192,6 +218,11 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
         if (tvTitle == null) {
             return;
         }
+        if (mEnabled) {
+            tvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_primary_70));
+        } else {
+            tvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.grey_500));
+        }
         if (TextUtils.isEmpty(titleText)) {
             tvTitle.setVisibility(View.GONE);
         } else {
@@ -204,10 +235,12 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
         if (tvDesc == null) {
             return;
         }
-        if (isEnabled()) {
+        if (mEnabled) {
+            tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_secondary_54));
             tvDesc.setText(getContext().getString(R.string.choose_delivery_packet));
         } else {
-            tvDesc.setText(getContext().getString(R.string.delivery_not_avaible));
+            tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.grey_300));
+            tvDesc.setText(getContext().getString(R.string.delivery_not_available));
         }
     }
 
