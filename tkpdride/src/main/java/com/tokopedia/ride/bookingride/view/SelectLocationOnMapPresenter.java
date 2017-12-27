@@ -84,8 +84,10 @@ public class SelectLocationOnMapPresenter extends BaseDaggerPresenter<SelectLoca
                         public void onConnected(@Nullable Bundle bundle) {
                             if (getFuzedLocation() != null) {
                                 mCurrentLocation = getFuzedLocation();
-                                getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                                actionMapDragStopped(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                                if (getView().getDefaultLocation() == null) {
+                                    getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                                    actionMapDragStopped(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                                }
                                 startLocationUpdates();
                             } else {
                                 checkLocationSettings();
