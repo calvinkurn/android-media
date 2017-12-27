@@ -2,15 +2,11 @@ package com.tokopedia.flight.search.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
-import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
 import com.tokopedia.flight.search.view.activity.FlightSearchReturnActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -19,7 +15,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
  * Created by hendry on 10/26/2017.
  */
 
-public class FlightSearchReturnFragment extends FlightSearchFragment {
+public class FlightSearchReturnFragment extends FlightSearchV2Fragment {
 
     private TextView airlineName;
     private TextView duration;
