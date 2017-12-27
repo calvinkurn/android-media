@@ -33,6 +33,7 @@ import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
@@ -974,6 +975,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 model.getId(),
                 rowNumber
         ), OPEN_KOL_COMMENT);
+    }
+
+    @Override
+    public void onGoToKolCommentApplink(String kolId) {
+        String url = Constants.Applinks.KOLCOMMENT.replace("{id}", kolId);
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
+                , url);
     }
 
     @Override

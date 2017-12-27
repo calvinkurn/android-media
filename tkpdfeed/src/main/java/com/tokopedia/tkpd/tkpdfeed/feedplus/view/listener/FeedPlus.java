@@ -40,6 +40,8 @@ public interface FeedPlus {
 
             void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
 
+            void onGoToKolCommentApplink(String kolId);
+
             void onGoToListKolRecommendation(int page, int rowNumber, String url);
 
             void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber);
