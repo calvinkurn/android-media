@@ -1,22 +1,21 @@
 package com.tokopedia.seller.shop.open.view.holder;
 
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
-import com.tokopedia.core.manage.people.address.interactor.ChooseAddressRetrofitInteractor;
 import com.tokopedia.seller.R;
 
 /**
  * Created by normansyahputa on 12/20/17.
  */
 
-public class ShopOpenMandatoryLocationHeaderViewHolder {
-    ChooseAddressRetrofitInteractor networkInteractor;
-    private com.tokopedia.seller.shop.open.view.holder.ShopOpenMandatoryLocationHeaderViewHolder.ViewHolderListener viewHolderListener;
+public class LocationHeaderViewHolder {
+    private ViewHolderListener viewHolderListener;
 
-    public ShopOpenMandatoryLocationHeaderViewHolder(View root, final ViewHolderListener viewHolderListener) {
+    public LocationHeaderViewHolder(View root, final ViewHolderListener viewHolderListener) {
         this.viewHolderListener = viewHolderListener;
-        root.findViewById(R.id.btn_choose_from_address)
-        .setOnClickListener(new View.OnClickListener() {
+        root.findViewById(R.id.btn_choose_from_address).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(viewHolderListener != null){

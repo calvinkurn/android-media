@@ -12,7 +12,7 @@ import rx.Subscriber;
 /**
  * Created by sebastianuskh on 3/17/17.
  */
-
+@Deprecated
 public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresenter {
 
     private final FetchDistrictDataUseCase fetchDistrictDataUseCase;
