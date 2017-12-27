@@ -72,7 +72,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/selectable_background_tokopedia"
                 android:gravity="center_horizontal"
-                android:padding="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_med"
+                android:paddingLeft="@dimen/padding_small"
                 android:text="Unduh E-Ticket" />
         </LinearLayout>
 
