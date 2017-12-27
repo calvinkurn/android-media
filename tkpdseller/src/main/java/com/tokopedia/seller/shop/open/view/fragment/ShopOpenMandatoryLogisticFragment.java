@@ -84,6 +84,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     private int getDistrictId(){
+        //TODO change from stepper model
         return 2253;
         //return onShopStepperListener.getStepperModel().getDistrictID();
     }
