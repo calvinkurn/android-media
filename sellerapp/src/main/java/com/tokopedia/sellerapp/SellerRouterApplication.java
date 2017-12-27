@@ -33,19 +33,20 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.manage.general.districtrecommendation.data.entity.AddressEntity;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.people.address.activity.DistrictRecommendationActivity;
-import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
-import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.router.OnActivityResultListener;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.TkpdSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -58,6 +59,8 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
+import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -136,6 +139,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -158,7 +162,7 @@ import static com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLoca
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
-        ReputationRouter {
+        ReputationRouter, LogisticRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -860,7 +864,7 @@ public abstract class SellerRouterApplication extends MainApplication
                     }
                     break;
                 case REQUEST_CODE__EDIT_ADDRESS:
-                    Address address = data.getParcelableExtra(DistrictRecomendationFragmentView.Constant.INTENT_DATA_ADDRESS);
+                    Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
                     if(address != null){
                         LocationViewModel locationViewModel = new LocationViewModel();
                         locationViewModel.setDistrictId(address.getDistrictId());

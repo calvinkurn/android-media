@@ -109,6 +109,8 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
 
     @Override
     public ShopOpenDomainComponent getComponent() {
+        initComponent();
+
         return component;
     }
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.router.OnActivityResultListener;
 import com.tokopedia.core.router.logistic.LogisticRouter;
@@ -31,6 +32,8 @@ import com.tokopedia.seller.shop.setting.domain.interactor.ShopOpenSaveLocationU
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 
 /**
@@ -110,6 +113,33 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
             @Override
             public void onClick(View view) {
 
+                RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
+                        locationMapViewHolder.getGoogleLocationViewModel().getLongitude(),
+                        locationMapViewHolder.getGoogleLocationViewModel().getLatitude(),
+                        "",
+                        locationShippingViewHolder.getLocationComplete(),
+                        locationShippingViewHolder.getDistrictName(),
+                        locationMapViewHolder.getManualAddress(),
+                        locationShippingViewHolder.getPostalCode(),
+                        locationShippingViewHolder.getDistrictId()
+                );
+
+                shopOpenSaveLocationUseCase.execute(requestParams, new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.d(TAG, "berhasilkah ? -> "+aBoolean);
+                    }
+                });
             }
         });
     }

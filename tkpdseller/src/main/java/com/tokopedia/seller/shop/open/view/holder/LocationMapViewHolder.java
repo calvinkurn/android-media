@@ -30,8 +30,9 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     private final FrameLayout emptyMapView;
     private View root;
     private final EditText shopAddressEdittext;
-    private GoogleLocationViewModel googleLocationViewModel;
     private GoogleMap googleMap;
+
+    private GoogleLocationViewModel googleLocationViewModel;
 
     public LocationMapViewHolder(View root, final ViewHolderListener3 viewHolderListener3) {
         shopAddressEdittext = root.findViewById(R.id.open_shop_address_edittext);
@@ -75,6 +76,14 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
         });
 
         setGoogleMap(googleMap);
+    }
+
+    public String getManualAddress(){
+        return shopAddressEdittext.getText().toString();
+    }
+
+    public GoogleLocationViewModel getGoogleLocationViewModel(){
+        return googleLocationViewModel;
     }
 
     private String getReverseGeocode(GoogleLocationViewModel locationPass) {
