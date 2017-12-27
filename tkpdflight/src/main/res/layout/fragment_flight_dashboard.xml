@@ -39,9 +39,11 @@
                     style="@style/TextView.Headline.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/flight_title_promo" />
+                    android:text="@string/flight_title_promo"
+                    android:layout_marginBottom="@dimen/margin_sm"/>
 
                 <!--Banner disini-->
+                <include layout="@layout/partial_flight_banner" />
 
             </LinearLayout>
         </LinearLayout>
