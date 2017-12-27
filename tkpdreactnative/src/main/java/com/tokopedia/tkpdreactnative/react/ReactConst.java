@@ -22,6 +22,8 @@ public interface ReactConst {
         String OFFICIAL_STORE = "official-store";
         String PROMO = "promo-page";
         String PROMO_TERMS = "promo-terms";
+        String THANK_YOU_PAGE = "thankyou-page";
+        String DISCOVERY_PAGE = "discovery-page";
     }
 
     interface EventEmitter{

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_three">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@id/main_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/margin_sm">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/string_detail_problem"
+                android:textSize="@dimen/text_size_xsmall"
+                android:textColor="@color/black_38"
+                />
+
+            <TextView
+                android:id="@+id/tv_problem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:textStyle="bold"
+                android:textSize="@dimen/fonts"
+                android:textColor="@color/black_70b"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_xsmall"
+                android:text="@string/string_buyer_solution"
+                android:textColor="@color/black_38"
+                />
+
+            <TextView
+                android:id="@+id/tv_solution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:textSize="@dimen/fonts"
+                android:textStyle="bold"
+                android:textColor="@color/black_70b"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_next_step"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:nestedScrollingEnabled="false"
+                context:listitem="@layout/item_next_action"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

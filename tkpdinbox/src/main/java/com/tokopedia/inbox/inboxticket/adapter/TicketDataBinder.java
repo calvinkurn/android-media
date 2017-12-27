@@ -156,7 +156,7 @@ public class TicketDataBinder extends DataBinder<TicketDataBinder.ViewHolder> {
                         Bundle bundle = new Bundle();
                         ArrayList<String> listImage = new ArrayList<>();
                         for (int i = 0; i < imageUpload.size(); i++) {
-                            listImage.add(imageUpload.get(i).getPicSrc());
+                            listImage.add(imageUpload.get(i).getPicSrcLarge());
                         }
                         bundle.putStringArrayList("fileloc", listImage);
                         bundle.putInt("img_pos", position);

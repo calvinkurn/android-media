@@ -2,10 +2,14 @@ package com.tokopedia.inbox.rescenter.detailv2.data.source;
 
 import android.content.Context;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapperV2;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailResponseData;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionSubmitMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
@@ -45,6 +49,7 @@ public class CloudResCenterDataSource {
     private LoadMoreMapper loadMoreMapper;
     private ReplyResolutionMapper replyResolutionMapper;
     private ReplyResolutionSubmitMapper replyResolutionSubmitMapper;
+    private DetailResCenterMapperV2 detailResCenterMapperV2;
 
     public CloudResCenterDataSource(Context context,
                                     ResolutionApi resolutionApi,
@@ -57,7 +62,8 @@ public class CloudResCenterDataSource {
                                     DiscussionResCenterMapper discussionResCenterMapper,
                                     LoadMoreMapper loadMoreMapper,
                                     ReplyResolutionMapper replyResolutionMapper,
-                                    ReplyResolutionSubmitMapper replyResolutionSubmitMapper) {
+                                    ReplyResolutionSubmitMapper replyResolutionSubmitMapper,
+                                    DetailResCenterMapperV2 detailResCenterMapperV2) {
         super();
         this.context = context;
         this.resolutionApi = resolutionApi;
@@ -71,6 +77,7 @@ public class CloudResCenterDataSource {
         this.loadMoreMapper = loadMoreMapper;
         this.replyResolutionMapper = replyResolutionMapper;
         this.replyResolutionSubmitMapper = replyResolutionSubmitMapper;
+        this.detailResCenterMapperV2 = detailResCenterMapperV2;
     }
 
     public Observable<DetailResCenter> getResCenterDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
@@ -78,6 +85,13 @@ public class CloudResCenterDataSource {
                 resolutionID,
                 AuthUtil.generateParamsNetwork2(context, parameters)
         ).map(detailResCenterMapper);
+    }
+
+    public Observable<DetailResponseData> getResCenterDetailV2(RequestParams requestParams) {
+        return resolutionApi.getResCenterDetailV2(
+                requestParams.getString(
+                        GetResCenterDetailV2UseCase.PARAM_RESOLUTION_ID, ""))
+                .map(detailResCenterMapperV2);
     }
 
  public Observable<DiscussionModel> getResCenterConversation(String resolutionID,
@@ -106,6 +120,14 @@ public class CloudResCenterDataSource {
     public Observable<HistoryActionData> getHistoryAction(String resolutionID,
                                                           TKPDMapParam<String, Object> parameters) {
         return resolutionApi.getHistoryAction(
+                resolutionID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(historyActionMapper);
+    }
+
+    public Observable<HistoryActionData> getHistoryActionV2(String resolutionID,
+                                                           TKPDMapParam<String, Object> parameters) {
+        return resolutionApi.getHistoryActionV2(
                 resolutionID,
                 AuthUtil.generateParamsNetwork2(context, parameters)
         ).map(historyActionMapper);

@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingRight="@dimen/padding_vs"
-    android:paddingLeft="@dimen/padding_vs"
     android:paddingTop="3dp"
     android:paddingBottom="3dp"
+    android:paddingLeft="@dimen/margin_sm"
+    android:paddingRight="@dimen/margin_sm"
     >
 
     <TextView
@@ -74,8 +74,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/name"
         android:layout_marginTop="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
         android:background="@drawable/right_bubble"
         android:padding="@dimen/padding_small">
 
@@ -102,7 +100,9 @@
         android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         android:layout_below="@+id/main"
-        android:layout_alignBottom="@+id/hour" />
+        android:layout_alignTop="@+id/hour"
+        android:layout_alignBottom="@+id/hour"
+        tools:src="@drawable/checked_thin"/>
 
     <TextView
         android:id="@+id/hour"
@@ -111,7 +111,7 @@
         android:textColor="@color/time_color"
         android:textSize="@dimen/fontvvs"
         tools:text="10:13 pm"
-        tools:visibility="gone"
+        tools:visibility="visible"
         android:layout_below="@id/main"
         android:layout_marginTop="@dimen/margin_vs"
         android:layout_alignEnd="@id/main"/>

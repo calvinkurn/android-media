@@ -9,8 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -27,9 +25,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.PlaceFilter;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
@@ -61,6 +57,7 @@ import com.tokopedia.ride.common.place.data.entity.Element;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -121,6 +118,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         if (checkPlayServices()) {
             createLocationRequest();
             initializeLocationService();
+
             prepareInitialView();
             mCompositeSubscription = new CompositeSubscription();
             AutocompleteFilter.Builder mbuilder = new AutocompleteFilter.Builder()
@@ -570,7 +568,9 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         mAutoDetectLocation = true;
         if (mCurrentLocation != null || ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             getCurrentPlace();
-        } else if (mGoogleApiClient != null) {
+        }
+
+        if (mGoogleApiClient != null && !RideUtils.isLocationEnabled(getView().getActivity())) {
             checkLocationSettings();
         }
     }
@@ -685,7 +685,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
                             placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
                             placeVm.setTitle(address);
-                            if(mAutoDetectLocation) {
+                            if (mAutoDetectLocation) {
                                 mAutoDetectLocation = false;
                                 getView().sendAutoDetectGAEvent(placeVm);
                             }
@@ -702,7 +702,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             placeVm.setAndFormatLongitude(place.getLatLng().longitude);
                             placeVm.setPlaceId(place.getId());
                             placeVm.setTitle(String.valueOf(place.getName()));
-                            if(mAutoDetectLocation) {
+                            if (mAutoDetectLocation) {
                                 mAutoDetectLocation = false;
                                 getView().sendAutoDetectGAEvent(placeVm);
                             }

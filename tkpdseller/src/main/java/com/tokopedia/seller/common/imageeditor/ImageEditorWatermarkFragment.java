@@ -139,6 +139,7 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
             watermarkMenuItem.getIcon().invalidateSelf();
             watermarkView.setVisibility(View.VISIBLE);
             vWatermarkWarning.setVisibility(View.VISIBLE);
+            drawWatermark();
         } else {
             watermarkMenuItem.setIcon(R.drawable.ic_branding_watermark_unchecked);
             watermarkMenuItem.getIcon().invalidateSelf();
@@ -149,12 +150,15 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
 
     @Override
     public void onCropOverlayReleased(Rect rect) {
-        RectF windowRect = mCropImageView.getCropWindowRect();
-        setWatermarkWindowCropRect(windowRect);
+        drawWatermark();
     }
 
     @Override
     public void onCropOverlayMoved(Rect rect) {
+        drawWatermark();
+    }
+
+    private void drawWatermark(){
         RectF windowRect = mCropImageView.getCropWindowRect();
         setWatermarkWindowCropRect(windowRect);
     }
@@ -187,6 +191,10 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     public void onErrorGetShopInfo(Throwable t) {
         watermarkText = "";
         watermarkView.setText(watermarkText);
+    }
+
+    public boolean isUseWatermark() {
+        return isUseWatermark;
     }
 
     @Override

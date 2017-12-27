@@ -17,6 +17,7 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
     private String imageUrl;
     private String desc;
     private List<HotlistHashTagViewModel> hashTags;
+    private HotlistPromo hotlistPromo;
 
     public HotlistHeaderViewModel() {
     }
@@ -79,4 +80,12 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
             return new HotlistHeaderViewModel[size];
         }
     };
+
+    public void setHotlistPromo(HotlistPromo hotlistPromo) {
+        this.hotlistPromo = hotlistPromo;
+    }
+
+    public HotlistPromo getHotlistPromo() {
+        return hotlistPromo;
+    }
 }

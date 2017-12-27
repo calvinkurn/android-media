@@ -29,7 +29,7 @@ public interface ICartPresenter {
 
     void processUpdateInsurance(@NonNull CartItemEditable cartItemEditable, boolean useInsurance);
 
-    void processCheckVoucherCode(int instantVoucher);
+    void processCheckVoucherCode(String voucherCode, int instantVoucher);
 
     void processGetTickerGTM();
 
