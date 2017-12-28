@@ -62,16 +62,43 @@ public class ShopSettingInfoDataSourceCloud {
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
-                        if (responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)) {
-                            return Observable.just(true);
-                        } else {
+
+                        if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
+                            return checkResponseError(responseSaveShopDescResponse);
+                        }else{
                             return Observable.just(false);
                         }
                     }
                 });
     }
 
-    public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams) {
+    private Observable<Boolean> checkResponseError(Response<ResponseSaveShopDesc> responseSaveShopDescResponse){
+            JSONObject json;
+            try {
+                json = new JSONObject(responseSaveShopDescResponse.body().toString());
+                JSONArray errorMessage = json.optJSONArray("message_error");
+                if (errorMessage != null) {
+                    String errorListMessage = "";
+                    for(int i = 0; i<errorMessage.length(); i++) {
+                        if(errorMessage.get(i) instanceof String) {
+                            errorListMessage = errorListMessage + errorMessage.getString(i);
+                        }
+                    }
+                    if(!TextUtils.isEmpty(errorListMessage)){
+                        return Observable.error(new ShopSettingException(errorListMessage));
+                    }else{
+                        return Observable.just(true);
+                    }
+                }else{
+                    return Observable.just(true);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return Observable.just(true);
+            }
+    }
+
+    public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){
         Map<String, String> values = generateRequestMapParams(requestParams.getString(LONGITUDE, null),
                 requestParams.getString(LATITUDE, null),
                 requestParams.getString(GEOLOCATION_CHECKSUM, null),
@@ -85,9 +112,9 @@ public class ShopSettingInfoDataSourceCloud {
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
-                        if (responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)) {
+                        if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
                             return Observable.just(true);
-                        } else {
+                        }else{
                             return Observable.just(false);
                         }
                     }
