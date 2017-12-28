@@ -476,6 +476,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorCheckVoucher(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override
