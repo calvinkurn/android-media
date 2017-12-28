@@ -6,6 +6,10 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseSaveShopDesc;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,13 +53,40 @@ public class ShopSettingInfoDataSourceCloud {
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
+
                         if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
-                            return Observable.just(true);
+                            return checkResponseError(responseSaveShopDescResponse);
                         }else{
                             return Observable.just(false);
                         }
                     }
                 });
+    }
+
+    private Observable<Boolean> checkResponseError(Response<ResponseSaveShopDesc> responseSaveShopDescResponse){
+            JSONObject json;
+            try {
+                json = new JSONObject(responseSaveShopDescResponse.body().toString());
+                JSONArray errorMessage = json.optJSONArray("message_error");
+                if (errorMessage != null) {
+                    String errorListMessage = "";
+                    for(int i = 0; i<errorMessage.length(); i++) {
+                        if(errorMessage.get(i) instanceof String) {
+                            errorListMessage = errorListMessage + errorMessage.getString(i);
+                        }
+                    }
+                    if(!TextUtils.isEmpty(errorListMessage)){
+                        return Observable.error(new ShopSettingException(errorListMessage));
+                    }else{
+                        return Observable.just(true);
+                    }
+                }else{
+                    return Observable.just(true);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return Observable.just(true);
+            }
     }
 
     public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){

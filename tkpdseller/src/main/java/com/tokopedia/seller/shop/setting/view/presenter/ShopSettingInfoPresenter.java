@@ -9,7 +9,7 @@ import com.tokopedia.seller.shop.setting.view.listener.ShopSettingInfoView;
 
 public abstract class ShopSettingInfoPresenter extends BaseDaggerPresenter<ShopSettingInfoView> {
 
-    public abstract void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription);
+    public abstract void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription, String imageUrl, String serverId, String picObj);
 
     public abstract void getisReserveDomain();
 }
