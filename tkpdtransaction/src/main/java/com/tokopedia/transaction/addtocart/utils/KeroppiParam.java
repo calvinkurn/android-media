@@ -7,7 +7,6 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
-import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 
 /**
  * @author anggaprasetiyo on 11/18/16.
@@ -81,11 +80,19 @@ public class KeroppiParam {
 
         params.put(CAT_ID, orderData.getCatId());
         params.put(INSURANCE, "1");
-        params.put(PRODUCT_INSURANCE, "0");
+        params.put(PRODUCT_INSURANCE, isProductMustInsurance(orderData));
         String rawPrice = getRawPrice(orderData.getPriceTotal());
         params.put(ORDER_VALUE, rawPrice);
 
         return params;
+    }
+
+    private static String isProductMustInsurance(OrderData orderData) {
+        if (orderData.getMustInsurance() == null) {
+            return "0";
+        } else {
+            return String.valueOf(orderData.getMustInsurance());
+        }
     }
 
     private static String generatePath(String districtID, String postalCode, String lat,
