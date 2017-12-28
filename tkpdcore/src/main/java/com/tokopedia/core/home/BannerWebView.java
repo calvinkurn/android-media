@@ -56,6 +56,13 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
         return intent;
     }
 
+    public static Intent getCallingIntentWithTitle(Activity activity, String url, String title) {
+        Intent intent = new Intent(activity, BannerWebView.class);
+        intent.putExtra(EXTRA_URL, url);
+        intent.putExtra(EXTRA_TITLE, title);
+        return intent;
+    }
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_WEBVIEW_BANNER;

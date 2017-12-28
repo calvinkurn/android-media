@@ -466,6 +466,7 @@ public class TkpdState {
     }
 
     public class SHIPPING_ID {
+        public static final String WAHANA = "6";
         public static final String GOJEK = "10";
     }
 

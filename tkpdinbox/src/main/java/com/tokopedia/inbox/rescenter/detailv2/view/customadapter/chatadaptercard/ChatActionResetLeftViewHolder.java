@@ -57,7 +57,7 @@ public class ChatActionResetLeftViewHolder extends AbstractViewHolder<ChatAction
         if (element.getConversation().getSolution().getName() != null)
             tvSolution.setText(MethodChecker.fromHtml(element.getConversation().getSolution().getName()));
         tvReason.setText(MethodChecker.fromHtml(element.getConversation().getMessage()));
-        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
+        String date = element.getConversation().getCreateTime().getTimestamp();
         tvDate.setText(date);
 
         tvUserTitle.setText(MainApplication.getAppContext().getResources().getString(R.string.string_tokopedia_admin_title));

@@ -81,12 +81,11 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     private List<Operator> operators;
 
-    public static WidgetStyle3RechargeFragment newInstance(Category category, int position, boolean useCache) {
+    public static WidgetStyle3RechargeFragment newInstance(Category category, int position) {
         WidgetStyle3RechargeFragment fragment = new WidgetStyle3RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         bundle.putInt(ARG_TAB_INDEX_POSITION, position);
-        bundle.putBoolean(ARG_USE_CACHE, useCache);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -136,8 +135,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 new ProductMapper(),
                 new OperatorMapper(),
                 new JobExecutor(),
-                new UIThread(),
-                useCache);
+                new UIThread());
 
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
     }
@@ -482,9 +480,15 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetSpinnerOperator);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-            compositeSubscription.unsubscribe();
         super.onDestroyView();
     }
 
+    @Override
+    public void onStop() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+
+        super.onStop();
+    }
 }
