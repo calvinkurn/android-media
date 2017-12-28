@@ -43,7 +43,7 @@
                     android:layout_marginBottom="@dimen/margin_sm"/>
 
                 <!--Banner disini-->
-                <include layout="@layout/partial_flight_banner" />
+                <!--<include layout="@layout/partial_flight_banner" />-->
 
             </LinearLayout>
         </LinearLayout>
