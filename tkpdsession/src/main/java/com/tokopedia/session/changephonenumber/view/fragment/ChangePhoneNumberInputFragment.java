@@ -118,8 +118,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     private void initVar() {
-        phoneNumber = getArguments().getString(PARAM_WARNING_LIST);
-        hasTokocash = getArguments().getBoolean(PARAM_WARNING_LIST, false);
+        phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
+        hasTokocash = getArguments().getBoolean(PARAM_HAS_TOKOCASH, false);
         warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
     }
 
