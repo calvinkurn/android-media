@@ -26,12 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                tools:text="@string/title_promo_code" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" : "/>
+                tools:text="Kode Voucher: " />
 
             <TextView
                 android:id="@+id/voucher_code"
