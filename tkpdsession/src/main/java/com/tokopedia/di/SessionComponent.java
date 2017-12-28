@@ -1,6 +1,8 @@
 package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 
 import dagger.Component;
 
@@ -12,5 +14,7 @@ import dagger.Component;
 @Component(modules = SessionModule.class, dependencies = AppComponent.class)
 public interface SessionComponent {
 
+    void inject(ChangePhoneNumberInputFragment fragment);
 
+    void inject(ChangePhoneNumberWarningFragment fragment);
 }

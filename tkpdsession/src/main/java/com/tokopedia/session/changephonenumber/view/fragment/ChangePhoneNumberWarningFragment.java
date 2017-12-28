@@ -13,10 +13,10 @@ import android.widget.TextView;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.SessionComponent;
+import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberWarningComponent;
-import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberWarningComponent;
-import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberWarningModule;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
@@ -120,12 +120,12 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
-        ChangePhoneNumberWarningComponent resolutionDetailComponent =
-                DaggerChangePhoneNumberWarningComponent.builder()
+        SessionComponent sessionComponent =
+                DaggerSessionComponent.builder()
                         .appComponent(appComponent)
-                        .changePhoneNumberWarningModule(new ChangePhoneNumberWarningModule())
+                        .sessionModule(new SessionModule())
                         .build();
-        resolutionDetailComponent.inject(this);
+        sessionComponent.inject(this);
     }
 
     @Override

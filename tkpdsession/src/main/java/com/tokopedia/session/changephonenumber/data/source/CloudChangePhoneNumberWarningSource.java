@@ -10,8 +10,11 @@ import com.tokopedia.session.changephonenumber.data.mapper.WarningMapper;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
+
+import static com.tokopedia.di.SessionModule.BEARER_SERVICE;
 
 /**
  * Created by milhamj on 27/12/17.
@@ -22,7 +25,7 @@ public class CloudChangePhoneNumberWarningSource {
     private WarningMapper warningMapper;
 
     @Inject
-    public CloudChangePhoneNumberWarningSource(AccountsService accountsService,
+    public CloudChangePhoneNumberWarningSource(@Named(BEARER_SERVICE) AccountsService accountsService,
                                                WarningMapper warningMapper) {
         this.accountsService = accountsService;
         this.warningMapper = warningMapper;

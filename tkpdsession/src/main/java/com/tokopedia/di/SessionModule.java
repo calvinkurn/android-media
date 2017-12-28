@@ -9,6 +9,14 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.session.changephonenumber.data.factory.ChangePhoneNumberFactory;
+import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
+import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
+import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
 
 import javax.inject.Named;
 
@@ -25,7 +33,7 @@ public class
 SessionModule {
 
     private static final String HMAC_SERVICE = "HMAC_SERVICE";
-    private static final String BEARER_SERVICE = "BEARER_SERVICE";
+    public static final String BEARER_SERVICE = "BEARER_SERVICE";
     private static final String WS_SERVICE = "WS_SERVICE";
 
     @SessionScope
@@ -88,4 +96,22 @@ SessionModule {
         return new AccountsService(bundle);
     }
 
+    @SessionScope
+    @Provides
+    ChangePhoneNumberInputFragmentListener.Presenter provideChangePhoneNumberInputPresenter() {
+        return new ChangePhoneNumberInputPresenter();
+    }
+
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberWarningFragmentListener.Presenter provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase) {
+        return new ChangePhoneNumberWarningPresenter(getWarningUseCase);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberRepository provideChangePhoneNumberRepository(ChangePhoneNumberFactory changePhoneNumberFactory) {
+        return new ChangePhoneNumberRepositoryImpl(changePhoneNumberFactory);
+    }
 }

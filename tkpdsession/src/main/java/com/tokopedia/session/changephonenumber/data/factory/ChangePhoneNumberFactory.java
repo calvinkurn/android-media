@@ -8,6 +8,9 @@ import com.tokopedia.session.changephonenumber.data.source.CloudChangePhoneNumbe
 import com.tokopedia.session.changephonenumber.data.source.CloudGetUploadHostSource;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+
+import static com.tokopedia.di.SessionModule.BEARER_SERVICE;
 
 /**
  * Created by milhamj on 27/12/17.
@@ -18,7 +21,7 @@ public class ChangePhoneNumberFactory {
     private final WarningMapper warningMapper;
 
     @Inject
-    public ChangePhoneNumberFactory(AccountsService accountsService, WarningMapper warningMapper) {
+    public ChangePhoneNumberFactory(@Named(BEARER_SERVICE) AccountsService accountsService, WarningMapper warningMapper) {
         this.accountsService = accountsService;
         this.warningMapper = warningMapper;
     }

@@ -17,10 +17,10 @@ import android.widget.TextView;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.SessionComponent;
+import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberInputComponent;
-import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberInputComponent;
-import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberInputModule;
 import com.tokopedia.session.changephonenumber.view.customview.BottomSheetInfo;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 
@@ -145,12 +145,12 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
-        ChangePhoneNumberInputComponent resolutionDetailComponent =
-                DaggerChangePhoneNumberInputComponent.builder()
+        SessionComponent sessionComponent =
+                DaggerSessionComponent.builder()
                         .appComponent(appComponent)
-                        .changePhoneNumberInputModule(new ChangePhoneNumberInputModule(this))
+                        .sessionModule(new SessionModule())
                         .build();
-        resolutionDetailComponent.inject(this);
+        sessionComponent.inject(this);
     }
 
     @Override

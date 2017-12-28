@@ -15,8 +15,7 @@ public class ChangePhoneNumberInputPresenter
 
     ChangePhoneNumberInputFragmentListener.View view;
 
-    public ChangePhoneNumberInputPresenter(ChangePhoneNumberInputFragmentListener.View view) {
-        this.view = view;
+    public ChangePhoneNumberInputPresenter() {
     }
 
     @Override
