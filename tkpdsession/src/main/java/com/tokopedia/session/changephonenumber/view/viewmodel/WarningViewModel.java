@@ -11,6 +11,8 @@ import java.util.List;
  */
 
 public class WarningViewModel implements Parcelable {
+    public static final String EMPTY_BALANCE = "Rp  0";
+
     private String tokopediaBalance;
     private String tokocash;
     private String action;

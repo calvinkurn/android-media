@@ -1,16 +1,15 @@
 package com.tokopedia.session.changephonenumber.view.subscriber;
 
-import android.util.Log;
-
-import com.tkpd.library.utils.Logger;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
+
+import rx.Subscriber;
 
 /**
  * Created by milhamj on 27/12/17.
  */
 
-public class GetWarningSubscriber extends rx.Subscriber<WarningViewModel> {
+public class GetWarningSubscriber extends Subscriber<WarningViewModel> {
     private final ChangePhoneNumberWarningFragmentListener.View view;
 
     public GetWarningSubscriber(ChangePhoneNumberWarningFragmentListener.View view) {
@@ -24,7 +23,10 @@ public class GetWarningSubscriber extends rx.Subscriber<WarningViewModel> {
 
     @Override
     public void onError(Throwable e) {
-        view.onGetWarningFailed();
+        if (e != null)
+            view.onGetWarningError(e.getMessage());
+        else
+            view.onGetWarningFailed();
     }
 
     @Override

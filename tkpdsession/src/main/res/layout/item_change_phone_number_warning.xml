@@ -27,7 +27,6 @@
                 android:id="@+id/warning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="7sp"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black_70"
                 android:textSize="14sp"

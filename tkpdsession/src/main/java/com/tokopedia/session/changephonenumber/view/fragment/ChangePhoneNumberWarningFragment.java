@@ -14,20 +14,22 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberInputComponent;
 import com.tokopedia.session.changephonenumber.di.component.ChangePhoneNumberWarningComponent;
-import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberInputComponent;
 import com.tokopedia.session.changephonenumber.di.component.DaggerChangePhoneNumberWarningComponent;
-import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberInputModule;
 import com.tokopedia.session.changephonenumber.di.module.ChangePhoneNumberWarningModule;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.EMPTY_BALANCE;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -132,25 +134,25 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     @Override
-    public void onGetWarningFailed() {
-        showEmptyState();
+    public void onGetWarningError(String message) {
+        showEmptyState(message);
     }
 
     @Override
-    public void onGetWarningError(String errorMessage) {
-
+    public void onGetWarningFailed() {
+        showEmptyState(null);
     }
 
     private void loadDataToView() {
         if (viewModel != null) {
-            if (viewModel.getTokopediaBalance() == null || viewModel.getTokopediaBalance().equalsIgnoreCase("null")) {
+            if (isNullOrEmpty(viewModel.getTokopediaBalance())) {
                 tokopediaBalanceLayout.setVisibility(View.GONE);
             } else {
                 tokopediaBalanceLayout.setVisibility(View.VISIBLE);
                 tokopediaBalanceValue.setText(viewModel.getTokopediaBalance());
             }
 
-            if (viewModel.getTokocash() == null || viewModel.getTokocash().equalsIgnoreCase("null")) {
+            if (isNullOrEmpty(viewModel.getTokocash())) {
                 tokocashLayout.setVisibility(View.GONE);
             } else {
                 tokocashLayout.setVisibility(View.VISIBLE);
@@ -161,28 +163,42 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         }
     }
 
+    private boolean isNullOrEmpty(String string) {
+        return (string == null || string.equalsIgnoreCase("null") || string.isEmpty() || string.equalsIgnoreCase(EMPTY_BALANCE));
+    }
+
     private void populateRecyclerView() {
         if (viewModel != null) {
             if (viewModel.getWarningList() != null && viewModel.getWarningList().size() > 0) {
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                 warningRecyclerView.setLayoutManager(mLayoutManager);
-
-                WarningListAdapter adapter = new WarningListAdapter();
-                adapter.addData(viewModel.getWarningList());
+                boolean hasTokocash = !isNullOrEmpty(viewModel.getTokocash());
+                adapter.addData(hasTokocash, viewModel.getWarningList());
                 warningRecyclerView.setAdapter(adapter);
             }
         }
     }
 
-
-    private void showEmptyState() {
-        NetworkErrorHelper.showEmptyState(getActivity(),
-                getView(),
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getWarning();
-                    }
-                });
+    private void showEmptyState(String message) {
+        if (message == null || message.isEmpty()) {
+            NetworkErrorHelper.showEmptyState(getActivity(),
+                    getView(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.getWarning();
+                        }
+                    });
+        } else {
+            NetworkErrorHelper.showEmptyState(getActivity(),
+                    getView(),
+                    message,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.getWarning();
+                        }
+                    });
+        }
     }
 }
