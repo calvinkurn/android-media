@@ -20,7 +20,7 @@ import rx.functions.Func1;
 
 public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> {
 
-    private final int BPJS_CATEGORY_ID = 4;
+    private final String BPJS_CATEGORY_ID = "4";
 
     @Override
     public List<Product> call(List<ProductEntity> productEntities) {
@@ -37,8 +37,10 @@ public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> 
                 attributes.setDetailUrl(productEntity.getAttributes().getDetailUrl());
                 attributes.setDetailUrlText(productEntity.getAttributes().getDetailUrlText());
                 attributes.setInfo(productEntity.getAttributes().getInfo());
-                if (product.getRelationships() != null) {
-                    if (productEntity.getRelationships().getCategory().getData().getId() != BPJS_CATEGORY_ID) {
+                if (productEntity.getRelationships() != null) {
+                    if (productEntity.getRelationships().getCategory().getData().getId().equals(BPJS_CATEGORY_ID)) {
+                        attributes.setPrice("");
+                    } else {
                         attributes.setPrice(productEntity.getAttributes().getPrice());
                     }
                 }
@@ -63,14 +65,14 @@ public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> 
                 Relationship relationship = new Relationship();
                 Category category = new Category();
                 Data dataCategory = new Data();
-                dataCategory.setId(productEntity.getRelationships().getCategory().getData().getId());
+                dataCategory.setId(Integer.valueOf(productEntity.getRelationships().getCategory().getData().getId()));
                 dataCategory.setType(productEntity.getRelationships().getCategory().getData().getType());
                 category.setData(dataCategory);
                 relationship.setCategory(category);
 
                 Operator operator = new Operator();
                 Data dataOperator = new Data();
-                dataOperator.setId(productEntity.getRelationships().getOperator().getData().getId());
+                dataOperator.setId(Integer.valueOf(productEntity.getRelationships().getOperator().getData().getId()));
                 dataOperator.setType(productEntity.getRelationships().getOperator().getData().getType());
                 operator.setData(dataOperator);
                 relationship.setOperator(operator);
