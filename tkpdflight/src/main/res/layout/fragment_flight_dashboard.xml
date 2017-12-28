@@ -24,7 +24,7 @@
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/button_search_ticket"
                 style="@style/Button.Submit.Orange"
-                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginTop="@dimen/margin_large"
                 android:text="@string/flight_search_search_ticket" />
 
             <LinearLayout
@@ -43,7 +43,7 @@
                     android:layout_marginBottom="@dimen/margin_sm"/>
 
                 <!--Banner disini-->
-                <!--<include layout="@layout/partial_flight_banner" />-->
+                <include layout="@layout/partial_flight_banner" />
 
             </LinearLayout>
         </LinearLayout>
