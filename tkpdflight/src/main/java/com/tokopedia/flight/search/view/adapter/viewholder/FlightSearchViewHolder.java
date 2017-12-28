@@ -23,7 +23,7 @@ import java.util.List;
  * Created by alvarisi on 12/22/17.
  */
 
-public class FlightSearchViewHolderV2 extends AbstractViewHolder<FlightSearchViewModel> {
+public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewModel> {
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_search;
 
@@ -39,7 +39,7 @@ public class FlightSearchViewHolderV2 extends AbstractViewHolder<FlightSearchVie
     View containerDetail;
     private FlightSearchAdapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
 
-    public FlightSearchViewHolderV2(View itemView, FlightSearchAdapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener) {
+    public FlightSearchViewHolder(View itemView, FlightSearchAdapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener) {
         super(itemView);
         tvDeparture = (TextView) itemView.findViewById(R.id.departure_time);
         tvArrival = (TextView) itemView.findViewById(R.id.arrival_time);
