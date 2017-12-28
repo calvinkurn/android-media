@@ -82,6 +82,11 @@ public class LocationShippingViewHolder {
         return districtName;
     }
 
+    public void updateLocationData(String completeLocation, String districtName){
+        this.districtName = districtName;
+        textEditShippingCity.setText(completeLocation);
+    }
+
     public void updateLocationData(String provinceName, String cityName, String districtName) {
         this.districtName = districtName;
         textEditShippingCity.setText(provinceName + ", " + cityName + ", " + districtName);
@@ -101,6 +106,10 @@ public class LocationShippingViewHolder {
         ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(root.getContext(), R.layout.item_autocomplete_text_double_row,
                 R.id.item, zipCodes);
         textEditPostalCode.setAdapter(zipCodeAdapter);
+    }
+
+    public void updateZipCodes(String zipCode){
+        textEditPostalCode.setText(zipCode);
     }
 
     public interface ViewHolderListener2{
