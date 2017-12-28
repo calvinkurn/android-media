@@ -34,7 +34,7 @@ public class OrderData implements Parcelable {
     private Shop shop;
     private List<Shipment> shipments;
     private String catId;
-    private String mustInsurance;
+    private Integer mustInsurance;
 
     public OrderData() {
     }
@@ -167,11 +167,11 @@ public class OrderData implements Parcelable {
         this.catId = catId;
     }
 
-    public String getMustInsurance() {
+    public Integer getMustInsurance() {
         return mustInsurance;
     }
 
-    public void setMustInsurance(String mustInsurance) {
+    public void setMustInsurance(Integer mustInsurance) {
         this.mustInsurance = mustInsurance;
     }
 
@@ -192,7 +192,7 @@ public class OrderData implements Parcelable {
         initWeight = in.readString();
         shipments = in.readArrayList(Shipment.class.getClassLoader());
         catId = in.readString();
-        mustInsurance = in.readString();
+        mustInsurance = in.readInt();
     }
 
     @Override
@@ -218,7 +218,7 @@ public class OrderData implements Parcelable {
         dest.writeString(initWeight);
         dest.writeArray(shipments.toArray());
         dest.writeString(catId);
-        dest.writeString(mustInsurance);
+        dest.writeInt(mustInsurance);
     }
 
     @SuppressWarnings("unused")
@@ -251,7 +251,7 @@ public class OrderData implements Parcelable {
         orderData.setInitWeight(data.getForm().getProductDetail().getProductWeight());
         orderData.setShipments(data.getForm().getShipment());
         orderData.setCatId(data.getForm().getProductDetail().getProductCatId());
-        orderData.setMustInsurance(String.valueOf(data.getForm().getProductDetail().getProductMustInsurance()));
+        orderData.setMustInsurance(data.getForm().getProductDetail().getProductMustInsurance());
         return orderData;
     }
 }

@@ -91,7 +91,7 @@ public class KeroppiParam {
         if (orderData.getMustInsurance() == null) {
             return "0";
         } else {
-            return orderData.getMustInsurance().equals("1") ? "1" : "0";
+            return String.valueOf(orderData.getMustInsurance());
         }
     }
 
