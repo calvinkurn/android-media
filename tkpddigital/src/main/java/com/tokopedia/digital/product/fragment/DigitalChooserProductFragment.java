@@ -39,8 +39,6 @@ import rx.subscriptions.CompositeSubscription;
 public class DigitalChooserProductFragment extends BasePresenterFragment<IProductChooserPresenter>
         implements ProductChooserAdapter.ActionListener, IProductChooserView {
 
-    private static final String ARG_PARAM_EXTRA_PRODUCT_LIST_DATA =
-            "ARG_PARAM_EXTRA_PRODUCT_LIST_DATA";
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
     private static final String ARG_PARAM_EXTRA_PRODUCT_STYLE_VIEW =

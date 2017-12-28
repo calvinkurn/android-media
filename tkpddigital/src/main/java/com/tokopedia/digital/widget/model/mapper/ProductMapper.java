@@ -20,6 +20,8 @@ import rx.functions.Func1;
 
 public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> {
 
+    private final int BPJS_CATEGORY_ID = 4;
+
     @Override
     public List<Product> call(List<ProductEntity> productEntities) {
         List<Product> productList = new ArrayList<>();
@@ -35,7 +37,11 @@ public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> 
                 attributes.setDetailUrl(productEntity.getAttributes().getDetailUrl());
                 attributes.setDetailUrlText(productEntity.getAttributes().getDetailUrlText());
                 attributes.setInfo(productEntity.getAttributes().getInfo());
-                attributes.setPrice(productEntity.getAttributes().getPrice());
+                if (product.getRelationships() != null) {
+                    if (productEntity.getRelationships().getCategory().getData().getId() != BPJS_CATEGORY_ID) {
+                        attributes.setPrice(productEntity.getAttributes().getPrice());
+                    }
+                }
                 attributes.setPricePlain(productEntity.getAttributes().getPricePlain());
                 attributes.setStatus(productEntity.getAttributes().getStatus());
                 attributes.setWeight(productEntity.getAttributes().getWeight());
