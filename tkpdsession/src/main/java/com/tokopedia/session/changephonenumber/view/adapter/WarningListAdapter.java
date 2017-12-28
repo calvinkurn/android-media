@@ -43,12 +43,16 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
         } else {
             warningListViewHolder.warning.setVisibility(View.GONE);
         }
-        warningListViewHolder.note.setVisibility(hasTokocash ? View.VISIBLE : View.GONE);
-        warningListViewHolder.separator.setVisibility((i == getItemCount() - 1) ? View.GONE : View.VISIBLE);
+        warningListViewHolder.note.setVisibility(isLastItem(i) && hasTokocash ? View.VISIBLE : View.GONE);
+        warningListViewHolder.separator.setVisibility(isLastItem(i) ? View.GONE : View.VISIBLE);
     }
 
     private boolean isNullOrEmpty(String string) {
         return (string == null || string.equalsIgnoreCase("null") || string.isEmpty());
+    }
+
+    private boolean isLastItem(int position) {
+        return (position == getItemCount() - 1);
     }
 
     public void addData(List<String> warningList) {
