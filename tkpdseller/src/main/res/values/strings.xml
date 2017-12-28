@@ -179,8 +179,8 @@
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
     <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik</string>
-    <string name="label_shop_setting_slogan">Slogan Toko (Opsional)</string>
-    <string name="label_shop_setting_desc_shop">Deskripsi Toko (Opsional)</string>
+    <string name="label_shop_setting_slogan">Slogan Toko</string>
+    <string name="label_shop_setting_desc_shop">Deskripsi Toko</string>
     <string name="label_shop_setting_logo">Logo (Opsional)</string>
     <string name="label_shop_setting_error_should_pick_image">Logo harus diisi</string>
     <string name="label_shop_setting_info_max_file_size">Besar file maksimum:</string>

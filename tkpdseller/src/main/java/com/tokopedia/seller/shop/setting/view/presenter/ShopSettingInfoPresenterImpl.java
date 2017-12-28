@@ -22,10 +22,10 @@ public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
     }
 
     @Override
-    public void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription) {
+    public void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription, String imageUrl, String serverId, String picObj) {
         getView().showProgressDialog();
         shopSettingSaveInfoUseCase.execute(ShopSettingSaveInfoUseCase.createRequestParams(uriPathImage,
-                shopDescription, shopSlogan), new Subscriber<Boolean>() {
+                shopDescription, shopSlogan, imageUrl, serverId, picObj), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
