@@ -268,7 +268,6 @@ public abstract class MainApplication extends BaseMainApplication{
         initFacebook();
         initCrashlytics();
         initializeAnalytics();
-        initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 

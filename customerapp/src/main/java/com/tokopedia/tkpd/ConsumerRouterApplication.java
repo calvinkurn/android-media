@@ -153,7 +153,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
-        TokoCashRouter, IWalletRouter, RemoteConfigRouter, AbstractionRouter, FlightModuleRouter, ILoyaltyRouter, ReputationRouter {
+        TokoCashRouter, IWalletRouter, AbstractionRouter, FlightModuleRouter, ILoyaltyRouter, ReputationRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -925,8 +925,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void refreshLogin() {
-        SessionRefresh sessionRefresh = new SessionRefresh();
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
+            ;
+            SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
             sessionRefresh.refreshLogin();
         } catch (IOException e) {
             e.printStackTrace();
@@ -941,6 +943,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public long getLongConfig(String flightAirport) {
+        return remoteConfig.getLong(flightAirport);
     }
 
     @Override
@@ -982,6 +989,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public int getTopPayPaymentCancelCode() {
         return TopPayActivity.PAYMENT_CANCELLED;
     }
+
     @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
