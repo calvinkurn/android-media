@@ -53,6 +53,11 @@ public class FreeReturnOnboardingActivity extends BaseOnboardingActivity {
     }
 
     @Override
+    public void onSkipPressed() {
+        onDonePressed();
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {

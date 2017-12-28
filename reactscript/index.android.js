@@ -24,6 +24,8 @@ class Home extends Component {
       return <OfficialStore />
     } else if(this.props.Screen === 'pos') {
       return <POS data={ this.props } />
+    } else if (this.props.Screen === 'thankyou-page') {
+        return <ThankYou data={this.props}/>
     } else {
       return (
         <View style={{ marginTop:20, marginBottom:20, justifyContent:'center', alignItems:'center', flex:1}}>
@@ -45,8 +47,6 @@ const styles = StyleSheet.create({
   },
 });
 
-//Home = codePush(Home);
+
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
-
-

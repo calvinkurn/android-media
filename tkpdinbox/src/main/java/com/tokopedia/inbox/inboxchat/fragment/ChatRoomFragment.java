@@ -312,7 +312,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             } else {
                 label.setVisibility(View.GONE);
             }
-            setOnlineDesc(getString(R.string.just_now));
+            setOnlineDesc(getActivity().getString(R.string.just_now));
             toolbar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -467,7 +467,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         setViewEnabled(true);
         finishLoading();
         replyColumn.setText("");
-        showError(getString(R.string.delete_error).concat("\n").concat(getString(R.string.string_general_error)));
+        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R.string.string_general_error)));
     }
 
     @Override
@@ -544,7 +544,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             label.setText(getArguments().getString(PARAM_SENDER_TAG));
-            setOnlineDesc(getString(R.string.just_now));
+            setOnlineDesc(getActivity().getString(R.string.just_now));
         }
     }
 
@@ -582,7 +582,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
                 if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
                         (PARAM_MESSAGE_ID))) {
-                    setOnlineDesc(getString(R.string.just_now));
+                    setOnlineDesc(getActivity().getString(R.string.just_now));
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

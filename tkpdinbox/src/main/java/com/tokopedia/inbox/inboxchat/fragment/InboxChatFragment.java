@@ -157,7 +157,7 @@ public class InboxChatFragment extends BaseDaggerFragment
         searchInputView = (SearchInputView) parentView.findViewById(R.id.simpleSearchView);
         searchInputView.setListener(this);
         searchInputView.setResetListener(this);
-        searchInputView.setSearchHint(getString(R.string.search_chat_user));
+        searchInputView.setSearchHint(getActivity().getString(R.string.search_chat_user));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setHasFixedSize(true);
         presenter.attachView(this);
@@ -321,7 +321,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                 finishContextMode();
                 ((InboxChatActivity) getActivity()).showTabLayout(true);
             }
-            contextMenu.setTitle(String.format("%s %s", String.valueOf(presenter.getSelected()), getString(R.string.title_inbox_chat)));
+            contextMenu.setTitle(String.format("%s %s", String.valueOf(presenter.getSelected()), getActivity().getString(R.string.title_inbox_chat)));
         }
     }
 
@@ -606,7 +606,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             @Override
             public void run() {
                 TextView title = (TextView) notifier.findViewById(R.id.title);
-                title.setText(getString(R.string.connected_websocket));
+                title.setText(getActivity().getString(R.string.connected_websocket));
                 View action = notifier.findViewById(R.id.action);
                 action.setVisibility(View.GONE);
             }
