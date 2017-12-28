@@ -272,6 +272,7 @@ dependencies {
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
     compile project(':tkpdreactnative')
+    compile project(':tkpdloyalty')
     compile project(':tkpdreputation')
     compile project(':tkpdtokocash')
 

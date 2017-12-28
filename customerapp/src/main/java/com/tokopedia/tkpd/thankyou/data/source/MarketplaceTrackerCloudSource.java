@@ -1,0 +1,68 @@
+package com.tokopedia.tkpd.thankyou.data.source;
+
+import android.content.Context;
+import android.content.res.Resources;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
+import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
+import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import rx.Observable;
+
+/**
+ * Created by okasurya on 12/5/17.
+ */
+
+public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
+    private Context context;
+    private MarketplaceTrackerApi marketplaceTrackerApi;
+    private MarketplaceTrackerMapper mapper;
+
+    public MarketplaceTrackerCloudSource(RequestParams requestParams,
+                                         MarketplaceTrackerApi marketplaceTrackerApi,
+                                         MarketplaceTrackerMapper mapper,
+                                         Context context) {
+        super(requestParams);
+        this.context = context;
+        this.marketplaceTrackerApi = marketplaceTrackerApi;
+        this.mapper = mapper;
+    }
+
+    @Override
+    public Observable<Boolean> sendAnalytics() {
+        return marketplaceTrackerApi.getTrackingData(getRequestPayload()).map(mapper);
+    }
+
+    private String getRequestPayload() {
+        return String.format(
+                loadRawString(context.getResources(), R.raw.payment_tracker_query),
+                requestParams.getString(ThanksTrackerConst.Key.ID, "0")
+        );
+    }
+
+    private String loadRawString(Resources resources, int resId) {
+        InputStream rawResource = resources.openRawResource(resId);
+        String content = streamToString(rawResource);
+        try {rawResource.close();} catch (IOException e) {}
+        return content;
+    }
+
+    private String streamToString(InputStream in) {
+        String temp;
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            while ((temp = bufferedReader.readLine()) != null) {
+                stringBuilder.append(temp + "\n");
+            }
+        } catch (IOException e) {}
+        return stringBuilder.toString();
+    }
+}

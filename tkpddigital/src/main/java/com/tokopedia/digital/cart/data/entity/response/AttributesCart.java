@@ -44,6 +44,9 @@ public class AttributesCart {
     @SerializedName("enable_voucher")
     @Expose
     private boolean enableVoucher;
+    @SerializedName("is_coupon_active")
+    @Expose
+    private int isCouponActive;
     @SerializedName("sms_state")
     @Expose
     private String smsState;
@@ -118,6 +121,10 @@ public class AttributesCart {
 
     public boolean isEnableVoucher() {
         return enableVoucher;
+    }
+
+    public int isCouponActive() {
+        return isCouponActive;
     }
 
     public String getVoucherAutoCode() {

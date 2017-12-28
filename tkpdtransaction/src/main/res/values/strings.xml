@@ -129,6 +129,8 @@
     <string name="authentication_description_2">Anda akan diminta memasukkan CVV dan verifikasi via SMS untuk setiap transaksi.</string>
     <string name="menu_credit_card_authentication">Pengaturan Autentikasi</string>
     <string name="title_preorder_proccess_time">Waktu Proses: </string>
+    <string name="title_use_promo_code">Gunakan Kode Promo</string>
+    <string name="title_use_promo_code_and_voucher">Gunakan Kode Promo dan Voucher</string>
     <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
 
@@ -163,4 +165,6 @@
     <string name="cancel_search_replacement">Batalkan Pencarian</string>
     <string name="title_detail_transaction">Detil Transaksi</string>
 
+    <string name="title_term_and_condition">Syarat dan Ketentuan</string>
+    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
 </resources>
