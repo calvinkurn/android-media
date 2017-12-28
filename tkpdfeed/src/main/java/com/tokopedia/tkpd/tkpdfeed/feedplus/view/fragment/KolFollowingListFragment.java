@@ -58,6 +58,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         rvItem = (RecyclerView) parentView.findViewById(R.id.rv_item);
         progressBar = (ProgressBar) parentView.findViewById(R.id.progress_bar);
         rvItem.setLayoutManager(new LinearLayoutManager(getActivity()));
+        presenter.attachView(this);
         return parentView;
     }
 
@@ -110,5 +111,11 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     @Override
     public void onListItemClicked(KolFollowingViewModel item) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
