@@ -312,7 +312,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetTokoCash(String errorMessage) {
-
+        Intent intentHomeFragment = new Intent(
+                HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+        );
+        intentHomeFragment.putExtra(HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR);
+        sendBroadcast(intentHomeFragment);
     }
 
     @Override

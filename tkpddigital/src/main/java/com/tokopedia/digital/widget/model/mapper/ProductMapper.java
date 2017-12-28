@@ -33,6 +33,7 @@ public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> 
                 attributes.setDesc(productEntity.getAttributes().getDesc());
                 attributes.setDetail(productEntity.getAttributes().getDetail());
                 attributes.setDetailUrl(productEntity.getAttributes().getDetailUrl());
+                attributes.setDetailUrlText(productEntity.getAttributes().getDetailUrlText());
                 attributes.setInfo(productEntity.getAttributes().getInfo());
                 attributes.setPrice(productEntity.getAttributes().getPrice());
                 attributes.setPricePlain(productEntity.getAttributes().getPricePlain());

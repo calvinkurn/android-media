@@ -60,7 +60,7 @@ public class ChatInputAddressLeftViewHolder extends AbstractViewHolder<ChatInput
                 addressDomain.getPostalCode(),
                 addressDomain.getProvince(),
                 addressDomain.getPhone()));
-        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
+        String date = element.getConversation().getCreateTime().getTimestamp();
         tvDate.setText(date);
 
         layoutTitle.setVisibility(View.VISIBLE);

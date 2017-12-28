@@ -13,6 +13,7 @@ public class HistoryActionItemDomainData {
     private String month;
     private String dateNumber;
     private String createTimestampStr;
+    private String timeNumber;
 
     public String getDateTimestamp() {
         return dateTimestamp;
@@ -86,5 +87,13 @@ public class HistoryActionItemDomainData {
 
     public void setCreateTimestampStr(String createTimestampStr) {
         this.createTimestampStr = createTimestampStr;
+    }
+
+    public String getTimeNumber() {
+        return timeNumber;
+    }
+
+    public void setTimeNumber(String timeNumber) {
+        this.timeNumber = timeNumber;
     }
 }

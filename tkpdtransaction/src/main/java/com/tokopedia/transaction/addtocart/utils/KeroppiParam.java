@@ -117,16 +117,11 @@ public class KeroppiParam {
         params.put(TOKEN, token);
         params.put(ORDER_VALUE, cartItem.getCartTotalProductPrice());
         params.put(CAT_ID, cartItem.getCartCatId());
-        params.put(PRODUCT_INSURANCE, setInsurance(cartItem));
+        params.put(PRODUCT_INSURANCE, cartItem.getCartInsuranceProd() == 1 ? "1" : "0");
         params.put(UT, ut);
         params.put(INSURANCE, "1");
 
         return params;
     }
 
-    private static String setInsurance(CartItem cartItem) {
-        if (cartItem.getCartForceInsurance() == 1) {
-            return "1";
-        } else return "0";
-    }
 }

@@ -3,6 +3,7 @@
     xmlns:context="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
+    android:minHeight="50dp"
     android:layout_height="wrap_content">
 
     <RelativeLayout
@@ -39,20 +40,29 @@
             android:layout_below="@id/fl_icon"
             android:paddingRight="2dp"
             android:layout_height="match_parent"
-            android:tint="@color/black"
-            context:src="@drawable/ic_step_arrow_past"/>
+            android:tint="@color/black"/>
     </RelativeLayout>
 
-
-    <TextView
-        android:layout_marginLeft="@dimen/margin_small"
-        android:id="@+id/tv_action"
+    <LinearLayout
+        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:textSize="@dimen/fontvs"
-        android:textColor="@color/black_54"
-        android:layout_weight="1"
-        android:paddingBottom="@dimen/padding_vs"
-        context:text="asd"/>
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/margin_vs">
+
+        <TextView
+            android:layout_marginLeft="@dimen/margin_small"
+            android:id="@+id/tv_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/fontvs"
+            android:textColor="@color/black_54"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/padding_vs"
+            context:text="asd"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
+    </LinearLayout>
 </LinearLayout>
