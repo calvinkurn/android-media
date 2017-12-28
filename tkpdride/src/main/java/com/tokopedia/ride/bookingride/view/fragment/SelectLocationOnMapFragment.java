@@ -202,6 +202,7 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
         mGoogleMap.setMyLocationEnabled(true);
         if (initialLocation != null) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(initialLocation.getLatitude(), initialLocation.getLongitude()), DEFAULT_MAP_ZOOM));
+            mPresenter.actionMapDragStopped(initialLocation.getLatitude(), initialLocation.getLongitude());
 
         } else {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
