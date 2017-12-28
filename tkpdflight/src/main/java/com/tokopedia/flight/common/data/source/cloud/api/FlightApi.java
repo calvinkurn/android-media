@@ -69,9 +69,9 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)
-    Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body VerifyRequest verifyRequest);
+    Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body VerifyRequest verifyRequest, @Header("x-tkpd-userid") String userId);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)
-    Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest);
+    Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest, @Header("x-tkpd-userid") String userId);
 }
