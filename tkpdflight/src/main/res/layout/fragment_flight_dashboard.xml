@@ -36,11 +36,12 @@
                 android:padding="@dimen/padding_med">
 
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/banner_title"
                     style="@style/TextView.Headline.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/flight_title_promo"
-                    android:layout_marginBottom="@dimen/margin_sm"/>
+                    android:layout_marginBottom="@dimen/margin_sm"
+                    android:text="@string/flight_title_promo" />
 
                 <!--Banner disini-->
                 <include layout="@layout/partial_flight_banner" />

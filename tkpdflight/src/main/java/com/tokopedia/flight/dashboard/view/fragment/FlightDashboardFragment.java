@@ -75,6 +75,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     AppCompatButton oneWayTripAppCompatButton;
     AppCompatButton roundTripAppCompatButton;
     View returnDateSeparatorView;
+    AppCompatTextView bannerTitle;
     BannerView bannerView;
 
     List<BannerDetail> bannerList;
@@ -107,7 +108,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
-        bannerView = (BannerView) view.findViewById(R.id.banner);
+        bannerTitle = view.findViewById(R.id.banner_title);
+        bannerView = view.findViewById(R.id.banner);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -387,6 +389,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }
         bannerView.setPromoList(promoUrls);
         bannerView.buildView();
+    }
+
+    @Override
+    public void hideBannerView() {
+        bannerTitle.setVisibility(View.GONE);
+        bannerView.setVisibility(View.GONE);
     }
 
     @Override

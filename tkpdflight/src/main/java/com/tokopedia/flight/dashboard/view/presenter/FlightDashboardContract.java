@@ -57,6 +57,8 @@ public interface FlightDashboardContract {
         void closePage();
 
         void renderBannerView(List<BannerDetail> bannerList);
+
+        void hideBannerView();
     }
 
     interface Presenter extends CustomerPresenter<View> {
