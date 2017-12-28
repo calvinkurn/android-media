@@ -55,6 +55,8 @@ import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.tokocash.activity.HistoryTokocashActivity;
+import com.tokopedia.digital.tokocash.activity.TopUpTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
@@ -107,6 +109,7 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -835,6 +838,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getRangeDateFormatted(Context context, long startDate, long endDate) {
         return DateLabelUtils.getRangeDateFormatted(context, startDate, endDate);
+    }
+
+    @Override
+    public Intent goToHistoryTokoCash(Context context) {
+        return HistoryTokoCashActivity.newInstance(context);
     }
 
     @Override

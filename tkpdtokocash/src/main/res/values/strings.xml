@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">tkpdtokocash</string>
+    <string name="back_to_top">Kembali ke Atas</string>
+    <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
+    <string name="desc_empty_page_tokocash">Pilih filter lain untuk melihat jenis transaksi lainnya, atau tutup filter untuk melihat semua riwayat transaksi.</string>
+    <string name="desc_empty_page_no_transaction_tokocash">Anda belum bertransaksi dengan TokoCash di rentang waktu yang anda pilih. Ayo gunakan TokoCash untuk semua kebutuhan harianmu.</string>
+    <string name="message_no_transaction">Belum ada Riwayat Transaksi </string>
+    <string name="range_date_today">Hari ini</string>
+    <string name="range_date_seven_days_ago">7 Hari Terakhir</string>
+    <string name="range_date_thirty_days_ago">30 Hari Terakhir</string>
+    <string name="range_date_this_month">Bulan ini</string>
+    <string name="range_date_last_month">Bulan Lalu</string>
+    <string name="title_empty_page_tokocash">Belum ada Riwayat Transaksi</string>
+
+</resources>
