@@ -19,8 +19,8 @@ public class FlightUrl {
     public static final String FLIGHT_ORDERS = FLIGHT_PATH + "order/list";
     public static final String FLIGHT_ORDER = FLIGHT_PATH + "order/{id}";
 
-    public static final String PULSA_BASE_URL = "https://pulsa-api-staging.tokopedia.com/v1.4";
-    public static final String BANNER_PATH = "banner";
+    public static final String PULSA_BASE_URL = "https://pulsa-api-staging.tokopedia.com/v1.4/";
+    public static final String BANNER_PATH = PULSA_BASE_URL + "banner";
 
     public static String getUrlPdf(String orderId){
         return BASE_URL + FLIGHT_PATH + "pdf/generate?order_id="+ orderId +"&pdf=filename.pdf";
