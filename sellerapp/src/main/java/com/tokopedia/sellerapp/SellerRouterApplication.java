@@ -150,7 +150,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
     private TopAdsComponent topAdsComponent;
 
-    private RemoteConfig remoteConfig;
+    protected RemoteConfig remoteConfig;
 
     @Override
     public void onCreate() {
@@ -743,5 +743,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getPhoneVerificationProfileIntent(Context context) {
         return PhoneVerificationProfileActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public Intent getSellerHomeIntent(Activity activity) {
+        return DashboardActivity.createInstance(activity);
     }
 }

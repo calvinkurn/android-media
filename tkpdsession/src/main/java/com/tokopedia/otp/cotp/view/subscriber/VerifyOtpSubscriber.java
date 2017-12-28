@@ -1,8 +1,10 @@
 package com.tokopedia.otp.cotp.view.subscriber;
 
+import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.VerifyOtpViewModel;
+import com.tokopedia.otp.data.model.ValidateOtpDomain;
 
 import rx.Subscriber;
 
@@ -10,7 +12,7 @@ import rx.Subscriber;
  * @author by nisie on 12/4/17.
  */
 
-public class VerifyOtpSubscriber extends Subscriber<VerifyOtpViewModel> {
+public class VerifyOtpSubscriber extends Subscriber<ValidateOtpDomain> {
     private final Verification.View view;
 
     public VerifyOtpSubscriber(Verification.View view) {
@@ -29,13 +31,12 @@ public class VerifyOtpSubscriber extends Subscriber<VerifyOtpViewModel> {
     }
 
     @Override
-    public void onNext(VerifyOtpViewModel verifyOtpTokoCashViewModel) {
+    public void onNext(ValidateOtpDomain validateOtpDomain) {
         view.dismissLoadingProgress();
-        if (verifyOtpTokoCashViewModel.isVerified()
-                && !verifyOtpTokoCashViewModel.getList().isEmpty())
-            view.onSuccessVerifyOTP(verifyOtpTokoCashViewModel);
+        if (validateOtpDomain.isSuccess())
+            view.onSuccessVerifyOTP();
         else {
-            view.onErrorNoAccountTokoCash();
+            view.onErrorVerifyOtp(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }
 }

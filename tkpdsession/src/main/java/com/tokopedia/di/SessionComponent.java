@@ -1,11 +1,14 @@
 package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.securityquestion.view.fragment.SecurityQuestionFragment;
-import com.tokopedia.otp.tokocashotp.view.fragment.ChooseVerificationMethodFragment;
-import com.tokopedia.otp.tokocashotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.ChooseTokocashVerificationMethodFragment;
+import com.tokopedia.otp.tokocashotp.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
 import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
@@ -38,15 +41,20 @@ public interface SessionComponent {
 
     void inject(LoginPhoneNumberFragment loginPhoneNumberFragment);
 
+    void inject(SecurityQuestionFragment securityQuestionFragment);
+
+    void inject(VerificationActivity loginFragment);
+
     void inject(VerificationFragment verificationFragment);
 
-    void inject(ChooseVerificationMethodFragment selectVerificationMethodFragment);
+    void inject(ChooseVerificationMethodFragment chooseVerificationMethodFragment);
+
+    void inject(TokoCashVerificationFragment verificationFragment);
+
+    void inject(ChooseTokocashVerificationMethodFragment selectVerificationMethodFragment);
 
     void inject(ChooseTokocashAccountFragment chooseTokocashAccountFragment);
 
     void inject(NotConnectedTokocashFragment notConnectedTokocashFragment);
-
-    void inject(SecurityQuestionFragment securityQuestionFragment);
-
 
 }

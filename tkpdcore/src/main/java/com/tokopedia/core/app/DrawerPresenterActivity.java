@@ -463,17 +463,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("NISNISLogin", "Drawer Presenter Activity onActivityResult requestcode" + " " +
+                requestCode + " resultCode "
+                + resultCode);
         if(requestCode == DrawerHelper.REQUEST_LOGIN && resultCode == Activity.RESULT_OK){
-            Log.d("NISNISLogin", "DPActivityOnActivityResult " + sessionHandler.isV4Login
-                    (MainApplication.getAppContext()));
-            onSuccessLogin();
+            updateDrawerData();
         }
-    }
-
-    protected void onSuccessLogin() {
-        sessionHandler = new SessionHandler(MainApplication.getAppContext());
-        Log.d("NISNISLogin", "DPActivityOnActivityResult " + sessionHandler.isV4Login
-                (MainApplication.getAppContext()));
-        updateDrawerData();
     }
 }

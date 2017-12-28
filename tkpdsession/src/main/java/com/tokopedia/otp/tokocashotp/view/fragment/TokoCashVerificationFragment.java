@@ -7,7 +7,6 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -48,7 +47,7 @@ import javax.inject.Inject;
  * @author by nisie on 11/30/17.
  */
 
-public class VerificationFragment extends BaseDaggerFragment implements Verification.View {
+public class TokoCashVerificationFragment extends BaseDaggerFragment implements Verification.View {
 
     private static final String ARGS_DATA = "ARGS_DATA";
 
@@ -81,7 +80,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     VerificationPresenter presenter;
 
     public static Fragment createInstance(Bundle bundle) {
-        Fragment fragment = new VerificationFragment();
+        Fragment fragment = new TokoCashVerificationFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

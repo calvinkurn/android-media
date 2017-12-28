@@ -13,14 +13,18 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.adapter.VerificationMethodAdapter;
 import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * @author by nisie on 11/29/17.
@@ -31,6 +35,9 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     RecyclerView methodList;
     VerificationMethodAdapter adapter;
+
+    @Inject
+    GlobalCacheManager cacheManager;
 
     @Override
     protected String getScreenName() {
@@ -79,10 +86,15 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     private ArrayList<MethodItem> getList() {
-        if (getArguments() != null && getArguments().getParcelableArrayList(VerificationActivity
-                .PARAM_METHOD_LIST) != null)
-            return getArguments().getParcelableArrayList(VerificationActivity.PARAM_METHOD_LIST);
-        else return new ArrayList<>();
+        if (cacheManager != null
+                && cacheManager.getConvertObjData(VerificationActivity.PASS_MODEL,
+                VerificationPassModel.class) != null) {
+            VerificationPassModel passModel = cacheManager.getConvertObjData(VerificationActivity
+                    .PASS_MODEL, VerificationPassModel.class);
+            return passModel.getListAvailableMethods();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @Override

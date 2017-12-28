@@ -66,8 +66,7 @@ public class ValidateVerifyPhoneNumberUseCase extends UseCase<ValidateVerifyPhon
         return validateOtpUseCase.createObservable(
                 ValidateOtpUseCase.getParam(
                         requestParams.getInt(ValidateOtpUseCase.PARAM_OTP_TYPE, -1),
-                        requestParams.getString(ValidateOtpUseCase.PARAM_CODE, ""),
-                        requestParams.getString(ValidateOtpUseCase.PARAM_USER, "")
+                        requestParams.getString(ValidateOtpUseCase.PARAM_CODE, "")
                 ))
                 .flatMap(new Func1<ValidateOtpDomain, Observable<ValidateVerifyPhoneNumberDomain>>() {
                     @Override
@@ -81,7 +80,7 @@ public class ValidateVerifyPhoneNumberUseCase extends UseCase<ValidateVerifyPhon
     public static RequestParams getParam(int otpType, String otpCode, String phoneNumber, String
             userId) {
         RequestParams params = RequestParams.create();
-        params.putAll(ValidateOtpUseCase.getParam(otpType, otpCode, userId).getParameters());
+        params.putAll(ValidateOtpUseCase.getParam(otpType, otpCode).getParameters());
         params.putAll(VerifyPhoneNumberUseCase.getParam(userId, phoneNumber).getParameters());
         return params;
     }

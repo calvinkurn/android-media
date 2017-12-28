@@ -137,7 +137,9 @@ public class ErrorHandler {
 
     public static String getErrorMessage(Throwable e) {
         Context context = MainApplication.getAppContext();
-        if (e instanceof UnknownHostException) {
+        if (BuildConfig.DEBUG) {
+            return e.getLocalizedMessage();
+        } else if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection) + " " +
                     context.getString(R.string.code_error) + ErrorCode.UNKNOWN_HOST_EXCEPTION;
         } else if (e instanceof SocketTimeoutException) {
@@ -196,8 +198,6 @@ public class ErrorHandler {
             else {
                 return e.getLocalizedMessage();
             }
-        } else if (BuildConfig.DEBUG) {
-            return e.getLocalizedMessage();
         } else if (e instanceof MessageErrorException) {
             return e.getLocalizedMessage();
         } else {

@@ -7,20 +7,18 @@ import android.os.Parcelable;
  * @author by nisie on 11/30/17.
  */
 
-public class VerificationViewModel implements Parcelable{
+public class VerificationViewModel implements Parcelable {
 
     private String appScreen;
     private int type;
     private int iconResId;
     private String message;
-    private String phoneNumber;
 
-    public VerificationViewModel(int type, int iconResId, String message, String phoneNumber,
+    public VerificationViewModel(int type, int iconResId, String message,
                                  String appScreen) {
         this.type = type;
         this.iconResId = iconResId;
         this.message = message;
-        this.phoneNumber = phoneNumber;
         this.appScreen = appScreen;
     }
 
@@ -29,7 +27,6 @@ public class VerificationViewModel implements Parcelable{
         type = in.readInt();
         iconResId = in.readInt();
         message = in.readString();
-        phoneNumber = in.readString();
     }
 
     public static final Creator<VerificationViewModel> CREATOR = new Creator<VerificationViewModel>() {
@@ -55,7 +52,6 @@ public class VerificationViewModel implements Parcelable{
         dest.writeInt(type);
         dest.writeInt(iconResId);
         dest.writeString(message);
-        dest.writeString(phoneNumber);
     }
 
     public String getAppScreen() {
@@ -74,7 +70,4 @@ public class VerificationViewModel implements Parcelable{
         return message;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
 }

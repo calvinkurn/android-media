@@ -5,11 +5,13 @@ package com.tokopedia.otp.cotp.view.viewmodel;
  */
 
 public class RequestOtpViewModel {
-    private final int attemptLeft;
     private final boolean isSuccess;
 
-    public RequestOtpViewModel(int otpAttemptLeft, boolean sent) {
-        this.attemptLeft = otpAttemptLeft;
-        this.isSuccess = sent;
+    public RequestOtpViewModel(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
     }
 }

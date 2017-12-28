@@ -871,4 +871,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getPhoneVerificationProfileIntent(Context context) {
         return PhoneVerificationProfileActivity.getCallingIntent(context);
     }
+
 }

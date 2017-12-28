@@ -46,14 +46,4 @@ public class MakeLoginUseCase extends UseCase<MakeLoginDomain> {
                 userId));
         return params;
     }
-
-    public static RequestParams getParamLoginSQ(String userId, String uuid) {
-        RequestParams params = RequestParams.create();
-        params.putString(PARAM_USER_ID, userId);
-        params.putString(PARAM_UUID, uuid);
-        params.putAll(AuthUtil.generateParamsNetworkObject(MainApplication.getAppContext(),
-                params.getParameters(),
-                userId));
-        return params;
-    }
 }

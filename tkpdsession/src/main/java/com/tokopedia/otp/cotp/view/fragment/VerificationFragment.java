@@ -26,18 +26,17 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
-import com.tokopedia.otp.cotp.view.viewmodel.VerifyOtpViewModel;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
-import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 
 import java.util.concurrent.TimeUnit;
 
@@ -53,11 +52,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final int COUNTDOWN_LENGTH = 90;
     private static final int INTERVAL = 1000;
-    private static final String RESEND = "Kirim ulang";
-    private static final String USE_OTHER_METHOD = "gunakan metode verifikasi lain";
 
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
+
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 243;
 
     ImageView icon;
     TextView message;
@@ -75,9 +74,13 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private boolean isRunningTimer = false;
     protected LocalCacheHandler cacheHandler;
     private VerificationViewModel viewModel;
+    private VerificationPassModel verificationPassModel;
 
     @Inject
     VerificationPresenter presenter;
+
+    @Inject
+    GlobalCacheManager globalCacheManager;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new VerificationFragment();
@@ -100,10 +103,17 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            viewModel = savedInstanceState.getParcelable(ARGS_DATA);
-        } else if (getArguments() != null) {
+
+        if (getArguments() != null) {
             viewModel = createViewModel(getArguments());
+        } else {
+            getActivity().finish();
+        }
+
+        if (globalCacheManager != null && globalCacheManager.getConvertObjData(VerificationActivity.PASS_MODEL,
+                VerificationPassModel.class) != null) {
+            verificationPassModel = globalCacheManager.getConvertObjData(VerificationActivity.PASS_MODEL,
+                    VerificationPassModel.class);
         } else {
             getActivity().finish();
         }
@@ -113,10 +123,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private VerificationViewModel createViewModel(Bundle bundle) {
         return new VerificationViewModel(
-                bundle.getInt(VerificationActivity.PARAM_FRAGMENT_TYPE, -1),
+                bundle.getInt(VerificationActivity.PARAM_DEFAULT_FRAGMENT_TYPE, -1),
                 bundle.getInt(VerificationActivity.PARAM_IMAGE, -1),
                 bundle.getString(VerificationActivity.PARAM_MESSAGE, ""),
-                bundle.getString(VerificationActivity.PARAM_PHONE_NUMBER, ""),
                 bundle.getString(VerificationActivity.PARAM_APP_SCREEN, "")
         );
     }
@@ -194,7 +203,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
                         && inputOtp.length() == 6) {
-                    presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
+                    presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
                     return true;
                 }
                 return false;
@@ -204,7 +213,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
+                presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
             }
         });
     }
@@ -237,7 +246,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         ImageHandler.loadImageWithId(icon, imageId);
         message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
         verifyButton.setEnabled(false);
-        presenter.requestOTP(viewModel);
+        presenter.requestOTP(viewModel, verificationPassModel);
     }
 
     @Override
@@ -247,16 +256,18 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onSuccessVerifyOTP(VerifyOtpViewModel verifyOtpTokoCashViewModel) {
+    public void onSuccessVerifyOTP() {
         resetCountDown();
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
-                new ChooseTokoCashAccountViewModel(verifyOtpTokoCashViewModel.getList(),
-                        viewModel.getPhoneNumber(),
-                        verifyOtpTokoCashViewModel.getKey()));
-        intent.putExtras(bundle);
-        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+
+    }
+
+    @Override
+    public void onGoToPhoneVerification() {
+        getActivity().setResult(Activity.RESULT_OK);
+        Intent intent = PhoneVerificationActivationActivity.getCallingIntent(getActivity());
+        startActivity(intent);
         getActivity().finish();
     }
 
@@ -298,13 +309,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void dismissLoadingProgress() {
         if (progressDialog != null)
             progressDialog.dismiss();
-    }
-
-    @Override
-    public void onErrorNoAccountTokoCash() {
-        startActivity(NotConnectedTokocashActivity.getNoTokocashAccountIntent(getActivity(),
-                viewModel.getPhoneNumber()));
-        getActivity().finish();
     }
 
     @Override
@@ -351,33 +355,49 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.requestOTP(viewModel);
+                presenter.requestOTP(viewModel, verificationPassModel);
             }
         });
 
         TextView useOtherMethod = finishCountdownView.findViewById(R.id.use_other_method);
-        useOtherMethod.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToOtherVerificationMethod();
+        TextView or = finishCountdownView.findViewById(R.id.or);
 
-            }
-        });
+        if (verificationPassModel != null
+                && verificationPassModel.getListAvailableMethods().size() > 1) {
+            or.setVisibility(View.VISIBLE);
+            useOtherMethod.setVisibility(View.VISIBLE);
+
+            useOtherMethod.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToOtherVerificationMethod();
+                }
+            });
+        } else {
+            or.setVisibility(View.GONE);
+            useOtherMethod.setVisibility(View.GONE);
+        }
     }
 
     private void setLimitReachedCountdownText() {
-        countdownText.setVisibility(View.VISIBLE);
+
         finishCountdownView.setVisibility(View.GONE);
         noCodeText.setVisibility(View.GONE);
 
-        countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
-        countdownText.setText(R.string.login_with_other_method);
-        countdownText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToOtherVerificationMethod();
-            }
-        });
+        if (verificationPassModel != null
+                && verificationPassModel.getListAvailableMethods().size() > 1) {
+            countdownText.setVisibility(View.VISIBLE);
+            countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+            countdownText.setText(R.string.login_with_other_method);
+            countdownText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToOtherVerificationMethod();
+                }
+            });
+        } else {
+            countdownText.setVisibility(View.GONE);
+        }
 
     }
 

@@ -15,6 +15,10 @@ import rx.Observable;
 
 /**
  * @author by nisie on 10/21/17.
+ * params :
+ * - mode : use static parameter from RequestOtpUseCase
+ * - otp_type : use static parameter from RequestOtpUseCase
+ *
  */
 
 public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
@@ -27,6 +31,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
 
     public static final String MODE_SMS = "sms";
     public static final String MODE_CALL = "call";
+    public static final String MODE_EMAIL = "email";
 
     public static final int OTP_TYPE_SECURITY_QUESTION = 13;
     public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 11;
@@ -56,10 +61,22 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
         return param;
     }
 
-    public static RequestParams getParamBeforeLogin(String mode, int otpType, String tempUserId) {
+    public static RequestParams getParamEmailAfterLogin(String mode, String email, int otpType) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_MODE, mode);
         param.putInt(PARAM_OTP_TYPE, otpType);
+        param.putString(PARAM_EMAIL, email);
+        param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(), param
+                .getParameters()));
+        return param;
+    }
+
+    public static RequestParams getParamBeforeLogin(String mode, String phone, int otpType, String
+            tempUserId) {
+        RequestParams param = RequestParams.create();
+        param.putString(PARAM_MODE, mode);
+        param.putInt(PARAM_OTP_TYPE, otpType);
+        param.putString(PARAM_MSISDN, phone);
         param.putAll(AuthUtil.generateParamsNetworkObject(MainApplication.getAppContext(),
                 RequestParams.EMPTY.getParameters(), tempUserId));
         return param;
@@ -68,7 +85,6 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
     public static RequestParams getParamEmailBeforeLogin(String mode, String email, int otpType,
                                                          String tempUserId) {
         RequestParams param = RequestParams.create();
-        param.putString(PARAM_MODE, mode);
         param.putString(PARAM_EMAIL, email);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putAll(AuthUtil.generateParamsNetworkObject(MainApplication.getAppContext(),

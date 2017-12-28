@@ -110,4 +110,6 @@ public interface TkpdCoreRouter {
     Intent getPhoneVerificationProfileIntent(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);
+
+    Intent getSellerHomeIntent(Activity activity);
 }

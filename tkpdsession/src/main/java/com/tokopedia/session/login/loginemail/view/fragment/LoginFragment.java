@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -42,12 +43,17 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
@@ -92,6 +98,10 @@ public class LoginFragment extends BaseDaggerFragment
     private static final int REQUEST_LOGIN_WEBVIEW = 107;
     private static final int REQUEST_ACTIVATE_ACCOUNT = 108;
 
+    public static final int TYPE_SQ_PHONE = 1;
+    public static final int TYPE_SQ_EMAIL = 2;
+
+
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
     View loginView;
@@ -109,6 +119,11 @@ public class LoginFragment extends BaseDaggerFragment
     @Inject
     LoginPresenter presenter;
 
+    @Inject
+    GlobalCacheManager cacheManager;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new LoginFragment();
@@ -144,7 +159,7 @@ public class LoginFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         UserAuthenticationAnalytics.setActiveLogin();
         callbackManager = CallbackManager.Factory.create();
-
+        sessionHandler.clearToken();
     }
 
     @Nullable
@@ -462,11 +477,43 @@ public class LoginFragment extends BaseDaggerFragment
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
 
-        startActivityForResult(
-                SecurityQuestionActivity.getCallingIntent(getActivity(),
-                        securityDomain,
-                        fullName, email, phone),
-                REQUEST_SECURITY_QUESTION);
+        VerificationPassModel passModel = new VerificationPassModel(phone, email,
+                getListAvailableMethod(securityDomain, phone), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
+        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
+                securityDomain.getUserCheckSecurity2());
+
+//        startActivityForResult(
+//                VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
+//                        securityDomain.getUserCheckSecurity2()),
+//                REQUEST_SECURITY_QUESTION);
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        getActivity().finish();
+
+    }
+
+    private ArrayList<MethodItem> getListAvailableMethod(SecurityDomain securityDomain, String phone) {
+        ArrayList<MethodItem> list = new ArrayList<>();
+        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
+            list.add(new MethodItem(
+                    VerificationActivity.TYPE_SMS,
+                    R.drawable.ic_verification_sms,
+                    MethodItem.getSmsMethodText(phone)
+            ));
+            list.add(new MethodItem(
+                    VerificationActivity.TYPE_PHONE_CALL,
+                    R.drawable.ic_verification_call,
+                    MethodItem.getCallMethodText(phone)
+            ));
+        }
+        return list;
     }
 
     @Override

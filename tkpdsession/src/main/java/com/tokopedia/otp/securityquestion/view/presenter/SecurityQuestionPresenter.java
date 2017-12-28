@@ -116,6 +116,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamBeforeLogin(
                         RequestOtpUseCase.MODE_SMS,
+                        "",
                         RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                         sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
                 new RequestOTPSecurityQuestionSubscriber(viewListener));
@@ -128,6 +129,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamBeforeLogin(
                         RequestOtpUseCase.MODE_CALL,
+                        "",
                         RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                         sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
                 new RequestOTPSecurityQuestionSubscriber(viewListener));
@@ -139,7 +141,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
         viewListener.disableOtpButton();
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamEmailBeforeLogin(
-                        RequestOtpUseCase.MODE_SMS,
+                        RequestOtpUseCase.MODE_EMAIL,
                         email,
                         RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                         sessionHandler.getTempLoginSession(MainApplication.getAppContext())),

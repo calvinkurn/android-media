@@ -15,29 +15,41 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
-import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.session.R;
-
-import java.util.ArrayList;
+import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 
 /**
  * @author by nisie on 11/29/17.
+ *         <p>
+ *         Please build VerificationPassModel and put it to cachemanager with key PASS_MODEL.
+ *         This is to prevent TransactionTooLarge.
  */
 
 public class VerificationActivity extends TActivity implements HasComponent {
 
+    public static final String PASS_MODEL = "VerificationPassModel";
+
     public static final int TYPE_SMS = 1;
     public static final int TYPE_PHONE_CALL = 2;
+    public static final int TYPE_EMAIL = 3;
 
-    public static final String PARAM_FRAGMENT_TYPE = "type";
+    public static final String PARAM_DEFAULT_FRAGMENT_TYPE = "fragmentType";
+    public static final String PARAM_OTP_TYPE = "otpType";
+
     public static final String PARAM_IMAGE = "image";
     public static final String PARAM_PHONE_NUMBER = "phone";
-    public static final String PARAM_MESSAGE = "message";
+    public static final String PARAM_EMAIL = "email";
     public static final String PARAM_APP_SCREEN = "app_screen";
-    public static final String PARAM_METHOD_LIST = "method_list";
+    public static final String PARAM_MESSAGE = "message";
 
     private static final String FIRST_FRAGMENT_TAG = "first";
     private static final String CHOOSE_FRAGMENT_TAG = "choose";
+
+    private static final int TYPE_SECURITY_QUESTION = 101;
+
+    private VerificationPassModel passModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,32 +59,43 @@ public class VerificationActivity extends TActivity implements HasComponent {
     }
 
     private void initView() {
+
+        setupPassdata();
+
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
 
         Fragment fragment;
-        fragment = getFragment(getIntent().getExtras().getInt(PARAM_FRAGMENT_TYPE, -1), bundle);
+        fragment = getFragment(getIntent().getExtras().getInt(PARAM_DEFAULT_FRAGMENT_TYPE, -1), bundle);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
         fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         fragmentTransaction.commit();
+    }
 
-        Log.d("NISNIS", getSupportFragmentManager().getBackStackEntryCount() + " " + (
-                getSupportFragmentManager().getBackStackEntryCount() > 0 ? getSupportFragmentManager()
-                        .getBackStackEntryAt
-                                (getSupportFragmentManager()
-                                        .getBackStackEntryCount() - 1).getName() : "No fragment at " +
-                        "backstack"));
+    private void setupPassdata() {
+        if (globalCacheManager != null
+                && globalCacheManager.getConvertObjData(PASS_MODEL, VerificationPassModel.class) != null) {
+            passModel = globalCacheManager.getConvertObjData(PASS_MODEL, VerificationPassModel.class);
+        } else {
+            Log.d(VerificationActivity.class.getSimpleName(), "Error no pass data");
+            finish();
+        }
     }
 
     private Fragment getFragment(int type, Bundle bundle) {
         Fragment fragment;
         switch (type) {
             case TYPE_SMS: {
-                String phoneNumber = bundle.getString(PARAM_PHONE_NUMBER, "");
+                String phoneNumber = passModel.getPhoneNumber();
                 fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
+                break;
+            }
+            case TYPE_EMAIL: {
+                String email = passModel.getEmail();
+                fragment = VerificationFragment.createInstance(createEmailBundle(email));
                 break;
             }
             default: {
@@ -81,30 +104,6 @@ public class VerificationActivity extends TActivity implements HasComponent {
             }
         }
         return fragment;
-    }
-
-    private String createSmsMessage(String phoneNumber) {
-        if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to_sms) + " " + getMaskedPhone(phoneNumber);
-        } else {
-            return "";
-        }
-    }
-
-    private String getMaskedPhone(String phoneNumber) {
-        String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{4})(\\d{4})(\\d+)",
-                "$1-$2-$3");
-        return String.format(
-                ("<b>%s</b>"), masked);
-    }
-
-    private String createCallMessage(String phoneNumber) {
-        if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to_call)
-                    + " " + getMaskedPhone(phoneNumber);
-        } else {
-            return "";
-        }
     }
 
     @Override
@@ -122,14 +121,15 @@ public class VerificationActivity extends TActivity implements HasComponent {
         return getApplicationComponent();
     }
 
-
-    public static Intent getSmsVerificationIntent(Context context, String phoneNumber,
-                                                  ArrayList<MethodItem> listAvailableMethod) {
+    public static Intent getSecurityQuestionVerificationIntent(Context context, int
+            typeSecurityQuestion) {
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
-        bundle.putInt(PARAM_FRAGMENT_TYPE, TYPE_SMS);
-        bundle.putParcelableArrayList(PARAM_METHOD_LIST, listAvailableMethod);
+        if (typeSecurityQuestion == LoginFragment.TYPE_SQ_PHONE) {
+            bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_SMS);
+        } else {
+            bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_EMAIL);
+        }
         intent.putExtras(bundle);
         return intent;
     }
@@ -154,7 +154,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
                 VerificationFragment))) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            String phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER, "");
+            String phoneNumber = passModel.getPhoneNumber();
 
             Fragment fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -172,7 +172,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
                 VerificationFragment))) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            String phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER, "");
+            String phoneNumber = passModel.getPhoneNumber();
 
             Fragment fragment = VerificationFragment.createInstance(createCallBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -186,7 +186,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private Bundle createSmsBundle(String phoneNumber) {
         Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_FRAGMENT_TYPE, TYPE_SMS);
+        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_SMS);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber));
@@ -196,12 +196,55 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private Bundle createCallBundle(String phoneNumber) {
         Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_FRAGMENT_TYPE, TYPE_PHONE_CALL);
+        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_PHONE_CALL);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_call);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createCallMessage(phoneNumber));
         bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_CALL);
         return bundle;
+    }
+
+    private Bundle createEmailBundle(String email) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_EMAIL);
+        bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
+        bundle.putString(PARAM_EMAIL, email);
+        bundle.putString(PARAM_MESSAGE, createEmailMessage(email));
+        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_CALL);
+        return bundle;
+    }
+
+    private String getMaskedPhone(String phoneNumber) {
+        String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{4})(\\d{4})(\\d+)",
+                "$1-$2-$3");
+        return String.format(
+                ("<b>%s</b>"), masked);
+    }
+
+    private String createSmsMessage(String phoneNumber) {
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            return getString(R.string.verification_code_sent_to) + " " + getMaskedPhone(phoneNumber);
+        } else {
+            return "";
+        }
+    }
+
+    private String createCallMessage(String phoneNumber) {
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            return getString(R.string.verification_code_sent_to_call)
+                    + " " + getMaskedPhone(phoneNumber);
+        } else {
+            return "";
+        }
+    }
+
+    private String createEmailMessage(String email) {
+        if (!TextUtils.isEmpty(email)) {
+            return getString(R.string.verification_code_sent_to)
+                    + " <b>" + email + "</b>";
+        } else {
+            return "";
+        }
     }
 
     @Override

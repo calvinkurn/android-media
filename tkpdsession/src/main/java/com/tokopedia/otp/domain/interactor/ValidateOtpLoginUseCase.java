@@ -55,8 +55,7 @@ public class ValidateOtpLoginUseCase extends UseCase<ValidateOtpLoginDomain> {
                                                            final ValidateOtpLoginDomain domain) {
         return validateOtpUseCase.createObservable(ValidateOtpUseCase.getParam(
                 requestParams.getInt(ValidateOtpUseCase.PARAM_OTP_TYPE, -1),
-                requestParams.getString(ValidateOtpUseCase.PARAM_CODE, ""),
-                requestParams.getString(ValidateOtpUseCase.PARAM_USER, "")
+                requestParams.getString(ValidateOtpUseCase.PARAM_CODE, "")
         )).flatMap(new Func1<ValidateOtpDomain, Observable<ValidateOtpLoginDomain>>() {
             @Override
             public Observable<ValidateOtpLoginDomain> call(ValidateOtpDomain validateOTPDomain) {
@@ -88,7 +87,7 @@ public class ValidateOtpLoginUseCase extends UseCase<ValidateOtpLoginDomain> {
 
     public static RequestParams getParam(int otpType, String otp, String tempUserId) {
         RequestParams params = RequestParams.create();
-        params.putAll(ValidateOtpUseCase.getParam(otpType, otp, tempUserId).getParameters());
+        params.putAll(ValidateOtpUseCase.getParam(otpType, otp).getParameters());
         params.putAll(MakeLoginUseCase.getParam(tempUserId).getParameters());
         return params;
     }

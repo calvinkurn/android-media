@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.OldSessionRouter;
@@ -54,6 +56,8 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresenter> implements WelcomeFragmentView{
+
+    private static final int REQUEST_LOGIN = 101;
 
     @BindView(R2.id.background)
     ImageView background;
@@ -167,10 +171,11 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-                startActivity(intent);
+                if(MainApplication.getAppContext() instanceof TkpdCoreRouter){
+                    Intent intent = ((TkpdCoreRouter)MainApplication.getAppContext())
+                            .getLoginIntent(getActivity());
+                    startActivityForResult(intent, REQUEST_LOGIN);
+                }
             }
         });
         isNotFirstRun = new LocalCacheHandler(getActivity(), "FirstRun");
@@ -412,5 +417,24 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
     void showNeverAskForGetAccounts() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("NISNISLogin", "WelcomeFragment onActivityResult requestcode" + " " + requestCode +
+                " resultCode "
+                + resultCode);
+        if(requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK){
+            moveToSellerHome();
+        }
+    }
+
+    private void moveToSellerHome() {
+        if(MainApplication.getAppContext() instanceof TkpdCoreRouter){
+            Intent intent = ((TkpdCoreRouter)MainApplication.getAppContext())
+                    .getSellerHomeIntent(getActivity());
+            startActivity(intent);
+        }
     }
 }
