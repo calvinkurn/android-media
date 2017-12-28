@@ -24,11 +24,6 @@ public class GetWarningSubscriber extends rx.Subscriber<WarningViewModel> {
 
     @Override
     public void onError(Throwable e) {
-        Log.d(this.getClass().getSimpleName(), e.getMessage());
-        for (int i = 0; i < e.getStackTrace().length; i++) {
-            StackTraceElement element = e.getStackTrace()[i];
-            Logger.dump(this.getClass().getSimpleName(), element.toString());
-        }
         view.onGetWarningFailed();
     }
 
