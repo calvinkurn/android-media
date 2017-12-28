@@ -4,11 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     >
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:id="@+id/main_view"
         >
         <LinearLayout
             android:layout_width="match_parent"
@@ -170,4 +171,10 @@
                 />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loading_view"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"/>
 </RelativeLayout>

@@ -21,9 +21,6 @@ import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -48,6 +45,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private RecyclerView warningRecyclerView;
     private TextView nextButton;
     private WarningViewModel viewModel;
+    private View mainView;
+    private View loadingView;
     private Unbinder unbinder;
 
     public static ChangePhoneNumberWarningFragment newInstance() {
@@ -82,6 +81,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         tokocashValue = view.findViewById(R.id.tokocash_value);
         warningRecyclerView = view.findViewById(R.id.warning_rv);
         nextButton = view.findViewById(R.id.next_button);
+        mainView = view.findViewById(R.id.main_view);
+        loadingView = view.findViewById(R.id.loading_view);
 
         warningRecyclerView.setFocusable(false);
 
@@ -125,6 +126,18 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                         .changePhoneNumberWarningModule(new ChangePhoneNumberWarningModule())
                         .build();
         resolutionDetailComponent.inject(this);
+    }
+
+    @Override
+    public void showLoading() {
+        mainView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void dismissLoading() {
+        loadingView.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
     }
 
     @Override

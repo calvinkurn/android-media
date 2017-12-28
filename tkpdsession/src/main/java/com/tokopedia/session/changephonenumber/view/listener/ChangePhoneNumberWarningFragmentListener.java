@@ -10,6 +10,10 @@ import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
 public interface ChangePhoneNumberWarningFragmentListener {
     public interface View extends CustomerView {
+        void showLoading();
+
+        void dismissLoading();
+
         void onGetWarningSuccess(WarningViewModel warningViewModel);
 
         void onGetWarningError(String message);
