@@ -1,7 +1,5 @@
 package com.tokopedia.transaction.addtocart.utils;
 
-import android.util.Log;
-
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.transaction.addtocart.model.OrderData;
@@ -9,9 +7,6 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
-import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
-
-import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 11/18/16.
@@ -58,11 +53,6 @@ public class KeroppiParam {
         params.put(ORDER_VALUE, getRawPrice(productDetail.getProductPrice()));
         params.put(CAT_ID, productDetail.getProductCatId());
 
-        Log.e("PARAMS__", "paramsKero");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
-
         return params;
     }
 
@@ -93,11 +83,6 @@ public class KeroppiParam {
         params.put(PRODUCT_INSURANCE, orderData.getMustInsurance().equals("1") ? "1" : "0");
         String rawPrice = getRawPrice(orderData.getPriceTotal());
         params.put(ORDER_VALUE, rawPrice);
-
-        Log.e("PARAMS__", "paramsKeroOrderData");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
 
         return params;
     }
@@ -135,32 +120,7 @@ public class KeroppiParam {
         params.put(UT, ut);
         params.put(INSURANCE, "1");
 
-        Log.e("PARAMS__", "paramsKeroCart");
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            Log.e(entry.getKey(), entry.getValue());
-        }
-
         return params;
-    }
-
-    public static void logger(String tag, String bodyResponse){
-        int chunkSize = 3000;
-        Log.e("RESPONSE", tag);
-        Log.e("RESPONSE_LENGTH", String.valueOf(bodyResponse.length()));
-        if (bodyResponse.length() > chunkSize) {
-            Log.e("RESPONSE", "sb.length = " + bodyResponse.length());
-            int chunkCount = bodyResponse.length() / chunkSize;
-            for (int i = 0; i <= chunkCount; i++) {
-                int max = chunkSize * (i + 1);
-                if (max >= bodyResponse.length()) {
-                    Log.e("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(chunkSize * i));
-                } else {
-                    Log.e("RESPONSE", "chunk " + i + " of " + chunkCount + ":" + bodyResponse.substring(chunkSize * i, max));
-                }
-            }
-        } else {
-            Log.e("RESPONSE", bodyResponse);
-        }
     }
 
 }

@@ -303,7 +303,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         insuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spInsurance.setAdapter(insuranceAdapter);
         spInsurance.setOnItemSelectedListener(this);
-//        orderData.setMustInsurance(String.valueOf(mProductDetail.getProductMustInsurance()));
         switch (data.getProductMustInsurance()) {
             case 1:
                 spInsurance.setSelection(0);
