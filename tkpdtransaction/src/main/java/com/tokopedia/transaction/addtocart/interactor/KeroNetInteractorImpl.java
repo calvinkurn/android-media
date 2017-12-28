@@ -2,12 +2,14 @@ package com.tokopedia.transaction.addtocart.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.addtocart.model.kero.Rates;
+import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -50,6 +52,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
             @Override
             public void onNext(Response<String> stringResponse) {
+                KeroppiParam.logger("calculateShipping", stringResponse.body());
                 if (stringResponse.body() != null) {
                     Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
                     listener.onSuccess(rates.getData());
@@ -84,6 +87,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
             @Override
             public void onNext(Response<String> response) {
+                KeroppiParam.logger("calculateKeroCartAddressShipping", response.body());
                 if (response.isSuccessful()) {
                     Rates rates = new Gson().fromJson(response.body(), Rates.class);
                     listener.onSuccess(rates.getData().getAttributes());

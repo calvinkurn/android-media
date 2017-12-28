@@ -303,14 +303,17 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         insuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spInsurance.setAdapter(insuranceAdapter);
         spInsurance.setOnItemSelectedListener(this);
+//        orderData.setMustInsurance(String.valueOf(mProductDetail.getProductMustInsurance()));
         switch (data.getProductMustInsurance()) {
             case 1:
                 spInsurance.setSelection(0);
                 spInsurance.setEnabled(false);
+                orderData.setMustInsurance("1");
                 break;
             default:
                 spInsurance.setSelection(1);
                 spInsurance.setEnabled(true);
+                orderData.setMustInsurance("0");
                 break;
         }
         if (data.getProductPreorder() != null
@@ -628,7 +631,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
-                setInsuranceInfoButtonVisibility(product);
+                if (product.getInsuranceMode() != null) {
+                    setInsuranceInfoButtonVisibility(product);
+                }
             }
             if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
                 arrowMaxHour.setText(product.getMaxHoursId());
