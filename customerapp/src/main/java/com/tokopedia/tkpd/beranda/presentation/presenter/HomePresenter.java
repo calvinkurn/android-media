@@ -48,11 +48,8 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 
 import java.util.List;
 
@@ -88,8 +85,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Inject
     HomeDataMapper homeDataMapper;
     @Inject
-    GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
-    @Inject
     GetFeedsUseCase getFeedsUseCase;
     @Inject
     SessionHandler sessionHandler;
@@ -109,6 +104,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
         this.pagingHandler = new PagingHandler();
+        resetPageFeed();
     }
 
     @Override
@@ -125,22 +121,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getTopPicksUseCase.getExecuteObservableAsync(getTopPicksUseCase.getRequestParam()),
-                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), homeDataMapper)
-                .doOnNext(fetchFirstPageFeed());
-    }
-
-    @NonNull
-    private Action1<List<Visitable>> fetchFirstPageFeed() {
-        return new Action1<List<Visitable>>() {
-            @Override
-            public void call(List<Visitable> visitables) {
-                pagingHandler.resetPage();
-                currentCursor = "";
-                getFirstPageFeedsCloudUseCase.execute(
-                        getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
-                        new GetFirstPageFeedsSubscriber(feedListener, pagingHandler.getPage()));
-            }
-        };
+                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), homeDataMapper);
     }
 
     @Override
@@ -345,6 +326,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     public void setFeedListener(FeedPlus.View feedListener) {
         this.feedListener = feedListener;
+    }
+
+    public void resetPageFeed() {
+        pagingHandler.setPage(0);
+        if (getFeedsUseCase != null) {
+            getFeedsUseCase.unsubscribe();
+        }
     }
 
     public void fetchNextPageFeed() {

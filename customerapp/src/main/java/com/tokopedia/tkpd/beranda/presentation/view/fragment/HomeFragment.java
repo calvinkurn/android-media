@@ -123,7 +123,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private String[] tabSectionTitle;
     private VerticalSpaceItemDecoration spaceItemDecoration;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
-    private String firstCursor = "";
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
 
@@ -193,9 +192,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initTabNavigation();
+        initListener();
         initAdapter();
         initRefreshLayout();
-        initListener();
         fetchRemoteConfig();
     }
 
@@ -265,6 +264,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.addItemDecoration(spaceItemDecoration);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new HomeRecycleScrollListener(layoutManager, this));
+        if (SessionHandler.isV4Login(getContext())) {
+            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
+        }
     }
 
     @Override
@@ -573,6 +575,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
+        presenter.resetPageFeed();
         presenter.getHomeData();
         presenter.getHeaderData(false);
     }
@@ -657,7 +660,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setFirstCursor(String firstCursor) {
-        this.firstCursor = firstCursor;
+
     }
 
     @Override
@@ -717,9 +720,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
-        adapter.addItems(listFeed);
-        adapter.notifyDataSetChanged();
-        recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
+
     }
 
     @Override
@@ -777,8 +778,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
-        adapter.addItems(listFeed);
-        adapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -790,7 +790,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onRetryClicked() {
         adapter.removeRetry();
         adapter.showLoading();
-        recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
         presenter.fetchCurrentPageFeed();
     }
 
@@ -828,15 +827,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct, boolean canShowTopads) {
-        adapter.showEmpty();
-        adapter.addItems(recentProduct);
-        adapter.notifyDataSetChanged();
+
     }
 
     @Override
     public void onShowEmpty(boolean canShowTopads) {
-        adapter.showEmpty();
-        adapter.notifyDataSetChanged();
+
     }
 
     @Override
