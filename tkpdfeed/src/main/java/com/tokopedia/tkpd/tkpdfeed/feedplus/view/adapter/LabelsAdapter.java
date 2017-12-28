@@ -22,6 +22,7 @@ import java.util.List;
 public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder> {
 
     private static final String DEFAULT_WHITE = "#ffffff";
+    private static final double MEDIAN_VALUE = 135;
     private List<LabelsViewModel> listLabel;
 
     public LabelsAdapter() {
@@ -57,7 +58,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder
 
     private int getInverseColor(int color) {
         double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
-        return y >= 128 ? Color.BLACK : Color.WHITE;
+        return y >= MEDIAN_VALUE ? Color.BLACK : Color.WHITE;
     }
 
     @Override

@@ -105,6 +105,7 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
 
     @Override
     public void processCancelTransaction(Context context, TxVerData data) {
+        viewListener.showProgressLoading();
         TKPDMapParam<String, String> cancelTransactionParams = new TKPDMapParam<>();
         cancelTransactionParams.put("payment_id", data.getPaymentId());
         netInteractor
@@ -184,21 +185,25 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
             @Override
             public void onSuccess(String message) {
                 viewListener.showCancelTransactionDialog(message, paymentId);
+                viewListener.hideProgressLoading();
             }
 
             @Override
             public void onError(String message) {
                 viewListener.showSnackbarWithMessage(message);
+                viewListener.hideProgressLoading();
             }
 
             @Override
             public void onTimeout(String message) {
                 viewListener.showSnackbarWithMessage(message);
+                viewListener.hideProgressLoading();
             }
 
             @Override
             public void onNoConnection(String message) {
                 viewListener.showSnackbarWithMessage(message);
+                viewListener.hideProgressLoading();
             }
         };
     }

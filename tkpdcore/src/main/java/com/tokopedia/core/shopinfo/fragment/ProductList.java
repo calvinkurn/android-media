@@ -375,7 +375,7 @@ public class ProductList extends V2BaseFragment {
     }
 
     private void initAdapter() {
-        adapter = ShopProductListAdapter.createAdapter(productModel);
+        adapter = ShopProductListAdapter.createAdapter(productModel, shopId);
         initEtalaseAdapter();
         initFeaturedProductAdapter();
     }
@@ -477,7 +477,9 @@ public class ProductList extends V2BaseFragment {
 
                         @Override
                         public void onFailure(int connectionTypeError, String message) {
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            if (isAdded() && getActivity() != null) {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 } else {
@@ -624,6 +626,7 @@ public class ProductList extends V2BaseFragment {
             @Override
             public void onSuccess(List<FeaturedProductItem> featuredProductItemList) {
                 featuredProductAdapter.setDataList(featuredProductItemList);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -898,5 +901,16 @@ public class ProductList extends V2BaseFragment {
             }
         }
         return -1;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (getActivity() != null &&
+                    getActivity() instanceof ShopInfoActivity) {
+                ((ShopInfoActivity) getActivity()).swipeAble(true);
+            }
+        }
     }
 }

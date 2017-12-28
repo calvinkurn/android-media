@@ -1,5 +1,8 @@
 package com.tokopedia.core.product.model.productdetail.promowidget;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by alifa on 9/13/17.
  */
 
-public class PromoAttributes {
+public class PromoAttributes implements Parcelable{
 
     @SerializedName("code")
     @Expose
@@ -33,6 +36,8 @@ public class PromoAttributes {
     @Expose
     private String userId;
 
+    public PromoAttributes() {
+    }
 
     public String getCode() {
         return code;
@@ -89,4 +94,43 @@ public class PromoAttributes {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    protected PromoAttributes(Parcel in) {
+        code = in.readString();
+        codeHtml = in.readString();
+        targetUrl = in.readString();
+        shortDescHtml = in.readString();
+        shortCondHtml = in.readString();
+        targetType = in.readString();
+        userId = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(code);
+        dest.writeString(codeHtml);
+        dest.writeString(targetUrl);
+        dest.writeString(shortDescHtml);
+        dest.writeString(shortCondHtml);
+        dest.writeString(targetType);
+        dest.writeString(userId);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PromoAttributes> CREATOR = new Parcelable.Creator<PromoAttributes>() {
+        @Override
+        public PromoAttributes createFromParcel(Parcel in) {
+            return new PromoAttributes(in);
+        }
+
+        @Override
+        public PromoAttributes[] newArray(int size) {
+            return new PromoAttributes[size];
+        }
+    };
 }

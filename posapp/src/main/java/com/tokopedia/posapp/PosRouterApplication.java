@@ -19,6 +19,8 @@ import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -231,6 +233,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public String getFlavor() {
+        return null;
+    }
+
+    @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return null;
     }
@@ -276,7 +283,47 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent instanceIntentTokoCashActivation() {
+    public void goToAddProduct(Activity activity) {
+
+    }
+
+    @Override
+    public boolean isInMyShop(Context context, String shopId) {
+        return false;
+    }
+
+    @Override
+    public Intent getForgotPasswordIntent(Context context, String email) {
+        return null;
+    }
+
+    @Override
+    public void invalidateCategoryMenuData() {
+
+    }
+
+    @Override
+    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getHomeHotlistIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
+        return null;
+    }
+
+    @Override
+    public android.app.Fragment getShopReputationFragment() {
+        return null;
+    }
+
+    @Override
+    public Intent getInboxReputationIntent(Context context) {
         return null;
     }
 

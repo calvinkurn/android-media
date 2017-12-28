@@ -6,14 +6,13 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author kulomady on 12/22/16.
  */
-public class DataValue implements Serializable, Parcelable {
+public class DataValue implements Parcelable {
 
 
     String selected;
@@ -71,23 +70,6 @@ public class DataValue implements Serializable, Parcelable {
     }
 
 
-    protected DataValue(Parcel in) {
-        selected = in.readString();
-        selectedOb = in.readString();
-        if (in.readByte() == 0x01) {
-            filter = new ArrayList<Filter>();
-            in.readList(filter, Filter.class.getClassLoader());
-        } else {
-            filter = null;
-        }
-        if (in.readByte() == 0x01) {
-            sort = new ArrayList<Sort>();
-            in.readList(sort, Sort.class.getClassLoader());
-        } else {
-            sort = null;
-        }
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -95,27 +77,26 @@ public class DataValue implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(selected);
-        dest.writeString(selectedOb);
-        if (filter == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(filter);
-        }
-        if (sort == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(sort);
-        }
+        dest.writeString(this.selected);
+        dest.writeString(this.selectedOb);
+        dest.writeTypedList(this.filter);
+        dest.writeTypedList(this.sort);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<DataValue> CREATOR = new Parcelable.Creator<DataValue>() {
+    public DataValue() {
+    }
+
+    protected DataValue(Parcel in) {
+        this.selected = in.readString();
+        this.selectedOb = in.readString();
+        this.filter = in.createTypedArrayList(Filter.CREATOR);
+        this.sort = in.createTypedArrayList(Sort.CREATOR);
+    }
+
+    public static final Creator<DataValue> CREATOR = new Creator<DataValue>() {
         @Override
-        public DataValue createFromParcel(Parcel in) {
-            return new DataValue(in);
+        public DataValue createFromParcel(Parcel source) {
+            return new DataValue(source);
         }
 
         @Override

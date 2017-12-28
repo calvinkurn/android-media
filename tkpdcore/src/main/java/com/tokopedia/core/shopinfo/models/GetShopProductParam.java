@@ -7,9 +7,12 @@ import android.os.Parcelable;
  * @author by Tkpd_Eka on 11/9/2015.
  */
 public class GetShopProductParam implements Parcelable {
+
+    public static final String DEFAULT_ALL_ETALASE_ID = "etalase";
+
     private int page = 1;
     private String keyword = "";
-    private String etalaseId = "etalase";
+    private String etalaseId = DEFAULT_ALL_ETALASE_ID;
     private String orderBy = "";
     private int selectedEtalase = 0;
     private int listState = 3;

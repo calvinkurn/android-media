@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/margin_small"
     android:layout_marginLeft="@dimen/margin_small"
-    android:layout_marginBottom="@dimen/margin_small"
     android:padding="@dimen/padding_small"
     android:background="#F0F0F0">
     <ImageView
@@ -19,8 +18,10 @@
 
     <TextView
         android:id="@+id/text_free_return"
-        android:gravity="center"
+        android:gravity="left"
         android:layout_width="0dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:textSize="@dimen/text_size_xsmall"
         android:layout_gravity="center_vertical"
         android:layout_height="wrap_content"
         android:layout_weight="0.9"

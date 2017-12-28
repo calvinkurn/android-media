@@ -6,12 +6,12 @@ import android.content.Intent;
 
 import com.appsflyer.SingleInstallBroadcastReceiver;
 import com.google.android.gms.analytics.CampaignTrackingReceiver;
-import com.localytics.android.ReferralReceiver;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.CampaignUtil;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 
+import io.branch.referral.InstallListener;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -42,9 +42,6 @@ public class InstallReceiver extends BroadcastReceiver {
                                 receiverData.intentData.getStringExtra(REFERRER)
                         );
                         TrackingUtils.eventCampaign(campaign);
-
-                        ReferralReceiver localyticsInstall = new ReferralReceiver();
-                        localyticsInstall.onReceive(receiverData.contextData, receiverData.intentData);
                         return true;
                     }
                 })

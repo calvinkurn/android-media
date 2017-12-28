@@ -140,4 +140,10 @@ public class ProductScoringDetailFragment extends BaseDaggerFragment implements 
                 });
         snackbarRetry.showRetrySnackbar();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }

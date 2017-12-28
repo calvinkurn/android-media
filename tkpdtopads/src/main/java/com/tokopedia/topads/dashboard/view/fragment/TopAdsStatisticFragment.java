@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -11,7 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.design.label.DateLabelView;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
 import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
 import com.tokopedia.seller.common.williamchart.config.GrossGraphDataSetConfig;
@@ -22,6 +24,9 @@ import com.tokopedia.seller.common.williamchart.util.TopAdsBaseWilliamChartConfi
 import com.tokopedia.seller.common.williamchart.util.TopAdsTooltipConfiguration;
 import com.tokopedia.seller.common.williamchart.view.LineChartView;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
+import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsStatisticActivityViewListener;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsStatisticViewListener;
@@ -35,7 +40,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopAdsStatisticPresenter> implements TopAdsStatisticViewListener {
+public abstract class TopAdsStatisticFragment extends TopAdsBaseDatePickerFragment<TopAdsStatisticPresenter> implements TopAdsStatisticViewListener {
 
     TextView contentTitleGraph;
     LineChartView contentGraph;
@@ -47,23 +52,26 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     private String[] mLabels;
     private ArrayList<TooltipModel> mLabelDisplay = new ArrayList<>();
     private float[] mValues;
+    private DateLabelView dateLabelView;
+
+    @Override
+    protected BaseDatePickerPresenter getDatePickerPresenter() {
+        BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(getActivity());
+        return baseDatePickerPresenter;
+    }
+
+    @Override
+    protected void loadData() {
+        if(dateLabelView != null)
+            dateLabelView.setDate(startDate, endDate);
+    }
 
     public TopAdsStatisticFragment() {
         // Required empty public constructor
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle bundle) {
 
     }
 
@@ -73,17 +81,13 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
     protected void initialPresenter() {
+        super.initialPresenter();
         presenter = new TopAdsStatisticPresenterImpl(this, getActivity());
     }
 
     @Override
-    protected void initialListener(Activity activity) {
+    protected void onAttachListener(Context activity) {
         if (activity instanceof TopAdsStatisticActivityViewListener) {
             topAdsStatisticActivityViewListener = (TopAdsStatisticActivityViewListener) activity;
         }
@@ -103,6 +107,13 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     protected void initView(View view) {
         contentTitleGraph = (TextView) view.findViewById(R.id.content_title_graph);
         contentGraph = (LineChartView) view.findViewById(R.id.content_graph);
+        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
+        dateLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
+        });
         contentTitleGraph.setText(getTitleGraph());
     }
 
@@ -192,6 +203,18 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if (datePickerPresenter!= null && datePickerPresenter.isDateUpdated(startDate, endDate)) {
+                startDate = datePickerPresenter.getStartDate();
+                endDate = datePickerPresenter.getEndDate();
+                loadData();
+            }
+        }
+    }
+
+    @Override
     protected void setActionVar() {
 
     }
@@ -206,7 +229,14 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     }
 
     @Override
+    public View getDateLabelView() {
+        return dateLabelView;
+    }
+
+    @Override
     public void onResume() {
+        startDate = null;
+        endDate = null;
         super.onResume();
     }
 

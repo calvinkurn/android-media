@@ -9,6 +9,7 @@ import android.view.Menu;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
@@ -85,13 +86,15 @@ public interface ProductDetailPresenter {
 
     void saveStateProductCampaign(Bundle outState, String key, ProductCampaign productCampaign);
 
+    void saveStatePromoWidget(Bundle outState, String key, PromoAttributes promoAttributes);
+
+    void saveStateAppBarCollapsed(Bundle outState, String key, boolean isAppBarCollapsed);
+
     void processStateData(Bundle savedInstanceState);
 
     void processToCatalog(Context context, String catalogId);
 
     void sendAppsFlyerData(@NonNull Context context, @NonNull ProductDetailData successResult, @NonNull String eventName);
-
-    void sendLocalytics(@NonNull Context context, @NonNull ProductDetailData successResult);
 
     void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult);
 

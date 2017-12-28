@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Created by henrypriyono on 8/7/17.
  */
 
-public class LevelThreeCategory implements Serializable, Parcelable {
+public class LevelThreeCategory implements Parcelable {
 
     @SerializedName("name")
     @Expose
@@ -94,14 +94,6 @@ public class LevelThreeCategory implements Serializable, Parcelable {
         this.totalData = totalData;
     }
 
-    protected LevelThreeCategory(Parcel in) {
-        name = in.readString();
-        key = in.readString();
-        value = in.readString();
-        inputType = in.readString();
-        totalData = in.readString();
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -109,18 +101,28 @@ public class LevelThreeCategory implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(key);
-        dest.writeString(value);
-        dest.writeString(inputType);
-        dest.writeString(totalData);
+        dest.writeString(this.name);
+        dest.writeString(this.key);
+        dest.writeString(this.value);
+        dest.writeString(this.inputType);
+        dest.writeString(this.totalData);
     }
 
-    public static final Parcelable.Creator<LevelThreeCategory> CREATOR
-            = new Parcelable.Creator<LevelThreeCategory>() {
+    public LevelThreeCategory() {
+    }
+
+    protected LevelThreeCategory(Parcel in) {
+        this.name = in.readString();
+        this.key = in.readString();
+        this.value = in.readString();
+        this.inputType = in.readString();
+        this.totalData = in.readString();
+    }
+
+    public static final Creator<LevelThreeCategory> CREATOR = new Creator<LevelThreeCategory>() {
         @Override
-        public LevelThreeCategory createFromParcel(Parcel in) {
-            return new LevelThreeCategory(in);
+        public LevelThreeCategory createFromParcel(Parcel source) {
+            return new LevelThreeCategory(source);
         }
 
         @Override

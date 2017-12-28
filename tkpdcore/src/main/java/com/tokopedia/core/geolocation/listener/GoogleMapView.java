@@ -9,6 +9,10 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.tokopedia.core.geolocation.domain.IMapsRepository;
+import com.tokopedia.core.network.apiservices.maps.MapService;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hangnadi on 1/31/16.
@@ -64,7 +68,9 @@ public interface GoogleMapView {
      * @param googleApiClient
      * @param latLngBounds
      */
-    void initAutoCompleteAdapter(GoogleApiClient googleApiClient, LatLngBounds latLngBounds);
+    void initAutoCompleteAdapter(CompositeSubscription compositeSubscription,
+                                 MapService service, IMapsRepository repository,
+                                 GoogleApiClient googleApiClient, LatLngBounds latLngBounds);
 
     /**
      *

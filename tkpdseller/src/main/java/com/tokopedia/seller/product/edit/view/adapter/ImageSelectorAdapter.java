@@ -113,6 +113,10 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         notifyDataSetChanged();
     }
 
+    public void setCurrentSelectedIndex(int currentSelectedIndex) {
+        this.currentSelectedIndex = currentSelectedIndex;
+    }
+
     private void switchPrimaryImageIfNeeded(int prevSize, @NonNull List<ImageSelectModel> imageSelectModelList) {
         int previousPrimaryImageIndex = currentPrimaryImageIndex;
         for (int i = 0, sizei = imageSelectModelList.size(); i < sizei; i++) {
@@ -161,7 +165,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
         final ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
         if (imageSelectModel.isValidURL()) {
-            ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUri(), new SimpleTarget<Bitmap>() {
+            ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUriOrPath(), new SimpleTarget<Bitmap>() {
                 @Override
                 public void onLoadStarted(Drawable placeholder) {
                     super.onLoadStarted(placeholder);
@@ -185,7 +189,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             ImageHandler.loadImageFromFileFitCenter(
                     holder.itemView.getContext(),
                     holder.imageView,
-                    new File(imageSelectModel.getUri())
+                    new File(imageSelectModel.getUriOrPath())
             );
         }
 
@@ -247,6 +251,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            currentSelectedIndex = -1;
             if (onImageSelectionListener != null) {
                 onImageSelectionListener.onAddClick(position);
             }
@@ -271,9 +276,8 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         public void onClick(View v) {
             int position = getAdapterPosition();
             currentSelectedIndex = position;
-            if (onImageSelectionListener != null) {
-                onImageSelectionListener.onItemClick(position,
-                        imageSelectModelList.get(position));
+            if (onImageSelectionListener != null && position >= 0 && position < imageSelectModelList.size()) {
+                onImageSelectionListener.onItemClick(position, imageSelectModelList.get(position));
             }
         }
     }
@@ -320,7 +324,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         if (position < 0 || position >= imageSelectModelList.size()) return;
 
         ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
-        imageSelectModel.setUri(path);
+        imageSelectModel.setUriOrPath(path);
         notifyItemChanged(position);
     }
 
@@ -409,7 +413,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         if (position < 0 || position >= imageSelectModelList.size()) return;
 
         ImageSelectModel imageSelectModelBefore = imageSelectModelList.get(position);
-        imageSelectModelBefore.setUri(imageSelectModelAfter.getUri());
+        imageSelectModelBefore.setUriOrPath(imageSelectModelAfter.getUriOrPath());
         imageSelectModelBefore.setDescription(imageSelectModelAfter.getDescription());
         changeImagePrimary(imageSelectModelAfter.isPrimary());
         notifyItemChanged(position);

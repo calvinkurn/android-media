@@ -163,7 +163,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public void setDescription(String description) {
-        descriptionEditText.setText(MethodChecker.fromHtml(description));
+        descriptionEditText.setText(MethodChecker.fromHtmlPreserveLineBreak(description));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

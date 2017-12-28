@@ -117,4 +117,9 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
     public Uri getUriData() {
         return uriData;
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

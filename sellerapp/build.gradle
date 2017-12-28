@@ -88,16 +88,10 @@ android {
             aidl.srcDirs = ['src/main/java']
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
         }
 
-        String sharedTestDir = 'src/sharedTest/java'
-        test {
-            java.srcDir sharedTestDir
-        }
-        androidTest {
-            java.srcDir sharedTestDir
-        }
-
+        instrumentTest.setRoot('tests')
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -152,17 +146,21 @@ android {
         }
     }
 
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
+    }
+
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.sellerapp"
-        resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        // exclude 64bit lib for react-native support
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -175,30 +173,10 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
-    }
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
-
-    productFlavors {
-        staging {
-            applicationIdSuffix ".staging"
-            versionNameSuffix "-staging"
-        }
-        alpha {
-            applicationIdSuffix ".alpha"
-            versionNameSuffix "-alpha"
-        }
-        live {
-
-        }
     }
 
     configurations.all {
@@ -206,6 +184,18 @@ android {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
+
+    productFlavors {
+        staging {
+
+        }
+
+        live {
+
+        }
+    }
+
+
 }
 
 repositories {
@@ -231,6 +221,9 @@ dependencies {
         compile (rootProject.ext.tkpdDependencies.session) {
             exclude group: 'com.tokopedia.core'
         }
+        compile (rootProject.ext.tkpdDependecies.transaction) {
+        exclude group 'com.tokopedia.core'
+        }
         compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdtopads')
@@ -238,6 +231,8 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpddigital')
+    compile project(':tkpdtransaction')
+    compile project(':tkpdreputation')
 
     compile(rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
@@ -245,9 +240,6 @@ dependencies {
 
     compile('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
-    }
-    compile(rootProject.ext.miscDependencies.smoothAppBarLayout) {
-        exclude group: "com.android.support"
     }
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler

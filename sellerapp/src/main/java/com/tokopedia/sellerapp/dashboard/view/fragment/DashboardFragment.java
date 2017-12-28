@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.ShopStatisticDetail;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
@@ -24,21 +26,23 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
-import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
@@ -146,6 +150,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_SETTINGS);
                 Intent intent = new Intent(getContext(), ManageShopActivity.class);
                 startActivity(intent);
             }
@@ -153,6 +159,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_ORDER_BARU);
                 Intent intent = SellerRouter.getActivitySellingTransactionNewOrder(getActivity());
                 startActivity(intent);
             }
@@ -160,6 +168,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         deliveryConfirmationLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_KONFIRMASI_PENGIRIMAN);
                 Intent intent = SellerRouter.getActivitySellingTransactionConfirmShipping(getActivity());
                 startActivity(intent);
             }
@@ -167,6 +177,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         deliveryStatusLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_STATUS_PENGIRIMAN);
                 Intent intent = SellerRouter.getActivitySellingTransactionShippingStatus(getActivity());
                 startActivity(intent);
             }
@@ -174,6 +186,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         opportunityLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PELUANG);
                 Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity());
                 startActivity(intent);
             }
@@ -181,13 +195,20 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = InboxRouter.getInboxMessageActivityIntent(getActivity());
-                startActivity(intent);
+                if (getActivity().getApplication() instanceof TkpdInboxRouter) {
+                    UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                            AppEventTracking.EventLabel.DASHBOARD_ITEM_PESAN);
+                    Intent intent = ((TkpdInboxRouter) getActivity().getApplication())
+                            .getInboxMessageIntent(getActivity());
+                    startActivity(intent);
+                }
             }
         });
         discussionLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_DISKUSI_PRODUK);
                 Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
                 startActivity(intent);
             }
@@ -195,13 +216,20 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reviewLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
-                startActivity(intent);
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
+                if(MainApplication.getAppContext() instanceof SellerModuleRouter){
+                    startActivity(((SellerModuleRouter)MainApplication.getAppContext()).getInboxReputationIntent
+                            (getActivity()));
+                }
+
             }
         });
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PERFORMA_TOKO);
                 Intent intent = new Intent(getActivity(), ShopScoreDetailActivity.class);
                 startActivity(intent);
             }
@@ -222,7 +250,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     void onRefresh() {
-        if(!swipeRefreshLayout.isRefreshing()) {
+        if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(true);
         }
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
@@ -257,13 +285,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_ERROR);
         headerShopInfoLoadingStateView.getContentView().setVisibility(View.INVISIBLE);
         View errorView = headerShopInfoLoadingStateView.getErrorView();
-        EmptyCardContentView emptyCardContentView= (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
+        EmptyCardContentView emptyCardContentView = (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
         emptyCardContentView.setTitleText(getString(R.string.msg_network_error_1));
         emptyCardContentView.setDescriptionText(getString(R.string.msg_network_error_2));
         emptyCardContentView.setContentText(null);
         swipeRefreshLayout.setRefreshing(false);
 
-        showSnackBarRetry();
+        showSnackBarRetry(ViewUtils.getErrorMessage(getActivity(), t));
     }
 
     @Override
@@ -275,25 +303,29 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         updateViewShopOpen(shopModel);
         shopScoreWidget.renderView(shopScoreViewModel);
         swipeRefreshLayout.setRefreshing(false);
+        hideSnackBarRetry();
     }
 
     private void updateReputation(final ShopModel shopModel) {
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(),SellerReputationInfoActivity.class));
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_REPUTASI_TOKO);
+                startActivity(new Intent(getContext(), SellerReputationInfoActivity.class));
             }
         });
         shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
                 shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
-        String formattedScore = KMNumbers.formatDecimalString(shopModel.getStats().getShopReputationScore(), false);
-        reputationPointTextView.setText(getString(R.string.dashboard_x_points, formattedScore));
+        reputationPointTextView.setText(getString(R.string.dashboard_x_points, shopModel.getStats().getShopReputationScore()));
     }
 
     private void updateTransaction(final ShopModel shopModel) {
         transactionlabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_TRANSAKSI_SUKSES);
                 String shopInfo = CacheUtil.convertModelToString(shopModel,
                         new TypeToken<ShopModel>() {
                         }.getType());
@@ -314,7 +346,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private void updateShopInfo(ShopModel shopModel) {
         Info shopModelInfo = shopModel.info;
-        shopNameTextView.setText(shopModelInfo.getShopName());
+        String shopName = shopModelInfo.getShopName();
+        if (!TextUtils.isEmpty(shopName)) {
+            shopName = MethodChecker.fromHtml(shopName).toString();
+        }
+        shopNameTextView.setText(shopName);
         if (shopModelInfo.isGoldMerchant()) {
             gmIconImageView.setVisibility(View.VISIBLE);
             gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
@@ -365,7 +401,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private void showShopModerated(ShopModel shopModel) {
         shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
-        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason) );
+        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason));
         shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.yellow_ticker));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
@@ -418,7 +454,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onErrorGetNotifiction(String message) {
         // just show the content without the count
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        showSnackBarRetry();
+        showSnackBarRetry(message);
     }
 
     @Override
@@ -429,23 +465,23 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         int shippingConfirmation = drawerNotification.getSellingShippingConfirmation();
         int shippingStatus = drawerNotification.getSellingShippingStatus();
 
-        int inboxCount = drawerNotification.getInboxMessage();
         int discussCount = drawerNotification.getInboxTalk();
         int reviewCount = drawerNotification.getInboxReview();
+        int messageCount = drawerNotification.getInboxMessage();
 
         setCounterIfNotEmpty(newOrderLabelView, newOrderCount);
         setCounterIfNotEmpty(deliveryConfirmationLabelView, shippingConfirmation);
         setCounterIfNotEmpty(deliveryStatusLabelView, shippingStatus);
+        setCounterIfNotEmpty(messageLabelView, messageCount);
 
-        setCounterIfNotEmpty(messageLabelView, inboxCount);
         setCounterIfNotEmpty(discussionLabelView, discussCount);
         setCounterIfNotEmpty(reviewLabelView, reviewCount);
 
     }
 
-    private void showSnackBarRetry() {
+    private void showSnackBarRetry(String message) {
         if (snackBarRetry == null) {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     DashboardFragment.this.onRefresh();
@@ -482,8 +518,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
     }
 
-    private void setCounterIfNotEmpty(LabelView labelView, int counter){
-        labelView.setContent(counter > 0? String.valueOf(counter) : null);
+    private void setCounterIfNotEmpty(LabelView labelView, int counter) {
+        labelView.setContent(counter > 0 ? String.valueOf(counter) : null);
     }
 
     @Override

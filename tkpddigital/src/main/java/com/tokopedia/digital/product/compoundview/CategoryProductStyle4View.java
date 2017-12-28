@@ -86,4 +86,9 @@ public class CategoryProductStyle4View extends
 
     }
 
+    @Override
+    public void clearFocusOnClientNumber() {
+
+    }
+
 }

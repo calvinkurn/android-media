@@ -3,6 +3,7 @@ package com.tkpd.library.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 
@@ -17,8 +18,10 @@ public class LocalCacheHandler {
     }
 
     public LocalCacheHandler(Context context, String name) {
-        sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-        editor = sharedPrefs.edit();
+        if (context != null && !TextUtils.isEmpty(name)) {
+            sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+            editor = sharedPrefs.edit();
+        }
     }
 
     public static void clearCache(Context context, String name) {

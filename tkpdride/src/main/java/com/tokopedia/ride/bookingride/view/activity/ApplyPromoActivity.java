@@ -11,10 +11,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.view.fragment.ApplyPromoFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
@@ -77,6 +79,7 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
             onBackPressed();
             return true;
         } else if (i == R.id.action_remove) {
+            RideGATracking.eventDeletePromotion(getScreenName(),confirmBookingViewModel.getPromoCode());
             confirmBookingViewModel.setPromoCode("");
             confirmBookingViewModel.setPromoDescription("");
 
@@ -92,7 +95,13 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_APPLYPROMO;
+    }
+
+    @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (backButtonListener != null) {
             ConfirmBookingViewModel confirmBookingViewModel = backButtonListener.getConfirmParam();
             Intent intent = getIntent();
@@ -110,7 +119,7 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
                 (Uri.encode(url)),
                 this
         );
-        Intent intent = TokoCashWebViewActivity.getCallingIntent(this, seamlessURL);
+        Intent intent = RideWebViewActivity.getCallingIntent(this, seamlessURL);
         startActivity(intent);
     }
 

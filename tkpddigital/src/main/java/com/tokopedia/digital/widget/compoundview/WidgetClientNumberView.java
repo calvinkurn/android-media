@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -24,8 +24,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.widget.adapter.AutoCompleteTVAdapter;
 
 import java.util.List;
 
@@ -54,6 +57,9 @@ public class WidgetClientNumberView extends LinearLayout {
     private RechargeEditTextListener rechargeEditTextListener;
     private OnButtonPickerListener buttonPickerListener;
 
+    private AutoCompleteTVAdapter adapter;
+
+    private int oldCount;
 
     public WidgetClientNumberView(Context context) {
         super(context);
@@ -78,6 +84,7 @@ public class WidgetClientNumberView extends LinearLayout {
         actionView();
     }
 
+    @SuppressWarnings("deprecation")
     private void initContactAndClearButtonBg() {
         Glide.with(getContext()).load(R.drawable.ic_clear_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
@@ -165,21 +172,33 @@ public class WidgetClientNumberView extends LinearLayout {
                 .into(this.imgOperator);
     }
 
-    public void setDropdownAutoComplete(List<String> numberList) {
-        String[] numberAutoCompleteList = new String[numberList.size()];
-        numberAutoCompleteList = numberList.toArray(numberAutoCompleteList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(), R.layout.simple_spinner_tv_res, numberAutoCompleteList);
+    public void setDropdownAutoComplete(List<OrderClientNumber> numberList) {
+        adapter = new AutoCompleteTVAdapter(getContext(),
+                R.layout.item_autocomplete_widget, numberList);
 
-        pulsaAutocompleteView.setAdapter(adapter);
-        pulsaAutocompleteView.setThreshold(1);
+        this.pulsaAutocompleteView.setAdapter(adapter);
+        this.pulsaAutocompleteView.setThreshold(1);
     }
 
     private void actionView() {
+        this.pulsaAutocompleteView.setAdapter(adapter);
+        this.pulsaAutocompleteView.setThreshold(1);
+
+        this.pulsaAutocompleteView.setOnItemClickListener(getItemClickListener());
         this.pulsaAutocompleteView.setOnFocusChangeListener(getFocusChangeListener());
         this.pulsaAutocompleteView.addTextChangedListener(getTextChangedListener());
         this.btnClear.setOnClickListener(getClickClearButtonListener());
         this.btnPhoneBook.setOnClickListener(getClickPhonebookListener());
+    }
+
+    private AdapterView.OnItemClickListener getItemClickListener() {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OrderClientNumber orderClientNumber = adapter.getItem(position);
+                rechargeEditTextListener.onItemAutocompletedSelected(orderClientNumber);
+            }
+        };
     }
 
     private OnFocusChangeListener getFocusChangeListener() {
@@ -207,7 +226,11 @@ public class WidgetClientNumberView extends LinearLayout {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (rechargeEditTextListener != null) {
-                    rechargeEditTextListener.onRechargeTextChanged(s, start, before, count);
+                    if (s.length() > 0) {
+                        rechargeEditTextListener.onRechargeTextChanged(s, start, before, count);
+                    } else {
+                        rechargeEditTextListener.onRechargeTextClear();
+                    }
                 }
                 if (s.length() > 0) {
                     setBtnClearVisible();
@@ -277,6 +300,8 @@ public class WidgetClientNumberView extends LinearLayout {
         void onRechargeTextChanged(final CharSequence s, int start, int before, int count);
 
         void onRechargeTextClear();
+
+        void onItemAutocompletedSelected(OrderClientNumber orderClientNumber);
     }
 
     public interface OnButtonPickerListener {

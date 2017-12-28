@@ -509,7 +509,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                             break;
                         default:
                             gmNetworkErrorHelper.showSnackbar(errorMessage,
-                                    getString(R.string.try_again), new NetworkErrorHelper.RetryClickedListener() {
+                                    getString(R.string.toast_try_again), new NetworkErrorHelper.RetryClickedListener() {
                                         @Override
                                         public void onRetryClicked() {
                                             Toast.makeText(

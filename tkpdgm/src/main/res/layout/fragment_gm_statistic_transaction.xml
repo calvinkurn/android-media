@@ -112,10 +112,13 @@
                         android:layout_height="240dp" />
                 </com.tokopedia.gm.statistic.view.widget.LineChartContainerWidget>
 
-                <TextView
-                    android:id="@+id/tv_see_topads"
-                    style="@style/TextView.Body1.Bold"
-                    android:background="@drawable/rect_stroke_lighter_gray"
+                <Button
+                    android:id="@+id/button_see_top_ads"
+                    style="@style/Button.Submit.White"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:background="@drawable/bg_rect_stroke_lighter_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
@@ -134,7 +137,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:content_color="@color/tkpd_main_green"
-                app:label_show_arrow="true"
                 app:title="@string/gm_statistic_sold_product_list_text" />
         </android.support.v7.widget.CardView>
 

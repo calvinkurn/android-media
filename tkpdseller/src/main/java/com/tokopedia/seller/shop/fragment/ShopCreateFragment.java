@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.fragment;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,8 +9,10 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Display;
 import android.view.View;
@@ -25,10 +29,13 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
+import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -39,6 +46,10 @@ import com.tokopedia.seller.shop.presenter.ShopCreateView;
 
 import java.io.File;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DESC_ERROR;
 import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DOMAIN_ERROR;
 import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.NAME_ERROR;
@@ -47,6 +58,7 @@ import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.TAG_ERROR;
 /**
  * Created by Toped18 on 5/19/2016.
  */
+@RuntimePermissions
 public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implements ShopCreateView {
 
     public static final int REQUEST_CAMERA = 111;
@@ -186,9 +198,9 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void setShopAvatar(String imagePath) {
-        if (imagePath != "") {
+        if (!TextUtils.isEmpty(imagePath)) {
             imageText.setVisibility(View.GONE);
-            ImageHandler.loadImageFit2(getActivity()
+            ImageHandler.loadImageFit2(imageText.getContext()
                     , shopAvatar
                     , MethodChecker.getUri(getActivity(), new File(imagePath)).toString());
             presenter.saveShopAvatarUrl(imagePath);
@@ -196,7 +208,38 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     public void startUploadDialog() {
-        ImageGalleryEntry.moveToImageGallery((AppCompatActivity) getActivity(), 0, 1);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        ImageAddDialogFragment dialogFragment = ImageAddDialogFragment.newInstance(0);
+        dialogFragment.show(fm, ImageAddDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageAddListener(new ImageAddDialogFragment.OnImageAddListener() {
+            @Override
+            public void clickAddProductFromCamera(int position) {
+                ShopCreateFragmentPermissionsDispatcher.goToCameraWithCheck(ShopCreateFragment.this, 0);
+            }
+
+            @Override
+            public void clickAddProductFromGallery(int position) {
+                ShopCreateFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopCreateFragment.this, 0);
+            }
+
+            @Override
+            public void clickAddProductFromInstagram(int position) {
+                InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ShopCreateFragment.this,
+                        INSTAGRAM_SELECT_REQUEST_CODE, 1);
+            }
+        });
+    }
+
+    @TargetApi(16)
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void goToGallery(int imagePosition) {
+        GalleryCropActivity.moveToImageGallery(getActivity(), this, imagePosition, 1, true);
+    }
+
+    @TargetApi(16)
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void goToCamera(int imagePosition) {
+        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition, true, 1,true);
     }
 
     public void SubmitDialog() {
@@ -423,7 +466,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String imageLocation = null;
-        if (requestCode == REQUEST_CAMERA || requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
+        if (requestCode == REQUEST_CAMERA ||
+                requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
             switch (resultCode) {
                 case GalleryBrowser.RESULT_CODE:
                     imageLocation = data.getStringExtra(ImageGallery.EXTRA_URL);
@@ -433,14 +477,15 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
                 default:
                     break;
             }
+        } else if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            imageLocation = data.getStringExtra(ImageGallery.EXTRA_URL);
         } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER
                 && resultCode == Activity.RESULT_OK
                 && SessionHandler.isMsisdnVerified()) {
             showPhoneVerification(false);
         }
         if (imageLocation != null) {
-            ImageHandler.LoadImage(shopAvatar, imageLocation);
-            imageText.setVisibility(View.GONE);
+            setShopAvatar(imageLocation);
         }
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.seller.shopsettings.shipping.fragment;
 
 import android.content.Context;
 
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.Courier;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
 
@@ -47,6 +48,8 @@ public interface EditShippingViewListener {
 
     void setShopLocationData(ShopShipping shopData);
 
+    String getDistrictAndCity();
+
     String getZipCode();
 
     String getStreetAddress();
@@ -63,7 +66,13 @@ public interface EditShippingViewListener {
 
     void setLocationProvinceCityDistrict(String Province, String City, String District);
 
+    void setLocationProvinceCityDistrict();
+
+    void initializeZipCodes();
+
     void refreshLocationViewListener(ShopShipping updatedShopInfo);
+
+    void refreshLocationViewListener(Address address);
 
     void locationDialogTimeoutListener();
 
@@ -85,7 +94,7 @@ public interface EditShippingViewListener {
 
     void setServiceCondition(boolean isChecked, int serviceIndex, int courierIndex);
 
-    void editAddressSpinner();
+    void editAddress();
 
     void showInfoBottomSheet(String information, String courierServiceName);
 

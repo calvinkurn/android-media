@@ -542,6 +542,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     }
 
+    @Override
+    public void restoreIsAppBarCollapsed(boolean isAppBarCollapsed) {
+
+    }
+
     private void initView(View view) {
         pictureView = view.findViewById(R.id.view_picture);
         headerInfoView = view.findViewById(R.id.view_header);

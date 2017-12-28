@@ -3,6 +3,7 @@ package com.tokopedia.tkpdreactnative.react;
 import android.app.Application;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -31,6 +32,11 @@ public class ReactNativeHostFactory {
     private ReactNativeHost createReactNativeHost(final Application application) {
         return new ReactNativeHost(application) {
             @Override
+            protected String getJSBundleFile() {
+                return CodePush.getJSBundleFile();
+            }
+
+            @Override
             public boolean getUseDeveloperSupport() {
                 return GlobalConfig.isAllowDebuggingTools();
             }
@@ -38,11 +44,6 @@ public class ReactNativeHostFactory {
             @Override
             protected List<ReactPackage> getPackages() {
                 return getListPackages(application);
-            }
-
-            @Override
-            protected String getJSBundleFile() {
-                return CodePush.getJSBundleFile();
             }
         };
     }
@@ -66,7 +67,7 @@ public class ReactNativeHostFactory {
 
             @Override
             protected String getJSMainModuleName() {
-                return "reactscript/index.android";
+                return "reactnative-apps/rnscript/index.android";
             }
         };
     }

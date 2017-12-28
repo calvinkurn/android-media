@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
@@ -21,6 +20,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
@@ -103,6 +103,11 @@ public class WishListImpl implements WishList {
         if (savedInstanceState != null) {
             //mPaging.onCreate(savedInstanceState);
             data = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_MODEL));
+            dataWishlist = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_ENTITY));
+            if (mPaging != null) {
+                Pagination pagination = savedInstanceState.getParcelable(PAGINATION_MODEL);
+                mPaging.setPagination(pagination);
+            }
         }
     }
 
@@ -157,16 +162,13 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void setLocalyticFlow(Context context, String screenName) {
-        if (context != null) {
-            ScreenTracking.screenLoca(screenName);
-        }
-    }
-
-    @Override
     public void saveDataBeforeRotate(Bundle saved) {
         //mPaging.onSavedInstanceState(saved);
         saved.putParcelable(WISHLIST_MODEL, Parcels.wrap(data));
+        saved.putParcelable(WISHLIST_ENTITY, Parcels.wrap(dataWishlist));
+        if (mPaging != null) {
+            saved.putParcelable(PAGINATION_MODEL, mPaging.getPagination());
+        }
     }
 
     @Override
@@ -377,6 +379,25 @@ public class WishListImpl implements WishList {
     }
 
     @Override
+    public void onResume(Context context) {
+        if (isAfterRotation()) {
+            handleAfterRotation(context);
+        } else {
+            fetchDataFromCache(context);
+        }
+    }
+
+    private void handleAfterRotation(Context context) {
+        if (!isLoadedFirstPage()) {
+            refreshData(context);
+        } else {
+            wishListView.displayLoadMore(mPaging.CheckNextPage());
+            wishListView.displayContentList(true);
+            wishListView.displayLoading(false);
+        }
+    }
+
+    @Override
     public void fetchDataFromCache(final Context context) {
         fetchDataFromInternet(context);
        /* if(cache.getWishListCache()!=null){
@@ -433,6 +454,7 @@ public class WishListImpl implements WishList {
             product.setBadges(wishlists.get(i).getBadges());
             product.setLabels(wishlists.get(i).getLabels());
             product.setShopLocation(wishlists.get(i).getShop().getLocation());
+            product.setOfficial(wishlists.get(i).getShop().getOfficial());
             products.add(product);
         }
 
@@ -462,6 +484,10 @@ public class WishListImpl implements WishList {
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "onError: ", e);
+            if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
+                wishListView.displayPull(false);
+            }
+            wishListView.displayErrorNetwork(false);
         }
 
         @Override

@@ -72,7 +72,7 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         }
     }
 
-    private void updateChecked(T t, int position, boolean checked) {
+    protected void updateChecked(T t, int position, boolean checked) {
         setChecked(t.getId(), checked);
         if (checkedCallback != null) {
             checkedCallback.onItemChecked(t, checked);
@@ -95,6 +95,10 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         notifyDataSetChanged();
 
         return deletedItems.isEmpty() ? null : deletedItems;
+    }
+
+    public List<String> getListChecked() {
+        return new ArrayList<>(hashSet);
     }
 
 

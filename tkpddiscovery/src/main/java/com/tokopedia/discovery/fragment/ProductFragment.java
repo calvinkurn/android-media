@@ -217,7 +217,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             productAdapter.incrementPage();
 
             UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
-            TrackingUtils.eventLocaSearched(browseModel.q);
             TrackingUtils.sendMoEngageSearchAttempt(browseModel.q, !model.isEmpty());
 
         }

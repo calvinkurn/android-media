@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tokopedia.core.analytics.PaymentTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -88,6 +89,9 @@ public class BannerView extends BaseCustomView {
         bannerSeeAll.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                UnifyTracking.eventClickViewAllPromo();
+
                 Intent intent = new Intent(getContext(), BannerWebView.class);
                 intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
                 intent.putExtra(BannerWebView.EXTRA_URL,
@@ -110,10 +114,16 @@ public class BannerView extends BaseCustomView {
 
         resetImpressionStatus();
 
+        bannerIndicator.setVisibility(VISIBLE);
+        indicatorItems.clear();
+        bannerIndicator.removeAllViews();
+
+
         BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoList);
 
         bannerRecyclerView.setHasFixedSize(true);
-
+        indicatorItems.clear();
+        bannerIndicator.removeAllViews();
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         bannerRecyclerView.setLayoutManager(layoutManager);
@@ -156,6 +166,7 @@ public class BannerView extends BaseCustomView {
         }
 
         PagerSnapHelper snapHelper = new PagerSnapHelper();
+        bannerRecyclerView.setOnFlingListener(null);
         snapHelper.attachToRecyclerView(bannerRecyclerView);
 
         bannerHandler = new Handler();

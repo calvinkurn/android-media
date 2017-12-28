@@ -17,11 +17,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
 import javax.annotation.Nonnull;
 
-public class GalleryActivity extends AppCompatActivity implements AlbumCollection.AlbumCallbacks, AdapterView.OnItemSelectedListener {
+public class GalleryActivity extends TActivity implements AlbumCollection.AlbumCallbacks, AdapterView
+        .OnItemSelectedListener {
 
     private static final String TAG = "hangnadi";
     private static final String BUNDLE_GALLERY_TYPE = "bundle_gallery_type";
@@ -180,5 +182,10 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

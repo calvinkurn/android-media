@@ -79,7 +79,11 @@ public final class AppScreen {
     public static final String SCREEN_INBOX_MESSAGE_DETAIL_VIEW = "Inbox Message Detail View";
     public static final String SCREEN_INBOX_TALK = "Inbox talk";
     public static final String SCREEN_INBOX_REVIEW = "Inbox review";
+    public static final String SCREEN_INBOX_REPUTATION_FILTER = "Inbox Reputation - Filter";
     public static final String SCREEN_INBOX_REPUTATION_DETAIL = "Inbox detail reputation";
+    public static final String SCREEN_INBOX_REPUTATION_REVIEW_DETAIL = "Inbox Detail Reputation " +
+            "Review";
+    public static final String SCREEN_INBOX_REPUTATION_REPORT = "Inbox Reputation - Report";
     public static final String SCREEN_INBOX_RESOLUTION_CENTER_DETAIL = "Inbox resolution center detail";
     public static final String SCREEN_INBOX_TICKET_DETAIL = "Inbox Ticket Detail";
     public static final String SCREEN_BROWSE_HOT = "Browse hot list detail";
@@ -233,7 +237,18 @@ public final class AppScreen {
     public static final String SCREEN_VIEWED_WISHLIST_PAGE = "event : Viewed Wishlist Page";
     public static final String SCREEN_VIDEO_PLAYER = "Video player page";
     public static final String SCREEN_RIDE_HOME = "Ride Home Page";
-    public static final String SCREEN_RIDE_ONTRIP = "Ride On Trip Page";
+    public static final String SCREEN_RIDE_BOOKING = "Ride Booking Page";
+    public static final String SCREEN_RIDE_APPLYPROMO = "Ride Promo Code Screen";
+    public static final String SCREEN_RIDE_ONTRIP = "Ride Booked Screen";
+    public static final String SCREEN_RIDE_COMPLETED = "Ride Completed Screen";
+    public static final String SCREEN_RIDE_SOURCE_CHANGE = "Ride Source Change Screen";
+    public static final String SCREEN_RIDE_DEST_CHANGE = "Ride Destination Change Screen";
+    public static final String SCREEN_RIDE_HISTORY_DETAIL = "Ride Trip Detail Screen";
+    public static final String SCREEN_RIDE_HISTORY = "Ride Your Trips Screen";
+    public static final String SCREEN_RIDE_CANCEL_REASON = "Ride Cancel Reason Screen";
+    public static final String SCREEN_RIDE_HISTORY_NEED_HELP ="Ride History Need Help Screen";
+    public static final String SCREEN_RIDE_PENDING_FARE_CHOOSER ="Ride Pending Fare Chooser Screen";
+    public static final String SCREEN_RIDE_TOPUP_TOKOCASH_CHANGE_DESTINATION = "Ride Topup TokoCash Change Destination Screen";
     public static final String SCREEN_DEEPLINK_APPLINKHANDLER = "AppLink Handler";
     public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ACTION = "Resolution Center - History Action Page";
     public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ADDRESS = "Resolution Center - History Address Page";
@@ -243,9 +258,10 @@ public final class AppScreen {
     public static final String SCREEN_RESOLUTION_CENTER_DISCUSSION = "Resolution Center - Discussion";
     public static final String CREATE_SHOP_REDIRECT = "Create Shop Redirect Page";
     public static final String SCREEN_FEED_DETAIL = "Feed Detail";
-    public static final String SCREEN_OPPORTUNITY_DETAIL = "PeluangDetail";
-    public static final String SCREEN_OPPORTUNITY_TAB= "Peluang";
-
+    public static final String SCREEN_OPPORTUNITY_DETAIL = "Replacement Detail Page";
+    public static final String SCREEN_OPPORTUNITY_TAB= "Replacement Main Page";
+    public static final String SCREEN_ONBOARDING = "Screen OnBoarding ";
+    public static final String SCREEN_KOL_COMMENTS = "Kol Comments Page";
 
     private AppScreen() {
 

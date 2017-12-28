@@ -6,9 +6,9 @@
     android:layout_centerHorizontal="true"
     android:orientation="vertical">
 
-    <include layout="@layout/partial_base_tab_indicator"/>
+    <include layout="@layout/partial_base_tab_layout"/>
 
-    <android.support.v4.view.ViewPager
+    <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

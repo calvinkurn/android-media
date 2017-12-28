@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.TintableBackgroundView;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -95,7 +96,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
         tvPrice.setText(data.getInfo().getProductPrice());
-        setVisibility(VISIBLE);
+
 
         if (data.getCashBack() != null && !data.getCashBack().getProductCashbackValue().isEmpty()) {
             cashbackTextView.setText(data.getCashBack().getProductCashbackValue());
@@ -103,9 +104,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     .replace("X", data.getCashBack().getProductCashback()));
             cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
             cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
-            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.core.R.color.tkpd_main_green));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 cashbackTextView.setBackgroundTintList(tint);
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {
+                    ((TintableBackgroundView) cashbackTextView).setSupportBackgroundTintList(tint);
             } else {
                 ViewCompat.setBackgroundTintList(cashbackTextView, tint);
             }
@@ -115,6 +118,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         if(data.getShopInfo().getShopIsOfficial() != null && data.getShopInfo().getShopIsOfficial() == 1) {
             textOfficialStore.setVisibility(VISIBLE);
         }
+        setVisibility(VISIBLE);
     }
 
     public void renderTempData(ProductPass productPass) {

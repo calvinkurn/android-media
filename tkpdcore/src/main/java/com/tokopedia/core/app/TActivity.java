@@ -2,17 +2,17 @@ package com.tokopedia.core.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -73,8 +73,7 @@ public abstract class TActivity extends BaseActivity {
     }
 
     protected boolean onSearchOptionSelected() {
-        Intent intent = BrowseProductRouter
-                .getBrowseProductIntent(this, "0", TopAdsApi.SRC_BROWSE_PRODUCT);
+        Intent intent = BrowseProductRouter.getSearchProductIntent(this);
         startActivity(intent);
         return true;
     }
@@ -124,6 +123,9 @@ public abstract class TActivity extends BaseActivity {
         }else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(
@@ -132,6 +134,8 @@ public abstract class TActivity extends BaseActivity {
 
 
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+                .WebViewToolbarSubtitleText);
     }
 
     protected boolean isLightToolbarThemes() {

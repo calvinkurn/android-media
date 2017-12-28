@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -11,6 +13,12 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         app:elevation="0dp">
+
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/search_input_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|snap|enterAlways" />
 
         <com.tokopedia.design.label.DateLabelView
             android:id="@+id/date_label_view"
@@ -34,12 +42,22 @@
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add"
-        style="@style/Fab"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add_black_48dp_00"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/padding_med"
         app:layout_anchor="@id/recycler_view"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|center_horizontal"
+        app:layout_behavior="com.tokopedia.seller.common.widget.QuickReturnFooterBehavior">
+
+        <com.tokopedia.design.button.BottomActionView
+            android:id="@+id/bottom_action_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bav_icon_1="@drawable/ic_bottom_action_filter"
+            app:bav_label_1="@string/filter"
+            app:bav_1_display="true"
+            />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.customview.BannerView;
+import com.tokopedia.tkpd.home.facade.FacadePromo;
 
 import org.json.JSONObject;
 
@@ -46,6 +48,11 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
     public BannerPagerAdapter(List<BannerView.PromoItem> promoList) {
         this.bannerList = promoList;
     }
+    public void setBannerList(List<BannerView.PromoItem> bannerList) {
+               this.bannerList = bannerList;
+            }
+
+
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {
 
@@ -121,10 +128,10 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                 trackingBannerClick(view.getContext(), item, currentPosition);
 
                 if (view.getContext() != null
-                        &&
-                        ((IDigitalModuleRouter) ((Activity) view.getContext()).getApplication()).isSupportedDelegateDeepLink(item.getPromoApplink())) {
-                    ((IDigitalModuleRouter) ((Activity) view.getContext()).getApplication())
-                            .actionNavigateByApplinksUrl((Activity) view.getContext(), item.getPromoApplink(), new Bundle());
+                        && view.getContext().getApplicationContext() instanceof IDigitalModuleRouter
+                        && ((IDigitalModuleRouter) view.getContext().getApplicationContext()).isSupportedDelegateDeepLink(item.getPromoApplink())) {
+                    ((IDigitalModuleRouter) view.getContext().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(view), item.getPromoApplink(), new Bundle());
                 } else {
 
                     String url = item.getPromoUrl();
@@ -153,6 +160,17 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                 }
             }
         };
+    }
+
+    private Activity getActivity(View view) {
+        Context context = view.getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
     }
 
     private void trackingBannerClick(Context context, BannerView.PromoItem item, int currentPosition) {

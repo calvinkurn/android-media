@@ -12,8 +12,8 @@ import java.util.List;
 
 public interface ProductDraftListView extends BaseListViewListener<ProductDraftViewModel> {
     void onSaveBulkDraftSuccess(List<Long> productIds);
-    void onSaveBulkDraftError(Throwable throwable);
-    void onSaveInstagramResolutionError(int position, String localPath);
+    void onErrorSaveBulkDraft(Throwable throwable);
     void onSuccessDeleteAllDraft();
     void onErrorDeleteAllDraft();
+    void hideDraftLoading();
 }

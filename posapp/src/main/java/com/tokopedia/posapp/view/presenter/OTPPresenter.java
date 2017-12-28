@@ -218,7 +218,7 @@ public class OTPPresenter implements OTP.Presenter {
         return new Func1<RequestParams, Observable<PaymentStatusDomain>>() {
             @Override
             public Observable<PaymentStatusDomain> call(RequestParams requestParams) {
-                return checkPaymentStatusUseCase.execute(requestParams);
+                return checkPaymentStatusUseCase.createObservable(requestParams);
             }
         };
     }
@@ -250,7 +250,7 @@ public class OTPPresenter implements OTP.Presenter {
             public Observable<PaymentStatusDomain> call(PaymentStatusDomain paymentStatusDomain) {
                 return Observable.zip(
                     Observable.just(paymentStatusDomain),
-                    getAllCartUseCase.execute(RequestParams.create()),
+                    getAllCartUseCase.createObservable(RequestParams.create()),
                     new Func2<PaymentStatusDomain, List<CartDomain>, PaymentStatusDomain>() {
                         @Override
                         public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, List<CartDomain> cartDomains) {
@@ -297,7 +297,7 @@ public class OTPPresenter implements OTP.Presenter {
                 requestParams.putObject(CREATE_ORDER_PARAMETER, getCreateOrderParam(paymentStatusDomain));
                 return Observable.zip(
                         Observable.just(paymentStatusDomain),
-                        createOrderUseCase.execute(requestParams),
+                        createOrderUseCase.createObservable(requestParams),
                         new Func2<PaymentStatusDomain, CreateOrderDomain, PaymentStatusDomain>() {
                             @Override
                             public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, CreateOrderDomain createOrderDomain) {

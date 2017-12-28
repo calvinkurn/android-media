@@ -240,6 +240,8 @@ public class TkpdState {
 
         public static final int POS_TRANSACTION_HISTORY = 401;
         public static final int POS_OUTLET = 402;
+
+        public static final int APPSHARE = 58;
     }
 
     public class Application {

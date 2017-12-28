@@ -3,6 +3,7 @@ package com.tokopedia.design.text;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,11 +19,17 @@ import android.widget.TextView;
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by nathan on 04/05/17.
  */
 
 public class SearchInputView extends BaseCustomView {
+
+    private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.SECONDS.toMillis(0);
 
     public interface Listener {
 
@@ -30,6 +37,10 @@ public class SearchInputView extends BaseCustomView {
 
         void onSearchTextChanged(String text);
 
+    }
+
+    public interface ResetListener {
+        void onSearchReset();
     }
 
     private ImageView searchImageView;
@@ -40,7 +51,9 @@ public class SearchInputView extends BaseCustomView {
     private String searchText;
     private String searchHint;
 
+    private long delayTextChanged;
     private Listener listener;
+    private ResetListener reset;
 
     public EditText getSearchTextView() {
         return searchTextView;
@@ -48,6 +61,10 @@ public class SearchInputView extends BaseCustomView {
 
     public void setListener(Listener listener) {
         this.listener = listener;
+    }
+
+    public void setResetListener(ResetListener listener) {
+        this.reset = listener;
     }
 
     public SearchInputView(Context context) {
@@ -67,7 +84,7 @@ public class SearchInputView extends BaseCustomView {
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SearchInputView);
         try {
             searchDrawable = styledAttributes.getDrawable(R.styleable.SearchInputView_siv_search_icon);
             searchText = styledAttributes.getString(R.styleable.SearchInputView_siv_search_text);
@@ -82,6 +99,7 @@ public class SearchInputView extends BaseCustomView {
         searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
         searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
         closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
+        delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
     }
 
 
@@ -108,8 +126,10 @@ public class SearchInputView extends BaseCustomView {
             }
         });
         searchTextView.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
+            private Timer timer = new Timer();
 
+            public void afterTextChanged(Editable s) {
+                runTimer(s.toString());
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -117,8 +137,8 @@ public class SearchInputView extends BaseCustomView {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (listener != null) {
-                    listener.onSearchTextChanged(s.toString());
+                if (timer != null) {
+                    timer.cancel();
                 }
                 if (TextUtils.isEmpty(searchTextView.getText().toString())) {
                     closeImageButton.setVisibility(View.GONE);
@@ -126,10 +146,37 @@ public class SearchInputView extends BaseCustomView {
                     closeImageButton.setVisibility(View.VISIBLE);
                 }
             }
+
+            private void runTimer(final String text) {
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        updateListener(text);
+                    }
+                }, delayTextChanged);
+            }
+
+            private void updateListener(final String text) {
+                if (listener == null) {
+                    return;
+                }
+                Handler mainHandler = new Handler(searchTextView.getContext().getMainLooper());
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onSearchTextChanged(text);
+                    }
+                };
+                mainHandler.post(myRunnable);
+            }
         });
         closeImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(reset!=null){
+                    reset.onSearchReset();
+                }
                 searchTextView.setText("");
             }
         });
@@ -142,6 +189,10 @@ public class SearchInputView extends BaseCustomView {
         if (!TextUtils.isEmpty(searchHint)) {
             searchTextView.setHint(searchHint);
         }
+    }
+
+    public void setDelayTextChanged(long delayTextChanged) {
+        this.delayTextChanged = delayTextChanged;
     }
 
     @Override

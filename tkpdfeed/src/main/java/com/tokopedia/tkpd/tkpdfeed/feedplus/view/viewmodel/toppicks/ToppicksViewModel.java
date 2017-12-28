@@ -12,9 +12,12 @@ import java.util.ArrayList;
 public class ToppicksViewModel implements Visitable<FeedPlusTypeFactory> {
 
     private ArrayList<ToppicksItemViewModel> list;
+    private int rowNumber;
+    private int page;
 
-    public ToppicksViewModel(ArrayList<ToppicksItemViewModel> list) {
+    public ToppicksViewModel(ArrayList<ToppicksItemViewModel> list, int page) {
         this.list = list;
+        this.page = page;
     }
 
     public ArrayList<ToppicksItemViewModel> getList() {
@@ -28,5 +31,21 @@ public class ToppicksViewModel implements Visitable<FeedPlusTypeFactory> {
     @Override
     public int type(FeedPlusTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }

@@ -31,6 +31,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.RideComponent;
@@ -105,6 +106,16 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     ProgressBar progressBar;
     @BindView(R2.id.rb_rating_result)
     RatingBar ratingResult;
+    @BindView(R2.id.tv_label_pending_fare)
+    TextView pendingFareLabelTextView;
+    @BindView(R2.id.tv_pending_fare)
+    TextView pendingFareValueTextView;
+    @BindView(R2.id.fare_sep)
+    View seperator;
+    @BindView(R2.id.tv_trip_id)
+    TextView tripIdTextView;
+    @BindView(R2.id.label_total_charged)
+    TextView amountChargedLabel;
 
     ProgressDialog mProgressDialog;
 
@@ -222,8 +233,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @Override
     public void renderHistory(RideHistoryViewModel rideHistoryViewModel) {
-        System.out.println("Vishal renderHistory " + rideHistory.getStartAddress());
-
+        tripIdTextView.setText(getString(R.string.prefx_trip_id) + " " + rideHistory.getRequestId());
         requestTimeTextView.setText(RideUtils.convertTime(rideHistory.getRequestTime()));
         rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
@@ -240,6 +250,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         tokocashChargedTexView.setText(rideHistory.getTokoCashCharged());
         rideFareTextView.setText(rideHistory.getTotalFare());
         totalFareValueTextView.setText(rideHistory.getTotalFare());
+        amountChargedLabel.setText(rideHistory.getPaymentMethod() + " " + getString(R.string.label_charged));
 
         if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {
             paymentDetailsLayout.setVisibility(View.VISIBLE);
@@ -258,6 +269,17 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         } else {
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);
+        }
+
+        if (rideHistory.getPendingAmount() > 0) {
+            pendingFareValueTextView.setText(rideHistory.getPendingAmountDisplayFormat());
+            pendingFareValueTextView.setVisibility(View.VISIBLE);
+            pendingFareLabelTextView.setVisibility(View.VISIBLE);
+            seperator.setVisibility(View.VISIBLE);
+        } else {
+            pendingFareValueTextView.setVisibility(View.GONE);
+            pendingFareLabelTextView.setVisibility(View.GONE);
+            seperator.setVisibility(View.GONE);
         }
 
 
@@ -429,6 +451,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @OnClick(R2.id.layout_need_help)
     public void actionNeedHelpClicked() {
+        RideGATracking.eventClickHelpTrip(getScreenName(), rideHistory.getRequestTime(), rideHistory.getTotalFare(), rideHistory.getStatus());//17
         startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
     }
 

@@ -31,6 +31,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     private static final String EXTRA_OPERATOR_STYLE_VIEW = "EXTRA_OPERATOR_STYLE_VIEW";
 
     private static final String EXTRA_TITLE_CHOOSER = "EXTRA_TITLE_CHOOSER";
+    private static final String EXTRA_OPERATOR_LABEL = "EXTRA_OPERATOR_LABEL";
     private static final String EXTRA_STATE_CATEGORY = "EXTRA_STATE_CATEGORY";
 
     public static final String EXTRA_CALLBACK_PRODUCT_DATA = "EXTRA_CALLBACK_PRODUCT_DATA";
@@ -38,15 +39,14 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
 
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
 
-
     private List<Operator> operatorListData;
     private List<Product> productListData;
 
     private String operatorStyleView;
+    private String operatorLabel;
     private String categoryState;
     private String productStyleView;
     private String titleToolbar;
-
 
     public static Intent newInstanceProductChooser(
             Activity activity, List<Product> productListData, String titleChooser
@@ -63,12 +63,13 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     }
 
     public static Intent newInstanceOperatorChooser(
-            Activity activity, List<Operator> operatorListData, String titleChooser, String categoryState
+            Activity activity, List<Operator> operatorListData, String titleChooser, String operatorLabel, String categoryState
     ) {
         Intent intent = new Intent(activity, DigitalChooserActivity.class);
         intent.putParcelableArrayListExtra(EXTRA_LIST_DATA_OPERATOR,
                 (ArrayList<? extends Parcelable>) operatorListData);
         intent.putExtra(EXTRA_TITLE_CHOOSER, titleChooser);
+        intent.putExtra(EXTRA_OPERATOR_LABEL, operatorLabel);
         intent.putExtra(EXTRA_STATE_CATEGORY, categoryState);
         return intent;
     }
@@ -84,6 +85,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         this.productListData = extras.getParcelableArrayList(EXTRA_LIST_DATA_PRODUCT);
         this.productStyleView = extras.getString(EXTRA_PRODUCT_STYLE_VIEW);
         this.operatorStyleView = extras.getString(EXTRA_OPERATOR_STYLE_VIEW);
+        this.operatorLabel = extras.getString(EXTRA_OPERATOR_LABEL);
         this.categoryState = extras.getString(EXTRA_STATE_CATEGORY);
         if (titleToolbar == null) titleToolbar = extras.getString(EXTRA_TITLE_CHOOSER);
     }
@@ -111,7 +113,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
             } else if (productListData == null && !operatorListData.isEmpty()) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         DigitalChooserOperatorFragment.newInstance(
-                                operatorListData, operatorStyleView, categoryState
+                                operatorListData, operatorStyleView, operatorLabel, categoryState
                         )).commit();
             }
         }
@@ -147,12 +149,6 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     @Override
     public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
-        finish();
-    }
-
-    @Override
-    public void onProductItemChooserCanceled() {
-        setResult(RESULT_CANCELED);
         finish();
     }
 

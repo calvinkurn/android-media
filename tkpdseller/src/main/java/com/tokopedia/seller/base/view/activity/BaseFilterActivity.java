@@ -26,7 +26,7 @@ import java.util.List;
  * @author normansyahputa on 5/26/17.
  *         just move to new architecture.
  */
-public abstract class BaseFilterActivity extends TActivity implements TopAdsFilterListFragment.Callback, BaseFilterContentFragment.Callback {
+public abstract class BaseFilterActivity extends BaseToolbarActivity implements TopAdsFilterListFragment.Callback, BaseFilterContentFragment.Callback {
     protected TopAdsFilterListFragment topAdsFilterListFragment;
     protected List<Fragment> filterContentFragmentList;
     protected int selectedPosition = 0;
@@ -42,12 +42,6 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
     }
 
     protected void initView() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false);
-        }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         submitButton = (Button) findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +68,27 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
         if (getIntent().getExtras() != null) {
             setupBundlePass(getIntent().getExtras());
         }
-        setContentView(getLayoutId());
         initView();
+    }
+
+    @Override
+    protected void setupFragment(Bundle savedInstanceState) {
+        /* remain empty, override this for compatibility */
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return getLayoutId();
+    }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 
     protected void setupBundlePass(Bundle extras) {
@@ -145,7 +158,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_filter, menu);
+        getMenuInflater().inflate(R.menu.menu_base_filter, menu);
         return true;
     }
 

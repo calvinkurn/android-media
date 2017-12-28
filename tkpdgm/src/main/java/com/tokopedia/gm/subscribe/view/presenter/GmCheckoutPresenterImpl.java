@@ -132,6 +132,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
         checkGmSubscribeVoucherUseCase.unsubscribe();
         checkoutGmSubscribeUseCase.unsubscribe();
         checkoutGMSubscribeWithVoucherCheckUseCase.unsubscribe();
+        deleteShopInfoUseCase.unsubscribe();
     }
 
     private class GetCurrentSelectedProductSubscriber extends Subscriber<GmProductDomainModel> {

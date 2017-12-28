@@ -17,6 +17,7 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
@@ -28,15 +29,18 @@ import rx.Observable;
 
 public interface KeywordApi {
 
-    @GET("/v1.1/dashboard/keywords")
+    @GET(TopAdsNetworkConstant.GET_DASHBOARD_KEYWORD)
     Observable<PageDataResponse<List<Datum>>> getDashboardKeyword(@QueryMap Map<String, String> param);
 
-    @POST("/v2/promo/keyword")
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
+    @POST(TopAdsNetworkConstant.ADD_KEYOWRD)
     Observable<PageDataResponse<List<KeywordAddResponseDatum>>> addKeyword(@Body AddKeywordRequest addKeywordRequest);
 
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_EDIT_KEYWORD_DETAIL)
     Observable<Response<DataResponse<List<EditTopAdsKeywordDetailDataModel>>>> editTopAdsKeywordDetail(@Body DataRequest<List<TopAdsKeywordEditDetailInputDataModel>> dataModel);
 
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_BULK_KEYWORD_DETAIL)
     Observable<Response<PageDataResponse<DataBulkKeyword>>> actionBulkKeyword(@Body DataRequest<DataBulkKeyword> dataModel);
 }

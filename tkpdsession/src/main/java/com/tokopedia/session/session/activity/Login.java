@@ -19,7 +19,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,8 +30,6 @@ import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
@@ -43,6 +40,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -74,7 +72,6 @@ import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
-import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
 import com.tokopedia.session.session.intentservice.LoginService;
 import com.tokopedia.session.session.intentservice.OTPResultReceiver;
@@ -96,9 +93,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
-import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * Created by m.normansyah on 04/11/2015.
@@ -140,16 +134,33 @@ public class Login extends BaseActivity implements SessionView
     RegisterResultReceiver registerReceiver;
     ResetPasswordResultReceiver resetPasswordReceiver;
     OTPResultReceiver otpReceiver;
-    ErrorNetworkReceiver mReceiverLogout;
 
     @DeepLink({Constants.Applinks.LOGIN})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        Intent intent = new Intent(context, Login.class);
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                TkpdState.DrawerPosition.LOGIN);
-        return intent
-                .setData(uri.build());
+        if (SessionHandler.isV4Login(context)) {
+            if (context.getApplicationContext() instanceof TkpdCoreRouter)
+                return ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+            else throw new RuntimeException("Applinks intent unsufficient");
+        } else {
+            Intent intent = new Intent(context, Login.class);
+            intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                    TkpdState.DrawerPosition.LOGIN);
+            return intent
+                    .setData(uri.build());
+        }
+    }
+
+    @DeepLink({Constants.Applinks.REGISTER})
+    public static Intent getCallingApplinkRegisterIntent(Context context, Bundle bundle) {
+        if (SessionHandler.isV4Login(context)) {
+            if (context.getApplicationContext() instanceof TkpdCoreRouter)
+                return ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+            else throw new RuntimeException("Applinks intent unsufficient");
+        } else {
+            return getRegisterIntent(context);
+        }
+
     }
 
     @NonNull
@@ -238,7 +249,6 @@ public class Login extends BaseActivity implements SessionView
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_login2);
-        mReceiverLogout = new ErrorNetworkReceiver();
 
         session = new SessionImpl(this);
         session.fetchExtras(getIntent());
@@ -309,17 +319,8 @@ public class Login extends BaseActivity implements SessionView
 
     }
 
+
     private void setToolbarColor() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.white)));
@@ -340,9 +341,13 @@ public class Login extends BaseActivity implements SessionView
     public void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG, int type) {
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.login_fragment, fragment, TAG);
-        if (isAddtoBackStack)
-            fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        try {
+            if (isAddtoBackStack)
+                fragmentTransaction.addToBackStack(null);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
@@ -493,9 +498,6 @@ public class Login extends BaseActivity implements SessionView
     protected void onResume() {
         super.onResume();
 
-        mReceiverLogout.setReceiver(this);
-
-
         switch (session.getWhichFragment()) {
             case TkpdState.DrawerPosition.LOGIN:
                 if (isFragmentCreated(LOGIN_FRAGMENT_TAG)) {
@@ -544,13 +546,11 @@ public class Login extends BaseActivity implements SessionView
                 }
                 break;
         }
-        session.sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mReceiverLogout.setReceiver(null);
 
     }
 
@@ -743,13 +743,13 @@ public class Login extends BaseActivity implements SessionView
             case OTPService.ACTION_REQUEST_OTP_WITH_CALL:
                 if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null) {
                     session.sendGTMEvent(resultData, type);
-                    session.sendLocalyticsEvent(resultData, type);
+                    session.sendAnalyticsEvent(resultData, type);
                     ((FragmentSecurityQuestion) fragment).onSuccessRequestOTPWithCall(resultData.getString(OTPService.EXTRA_BUNDLE));
                 }
             case OTPService.ACTION_REQUEST_OTP:
                 if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null) {
                     session.sendGTMEvent(resultData, type);
-                    session.sendLocalyticsEvent(resultData, type);
+                    session.sendAnalyticsEvent(resultData, type);
                     ((FragmentSecurityQuestion) fragment).onSuccessRequestOTP(resultData.getString(OTPService.EXTRA_BUNDLE));
                 }
             case DownloadService.LOGIN_EMAIL:
@@ -769,7 +769,7 @@ public class Login extends BaseActivity implements SessionView
                         moveToRegisterPassPhone(model, null, resultData);
                     } else {
                         session.sendGTMEvent(resultData, type);
-                        session.sendLocalyticsEvent(resultData, type);
+                        session.sendAnalyticsEvent(resultData, type);
                         ((BaseView) fragment).setData(type, resultData);
                         UserAuthenticationAnalytics.sendAnalytics(resultData);
                     }
@@ -949,7 +949,6 @@ public class Login extends BaseActivity implements SessionView
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        session.sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override

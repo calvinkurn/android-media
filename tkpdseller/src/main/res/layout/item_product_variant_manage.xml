@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/margin_vvs"
-            android:background="@drawable/rect_stroke_lighter_gray">
+            android:background="@drawable/bg_rect_stroke_lighter_gray">
             <ImageView
                 android:id="@+id/image_view"
                 android:layout_width="@dimen/base_picker_main_variant_image_height"
@@ -28,7 +28,7 @@
             <View
                 android:layout_width="@dimen/base_picker_main_variant_image_height"
                 android:layout_height="@dimen/base_picker_main_variant_image_height"
-                android:background="@drawable/rect_stroke_gray_dashed">
+                android:background="@drawable/bg_rect_stroke_gray_dashed">
             </View>
         </FrameLayout>
 
@@ -51,12 +51,6 @@
                 android:textColor="@color/black_38"
                 tools:text="@string/app_id" />
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/arrow_left"
-            android:layout_width="@dimen/image_width_xxs"
-            android:layout_height="@dimen/image_width_xxs"
-            android:src="@drawable/ic_arrow_right" />
 
     </LinearLayout>
 </FrameLayout>

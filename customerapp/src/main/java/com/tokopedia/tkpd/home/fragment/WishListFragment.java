@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -170,14 +171,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onResume() {
         super.onResume();
-        wishList.setLocalyticFlow(getActivity(), getString(R.string.home_wishlist));
-        if (wishList.isAfterRotation()) {
-            if (!wishList.isLoadedFirstPage())
-                wishList.refreshData(getActivity());
-        } else {
-            wishList.fetchDataFromCache(getActivity());
-        }
-        UnifyTracking.eventViewWishlist();
+        wishList.onResume(getActivity());
     }
 
     @Override
@@ -272,6 +266,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    UnifyTracking.eventRemoveWishlist();
                     wishList.deleteWishlist(getActivity(), productId, position);
                     isDeleteDialogShown = false;
                 }
@@ -378,6 +373,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void findProduct() {
+        UnifyTracking.eventClickCariEmptyWishlist();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -478,8 +474,17 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        UnifyTracking.eventClickCariWishlist(query);
         wishList.searchWishlist(query);
+        sendSearchGTM(query);
         return false;
+    }
+
+    private void sendSearchGTM(String keyword) {
+        if (keyword != null &&
+                !TextUtils.isEmpty(keyword)) {
+            UnifyTracking.eventSearchWishlist(keyword);
+        }
     }
 
     @Override

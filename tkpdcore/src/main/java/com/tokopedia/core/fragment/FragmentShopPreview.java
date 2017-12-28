@@ -69,6 +69,7 @@ public class FragmentShopPreview extends Fragment {
         LinearLayout rootLayout;
         TextView vShopName;
         ImageView vGoldImg;
+        ImageView officialStoreBadgetImageView;
         TextView vShopLoc;
         ImageView vShopAvatar;
         View vShopInfo;
@@ -105,6 +106,7 @@ public class FragmentShopPreview extends Fragment {
         Holder.rootLayout = (LinearLayout) MainView.findViewById(R.id.shop_info);
         Holder.vShopName = (TextView) MainView.findViewById(R.id.shop_name);
         Holder.vGoldImg = (ImageView) MainView.findViewById(R.id.gold_merchant);
+        Holder.officialStoreBadgetImageView = (ImageView) MainView.findViewById(R.id.image_official_store);
         Holder.vShopLoc = (TextView) MainView.findViewById(R.id.shop_loc);
         Holder.vShopAvatar = (ImageView) MainView.findViewById(R.id.shop_ava);
         Holder.vShopInfo = MainView.findViewById(R.id.shop_info);
@@ -216,9 +218,21 @@ public class FragmentShopPreview extends Fragment {
             mIsGold = 0;
         }
 
+        int isOfficalStore = -1;
+
+        if (!ShopInfo.isNull("shop_is_official")) {
+            isOfficalStore = ShopInfo.getInt("shop_is_official");
+        }
+
         if (mIsGold == 0) {
             Holder.vGoldImg.setVisibility(View.GONE);
         }
+
+        if (isOfficalStore == 1){
+            Holder.vGoldImg.setVisibility(View.GONE);
+            Holder.officialStoreBadgetImageView.setVisibility(View.VISIBLE);
+        }
+
         Holder.rootLayout.setVisibility(View.VISIBLE);
     }
 

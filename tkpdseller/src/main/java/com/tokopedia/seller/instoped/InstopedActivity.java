@@ -33,7 +33,7 @@ import java.util.List;
 public class InstopedActivity extends TActivity implements InstagramActivityListener {
 
     public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
-    private static final String MAX_RESULT = "MAX_R";
+    protected static final String MAX_RESULT = "MAX_R";
     private String FRAGMENT;
     private FragmentManager supportFragmentManager;
     private Toolbar toolbar;
@@ -153,16 +153,20 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
                     //[END] move to productSocMedActivity
                 }
                 else { // activity has caller, just finish it and return the bundle to the caller
-                    Intent socMedIntent = new Intent();
-                    socMedIntent.putParcelableArrayListExtra(
-                            GalleryActivity.PRODUCT_SOC_MED_DATA,
-                            fromSparseArray(selectedModel)
-                    );
-                    InstopedActivity.this.setResult(Activity.RESULT_OK, socMedIntent);
-                    InstopedActivity.this.finish();
+                    setResultToCaller(fromSparseArray(selectedModel));
                 }
             }
         };
+    }
+
+    protected void setResultToCaller(ArrayList<InstagramMediaModel> selectedModel){
+        Intent socMedIntent = new Intent();
+        socMedIntent.putParcelableArrayListExtra(
+                GalleryActivity.PRODUCT_SOC_MED_DATA,
+                selectedModel
+        );
+        InstopedActivity.this.setResult(Activity.RESULT_OK, socMedIntent);
+        InstopedActivity.this.finish();
     }
 
     private ArrayList<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data) {

@@ -25,12 +25,11 @@ import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.addtocart.activity.AddToCartActivity;
 import com.tokopedia.transaction.addtocart.interactor.AddToCartNetInteractor;
@@ -439,9 +438,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         values.put(context.getString(R.string.value_quantity), orderData.getQuantity() + "");
         values.put(context.getString(R.string.value_seller_id), orderData.getShopId() + "");
         values.put(context.getString(R.string.value_products_category), productCartPass.getProductCategory());
-
-        PaymentTracking.atcLoca(productCartPass, orderData.getProductId(),
-                orderData.getPriceItem(), values);
 
         com.tokopedia.core.analytics.nishikino.model.Product product
                 = new com.tokopedia.core.analytics.nishikino.model.Product();

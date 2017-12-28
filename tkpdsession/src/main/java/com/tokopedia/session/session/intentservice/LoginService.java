@@ -15,7 +15,6 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -297,10 +296,11 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         AccountsModel accountsModel = new GsonBuilder()
                                 .create().fromJson(jsonObject.toString(), AccountsModel.class);
                         setLoginSession(accountsModel);
+                        sessionHandler.setPhoneNumber(sessionHandler.getTempPhoneNumber(context));
+                        sessionHandler.setGoldMerchant(context, accountsModel.getShopIsGold());
                         result.putBoolean(LOGIN_MOVE_SECURITY, false);
                         result.putBoolean(LOGIN_ACTIVATION_RESENT, false);
                         result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
-                        SessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
                         result.putString(AppEventTracking.USER_ID_KEY, accountsModel.getUserId() + "");
                         result.putString(AppEventTracking.FULLNAME_KEY, accountsModel.getFullName());
                     }
@@ -423,7 +423,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putParcelable(LOGIN_SECURITY_QUESTION_DATA, securityModel);
                                 result.putParcelable(ACCOUNTS, accountsParameter);
                             } else {
-                                sendLocalyticsUserAttr(data.getAccountsModel().getUserId() + "", data.getAccountsModel().getFullName(), data.getEmail());
                                 AccountsModel accountsModel = accountsParameter.getAccountsModel();
                                 setLoginSession(accountsModel);
                                 SessionHandler.setPhoneNumber(accountsParameter.getInfoModel().getPhone());
@@ -607,13 +606,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 accountsModel.getUserId() + "",
                 accountsModel.getFullName(), accountsModel.getShopId() + "",
                 accountsModel.getMsisdnIsVerifiedBoolean());
-    }
-
-    private void sendLocalyticsUserAttr(String userId, String fullName, String email) {
-        if (getApplicationContext() != null) {
-            Jordan.init(getApplicationContext()).getLocalyticsContainer()
-                    .tagUserAttributes(userId, fullName, email);
-        }
     }
 
     private void sendAuthenticateGTMEvent(@NonNull Object modelObject) {

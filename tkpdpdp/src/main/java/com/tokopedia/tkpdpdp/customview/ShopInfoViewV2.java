@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,6 +28,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_OFFICIAL_VALUE;
+
 
 /**
  * @author Angga.Prasetiyo on 27/10/2015.
@@ -36,6 +40,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private ImageView ivGoldShop;
     private ImageView ivOfficialStore;
     private ImageView ivLuckyShop;
+    private ImageView ivLocation;
     private TextView tvShopName;
     private TextView tvShopLoc;
     private TextView tvLastOnline;
@@ -93,13 +98,19 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         llRating = (LinearLayout) findViewById(R.id.l_rating);
         llReputationMedal = (LinearLayout) findViewById(R.id.l_medal);
         lastOnlineImageView = (ImageView) findViewById(R.id.last_online_icon);
+        ivLocation = (ImageView) findViewById(R.id.icon_location);
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
         tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
-        tvShopLoc.setText(data.getShopInfo().getShopLocation());
+        if (data.getShopInfo().getShopIsOfficial()==SHOP_OFFICIAL_VALUE) {
+            ivLocation.setImageDrawable(ContextCompat.getDrawable(getContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
+            tvShopLoc.setText(getResources().getString(com.tokopedia.core.R.string.authorized));
+        } else {
+            tvShopLoc.setText(data.getShopInfo().getShopLocation());
+        }
         if (data.getShopInfo().getShopStats().getShopBadge() != null) generateMedal(data);
         ImageHandler.loadImage2(ivShopAva, data.getShopInfo().getShopAvatar(),
                 R.drawable.ic_default_shop_ava);
@@ -107,10 +118,11 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
 
         displayLastLogin(data);
 
-        favoriteButton.setVisibility(data.getShopInfo().getShopIsOwner() == 1 ? GONE : VISIBLE);
+        favoriteButton.setVisibility(data.getShopInfo().getShopIsAllowManage() == 1 ? GONE : VISIBLE);
         ivGoldShop.setVisibility(showGoldBadge(data) ? VISIBLE : GONE);
         switchOfficialStoreBadge(data.getShopInfo().getShopIsOfficial());
 
+        adjustSendMsgAndFavoriteTextSize();
         sendMsgButton.setVisibility(data.getShopInfo().getShopId()
                 .equals(SessionHandler.getShopID(getContext())) ? GONE : VISIBLE);
 
@@ -153,14 +165,22 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     }
 
     public void updateFavoriteStatus(int statFave) {
+        int screenDensityDpi = getResources().getDisplayMetrics().densityDpi;
         switch (statFave) {
             case 1:
                 favoriteButton.setSelected(true);
                 favoriteButton.setClickable(true);
                 favoriteText.setText(getContext().getString(R.string.favorited));
-                favoriteText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_green_24dp, 0, 0, 0);
                 favoriteText.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
                 isShopFavorite = true;
+                if (screenDensityDpi <= DisplayMetrics.DENSITY_HIGH) {
+                    favoriteText.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.ic_check_green_12dp, 0, 0, 0);
+
+                } else {
+                    favoriteText.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.ic_check_green_24dp, 0, 0, 0);
+                }
                 break;
             case 0:
             default:
@@ -168,12 +188,28 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                 favoriteButton.setSelected(false);
                 favoriteButton.setClickable(true);
                 favoriteText.setText(getContext().getString(R.string.fave));
-                favoriteText
-                        .setCompoundDrawablesWithIntrinsicBounds(
-                                R.drawable.ic_add_black_24dp, 0, 0, 0);
-
                 favoriteText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                if (screenDensityDpi <= DisplayMetrics.DENSITY_HIGH) {
+                    favoriteText.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.ic_add_black_12dp, 0, 0, 0);
+
+                } else {
+                    favoriteText.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.ic_add_black_24dp, 0, 0, 0);
+                }
                 break;
+        }
+    }
+
+    private void adjustSendMsgAndFavoriteTextSize(){
+        int screenDensityDpi = getResources().getDisplayMetrics().densityDpi;
+        if (screenDensityDpi <= DisplayMetrics.DENSITY_HIGH) {
+            sendMsgButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
+            favoriteText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
+            favoriteText.setPadding(0, 4, 0, 4);
+        } else {
+            sendMsgButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
+            favoriteText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
         }
     }
 
@@ -205,7 +241,9 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                                 String.valueOf(data.getShopInfo().getShopId()),
                                 data.getShopInfo().getShopName(),
                                 data.getInfo().getProductName(),
-                                TkpdInboxRouter.PRODUCT);
+                                data.getInfo().getProductUrl(),
+                                TkpdInboxRouter.PRODUCT,
+                                data.getShopInfo().getShopAvatar());
                 listener.onProductShopMessageClicked(intent);
             }
         }

@@ -17,15 +17,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
@@ -54,6 +53,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     private final TxDetailViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
     private static final int FREE_RETURN = 1;
+
     public TxDetailPresenterImpl(TxDetailViewListener viewListener) {
         this.viewListener = viewListener;
         this.netInteractor = new TxOrderNetInteractorImpl();
@@ -168,7 +168,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                                             .replace("XXX",
                                                     orderData.getOrderDetail().getDetailPdfUri())
                             ).toString(),
-                            TkpdInboxRouter.TX_ASK_SELLER);
+                            TkpdInboxRouter.TX_ASK_SELLER,
+                            orderData.getOrderShop().getShopPic());
             viewListener.navigateToActivity(intent);
         }
     }
@@ -218,7 +219,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     }
 
     @Override
-    public void processComplain(Context context, OrderData orderData){
+    public void processComplain(Context context, OrderData orderData) {
         showComplainDialog(context, orderData);
     }
 
@@ -234,13 +235,17 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(context, InboxReputationActivity.class);
-                        intent.putExtra("unread", true);
-                        dialog.dismiss();
-                        viewListener.navigateToActivity(intent);
-                        viewListener.closeWithResult(
-                                TkpdState.TxActivityCode.BuyerItemReceived, null
-                        );
+                        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+                            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                                    .getInboxReputationIntent(MainApplication.getAppContext());
+                            intent.putExtra("unread", true);
+                            dialog.dismiss();
+                            viewListener.navigateToActivity(intent);
+                            viewListener.closeWithResult(
+                                    TkpdState.TxActivityCode.BuyerItemReceived, null
+                            );
+                        }
+
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -287,33 +292,24 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
         tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
-        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
+        tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsgV2() != null ?
+                Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsgV2()) :
+                "");
 
         llFreeReturn.setVisibility(View.GONE);
-        btnBack.setVisibility(View.GONE);
+        btnBack.setVisibility(View.VISIBLE);
         btnNotReceive.setVisibility(View.GONE);
-        if (orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
-            btnNotReceive.setVisibility(View.VISIBLE);
-        else
-            btnBack.setVisibility(View.VISIBLE);
       
         //will be used later
 //        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
 //            llFreeReturn.setVisibility(View.VISIBLE);
 //            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
 //        }
-      
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-            }
-        });
-        btnNotReceive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                showNotReceiveDialog(context, orderData);
             }
         });
 
@@ -386,6 +382,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
 
         dialog.show();
     }
+
     private void processResolution(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())
@@ -510,7 +507,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
                             processReview(context, message);
                             dialog.dismiss();
                         }

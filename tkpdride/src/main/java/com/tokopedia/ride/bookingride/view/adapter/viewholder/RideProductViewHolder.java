@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 
@@ -85,6 +86,8 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
 
     @OnClick(R2.id.row_cab_list)
     public void actionOnProductClicked() {
+        RideGATracking.eventSelectRideOption(rideProductViewModel.getProductName(),rideProductViewModel.getTimeEstimate(),rideProductViewModel.getProductPriceFmt());
+
         itemClickListener.onProductSelected(rideProductViewModel);
     }
 }

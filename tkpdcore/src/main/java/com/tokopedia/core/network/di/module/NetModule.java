@@ -14,7 +14,12 @@ import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
 import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardOkHttp;
 import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
 import com.tokopedia.core.network.di.qualifier.ScroogeNoAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
@@ -24,11 +29,8 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
-import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
@@ -77,19 +79,27 @@ public class NetModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ACE_DOMAIN).client(okHttpClient).build();
     }
 
-    @TopAdsQualifier
-    @ApplicationScope
-    @Provides
-    public Retrofit provideTopAdsRetrofit(@TopAdsAuth OkHttpClient okHttpClient,
-                                       Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.TOPADS_DOMAIN).client(okHttpClient).build();
-    }
-
     @MojitoQualifier
     @ApplicationScope
     @Provides
     public Retrofit provideMojitoRetrofit(@MojitoAuth OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
+    }
+
+    @MojitoGetWishlistQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideMojitoGetWishlistRetrofit(@MojitoSmallTimeoutNoAuth OkHttpClient okHttpClient,
+                                                     Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
+    }
+
+    @MojitoWishlistActionQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideMojitoWishlistActionRetrofit(@MojitoNoRetryAuth OkHttpClient okHttpClient,
+                                                     Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
     }
 
@@ -107,14 +117,6 @@ public class NetModule {
     public Retrofit provideAccountsRetrofit(@BearerAuth OkHttpClient okHttpClient,
                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN).client(okHttpClient).build();
-    }
-
-    @RechargeQualifier
-    @ApplicationScope
-    @Provides
-    public Retrofit provideRechargeRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.RECHARGE_API_DOMAIN).client(okHttpClient).build();
     }
 
     @YoutubeQualifier
@@ -227,5 +229,13 @@ public class NetModule {
                 .baseUrl(TkpdBaseURL.POS_DOMAIN)
                 .client(okHttpClient)
                 .build();
+    }
+
+    @TopAdsQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideTopAdsRetrofit(@TopAdsQualifier OkHttpClient okHttpClient,
+                                          Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.TOPADS_DOMAIN).client(okHttpClient).build();
     }
 }

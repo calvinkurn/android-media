@@ -5,6 +5,7 @@ import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.product.picker.view.mapper.GetProductListPickerMapperView;
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerSearchView;
+import com.tokopedia.seller.product.picker.view.model.ProductListSellerModelView;
 
 import rx.Subscriber;
 
@@ -36,12 +37,17 @@ public class ProductListPickerSearchPresenterImpl extends BaseDaggerPresenter<Pr
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorGetProductList(e);
+                if (isViewAttached()) {
+                    getView().onLoadSearchError(e);
+                }
             }
 
             @Override
             public void onNext(ProductListSellerModel productListSellerModel) {
-                getView().onSuccessGetProductList(getProductListPickerMapperView.transform(productListSellerModel));
+                ProductListSellerModelView productListSellerModelView = getProductListPickerMapperView.transform(productListSellerModel);
+                getView().onSearchLoaded(productListSellerModelView.getProductListPickerViewModels(),
+                        productListSellerModelView.getProductListPickerViewModels().size(),
+                        productListSellerModelView.isHasNextPage());
             }
         };
     }

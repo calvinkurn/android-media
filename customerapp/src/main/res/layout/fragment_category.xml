@@ -13,8 +13,8 @@
         android:id="@+id/wrapperLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:focusableInTouchMode="true" >
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
         <com.tokopedia.core.home.customview.TokoCashHeaderView
             android:id="@+id/toko_cash_header_layout"
@@ -33,78 +33,18 @@
             android:id="@+id/banner_container_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/container_recharge"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_toppicks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="3dp"
-            app:cardUseCompatPadding="true"
-            android:visibility="gone">
+            android:scrollbars="none" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tablayout_recharge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:tabBackground="@color/white"
-                    app:tabIndicatorColor="@color/tkpd_main_green"
-                    app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/tkpd_main_green"
-                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                    app:tabTextColor="@color/tkpd_dark_gray" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="@color/grey_100" />
-
-                <com.tokopedia.core.customView.WrapContentViewPager
-                    android:id="@+id/viewpager_pulsa"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                </com.tokopedia.core.customView.WrapContentViewPager>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:background="@color/grey_100"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:layout_marginBottom="@dimen/margin_small" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small">
-
-                    <TextView
-                        android:id="@+id/see_all_product"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:drawableRight="@drawable/ic_arrow_right"
-                        android:textColor="@color/tkpd_main_green"
-                        android:drawablePadding="@dimen/padding_small"
-                        android:layout_marginRight="@dimen/margin_small"
-                        android:text="@string/lihat_semua_product" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
+        <com.tokopedia.tkpd.home.customview.DigitalWidgetView
+            android:id="@+id/digital_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/card_brand_layout"
@@ -177,8 +117,6 @@
                     android:paddingRight="@dimen/padding_small"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
-                    android:drawableEnd="@drawable/ic_chevron_right"
-                    android:drawableRight="@drawable/ic_chevron_right"
                     android:gravity="center_vertical|end"
                     android:text="@string/see_all"
                     android:textColor="@color/green_400"
@@ -193,10 +131,5 @@
             android:layout_height="wrap_content"
             android:scrollbars="none" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_toppicks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

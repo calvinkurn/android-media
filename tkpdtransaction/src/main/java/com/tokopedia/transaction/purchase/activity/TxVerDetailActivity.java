@@ -233,7 +233,8 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     public void renderInvoiceList(List<Detail> detail) {
         invoiceAdapter.addAllInvoiceList(detail);
-        if(presenter.getTypePaymentMethod(txVerData) != KLIK_BCA_MODE) {
+        if(presenter.getTypePaymentMethod(txVerData) != KLIK_BCA_MODE
+                && !tvPaymentCode.getText().toString().isEmpty()) {
             tvPaymentCode.setVisibility(View.VISIBLE);
         }
     }
@@ -407,5 +408,10 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
                 this, detailInvoice != null ? detailInvoice.getUrl() : "",
                 detailInvoice != null ? detailInvoice.getInvoice() : ""
         );
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

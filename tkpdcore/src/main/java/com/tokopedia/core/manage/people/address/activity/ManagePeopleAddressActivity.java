@@ -123,4 +123,9 @@ public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeo
             fab.hide();
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

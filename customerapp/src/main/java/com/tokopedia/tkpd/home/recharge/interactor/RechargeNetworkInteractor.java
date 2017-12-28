@@ -1,10 +1,9 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.status.Status;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.status.Status;
 
-import java.util.Map;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -14,15 +13,10 @@ import rx.Subscriber;
  */
 public interface RechargeNetworkInteractor {
 
-    void getRecentNumbers(Map<String, String> param);
-
-    void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> param);
-
-    void getCategoryData(Subscriber<CategoryData> subscriber);
+    void getCategoryData(Subscriber<List<Category>> subscriber, boolean isUseCache);
 
     void getStatus(Subscriber<Status> subscriber);
 
-    void getStatusResume(Subscriber<Status> subscriber);
-
     void onDestroy();
+
 }

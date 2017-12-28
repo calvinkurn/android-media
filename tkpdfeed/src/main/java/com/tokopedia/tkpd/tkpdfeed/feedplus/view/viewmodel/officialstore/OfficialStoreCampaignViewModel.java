@@ -17,6 +17,7 @@ public class OfficialStoreCampaignViewModel implements Visitable<FeedPlusTypeFac
     private final String title;
     private final ArrayList<OfficialStoreCampaignProductViewModel> listProduct;
     private final int page;
+    private int rowNumber;
 
     public OfficialStoreCampaignViewModel(String url,
                                           String redirectUrl,
@@ -59,5 +60,13 @@ public class OfficialStoreCampaignViewModel implements Visitable<FeedPlusTypeFac
 
     public int getPage() {
         return page;
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
     }
 }

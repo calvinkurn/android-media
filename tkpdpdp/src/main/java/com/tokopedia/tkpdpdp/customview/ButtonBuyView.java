@@ -77,7 +77,6 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             tvBuy.setText(getContext().getString(R.string.title_promo_per_hour));
             tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
             tvPromoTopAds.setVisibility(VISIBLE);
-            tvPromoTopAds.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
             tvBuy.setBackgroundResource(R.drawable.btn_promo_ads);
             tvBuy.setOnClickListener(new PromoteClick(data));
             tvPromoTopAds.setOnClickListener(new OnClickListener() {

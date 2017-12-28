@@ -43,13 +43,15 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private List<Item> adsItems = Collections.emptyList();
     private int mPage = 1;
     private boolean hasHeader = false;
+    private int headerCount = 0;
     private boolean headerPlaced = false;
     private boolean isFeed = false;
     private boolean shouldLoadAds = true; //default load ads
-    private final RecyclerView.Adapter adapter;
+    private final TopAdsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
+    private static final int ROW_ADS_INDEX_FEED = 2;
 
-    public TopAdsPlacer(RecyclerView.Adapter adapter, Context context,
+    public TopAdsPlacer(TopAdsRecyclerAdapter adapter, Context context,
                         TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
         presenter = new TopAdsPresenter(context);
         this.adapter = adapter;
@@ -99,6 +101,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onItemRangeInserted(final int positionStart, final int itemCount) {
+        Log.d(TAG, "onItemRangeInserted positionStart " + positionStart + " itemCount " + itemCount);
         ajustedPositionStart = positionStart;
         ajustedItemCount = itemCount;
         observerType = ObserverType.ITEM_RANGE_INSERTED;
@@ -118,8 +121,9 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         presenter.setMaxItems(items);
     }
 
-    public void setHasHeader(boolean hasHeader) {
+    public void setHasHeader(boolean hasHeader, int headerCount) {
         this.hasHeader = hasHeader;
+        this.headerCount = headerCount;
     }
 
     @Override
@@ -157,9 +161,12 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = 0;
         mPage = 1;
         itemList.clear();
-        setShouldLoadAds(true);
         if (hasHeader)
             headerPlaced = false;
+    }
+
+    public void clearAds() {
+        adsItems.clear();
     }
 
     @Override
@@ -175,20 +182,26 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void displayAds(List<Item> list, int position) {
-        Log.d(TAG, "displayAds list size " + list.size());
+        Log.d(TAG, "displayAds list size " + list.size() + " position " + position);
         adsItems = list;
         if (isFeed) {
-            setTopAds(adsItems, itemList, getItemCount());
-        } else {
-            if (hasHeader && !headerPlaced) {
-                headerPlaced = true;
-                setTopAds(adsItems, itemList, 1);
-                adapter.notifyItemInserted(1);
-            } else {
-                if (headerPlaced || position > 0) {
-                    position = position - 1;
+            int tresHold = (ajustedItemCount - 1);
+            if (getItemCount() > tresHold) {
+                if (hasHeader && !headerPlaced) {
+                    headerPlaced = true;
+                    setTopAds(adsItems, ROW_ADS_INDEX_FEED);
+                } else {
+                    setTopAds(adsItems, getItemCount() - tresHold);
                 }
-                setTopAds(adsItems, itemList, position);
+            } else {
+                setTopAds(adsItems, getItemCount());
+            }
+        } else {
+            if ((hasHeader && !headerPlaced) || (hasHeader && mPage == 1)) {
+                headerPlaced = true;
+                setTopAds(adsItems, headerCount);
+            } else {
+                setTopAds(adsItems, position);
                 if (recyclerView != null && position == 0) {
                     recyclerView.scrollToPosition(position);
                 }
@@ -209,7 +222,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         itemList.addAll(arrayList);
         if (hasHeader && !adsItems.isEmpty() && !headerPlaced) {
             headerPlaced = true;
-            setTopAds(adsItems, itemList, 1);
+            setTopAds(adsItems, headerCount);
         }
         observer.onStreamLoaded(observerType);
     }
@@ -252,13 +265,15 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         return presenter.getConfig();
     }
 
-    private void setTopAds(List<Item> list, List<Item> arrayList, int pos) {
+    private void setTopAds(List<Item> list, int pos) {
         Log.d(TAG, "setTopAds size " + list.size() + " pos " + pos);
-        if (list.size() > 0) {
-            arrayList.add(pos, new TopAdsViewModel(list));
-            adapter.notifyItemInserted(pos);
-        } else {
-            setShouldLoadAds(false);
+        if (pos >= 0 && pos < itemList.size()) {
+            if (list.size() > 0) {
+                itemList.add(pos, new TopAdsViewModel(list));
+                adapter.notifyItemInserted(pos);
+            } else {
+                setShouldLoadAds(false);
+            }
         }
     }
 

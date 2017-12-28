@@ -18,18 +18,26 @@
                 android:id="@+id/product_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:label_show_arrow="true"
                 app:content_color="@color/tkpd_main_green"
                 app:content="@string/top_ads_keyword_add" />
 
             <include layout="@layout/partial_separator_horizontal"/>
 
             <com.tokopedia.seller.common.widget.LabelView
+                android:id="@+id/total_keyword_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:content_color="@color/tkpd_main_green"
+                app:content="@string/top_ads_keyword_add" />
+
+            <include layout="@layout/partial_separator_horizontal"/>
+
+
+            <com.tokopedia.seller.common.widget.LabelView
                 android:id="@+id/name"
                 android:layout_marginTop="@dimen/margin_small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:label_show_arrow="true"
                 app:content_color="@color/tkpd_main_green"
                 app:title="@string/label_top_ads_group_name" />
 

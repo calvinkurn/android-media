@@ -15,6 +15,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.CacheUtil;
@@ -236,7 +237,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                                 AppEventTracking.Action.SCROLL,
                                 OpportunityTrackingEventLabel.EventLabel.NAVIGATE_PAGE
-                                );
+                        );
                     }
                 });
 
@@ -245,6 +246,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public boolean onQueryTextSubmit(String query) {
                 opportunityParam.setQuery(query);
                 resetOpportunityList();
+
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        query
+                );
                 return false;
             }
 
@@ -452,6 +460,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ScreenTracking.screen(getScreenName());
+
         if (requestCode == REQUEST_CODE_OPPORTUNITY_DETAIL
                 && resultCode == OpportunityDetailFragment.RESULT_DELETED
                 && data != null) {
@@ -480,7 +490,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         ArrayList<FilterPass> listPass = opportunityFilterPassModel.getListPass();
 
         if (listPass != null) {
-            opportunityParam.setListFilter(listPass);
+            opportunityParam.setFilter(listPass);
             resetOpportunityList();
         }
     }
@@ -522,9 +532,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected String getScreenName() {
-        if (pagingHandler != null)
-            return AppScreen.SCREEN_OPPORTUNITY_TAB + pagingHandler.getPage();
-        else
-            return AppScreen.SCREEN_OPPORTUNITY_TAB;
+        return AppScreen.SCREEN_OPPORTUNITY_TAB;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && getActivity() != null) {
+            ScreenTracking.screen(getScreenName());
+        }
     }
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/main_view"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@drawable/cards_ui_selected"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/cards_ui_selected"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:layout_marginRight="@dimen/margin_small"
             android:layout_weight="0.175"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/common_google_signin_btn_icon_dark"/>
+            tools:src="@drawable/common_google_signin_btn_icon_dark" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -42,7 +42,7 @@
                 android:textSize="@dimen/fontvs"
                 android:textStyle="bold"
                 android:visibility="gone"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/invoice_text"
@@ -52,7 +52,7 @@
                 android:lines="1"
                 android:textColor="@color/href_link"
                 android:textSize="@dimen/fontvs"
-                tools:text="XXXXXXXXXXXXXXXX"/>
+                tools:text="XXXXXXXXXXXXXXXX" />
 
             <TextView
                 android:id="@+id/date"
@@ -61,7 +61,7 @@
                 android:lines="1"
                 android:textColor="@color/label_color"
                 android:textSize="@dimen/fontvs"
-                tools:text="31 February 1999"/>
+                tools:text="31 February 1999" />
 
             <TextView
                 android:id="@+id/shop_name"
@@ -73,7 +73,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/font_medium"
                 android:textStyle="bold"
-                tools:text="Bought by: User_Name"/>
+                tools:text="Bought by: User_Name" />
 
             <TextView
                 android:id="@+id/status"
@@ -83,7 +83,7 @@
                 android:lines="1"
                 android:scrollHorizontally="true"
                 android:textSize="@dimen/fontvs"
-                tools:text="Menunggu pengejaran dari pihak kepolisian"/>
+                tools:text="Menunggu pengejaran dari pihak kepolisian" />
 
             <LinearLayout
                 android:id="@+id/ref_area"
@@ -97,7 +97,7 @@
                     android:layout_marginEnd="@dimen/margin_vs"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:text="@string/title_reference_number"
-                    android:textSize="@dimen/fontvs"/>
+                    android:textSize="@dimen/fontvs" />
 
                 <com.tokopedia.core.customView.TextViewCopyable
                     android:id="@+id/reference_num"
@@ -106,34 +106,27 @@
                     android:textColor="@color/href_link"
                     android:textSize="@dimen/fontvs"
                     android:textStyle="bold"
-                    tools:text="A3439i3i3i"/>
+                    tools:text="A3439i3i3i" />
 
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/but_overflow"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".10"
-            android:orientation="vertical">
+            android:background="@drawable/overflow_selected"
+            android:visibility="gone"
+            tools:ignore="UselessParent"
+            tools:visibility="visible">
 
-            <LinearLayout
-                android:id="@+id/but_overflow"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/overflow_selected"
-                android:gravity="end"
-                android:visibility="gone"
-                tools:ignore="UselessParent"
-                tools:visibility="visible">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_new_action_overflow_black"
-                    tools:ignore="ContentDescription"/>
-            </LinearLayout>
+                android:src="@drawable/ic_new_action_overflow_black"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
+
     </LinearLayout>
 
     <!-- <LinearLayout -->
@@ -169,7 +162,7 @@
             android:gravity="center"
             android:padding="@dimen/padding_vs"
             android:text="@string/title_package_received"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/reject_button"
@@ -180,7 +173,7 @@
             android:gravity="center"
             android:padding="@dimen/padding_vs"
             android:text="@string/title_package_not_rcv"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/track_button"
@@ -192,7 +185,7 @@
             android:padding="@dimen/padding_vs"
             android:text="@string/title_track"
             android:textColor="@color/black"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
@@ -214,7 +207,7 @@
             android:background="@android:color/transparent"
             android:text="@string/title_upload_evidence"
             android:textColor="@color/black"
-            android:textSize="@dimen/fontvs"/>
+            android:textSize="@dimen/fontvs" />
         <!-- <ImageView -->
         <!-- android:shopId="@+shopId/detail" -->
         <!-- android:layout_gravity="right" -->

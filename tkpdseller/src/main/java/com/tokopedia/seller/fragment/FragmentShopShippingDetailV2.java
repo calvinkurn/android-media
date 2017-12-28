@@ -338,7 +338,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
                                                     .replace("XXX",
                                                             orderShippingList.getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER);
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    orderShippingList.getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }
             }
@@ -468,7 +469,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     public void onConfirmClick() {
         if (checkConfirmationError()) {
             confirmShipping();
-            TrackingUtils.eventLoca(getActivity().getString(R.string.shipping_confirmation));
         }
     }
 

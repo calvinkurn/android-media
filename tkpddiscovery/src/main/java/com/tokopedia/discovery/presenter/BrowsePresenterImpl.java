@@ -128,7 +128,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             fetchIntent(intent);
             deleteFilterAndSortCache();
             setFilterOptionsFromIntent(intent);
-            if (intent.hasExtra(EXTRA_BROWSE_MODEL) && intent.getParcelableExtra(EXTRA_BROWSE_MODEL) != null){
+            if (intent.hasExtra(EXTRA_BROWSE_MODEL) && intent.getParcelableExtra(EXTRA_BROWSE_MODEL) != null) {
                 BrowseProductActivityModel temporary = intent.getParcelableExtra(EXTRA_BROWSE_MODEL);
                 if (temporary.getFilterOptions() != null && temporary.getFilterOptions().size() > 0) {
                     browseModel.setFilterOptions(temporary.getFilterOptions());
@@ -259,7 +259,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 break;
             case RevampedDynamicFilterActivity.REQUEST_CODE:
                 FilterMapAtribut.FilterMapValue filterMapValue =
-                        data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_FILTERS);
+                        data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS);
                 mFilterMapAtribut.getFiltersMap()
                         .put(browseModel.getActiveTab(), filterMapValue);
                 browseModel.setFilterOptions(filterMapValue.getValue());
@@ -287,6 +287,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
             isBottomBarFirstTimeChange = false;
         }
+
     }
 
     @Override
@@ -326,8 +327,12 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                                 .build();
                         if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                             shareData.setType(ShareData.CATEGORY_TYPE);
-                            shareData.setDescription(browseModel.getParentDepartement()+","
-                                    +browseModel.getDepartmentId());
+                            shareData.setDescription(browseModel.getParentDepartement() + ","
+                                    + browseModel.getDepartmentId());
+                        } else if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
+                            shareData.setType(ShareData.HOTLIST_TYPE);
+                            shareData.setId(browseModel.getHotListBannerModel().info.aliasKey);
+
                         }
                         browseView.startShareActivity(shareData);
                     }
@@ -386,6 +391,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             @Override
             public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
                 browseView.showFailedFetchAttribute();
+                isFetchingDynamicAttribute = false;
             }
 
             @Override

@@ -62,11 +62,13 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
             Name.add(getString(R.string.title_personal_profile));
             Name.add(getString(R.string.title_address));
             Name.add(getString(R.string.title_bank));
+            Name.add(getString(R.string.title_payment_menu));
             Name.add(getString(R.string.title_notification));
             Name.add(getString(R.string.title_password));
             ResID.add(R.drawable.ic_set_profile);
             ResID.add(R.drawable.ic_set_address);
             ResID.add(R.drawable.ic_set_bank);
+            ResID.add(R.drawable.ic_set_payment);
             ResID.add(R.drawable.ic_set_notifications);
             ResID.add(R.drawable.ic_menu_general_setting);
             lvManage.setOnItemClickListener(onSellerSettingMenuClickedListener());
@@ -165,6 +167,12 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
                         startActivity(intent);
                         break;
                     case 3:
+                        if ((getActivity().getApplication() instanceof TransactionRouter)) {
+                            ((TransactionRouter) getActivity().getApplication())
+                                    .goToUserPaymentList(getActivity());
+                        }
+                        break;
+                    case 4:
                         intent = new Intent(getActivity(), ManageNotificationActivity.class);
                         startActivityForResult(intent, MANAGE_NOTIFICATION);
                         break;
@@ -173,7 +181,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
 					startActivityForResult(intent, 1);
 					GAUtility.SendEvent(getActivity(), "Cat Manage People", "Act Click Btn", "Lbl Privacy");
 					break;*/
-                    case 4:
+                    case 5:
                         intent = new Intent(getActivity(), ManagePasswordActivity.class);
                         startActivity(intent);
                         break;

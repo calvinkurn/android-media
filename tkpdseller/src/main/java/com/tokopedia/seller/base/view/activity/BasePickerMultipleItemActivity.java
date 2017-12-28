@@ -207,12 +207,12 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     public void showFooterAndInfo(boolean show) {
         bottomSheetContainerView.setVisibility(show ? View.VISIBLE : View.GONE);
         footerView.setVisibility(show ? View.VISIBLE : View.GONE);
+        int containerBottomMargin = (int) getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height);
         if (!show) {
-            int containerBottomMargin = 0;
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
-            p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
-            containerListView.requestLayout();
-        } else {
+            containerBottomMargin = 0;
+        }
+        updateContainerListBottomMargin(containerBottomMargin);
+        if (show) {
             showBottomSheetInfo(true);
         }
     }
@@ -225,12 +225,18 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
             containerBottomMargin += getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_height) -
                     getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_shadow_height);
         }
+        updateContainerListBottomMargin(containerBottomMargin);
         if (bottomSheetBehavior.getPeekHeight() == peekHeight) {
             return;
         }
         bottomSheetBehavior.setPeekHeight(peekHeight);
+    }
+
+    private void updateContainerListBottomMargin(int containerBottomMargin) {
         ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
-        p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
-        containerListView.requestLayout();
+        if (p.bottomMargin != containerBottomMargin) {
+            p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
+            containerListView.requestLayout();
+        }
     }
 }

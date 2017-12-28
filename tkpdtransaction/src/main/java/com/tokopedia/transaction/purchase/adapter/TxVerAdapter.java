@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -142,8 +143,12 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
     private void renderUnchangeableHolder(TxVerData item, ViewHolder holder) {
         holder.holderNormalPayment.setVisibility(View.GONE);
         holder.holderUnchangeablePayment.setVisibility(View.VISIBLE);
-        holder.tvSpecialPaymentMethod.setText(MessageFormat.format("Kode {0} : {1}",
-                item.getBankName(), item.getUserAccountName()));
+        if(item.getUserAccountName().equals("-") || item.getUserAccountName().isEmpty()) {
+            holder.tvSpecialPaymentMethod.setText(item.getBankName());
+        } else {
+            holder.tvSpecialPaymentMethod.setText(MessageFormat.format("Kode {0} : {1}",
+                    item.getBankName(), item.getUserAccountName()));
+        }
     }
 
     private void renderKlikBCAHolder(TxVerData item, ViewHolder holder) {

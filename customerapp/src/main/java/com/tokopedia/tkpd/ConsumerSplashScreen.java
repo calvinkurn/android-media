@@ -28,7 +28,6 @@ public class ConsumerSplashScreen extends SplashScreen {
             taskStackBuilder.addNextIntent(RideHomeActivity.getCallingIntent(this));
             taskStackBuilder.startActivities();
         }
-
         finish();
     }
 }

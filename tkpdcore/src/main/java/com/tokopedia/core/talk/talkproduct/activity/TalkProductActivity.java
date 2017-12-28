@@ -111,4 +111,9 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
         InboxTalkIntentService.startAction(this, param, mReceiver,
                 InboxTalkIntentService.ACTION_REPORT);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

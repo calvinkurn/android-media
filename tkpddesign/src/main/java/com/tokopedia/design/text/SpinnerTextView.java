@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -32,6 +33,7 @@ public class SpinnerTextView extends BaseCustomView {
     private static final int DEFAULT_INDEX_NOT_SELECTED = -1;
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textAutoComplete;
+    private ImageView imageViewChevron;
 
     private String hintText;
     private
@@ -93,7 +95,7 @@ public class SpinnerTextView extends BaseCustomView {
             textInputLayout.setHint(hintText);
         }
         if (entries != null) {
-            updateEntries(ConverterUtils.convertCharSequenceToString(entries));
+            updateEntries(ConverterUtils.convertCharSequenceToString(entries), selectionIndex);
         }
         if (hintTextAppearance != 0) {
             textInputLayout.setHintTextAppearance(hintTextAppearance);
@@ -107,6 +109,7 @@ public class SpinnerTextView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_spinner_text_view, this);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
         textAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.edit_text_spinner);
+        imageViewChevron = (ImageView) view.findViewById(R.id.image_view_chevron_icon);
         textAutoComplete.setOnKeyListener(null);
         textAutoComplete.setOnClickListener(new OnClickListener() {
             @Override
@@ -144,7 +147,11 @@ public class SpinnerTextView extends BaseCustomView {
     }
 
     public void setEntries(String[] entries) {
-        updateEntries(entries);
+        setEntries(entries, selectionIndex);
+    }
+
+    public void setEntries(String[] entries, int position) {
+        updateEntries(entries, position);
         invalidate();
         requestLayout();
     }
@@ -162,8 +169,19 @@ public class SpinnerTextView extends BaseCustomView {
         return values[selectionIndex].toString();
     }
 
+    public String getSpinnerEntry() {
+        if (values == null || selectionIndex < 0) {
+            return String.valueOf(DEFAULT_INDEX_NOT_SELECTED);
+        }
+        return entries[selectionIndex].toString();
+    }
+
     public String getSpinnerValue(int position) {
         return values[position].toString();
+    }
+
+    public String getSpinnerEntry(int position) {
+        return entries[position].toString();
     }
 
     public void setSpinnerPosition(int position) {
@@ -218,11 +236,13 @@ public class SpinnerTextView extends BaseCustomView {
         textInputLayout.setError(error);
     }
 
-    private void updateEntries(String[] entries) {
+
+    private void updateEntries(String[] entries, int position) {
         if (entries != null) {
             this.entries = entries;
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
+            selectionIndex = position;
             if (selectionIndex >= 0) {
                 textAutoComplete.setText(entries[selectionIndex]);
                 updateOnItemChanged(selectionIndex);
@@ -232,5 +252,9 @@ public class SpinnerTextView extends BaseCustomView {
 
     public EditText getEditText() {
         return textAutoComplete;
+    }
+
+    public void setChevronVisibility(boolean isVisible) {
+        imageViewChevron.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 }

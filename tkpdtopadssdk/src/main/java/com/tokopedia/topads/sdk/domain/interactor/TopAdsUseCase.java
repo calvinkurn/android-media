@@ -84,9 +84,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                             } else if (displayMode == DisplayMode.LIST) {
                                 visitables.add(ModelConverter.convertToShopListViewModel(data));
                             } else if (displayMode == DisplayMode.FEED) {
-                                if (i < 1) //Limited shop 1 item only
-                                    visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
-                            } else if(displayMode == DisplayMode.FEED_EMPTY){
+                                visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
+                            } else if (displayMode == DisplayMode.FEED_EMPTY) {
                                 visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
                             }
                         }

@@ -178,18 +178,6 @@
             android:textColor="@color/medium_green"
             android:textSize="@dimen/fontm" />
 
-
-        <ImageView
-            android:id="@+id/avatar_all_discussion"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginRight="@dimen/margin_sm"
-            android:layout_marginLeft="@dimen/margin_sm"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/icon_arrow_right"
-            android:contentDescription="@string/title_all_discussion"/>
-
-
     </LinearLayout>
 
 </RelativeLayout>

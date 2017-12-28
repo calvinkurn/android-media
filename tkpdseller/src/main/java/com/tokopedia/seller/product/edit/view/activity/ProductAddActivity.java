@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -122,13 +123,17 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         imageUrls = new ArrayList<>();
         for (int i = 0; i < imagesCount; i++) {
             String imageUrl = oriImageUrls.get(i);
-            String fileNameToMove = FileUtils.generateUniqueFileName(imageUrl);
-            File photo = FileUtils.writeImageToTkpdPath(
-                    FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
-                            DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                    fileNameToMove);
-            if (photo != null) {
-                imageUrls.add(photo.getAbsolutePath());
+            if(FileUtils.isInTkpdCache(new File(imageUrl))) {
+                imageUrls.add(imageUrl);
+            } else {
+                String fileNameToMove = FileUtils.generateUniqueFileName();
+                File photo = FileUtils.writeImageToTkpdPath(
+                        FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
+                                DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                        fileNameToMove);
+                if (photo != null) {
+                    imageUrls.add(photo.getAbsolutePath());
+                }
             }
         }
         dismissDialog();
@@ -271,6 +276,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                     .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteNotUsedTkpdCacheImage();
                             ProductAddActivity.super.onBackPressed();
                         }
                     }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
@@ -297,11 +303,24 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     private boolean hasDataAdded() {
-        Fragment fragment = getFragment();
-        if (fragment != null && fragment instanceof ProductAddFragment) {
-            return ((ProductAddFragment) fragment).hasDataAdded();
+        ProductAddFragment fragment = getProductAddFragment();
+        if (fragment != null) {
+            return fragment.hasDataAdded();
         }
         return false;
+    }
+
+    private void deleteNotUsedTkpdCacheImage() {
+        if (needDeleteCacheOnBack()) {
+            ProductAddFragment fragment = getProductAddFragment();
+            if (fragment != null) {
+                fragment.deleteNotUsedTkpdCacheImage();
+            }
+        }
+    }
+
+    protected boolean needDeleteCacheOnBack(){
+        return true;
     }
 
     private boolean saveProductToDraft() {
@@ -336,7 +355,10 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
             if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
                 imageUrls.add(FileUtils.getPathFromGmail(this, imageUri));
             } else { // get extras for import from gallery
-                imageUrls.add(FileUtils.getRealPathFromURI(this, imageUri));
+                String url = FileUtils.getTkpdPathFromURI(this, imageUri);
+                if (!TextUtils.isEmpty(url)) {
+                    imageUrls.add(url);
+                }
             }
         }
         dismissDialog();
@@ -444,6 +466,11 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     public String getScreenName() {
         return AppScreen.SCREEN_ADD_PRODUCT;
     }
@@ -452,4 +479,5 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     public ProductComponent getComponent() {
         return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
+
 }

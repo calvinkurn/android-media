@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 
@@ -177,7 +178,7 @@ public class BottomSheetItemAdapter extends RecyclerView.Adapter<BottomSheetItem
         }
 
         public void setData(BottomSheetHeader item) {
-            textView.setText(item.getTitle());
+            textView.setText(MethodChecker.fromHtml(item.getTitle()));
             int color = item.getTextColor();
 
             if (color != 0) {

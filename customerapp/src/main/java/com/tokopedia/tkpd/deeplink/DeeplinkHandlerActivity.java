@@ -14,6 +14,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
@@ -27,10 +28,16 @@ import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
+import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModule;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+
+import io.branch.referral.Branch;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -42,8 +49,11 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         PdpApplinkModule.class,
         RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
-        SessionApplinkModule.class
+        SessionApplinkModule.class,
+        FeedDeeplinkModule.class,
+        ReputationApplinkModule.class
 })
+
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
@@ -57,13 +67,18 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new PdpApplinkModuleLoader(),
                 new RideDeeplinkModuleLoader(),
                 new DiscoveryApplinkModuleLoader(),
-                new SessionApplinkModuleLoader()
+                new SessionApplinkModuleLoader(),
+                new FeedDeeplinkModuleLoader(),
+                new ReputationApplinkModuleLoader()
         );
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(Branch.getInstance()!=null) {
+            Branch.getInstance().initSession(this);
+        }
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
@@ -72,9 +87,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
             presenter.processUTM(applink);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
-                deepLinkDelegate.dispatchFrom(this, intent);
+                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, applink.toString());
+                startActivity(homeIntent);
             } else {
-                startActivity(HomeRouter.getHomeActivity(this));
+                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+                startActivity(homeIntent);
             }
 
             if (getIntent().getExtras() != null) {
@@ -90,7 +109,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
 
 
     @DeepLink(Constants.Applinks.SellerApp.SELLER_APP_HOME)
-    public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
+    public static Intent getCallingIntentSellerAppHome(Context context, Bundle extras) {
         Intent launchIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
 
@@ -100,5 +119,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             );
         }
         return launchIntent;
+    }
+
+    @DeepLink(Constants.Applinks.BROWSER)
+    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
+        String webUrl = extras.getString(
+                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+        );
+        Intent destination = new Intent(Intent.ACTION_VIEW);
+        destination.setData(Uri.parse(webUrl));
+        return destination;
     }
 }

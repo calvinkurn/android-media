@@ -2,9 +2,9 @@ package com.tokopedia.digital.cart.domain;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.model.VoucherDigital;

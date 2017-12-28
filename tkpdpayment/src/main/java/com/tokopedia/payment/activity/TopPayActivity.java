@@ -1,5 +1,6 @@
 package com.tokopedia.payment.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,9 +31,11 @@ import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 
 /**
@@ -115,6 +118,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         presenter.proccessUriPayment();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void setViewListener() {
         progressBar.setIndeterminate(true);
         scroogeWebView.getSettings().setJavaScriptEnabled(true);
@@ -129,6 +133,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
             @Override
             public void onClick(View v) {
                 if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
+                        && scroogeWebView.getUrl() != null
                         && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment()))
                     scroogeWebView.loadUrl("javascript:handlePopAndroid();");
                 else
@@ -272,7 +277,31 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //   Log.d(TAG, "redirect url = " + url);
+            //Log.d(TAG, "redirect url = " + url);
+
+            /*
+              HANYA SEMENTARA HARCODE, NANTI PAKAI APPLINK
+             */
+            if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE
+                    + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY)
+                    || url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING
+                    + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY))) {
+                String deepLinkUrl = Constant.TempRedirectPayment.APP_LINK_SCHEME_WEB_VIEW
+                        + "?url=" + URLEncoder.encode(url);
+                paymentModuleRouter.actionAppLinkPaymentModule(
+                        TopPayActivity.this, deepLinkUrl
+                );
+                return true;
+            } else {
+                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
+                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
+                    paymentModuleRouter.actionAppLinkPaymentModule(
+                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
+                    );
+                    return true;
+                }
+            }
+
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
                     url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();

@@ -1,8 +1,11 @@
 package com.tokopedia.core.var;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * Created by Nisie on 10/06/15.
@@ -31,6 +34,8 @@ public class ShopItem extends RecyclerViewItem implements Parcelable {
     public String adR;// 8
     @SerializedName("shop_click_url")
     public String shopClickUrl;
+    @SerializedName("shop_badge")
+    public List<Badge> shopBadge;
 
     public ShopItem() {
 
@@ -42,7 +47,7 @@ public class ShopItem extends RecyclerViewItem implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(android.os.Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(this.name);
         dest.writeString(this.iconUri);
@@ -53,9 +58,10 @@ public class ShopItem extends RecyclerViewItem implements Parcelable {
         dest.writeString(this.adKey);
         dest.writeString(this.adR);
         dest.writeString(this.shopClickUrl);
+        dest.writeTypedList(this.shopBadge);
     }
 
-    protected ShopItem(android.os.Parcel in) {
+    protected ShopItem(Parcel in) {
         super(in);
         this.name = in.readString();
         this.iconUri = in.readString();
@@ -66,11 +72,12 @@ public class ShopItem extends RecyclerViewItem implements Parcelable {
         this.adKey = in.readString();
         this.adR = in.readString();
         this.shopClickUrl = in.readString();
+        this.shopBadge = in.createTypedArrayList(Badge.CREATOR);
     }
 
     public static final Creator<ShopItem> CREATOR = new Creator<ShopItem>() {
         @Override
-        public ShopItem createFromParcel(android.os.Parcel source) {
+        public ShopItem createFromParcel(Parcel source) {
             return new ShopItem(source);
         }
 

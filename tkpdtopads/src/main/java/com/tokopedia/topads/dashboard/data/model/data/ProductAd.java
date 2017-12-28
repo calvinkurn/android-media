@@ -107,6 +107,10 @@ public class ProductAd implements Ad, Parcelable {
     @Expose
     private long groupId;
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String getStatTotalImpression() {
         return statTotalImpression;

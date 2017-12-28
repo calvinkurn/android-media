@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
@@ -39,7 +40,7 @@ public class ProductListPickerSearchViewHolder extends BaseMultipleCheckViewHold
                 imageProduct,
                 productListPickerViewModel.getIcon()
         );
-        nameProduct.setText(productListPickerViewModel.getTitle());
+        nameProduct.setText(MethodChecker.fromHtml(productListPickerViewModel.getTitle()));
         priceProduct.setText(productListPickerViewModel.getProductPrice());
     }
 
