@@ -123,7 +123,7 @@ public interface Constants {
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
-        String KOLCOMMENT = "tkpd://kolcomment/{id}";
+        String KOLCOMMENT = "tokopedia://kolcomment/{id}";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";
