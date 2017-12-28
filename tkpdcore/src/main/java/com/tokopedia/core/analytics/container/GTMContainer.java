@@ -473,7 +473,7 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void enhanceClickFeedRecomItem(List<Object> objects,
+    public void enhanceClickFeedRecomItem(Map<String, Object> objects,
                                           String eventLabel,
                                           String productUrl,
                                           String actionField) {
@@ -484,9 +484,19 @@ public class GTMContainer implements IGTMContainer {
                         "eventCategory", "homepage",
                         "eventAction", "feed - click card item",
                         "eventLabel", eventLabel,
+                        "ecommerce", null
+                )
+        );
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - click card item",
+                        "eventLabel", eventLabel,
                         "ecommerce", DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField", DataLayer.mapOf("list", actionField),
-                                        "products", DataLayer.listOf(objects.toArray(new Object[objects.size()]))
+                                        "products", DataLayer.listOf(objects)
                                 )
                         )
                 )
@@ -495,6 +505,16 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void eventImpressionFeedInspiration(List<Object> objects, String eventLabel) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - item impression",
+                        "eventLabel", eventLabel,
+                        "ecommerce", null
+                )
+        );
+
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf("event", "productView",
@@ -512,6 +532,16 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - item impression",
+                        "eventLabel", eventLabel,
+                        "ecommerce", null
+                )
+        );
+
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf("event", "productView",

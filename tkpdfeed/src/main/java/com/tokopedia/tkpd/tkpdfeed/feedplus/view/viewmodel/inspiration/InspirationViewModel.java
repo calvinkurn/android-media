@@ -90,7 +90,7 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
                             "brand", "",
                             "category", "",
                             "variant", "",
-                            "list", String.format("feed - product %d - %s", positionFeedCard, eventLabel),
+                            "list", String.format("/feed - product %d - %s", positionFeedCard, eventLabel),
                             "position", i,
                             "userId", getUserId()
                     )

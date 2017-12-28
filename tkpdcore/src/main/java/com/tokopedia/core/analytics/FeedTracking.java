@@ -1,7 +1,7 @@
 package com.tokopedia.core.analytics;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 12/14/17.
@@ -82,10 +82,10 @@ public class FeedTracking extends TrackingUtils {
         return generateClickRecomItemActionField(rowNumber, FeedTracking.CARD_TYPE_PRODUCT, FeedTracking.CARD_DETAIL_TOPPICKS);
     }
 
-    private static void enhanceClickFeedRecomItem(List<Object> objects,
-                                                 String eventLabel,
-                                                 String actionField,
-                                                 String productUrl) {
+    private static void enhanceClickFeedRecomItem(Map<String, Object> objects,
+                                                  String eventLabel,
+                                                  String actionField,
+                                                  String productUrl) {
         getGTMEngine().enhanceClickFeedRecomItem(objects, eventLabel, productUrl, actionField);
     }
 
@@ -94,12 +94,12 @@ public class FeedTracking extends TrackingUtils {
     }
 
     private static String generateClickRecomItemActionField(int rowPosition, String cardType, String cardDetail) {
-        return String.format("/feed - product row %d - %s - %s", rowPosition, cardType, cardDetail);
+        return String.format("/feed - product %d - %s - %s", rowPosition, cardType, cardDetail);
     }
 
-    private static List<Object> createProductList(String name, String id, String price,
-                                                  int itemPosition,
-                                                  String actionField, String userId) {
+    private static Map<String, Object> createProductList(String name, String id, String price,
+                                                         int itemPosition,
+                                                         String actionField, String userId) {
         com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
         product.setName(name);
         product.setId(id);
@@ -112,9 +112,7 @@ public class FeedTracking extends TrackingUtils {
         product.setPosition(itemPosition);
         product.setUserId(userId);
 
-        List<Object> list = new ArrayList<>();
-        list.add(product.getProductAsDataLayerForFeedRecomItemClick());
-        return list;
+        return product.getProductAsDataLayerForFeedRecomItemClick();
     }
 
     public static void eventImpressionFeedInspiration(List<Object> list, String eventLabel) {

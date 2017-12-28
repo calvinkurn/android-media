@@ -113,7 +113,7 @@ public interface IGTMContainer {
 
     void event(String name, Map<String, Object> data);
 
-    void enhanceClickFeedRecomItem(List<Object> objects, String eventLabel, String productUrl, String actionField);
+    void enhanceClickFeedRecomItem(Map<String, Object> objects, String eventLabel, String productUrl, String actionField);
 
     void eventImpressionFeedInspiration(List<Object> objects, String eventLabel);
 
