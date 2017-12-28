@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.data.factory.TemplateChatFactory;
 
 import java.util.ArrayList;
 import java.util.List;

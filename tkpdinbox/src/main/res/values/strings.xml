@@ -159,4 +159,21 @@ yang ditemukan</string>
     <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
         menghubungkan...</string>
     <string name="title_time_machine_message">Riwayat</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="add_template_chat_title">Tambah Template Pesan</string>
+    <string name="edit_template_chat_title">Ubah Template Pesan</string>
+    <string name="limited_template_chat_warning">Hapus salah satu template untuk bisa membuat template baru.</string>
+    <string name="success_add_template_chat">Berhasil menambahkan template pesan</string>
+    <string name="success_edit_template_chat">Berhasil mengubah template pesan</string>
+    <string name="success_delete_template_chat">Template berhasil dihapus</string>
+    <string name="success_rearrange_template_chat">Berhasil mengubah urutan template</string>
+    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat dan Diskusi tanpa perlu mengetik pesan yang sama berulang kali.
+        \n\nContoh:\nHalo, barang ini ready ya. Silakan diorder</string>
+    <string name="delete_chat_template">"Hapus template?"</string>
+    <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>
+    <string name="minimal_char_template">"Template pesan minimal 5 karakter"</string>
+
 </resources>

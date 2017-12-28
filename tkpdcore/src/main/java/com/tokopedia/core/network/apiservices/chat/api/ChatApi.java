@@ -17,6 +17,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -65,4 +66,15 @@ public interface ChatApi {
 
     @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
     Observable<Response<TkpdResponse>> getTemplate(@QueryMap Map<String, Object> parameters);
+
+    @Headers("Content-Type: application/json")
+    @POST(TkpdBaseURL.Chat.UPDATE_TEMPLATE)
+    Observable<Response<TkpdResponse>> editTemplate(@Body JsonObject jsonObject);
+
+    @PUT(TkpdBaseURL.Chat.SET_TEMPLATE)
+    Observable<Response<TkpdResponse>> setTemplate(TKPDMapParam<String, Object> parameters);
+
+    @Headers("Content-Type: application/json")
+    @POST(TkpdBaseURL.Chat.CREATE_TEMPLATE)
+    Observable<Response<TkpdResponse>> createTemplate(JsonObject parameters);
 }

@@ -106,4 +106,10 @@
     <color name="devider">#c7c7c7</color>
 
     <color name="black_tooltip">#96000000</color>
+
+
+    <color name="red_template">#fdebec</color>
+    <color name="green_template">#f3fef3</color>
+
+
 </resources>

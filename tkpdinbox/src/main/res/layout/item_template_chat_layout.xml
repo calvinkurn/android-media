@@ -9,17 +9,32 @@
     android:layout_marginLeft="@dimen/margin_vvvs">
 
     <TextView
+        android:id="@+id/dummy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="" />
+
+    <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:maxWidth="200dp"
         android:layout_height="wrap_content"
         android:background="@drawable/interactive_label_template_chat"
         android:padding="@dimen/padding_vs"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
         android:scrollbars="horizontal"
         android:singleLine="true"
         android:textSize="@dimen/text_size_small"
         android:textColor="@color/tkpd_main_green"
         tools:text="Maaf mengganggu" />
+
+    <com.tokopedia.core.customwidget.SquareHImageView
+        android:id="@+id/setting"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/interactive_label_template_chat"
+        android:src="@drawable/ic_setting_chat" />
 
 
 </LinearLayout>

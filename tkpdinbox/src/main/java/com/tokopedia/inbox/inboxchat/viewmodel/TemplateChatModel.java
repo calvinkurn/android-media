@@ -10,6 +10,19 @@ import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
 public class TemplateChatModel implements Visitable<TemplateChatTypeFactory>{
 
     String message;
+    boolean isIcon;
+
+    public TemplateChatModel() {
+        isIcon = false;
+    }
+
+    public TemplateChatModel(String message) {
+        this.message = message;
+    }
+
+    public TemplateChatModel(boolean hasMessage) {
+        isIcon = !hasMessage;
+    }
 
     public String getMessage() {
         return message;
@@ -22,5 +35,13 @@ public class TemplateChatModel implements Visitable<TemplateChatTypeFactory>{
     @Override
     public int type(TemplateChatTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public boolean isIcon() {
+        return isIcon;
+    }
+
+    public void setIcon(boolean icon) {
+        isIcon = icon;
     }
 }

@@ -86,6 +86,8 @@ public class ChatRoomContract {
         void setTemplate(List<Visitable> listTemplate);
 
         void addTemplateString(String message);
+
+        void goToSettingTemplate();
     }
 
     interface Presenter extends CustomerPresenter<View>{
