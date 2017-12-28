@@ -181,7 +181,7 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
     }
 
     private void goToVerifyPhoneNumberPage() {
-        startActivityForResult(VerificationActivity.getSmsVerificationIntent(
+        startActivityForResult(VerificationActivity.getLoginTokoCashVerificationIntent(
                 getActivity(),
                 phoneNumber,
                 getListAvailableMethod()

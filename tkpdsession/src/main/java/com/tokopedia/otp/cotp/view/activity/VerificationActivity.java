@@ -1,4 +1,4 @@
-package com.tokopedia.otp.tokocashotp.view.activity;
+package com.tokopedia.otp.cotp.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +13,9 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.otp.tokocashotp.view.fragment.ChooseVerificationMethodFragment;
-import com.tokopedia.otp.tokocashotp.view.fragment.VerificationFragment;
-import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
@@ -123,8 +123,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
     }
 
 
-    public static Intent getLoginTokoCashVerificationIntent(Context context, String phoneNumber,
-                                                            ArrayList<MethodItem> listAvailableMethod) {
+    public static Intent getSmsVerificationIntent(Context context, String phoneNumber,
+                                                  ArrayList<MethodItem> listAvailableMethod) {
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);

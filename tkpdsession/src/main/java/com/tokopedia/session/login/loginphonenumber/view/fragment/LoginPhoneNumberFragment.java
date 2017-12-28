@@ -132,7 +132,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(VerificationActivity.getSmsVerificationIntent(
+        startActivityForResult(VerificationActivity.getLoginTokoCashVerificationIntent(
                 getActivity(),
                 phoneNumber,
                 getListVerificationMethod()),
