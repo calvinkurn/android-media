@@ -13,41 +13,10 @@ public class GoogleLocationViewModel implements Parcelable {
     private String longitude;
     private String manualAddress;
     private String generatedAddress;
-
-    protected GoogleLocationViewModel(Parcel in) {
-        latitude = in.readString();
-        longitude = in.readString();
-        manualAddress = in.readString();
-        generatedAddress = in.readString();
-    }
-
-    public static final Parcelable.Creator<GoogleLocationViewModel> CREATOR = new Creator<GoogleLocationViewModel>() {
-        @Override
-        public GoogleLocationViewModel createFromParcel(Parcel in) {
-            return new GoogleLocationViewModel(in);
-        }
-
-        @Override
-        public GoogleLocationViewModel[] newArray(int size) {
-            return new GoogleLocationViewModel[size];
-        }
-    };
+    private String checkSum;
 
     public GoogleLocationViewModel() {
 
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(latitude);
-        parcel.writeString(longitude);
-        parcel.writeString(manualAddress);
-        parcel.writeString(generatedAddress);
     }
 
     public String getLatitude() {
@@ -76,6 +45,14 @@ public class GoogleLocationViewModel implements Parcelable {
 
     public void setGeneratedAddress(String generatedAddress) {
         this.generatedAddress = generatedAddress;
+    }
+
+    public String getCheckSum() {
+        return checkSum;
+    }
+
+    public void setCheckSum(String checkSum) {
+        this.checkSum = checkSum;
     }
 
     public String getGeneratedAddress() {
@@ -132,4 +109,38 @@ public class GoogleLocationViewModel implements Parcelable {
             return locationPass;
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+        dest.writeString(this.manualAddress);
+        dest.writeString(this.generatedAddress);
+        dest.writeString(this.checkSum);
+    }
+
+    protected GoogleLocationViewModel(Parcel in) {
+        this.latitude = in.readString();
+        this.longitude = in.readString();
+        this.manualAddress = in.readString();
+        this.generatedAddress = in.readString();
+        this.checkSum = in.readString();
+    }
+
+    public static final Creator<GoogleLocationViewModel> CREATOR = new Creator<GoogleLocationViewModel>() {
+        @Override
+        public GoogleLocationViewModel createFromParcel(Parcel source) {
+            return new GoogleLocationViewModel(source);
+        }
+
+        @Override
+        public GoogleLocationViewModel[] newArray(int size) {
+            return new GoogleLocationViewModel[size];
+        }
+    };
 }

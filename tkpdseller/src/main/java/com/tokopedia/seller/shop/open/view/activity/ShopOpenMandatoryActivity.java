@@ -12,12 +12,14 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.UserData;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +74,8 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-//            fragmentList.add(new ShopOpenMandatoryInfoFragment());
-//            fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
+            fragmentList.add(ShopSettingInfoFragment.createInstance());
+            fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
             fragmentList.add(new ShopOpenMandatoryLogisticFragment());
             return fragmentList;
         } else {
