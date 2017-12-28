@@ -14,10 +14,12 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +74,8 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-//            fragmentList.add(ShopSettingInfoFragment.createInstance());
-//            fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
+            fragmentList.add(ShopSettingInfoFragment.createInstance());
+            fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
             fragmentList.add(ShopOpenMandatoryLogisticFragment.newInstance());
             return fragmentList;
         } else {
@@ -84,10 +86,10 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     @Override
     protected void onResume() {
         super.onResume();
-//        if (!SessionHandler.isMsisdnVerified()) {
-//            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
-//            startActivity(intent);
-//        }
+        if (!SessionHandler.isMsisdnVerified()) {
+            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
+            startActivity(intent);
+        }
     }
 
     @Override
