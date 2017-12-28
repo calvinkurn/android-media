@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 
 /**
@@ -10,4 +11,5 @@ import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 public abstract class ShopSettingLogisticPresenter extends BaseDaggerPresenter<ShopSettingLogisticView> {
 
     public abstract void getCouriers(int districtCode);
+    public abstract void saveCourier(CourierServiceIdWrapper courierServiceIdWrapper);
 }

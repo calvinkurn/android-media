@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <ImageView
+            android:layout_width="@dimen/image_width_xxxl"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center_horizontal"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Subheading"
+            android:text="@string/shop_has_been_active"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/button_submit"
+            style="@style/Button.Submit.Green"
+            android:text="@string/title_add_product_lowercase"
+            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:foreground="?attr/selectableItemBackground"/>
+    </LinearLayout>
+</ScrollView>
+

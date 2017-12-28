@@ -1,33 +1,59 @@
 package com.tokopedia.seller.shop.open.view.model;
 
 import android.os.Parcel;
+import android.text.TextUtils;
 
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.setting.data.model.response.Shipment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by nakama on 19/12/17.
  */
 
 public class ShopOpenStepperModel implements StepperModel {
-    private final int DEFAULT_UNSELECTED_DISTRICT_ID = -1;
-    private int districtID = DEFAULT_UNSELECTED_DISTRICT_ID;
     private ResponseIsReserveDomain responseIsReserveDomain;
 
-    public int getDistrictID() {
-        return districtID;
-    }
-
-    //TODO set from step 2
-    public void setDistrictID(int districtID) {
-        this.districtID = districtID;
-    }
-
-    public CourierServiceIdList getSelectedCourierServices(){
-        // TODO get this from responseIsReserveDomain
-        return new CourierServiceIdList();
+    /**
+     * this is to convert string like "{"package_list":{"1":[1,2,3]}}" to our readable object.
+     */
+    public CourierServiceIdWrapper getSelectedCourierServices(){
+        CourierServiceIdWrapper courierServiceIdWrapper = new CourierServiceIdWrapper();
+        if (responseIsReserveDomain==null) {
+            return courierServiceIdWrapper;
+        }
+        Shipment shipment = responseIsReserveDomain.getShipment();
+        if (shipment == null) {
+            return courierServiceIdWrapper;
+        }
+        String packageListString = shipment.getPackageList();
+        if (TextUtils.isEmpty(packageListString)) {
+            return courierServiceIdWrapper;
+        }
+        try {
+            JSONObject jsonObject = new JSONObject(packageListString);
+            Iterator<?> keys = jsonObject.keys();
+            while( keys.hasNext() ) {
+                String key = (String)keys.next();
+                JSONArray jsonArray = jsonObject.getJSONArray(key);
+                List<String> courierServiceId = new ArrayList<>();
+                for (int i = 0 ; i < jsonArray.length(); i++) {
+                    courierServiceId.add(jsonArray.getString(i));
+                }
+                courierServiceIdWrapper.add(key, courierServiceId);
+            }
+            return courierServiceIdWrapper;
+        } catch (JSONException e) {
+            return new CourierServiceIdWrapper();
+        }
     }
 
     public ShopOpenStepperModel() {
@@ -48,12 +74,10 @@ public class ShopOpenStepperModel implements StepperModel {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.districtID);
         dest.writeParcelable(this.responseIsReserveDomain, flags);
     }
 
     protected ShopOpenStepperModel(Parcel in) {
-        this.districtID = in.readInt();
         this.responseIsReserveDomain = in.readParcelable(ResponseIsReserveDomain.class.getClassLoader());
     }
 

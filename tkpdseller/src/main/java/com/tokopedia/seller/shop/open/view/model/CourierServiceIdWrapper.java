@@ -7,12 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CourierServiceIdList implements Parcelable {
+public class CourierServiceIdWrapper implements Parcelable {
     private List<String> selectedServiceIdList = new ArrayList<>();
     private List<CourierServiceId> courierServiceIdList = new ArrayList<>();
 
     public List<String> getSelectedServiceIdList() {
         return selectedServiceIdList;
+    }
+
+    public List<CourierServiceId> getCourierServiceIdList() {
+        return courierServiceIdList;
     }
 
     public boolean contains(String courierId) {
@@ -25,8 +29,8 @@ public class CourierServiceIdList implements Parcelable {
     }
 
     public List<String> getCourierServiceIdList(String courierId) {
-        for (int i = 0, sizei = selectedServiceIdList.size(); i < sizei; i++) {
-            if (courierId.equals(selectedServiceIdList.get(i))){
+        for (int i = 0, sizei = courierServiceIdList.size(); i < sizei; i++) {
+            if (courierId.equals(courierServiceIdList.get(i).getCourierID())){
                 return courierServiceIdList.get(i).getCourierServiceIdList();
             }
         }
@@ -44,23 +48,23 @@ public class CourierServiceIdList implements Parcelable {
         dest.writeTypedList(this.courierServiceIdList);
     }
 
-    public CourierServiceIdList() {
+    public CourierServiceIdWrapper() {
     }
 
-    protected CourierServiceIdList(Parcel in) {
+    protected CourierServiceIdWrapper(Parcel in) {
         this.selectedServiceIdList = in.createStringArrayList();
         this.courierServiceIdList = in.createTypedArrayList(CourierServiceId.CREATOR);
     }
 
-    public static final Parcelable.Creator<CourierServiceIdList> CREATOR = new Parcelable.Creator<CourierServiceIdList>() {
+    public static final Parcelable.Creator<CourierServiceIdWrapper> CREATOR = new Parcelable.Creator<CourierServiceIdWrapper>() {
         @Override
-        public CourierServiceIdList createFromParcel(Parcel source) {
-            return new CourierServiceIdList(source);
+        public CourierServiceIdWrapper createFromParcel(Parcel source) {
+            return new CourierServiceIdWrapper(source);
         }
 
         @Override
-        public CourierServiceIdList[] newArray(int size) {
-            return new CourierServiceIdList[size];
+        public CourierServiceIdWrapper[] newArray(int size) {
+            return new CourierServiceIdWrapper[size];
         }
     };
 }

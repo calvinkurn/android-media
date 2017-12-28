@@ -3,6 +3,8 @@ package com.tokopedia.seller.shop.setting.data.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 12/19/17.
  */
@@ -12,9 +14,9 @@ public class ResponseSaveShopDesc {
     @SerializedName("ServerProcessTime")
     @Expose
     private String serverProcessTime;
-    @SerializedName("message_status")
+    @SerializedName("message_error")
     @Expose
-    private String messageStatus;
+    private List<String> messageError;
     @SerializedName("reserve_status")
     @Expose
     private String reserveStatus;
@@ -27,20 +29,13 @@ public class ResponseSaveShopDesc {
         this.serverProcessTime = serverProcessTime;
     }
 
-    public String getMessageStatus() {
-        return messageStatus;
-    }
-
-    public void setMessageStatus(String messageStatus) {
-        this.messageStatus = messageStatus;
+    public List<String> getMessageError() {
+        return messageError;
     }
 
     public String getReserveStatus() {
         return reserveStatus;
     }
 
-    public void setReserveStatus(String reserveStatus) {
-        this.reserveStatus = reserveStatus;
-    }
 
 }

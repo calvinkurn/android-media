@@ -3,6 +3,7 @@ package com.tokopedia.seller.shop.open.data.source.cloud.api;
 import com.tokopedia.seller.shop.constant.ShopOpenNetworkConstant;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckShop;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseCreateShop;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseSaveShopDesc;
@@ -45,4 +46,8 @@ public interface TomeApi {
     @FormUrlEncoded
     @POST(ShopOpenNetworkConstant.PATH_RESERVE_SHOP_DESC_INFO)
     Observable<Response<ResponseSaveShopDesc>> reserveShopDescInfo(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(ShopOpenNetworkConstant.PATH_CREATE_SHOP)
+    Observable<Response<ResponseCreateShop>> createShop();
 }

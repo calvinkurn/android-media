@@ -13,4 +13,10 @@ public interface ShopSettingLogisticView extends CustomerView {
 
     void onErrorLoadLogistic(Throwable t);
 
+    void onErrorSaveCourier(Throwable t);
+
+    void onErrorCreateShop(Throwable t);
+
+    void onSuccessCreateShop();
+
 }

@@ -246,4 +246,6 @@
     <string name="delivery_not_available">Pengiriman tidak tersedia</string>
     <string name="courier_cannot_activate_desc">Kurir ini tidak dapat diaktifkan karena tidak tersedia di daerah Anda.</string>
     <string name="courier_cannot_activate_title">Kurir tidak tersedia di daerah Anda</string>
+    <string name="min_1_courier_must_be_selected">Minimal 1 layanan kurir harus dipilih.</string>
+    <string name="shop_has_been_active">Toko Anda sudah aktif!</string>
 </resources>
