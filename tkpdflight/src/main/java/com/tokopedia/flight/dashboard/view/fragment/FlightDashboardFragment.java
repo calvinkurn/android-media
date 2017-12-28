@@ -75,6 +75,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View returnDateSeparatorView;
     BannerView bannerView;
 
+    List<BannerDetail> bannerList;
+
     @Inject
     FlightDashboardPresenter presenter;
 
@@ -201,7 +203,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView.setOnPromoClickListener(new BannerView.OnPromoClickListener() {
             @Override
             public void onPromoClick(int position) {
-
+                bannerClickAction(position);
             }
         });
         bannerView.setOnPromoAllClickListener(new BannerView.OnPromoAllClickListener() {
@@ -376,6 +378,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderBannerView(List<BannerDetail> bannerList) {
+        this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
         for (BannerDetail bannerModel : bannerList) {
             promoUrls.add(bannerModel.getAttributes().getFileName());
@@ -446,5 +449,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onDestroyView() {
         presenter.onDestroyView();
         super.onDestroyView();
+    }
+
+    private void bannerClickAction(int position) {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication()).getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()) != null) {
+            startActivity(((FlightModuleRouter) getActivity().getApplication()).getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()));
+        }
     }
 }
