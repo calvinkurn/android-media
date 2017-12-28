@@ -19,11 +19,13 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
+import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
@@ -36,8 +38,10 @@ import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -69,6 +73,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     AppCompatButton oneWayTripAppCompatButton;
     AppCompatButton roundTripAppCompatButton;
     View returnDateSeparatorView;
+    BannerView bannerView;
 
     @Inject
     FlightDashboardPresenter presenter;
@@ -98,6 +103,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
+        bannerView = (BannerView) view.findViewById(R.id.banner);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -185,6 +191,26 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 reverseAirportImageView.startAnimation(shake);
             }
         });
+
+        bannerView.setOnPromoScrolledListener(new BannerView.OnPromoScrolledListener() {
+            @Override
+            public void onPromoScrolled(int position) {
+
+            }
+        });
+        bannerView.setOnPromoClickListener(new BannerView.OnPromoClickListener() {
+            @Override
+            public void onPromoClick(int position) {
+
+            }
+        });
+        bannerView.setOnPromoAllClickListener(new BannerView.OnPromoAllClickListener() {
+            @Override
+            public void onPromoAllClick() {
+
+            }
+        });
+
         return view;
     }
 
@@ -346,6 +372,16 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void closePage() {
         getActivity().finish();
+    }
+
+    @Override
+    public void renderBannerView(List<BannerDetail> bannerList) {
+        List<String> promoUrls = new ArrayList<>();
+        for (BannerDetail bannerModel : bannerList) {
+            promoUrls.add(bannerModel.getAttributes().getFileName());
+        }
+        bannerView.setPromoList(promoUrls);
+        bannerView.buildView();
     }
 
     @Override

@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
+import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -34,6 +36,7 @@ import rx.Subscriber;
 
 public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboardContract.View> implements FlightDashboardContract.Presenter {
 
+    private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private GetFlightClassesUseCase getFlightClassesUseCase;
@@ -42,12 +45,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private UserSession userSession;
 
     @Inject
-    public FlightDashboardPresenter(FlightDashboardValidator validator,
+    public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
+                                    FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightClassesUseCase getFlightClassesUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
                                     UserSession userSession) {
+        this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightClassesUseCase = getFlightClassesUseCase;
@@ -81,6 +86,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         setupViewModel();
         actionLoadFromCache();
         actionGetClassesAndSetDefaultClass();
+        getBannerData();
     }
 
     private void actionLoadFromCache() {
@@ -337,6 +343,29 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else {
             getView().closePage();
         }
+    }
+
+    private void getBannerData() {
+        String deviceId = "4";
+        String categoryId = "27";
+        bannerGetDataUseCase.execute(bannerGetDataUseCase.createRequestParams(deviceId, categoryId), new Subscriber<List<BannerDetail>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onNext(List<BannerDetail> bannerDetailList) {
+                if(isViewAttached()) {
+                    getView().renderBannerView(bannerDetailList);
+                }
+            }
+        });
     }
 
     private boolean validateSearchParam(FlightDashboardViewModel currentDashboardViewModel) {
