@@ -2,8 +2,7 @@ package com.tokopedia.session.changephonenumber.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.session.changephonenumber.data.model.WarningData;
-import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.session.changephonenumber.data.model.SendEmailData;
 
 import javax.inject.Inject;
 
@@ -11,27 +10,24 @@ import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * Created by milhamj on 27/12/17.
+ * Created by milhamj on 28/12/17.
  */
 
-public class WarningMapper implements Func1<Response<TkpdResponse>, WarningViewModel> {
+public class SendEmailMapper implements Func1<Response<TkpdResponse>, Boolean> {
     @Inject
-    public WarningMapper() {
+    public SendEmailMapper() {
     }
 
     @Override
-    public WarningViewModel call(Response<TkpdResponse> tkpdResponseResponse) {
-        WarningViewModel model = new WarningViewModel();
+    public Boolean call(Response<TkpdResponse> tkpdResponseResponse) {
+        Boolean model;
         if (tkpdResponseResponse.isSuccessful()) {
             if (!tkpdResponseResponse.body().isError() &&
                     (tkpdResponseResponse.body().getErrorMessageJoined().isEmpty() ||
                             tkpdResponseResponse.body().getErrorMessages() == null)
                     ) {
-                WarningData data = tkpdResponseResponse.body().convertDataObj(WarningData.class);
-                model.setAction(data.getAction());
-                model.setTokocash(data.getTokocash());
-                model.setTokopediaBalance(data.getSaldo());
-                model.setWarningList(data.getWarning());
+                SendEmailData data = tkpdResponseResponse.body().convertDataObj(SendEmailData.class);
+                model = (data.getIsSuccess() == 1);
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {

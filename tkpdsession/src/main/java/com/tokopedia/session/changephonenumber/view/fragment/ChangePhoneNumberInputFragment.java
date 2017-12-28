@@ -86,8 +86,6 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         oldPhoneNumber = view.findViewById(R.id.old_phone_number_value);
         newPhoneNumber = view.findViewById(R.id.new_phone_number_value);
         nextButton = view.findViewById(R.id.next_button);
-
-        oldPhoneNumber.setText(phoneNumber);
     }
 
     private void setViewListener() {
@@ -121,6 +119,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
         hasTokocash = getArguments().getBoolean(PARAM_HAS_TOKOCASH, false);
         warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
+
+        oldPhoneNumber.setText(phoneNumber);
     }
 
     private void createBottomSheetView() {

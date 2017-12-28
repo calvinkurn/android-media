@@ -8,7 +8,7 @@ import java.util.List;
  * Created by milhamj on 27/12/17.
  */
 
-public class WarningData {
+public class GetWarningData {
     @SerializedName("is_success")
     private int isSuccess;
     @SerializedName("warning")

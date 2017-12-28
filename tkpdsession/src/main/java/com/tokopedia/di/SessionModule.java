@@ -11,10 +11,14 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.changephonenumber.data.factory.ChangePhoneNumberFactory;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
+import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
 import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
 import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
 
@@ -111,7 +115,14 @@ SessionModule {
 
     @SessionScope
     @Provides
-    ChangePhoneNumberRepository provideChangePhoneNumberRepository(ChangePhoneNumberFactory changePhoneNumberFactory) {
-        return new ChangePhoneNumberRepositoryImpl(changePhoneNumberFactory);
+    ChangePhoneNumberRepository provideChangePhoneNumberRepository(ChangePhoneNumberFactory changePhoneNumberFactory,
+                                                                   CloudSendEmailSource cloudSendEmailSource) {
+        return new ChangePhoneNumberRepositoryImpl(changePhoneNumberFactory, cloudSendEmailSource);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberEmailFragmentListener.Presenter ChangePhoneNumberEmailPresenter(SendEmailUseCase sendEmailUseCase) {
+        return new ChangePhoneNumberEmailPresenter(sendEmailUseCase);
     }
 }

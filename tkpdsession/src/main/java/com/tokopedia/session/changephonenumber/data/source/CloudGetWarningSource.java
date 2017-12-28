@@ -1,12 +1,8 @@
 package com.tokopedia.session.changephonenumber.data.source;
 
-import android.content.Context;
-
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.changephonenumber.data.CheckStatusModel;
-import com.tokopedia.session.changephonenumber.data.mapper.CheckStatusMapper;
-import com.tokopedia.session.changephonenumber.data.mapper.WarningMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.GetWarningMapper;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
 import javax.inject.Inject;
@@ -20,19 +16,19 @@ import static com.tokopedia.di.SessionModule.BEARER_SERVICE;
  * Created by milhamj on 27/12/17.
  */
 
-public class CloudChangePhoneNumberWarningSource {
+public class CloudGetWarningSource {
     private final AccountsService accountsService;
-    private WarningMapper warningMapper;
+    private GetWarningMapper getWarningMapper;
 
     @Inject
-    public CloudChangePhoneNumberWarningSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                               WarningMapper warningMapper) {
+    public CloudGetWarningSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                 GetWarningMapper getWarningMapper) {
         this.accountsService = accountsService;
-        this.warningMapper = warningMapper;
+        this.getWarningMapper = getWarningMapper;
     }
 
     public Observable<WarningViewModel> getWarning(TKPDMapParam<String, Object> params) {
         return accountsService.getApi().getWarning(params)
-                .map(warningMapper);
+                .map(getWarningMapper);
     }
 }

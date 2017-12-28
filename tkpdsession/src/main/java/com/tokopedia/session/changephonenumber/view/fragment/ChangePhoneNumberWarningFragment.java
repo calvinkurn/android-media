@@ -51,6 +51,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private RecyclerView warningRecyclerView;
     private TextView nextButton;
     private WarningViewModel viewModel;
+    private String email;
     private String phoneNumber;
     private boolean hasTokocash;
     private View mainView;
@@ -107,7 +108,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     private void initVar() {
-
+        email = "kucing@tokopedia.com";
     }
 
     @Override
@@ -193,7 +194,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private void goToNextActivity() {
         if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
             startActivity(
-                    ChangePhoneNumberEmailActivity.newInstance(getContext())
+                    ChangePhoneNumberEmailActivity.newInstance(getContext(), email)
             );
         } else if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)) {
             startActivity(

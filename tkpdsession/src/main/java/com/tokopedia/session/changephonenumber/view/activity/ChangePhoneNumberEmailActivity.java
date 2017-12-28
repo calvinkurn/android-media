@@ -6,14 +6,21 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailFragment;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailActivityListener;
 
-public class ChangePhoneNumberEmailActivity extends BasePresenterActivity implements ChangePhoneNumberEmailActivityListener.View {
+public class ChangePhoneNumberEmailActivity extends BasePresenterActivity
+        implements ChangePhoneNumberEmailActivityListener.View, HasComponent {
+    public static final String PARAM_EMAIL = "email";
 
-    public static Intent newInstance(Context context) {
+    private String email;
+
+    public static Intent newInstance(Context context, String email) {
         Intent intent = new Intent(context, ChangePhoneNumberEmailActivity.class);
-        //TODO intent.putExtra(PARAM_SOMETHING, something);
+        intent.putExtra(PARAM_EMAIL, email);
         return intent;
     }
 
@@ -24,7 +31,7 @@ public class ChangePhoneNumberEmailActivity extends BasePresenterActivity implem
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+        email = extras.getString(PARAM_EMAIL);
     }
 
     @Override
@@ -59,24 +66,29 @@ public class ChangePhoneNumberEmailActivity extends BasePresenterActivity implem
 
     @Override
     public void inflateFragment() {
-//        String TAG = ChangePhoneNumberInputFragment.class.getSimpleName();
-//        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance();
-//
-//        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(com.tokopedia.core.R.id.container,
-//                            getSupportFragmentManager().findFragmentByTag(TAG))
-//                    .commit();
-//        } else {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
-//                    .commit();
-//        }
+        String TAG = ChangePhoneNumberEmailFragment.class.getSimpleName();
+        ChangePhoneNumberEmailFragment fragment = ChangePhoneNumberEmailFragment.newInstance(email);
+
+        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(com.tokopedia.core.R.id.container,
+                            getSupportFragmentManager().findFragmentByTag(TAG))
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .commit();
+        }
 
     }
 
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
     }
 }

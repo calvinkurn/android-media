@@ -144,4 +144,8 @@ public interface AccountsApi {
 
     @GET(TkpdBaseURL.Accounts.ChangeMSISDN.GET_WARNING)
     Observable<Response<TkpdResponse>> getWarning(@QueryMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ChangeMSISDN.SEND_EMAIL)
+    Observable<Response<TkpdResponse>> sendEmail(@FieldMap TKPDMapParam<String, Object> params);
 }
