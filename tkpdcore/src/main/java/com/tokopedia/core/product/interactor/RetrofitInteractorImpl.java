@@ -844,7 +844,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
     @Override
     public void getProductVariant(@NonNull Context context, @NonNull String productId, final @NonNull ProductVariantListener listener) {
-        Observable<Response<ProductVariantResponse>> observable = tomeService.getApi().getProductVariant(productId);
+        Observable<Response<ProductVariantResponse>> observable = tomeService.getApi().getProductVariant(productId,"https://staging.tokopedia.com", "https://staging.tokopedia.com/seller01/usain-bolt-putih-s");
 
         Subscriber<ProductVariant> subscriber = new Subscriber<ProductVariant>() {
             @Override
@@ -868,44 +868,6 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     @Override
                     public ProductVariant call(Response<ProductVariantResponse> productVariantResponse) {
                         return productVariantResponse.body().getData();
-                    }
-                };
-
-        compositeSubscription.add(
-                observable.subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map(mapper)
-                        .subscribe(subscriber)
-        );
-    }
-
-    @Override
-    public void getMostHelpfulReview(@NonNull Context context, @NonNull String productId, final @NonNull MostHelpfulListener listener) {
-        Observable<Response<MostHelpfulReviewResponse>> observable = reputationReviewService
-                .getApi().getMostHelpfulReview(productId);
-
-        Subscriber<List<Review>> subscriber = new Subscriber<List<Review>>() {
-            @Override
-            public void onCompleted() {
-                Log.d(TAG, "onCompleted: ");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(List<Review> reviews) {
-                listener.onSucccess(reviews);
-            }
-        };
-
-        Func1<Response<MostHelpfulReviewResponse>, List<Review>> mapper =
-                new Func1<Response<MostHelpfulReviewResponse>, List<Review>>() {
-                    @Override
-                    public List<Review> call(Response<MostHelpfulReviewResponse> mostHelpfulReview) {
-                        return mostHelpfulReview.body().getData().getReviews();
                     }
                 };
 

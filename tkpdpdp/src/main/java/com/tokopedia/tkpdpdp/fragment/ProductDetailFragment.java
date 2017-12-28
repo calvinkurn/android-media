@@ -152,6 +152,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
+    private MostHelpfulReviewView mostHelpfulReviewView;
     private OtherProductsView otherProductsView;
     private NewShopView newShopView;
     private ButtonBuyView buttonBuyView;
@@ -182,9 +183,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private DeepLinkWebViewHandleListener webViewHandleListener;
     private Menu menu;
 
-    ReportProductDialogFragment fragment;
-
-    Bundle recentBundle;
     private YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcessListener;
     private ReportProductDialogFragment fragment;
     private Bundle recentBundle;

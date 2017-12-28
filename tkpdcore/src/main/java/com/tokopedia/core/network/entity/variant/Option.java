@@ -9,61 +9,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class Option implements Parcelable {
 
-    @SerializedName("pvo_id")
+    @SerializedName("id")
     @Expose
-    private Integer pvoId;
-    @SerializedName("v_id")
-    @Expose
-    private Integer vId;
-    @SerializedName("vu_id")
-    @Expose
-    private Integer vuId;
-    @SerializedName("vuv_id")
-    @Expose
-    private Integer vuvId;
+    private long id;
     @SerializedName("value")
     @Expose
     private String value;
-    @SerializedName("status")
-    @Expose
-    private Integer status;
     @SerializedName("hex")
     @Expose
     private String hex;
     @SerializedName("picture")
     @Expose
-    private String picture;
+    private Picture picture;
 
-    public Integer getPvoId() {
-        return pvoId;
+    public long getId() {
+        return id;
     }
 
-    public void setPvoId(Integer pvoId) {
-        this.pvoId = pvoId;
-    }
-
-    public Integer getVId() {
-        return vId;
-    }
-
-    public void setVId(Integer vId) {
-        this.vId = vId;
-    }
-
-    public Integer getVuId() {
-        return vuId;
-    }
-
-    public void setVuId(Integer vuId) {
-        this.vuId = vuId;
-    }
-
-    public Integer getVuvId() {
-        return vuvId;
-    }
-
-    public void setVuvId(Integer vuvId) {
-        this.vuvId = vuvId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getValue() {
@@ -74,14 +38,6 @@ public class Option implements Parcelable {
         this.value = value;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     public String getHex() {
         return hex;
     }
@@ -90,24 +46,20 @@ public class Option implements Parcelable {
         this.hex = hex;
     }
 
-    public Object getPicture() {
+    public Picture getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(Picture picture) {
         this.picture = picture;
     }
 
 
     protected Option(Parcel in) {
-        pvoId = in.readByte() == 0x00 ? null : in.readInt();
-        vId = in.readByte() == 0x00 ? null : in.readInt();
-        vuId = in.readByte() == 0x00 ? null : in.readInt();
-        vuvId = in.readByte() == 0x00 ? null : in.readInt();
+        id = in.readLong();
         value = in.readString();
-        status = in.readByte() == 0x00 ? null : in.readInt();
         hex = in.readString();
-        picture = in.readString();
+        picture = (Picture) in.readValue(Picture.class.getClassLoader());
     }
 
     @Override
@@ -117,39 +69,10 @@ public class Option implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if (pvoId == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(pvoId);
-        }
-        if (vId == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(vId);
-        }
-        if (vuId == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(vuId);
-        }
-        if (vuvId == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(vuvId);
-        }
+        dest.writeLong(id);
         dest.writeString(value);
-        if (status == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(status);
-        }
         dest.writeString(hex);
-        dest.writeString(picture);
+        dest.writeValue(picture);
     }
 
     @SuppressWarnings("unused")

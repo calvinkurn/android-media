@@ -9,6 +9,7 @@ import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
@@ -53,12 +54,8 @@ public interface ProductDetailView extends ViewListener {
      */
     void onProductTalkClicked(@NonNull Bundle bundle);
 
-    /**
-     * Pada saat diskusi produk diklik
-     *
-     * @param bundle bundle data yang dikirim
-     */
-    void onProductReviewClicked(@NonNull Bundle bundle);
+
+    void onProductReviewClicked();
 
     /**
      * Pada saat promosikan produk diklik
@@ -291,6 +288,8 @@ public interface ProductDetailView extends ViewListener {
     void showProductCampaign(ProductCampaign productCampaign);
 
     void showMostHelpfulReview(List<Review> reviews);
+
+    void showLatestTalkView(LatestTalkViewModel discussion);
 
     void addProductVariant(ProductVariant productVariant);
 
