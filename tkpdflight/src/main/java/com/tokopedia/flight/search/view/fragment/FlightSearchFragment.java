@@ -20,9 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
@@ -41,11 +41,11 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
-import com.tokopedia.flight.search.presenter.FlightSearchPresenter2;
-import com.tokopedia.flight.search.view.FlightSearchView2;
+import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
+import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
-import com.tokopedia.flight.search.view.adapter.FlightSearchV2Adapter;
+import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.view.model.AirportCombineModelList;
 import com.tokopedia.flight.search.view.model.FlightAirportCombineModel;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
@@ -66,10 +66,10 @@ import javax.inject.Inject;
  * Created by hendry on 10/26/2017.
  */
 
-public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView2,
-        FlightSearchV2Adapter.OnBaseFlightSearchAdapterListener {
+public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView,
+        FlightSearchAdapter.OnBaseFlightSearchAdapterListener {
 
-    public static final String TAG = FlightSearchV2Fragment.class.getSimpleName();
+    public static final String TAG = FlightSearchFragment.class.getSimpleName();
     public static final int MAX_PROGRESS = 100;
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
@@ -80,7 +80,7 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
     private static final String SAVED_AIRPORT_COMBINE = "svd_airport_combine";
     private static final String SAVED_PROGRESS = "svd_progress";
     @Inject
-    public FlightSearchPresenter2 flightSearchPresenter;
+    public FlightSearchPresenter flightSearchPresenter;
     protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
     int selectedSortOption;
     private BottomActionView filterAndSortBottomAction;
@@ -91,13 +91,13 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
     private AirportCombineModelList airportCombineModelList;
     private SwipeToRefresh swipeToRefresh;
-    private FlightSearchV2Adapter adapter;
+    private FlightSearchAdapter adapter;
     private boolean needRefreshFromCache;
 
-    public static FlightSearchV2Fragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
+    public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
-        FlightSearchV2Fragment fragment = new FlightSearchV2Fragment();
+        FlightSearchFragment fragment = new FlightSearchFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -180,14 +180,14 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
 
     @NonNull
     @Override
-    protected BaseListAdapterV2<FlightSearchViewModel, FilterSearchAdapterTypeFactory> createAdapterInstance() {
-        adapter = new FlightSearchV2Adapter(getAdapterTypeFactory());
+    protected BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> createAdapterInstance() {
+        adapter = new FlightSearchAdapter(getAdapterTypeFactory());
         adapter.setOnBaseFlightSearchAdapterListener(this);
         return adapter;
     }
 
     @Override
-    public FlightSearchV2Adapter getAdapter() {
+    public FlightSearchAdapter getAdapter() {
         return adapter;
     }
 
@@ -427,18 +427,31 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
     }
 
     @Override
-    public void showNoResultFlight() {
-        hideLoading();
-        addToolbarElevation();
-        getAdapter().clearData();
+    public void showFilterAndSortView() {
+        filterAndSortBottomAction.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    public void hideFilterAndSortView() {
+        filterAndSortBottomAction.setVisibility(View.GONE);
     }
 
     @Override
     public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
         hideLoading();
         addToolbarElevation();
-        renderList(flightSearchViewModelList);
+        adapter.clearData();
+        if (flightSearchViewModelList.size() == 0) {
+            if (progress < MAX_PROGRESS) {
+                adapter.showLoading();
+            } else {
+                adapter.addElement(getEmptyDataViewModel());
+            }
+        } else {
+            adapter.addData(flightSearchViewModelList);
+        }
+
+
     }
 
     @Override
@@ -514,7 +527,7 @@ public class FlightSearchV2Fragment extends BaseListV2Fragment<FlightSearchViewM
 
         // we retrieve from cache, because there is possibility the filter/sort will be different
         reloadDataFromCache();
-        if (filterAndSortBottomAction.getVisibility() == View.GONE) {
+        if (filterAndSortBottomAction.getVisibility() == View.GONE && progress >= MAX_PROGRESS) {
             filterAndSortBottomAction.setVisibility(View.VISIBLE);
         }
     }

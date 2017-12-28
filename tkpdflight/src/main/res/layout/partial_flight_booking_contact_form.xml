@@ -22,7 +22,7 @@
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginTop="@dimen/margin_vs"
         android:hint="@string/flight_booking_contact_name_hint">
 
@@ -43,7 +43,7 @@
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginTop="@dimen/margin_vs"
         android:hint="@string/flight_booking_contact_email_hint">
 

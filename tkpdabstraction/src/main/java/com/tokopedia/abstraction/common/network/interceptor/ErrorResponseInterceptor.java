@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.abstraction.utils.CommonUtils;
 
 import java.io.IOException;
 
@@ -47,6 +48,9 @@ public class ErrorResponseInterceptor implements Interceptor {
                 return response;
             } else {
                 if (responseError.hasBody() ) {
+                    CommonUtils.dumper(response.headers().toString());
+                    CommonUtils.dumper(responseBodyString);
+                    response.body().close();
                     throw responseError.createException();
                 }
                 else {

@@ -9,15 +9,15 @@ import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
+import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchReturnFragment;
-import com.tokopedia.flight.search.view.fragment.FlightSearchV2Fragment;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 /**
  * Created by User on 10/26/2017.
  */
 
-public class FlightSearchReturnActivity extends FlightSearchActivity implements FlightSearchV2Fragment.OnFlightSearchFragmentListener {
+public class FlightSearchReturnActivity extends FlightSearchActivity implements FlightSearchFragment.OnFlightSearchFragmentListener {
 
     public static final String EXTRA_SEL_DEPARTURE_ID = "EXTRA_DEPARTURE_ID";
     private static final int REQUEST_CODE_BOOKING = 13;

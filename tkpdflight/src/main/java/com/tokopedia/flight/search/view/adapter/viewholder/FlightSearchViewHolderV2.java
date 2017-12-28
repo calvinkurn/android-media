@@ -11,7 +11,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.search.util.DurationUtil;
-import com.tokopedia.flight.search.view.adapter.FlightSearchV2Adapter;
+import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -37,9 +37,9 @@ public class FlightSearchViewHolderV2 extends AbstractViewHolder<FlightSearchVie
     TextView savingPrice;
     TextView arrivalAddDay;
     View containerDetail;
-    private FlightSearchV2Adapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
+    private FlightSearchAdapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
 
-    public FlightSearchViewHolderV2(View itemView, FlightSearchV2Adapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener) {
+    public FlightSearchViewHolderV2(View itemView, FlightSearchAdapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener) {
         super(itemView);
         tvDeparture = (TextView) itemView.findViewById(R.id.departure_time);
         tvArrival = (TextView) itemView.findViewById(R.id.arrival_time);

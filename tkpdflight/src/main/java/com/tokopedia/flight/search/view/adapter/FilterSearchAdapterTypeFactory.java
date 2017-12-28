@@ -18,9 +18,9 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory implements AdapterTypeFactory, ErrorNetworkViewHolder.OnRetryListener {
 
-    private FlightSearchV2Adapter.OnBaseFlightSearchAdapterListener baseFlightSearchAdapterListener;
+    private FlightSearchAdapter.OnBaseFlightSearchAdapterListener baseFlightSearchAdapterListener;
 
-    public FilterSearchAdapterTypeFactory(FlightSearchV2Adapter.OnBaseFlightSearchAdapterListener baseFlightSearchAdapterListener) {
+    public FilterSearchAdapterTypeFactory(FlightSearchAdapter.OnBaseFlightSearchAdapterListener baseFlightSearchAdapterListener) {
         this.baseFlightSearchAdapterListener = baseFlightSearchAdapterListener;
     }
 

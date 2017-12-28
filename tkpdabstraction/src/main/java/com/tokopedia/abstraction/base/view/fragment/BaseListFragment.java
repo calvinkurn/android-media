@@ -13,20 +13,20 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.AdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.listener.BaseListViewListener2;
+import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerviewListener;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
 
 import java.util.List;
 
-public abstract class BaseListV2Fragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseDaggerFragment
-        implements BaseListViewListener2<T>, BaseListAdapterV2.OnAdapterInteractionListener<T> {
+public abstract class BaseListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseDaggerFragment
+        implements BaseListViewListener<T>, BaseListAdapter.OnAdapterInteractionListener<T> {
 
-    private BaseListAdapterV2<T, F> adapter;
+    private BaseListAdapter<T, F> adapter;
     private SwipeRefreshLayout swipeToRefresh;
     private SnackbarRetry snackBarRetry;
     private boolean isLoadMoreState;
@@ -40,8 +40,8 @@ public abstract class BaseListV2Fragment<T extends Visitable, F extends AdapterT
     }
 
     @NonNull
-    protected BaseListAdapterV2<T, F> createAdapterInstance() {
-        return new BaseListAdapterV2<>(getAdapterTypeFactory());
+    protected BaseListAdapter<T, F> createAdapterInstance() {
+        return new BaseListAdapter<>(getAdapterTypeFactory());
     }
 
     @Nullable
@@ -124,7 +124,7 @@ public abstract class BaseListV2Fragment<T extends Visitable, F extends AdapterT
         adapter.clearData();
     }
 
-    public BaseListAdapterV2<T, F> getAdapter() {
+    public BaseListAdapter<T, F> getAdapter() {
         return adapter;
     }
 

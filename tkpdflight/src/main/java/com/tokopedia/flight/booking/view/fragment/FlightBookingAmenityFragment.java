@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightAmenityAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingAmenityViewHolder;
@@ -23,7 +23,7 @@ import java.util.List;
  * Created by zulfikarrahman on 11/7/17.
  */
 
-public class FlightBookingAmenityFragment extends BaseListV2Fragment<FlightBookingAmenityViewModel, FlightAmenityAdapterTypeFactory>
+public class FlightBookingAmenityFragment extends BaseListFragment<FlightBookingAmenityViewModel, FlightAmenityAdapterTypeFactory>
         implements FlightBookingAmenityViewHolder.ListenerCheckedLuggage {
 
     public static final String EXTRA_SELECTED_AMENITIES = "EXTRA_SELECTED_AMENITIES";

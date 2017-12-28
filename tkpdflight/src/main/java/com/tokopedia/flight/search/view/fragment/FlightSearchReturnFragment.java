@@ -17,7 +17,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
  * Created by hendry on 10/26/2017.
  */
 
-public class FlightSearchReturnFragment extends FlightSearchV2Fragment {
+public class FlightSearchReturnFragment extends FlightSearchFragment {
 
     private AppCompatTextView departureHeaderLabel;
     private TextView airlineName;
