@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -17,6 +18,7 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -151,10 +153,10 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
             fragmentList.add(sellerReputationFragment);
         } else {
             if (!SessionHandler.isUserHasShop(this)) {
-                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
+                fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             } else {
-                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
-                fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+                fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
+                fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
             }
         }
 

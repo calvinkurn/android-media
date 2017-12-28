@@ -242,4 +242,8 @@
     <string name="shop_open_label_save_and_continue_later">Simpan dan Lanjutkan Nanti</string>
     <string name="shop_open_label_description_info">Ceritakan secara singkat mengenai toko Anda, produk apa yang Anda jual, dan lain-lain.</string>
     <string name="shop_open_label_slogan_info">Tulis kalimat singkat yang mencerminkan toko Anda.</string>
+    <string name="choose_delivery_packet">Pilih Paket Pengiriman</string>
+    <string name="delivery_not_available">Pengiriman tidak tersedia</string>
+    <string name="courier_cannot_activate_desc">Kurir ini tidak dapat diaktifkan karena tidak tersedia di daerah Anda.</string>
+    <string name="courier_cannot_activate_title">Kurir tidak tersedia di daerah Anda</string>
 </resources>

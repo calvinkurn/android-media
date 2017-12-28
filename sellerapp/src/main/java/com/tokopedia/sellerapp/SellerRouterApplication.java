@@ -191,11 +191,6 @@ public abstract class SellerRouterApplication extends MainApplication
         remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
-    @Override
-    public Intent getPhoneVerification() {
-        return null;
-    }
-
     private void initializeDagger() {
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
@@ -228,7 +223,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public ShopComponent getShopComponent() {
-        if(shopComponent == null){
+        if (shopComponent == null) {
             shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
         }
         return shopComponent;
@@ -679,7 +674,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getIntentCreateEditShop(Context context){
+    public Intent getIntentCreateEditShop(Context context) {
         return TkpdSeller.getIntentCreateEditShop(context, true, true);
     }
 
@@ -694,7 +689,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getIntentManageShop(Context context){
+    public Intent getIntentManageShop(Context context) {
         return TkpdSeller.getIntentManageShop(context);
     }
 
@@ -839,12 +834,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void navigateToChooseAddressActivityRequest(Intent var1, int var2){
+    public void navigateToChooseAddressActivityRequest(Intent var1, int var2) {
 
     }
 
     @Override
-    public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3){
+    public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
         Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
         var1.startActivityForResult(instance, var3);
     }
@@ -852,12 +847,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener onActivityResultListener){
+    public void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener onActivityResultListener) {
 
-        if(onActivityResultListener != null){
-            switch (requestCode){
+        if (onActivityResultListener != null) {
+            switch (requestCode) {
                 case REQUEST_CODE_ADDRESS:
-                    if(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS) != null) {
+                    if (data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS) != null) {
                         onActivityResultListener.onActivityResult(DestinationViewModel.convertFromBundle(
                                 data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
                         ));
@@ -880,7 +875,7 @@ public abstract class SellerRouterApplication extends MainApplication
                     break;
                 case REQUEST_CODE_GOOGLE_MAP:
                     LocationPass locationPass = data.getParcelableExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-                    if(locationPass != null && locationPass.getLatitude() != null) {
+                    if (locationPass != null && locationPass.getLatitude() != null) {
                         model.getShopShipping().setShopLatitude(locationPass.getLatitude());
                         model.getShopShipping().setShopLongitude(locationPass.getLongitude());
 
@@ -900,13 +895,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
 
-
     private OpenShopData model = null;
     private LocationPass locationPass = null;
 
     @Override
     public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode) {
-        if(model != null){
+        if (model != null) {
             fragment.startActivityForResult(DistrictRecommendationActivity.createInstance(fragment.getActivity(),
                     model.getToken()),
                     requestCode);
@@ -944,7 +938,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress) {
-        if(model != null){
+        if (model != null) {
             if (!model.getShopShipping().getShopLatitude().isEmpty()
                     && !model.getShopShipping().getShopLongitude().isEmpty()) {
                 locationPass = new LocationPass();

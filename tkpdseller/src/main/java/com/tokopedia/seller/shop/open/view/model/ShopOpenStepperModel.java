@@ -5,6 +5,8 @@ import android.os.Parcel;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 
+import java.util.ArrayList;
+
 /**
  * Created by nakama on 19/12/17.
  */
@@ -18,8 +20,14 @@ public class ShopOpenStepperModel implements StepperModel {
         return districtID;
     }
 
+    //TODO set from step 2
     public void setDistrictID(int districtID) {
         this.districtID = districtID;
+    }
+
+    public CourierServiceIdList getSelectedCourierServices(){
+        // TODO get this from responseIsReserveDomain
+        return new CourierServiceIdList();
     }
 
     public ShopOpenStepperModel() {

@@ -20,7 +20,6 @@ import rx.Observable;
  * @author sebastianuskh on 3/20/17.
  */
 
-@ShopSettingScope
 public class DistrictLogisticDataCloud {
     public static final String DISTRICT = "district";
     public static final String YES = "1";

@@ -21,10 +21,10 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="@dimen/image_width_xs"
-                android:layout_height="@dimen/image_width_xs"
-                android:layout_marginTop="@dimen/margin_med"
-                android:src="@drawable/ic_action_attachment" />
+                android:layout_width="@dimen/image_width_l"
+                android:layout_height="@dimen/image_width_l"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:src="@drawable/ic_icon_openshop_box" />
 
             <TextView
                 style="@style/TextView.Title"
@@ -41,6 +41,7 @@
                 android:layout_marginLeft="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
                 android:layout_marginTop="@dimen/margin_ms"
+                android:layout_marginBottom="@dimen/margin_ms"
                 android:gravity="center"
                 android:text="@string/description_shop_setting_logistic"
                 android:textAlignment="center" />
@@ -48,21 +49,31 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minWidth="@dimen/image_width_xxxl">
+                android:minHeight="@dimen/image_width_xxxl">
                 <LinearLayout
                     android:id="@+id/vg_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recycler_view"
+                    android:orientation="vertical"
+                    android:animateLayoutChanges="true">
+                    <com.tokopedia.seller.shop.setting.view.CourierListViewGroup
+                        android:id="@+id/vg_courier_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clipToPadding="false"
+                        android:orientation="vertical"
                         android:paddingBottom="@dimen/padding_vs"
                         android:paddingLeft="@dimen/margin_sm"
                         android:paddingRight="@dimen/margin_sm"
                         android:paddingTop="@dimen/padding_vs"/>
+                    <!--<android.support.v7.widget.RecyclerView-->
+                        <!--android:id="@+id/recycler_view"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:clipToPadding="false"-->
+                        <!--android:paddingBottom="@dimen/padding_vs"-->
+                        <!--android:paddingLeft="@dimen/margin_sm"-->
+                        <!--android:paddingRight="@dimen/margin_sm"-->
+                        <!--android:paddingTop="@dimen/padding_vs"/>-->
 
                     <Button
                         android:id="@+id/continue_button"

@@ -16,7 +16,9 @@ import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenRoutingFragment;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragment;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoPresenter;
 
@@ -36,6 +38,8 @@ public interface ShopOpenDomainComponent {
     void inject(ShopOpenDomainFragment shopOpenDomainFragment);
 
     void inject(ShopOpenMandatoryLocationFragment shopOpenMandatoryLocationFragment);
+
+    void inject(ShopOpenMandatoryLogisticFragment shopOpenMandatoryLogisticFragment);
 
     ThreadExecutor getThreadExecutor();
 
