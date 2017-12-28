@@ -53,7 +53,12 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                                     .getImageSource(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition())
                                     .getName(),
-                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getPrice());
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getPrice(),
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getPriceInt(),
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getUrl(),
+                            inspirationViewModel.getSource(),
+                            inspirationViewModel.getPositionFeedCard(),
+                            getAdapterPosition());
                 }
             });
             productImage.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +68,15 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                             inspirationViewModel.getListProduct().get(getAdapterPosition())
                                     .getPage(),
                             inspirationViewModel.getRowNumber(),
-                            String.valueOf(inspirationViewModel.getListProduct().get(getAdapterPosition()).getProductId()), inspirationViewModel.getListProduct().get(getAdapterPosition()).getImageSource(), inspirationViewModel.getListProduct().get(getAdapterPosition()).getName(), inspirationViewModel.getListProduct().get(getAdapterPosition()).getPrice());
+                            String.valueOf(inspirationViewModel.getListProduct().get(getAdapterPosition()).getProductId()),
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getImageSource(),
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getName(),
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getPrice(),
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getPriceInt(),
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()).getUrl(),
+                            inspirationViewModel.getSource(),
+                            inspirationViewModel.getPositionFeedCard(),
+                            getAdapterPosition());
                 }
             });
         }

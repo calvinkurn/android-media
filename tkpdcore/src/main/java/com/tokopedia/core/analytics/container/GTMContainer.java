@@ -35,6 +35,7 @@ import com.tokopedia.core.var.TkpdCache;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -469,5 +470,60 @@ public class GTMContainer implements IGTMContainer {
 
     public void event(String name, Map<String, Object> data) {
         GTMDataLayer.pushEvent(context, name, data);
+    }
+
+    @Override
+    public void enhanceClickFeedRecomItem(List<Object> objects,
+                                          String eventLabel,
+                                          String productUrl,
+                                          String actionField) {
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - click card item",
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField", DataLayer.mapOf("list", actionField),
+                                        "products", DataLayer.listOf(objects.toArray(new Object[objects.size()]))
+                                )
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void eventImpressionFeedInspiration(List<Object> objects, String eventLabel) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - item impression",
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        objects.toArray(new Object[objects.size()])
+                                ))
+                        )
+        );
+    }
+
+    @Override
+    public void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - item impression",
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                ))
+                )
+        );
     }
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 5/15/17.
@@ -10,8 +12,10 @@ import java.util.ArrayList;
 
 public class ActivityCardViewModel extends ProductCardViewModel {
 
+    private static final String TAG = "hangnadi";
     private final int totalProduct;
     private final int page;
+    private int positionFeedCard;
     private ProductCardHeaderViewModel productCardHeaderViewModel;
     private String shareUrl;
     private String actionText;
@@ -27,7 +31,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
                                  String actionText,
                                  String feedId,
                                  int totalProduct,
-                                 String cursor, int page) {
+                                 String cursor, int positionFeedCard, int page) {
         this.listProduct = listProduct;
         this.productCardHeaderViewModel = productCardHeaderViewModel;
         this.shareUrl = shareUrl;
@@ -36,6 +40,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
         this.feedId = feedId;
         this.totalProduct = totalProduct;
         this.cursor = cursor;
+        this.positionFeedCard = positionFeedCard;
         this.page = page;
     }
 
@@ -115,5 +120,35 @@ public class ActivityCardViewModel extends ProductCardViewModel {
 
     public int getRowNumber() {
         return rowNumber;
+    }
+
+    public List<Object> getListProductAsObjectDataLayer(String eventLabel, String userId, int positionFeedCard) {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < getListProduct().size(); i++) {
+            ProductFeedViewModel viewModel = getListProduct().get(i);
+            list.add(
+                    DataLayer.mapOf(
+                            "name", viewModel.getName(),
+                            "id", viewModel.getProductId(),
+                            "price", viewModel.getPriceInt(),
+                            "brand", "",
+                            "category", "",
+                            "variant", "",
+                            "list", String.format("feed - product %d - %s", positionFeedCard, eventLabel),
+                            "position", i,
+                            "userId", userId
+                    )
+            );
+        }
+        return list;
+    }
+
+
+    public void setPositionFeedCard(int positionFeedCard) {
+        this.positionFeedCard = positionFeedCard;
+    }
+
+    public int getPositionFeedCard() {
+        return positionFeedCard;
     }
 }
