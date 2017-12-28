@@ -193,7 +193,8 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int SHOP_INFO = 15;
         public static final int GENERAL_SETTING = 16;
         public static final int RESOLUTION_CENTER = 18;
-        public static final int REGISTER = 19;
+        public static final int SELLER_INFO = 19;
+		public static final int REGISTER = 19;
         public static final int DEVELOPER_OPTIONS = 20;
         public static final int MANAGE_ETALASE = 21;
         public static final int PEOPLE_PAYMENT_STATUS = 201;
@@ -459,6 +460,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
     }
 
     public class SHIPPING_ID {
+        public static final String WAHANA = "6";
         public static final String GOJEK = "10";
     }
 

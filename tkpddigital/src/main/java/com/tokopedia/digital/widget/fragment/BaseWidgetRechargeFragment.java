@@ -64,8 +64,9 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
 
     protected Unbinder unbinder;
     protected Bundle bundle;
+
     protected DigitalCheckoutPassData digitalCheckoutPassDataState;
-    protected String lastClientNumberTyped = "";
+
     protected String lastOperatorSelected = "";
     protected String lastProductSelected = "";
 

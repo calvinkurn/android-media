@@ -13,7 +13,8 @@ import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.applink.ApplinkPushNotificationBuildAndShow;
 import com.tokopedia.core.gcm.utils.GCMUtils;
-import com.tokopedia.core.router.RemoteConfigRouter;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -39,8 +40,11 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
  */
 
 public class AppNotificationReceiverUIBackground extends BaseAppNotificationReceiverUIBackground {
+    private RemoteConfig remoteConfig;
+
     public AppNotificationReceiverUIBackground(Application application) {
         super(application);
+        remoteConfig = new FirebaseRemoteConfigImpl(application);
     }
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {
@@ -120,9 +124,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
         String category = Uri.parse(applinks).getHost();
         if (category != null && category.equals(Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT)) {
-            if (MainApplication.getInstance() instanceof RemoteConfigRouter
-                    && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
-                    (TkpdInboxRouter.ENABLE_TOPCHAT)) {
+            if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                 if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
                         && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
                     NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
@@ -140,9 +142,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 }
             }
         } else if (category != null && category.equals(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE)) {
-            if (MainApplication.getInstance() instanceof RemoteConfigRouter
-                    && !((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig
-                    (TkpdInboxRouter.ENABLE_TOPCHAT)) {
+            if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                 ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
                 Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
                 buildAndShow.process(mContext, intent);

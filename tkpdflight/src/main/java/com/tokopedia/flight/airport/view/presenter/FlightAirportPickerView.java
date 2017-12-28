@@ -1,5 +1,7 @@
 package com.tokopedia.flight.airport.view.presenter;
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener2;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
@@ -13,4 +15,6 @@ public interface FlightAirportPickerView extends BaseListViewListener2<FlightAir
     void showGetAirportListLoading();
 
     void hideGetAirportListLoading();
+
+    Activity getActivity();
 }

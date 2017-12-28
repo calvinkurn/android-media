@@ -20,8 +20,8 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     protected List<Visitable> visitables;
     protected AdapterTypeFactory adapterTypeFactory;
-    private Visitable loadingModel = new LoadingModel();
-    private Visitable errorNetworkModel = new ErrorNetworkModel();
+    protected Visitable loadingModel = new LoadingModel();
+    protected Visitable errorNetworkModel = new ErrorNetworkModel();
 
     public BaseAdapter(AdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
@@ -59,7 +59,7 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void showLoading() {
         if (!visitables.contains(loadingModel)) {
             visitables.add(loadingModel);
-            notifyItemInserted(visitables.size() + 1);
+            notifyDataSetChanged();
         }
     }
 

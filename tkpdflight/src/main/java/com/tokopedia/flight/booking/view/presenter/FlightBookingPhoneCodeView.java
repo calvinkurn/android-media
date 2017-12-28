@@ -1,5 +1,7 @@
 package com.tokopedia.flight.booking.view.presenter;
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener2;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 
@@ -8,4 +10,5 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
  */
 
 public interface FlightBookingPhoneCodeView extends BaseListViewListener2<FlightBookingPhoneCodeViewModel> {
+    Activity getActivity();
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface IDigitalWidgetStyle1View extends BaseDigitalWidgetView {
 
-    void renderDataProducts(List<Product> products);
+    void renderDataProducts(List<Product> products, boolean showPrice);
 
     void renderEmptyProduct(String message);
 
@@ -23,11 +23,12 @@ public interface IDigitalWidgetStyle1View extends BaseDigitalWidgetView {
 
     void renderOperator(Operator operatorModel);
 
-    void renderLastTypedClientNumber();
+    void renderLastTypedClientNumber(String lastClientNumberTyped);
 
     void renderErrorProduct(String message);
 
     void renderDefaultError();
 
-    void renderVerifiedNumber();
+    void renderVerifiedNumber(String verifiedNumber);
+
 }

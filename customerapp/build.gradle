@@ -272,6 +272,8 @@ dependencies {
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
     compile project(':tkpdreactnative')
+    compile project(':tkpdloyalty')
+    compile project(':tkpdreputation')
     compile project(':tkpdflight')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
@@ -288,9 +290,6 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
-    compile rootProject.ext.playServicesDependencies.firebase
-    compile rootProject.ext.playServicesDependencies.remoteConfig
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger

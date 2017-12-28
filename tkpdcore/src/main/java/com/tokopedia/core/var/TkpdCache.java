@@ -53,6 +53,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
     public static final String FIREBASE_REMOTE_CONFIG = "FIREBASE_REMOTE_CONFIG";
+    public static final String APP_RATING = "APP_RATING";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -216,6 +217,26 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String CONFIG_SHOW_HIDE_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
         public static final String CONFIG_APP_SHARE_DESCRIPTION = "app_share_description";
         public static final String CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
+        public static final String CART_CACHE_TRACKER = "CART_CACHE_TRACKER";
+        public static final String HOME_CATEGORY_CACHE = "HOME_CATEGORY_CACHE";
+        public static final String HOME_BRAND_OS_CACHE = "HOME_BRAND_OS_CACHE";
+        public static final String HOME_BANNER_CACHE = "HOME_BANNER_CACHE";
+        public static final String HOME_TOP_PICK_CACHE = "HOME_TOP_PICK_CACHE";
+        public static final String HOME_TICKER_CACHE = "HOME_TICKER_CACHE";
+        public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
+        public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
+    }
+
+    public class RemoteConfigKey {
+        public static final String MAINAPP_SHOW_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
+        public static final String APP_SHARE_DESCRIPTION = "app_share_description";
+        public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
+
+        public static final String TOKO_CASH_TOP_UP = "toko_cash_top_up";
+        public static final String TOKO_CASH_LABEL = "toko_cash_label";
+
+        public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
+        public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
     }
 
 }

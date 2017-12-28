@@ -30,6 +30,7 @@ import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
@@ -48,7 +49,8 @@ import javax.inject.Inject;
 public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View {
 
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
-
+    @Inject
+    FlightDetailOrderPresenter flightDetailOrderPresenter;
     private TextView orderId;
     private ImageView copyOrderId;
     private View containerDownloadEticket;
@@ -64,17 +66,21 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private Button buttonRescheduleTicket;
     private Button buttonReorder;
     private ProgressDialog progressDialog;
-
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
-
-    @Inject
-    FlightDetailOrderPresenter flightDetailOrderPresenter;
     private FlightOrderDetailPassData flightOrderDetailPassData;
 
     private String eticketLink = "";
     private String invoiceLink = "";
+
+    public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
+        FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_ORDER_DETAIL_PASS, flightOrderDetailPassData);
+        flightDetailOrderFragment.setArguments(bundle);
+        return flightDetailOrderFragment;
+    }
 
     @Override
     protected String getScreenName() {
@@ -115,7 +121,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
         setViewClickListener();
 
-        flightDetailOrderAdapter = new FlightDetailOrderAdapter(getActivity());
+        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory();
+        flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
         flightBookingReviewPriceAdapter = new FlightSimpleAdapter();
@@ -203,14 +210,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
             }
         });
-    }
-
-    public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
-        FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_ORDER_DETAIL_PASS, flightOrderDetailPassData);
-        flightDetailOrderFragment.setArguments(bundle);
-        return flightDetailOrderFragment;
     }
 
     @Override

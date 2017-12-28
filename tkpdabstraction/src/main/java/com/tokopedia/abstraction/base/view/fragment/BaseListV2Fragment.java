@@ -124,7 +124,7 @@ public abstract class BaseListV2Fragment<T extends Visitable, F extends AdapterT
         adapter.clearData();
     }
 
-    public final BaseListAdapterV2<T, F> getAdapter() {
+    public BaseListAdapterV2<T, F> getAdapter() {
         return adapter;
     }
 
@@ -149,7 +149,7 @@ public abstract class BaseListV2Fragment<T extends Visitable, F extends AdapterT
     }
 
     @Override
-    public void showGetListError() {
+    public void showGetListError(String message) {
         adapter.hideLoading();
         if (adapter.getItemCount() > 0) {
             onGetListErrorWithExistingData();

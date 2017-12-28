@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.recharge.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -24,14 +25,14 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     private static final String TAG = RechargeCategoryPresenterImpl.class.getSimpleName();
 
-    private Activity activity;
+    private Context context;
     private RechargeCategoryView view;
     private RechargeNetworkInteractor rechargeNetworkInteractor;
     private List<Category> categoryList;
 
-    public RechargeCategoryPresenterImpl(Activity activity, RechargeCategoryView view,
+    public RechargeCategoryPresenterImpl(Context context, RechargeCategoryView view,
                                          RechargeNetworkInteractor rechargeNetworkInteractor) {
-        this.activity = activity;
+        this.context = context;
         this.view = view;
         this.rechargeNetworkInteractor = rechargeNetworkInteractor;
     }
@@ -104,7 +105,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     }
 
     private void finishPrepareRechargeModule(boolean useCache) {
-        if (activity != null && view != null) {
+        if (context != null && view != null) {
             if (categoryList != null) {
                 view.renderDataRechargeCategory(categoryList, useCache);
             } else {
@@ -114,7 +115,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     }
 
     private int getVersionCode() throws PackageManager.NameNotFoundException {
-        PackageInfo pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+        PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
         return pInfo.versionCode;
     }
 

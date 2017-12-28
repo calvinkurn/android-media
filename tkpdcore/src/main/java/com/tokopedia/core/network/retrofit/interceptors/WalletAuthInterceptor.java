@@ -53,7 +53,7 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
             Response responseNew = chain.proceed(newRequestWallet);
             if (isUnauthorizeWalletToken(newRequestWallet, responseNew)) {
                 ServerErrorHandler.showForceLogoutDialog();
-                sendForceLogoutAnalytics(responseNew);
+                ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
             }
             return responseNew;
         }

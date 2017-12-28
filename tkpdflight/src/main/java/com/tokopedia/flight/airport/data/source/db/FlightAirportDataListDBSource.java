@@ -48,7 +48,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                 .flatMap(new Func1<FlightAirportCountry, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(FlightAirportCountry flightAirportCountry) {
-                        if(flightAirportCountry.getAttributes().getCities().size() > 0) {
+                        if (flightAirportCountry.getAttributes().getCities().size() > 0) {
                             for (FlightAirportCity flightAirportCity : flightAirportCountry.getAttributes().getCities()) {
                                 if (flightAirportCity.getFlightAirportDetails() != null && flightAirportCity.getFlightAirportDetails().size() > 1) {
                                     List<String> airportIds = new ArrayList<>();
@@ -61,7 +61,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                                     insertFlight(flightAirportCountry, flightAirportCity, flightAirportDetail, "");
                                 }
                             }
-                        }else{
+                        } else {
                             FlightAirportDB flightAirportDB = new FlightAirportDB();
                             flightAirportDB.setCountryId(flightAirportCountry.getId());
                             flightAirportDB.setCityId("");
@@ -116,11 +116,11 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                 @Override
                 public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
                     ConditionGroup conditions = ConditionGroup.clause();
-                    if(!TextUtils.isEmpty(idCountry)){
+                    if (!TextUtils.isEmpty(idCountry)) {
                         conditions.and(FlightAirportDB_Table.country_id.eq(idCountry));
                     }
                     String queryLike = "%" + queryText + "%";
-                    if (!TextUtils.isEmpty(queryText)){
+                    if (!TextUtils.isEmpty(queryText)) {
                         ConditionGroup likeConditionsGroup = ConditionGroup.clause();
                         likeConditionsGroup.or(FlightAirportDB_Table.country_id.like(queryLike))
                                 .or(FlightAirportDB_Table.country_name.like(queryLike))
@@ -135,7 +135,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                     orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.country_name).ascending());
                     orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.city_name).ascending());
                     orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.airport_id).ascending());
-                    List<FlightAirportDB> flightAirportDBList  = new Select().from(FlightAirportDB.class)
+                    List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
                             .where(conditions)
                             .orderByAll(orderBies)
                             .queryList();
@@ -167,4 +167,107 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
         });
     }
 
+    public Observable<Boolean> updateAndInsert(List<FlightAirportCountry> flightAirportCountries) {
+        return Observable.from(flightAirportCountries)
+                .flatMap(new Func1<FlightAirportCountry, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(FlightAirportCountry flightAirportCountry) {
+                        if (flightAirportCountry.getAttributes().getCities().size() > 0) {
+                            for (FlightAirportCity flightAirportCity : flightAirportCountry.getAttributes().getCities()) {
+                                if (flightAirportCity.getFlightAirportDetails() != null && flightAirportCity.getFlightAirportDetails().size() > 1) {
+                                    List<String> airportIds = new ArrayList<>();
+                                    for (FlightAirportDetail flightAirportDetail : flightAirportCity.getFlightAirportDetails()) {
+                                        airportIds.add(flightAirportDetail.getId());
+                                    }
+                                    insertFlight(flightAirportCountry, flightAirportCity, new FlightAirportDetail("", "", new ArrayList<String>()), TextUtils.join(",", airportIds));
+                                }
+                                for (FlightAirportDetail flightAirportDetail : flightAirportCity.getFlightAirportDetails()) {
+                                    insertFlight(flightAirportCountry, flightAirportCity, flightAirportDetail, "");
+                                }
+                            }
+                        } else {
+                            FlightAirportDB flightAirportDB = new FlightAirportDB();
+                            flightAirportDB.setCountryId(flightAirportCountry.getId());
+                            flightAirportDB.setCityId("");
+                            flightAirportDB.setAirportId("");
+                            flightAirportDB.setPhoneCode(flightAirportCountry.getAttributes().getPhoneCode());
+                            flightAirportDB.setCountryName(flightAirportCountry.getAttributes().getName());
+                            insertFlight(flightAirportDB);
+                        }
+                        return Observable.just(true);
+                    }
+
+                    private void insertFlight(FlightAirportDB flightAirportDB) {
+                        ConditionGroup conditions = ConditionGroup.clause();
+                        conditions.and(FlightAirportDB_Table.country_id.eq(flightAirportDB.getCountryId()));
+                        conditions.and(FlightAirportDB_Table.city_id.eq(flightAirportDB.getCityId()));
+                        conditions.and(FlightAirportDB_Table.airport_id.eq(flightAirportDB.getAirportId()));
+                        FlightAirportDB result = new Select().from(FlightAirportDB.class)
+                                .where(conditions)
+                                .querySingle();
+                        if (result != null) {
+                            result.setCountryId(flightAirportDB.getCountryId());
+                            result.setCityId(flightAirportDB.getCityId());
+                            result.setAirportId(flightAirportDB.getAirportId());
+                            result.setPhoneCode(flightAirportDB.getPhoneCode());
+                            result.setCountryName(flightAirportDB.getCountryName());
+                            result.save();
+                        } else {
+                            flightAirportDB.insert();
+                        }
+                    }
+
+                    private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {
+                        ConditionGroup conditions = ConditionGroup.clause();
+                        conditions.and(FlightAirportDB_Table.country_id.eq(flightAirportCountry.getId()));
+                        conditions.and(FlightAirportDB_Table.city_id.eq(flightAirportCity.getId()));
+                        conditions.and(FlightAirportDB_Table.airport_id.eq(flightAirportDetail.getId()));
+                        FlightAirportDB result = new Select().from(FlightAirportDB.class)
+                                .where(conditions)
+                                .querySingle();
+                        if (result != null) {
+                            result.setCountryId(flightAirportCountry.getId());
+                            result.setCountryName(flightAirportCountry.getAttributes().getName());
+                            result.setPhoneCode(flightAirportCountry.getAttributes().getPhoneCode());
+                            result.setCityId(flightAirportCity.getId());
+                            result.setCityName(flightAirportCity.getName());
+                            result.setCityCode(flightAirportCity.getCode());
+                            result.setAirportId(flightAirportDetail.getId());
+                            result.setAirportName(flightAirportDetail.getName());
+                            result.setAirportIds(airportIds);
+                            String aliases = "";
+                            for (String alias : flightAirportDetail.getAliases()) {
+                                aliases += alias;
+                            }
+                            result.setAliases(aliases);
+                            result.save();
+                        } else {
+                            FlightAirportDB flightAirportDB = new FlightAirportDB();
+                            flightAirportDB.setCountryId(flightAirportCountry.getId());
+                            flightAirportDB.setCountryName(flightAirportCountry.getAttributes().getName());
+                            flightAirportDB.setPhoneCode(flightAirportCountry.getAttributes().getPhoneCode());
+                            flightAirportDB.setCityId(flightAirportCity.getId());
+                            flightAirportDB.setCityName(flightAirportCity.getName());
+                            flightAirportDB.setCityCode(flightAirportCity.getCode());
+                            flightAirportDB.setAirportId(flightAirportDetail.getId());
+                            flightAirportDB.setAirportName(flightAirportDetail.getName());
+                            flightAirportDB.setAirportIds(airportIds);
+                            String aliases = "";
+                            for (String alias : flightAirportDetail.getAliases()) {
+                                aliases += alias;
+                            }
+                            flightAirportDB.setAliases(aliases);
+                            flightAirportDB.insert();
+                        }
+
+                    }
+                })
+                .toList()
+                .flatMap(new Func1<List<Boolean>, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(List<Boolean> booleen) {
+                        return Observable.just(new Select(Method.count()).from(FlightAirportDB.class).hasData());
+                    }
+                });
+    }
 }

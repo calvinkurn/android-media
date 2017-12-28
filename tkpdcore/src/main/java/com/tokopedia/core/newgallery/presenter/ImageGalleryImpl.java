@@ -5,8 +5,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 
+import com.nytimes.android.external.cache.Stopwatch;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
 import com.tokopedia.core.newgallery.constant.Constants;
@@ -17,11 +18,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -63,7 +62,11 @@ public class ImageGalleryImpl implements ImageGallery {
     }
 
     public String getFolderPath(int position) {
-        return dataAlbum.get(position).getName();
+        String folderPath = "";
+        if (dataAlbum != null && position >= 0 && position < dataAlbum.size()) {
+            folderPath = dataAlbum.get(position).getName();
+        }
+        return folderPath;
     }
 
     @Override

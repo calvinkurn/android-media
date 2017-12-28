@@ -2,15 +2,13 @@ package com.tokopedia.flight.search.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
-import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.view.activity.FlightSearchReturnActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -19,8 +17,9 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
  * Created by hendry on 10/26/2017.
  */
 
-public class FlightSearchReturnFragment extends FlightSearchFragment {
+public class FlightSearchReturnFragment extends FlightSearchV2Fragment {
 
+    private AppCompatTextView departureHeaderLabel;
     private TextView airlineName;
     private TextView duration;
 
@@ -51,19 +50,20 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
         super.onViewCreated(view, savedInstanceState);
         airlineName = (TextView) view.findViewById(R.id.airline_name);
         duration = (TextView) view.findViewById(R.id.duration);
+        departureHeaderLabel = (AppCompatTextView) view.findViewById(R.id.tv_departure_header_card_label);
 
         flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
     }
 
-    protected FlightAirportDB getDepartureAirport(){
+    protected FlightAirportDB getDepartureAirport() {
         return flightSearchPassDataViewModel.getArrivalAirport();
     }
 
-    protected FlightAirportDB getArrivalAirport(){
+    protected FlightAirportDB getArrivalAirport() {
         return flightSearchPassDataViewModel.getDepartureAirport();
     }
 
-    protected boolean isReturning(){
+    protected boolean isReturning() {
         return true;
     }
 
@@ -74,17 +74,19 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
 
     @Override
     public void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel) {
-        if(flightSearchViewModel.getAirlineList().size() > 1){
+        if (flightSearchViewModel.getAirlineList().size() > 1) {
             airlineName.setText(getString(R.string.flight_label_multi_maskapai));
-        }else if(flightSearchViewModel.getAirlineList().size() == 1){
+        } else if (flightSearchViewModel.getAirlineList().size() == 1) {
             airlineName.setText(flightSearchViewModel.getAirlineList().get(0).getName());
         }
-        if(flightSearchViewModel.getAddDayArrival() > 0) {
+        if (flightSearchViewModel.getAddDayArrival() > 0) {
             duration.setText(String.format("| %s - %s (+%sh)", flightSearchViewModel.getDepartureTime(),
                     flightSearchViewModel.getArrivalTime(), String.valueOf(flightSearchViewModel.getAddDayArrival())));
-        }else{
+        } else {
             duration.setText(String.format("| %s - %s", flightSearchViewModel.getDepartureTime(),
                     flightSearchViewModel.getArrivalTime()));
         }
+
+        departureHeaderLabel.setText(String.format("%s - %s", getString(R.string.flight_label_departure_flight), FlightDateUtil.formatToUi(flightSearchPassDataViewModel.getDepartureDate())));
     }
 }

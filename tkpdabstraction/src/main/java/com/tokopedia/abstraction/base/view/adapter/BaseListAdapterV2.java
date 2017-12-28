@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class BaseListAdapterV2<T extends Visitable, F extends AdapterTypeFactory> extends BaseAdapter {
 
-    protected OnAdapterInteractionListener onAdapterInteractionListener;
+    private OnAdapterInteractionListener onAdapterInteractionListener;
     private F baseListAdapterTypeFactory;
 
     public BaseListAdapterV2(F baseListAdapterTypeFactory) {
@@ -54,6 +54,19 @@ public class BaseListAdapterV2<T extends Visitable, F extends AdapterTypeFactory
     public void addData(List<T> visitables) {
         this.visitables.addAll(visitables);
         notifyDataSetChanged();
+    }
+
+    public List<T> getData() {
+        List<T> list = new ArrayList<>();
+        for (Visitable visitable : this.visitables) {
+            try {
+                T item = (T) visitable;
+                list.add(item);
+            } catch (ClassCastException exception) {
+                exception.printStackTrace();
+            }
+        }
+        return list;
     }
 
     public interface OnAdapterInteractionListener<T> {
