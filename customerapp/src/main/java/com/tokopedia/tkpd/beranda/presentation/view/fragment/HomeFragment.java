@@ -79,6 +79,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSect
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
@@ -102,7 +103,7 @@ import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant
 
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener,
-        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, FeedPlus.View {
+        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, FeedPlus.View, FeedPlus.View.Toppicks {
 
     @Inject
     HomePresenter presenter;
@@ -258,7 +259,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initAdapter() {
         layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
+        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
         recyclerView.addItemDecoration(spaceItemDecoration);
@@ -916,6 +917,31 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl) {
 
+    }
+
+    @Override
+    public void onToppicksClicked(int page, int rowNumber, String name, String url) {
+        switch ((DeepLinkChecker.getDeepLinkType(url))) {
+            case DeepLinkChecker.BROWSE:
+                DeepLinkChecker.openBrowse(url, getActivity());
+                break;
+            case DeepLinkChecker.HOT:
+                DeepLinkChecker.openHot(url, getActivity());
+                break;
+            case DeepLinkChecker.CATALOG:
+                DeepLinkChecker.openCatalog(url, getActivity());
+                break;
+            default:
+                if (!TextUtils.isEmpty(url)) {
+                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
+                            , url);
+                }
+        }
+    }
+
+    @Override
+    public void onSeeAllToppicks(int page, int rowNumber) {
+        startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
     }
 
     private void openActivity(String depID, String title) {
