@@ -79,13 +79,9 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSect
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -192,9 +188,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initTabNavigation();
-        initListener();
         initAdapter();
         initRefreshLayout();
+        initFeedLoadMoreTriggerListener();
         fetchRemoteConfig();
     }
 
@@ -237,7 +233,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.setOnRefreshListener(this);
     }
 
-    private void initListener() {
+    private void initFeedLoadMoreTriggerListener() {
         feedLoadMoreTriggerListener = new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -247,6 +243,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         };
+        if (SessionHandler.isV4Login(getContext())) {
+            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
+        }
     }
 
     private boolean isAllowLoadMore() {
@@ -264,9 +263,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.addItemDecoration(spaceItemDecoration);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new HomeRecycleScrollListener(layoutManager, this));
-        if (SessionHandler.isV4Login(getContext())) {
-            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
-        }
     }
 
     @Override
