@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.open.data.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -29,7 +31,7 @@ public class Courier {
     private String id;
     @SerializedName("services")
     @Expose
-    private List<CourierService> services = null;
+    private List<CourierServiceModel> services = null;
     @SerializedName("weight")
     @Expose
     private int weight;
@@ -41,43 +43,31 @@ public class Courier {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getWeightPolicy() {
         return weightPolicy;
-    }
-
-    public void setWeightPolicy(String weightPolicy) {
-        this.weightPolicy = weightPolicy;
     }
 
     public String getLogo() {
         return logo;
     }
 
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
     public Integer getByZipCode() {
         return byZipCode;
-    }
-
-    public void setByZipCode(Integer byZipCode) {
-        this.byZipCode = byZipCode;
     }
 
     public int getAvailable() {
         return available;
     }
 
+    public boolean isAvailable() {
+        return available == 1;
+    }
+
     public String getId() {
         return id;
     }
 
-    public List<CourierService> getServices() {
+    public List<CourierServiceModel> getServices() {
         return services;
     }
 
@@ -87,6 +77,11 @@ public class Courier {
 
     public String getUrlAdditionalOption() {
         return urlAdditionalOption;
+    }
+
+    public boolean hasUrlAdditionalOption() {
+        return !TextUtils.isEmpty(urlAdditionalOption) &&
+                "0".equals(urlAdditionalOption);
     }
 
 }

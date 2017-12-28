@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.setting.domain.interactor;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -8,12 +10,20 @@ import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.shop.setting.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.setting.domain.ShopSettingSaveInfoRepository;
 
+import javax.annotation.Nullable;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import rx.Observable;
 
 /**
  * Created by normansyahputa on 12/22/17.
+ *
+ * https://phab.tokopedia.com/w/api/tome/#open-shop-api
+ *
+ * Reserve Shop Description And Details ( Step 2 )
+ *
+ * this link is important for references.
  */
 
 public class ShopOpenSaveLocationUseCase extends UseCase<Boolean> {
@@ -43,21 +53,43 @@ public class ShopOpenSaveLocationUseCase extends UseCase<Boolean> {
         return shopSettingSaveInfoRepository.saveShopSettingStep2(requestParams);
     }
 
-    public static RequestParams createRequestParams(String longitude,
-                                                    String latitude,
-                                                    String geolocation_checksum,
+    /**
+     *
+     * @param longitude optional if add pinpoint, longitude ex..83258720000003
+     * @param latitude optional if add pinpoint, latitude ex. -6.2195686
+     * @param geolocation_checksum optional if add pinpoint, checksum get from kero
+     * @param loc_complete "A MUST"
+     * @param location "A MUST"
+     * @param addr_street 	optional if add pinpoint, ex. Jl.+Haji+R.+Rasuna+Said,+Kecamatan+Setiabudi,+Jaksel+12940
+     * @param postal_code "A MUST"
+     * @param district_id "A MUST"
+     * @return RequestParam object
+     */
+    public static RequestParams createRequestParams(@Nullable String longitude,
+                                                    @Nullable String latitude,
+                                                    @Nullable String geolocation_checksum,
                                                     String loc_complete,
                                                     String location,
-                                                    String addr_street,
+                                                    @Nullable String addr_street,
                                                     String postal_code,
                                                     String district_id) {
         RequestParams params = RequestParams.create();
-        params.putString(LONGITUDE, longitude);
-        params.putString(LATITUDE, latitude);
-        params.putString(GEOLOCATION_CHECKSUM, geolocation_checksum);
+        if(!TextUtils.isEmpty(longitude))
+            params.putString(LONGITUDE, longitude);
+
+        if(!TextUtils.isEmpty(latitude))
+            params.putString(LATITUDE, latitude);
+
+        if(!TextUtils.isEmpty(geolocation_checksum))
+            params.putString(GEOLOCATION_CHECKSUM, geolocation_checksum);
+
+
         params.putString(LOC_COMPLETE, loc_complete);
         params.putString(LOCATION, location);
-        params.putString(ADDR_STREET, String.valueOf(addr_street));
+
+        if(!TextUtils.isEmpty(addr_street))
+            params.putString(ADDR_STREET, String.valueOf(addr_street));
+
         params.putString(POSTAL_CODE, String.valueOf(postal_code));
         params.putString(DISTRICT_ID, String.valueOf(district_id));
         return params;
