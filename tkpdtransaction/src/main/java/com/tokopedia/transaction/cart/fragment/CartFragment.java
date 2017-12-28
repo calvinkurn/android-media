@@ -1018,7 +1018,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 promoResultLayout.setVisibility(View.VISIBLE);
-                labelPromoType.setText(getString(R.string.title_coupon_code));
+                labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
                 promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
                 voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
 
@@ -1035,7 +1035,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                                         String amount,
                                         String description) {
         promoResultLayout.setVisibility(View.VISIBLE);
-        labelPromoType.setText(getString(R.string.promo_code));
+        labelPromoType.setText(getString(R.string.promo_code) + " : ");
         promoVoucherCode.setText(voucherCode);
         voucherDescription.setText(description);
 
