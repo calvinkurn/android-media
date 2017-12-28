@@ -80,11 +80,19 @@ public class KeroppiParam {
 
         params.put(CAT_ID, orderData.getCatId());
         params.put(INSURANCE, "1");
-        params.put(PRODUCT_INSURANCE, orderData.getMustInsurance().equals("1") ? "1" : "0");
+        params.put(PRODUCT_INSURANCE, isProductMustInsurance(orderData));
         String rawPrice = getRawPrice(orderData.getPriceTotal());
         params.put(ORDER_VALUE, rawPrice);
 
         return params;
+    }
+
+    private static String isProductMustInsurance(OrderData orderData) {
+        if (orderData.getMustInsurance() == null) {
+            return "0";
+        } else {
+            return orderData.getMustInsurance().equals("1") ? "1" : "0";
+        }
     }
 
     private static String generatePath(String districtID, String postalCode, String lat,
