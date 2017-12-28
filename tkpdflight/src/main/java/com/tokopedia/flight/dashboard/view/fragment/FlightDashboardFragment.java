@@ -59,6 +59,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
 
+    private static final String ALL_PROMO_LINK = "https://www.tokopedia.com/promo/";
+
     private FlightDashboardViewModel viewModel;
 
     AppCompatImageView reverseAirportImageView;
@@ -209,7 +211,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView.setOnPromoAllClickListener(new BannerView.OnPromoAllClickListener() {
             @Override
             public void onPromoAllClick() {
-
+                bannerAllClickAction();
             }
         });
 
@@ -453,8 +455,21 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     private void bannerClickAction(int position) {
         if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication()).getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()) != null) {
-            startActivity(((FlightModuleRouter) getActivity().getApplication()).getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()));
+                && ((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()) != null) {
+
+            startActivity(((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()));
+        }
+    }
+
+    private void bannerAllClickAction() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), ALL_PROMO_LINK) != null) {
+
+            startActivity(((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), ALL_PROMO_LINK));
         }
     }
 }
