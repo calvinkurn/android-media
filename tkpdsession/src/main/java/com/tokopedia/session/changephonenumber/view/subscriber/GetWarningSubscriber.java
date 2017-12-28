@@ -23,7 +23,6 @@ public class GetWarningSubscriber extends Subscriber<WarningViewModel> {
 
     @Override
     public void onError(Throwable e) {
-        view.dismissLoading();
         if (e != null)
             view.onGetWarningError(e.getMessage());
         else
@@ -32,7 +31,6 @@ public class GetWarningSubscriber extends Subscriber<WarningViewModel> {
 
     @Override
     public void onNext(WarningViewModel object) {
-        view.dismissLoading();
         view.onGetWarningSuccess(object);
     }
 }

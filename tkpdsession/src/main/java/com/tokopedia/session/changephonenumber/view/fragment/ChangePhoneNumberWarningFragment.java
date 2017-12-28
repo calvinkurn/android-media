@@ -17,15 +17,21 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberEmailActivity;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_EMAIL;
+import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.EMPTY_BALANCE;
 
 /**
@@ -45,6 +51,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private RecyclerView warningRecyclerView;
     private TextView nextButton;
     private WarningViewModel viewModel;
+    private String phoneNumber;
+    private boolean hasTokocash;
     private View mainView;
     private View loadingView;
     private Unbinder unbinder;
@@ -90,15 +98,12 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     private void setViewListener() {
-//        nextButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(ChangePhoneNumberInputActivity.newInstance(
-//                        getContext(),
-//                        new ArrayList<>(viewModel.getWarningList()))
-//                );
-//            }
-//        });
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToNextActivity();
+            }
+        });
     }
 
     private void initVar() {
@@ -143,17 +148,26 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     @Override
     public void onGetWarningSuccess(WarningViewModel warningViewModel) {
         this.viewModel = warningViewModel;
-        loadDataToView();
+        this.hasTokocash = !isNullOrEmpty(viewModel.getTokocash());
+        if (isNullOrEmpty(viewModel.getTokocash()) && isNullOrEmpty(viewModel.getTokopediaBalance())) {
+            goToNextActivity();
+            getActivity().finish();
+        } else {
+            loadDataToView();
+            dismissLoading();
+        }
     }
 
     @Override
     public void onGetWarningError(String message) {
         showEmptyState(message);
+        dismissLoading();
     }
 
     @Override
     public void onGetWarningFailed() {
         showEmptyState(null);
+        dismissLoading();
     }
 
     private void loadDataToView() {
@@ -176,6 +190,23 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         }
     }
 
+    private void goToNextActivity() {
+        if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
+            startActivity(
+                    ChangePhoneNumberEmailActivity.newInstance(getContext())
+            );
+        } else if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)) {
+            startActivity(
+                    ChangePhoneNumberInputActivity.newInstance(
+                            getContext(),
+                            phoneNumber,
+                            hasTokocash,
+                            new ArrayList<>(viewModel.getWarningList())
+                    )
+            );
+        }
+    }
+
     private boolean isNullOrEmpty(String string) {
         return (string == null || string.equalsIgnoreCase("null") || string.isEmpty() || string.equalsIgnoreCase(EMPTY_BALANCE));
     }
@@ -185,7 +216,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
             if (viewModel.getWarningList() != null && viewModel.getWarningList().size() > 0) {
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                 warningRecyclerView.setLayoutManager(mLayoutManager);
-                boolean hasTokocash = !isNullOrEmpty(viewModel.getTokocash());
                 adapter.addData(hasTokocash, viewModel.getWarningList());
                 warningRecyclerView.setAdapter(adapter);
             }

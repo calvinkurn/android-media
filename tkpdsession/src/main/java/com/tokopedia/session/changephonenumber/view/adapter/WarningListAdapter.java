@@ -55,11 +55,6 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
         return (position == getItemCount() - 1);
     }
 
-    public void addData(List<String> warningList) {
-        this.warningList.addAll(warningList);
-        notifyItemRangeInserted(0, warningList.size());
-    }
-
     public void addData(boolean hasTokocash, List<String> warningList) {
         this.hasTokocash = hasTokocash;
         this.warningList.addAll(warningList);

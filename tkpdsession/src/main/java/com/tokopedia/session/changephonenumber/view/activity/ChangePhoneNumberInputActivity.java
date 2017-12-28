@@ -16,16 +16,22 @@ import java.util.ArrayList;
 
 public class ChangePhoneNumberInputActivity extends BasePresenterActivity
         implements ChangePhoneNumberInputActivityListener.View, HasComponent {
+    public static final String PARAM_PHONE_NUMBER = "phone_number";
+    public static final String PARAM_HAS_TOKOCASH = "has_tokocash";
     public static final String PARAM_WARNING_LIST = "warning_list";
 
+    private String phoneNumber;
+    private boolean hasTokocash;
     private ArrayList<String> warningList;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, ChangePhoneNumberInputActivity.class);
     }
 
-    public static Intent newInstance(Context context, ArrayList<String> warningList) {
+    public static Intent newInstance(Context context, String phoneNumber, boolean hasTokocash, ArrayList<String> warningList) {
         Intent intent = new Intent(context, ChangePhoneNumberInputActivity.class);
+        intent.putExtra(PARAM_PHONE_NUMBER, phoneNumber);
+        intent.putExtra(PARAM_HAS_TOKOCASH, hasTokocash);
         intent.putExtra(PARAM_WARNING_LIST, warningList);
         return intent;
     }
@@ -37,6 +43,8 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
+        phoneNumber = extras.getString(PARAM_PHONE_NUMBER);
+        hasTokocash = extras.getBoolean(PARAM_HAS_TOKOCASH);
         warningList = extras.getStringArrayList(PARAM_WARNING_LIST);
     }
 
@@ -73,7 +81,7 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
     @Override
     public void inflateFragment() {
         String TAG = ChangePhoneNumberInputFragment.class.getSimpleName();
-        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance(warningList);
+        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance(phoneNumber, hasTokocash, warningList);
 
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()

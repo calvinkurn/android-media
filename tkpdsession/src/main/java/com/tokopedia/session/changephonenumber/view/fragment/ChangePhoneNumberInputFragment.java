@@ -36,6 +36,8 @@ import butterknife.Unbinder;
  */
 
 public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implements ChangePhoneNumberInputFragmentListener.View {
+    public static final String PARAM_PHONE_NUMBER = "phone_number";
+    public static final String PARAM_HAS_TOKOCASH = "has_tokocash";
     public static final String PARAM_WARNING_LIST = "warning_list";
 
     @Inject
@@ -43,13 +45,17 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private TextView oldPhoneNumber;
     private EditText newPhoneNumber;
     private TextView nextButton;
+    private String phoneNumber;
+    private boolean hasTokocash;
     private ArrayList<String> warningList;
     private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
 
-    public static ChangePhoneNumberInputFragment newInstance(ArrayList<String> warningList) {
+    public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, boolean hasTokocash, ArrayList<String> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
+        bundle.putBoolean(PARAM_HAS_TOKOCASH, hasTokocash);
         bundle.putStringArrayList(PARAM_WARNING_LIST, warningList);
         fragment.setArguments(bundle);
         return fragment;
@@ -80,6 +86,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         oldPhoneNumber = view.findViewById(R.id.old_phone_number_value);
         newPhoneNumber = view.findViewById(R.id.new_phone_number_value);
         nextButton = view.findViewById(R.id.next_button);
+
+        oldPhoneNumber.setText(phoneNumber);
     }
 
     private void setViewListener() {
@@ -110,11 +118,13 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     private void initVar() {
+        phoneNumber = getArguments().getString(PARAM_WARNING_LIST);
+        hasTokocash = getArguments().getBoolean(PARAM_WARNING_LIST, false);
         warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
     }
 
     private void createBottomSheetView() {
-        bottomSheetInfo = new BottomSheetInfo(getContext(), warningList);
+        bottomSheetInfo = new BottomSheetInfo(getContext(), hasTokocash, warningList);
     }
 
     @Override
