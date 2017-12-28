@@ -297,24 +297,4 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     protected String getScreenName() {
         return null;
     }
-
-
-    private void logShipment(Shipment shipment){
-        String addrStreet = shipment.getAddrStreet(); // manual address
-        String longitude = shipment.getLongitude();
-        String latitude = shipment.getLatitude();
-        String geolocationChecksum = shipment.getGeolocationChecksum();
-
-        int postal = shipment.getPostal();
-        int districtId = shipment.getDistrictId();
-        Log.d(TAG, String.format(
-                "%s %s %s %d %d %s", addrStreet, longitude, latitude, postal, districtId, geolocationChecksum
-        ));
-    }
-
-    private void logUserData(UserData userData){
-        // location complete district
-        String location = userData.getLocation();
-        String locComplete = userData.getLocComplete();
-    }
 }
