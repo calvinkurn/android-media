@@ -48,6 +48,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
@@ -87,7 +88,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Inject
     HomeDataMapper homeDataMapper;
     @Inject
-    GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
+    GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     @Inject
     GetFeedsUseCase getFeedsUseCase;
     @Inject
@@ -135,8 +136,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             public void call(List<Visitable> visitables) {
                 pagingHandler.resetPage();
                 currentCursor = "";
-                getFirstPageFeedsUseCase.execute(
-                        getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
+                getFirstPageFeedsCloudUseCase.execute(
+                        getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
                         new GetFirstPageFeedsSubscriber(feedListener, pagingHandler.getPage()));
             }
         };
