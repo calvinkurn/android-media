@@ -52,7 +52,6 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     protected StepperListener<ShopOpenStepperModel> stepperListener;
     private LogisticRouter logisticRouter;
     private static final String TAG = "ShopOpenMandatoryLocati";
-    private LocationHeaderViewHolder locationHeaderViewHolder;
     private LocationShippingViewHolder locationShippingViewHolder;
     private LocationMapViewHolder locationMapViewHolder;
 
@@ -72,10 +71,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     }
 
     private void initView(View root){
-        locationHeaderViewHolder = new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
+        LocationHeaderViewHolder locationHeaderViewHolder = new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
             public void navigateToChooseAddressActivityRequest() {
-                if(logisticRouter == null)
+                if (logisticRouter == null)
                     return;
 
                 logisticRouter.navigateToChooseAddressActivityRequest(
@@ -145,6 +144,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
 
                         if(aBoolean != null || aBoolean){
                             updateStepperModel();
+
+                            if(stepperListener != null) {
+                                stepperListener.goToNextPage(null);
+                            }
                         }
 
                     }
