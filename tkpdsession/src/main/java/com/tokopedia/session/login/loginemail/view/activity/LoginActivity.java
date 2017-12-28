@@ -70,12 +70,4 @@ public class LoginActivity extends TActivity implements HasComponent {
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, LoginActivity.class);
     }
-
-    public static Intent getAutoLoginIntent(Context context, String email, String password) {
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.putExtra(PARAM_EMAIL, email);
-        intent.putExtra(PARAM_PASSWORD, password);
-        intent.putExtra(PARAM_LOGIN_TYPE, TYPE_AUTO);
-        return intent;
-    }
 }

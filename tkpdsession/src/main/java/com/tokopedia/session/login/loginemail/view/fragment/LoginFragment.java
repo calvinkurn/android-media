@@ -89,14 +89,9 @@ public class LoginFragment extends BaseDaggerFragment
     private static final String GPLUS = "gplus";
     private static final String PHONE_NUMBER = "tokocash";
 
-    private static final int REQUEST_PHONE_NUMBER = 101;
-    private static final int REQUEST_SECURITY_QUESTION = 102;
-    private static final int REQUEST_SMART_LOCK = 103;
-    private static final int REQUEST_SAVE_SMART_LOCK = 104;
-    private static final int REQUEST_CREATE_PASSWORD = 105;
-    private static final int REQUEST_VERIFY_PHONE_NUMBER = 106;
-    private static final int REQUEST_LOGIN_WEBVIEW = 107;
-    private static final int REQUEST_ACTIVATE_ACCOUNT = 108;
+    private static final int REQUEST_SMART_LOCK = 101;
+    private static final int REQUEST_SAVE_SMART_LOCK = 102;
+    private static final int REQUEST_LOGIN_WEBVIEW = 103;
 
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
@@ -361,9 +356,6 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLogin() {
-
-        Log.d("NISNISLogin", "LoginFragment " + SessionHandler.isV4Login(MainApplication.getAppContext()));
-
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -454,7 +446,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
-        startActivityForResult(CreatePasswordActivity.getCallingIntent(getActivity(),
+        Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
                 new CreatePasswordViewModel(
                         userInfoDomainData.getEmail(),
                         userInfoDomainData.getFullName(),
@@ -462,15 +454,18 @@ public class LoginFragment extends BaseDaggerFragment
                         userInfoDomainData.getBdayMonth(),
                         userInfoDomainData.getBdayDay(),
                         userInfoDomainData.getCreatePasswordList(),
-                        String.valueOf(userInfoDomainData.getUserId()))),
-                REQUEST_CREATE_PASSWORD);
+                        String.valueOf(userInfoDomainData.getUserId())));
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     @Override
     public void onGoToPhoneVerification() {
-        startActivityForResult(
-                PhoneVerificationActivationActivity.getCallingIntent(getActivity()),
-                REQUEST_VERIFY_PHONE_NUMBER);
+        getActivity().setResult(Activity.RESULT_OK);
+        startActivity(
+                PhoneVerificationActivationActivity.getCallingIntent(getActivity()));
+        getActivity().finish();
     }
 
     @Override
@@ -485,14 +480,9 @@ public class LoginFragment extends BaseDaggerFragment
                 }.getType()));
         cacheManager.store();
 
+
         Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
                 securityDomain.getUserCheckSecurity2());
-
-//        startActivityForResult(
-//                VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
-//                        securityDomain.getUserCheckSecurity2()),
-//                REQUEST_SECURITY_QUESTION);
-
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         getActivity().finish();
@@ -535,8 +525,10 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToActivationPage() {
-        startActivity(ActivationActivity.getCallingIntent(getActivity(),
-                emailEditText.getText().toString()));
+        Intent intent = ActivationActivity.getCallingIntent(getActivity(),
+                emailEditText.getText().toString());
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
     }
 
     private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel,
@@ -587,7 +579,8 @@ public class LoginFragment extends BaseDaggerFragment
     private void onLoginPhoneNumberClick() {
         UnifyTracking.eventCTAAction(PHONE_NUMBER);
         Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
-        startActivityForResult(intent, REQUEST_PHONE_NUMBER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
     }
 
     private void onLoginGoogleClick() {
@@ -652,9 +645,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-            onSuccessLogin();
-        } else if (requestCode == REQUEST_SMART_LOCK
+        if (requestCode == REQUEST_SMART_LOCK
                 && resultCode == Activity.RESULT_OK
                 && data != null
                 && data.getExtras() != null
@@ -668,14 +659,6 @@ public class LoginFragment extends BaseDaggerFragment
             //TODO : FIX SMART LOCK ERROR STATE
 //            onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode
 //                    .SMART_LOCK_FAILED_TO_GET_CREDENTIALS));
-        } else if (requestCode == REQUEST_CREATE_PASSWORD
-                && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
-        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER
-                && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
         } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
             String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
             presenter.loginGoogle(accessToken);

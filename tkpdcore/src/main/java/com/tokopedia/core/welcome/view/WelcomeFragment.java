@@ -30,13 +30,12 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
 
@@ -426,15 +425,30 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                 " resultCode "
                 + resultCode);
         if(requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK){
-            moveToSellerHome();
+            onSuccessLogin();
         }
     }
 
-    private void moveToSellerHome() {
+    private void onSuccessLogin() {
         if(MainApplication.getAppContext() instanceof TkpdCoreRouter){
-            Intent intent = ((TkpdCoreRouter)MainApplication.getAppContext())
-                    .getSellerHomeIntent(getActivity());
-            startActivity(intent);
+            Intent intent;
+            if (SessionHandler.isUserSeller(getActivity())) {
+                intent = SellerAppRouter.getSellerHomeActivity(getActivity());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
+                        .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            } else {
+                intent = moveToCreateShop(this);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            }
         }
+    }
+
+    private Intent moveToCreateShop(WelcomeFragment welcomeFragment) {
+        Intent intent;
+        intent = SellerRouter.getAcitivityShopCreateEdit(context);
+        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
     }
 }
