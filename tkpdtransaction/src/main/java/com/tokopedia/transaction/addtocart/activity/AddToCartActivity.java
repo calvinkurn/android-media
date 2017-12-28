@@ -307,12 +307,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             case 1:
                 spInsurance.setSelection(0);
                 spInsurance.setEnabled(false);
-                orderData.setMustInsurance("1");
+                orderData.setMustInsurance(1);
                 break;
             default:
                 spInsurance.setSelection(1);
                 spInsurance.setEnabled(true);
-                orderData.setMustInsurance("0");
+                orderData.setMustInsurance(0);
                 break;
         }
         if (data.getProductPreorder() != null
