@@ -71,7 +71,7 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
-import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointsActivity;
+import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointActivity;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -842,7 +842,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.tv_send_to_pick_up_booth)
     void sendToPickUpBooth() {
-        startActivityForResult(PickupPointsActivity.createInstance(this, presenter.getPickupPointParams()), 0);
+        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getPickupPointParams()), 0);
     }
 
     private OrderData createFinalOrderData() {

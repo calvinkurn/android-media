@@ -3,6 +3,7 @@ package com.tokopedia.transaction.pickupbooth.di;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointActivity;
 
 import dagger.Component;
 
@@ -13,7 +14,7 @@ import dagger.Component;
 @PickupPointScope
 @Component(modules = PickupPointModule.class, dependencies = AppComponent.class)
 public interface PickupPointComponent {
-//    void inject(??Fragment fragment);
+    void inject(PickupPointActivity pickupPointActivity);
 
     ThreadExecutor threadExecutor();
 

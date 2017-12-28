@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.tokopedia.transaction.R;
 
-public class PickupBoothMapActivity extends AppCompatActivity {
+public class PickupPointMapActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
