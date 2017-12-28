@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
@@ -129,7 +128,9 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         variantLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onVariantClicked(new Bundle());
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
+                listener.onVariantClicked(bundle);
             }
         });
         variantLayout.setVisibility(VISIBLE);

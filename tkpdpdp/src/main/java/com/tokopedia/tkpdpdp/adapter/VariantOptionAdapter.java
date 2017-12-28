@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.network.entity.variant.Option;
-import com.tokopedia.core.network.entity.variant.VariantDatum;
 import com.tokopedia.tkpdpdp.R;
 
 import java.util.ArrayList;
@@ -28,13 +27,13 @@ import java.util.List;
 public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdapter.VariantOptionViewHolder> {
 
     private final Context context;
-    private final ArrayList<Option> variantOptions;
+    private final List<Option> variantOptions;
     private final boolean isColor;
     private int selectedPosition = 0;
     private final OnVariantOptionChoosedListener variantChosenListener;
     private final int level;
 
-    public VariantOptionAdapter(Context context, ArrayList<Option> variantOptions,
+    public VariantOptionAdapter(Context context, List<Option> variantOptions,
                                 boolean isColor, OnVariantOptionChoosedListener variantChosenListener, int level) {
         this.context = context;
         this.variantOptions = variantOptions;
@@ -55,7 +54,8 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (variantOptions.get(position).isEnabled()) {
+                //TODO
+                if (true) {
                     selectedPosition = position;
                     notifyDataSetChanged();
                     variantChosenListener.onVariantChosen(variantOptions.get(selectedPosition),level);
@@ -102,7 +102,8 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
                 imageColor.setVisibility(View.VISIBLE);
             }
             Drawable background = container.getBackground();
-            if (!variantOption.isEnabled()) {
+            //TODO
+            if (true) {
                 if (background instanceof GradientDrawable) {
                     ((GradientDrawable)background).setColor(ContextCompat.getColor(context,R.color.white));
                     ((GradientDrawable)background).setStroke(1,ContextCompat.getColor(context,R.color.grey_hint),5,5);
@@ -125,7 +126,7 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
         }
     }
 
-    public ArrayList<Option> getVariantOptions() {
+    public List<Option> getVariantOptions() {
         return variantOptions;
     }
 

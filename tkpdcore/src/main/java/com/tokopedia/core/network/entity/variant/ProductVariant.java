@@ -118,11 +118,11 @@ public class ProductVariant implements Parcelable {
         productImageUrl = in.readString();
     }
 
-    public List<Integer> getCombinationFromSelectedVariant(int variantOptionId) {
-        List<Integer> products = new ArrayList<>();
-        for (VariantDatum variantDatum: getVariantData()) {
-            if (variantDatum.getOptionIds().contains(variantOptionId)) {
-                products.addAll(variantDatum.getOptionIds());
+    public List<Long> getCombinationFromSelectedVariant(long variantOptionId) {
+        List<Long> products = new ArrayList<>();
+        for (Child child: getChildren()) {
+            if (child.getOptionIds().contains(variantOptionId)) {
+                products.addAll(child.getOptionIds());
             }
         }
         products.removeAll(Collections.singleton(variantOptionId));
@@ -131,7 +131,7 @@ public class ProductVariant implements Parcelable {
     }
 
     public int getLevel1Variant() {
-        if (variantOption!=null && variantOption.size()>1 && variantOption.get(0).getPosition()!=1) {
+        if (variant!=null && variant.size()>1 && variant.get(0).getPosition()!=1) {
             return 1;
         }
         return 0;

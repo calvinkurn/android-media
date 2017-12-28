@@ -14,16 +14,15 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
-import com.tokopedia.core.network.entity.variant.VariantDatum;
-import com.tokopedia.core.network.entity.variant.VariantOption;
+import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
 import java.util.List;
 
-import static com.tokopedia.core.network.entity.variant.VariantOption.IDENTIFIER_COLOUR;
 
 public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
 
@@ -32,6 +31,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final String KEY_SELLER_MODE = "ON_SELLER_MODE";
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
     public static final String KEY_LEVEL2_SELECTED= "LEVEL2_OPTION";
+    public static final String IDENTIFIER_COLOUR= "colour";
 
     public static final int SELECTED_VARIANT_RESULT = 99;
     public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
@@ -51,12 +51,12 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
 
-    private ProductVariant variant;
+    private ProductVariant productVariant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        variant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
+        productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
         setContentView(R.layout.activity_variant);
         hideToolbar();
         initView();
@@ -86,7 +86,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 @Override
                 public void onClick(View view) {
                     if(getApplication() instanceof TkpdCoreRouter){
-                        Intent intent = ((TkpdCoreRouter)getApplication()).goToEditProduct(VariantActivity.this, true, Integer.toString(variant.getProductId()));
+                        Intent intent = ((TkpdCoreRouter)getApplication()).goToEditProduct(VariantActivity.this, true, Long.toString(productVariant.getParentId()));
                         startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
                     }
                     finish();
@@ -109,13 +109,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             buttonSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    VariantDatum variantDatumSelected = getProductDatumSelected();
-                    if (variantDatumSelected!=null && variantDatumSelected.getProductId().equals(variant.getProductId())) {
+                    Child childSelected = getProductDatumSelected();
+                    if (childSelected!=null && childSelected.getProductId()==productVariant.getParentId()) {
                         setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
                         finish();
                         VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
                     } else {
-                        Intent intent = ProductInfoActivity.createInstance(VariantActivity.this, Integer.toString(variantDatumSelected.getProductId()));
+                        Intent intent = ProductInfoActivity.createInstance(VariantActivity.this, Long.toString(childSelected.getProductId()));
                         VariantActivity.this.startActivity(intent);
                         setResult(VariantActivity.KILL_PDP_BACKGROUND, generateExtraSelectedIntent());
                         finish();
@@ -136,19 +136,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private Intent generateExtraSelectedIntent() {
         Intent intent = new Intent();
         intent.putExtra(KEY_LEVEL1_SELECTED,variantOptionAdapterLevel1.getSelectedOption());
-        if (variant.getVariantOption().size()>1)intent.putExtra(KEY_LEVEL2_SELECTED,variantOptionAdapterLevel2.getSelectedOption());
+        if (productVariant.getVariant().size()>1)intent.putExtra(KEY_LEVEL2_SELECTED,variantOptionAdapterLevel2.getSelectedOption());
         return intent;
     }
 
     public void initAdapter() {
-        productName.setText(variant.getProductName());
-        productPrice.setText(variant.getProductPrice());
-        ImageHandler.LoadImage(productImage,variant.getProductImageUrl());
+        productName.setText(productVariant.getProductName());
+        productPrice.setText(productVariant.getProductPrice());
+        ImageHandler.LoadImage(productImage, productVariant.getProductImageUrl());
 
-        VariantOption optionLevel1 = variant.getVariantOption().get(variant.getLevel1Variant());
-        optionNameLevel1.setText(variant.getVariantOption().get(0).getName()+" :");
-        variantOptionAdapterLevel1 = new VariantOptionAdapter(VariantActivity.this,optionLevel1.getOption(),
-                TextUtils.equals(IDENTIFIER_COLOUR,optionLevel1.getIdentifier()), VariantActivity.this, 1);
+        Variant variantLevel1 = productVariant.getVariant().get(productVariant.getLevel1Variant());
+        optionNameLevel1.setText(variantLevel1.getName()+" :");
+        variantOptionAdapterLevel1 = new VariantOptionAdapter(VariantActivity.this,variantLevel1.getOption(),
+                TextUtils.equals(IDENTIFIER_COLOUR,variantLevel1.getIdentifier()), VariantActivity.this, 1);
         ChipsLayoutManager chipsLayoutManager= ChipsLayoutManager.newBuilder(VariantActivity.this)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
@@ -156,11 +156,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionRecyclerViewLevel1.setNestedScrollingEnabled(false);
         optionRecyclerViewLevel1.setLayoutManager(chipsLayoutManager);
         optionRecyclerViewLevel1.setAdapter(variantOptionAdapterLevel1);
-        optionNameLevel1.setText(optionLevel1.getName()+" :");
+        optionNameLevel1.setText(variantLevel1.getName()+" :");
         Option level1Selected = getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
         if (level1Selected!=null) {
             for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-                if (level1Selected.getPvoId().equals(variantOptionAdapterLevel1.getVariantOptions().get(i).getPvoId())) {
+                if (level1Selected.getId()==variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
                     variantOptionAdapterLevel1.setSelectedPosition(i);
                     break;
                 }
@@ -170,11 +170,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
 
         Option level2Selected = getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED);
-        if (variant.getVariantOption().size()>1) {
-            VariantOption optionLevel2 = variant.getVariantOption().get(1-variant.getLevel1Variant());
+        if (productVariant.getVariant().size()>1) {
+            Variant variantLevel2 = productVariant.getVariant().get(1- productVariant.getLevel1Variant());
             variantOptionAdapterLevel2
-                    = new VariantOptionAdapter(VariantActivity.this,optionLevel2.getOption(),
-                    TextUtils.equals(IDENTIFIER_COLOUR,optionLevel2.getIdentifier()), VariantActivity.this, 2);
+                    = new VariantOptionAdapter(VariantActivity.this,variantLevel2.getOption(),
+                    TextUtils.equals(IDENTIFIER_COLOUR,variantLevel2.getIdentifier()), VariantActivity.this, 2);
 
             ChipsLayoutManager chipsLayoutManagerLevel2= ChipsLayoutManager.newBuilder(VariantActivity.this)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
@@ -183,15 +183,15 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             optionRecyclerViewLevel2.setNestedScrollingEnabled(false);
             optionRecyclerViewLevel2.setLayoutManager(chipsLayoutManagerLevel2);
             optionRecyclerViewLevel2.setAdapter(variantOptionAdapterLevel2);
-            optionNameLevel2.setText(optionLevel2.getName()+" :");
             variantOptionAdapterLevel1.notifyItemSelectedChange();
             if (level2Selected!=null) {
                 for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
-                    if (level2Selected.getPvoId().equals(variantOptionAdapterLevel2.getVariantOptions().get(i).getPvoId())) {
+                    if (level2Selected.getId()==variantOptionAdapterLevel2.getVariantOptions().get(i).getId()) {
                         variantOptionAdapterLevel2.setSelectedPosition(i);
                         break;
                     }
                 }
+                optionNameLevel2.setText(level2Selected.getValue()+" :");
             } else {
                 variantOptionAdapterLevel2.setSelectedPosition(0);
             }
@@ -208,56 +208,56 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         topBarTitle.setText(getString(R.string.product_variant));
     }
 
-    private VariantDatum getProductDatumSelected() {
-        VariantDatum variantDatumSelected = null;
-        if (variant.getVariantOption().size()==1) {
-            for (VariantDatum variantDatum: variant.getVariantData()) {
-                if (variantDatum.getOptionIds().contains(variantOptionAdapterLevel1.getSelectedOption().getPvoId())) {
-                    variantDatumSelected = variantDatum; break;
+    private Child getProductDatumSelected() {
+        Child childSelected = null;
+        if (productVariant.getVariant().size()==1) {
+            for (Child child: productVariant.getChildren()) {
+                if (child.getOptionIds().contains(variantOptionAdapterLevel1.getSelectedOption().getId())) {
+                    childSelected = child; break;
                 }
             }
         } else {
-            for (VariantDatum variantDatum: variant.getVariantData()) {
-                if (variantDatum.getOptionIds().contains(variantOptionAdapterLevel1.getSelectedOption().getPvoId())
-                        && variantDatum.getOptionIds().contains(variantOptionAdapterLevel2.getSelectedOption().getPvoId())) {
-                    variantDatumSelected = variantDatum; break;
+            for (Child child: productVariant.getChildren()) {
+                if (child.getOptionIds().contains(variantOptionAdapterLevel1.getSelectedOption().getId())
+                        && child.getOptionIds().contains(variantOptionAdapterLevel2.getSelectedOption().getId())) {
+                    childSelected = child; break;
                 }
             }
         }
-        return variantDatumSelected;
+        return childSelected;
     }
 
     @Override
     public void onVariantChosen(Option option, int level) {
-        List<Integer> combinations = variant.getCombinationFromSelectedVariant(option.getPvoId());
+        List<Long> combinations = productVariant.getCombinationFromSelectedVariant(option.getId());
         if (level==1) {
-            if (combinations.size()==1 && variant.getVariantOption().size()>1) {
-                option.setEnabled(false);
+            if (combinations.size()==1 && productVariant.getVariant().size()>1) {
+                //option.setEnabled(false);
                 for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-                    combinations = variant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions().get(i).getPvoId());
+                    combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions().get(i).getId());
                     if (combinations.size() > 1) {
                         variantOptionAdapterLevel1.setSelectedPosition(i);
                         variantOptionAdapterLevel1.notifyItemSelectedChange();
                         break;
                     }
                 }
-            } else if (variant.getVariantOption().size()>1) {
+            } else if (productVariant.getVariant().size()>1) {
                 for (Option otherLevelOption: variantOptionAdapterLevel2.getVariantOptions()) {
-                    if (combinations.contains(otherLevelOption.getPvoId())) {
-                        otherLevelOption.setEnabled(true);
+                    if (combinations.contains(otherLevelOption.getId())) {
+                        //otherLevelOption.setEnabled(true);
                     } else {
-                        otherLevelOption.setEnabled(false);
+                        //otherLevelOption.setEnabled(false);
                     }
                 }
                 variantOptionAdapterLevel2.notifyItemSelectedChange();
             }
 
         } else {
-            if (!combinations.contains(variantOptionAdapterLevel1.getVariantOptions().get(variantOptionAdapterLevel1.getSelectedPosition()).getPvoId())) {
-                combinations = variant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions()
-                        .get(variantOptionAdapterLevel1.getSelectedPosition()).getPvoId());
+            if (!combinations.contains(variantOptionAdapterLevel1.getVariantOptions().get(variantOptionAdapterLevel1.getSelectedPosition()).getId())) {
+                combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions()
+                        .get(variantOptionAdapterLevel1.getSelectedPosition()).getId());
                 for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
-                    if (combinations.contains(variantOptionAdapterLevel2.getVariantOptions().get(i).getPvoId())) {
+                    if (combinations.contains(variantOptionAdapterLevel2.getVariantOptions().get(i).getId())) {
                         variantOptionAdapterLevel2.setSelectedPosition(i);
                         break;
                     }

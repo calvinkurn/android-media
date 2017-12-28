@@ -572,7 +572,7 @@ public class TkpdBaseURL {
     public static class Tome {
         public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
         public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
-        public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant?origin=https://www.tokopedia.com&referer=https://www.tokopedia.com";
+        public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant";
     }
 
     public static class Ace {

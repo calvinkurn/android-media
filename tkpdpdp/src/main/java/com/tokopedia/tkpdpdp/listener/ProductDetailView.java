@@ -55,7 +55,7 @@ public interface ProductDetailView extends ViewListener {
     void onProductTalkClicked(@NonNull Bundle bundle);
 
 
-    void onProductReviewClicked();
+    void onProductReviewClicked(@NonNull Bundle bundle);
 
     /**
      * Pada saat promosikan produk diklik
@@ -292,8 +292,6 @@ public interface ProductDetailView extends ViewListener {
     void showLatestTalkView(LatestTalkViewModel discussion);
 
     void addProductVariant(ProductVariant productVariant);
-
-    void showLatestTalkView(LatestTalkViewModel discussion);
 
     void actionSuccessAddToWishlist(Integer productId);
 
