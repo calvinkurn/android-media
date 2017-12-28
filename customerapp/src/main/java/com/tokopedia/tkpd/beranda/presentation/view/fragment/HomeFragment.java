@@ -646,11 +646,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void loadFirstPageFeed() {
-        presenter.fetchFirstPageFeed();
-    }
-
-    @Override
     public void showLoadingProgress() {
 
     }

@@ -34,8 +34,6 @@ public interface HomeContract {
 
         void removeNetworkError();
 
-        void loadFirstPageFeed();
-
         String getString(@StringRes int res);
 
         Context getContext();

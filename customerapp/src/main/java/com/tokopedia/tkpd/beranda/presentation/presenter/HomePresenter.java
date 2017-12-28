@@ -124,7 +124,22 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
                 getTopPicksUseCase.getExecuteObservableAsync(getTopPicksUseCase.getRequestParam()),
-                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), homeDataMapper);
+                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), homeDataMapper)
+                .doOnNext(fetchFirstPageFeed());
+    }
+
+    @NonNull
+    private Action1<List<Visitable>> fetchFirstPageFeed() {
+        return new Action1<List<Visitable>>() {
+            @Override
+            public void call(List<Visitable> visitables) {
+                pagingHandler.resetPage();
+                currentCursor = "";
+                getFirstPageFeedsUseCase.execute(
+                        getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
+                        new GetFirstPageFeedsSubscriber(feedListener, pagingHandler.getPage()));
+            }
+        };
     }
 
     @Override
@@ -331,14 +346,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         this.feedListener = feedListener;
     }
 
-    public void fetchFirstPageFeed() {
-        pagingHandler.resetPage();
-        currentCursor = "";
-        getFirstPageFeedsUseCase.execute(
-                getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
-                new GetFirstPageFeedsSubscriber(feedListener, pagingHandler.getPage()));
-    }
-
     public void fetchNextPageFeed() {
         pagingHandler.nextPage();
         fetchCurrentPageFeed();
@@ -396,7 +403,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 getView().setItems(visitables);
                 if (isDataValid(visitables)) {
                     getView().removeNetworkError();
-                    getView().loadFirstPageFeed();
                 } else {
                     getView().showNetworkError(context.getString(R.string.msg_network_error));
                 }
