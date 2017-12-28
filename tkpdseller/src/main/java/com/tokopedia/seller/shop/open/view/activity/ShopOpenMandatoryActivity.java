@@ -8,21 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.UserData;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
-import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +32,6 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     private List<Fragment> fragmentList;
     private ShopOpenDomainComponent component;
 
-    boolean isLogoutOnBack = false;
-
     public static Intent getIntent(Context context) {
         return new Intent(context, ShopOpenMandatoryActivity.class);
     }
@@ -50,7 +43,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_RESPONSE_IS_RESERVE_DOMAIN)) {
@@ -80,8 +73,8 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
 //            fragmentList.add(new ShopOpenMandatoryInfoFragment());
-            fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
-//            fragmentList.add(new ShopOpenMandatoryLogisticFragment());
+//            fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
+            fragmentList.add(new ShopOpenMandatoryLogisticFragment());
             return fragmentList;
         } else {
             return fragmentList;
@@ -110,21 +103,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     @Override
     public ShopOpenDomainComponent getComponent() {
         initComponent();
-
         return component;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (getCurrentPosition() > 1) {
-            super.onBackPressed();
-        } else {
-            if (isLogoutOnBack) {
-                SessionHandler session = new SessionHandler(this);
-                session.Logout(this);
-            } else {
-                super.onBackPressed();
-            }
-        }
-    }
 }

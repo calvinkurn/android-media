@@ -19,7 +19,6 @@ import rx.Observable;
  * Created by sebastianuskh on 3/20/17.
  */
 
-@ShopSettingScope
 public class DistrictDataCache {
 
     public static final String DISTRICT_DATA_CACHE = "DISTRICT_DATA_CACHE";

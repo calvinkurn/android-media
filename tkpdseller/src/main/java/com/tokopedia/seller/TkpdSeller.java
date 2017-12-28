@@ -12,9 +12,6 @@ import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import com.tokopedia.seller.shopsettings.FragmentSettingShop;
 import com.tokopedia.seller.shopsettings.ManageShopActivity;
 
-/**
- * Created by nakama on 12/12/17.
- */
 
 public class TkpdSeller {
     public static Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack){

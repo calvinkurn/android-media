@@ -6,7 +6,11 @@ import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepositoryImpl;
 import com.tokopedia.seller.shop.open.data.source.ShopOpenDataSource;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
+import com.tokopedia.seller.shop.setting.data.repository.DistrictLogisticDataRepositoryImpl;
+import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
+import com.tokopedia.seller.shop.setting.data.source.LogisticDataSource;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
+import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,6 +24,13 @@ public class ShopOpenDomainModule {
     @Provides
     public ShopOpenRepository provideShopOpenRepository(ShopOpenDataSource shopOpenDataSource) {
         return new ShopOpenRepositoryImpl(shopOpenDataSource);
+    }
+
+    @ShopOpenDomainScope
+    @Provides
+    public DistrictLogisticDataRepository provideDistrictLogisticDataRepository(DistrictDataSource districtDataSource,
+                                                                                LogisticDataSource logisticDataSource) {
+        return new DistrictLogisticDataRepositoryImpl(districtDataSource, logisticDataSource);
     }
 
     @Provides
