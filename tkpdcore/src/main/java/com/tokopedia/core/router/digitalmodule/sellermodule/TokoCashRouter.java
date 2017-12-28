@@ -16,4 +16,6 @@ public interface TokoCashRouter {
                           int datePickerSelection, int datePickerType);
 
     String getRangeDateFormatted(Context context, long startDate, long endDate);
+
+    Intent goToHistoryTokoCash(Context context);
 }

@@ -30,6 +30,7 @@ import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
@@ -60,6 +61,7 @@ import com.tokopedia.digital.tokocash.interactor.TokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.tokocash.presenter.TopUpTokocashPresenter;
+import com.tokopedia.digital.utils.DatePickerTokoCashUtil;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
@@ -364,7 +366,12 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_history_tokocash) {
-            startActivity(HistoryTokocashActivity.newInstance(this));
+//            startActivity(HistoryTokocashActivity.newInstance(this));
+            Application application = this.getApplication();
+            if (application != null && application instanceof TokoCashRouter) {
+                Intent intent = ((TokoCashRouter) application).goToHistoryTokoCash(this);
+                startActivity(intent);
+            }
             return true;
         } else if (item.getItemId() == R.id.action_account_setting_tokocash) {
             startActivityForResult(WalletAccountSettingActivity.newInstance(this),
