@@ -54,21 +54,25 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     }
 
     @Override
-    protected void loadSuggestionBid() {
-        // get id from view model
-        List<String> ids = new ArrayList<>();
-        for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
-            ids.add(topAdsProductViewModel.getDepartmentId() + "");
-        }
-
-        topAdsDetailNewProductPresenter.getSuggestionBid(ids, TopAdsNetworkConstant.SOURCE_NEW_COST_WITHOUT_GROUP);
-    }
-
-    @Override
     protected void initialVar() {
         super.initialVar();
         detailAd.setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
         detailAd.setType(TopAdsNetworkConstant.TYPE_PRODUCT_STAT);
+    }
+
+    @Override
+    protected void loadSuggestionBid() {
+        // Do nothing
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        // Do nothing
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        // Do nothing
     }
 
     @Override
@@ -120,32 +124,6 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
-    }
-
-    @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-        setSuggestionBidText(s);
-        detailAd.setSuggestionBidValue(suggestionBidValue);
-        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
-        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
-    }
-
-    @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION);
-    }
-
-    @Override
-    protected void onSuggestionBidClicked() {
-        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_IMPLEMENTED);
-    }
-
-    @Override
-    protected void onPriceChanged(double number) {
-        super.onPriceChanged(number);
-        if (suggestionBidValue != number) {
-            detailAd.setSuggestionBidButton(defaultSuggestionBidButtonStatus);
-        }
     }
 
     @Override

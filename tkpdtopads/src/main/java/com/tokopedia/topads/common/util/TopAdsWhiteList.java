@@ -31,7 +31,7 @@ public class TopAdsWhiteList {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
                 TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT, TEN_SECOND));
 
-        // Topads Credit
+        // TopAds Credit
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
                 TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT, ONE_HOUR));
 
@@ -41,7 +41,7 @@ public class TopAdsWhiteList {
 
         // Suggestion Bid
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
-                TopAdsNetworkConstant.GET_SUGGESTION, FIVE_MINUTE));
+                TopAdsNetworkConstant.GET_SUGGESTION, ONE_HOUR));
 
         return cacheApiWhiteList;
     }
