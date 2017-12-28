@@ -36,6 +36,9 @@ import rx.Subscriber;
 
 public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboardContract.View> implements FlightDashboardContract.Presenter {
 
+    private static final String DEVICE_ID = "4";
+    private static final String CATEGORY_ID = "27";
+
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
@@ -346,9 +349,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     private void getBannerData() {
-        String deviceId = "4";
-        String categoryId = "27";
-        bannerGetDataUseCase.execute(bannerGetDataUseCase.createRequestParams(deviceId, categoryId), new Subscriber<List<BannerDetail>>() {
+        bannerGetDataUseCase.execute(bannerGetDataUseCase.createRequestParams(DEVICE_ID, CATEGORY_ID), new Subscriber<List<BannerDetail>>() {
             @Override
             public void onCompleted() {
 

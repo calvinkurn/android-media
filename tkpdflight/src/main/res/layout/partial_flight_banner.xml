@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.banner.BannerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/banner"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_med"
+    android:background="@color/background_apps"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_med">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/banner_title"
+        style="@style/TextView.Headline.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:text="@string/flight_title_promo" />
+
+    <com.tokopedia.design.banner.BannerView
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
