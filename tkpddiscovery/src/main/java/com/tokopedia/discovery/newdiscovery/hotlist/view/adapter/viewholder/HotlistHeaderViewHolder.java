@@ -20,7 +20,10 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistViewPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
@@ -28,6 +31,11 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromo
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
 import java.util.List;
 
@@ -49,7 +57,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final RelativeLayout hotlistBackground;
     private final View hashtTagScrollView;
     private final HotlistPromoView hotlistPromoView;
-
+    private final TopAdsBannerView topAdsBannerView;
     private int counterError;
 
     public HotlistHeaderViewHolder(View parent, ItemClickListener mItemClickListener) {
@@ -62,6 +70,23 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         this.hotlistBackground = (RelativeLayout) parent.findViewById(R.id.hotlist_background);
         this.hashtTagScrollView = parent.findViewById(R.id.hashtag_scroll_view);
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
+        this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
+        initTopAds();
+    }
+
+    private void initTopAds() {
+        TopAdsParams adsParams = new TopAdsParams();
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, "hotlist");
+        adsParams.getParam().put(TopAdsParams.KEY_QUERY, "laptop");
+
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(adsParams)
+                .build();
+        this.topAdsBannerView.setConfig(config);
+        this.topAdsBannerView.loadTopAds();
     }
 
     @Override
