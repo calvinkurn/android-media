@@ -4,13 +4,11 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@drawable/digital_bg_chooser_operator_product_item"
-              android:minHeight="60dp"
               android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="55dp"
         android:paddingBottom="@dimen/digital_padding_6"
         android:paddingTop="@dimen/digital_padding_6">
 
@@ -36,8 +34,7 @@
             android:layout_marginRight="@dimen/margin_ms"
             android:layout_marginEnd="@dimen/margin_ms"
             android:paddingBottom="@dimen/digital_padding_2"
-            android:paddingTop="@dimen/digital_padding_2"
-            tools:visibility="visible"/>
+            android:paddingTop="@dimen/digital_padding_2"/>
 
         <TextView
             android:id="@+id/product_total_price"

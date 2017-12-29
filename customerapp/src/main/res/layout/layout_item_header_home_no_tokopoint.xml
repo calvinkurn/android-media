@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/container_tokocash"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center_vertical"
+    android:minHeight="1px"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/card_view_margin"
     android:paddingEnd="@dimen/keyline_1_minus_8dp"
@@ -48,7 +49,10 @@
             android:lineSpacingExtra="4sp"
             android:textColor="@color/black_70"
             android:textSize="12sp"
+            android:textStyle="bold"
             android:visibility="gone"
+            tools:text="Rp 100.000"
+            tools:visibility="visible" />
             tools:text="Balance" />
 
         <LinearLayout

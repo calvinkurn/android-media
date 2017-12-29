@@ -17,6 +17,8 @@ public class SellerAddressResponse {
     private String createTimeStr;
     @SerializedName("conversationId")
     private int conversationId;
+    @SerializedName("createTimeFullStr")
+    private String createTimeFullStr;
 
     public AddressResponse getAddress() {
         return address;
@@ -58,4 +60,11 @@ public class SellerAddressResponse {
         this.conversationId = conversationId;
     }
 
+    public String getCreateTimeFullStr() {
+        return createTimeFullStr;
+    }
+
+    public void setCreateTimeFullStr(String createTimeFullStr) {
+        this.createTimeFullStr = createTimeFullStr;
+    }
 }

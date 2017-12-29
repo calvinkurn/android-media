@@ -50,4 +50,6 @@ public interface HomeCategoryListener {
     void actionScannerQRTokoCash();
 
     boolean isMainViewVisible();
+
+    void showNetworkError(String message);
 }

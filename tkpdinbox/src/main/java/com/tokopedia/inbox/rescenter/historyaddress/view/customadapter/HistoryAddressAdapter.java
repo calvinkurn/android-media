@@ -97,26 +97,25 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         context = holder.itemView.getContext();
         final HistoryAddressViewItem item = arraylist.get(position);
         renderData(holder, item);
-        renderView(holder, item);
+        renderView(holder, item, position);
     }
 
     private void renderData(AddressViewHolder holder, HistoryAddressViewItem item) {
         holder.date.setText(
                 context.getString(R.string.template_history_additional_information, item.getActionByText(),
-                        DateFormatUtils.formatDateForResoChatV2(item.getCreateTimestamp()))
+                        item.getCreateTimestamp())
         );
         holder.history.setText(MethodChecker.fromHtml(item.getAddress()));
     }
 
-    private void renderView(AddressViewHolder holder, HistoryAddressViewItem item) {
+    private void renderView(AddressViewHolder holder, HistoryAddressViewItem item, int position) {
         setPadding(holder);
-        setIndicator(holder, item);
+        setIndicator(holder, item, position);
     }
 
 
-    private void setIndicator(AddressViewHolder holder, HistoryAddressViewItem item) {
-        holder.lineIndicator.setVisibility(
-                holder.getAdapterPosition() == getArraylist().size() - 1 ?
+    private void setIndicator(AddressViewHolder holder, HistoryAddressViewItem item, int position) {
+        holder.lineIndicator.setVisibility(position == (arraylist.size() - 1) ?
                         View.GONE : View.VISIBLE
         );
         if (isFinished) {
@@ -161,5 +160,12 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public int getItemCount() {
         return arraylist.size() + super.getItemCount();
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof AddressViewHolder) {
+            ((AddressViewHolder)holder).glowingView.renderData(new Object());
+        }
     }
 }
