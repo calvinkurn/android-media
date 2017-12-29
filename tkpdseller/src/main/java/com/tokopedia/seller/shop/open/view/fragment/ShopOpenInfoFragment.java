@@ -198,7 +198,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
             public void onRetryClicked() {
                 onNextButtonClicked();
             }
-        });
+        }).showRetrySnackbar();
     }
 
     @Override
