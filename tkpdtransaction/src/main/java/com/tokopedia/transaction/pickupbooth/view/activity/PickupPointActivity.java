@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -23,7 +23,8 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.pickupbooth.di.DaggerPickupPointComponent;
 import com.tokopedia.transaction.pickupbooth.di.PickupPointComponent;
-import com.tokopedia.transaction.pickupbooth.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
+import com.tokopedia.transaction.pickupbooth.view.adapter.PickupPointAdapter;
 import com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract;
 
 import java.util.HashMap;
@@ -35,7 +36,8 @@ import butterknife.ButterKnife;
 
 import static com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract.Constant.INTENT_DATA_PARAMS;
 
-public class PickupPointActivity extends BaseActivity implements PickupPointContract.View {
+public class PickupPointActivity extends BaseActivity
+        implements PickupPointContract.View, PickupPointAdapter.Listener{
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -53,9 +55,13 @@ public class PickupPointActivity extends BaseActivity implements PickupPointCont
     ProgressBar pbLoading;
     @BindView(R2.id.network_error_view)
     LinearLayout networkErrorView;
+    @BindView(R2.id.ll_empty_result)
+    LinearLayout llEmptyResult;
 
     @Inject
     PickupPointContract.Presenter presenter;
+
+    private PickupPointAdapter pickupPointAdapter;
 
     public static Intent createInstance(Activity activity, HashMap<String, String> params) {
         Intent intent = new Intent(activity, PickupPointActivity.class);
@@ -82,6 +88,15 @@ public class PickupPointActivity extends BaseActivity implements PickupPointCont
 
         initializeInjector();
         presenter.attachView(this);
+        setupRecycleView();
+    }
+
+    private void setupRecycleView() {
+        pickupPointAdapter = new PickupPointAdapter(presenter.getPickupPoints(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false);
+        rvPickupBooth.setLayoutManager(linearLayoutManager);
+        rvPickupBooth.setAdapter(pickupPointAdapter);
     }
 
     @Override
@@ -124,13 +139,28 @@ public class PickupPointActivity extends BaseActivity implements PickupPointCont
     }
 
     @Override
+    public void showResult() {
+        pickupPointAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void showNoConnection(@NonNull String message) {
         NetworkErrorHelper.showEmptyState(getActivity(), networkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.getPickupPoints(searchViewPickupBooth.getQuery().toString());
+                        presenter.queryPickupPoints(searchViewPickupBooth.getQuery().toString());
                     }
                 });
+    }
+
+    @Override
+    public void showNoResult() {
+        llEmptyResult.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onItemClick(Store store) {
+
     }
 }

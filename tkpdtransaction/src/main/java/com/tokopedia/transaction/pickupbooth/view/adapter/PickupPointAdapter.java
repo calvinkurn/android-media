@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.pickupbooth.domain.model.Store;
+import com.tokopedia.transaction.pickupbooth.view.model.StoreViewModel;
 
 import java.util.ArrayList;
 
@@ -22,10 +23,10 @@ import butterknife.ButterKnife;
 
 public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.PickupPointViewHolder> {
 
-    private ArrayList<Store> stores;
+    private ArrayList<StoreViewModel> stores;
     private Listener listener;
 
-    public PickupPointAdapter(ArrayList<Store> stores, Listener listener) {
+    public PickupPointAdapter(ArrayList<StoreViewModel> stores, Listener listener) {
         this.stores = stores;
         this.listener = listener;
     }
@@ -41,10 +42,16 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
     @Override
     public void onBindViewHolder(PickupPointViewHolder holder, int position) {
 
-        Store store = stores.get(position);
+        final StoreViewModel storeViewModel = stores.get(position);
 
-        holder.tvStoreName.setText(store.getStoreName());
-        holder.tvStoreAddress.setText(store.getAddress());
+        holder.tvStoreName.setText(storeViewModel.getStore().getStoreName());
+        holder.tvStoreAddress.setText(storeViewModel.getStore().getAddress());
+
+        if (storeViewModel.isChecked()) {
+            holder.btnCheck.setImageResource(R.drawable.ic_check_circle_green);
+        } else {
+            holder.btnCheck.setImageResource(android.R.color.transparent);
+        }
 
         holder.tvShowMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,10 +60,21 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
             }
         });
 
-        holder.tvShowMap.setOnClickListener(new View.OnClickListener() {
+        holder.btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                for (StoreViewModel viewModel : stores) {
+                    if (viewModel.getStore().getId() == storeViewModel.getStore().getId()) {
+                        if (viewModel.isChecked()) {
+                            viewModel.setChecked(false);
+                        } else {
+                            viewModel.setChecked(true);
+                        }
+                    } else {
+                        viewModel.setChecked(false);
+                    }
+                }
+                notifyDataSetChanged();
             }
         });
 
@@ -91,7 +109,7 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
         @Override
         public void onClick(View v) {
             if (stores.size() > getAdapterPosition() && getAdapterPosition() >= 0) {
-                listener.onItemClick(stores.get(getAdapterPosition()));
+                listener.onItemClick(stores.get(getAdapterPosition()).getStore());
             }
         }
     }

@@ -47,7 +47,7 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
     }
 
     @Override
-    public void getPickupPoints(String keyword) {
+    public void queryPickupPoints(String keyword) {
         getView().showLoading();
         getPickupPointsUseCase.execute(getParams(), new Subscriber<PickupPointResponse>() {
             @Override
@@ -77,7 +77,9 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
 
             @Override
             public void onNext(PickupPointResponse pickupPointResponse) {
-
+                if (isViewAttached()) {
+                    getView().
+                }
             }
         });
     }
