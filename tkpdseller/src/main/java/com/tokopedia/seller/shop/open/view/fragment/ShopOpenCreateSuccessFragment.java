@@ -10,7 +10,7 @@ import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 
 
 public class ShopOpenCreateSuccessFragment extends BasePresenterFragment{
-
+    public static final String TAG = ShopOpenCreateSuccessFragment.class.getSimpleName();
 
     public static ShopOpenCreateSuccessFragment newInstance() {
         return new ShopOpenCreateSuccessFragment();
