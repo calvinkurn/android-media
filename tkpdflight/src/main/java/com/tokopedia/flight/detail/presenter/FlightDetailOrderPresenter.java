@@ -144,7 +144,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     private String countTotalPrice(int totalAdultNumeric, int totalChildNumeric, int totalInfantNumeric) {
-        return CurrencyFormatUtil.convertPriceValueToIdrFormat(totalAdultNumeric + totalChildNumeric + totalInfantNumeric);
+        return CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalAdultNumeric + totalChildNumeric + totalInfantNumeric);
     }
 
     private List<FlightDetailPassenger> transformToListPassenger(List<FlightOrderPassengerViewModel> passengerViewModels) {

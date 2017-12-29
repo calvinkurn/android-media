@@ -207,6 +207,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/container_download_invoice"
+                    android:textSize="@dimen/font_subheading"
                     android:text="@string/flight_label_detail_price" />
 
                 <LinearLayout
@@ -282,7 +283,7 @@
                 <TextView
                     android:id="@+id/help"
                     style="@style/TextView.Caption.Green"
-                    android:text="disini" />
+                    android:text="@string/di_sini" />
             </LinearLayout>
 
             <Button
