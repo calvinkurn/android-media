@@ -28,6 +28,7 @@ import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
@@ -61,7 +62,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
 
-    private static final String ALL_PROMO_LINK = "https://www.tokopedia.com/promo/";
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -476,10 +476,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private void bannerAllClickAction() {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), ALL_PROMO_LINK) != null) {
+                .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK) != null) {
 
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), ALL_PROMO_LINK));
+                    .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
         }
     }
 }
