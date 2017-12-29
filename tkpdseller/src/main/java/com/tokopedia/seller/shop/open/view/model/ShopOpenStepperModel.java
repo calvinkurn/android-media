@@ -30,7 +30,7 @@ public class ShopOpenStepperModel implements StepperModel {
         if (responseIsReserveDomain==null) {
             return courierServiceIdWrapper;
         }
-        Shipment shipment = responseIsReserveDomain.getData().getShipment();
+        Shipment shipment = responseIsReserveDomain.getShipment();
         if (shipment == null) {
             return courierServiceIdWrapper;
         }

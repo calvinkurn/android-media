@@ -1,13 +1,12 @@
-package com.tokopedia.seller.product.edit.data.source;
+package com.tokopedia.seller.shop.common.data.source;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.edit.data.source.cloud.ShopInfoCloud;
+import com.tokopedia.seller.shop.common.data.source.cloud.ShopInfoCloud;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * @author sebastianuskh on 3/8/17.

@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.common.imageeditor.scope;
+package com.tokopedia.seller.common.imageeditor.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,5 +11,5 @@ import javax.inject.Scope;
  */
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface GetShopInfoScope {
+public @interface WatermarkScope {
 }

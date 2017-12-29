@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.open.data.source.cloud.api;
 
+import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.shop.constant.ShopOpenNetworkConstant;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShopName;
@@ -26,28 +27,28 @@ import rx.Observable;
 public interface TomeApi {
 
     @GET(ShopOpenNetworkConstant.PATH_DOMAIN_CHECK)
-    Observable<Response<ResponseCheckDomainName>> getDomainCheck(
+    Observable<Response<DataResponse<ResponseCheckDomainName>>> getDomainCheck(
             @Query(ShopOpenNetworkConstant.PARAM_SHOP_DOMAIN) String domainName);
 
     @GET(ShopOpenNetworkConstant.PATH_DOMAIN_CHECK)
-    Observable<Response<ResponseCheckShopName>> getShopCheck(
+    Observable<Response<DataResponse<ResponseCheckShopName>>> getShopCheck(
             @Query(ShopOpenNetworkConstant.PARAM_SHOP_NAME) String shopName);
 
     @FormUrlEncoded
     @POST(ShopOpenNetworkConstant.PATH_RESERVE_DOMAIN)
-    Observable<Response<ResponseReserveDomain>> reserveDomain(
+    Observable<Response<DataResponse<ResponseReserveDomain>>> reserveDomain(
             @Field(ShopOpenNetworkConstant.PARAM_SHOP_NAME) String shopName,
             @Field(ShopOpenNetworkConstant.PARAM_SHOP_DOMAIN) String shopDomain);
 
     @GET(ShopOpenNetworkConstant.PATH_IS_RESERVE_DOMAIN)
-    Observable<Response<ResponseIsReserveDomain>> isReserveDomain();
+    Observable<Response<DataResponse<ResponseIsReserveDomain>>> isReserveDomain();
 
 
     @FormUrlEncoded
     @POST(ShopOpenNetworkConstant.PATH_RESERVE_SHOP_DESC_INFO)
-    Observable<Response<ResponseSaveShopDesc>> reserveShopDescInfo(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<ResponseSaveShopDesc>>> reserveShopDescInfo(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(ShopOpenNetworkConstant.PATH_CREATE_SHOP)
-    Observable<Response<ResponseCreateShop>> createShop();
+    Observable<Response<DataResponse<ResponseCreateShop>>> createShop();
 }

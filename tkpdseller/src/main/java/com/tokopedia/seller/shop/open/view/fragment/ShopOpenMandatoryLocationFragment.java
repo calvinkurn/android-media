@@ -209,8 +209,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         });
 
         if(stepperListener.getStepperModel()!=null){
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
+            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
+            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
 
             locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
             locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
@@ -236,7 +236,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
 
             ResponseIsReserveDomain responseIsReserveDomain = stepperListener.getStepperModel().getResponseIsReserveDomain();
 
-            Shipment shipment = responseIsReserveDomain.getData().getShipment();
+            Shipment shipment = responseIsReserveDomain.getShipment();
             shipment.setAddrStreet(googleLocationViewModel.getGeneratedAddress());
             shipment.setLongitude(googleLocationViewModel.getLongitude());
             shipment.setLatitude(googleLocationViewModel.getLatitude());
@@ -245,12 +245,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
             shipment.setPostal(Integer.valueOf(locationShippingViewHolder.getPostalCode()));
 
 
-            UserData userData = responseIsReserveDomain.getData().getUserData();
+            UserData userData = responseIsReserveDomain.getUserData();
             userData.setLocComplete(locationShippingViewHolder.getLocationComplete());
             userData.setLocation(locationShippingViewHolder.getDistrictName());
 
-            responseIsReserveDomain.getData().setShipment(shipment);
-            responseIsReserveDomain.getData().setUserData(userData);
+            responseIsReserveDomain.setShipment(shipment);
+            responseIsReserveDomain.setUserData(userData);
 
             stepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
         }

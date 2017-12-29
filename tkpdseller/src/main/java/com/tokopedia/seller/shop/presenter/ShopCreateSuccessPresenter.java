@@ -2,6 +2,7 @@ package com.tokopedia.seller.shop.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import javax.inject.Inject;
@@ -12,11 +13,11 @@ import rx.Subscriber;
  * Created by hendry on 10/20/2017.
  */
 
-public class GetShopInfoPresenter extends BaseDaggerPresenter<GetShopInfoView> {
+public class ShopCreateSuccessPresenter extends BaseDaggerPresenter<WatermarkPresenterView> {
     private GetShopInfoUseCase getShopInfoUseCase;
 
     @Inject
-    public GetShopInfoPresenter(GetShopInfoUseCase getShopInfoUseCase) {
+    public ShopCreateSuccessPresenter(GetShopInfoUseCase getShopInfoUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
     }
 

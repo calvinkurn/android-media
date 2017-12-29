@@ -248,4 +248,6 @@
     <string name="courier_cannot_activate_title">Kurir tidak tersedia di daerah Anda</string>
     <string name="min_1_courier_must_be_selected">Minimal 1 layanan kurir harus dipilih.</string>
     <string name="shop_has_been_active">Toko Anda sudah aktif!</string>
+    <string name="shop_create_success_ask_add_product">Jangan sampai toko Anda kosong begitu saja.\nTambahkan produk pertamamu dan mulai berjualan sekarang.</string>
+    <string name="go_to_shop_page">Ke Halaman Toko Saya</string>
 </resources>

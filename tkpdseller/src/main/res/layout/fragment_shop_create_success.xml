@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -9,28 +10,78 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/activity_horizontal_margin">
+        android:padding="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/margin_vl">
 
-        <ImageView
-            android:layout_width="@dimen/image_width_xxxl"
+        <com.tokopedia.design.loading.LoadingStateView
+            android:id="@+id/loading_state_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"
-            android:adjustViewBounds="true"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_marginTop="@dimen/margin_large"
+            android:minHeight="@dimen/image_width_xxxl">
+            <LinearLayout
+                android:id="@+id/vg_shop_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_vs"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_rect_stroke_lighter_gray">
+                    <ImageView
+                        android:id="@+id/image_view_shop_icon"
+                        android:layout_width="@dimen/image_width_xxxl"
+                        android:layout_height="@dimen/image_width_xxxl"
+                        tools:src="@mipmap/ic_launcher"
+                        android:scaleType="centerCrop" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/text_view_shop_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Nama Toko"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:gravity="center_horizontal"
+                    style="@style/TextView.Title.Green"/>
+            </LinearLayout>
+        </com.tokopedia.design.loading.LoadingStateView>
 
         <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.Subheading"
-            android:text="@string/shop_has_been_active"
-            android:layout_gravity="center"/>
+            android:id="@+id/appCompatTextView"
+            style="@style/TextView.Title"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_med"
+            android:text="@string/shop_has_been_active" />
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Body1"
+            android:text="@string/shop_create_success_ask_add_product"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:layout_marginTop="@dimen/margin_med"/>
 
         <Button
-            android:id="@+id/button_submit"
+            android:id="@+id/button_add_product"
             style="@style/Button.Submit.Green"
             android:text="@string/title_add_product_lowercase"
             android:layout_marginTop="@dimen/margin_med"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
             android:foreground="?attr/selectableItemBackground"/>
+
+        <Button
+            android:id="@+id/button_shop_page"
+            style="@style/Button.Submit.White.Border"
+            android:text="@string/go_to_shop_page"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:foreground="?attr/selectableItemBackground"/>
+
     </LinearLayout>
 </ScrollView>
-
