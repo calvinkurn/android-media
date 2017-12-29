@@ -29,7 +29,7 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 3/21/17.
  */
 
-public class ShopSettingInfoDataSourceCloud {
+public class ShopOpenInfoDataSourceCloud {
 
     public static final long SUCCESS = 1;
     public static final String LOGO = "logo";
@@ -53,7 +53,7 @@ public class ShopSettingInfoDataSourceCloud {
     private final TomeApi tomeApi;
 
     @Inject
-    public ShopSettingInfoDataSourceCloud(TomeApi tomeApi) {
+    public ShopOpenInfoDataSourceCloud(TomeApi tomeApi) {
         this.tomeApi = tomeApi;
     }
 
@@ -65,7 +65,7 @@ public class ShopSettingInfoDataSourceCloud {
                         if(responseSaveShopDescResponse.isSuccessful() && (responseSaveShopDescResponse.body().getData().getReserveStatus()==SUCCESS)){
                             return Observable.just(true);
                         }else{
-                            return Observable.just(false);
+                            return checkResponseError(responseSaveShopDescResponse);
                         }
                     }
                 });

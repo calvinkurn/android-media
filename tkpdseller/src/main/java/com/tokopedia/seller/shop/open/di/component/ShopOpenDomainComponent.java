@@ -18,7 +18,7 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFra
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenRoutingFragment;
 import com.tokopedia.seller.shop.open.di.module.ShopSettingInfoModule;
-import com.tokopedia.seller.shop.open.view.presenter.ShopSettingInfoPresenter;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -58,7 +58,7 @@ public interface ShopOpenDomainComponent {
 
     ShopOpenRepository provideShopOpenRepository();
 
-    ShopSettingInfoPresenter shopSettingInfoPresenter();
+    ShopOpenInfoPresenter shopSettingInfoPresenter();
 
     NetworkCalculator networkCalculator();
 }

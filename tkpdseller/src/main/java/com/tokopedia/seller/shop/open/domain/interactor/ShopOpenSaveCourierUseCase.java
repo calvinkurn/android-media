@@ -5,9 +5,9 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
+import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
-import com.tokopedia.seller.shop.open.domain.ShopSettingSaveInfoRepository;
 
 import javax.inject.Inject;
 
@@ -26,20 +26,20 @@ public class ShopOpenSaveCourierUseCase extends UseCase<Boolean> {
 
     private static final String PARAM_COURIER_ID_LIST = "courier_id_list";
 
-    private final ShopSettingSaveInfoRepository shopSettingSaveInfoRepository;
+    private final ShopOpenSaveInfoRepository shopOpenSaveInfoRepository;
 
     @Inject
     public ShopOpenSaveCourierUseCase(ThreadExecutor threadExecutor,
                                       PostExecutionThread postExecutionThread,
-                                      ShopSettingSaveInfoRepository shopSettingSaveInfoRepository,
+                                      ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
                                       UploadImageUseCase<UploadShopImageModel> uploadImageUseCase) {
         super(threadExecutor, postExecutionThread);
-        this.shopSettingSaveInfoRepository = shopSettingSaveInfoRepository;
+        this.shopOpenSaveInfoRepository = shopOpenSaveInfoRepository;
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return shopSettingSaveInfoRepository.saveShopSettingStep3(
+        return shopOpenSaveInfoRepository.saveShopSettingStep3(
                 (CourierServiceIdWrapper) requestParams.getObject(PARAM_COURIER_ID_LIST));
     }
 

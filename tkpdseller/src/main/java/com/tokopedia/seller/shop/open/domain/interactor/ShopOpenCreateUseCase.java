@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
-import com.tokopedia.seller.shop.open.domain.ShopSettingSaveInfoRepository;
+import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 
 import javax.inject.Inject;
 
@@ -15,19 +15,19 @@ import rx.Observable;
 
 public class ShopOpenCreateUseCase extends UseCase<Boolean> {
 
-    private final ShopSettingSaveInfoRepository shopSettingSaveInfoRepository;
+    private final ShopOpenSaveInfoRepository shopOpenSaveInfoRepository;
 
     @Inject
     public ShopOpenCreateUseCase(ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
-                                 ShopSettingSaveInfoRepository shopSettingSaveInfoRepository,
+                                 ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
                                  UploadImageUseCase<UploadShopImageModel> uploadImageUseCase) {
         super(threadExecutor, postExecutionThread);
-        this.shopSettingSaveInfoRepository = shopSettingSaveInfoRepository;
+        this.shopOpenSaveInfoRepository = shopOpenSaveInfoRepository;
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return shopSettingSaveInfoRepository.createShop();
+        return shopOpenSaveInfoRepository.createShop();
     }
 }
