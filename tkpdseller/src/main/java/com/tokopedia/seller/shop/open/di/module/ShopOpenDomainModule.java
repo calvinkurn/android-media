@@ -1,6 +1,10 @@
 package com.tokopedia.seller.shop.open.di.module;
 
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
+import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepositoryImpl;
 import com.tokopedia.seller.shop.open.data.source.ShopOpenDataSource;
@@ -9,7 +13,6 @@ import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictLogisticDataRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
 import com.tokopedia.seller.shop.setting.data.source.LogisticDataSource;
-import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
 
 import dagger.Module;
@@ -39,4 +42,16 @@ public class ShopOpenDomainModule {
         return retrofit.create(OpenShopApi.class);
     }
 
+    @Provides
+    @ShopOpenDomainScope
+    public GetOpenShopTokenUseCase provideGetOpenShopDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread){
+        return new GetOpenShopTokenUseCase(threadExecutor,postExecutionThread);
+    }
+
+
+    @Provides
+    @ShopOpenDomainScope
+    public GetOpenShopLocationPassUseCase provideGetOpenShopLocationPassUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread){
+        return new GetOpenShopLocationPassUseCase(threadExecutor,postExecutionThread);
+    }
 }

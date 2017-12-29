@@ -26,6 +26,7 @@ import rx.functions.Func1;
 public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
     public static final String PATH_FILE_IMAGE = "PATH_FILE_IMAGE";
     public static final String SHOP_DESCRIPTION = "SHOP_DESCRIPTION";
+    public static final String TAG_LINE = "tag_line";
     public static final String STEP_INFO_1 = "1";
     public static final String LOGO = "logo";
     public static final String SERVER_ID = "server_id";

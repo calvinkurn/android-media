@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.router.OnActivityResultListener;
 
 /**
@@ -11,9 +13,7 @@ import com.tokopedia.core.router.OnActivityResultListener;
  */
 
 public interface LogisticRouter {
-    void navigateToChooseAddressActivityRequest(Intent intent, int requestCode);
     void navigateToChooseAddressActivityRequest(Fragment fragment, Intent intent, int requestCode);
-    void navigateToEditAddressActivityRequest(Fragment fragment, int requestCode);
-    void navigateToGeoLocationActivityRequest(Fragment fragment, int requestCode, String generatedAddress);
-    void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener<?> onActivityResultListener);
+    void navigateToEditAddressActivityRequest(Fragment fragment, int requestCode, Token token);
+    void navigateToGeoLocationActivityRequest(Fragment fragment, int requestCode, String generatedAddress, LocationPass locationPass);
 }

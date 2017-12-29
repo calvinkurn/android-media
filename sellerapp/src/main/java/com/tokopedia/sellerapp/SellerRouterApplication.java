@@ -35,6 +35,7 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.manage.general.districtrecommendation.data.entity.AddressEntity;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
@@ -834,167 +835,21 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void navigateToChooseAddressActivityRequest(Intent var1, int var2) {
-
-    }
-
-    @Override
     public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
         Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
         var1.startActivityForResult(instance, var3);
     }
 
-
-    @SuppressWarnings("unchecked")
     @Override
-    public void onActivityResultChooseAddress(int requestCode, Intent data, OnActivityResultListener onActivityResultListener) {
-
-        if (onActivityResultListener != null) {
-            switch (requestCode) {
-                case REQUEST_CODE_ADDRESS:
-                    if (data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS) != null) {
-                        onActivityResultListener.onActivityResult(DestinationViewModel.convertFromBundle(
-                                data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
-                        ));
-                    }
-                    break;
-                case REQUEST_CODE__EDIT_ADDRESS:
-                    Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
-                    if(address != null){
-                        LocationViewModel locationViewModel = new LocationViewModel();
-                        locationViewModel.setDistrictId(address.getDistrictId());
-                        locationViewModel.setDistrictName(address.getDistrictName());
-                        locationViewModel.setCityId(address.getCityId());
-                        locationViewModel.setCityName(address.getCityName());
-                        locationViewModel.setProvinceId(address.getProvinceId());
-                        locationViewModel.setProvinceName(address.getProvinceName());
-                        locationViewModel.setZipCodes(address.getZipCodes());
-
-                        onActivityResultListener.onActivityResult(locationViewModel);
-                    }
-                    break;
-                case REQUEST_CODE_GOOGLE_MAP:
-                    LocationPass locationPass = data.getParcelableExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-                    if (locationPass != null && locationPass.getLatitude() != null) {
-                        model.getShopShipping().setShopLatitude(locationPass.getLatitude());
-                        model.getShopShipping().setShopLongitude(locationPass.getLongitude());
-
-                        GoogleLocationViewModel locationViewModel = new GoogleLocationViewModel();
-                        locationViewModel.setGeneratedAddress(locationPass.getGeneratedAddress());
-                        locationViewModel.setLatitude(locationPass.getLatitude());
-                        locationViewModel.setLongitude(locationPass.getLongitude());
-
-                        onActivityResultListener.onActivityResult(locationViewModel);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-    }
-
-
-    private OpenShopData model = null;
-    private LocationPass locationPass = null;
-
-    @Override
-    public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode) {
-        if (model != null) {
-            fragment.startActivityForResult(DistrictRecommendationActivity.createInstance(fragment.getActivity(),
-                    model.getToken()),
-                    requestCode);
-
-            return;
-        }
-
-        EditShippingInteractorImpl editShippingInteractor = new EditShippingInteractorImpl();
-        editShippingInteractor.getOpenShopData(fragment.getActivity(), new HashMap<String, String>(), new EditShippingRetrofitInteractor.getOpenShopDataListener() {
-            @Override
-            public void onSuccess(OpenShopData model) {
-                SellerRouterApplication.this.model = model;
-
-                fragment.startActivityForResult(DistrictRecommendationActivity.createInstance(fragment.getActivity(),
-                        model.getToken()),
-                        requestCode);
-            }
-
-            @Override
-            public void onFailed() {
-
-            }
-
-            @Override
-            public void onTimeout() {
-
-            }
-
-            @Override
-            public void onNoConnection() {
-
-            }
-        });
+    public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode, Token token) {
+        fragment.startActivityForResult(DistrictRecommendationActivity.createInstance(fragment.getActivity(),
+                token),
+                requestCode);
     }
 
     @Override
-    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress) {
-        if (model != null) {
-            if (!model.getShopShipping().getShopLatitude().isEmpty()
-                    && !model.getShopShipping().getShopLongitude().isEmpty()) {
-                locationPass = new LocationPass();
-                locationPass.setLatitude(model.getShopShipping().getShopLatitude());
-                locationPass.setLongitude(model.getShopShipping().getShopLongitude());
-                locationPass.setGeneratedAddress(generatedAddress);
-            }
-
-            Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
-            fragment.startActivityForResult(intent, requestCode);
-            return;
-        }
-
-        GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
-
-        int resultCode = availability.isGooglePlayServicesAvailable(fragment.getActivity());
-
-        if (ConnectionResult.SUCCESS != resultCode) {
-            CommonUtils.dumper("Google play services unavailable");
-            Dialog dialog = availability.getErrorDialog(fragment.getActivity(), resultCode, 0);
-            dialog.show();
-        }
-
-
-        EditShippingInteractorImpl editShippingInteractor = new EditShippingInteractorImpl();
-        editShippingInteractor.getOpenShopData(fragment.getActivity(), new HashMap<String, String>(), new EditShippingRetrofitInteractor.getOpenShopDataListener() {
-            @Override
-            public void onSuccess(OpenShopData model) {
-                SellerRouterApplication.this.model = model;
-
-                if (!model.getShopShipping().getShopLatitude().isEmpty()
-                        && !model.getShopShipping().getShopLongitude().isEmpty()) {
-                    locationPass = new LocationPass();
-                    locationPass.setLatitude(model.getShopShipping().getShopLatitude());
-                    locationPass.setLongitude(model.getShopShipping().getShopLongitude());
-                    locationPass.setGeneratedAddress(generatedAddress);
-                }
-
-                Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
-                fragment.startActivityForResult(intent, requestCode);
-            }
-
-            @Override
-            public void onFailed() {
-
-            }
-
-            @Override
-            public void onTimeout() {
-
-            }
-
-            @Override
-            public void onNoConnection() {
-
-            }
-        });
+    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, LocationPass locationPass) {
+        Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
+        fragment.startActivityForResult(intent, requestCode);
     }
 }

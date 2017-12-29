@@ -11,31 +11,27 @@ import java.util.List;
 
 public class ResponseSaveShopDesc {
 
-    @SerializedName("ServerProcessTime")
+    @SerializedName("header")
     @Expose
-    private String serverProcessTime;
-    @SerializedName("message_error")
+    private Header header;
+    @SerializedName("data")
     @Expose
-    private List<String> messageError;
-    @SerializedName("reserve_status")
-    @Expose
-    private String reserveStatus;
+    private Data data;
 
-    public String getServerProcessTime() {
-        return serverProcessTime;
+    public Header getHeader() {
+        return header;
     }
 
-    public void setServerProcessTime(String serverProcessTime) {
-        this.serverProcessTime = serverProcessTime;
+    public void setHeader(Header header) {
+        this.header = header;
     }
 
-    public List<String> getMessageError() {
-        return messageError;
+    public Data getData() {
+        return data;
     }
-
-    public String getReserveStatus() {
-        return reserveStatus;
+  
+    public void setData(Data data) {
+        this.data = data;
     }
-
 
 }

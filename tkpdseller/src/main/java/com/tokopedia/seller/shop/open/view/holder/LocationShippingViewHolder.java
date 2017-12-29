@@ -18,7 +18,6 @@ import java.util.ArrayList;
  */
 
 public class LocationShippingViewHolder {
-    private final TextView editShippingLocation;
     private final TextInputLayout postalCodeTextInputLayout;
     private final AutoCompleteTextView textEditPostalCode;
     private View root;
@@ -32,8 +31,6 @@ public class LocationShippingViewHolder {
     public LocationShippingViewHolder(View root, final ViewHolderListener2 viewHolderListener2){
         this.root = root;
         this.viewHolderListener2 = viewHolderListener2;
-
-        editShippingLocation = root.findViewById(R.id.seller_title_edit_shipping_location);
         cityTextInputLayout = root.findViewById(R.id.seller_city_text_input_layout);
         textEditShippingCity = root.findViewById(R.id.seller_text_edit_shipping_city);
         postalCodeTextInputLayout = root.findViewById(R.id.seller_text_input_layout_postal_code);

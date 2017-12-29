@@ -12,52 +12,27 @@ import com.google.gson.annotations.SerializedName;
 
 public class ResponseIsReserveDomain implements Parcelable {
 
-    @SerializedName("ServerProcessTime")
+    @SerializedName("header")
     @Expose
-    private String serverProcessTime;
-    @SerializedName("reserve_status")
+    private Header header;
+    @SerializedName("data")
     @Expose
-    private int reserveStatus;
-    @SerializedName("shipment")
-    @Expose
-    private Shipment shipment;
-    @SerializedName("user_data")
-    @Expose
-    private UserData userData;
+    private Data data;
 
-    public String getServerProcessTime() {
-        return serverProcessTime;
+    public Header getHeader() {
+        return header;
     }
 
-    public void setServerProcessTime(String serverProcessTime) {
-        this.serverProcessTime = serverProcessTime;
+    public void setHeader(Header header) {
+        this.header = header;
     }
 
-    public int getReserveStatus() {
-        return reserveStatus;
+    public Data getData() {
+        return data;
     }
 
-    public void setReserveStatus(int reserveStatus) {
-        this.reserveStatus = reserveStatus;
-    }
-
-    public Shipment getShipment() {
-        return shipment;
-    }
-
-    public void setShipment(Shipment shipment) {
-        this.shipment = shipment;
-    }
-
-    public UserData getUserData() {
-        return userData;
-    }
-
-    public void setUserData(UserData userData) {
-        this.userData = userData;
-    }
-    public boolean isDomainAlreadyReserved(){
-        return reserveStatus!= 0;
+    public void setData(Data data) {
+        this.data = data;
     }
 
     @Override
@@ -67,23 +42,19 @@ public class ResponseIsReserveDomain implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.serverProcessTime);
-        dest.writeInt(this.reserveStatus);
-        dest.writeParcelable(this.shipment, flags);
-        dest.writeParcelable(this.userData, flags);
+        dest.writeParcelable(this.header, flags);
+        dest.writeParcelable(this.data, flags);
     }
 
     public ResponseIsReserveDomain() {
     }
 
     protected ResponseIsReserveDomain(Parcel in) {
-        this.serverProcessTime = in.readString();
-        this.reserveStatus = in.readInt();
-        this.shipment = in.readParcelable(Shipment.class.getClassLoader());
-        this.userData = in.readParcelable(UserData.class.getClassLoader());
+        this.header = in.readParcelable(Header.class.getClassLoader());
+        this.data = in.readParcelable(Data.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<ResponseIsReserveDomain> CREATOR = new Parcelable.Creator<ResponseIsReserveDomain>() {
+    public static final Creator<ResponseIsReserveDomain> CREATOR = new Creator<ResponseIsReserveDomain>() {
         @Override
         public ResponseIsReserveDomain createFromParcel(Parcel source) {
             return new ResponseIsReserveDomain(source);

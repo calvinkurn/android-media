@@ -9,17 +9,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.router.OnActivityResultListener;
+import com.tokopedia.core.geolocation.activity.GeolocationActivity;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.logistic.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
+import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
  import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
@@ -32,7 +38,8 @@ import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDo
 import com.tokopedia.seller.shop.setting.data.model.response.Shipment;
 import com.tokopedia.seller.shop.setting.data.model.response.UserData;
 import com.tokopedia.seller.shop.setting.domain.interactor.ShopOpenSaveLocationUseCase;
-import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -52,12 +59,19 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     protected StepperListener<ShopOpenStepperModel> stepperListener;
     private LogisticRouter logisticRouter;
     private static final String TAG = "ShopOpenMandatoryLocati";
-    private LocationHeaderViewHolder locationHeaderViewHolder;
     private LocationShippingViewHolder locationShippingViewHolder;
     private LocationMapViewHolder locationMapViewHolder;
 
     @Inject
     ShopOpenSaveLocationUseCase shopOpenSaveLocationUseCase;
+
+    @Inject
+    GetOpenShopTokenUseCase getOpenShopTokenUseCase;
+
+    @Inject
+    GetOpenShopLocationPassUseCase getOpenShopLocationPassUseCase;
+
+    RequestParams requestParams;
 
     public static ShopOpenMandatoryLocationFragment getInstance(){
         return new ShopOpenMandatoryLocationFragment();
@@ -67,15 +81,17 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_shop_open_location, container, false);
+        requestParams = RequestParams.EMPTY;
+        requestParams.putAll((HashMap<String, String>) AuthUtil.generateParams(getActivity()));
         initView(root);
         return root;
     }
 
     private void initView(View root){
-        locationHeaderViewHolder = new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
+        new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
             public void navigateToChooseAddressActivityRequest() {
-                if(logisticRouter == null)
+                if (logisticRouter == null)
                     return;
 
                 logisticRouter.navigateToChooseAddressActivityRequest(
@@ -91,24 +107,62 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                 if(logisticRouter == null)
                     return;
 
-                logisticRouter.navigateToEditAddressActivityRequest(
-                        ShopOpenMandatoryLocationFragment.this,
-                        REQUEST_CODE__EDIT_ADDRESS
-                );
+
+
+                getOpenShopTokenUseCase.execute(requestParams, new Subscriber<Token>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Token token) {
+                        logisticRouter.navigateToEditAddressActivityRequest(
+                                ShopOpenMandatoryLocationFragment.this,
+                                REQUEST_CODE__EDIT_ADDRESS,
+                                token
+                        );
+                    }
+                });
+
+
             }
         });
 
         locationMapViewHolder = new LocationMapViewHolder(root, new LocationMapViewHolder.ViewHolderListener3() {
             @Override
-            public void navigateToGeoLocationActivityRequest(String generatedMap) {
+            public void navigateToGeoLocationActivityRequest(final String generatedMap) {
                 if(logisticRouter == null)
                     return;
 
-                logisticRouter.navigateToGeoLocationActivityRequest(
-                        ShopOpenMandatoryLocationFragment.this,
-                        REQUEST_CODE_GOOGLE_MAP,
-                        generatedMap
-                );
+                getOpenShopLocationPassUseCase.execute(requestParams, new Subscriber<LocationPass>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(LocationPass locationPass) {
+                        logisticRouter.navigateToGeoLocationActivityRequest(
+                                ShopOpenMandatoryLocationFragment.this,
+                                REQUEST_CODE_GOOGLE_MAP,
+                                generatedMap,
+                                locationPass
+                        );
+                    }
+                });
+
+
             }
         });
 
@@ -145,6 +199,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
 
                         if(aBoolean != null || aBoolean){
                             updateStepperModel();
+
+                            if(stepperListener != null) {
+                                stepperListener.goToNextPage(null);
+                            }
                         }
 
                     }
@@ -153,8 +211,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         });
 
         if(stepperListener.getStepperModel()!=null){
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getShipment();
+            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
 
             locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
             locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
@@ -178,7 +236,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
 
             ResponseIsReserveDomain responseIsReserveDomain = stepperListener.getStepperModel().getResponseIsReserveDomain();
 
-            Shipment shipment = responseIsReserveDomain.getShipment();
+            Shipment shipment = responseIsReserveDomain.getData().getShipment();
             shipment.setAddrStreet(googleLocationViewModel.getGeneratedAddress());
             shipment.setLongitude(googleLocationViewModel.getLongitude());
             shipment.setLatitude(googleLocationViewModel.getLatitude());
@@ -187,12 +245,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
             shipment.setPostal(Integer.valueOf(locationShippingViewHolder.getPostalCode()));
 
 
-            UserData userData = responseIsReserveDomain.getUserData();
+            UserData userData = responseIsReserveDomain.getData().getUserData();
             userData.setLocComplete(locationShippingViewHolder.getLocationComplete());
             userData.setLocation(locationShippingViewHolder.getDistrictName());
 
-            responseIsReserveDomain.setShipment(shipment);
-            responseIsReserveDomain.setUserData(userData);
+            responseIsReserveDomain.getData().setShipment(shipment);
+            responseIsReserveDomain.getData().setUserData(userData);
 
             stepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
         }
@@ -221,36 +279,43 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK && data != null){
-            switch (requestCode){
+            switch (requestCode) {
                 case REQUEST_CODE_ADDRESS:
+                    if (data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS) != null) {
+                        DestinationViewModel address = DestinationViewModel.convertFromBundle(
+                                data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                        );
+                        locationShippingViewHolder.updateDistrictId(address.getDistrictId()+"");
+                        locationShippingViewHolder.updateLocationData(
+                                address.getProvinceName(),
+                                address.getCityName(),
+                                address.getDistrictName());
+                    }
+                    break;
                 case REQUEST_CODE__EDIT_ADDRESS:
+                    Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
+                    if(address != null){
+
+                        locationShippingViewHolder.initializeZipCodes(address.getZipCodes());
+                        locationShippingViewHolder.updateDistrictId(address.getDistrictId()+"");
+                        locationShippingViewHolder.updateLocationData(
+                                address.getProvinceName(),
+                                address.getCityName(),
+                                address.getDistrictName()
+                        );
+                    }
+                    break;
                 case REQUEST_CODE_GOOGLE_MAP:
-                    logisticRouter.onActivityResultChooseAddress(requestCode, data, new OnActivityResultListener() {
-                        @Override
-                        public void onActivityResult(Object rawData) {
-                            Log.d(TAG, rawData.toString());
-                            if(rawData instanceof DestinationViewModel){
-                                DestinationViewModel address = (DestinationViewModel)rawData;
-                                locationShippingViewHolder.updateDistrictId(address.getDistrictId()+"");
-                                locationShippingViewHolder.updateLocationData(
-                                        address.getProvinceName(),
-                                        address.getCityName(),
-                                        address.getDistrictName());
-                            }else if(rawData instanceof LocationViewModel){
-                                LocationViewModel locationViewModel = (LocationViewModel) rawData;
-                                locationShippingViewHolder.initializeZipCodes(locationViewModel.getZipCodes());
-                                locationShippingViewHolder.updateDistrictId(locationViewModel.getDistrictId()+"");
-                                locationShippingViewHolder.updateLocationData(
-                                        locationViewModel.getProvinceName(),
-                                        locationViewModel.getCityName(),
-                                        locationViewModel.getDistrictName()
-                                );
-                            }else if(rawData instanceof GoogleLocationViewModel){
-                                GoogleLocationViewModel googleLocationViewModel = (GoogleLocationViewModel) rawData;
-                                locationMapViewHolder.setLocationText(googleLocationViewModel);
-                            }
-                        }
-                    });
+                    LocationPass locationPass = data.getParcelableExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                    if (locationPass != null && locationPass.getLatitude() != null) {
+
+                        GoogleLocationViewModel locationViewModel = new GoogleLocationViewModel();
+                        locationViewModel.setGeneratedAddress(locationPass.getGeneratedAddress());
+                        locationViewModel.setLatitude(locationPass.getLatitude());
+                        locationViewModel.setLongitude(locationPass.getLongitude());
+
+                        locationMapViewHolder.setLocationText(locationViewModel);
+                    }
                     break;
                 default:
                     break;
@@ -277,8 +342,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         if (savedInstanceState == null && getArguments() != null) {
             setupArguments(getArguments());
 
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getShipment();
+            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
             logShipment(shipment);
             logUserData(userData);
         }
