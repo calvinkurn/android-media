@@ -140,4 +140,12 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
         dest.writeString(userId);
         dest.writeByte((byte) (canDeleteComment ? 1 : 0));
     }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }

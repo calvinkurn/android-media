@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -63,7 +65,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     ImageView wishlist;
 
     KolCommentHeaderViewModel header;
-    KolCommentProductViewModel footer;
 
     TkpdProgressDialog progressDialog;
 
@@ -104,11 +105,9 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             header = getArguments().getParcelable(KolCommentActivity.ARGS_HEADER);
-            footer = getArguments().getParcelable(KolCommentActivity.ARGS_FOOTER);
             totalNewComment = 0;
         } else if (savedInstanceState != null) {
             header = savedInstanceState.getParcelable(KolCommentActivity.ARGS_HEADER);
-            footer = savedInstanceState.getParcelable(KolCommentActivity.ARGS_FOOTER);
             totalNewComment = savedInstanceState.getInt(ARGS_TOTAL_COMMENT);
         } else {
             getActivity().finish();
@@ -119,7 +118,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KolCommentActivity.ARGS_HEADER, header);
-        outState.putParcelable(KolCommentActivity.ARGS_FOOTER, footer);
         outState.putInt(ARGS_TOTAL_COMMENT, totalNewComment);
     }
 
@@ -145,7 +143,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHeader(header);
-//        setFooter(footer);
         presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
     }
 
@@ -220,27 +217,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
             adapter.getHeader().setLoading(false);
             adapter.notifyItemChanged(0);
         }
-    }
-
-    private void setFooter(KolCommentProductViewModel footer) {
-
-        productName.setText(MethodChecker.fromHtml(footer.getName()));
-        ImageHandler.LoadImage(productAvatar, footer.getImageUrl());
-        if (TextUtils.isEmpty(footer.getPrice())) {
-            productPrice.setVisibility(View.GONE);
-        } else {
-            productPrice.setVisibility(View.VISIBLE);
-            productPrice.setText(footer.getPrice());
-        }
-
-        setWishlist(footer.isWishlisted());
-
-        wishlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                presenter.changeWishlist();
-            }
-        });
     }
 
     @Override
@@ -325,8 +301,39 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     }
 
     @Override
-    public void onDeleteCommentKol(int id, int adapterPosition) {
-        presenter.deleteComment(id, adapterPosition);
+    public void onDeleteCommentKol(int id, boolean canDeleteComment, int
+            adapterPosition) {
+        if (canDeleteComment || isInfluencer()) {
+            showDeleteDialog(id, adapterPosition);
+        }
+    }
+
+    private boolean isInfluencer() {
+        return header != null
+                && sessionHandler != null
+                && !TextUtils.isEmpty(header.getUserId())
+                && sessionHandler.getLoginID().equals(header.getUserId());
+    }
+
+    private void showDeleteDialog(final int id, final int adapterPosition) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setMessage(R.string.prompt_delete_comment_kol);
+        builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presenter.deleteComment(id, adapterPosition);
+            }
+        });
+        builder.setNegativeButton(R.string.title_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
