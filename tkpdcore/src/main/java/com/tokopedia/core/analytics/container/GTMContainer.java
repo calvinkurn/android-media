@@ -470,4 +470,53 @@ public class GTMContainer implements IGTMContainer {
     public void event(String name, Map<String, Object> data) {
         GTMDataLayer.pushEvent(context, name, data);
     }
+
+    @Override
+    public void impressionHotlistTracking(String hotlistName, String promoName, String promoCode) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo impression",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo impression",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+
+    @Override
+    public void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click salin kode",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+    @Override
+    public void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click syarat ketentuan",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
 }
