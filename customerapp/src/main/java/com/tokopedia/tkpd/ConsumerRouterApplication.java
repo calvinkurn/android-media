@@ -22,7 +22,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -38,8 +37,8 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -60,17 +59,13 @@ import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.activity.HistoryTokocashActivity;
-import com.tokopedia.digital.tokocash.activity.TopUpTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
-import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
-import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
-import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
+import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -116,7 +111,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
-import com.tokopedia.tokocash.qrpayment.presentation.CustomScannerQRActivity;
+import com.tokopedia.tokocash.qrpayment.presentation.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -642,19 +637,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
 
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
         else
             return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source);
+                    customSubject, customMessage, source);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String customMessage, String source, String avatar) {
 
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
         else
@@ -666,7 +661,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String source,
                                    String avatar) {
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
             return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
@@ -677,7 +672,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
@@ -824,7 +819,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return InboxChatActivity.getCallingIntent(context);
         else
             return InboxMessageActivity.getCallingIntent(context);
@@ -855,7 +850,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent goToQRScannerTokoCash(Context context) {
-        return new Intent(getApplicationContext(), CustomScannerQRActivity.class);
+        return new Intent(getApplicationContext(), CustomScannerTokoCashActivity.class);
     }
 
     @Override

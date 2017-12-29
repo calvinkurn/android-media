@@ -9,7 +9,7 @@
         <activity
             android:name=".historytokocash.presentation.activity.HistoryTokoCashActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".qrpayment.presentation.CustomScannerQRActivity"
+        <activity android:name=".qrpayment.presentation.CustomScannerTokoCashActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".qrpayment.presentation.SuccessPaymentQRActivity"
             android:screenOrientation="portrait" />
