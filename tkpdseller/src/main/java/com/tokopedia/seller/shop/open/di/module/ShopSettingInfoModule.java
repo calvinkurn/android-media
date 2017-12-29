@@ -24,7 +24,7 @@ import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenSaveInfoRepositoryImpl;
 import com.tokopedia.seller.shop.open.data.source.ShopOpenInfoDataSource;
-import com.tokopedia.seller.shop.open.domain.interactor.ShopSettingSaveInfoUseCase;
+import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveInfoUseCase;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenterImpl;
 
@@ -42,8 +42,8 @@ public class ShopSettingInfoModule {
 
     @Provides
     @ShopOpenDomainScope
-    ShopOpenInfoPresenter providePresenter(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
-        return new ShopOpenInfoPresenterImpl(shopSettingSaveInfoUseCase, shopIsReserveDomainUseCase);
+    ShopOpenInfoPresenter providePresenter(ShopOpenSaveInfoUseCase shopOpenSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
+        return new ShopOpenInfoPresenterImpl(shopOpenSaveInfoUseCase, shopIsReserveDomainUseCase);
     }
 
     @Provides

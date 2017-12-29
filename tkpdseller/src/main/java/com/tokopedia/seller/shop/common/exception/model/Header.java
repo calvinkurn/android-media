@@ -1,10 +1,12 @@
-package com.tokopedia.seller.shop.open.data.model.response.isreservedomain;
+package com.tokopedia.seller.shop.common.exception.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Header implements Parcelable {
 
@@ -13,10 +15,21 @@ public class Header implements Parcelable {
     private double processTime;
     @SerializedName("messages")
     @Expose
-    private String messages;
+    private List<String> messages;
     @SerializedName("reason")
     @Expose
     private String reason;
+    @SerializedName("error_code")
+    @Expose
+    private String errorCode;
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
     public double getProcessTime() {
         return processTime;
@@ -26,11 +39,11 @@ public class Header implements Parcelable {
         this.processTime = processTime;
     }
 
-    public String getMessages() {
+    public List<String> getMessages() {
         return messages;
     }
 
-    public void setMessages(String messages) {
+    public void setMessages(List<String> messages) {
         this.messages = messages;
     }
 
@@ -42,6 +55,9 @@ public class Header implements Parcelable {
         this.reason = reason;
     }
 
+    public Header() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -50,20 +66,19 @@ public class Header implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(this.processTime);
-        dest.writeString(this.messages);
+        dest.writeStringList(this.messages);
         dest.writeString(this.reason);
-    }
-
-    public Header() {
+        dest.writeString(this.errorCode);
     }
 
     protected Header(Parcel in) {
         this.processTime = in.readDouble();
-        this.messages = in.readString();
+        this.messages = in.createStringArrayList();
         this.reason = in.readString();
+        this.errorCode = in.readString();
     }
 
-    public static final Parcelable.Creator<Header> CREATOR = new Parcelable.Creator<Header>() {
+    public static final Creator<Header> CREATOR = new Creator<Header>() {
         @Override
         public Header createFromParcel(Parcel source) {
             return new Header(source);

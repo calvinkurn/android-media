@@ -36,7 +36,7 @@ import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
-import com.tokopedia.seller.shop.open.data.source.cloud.ShopSettingException;
+import com.tokopedia.seller.shop.common.exception.ShopException;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenInfoView;
@@ -188,7 +188,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
         String errorMessage;
-        if(t instanceof ShopSettingException){
+        if(t instanceof ShopException){
             errorMessage = t.getMessage();
         }else{
             errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
@@ -198,7 +198,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
             public void onRetryClicked() {
                 onNextButtonClicked();
             }
-        });
+        }).showRetrySnackbar();
     }
 
     @Override
