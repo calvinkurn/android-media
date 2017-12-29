@@ -8,6 +8,7 @@ import com.tokopedia.transaction.pickupbooth.domain.mapper.PickupPointEntityMapp
 import com.tokopedia.transaction.pickupbooth.data.repository.PickupPointRepository;
 import com.tokopedia.transaction.pickupbooth.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract;
+import com.tokopedia.transaction.pickupbooth.view.mapper.PickupPointViewModelMapper;
 import com.tokopedia.transaction.pickupbooth.view.presenter.PickupPointPresenter;
 
 import dagger.Module;
@@ -42,6 +43,12 @@ public class PickupPointModule {
 
     @Provides
     @PickupPointScope
+    PickupPointViewModelMapper provideViewModelMapper() {
+        return new PickupPointViewModelMapper();
+    }
+
+    @Provides
+    @PickupPointScope
     PickupPointRepository providePickupPointRepository(
             PickupPointDataStore pickupPointDataStore,
             PickupPointEntityMapper pickupPointEntityMapper
@@ -63,8 +70,10 @@ public class PickupPointModule {
     @Provides
     @PickupPointScope
     PickupPointContract.Presenter providePickupPointPresenter(
-            GetPickupPointsUseCase getPickupPointsUseCase) {
-        return new PickupPointPresenter(getPickupPointsUseCase);
+            GetPickupPointsUseCase getPickupPointsUseCase,
+            PickupPointViewModelMapper pickupPointViewModelMapper
+    ) {
+        return new PickupPointPresenter(getPickupPointsUseCase, pickupPointViewModelMapper);
     }
 
 }

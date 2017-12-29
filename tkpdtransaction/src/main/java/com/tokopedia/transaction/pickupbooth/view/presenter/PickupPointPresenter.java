@@ -9,12 +9,16 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.usecase.G
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.pickupbooth.domain.model.PickupPointResponse;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 import com.tokopedia.transaction.pickupbooth.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract;
+import com.tokopedia.transaction.pickupbooth.view.mapper.PickupPointViewModelMapper;
+import com.tokopedia.transaction.pickupbooth.view.model.StoreViewModel;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -28,12 +32,16 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
         implements PickupPointContract.Presenter {
 
     private GetPickupPointsUseCase getPickupPointsUseCase;
+    private ArrayList<StoreViewModel> storeViewModels = new ArrayList<>();
+    private PickupPointViewModelMapper pickupPointViewModelMapper;
     private String token;
     private String ut;
 
     @Inject
-    public PickupPointPresenter(GetPickupPointsUseCase getPickupPointsUseCase) {
+    public PickupPointPresenter(GetPickupPointsUseCase getPickupPointsUseCase,
+                                PickupPointViewModelMapper pickupPointViewModelMapper) {
         this.getPickupPointsUseCase = getPickupPointsUseCase;
+        this.pickupPointViewModelMapper = pickupPointViewModelMapper;
     }
 
     @Override
@@ -78,10 +86,17 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
             @Override
             public void onNext(PickupPointResponse pickupPointResponse) {
                 if (isViewAttached()) {
-                    getView().
+                    for (Store store : pickupPointResponse.getData().getStores()) {
+                        storeViewModels.add(pickupPointViewModelMapper.transform(store));
+                    }
                 }
             }
         });
+    }
+
+    @Override
+    public ArrayList<StoreViewModel> getPickupPoints() {
+        return storeViewModels;
     }
 
     private RequestParams getParams() {
