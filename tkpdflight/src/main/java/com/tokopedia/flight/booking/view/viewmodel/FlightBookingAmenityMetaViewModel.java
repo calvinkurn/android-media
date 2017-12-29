@@ -10,31 +10,6 @@ import java.util.List;
  */
 
 public class FlightBookingAmenityMetaViewModel implements Parcelable {
-    private String key;
-    private String description;
-    private List<FlightBookingAmenityViewModel> amenities;
-
-    public FlightBookingAmenityMetaViewModel() {
-    }
-
-    protected FlightBookingAmenityMetaViewModel(Parcel in) {
-        key = in.readString();
-        description = in.readString();
-        amenities = in.createTypedArrayList(FlightBookingAmenityViewModel.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(key);
-        dest.writeString(description);
-        dest.writeTypedList(amenities);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     public static final Creator<FlightBookingAmenityMetaViewModel> CREATOR = new Creator<FlightBookingAmenityMetaViewModel>() {
         @Override
         public FlightBookingAmenityMetaViewModel createFromParcel(Parcel in) {
@@ -46,6 +21,20 @@ public class FlightBookingAmenityMetaViewModel implements Parcelable {
             return new FlightBookingAmenityMetaViewModel[size];
         }
     };
+    private String journeyId;
+    private String key;
+    private String description;
+    private List<FlightBookingAmenityViewModel> amenities;
+
+    public FlightBookingAmenityMetaViewModel() {
+    }
+
+    protected FlightBookingAmenityMetaViewModel(Parcel in) {
+        journeyId = in.readString();
+        key = in.readString();
+        description = in.readString();
+        amenities = in.createTypedArrayList(FlightBookingAmenityViewModel.CREATOR);
+    }
 
     public String getKey() {
         return key;
@@ -80,5 +69,26 @@ public class FlightBookingAmenityMetaViewModel implements Parcelable {
     public boolean equals(Object obj) {
         return obj instanceof FlightBookingAmenityMetaViewModel &&
                 ((FlightBookingAmenityMetaViewModel) obj).getKey().equalsIgnoreCase(key);
+    }
+
+    public String getJourneyId() {
+        return journeyId;
+    }
+
+    public void setJourneyId(String journeyId) {
+        this.journeyId = journeyId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(journeyId);
+        parcel.writeString(key);
+        parcel.writeString(description);
+        parcel.writeTypedList(amenities);
     }
 }

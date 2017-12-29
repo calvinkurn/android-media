@@ -281,8 +281,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass().getId(),
                     getView().getDepartureTripId(),
                     getView().getReturnTripId(),
-                    getView().getCurrentBookingParamViewModel().getSearchParam().getDepartureDate(),
-                    getView().getCurrentBookingParamViewModel().getSearchParam().getReturnDate(),
                     getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId())
             );
         } else {
@@ -292,7 +290,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     getView().getCurrentBookingParamViewModel().getSearchParam().getFlightPassengerViewModel().getInfant(),
                     getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass().getId(),
                     getView().getDepartureTripId(),
-                    getView().getCurrentBookingParamViewModel().getSearchParam().getDepartureDate(),
                     getView().getIdEmpotencyKey(getView().getDepartureTripId())
             );
         }

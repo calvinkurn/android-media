@@ -36,6 +36,7 @@ public class FlightBookingCartDataMapper {
                         case Amenity.MEAL:
                             FlightBookingAmenityMetaViewModel mealMetaViewModel = new FlightBookingAmenityMetaViewModel();
                             mealMetaViewModel.setKey(amenity.getKey());
+                            mealMetaViewModel.setJourneyId(amenity.getJourneyId());
                             mealMetaViewModel.setDescription(amenity.getDescription());
                             mealMetaViewModel.setAmenities(flightBookingAmenityViewModelMapper.transform(amenity));
                             mealMetaViewModels.add(mealMetaViewModel);
@@ -43,6 +44,7 @@ public class FlightBookingCartDataMapper {
                         case Amenity.LUGGAGE:
                             FlightBookingAmenityMetaViewModel luggageMetaViewModel = new FlightBookingAmenityMetaViewModel();
                             luggageMetaViewModel.setKey(amenity.getKey());
+                            luggageMetaViewModel.setJourneyId(amenity.getJourneyId());
                             luggageMetaViewModel.setDescription(amenity.getDescription());
                             luggageMetaViewModel.setAmenities(flightBookingAmenityViewModelMapper.transform(amenity));
                             luggageMetaViewModels.add(luggageMetaViewModel);

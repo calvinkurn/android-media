@@ -10,6 +10,9 @@ import java.util.List;
  */
 
 public class Attributes {
+    @SerializedName("term")
+    @Expose
+    private String term;
     @SerializedName("aid")
     @Expose
     private String aid;
@@ -58,6 +61,10 @@ public class Attributes {
     @SerializedName("fare")
     @Expose
     private Fare fare;
+
+    public String getTerm() {
+        return term;
+    }
 
     public String getAid() {
         return aid;

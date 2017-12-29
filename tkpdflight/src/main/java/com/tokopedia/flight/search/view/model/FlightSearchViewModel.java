@@ -38,9 +38,9 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
             return new FlightSearchViewModel[size];
         }
     };
+    private String term;
     private String id;
     private String type;
-    private String aid;
     private String departureAirport;
     private String departureAirportName; // merge result
     private String departureAirportCity; // merge result
@@ -66,10 +66,9 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
 
     public FlightSearchViewModel(FlightSearchSingleRouteDB flightSearchSingleRouteDB) {
         Gson gson = new Gson();
-
+        this.term = flightSearchSingleRouteDB.getTerm();
         this.id = flightSearchSingleRouteDB.getId();
         this.type = flightSearchSingleRouteDB.getFlightType();
-        this.aid = flightSearchSingleRouteDB.getAid();
         this.departureAirport = flightSearchSingleRouteDB.getDepartureAirport();
         this.departureTime = flightSearchSingleRouteDB.getDepartureTime();
         this.departureTimeInt = flightSearchSingleRouteDB.getDepartureTimeInt();
@@ -104,7 +103,7 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
     protected FlightSearchViewModel(Parcel in) {
         this.id = in.readString();
         this.type = in.readString();
-        this.aid = in.readString();
+        this.term = in.readString();
         this.departureAirport = in.readString();
         this.departureAirportName = in.readString();
         this.departureAirportCity = in.readString();
@@ -196,12 +195,12 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
         return id;
     }
 
-    public String getFlightType() {
-        return type;
+    public String getTerm() {
+        return term;
     }
 
-    public String getAid() {
-        return aid;
+    public String getFlightType() {
+        return type;
     }
 
     public String getDepartureAirport() {
@@ -329,7 +328,7 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.id);
         dest.writeString(this.type);
-        dest.writeString(this.aid);
+        dest.writeString(this.term);
         dest.writeString(this.departureAirport);
         dest.writeString(this.departureAirportName);
         dest.writeString(this.departureAirportCity);

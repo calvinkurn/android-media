@@ -3,6 +3,7 @@ package com.tokopedia.flight.review.domain;
 import android.text.TextUtils;
 
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -47,7 +48,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         return flightRepository.verifyBooking((VerifyRequest) requestParams.getObject(VERIFY_REQUEST));
     }
 
-    public RequestParams createRequestParams(String promoCode, int price, int adult, String cartId,
+    public RequestParams createRequestParams(String promoCode, int price, String cartId,
                                              List<FlightBookingPassengerViewModel> flightPassengerViewModels,
                                              String contactName, String country, String email, String phone) {
         RequestParams requestParams = RequestParams.create();
@@ -81,7 +82,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
 
     private List<Passenger> generatePassengers(List<FlightBookingPassengerViewModel> flightPassengerViewModels) {
         List<Passenger> passengers = new ArrayList<>();
-        for(FlightBookingPassengerViewModel flightPassengerViewModel : flightPassengerViewModels){
+        for (FlightBookingPassengerViewModel flightPassengerViewModel : flightPassengerViewModels) {
             Passenger passenger = new Passenger();
             if (!TextUtils.isEmpty(flightPassengerViewModel.getPassengerBirthdate()))
                 passenger.setDob(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.FORMAT_DATE_API, flightPassengerViewModel.getPassengerBirthdate()));
@@ -95,7 +96,29 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         return passengers;
     }
 
-    private List<AmenityPassenger> generateAmenities(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels, List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels) {
-        return null;
+    private List<AmenityPassenger> generateAmenities(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
+                                                     List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels) {
+        List<AmenityPassenger> amenityPassengers = new ArrayList<>();
+        for (FlightBookingAmenityMetaViewModel lugagge : flightBookingLuggageMetaViewModels) {
+            for (FlightBookingAmenityViewModel amenityViewModel : lugagge.getAmenities()) {
+                AmenityPassenger amenityPassenger = new AmenityPassenger();
+                amenityPassenger.setKey(lugagge.getKey());
+                amenityPassenger.setItemId(amenityViewModel.getId());
+                amenityPassenger.setAmenityType(amenityViewModel.getType());
+                amenityPassenger.setJourneyId(lugagge.getJourneyId());
+                amenityPassengers.add(amenityPassenger);
+            }
+        }
+        for (FlightBookingAmenityMetaViewModel meal : flightBookingMealMetaViewModels) {
+            for (FlightBookingAmenityViewModel amenityViewModel : meal.getAmenities()) {
+                AmenityPassenger amenityPassenger = new AmenityPassenger();
+                amenityPassenger.setKey(meal.getKey());
+                amenityPassenger.setItemId(amenityViewModel.getId());
+                amenityPassenger.setAmenityType(amenityViewModel.getType());
+                amenityPassenger.setJourneyId(meal.getJourneyId());
+                amenityPassengers.add(amenityPassenger);
+            }
+        }
+        return amenityPassengers;
     }
 }
