@@ -1,5 +1,5 @@
 ext {
-    supportLibraryVersion = '26.0.2'
+    supportLibraryVersion = '26.0.0'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
