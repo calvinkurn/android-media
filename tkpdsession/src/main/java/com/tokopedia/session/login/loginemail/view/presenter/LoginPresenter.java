@@ -2,7 +2,6 @@ package com.tokopedia.session.login.loginemail.view.presenter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
@@ -10,17 +9,13 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
-import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
 import com.tokopedia.session.login.loginemail.view.subscriber.LoginDiscoverSubscriber;
@@ -31,7 +26,6 @@ import com.tokopedia.session.register.domain.interactor.registerinitial.GetFaceb
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWithSosmedUseCase;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
-import com.tokopedia.session.session.model.LoginModel;
 
 import java.util.ArrayList;
 
@@ -96,7 +90,7 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
         if (isValid(email, password)) {
             getView().showLoadingLogin();
             loginEmailUseCase.execute(LoginEmailUseCase.getParam(email, password),
-                    new LoginSubscriber(getView()));
+                    new LoginSubscriber(getView(), email));
         }
     }
 
@@ -157,9 +151,9 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
                 loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString
                                 (CODE, ""), HTTPS + bundle.getString(SERVER) + bundle.getString
                                 (PATH)),
-                        new LoginSosmedSubscriber(getView()));
+                        new LoginSosmedSubscriber(getView(), ""));
             } else if (bundle.getString(PATH, "").contains(ACTIVATION_SOCIAL)) {
-                getView().onGoToActivationPage();
+                getView().onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
             }
         } else {
             getView().onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
@@ -167,10 +161,10 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     }
 
     @Override
-    public void loginGoogle(String accessToken) {
+    public void loginGoogle(String accessToken, String email) {
         getView().showLoadingLogin();
         loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamGoogle(accessToken), new
-                LoginSosmedSubscriber(getView()));
+                LoginSosmedSubscriber(getView(), email));
     }
 
     @Override
@@ -182,10 +176,10 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     }
 
     @Override
-    public void loginFacebook(AccessToken accessToken) {
+    public void loginFacebook(AccessToken accessToken, String email) {
         getView().showLoadingLogin();
-        loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamFacebook(accessToken), new
-                LoginSosmedSubscriber(getView()));
+        loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamFacebook(accessToken),
+                new LoginSosmedSubscriber(getView(), email));
     }
 
     @Override

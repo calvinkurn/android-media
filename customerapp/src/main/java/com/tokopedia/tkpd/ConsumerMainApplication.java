@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -167,5 +169,25 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void initReact() {
         SoLoader.init(this, false);
+    }
+
+    @Override
+    public Intent getSellerHomeIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginGoogleIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginFacebookIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getLoginWebviewIntent(Context context, String name, String url) {
+        return null;
     }
 }

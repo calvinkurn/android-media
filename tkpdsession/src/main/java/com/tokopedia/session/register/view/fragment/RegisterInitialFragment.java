@@ -441,7 +441,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             }
 
             @Override
-            public void onSuccessGetFacebookCredential(AccessToken accessToken) {
+            public void onSuccessGetFacebookCredential(AccessToken accessToken, String email) {
                 presenter.registerFacebook(accessToken);
             }
         };

@@ -17,7 +17,6 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +31,7 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -39,7 +39,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
@@ -75,6 +74,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
 import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
@@ -386,6 +386,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLogin() {
+
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -468,8 +469,8 @@ public class LoginFragment extends BaseDaggerFragment
             }
 
             @Override
-            public void onSuccessGetFacebookCredential(AccessToken accessToken) {
-                presenter.loginFacebook(accessToken);
+            public void onSuccessGetFacebookCredential(AccessToken accessToken, String email) {
+                presenter.loginFacebook(accessToken, email);
             }
         };
     }
@@ -554,9 +555,9 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToActivationPage() {
+    public void onGoToActivationPage(String email) {
         Intent intent = ActivationActivity.getCallingIntent(getActivity(),
-                emailEditText.getText().toString());
+                email);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
     }
@@ -691,8 +692,10 @@ public class LoginFragment extends BaseDaggerFragment
 //            onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode
 //                    .SMART_LOCK_FAILED_TO_GET_CREDENTIALS));
         } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
+            GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+            String email = googleSignInAccount.getEmail();
             String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
-            presenter.loginGoogle(accessToken);
+            presenter.loginGoogle(accessToken, email);
         } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
             presenter.loginWebview(data);
         } else {

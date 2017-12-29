@@ -60,7 +60,7 @@ public interface Login {
 
         void onErrorLogin(String errorMessage, int codeError);
 
-        void onGoToActivationPage();
+        void onGoToActivationPage(String email);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -75,11 +75,11 @@ public interface Login {
 
         void loginWebview(Intent data);
 
-        void loginGoogle(String accessToken);
+        void loginGoogle(String accessToken, String email);
 
         void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
 
-        void loginFacebook(AccessToken accessToken);
+        void loginFacebook(AccessToken accessToken, String email);
 
         void resetToken();
     }

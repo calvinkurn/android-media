@@ -1,5 +1,7 @@
 package com.tokopedia.session.login.loginemail.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
@@ -15,10 +17,13 @@ import rx.Subscriber;
  */
 
 public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
+    private static final String NOT_ACTIVATED = "belum diaktivasi";
     private final Login.View view;
+    private final String email;
 
-    public LoginSosmedSubscriber(Login.View view) {
+    public LoginSosmedSubscriber(Login.View view, String email) {
         this.view = view;
+        this.email = email;
     }
 
     @Override
@@ -29,7 +34,13 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingLogin();
-        view.onErrorLogin(ErrorHandler.getErrorMessage(e));
+        if (e.getLocalizedMessage() != null
+                && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
+                && !TextUtils.isEmpty(email)) {
+            view.onGoToActivationPage(email);
+        } else {
+            view.onErrorLogin(ErrorHandler.getErrorMessage(e));
+        }
     }
 
     @Override
