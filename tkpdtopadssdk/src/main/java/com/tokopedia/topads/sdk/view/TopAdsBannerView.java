@@ -26,32 +26,41 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     private TopAdsListener adsListener;
     private ImageLoader imageLoader;
 
-    private ImageView iconImg;
-    private TextView sloganTxt;
-
     public TopAdsBannerView(Context context) {
         super(context);
-        inflateView(context, null, 0);
-        initPresenter();
+        init();
     }
 
     public TopAdsBannerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        inflateView(context, attrs, 0);
-        initPresenter();
+        init();
     }
 
     public TopAdsBannerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        inflateView(context, attrs, defStyleAttr);
+        init();
     }
 
-    private void inflateView(Context context, AttributeSet attrs, int defStyle) {
-        imageLoader = new ImageLoader(context);
+    private void createViewCpmShop(Context context, CpmData.Cpm cpm) {
         inflate(getContext(), R.layout.layout_ads_banner_shop, this);
-        iconImg = (ImageView) findViewById(R.id.icon);
-        sloganTxt = (TextView) findViewById(R.id.slogan);
-        initPresenter();
+        ImageView iconImg = (ImageView) findViewById(R.id.icon);
+        TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
+        TextView nameTxt = (TextView) findViewById(R.id.shop_name);
+        TextView descriptionTxt = (TextView) findViewById(R.id.description);
+        imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
+        promotedTxt.setText(cpm.getPromotedText());
+        nameTxt.setText(cpm.getName());
+        descriptionTxt.setText(cpm.getDecription());
+    }
+
+    private void createViewCpmDigital(Context context, CpmData.Cpm cpm) {
+        inflate(getContext(), R.layout.layout_ads_banner_digital, this);
+        ImageView iconImg = (ImageView) findViewById(R.id.icon);
+        TextView nameTxt = (TextView) findViewById(R.id.name);
+        TextView descriptionTxt = (TextView) findViewById(R.id.description);
+        imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
+        nameTxt.setText(cpm.getName());
+        descriptionTxt.setText(cpm.getDecription());
     }
 
     public void setConfig(Config config) {
@@ -71,11 +80,10 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     public void displayAds(CpmModel cpmModel) {
         CpmData data = cpmModel.getData().get(0);
         if(data.getCpm().getCpmShop()!=null) {
-            sloganTxt.setText(data.getCpm().getCpmShop().getSlogan());
+            createViewCpmShop(getContext(), data.getCpm());
         } else {
-            sloganTxt.setText(data.getCpm().getDecription());
+            createViewCpmDigital(getContext(), data.getCpm());
         }
-        imageLoader.loadImage(data.getCpm().getCpmImage().getFullEcs(), data.getCpm().getCpmImage().getFullUrl(), iconImg);
     }
 
     @Override
@@ -100,7 +108,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    public void initPresenter() {
+    public void init() {
+        imageLoader = new ImageLoader(getContext());
         presenter = new BannerAdsPresenter(getContext());
         presenter.attachView(this);
     }
