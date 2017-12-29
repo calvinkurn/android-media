@@ -13,7 +13,7 @@ public class Header implements Parcelable {
     private double processTime;
     @SerializedName("messages")
     @Expose
-    private Object messages;
+    private String messages;
     @SerializedName("reason")
     @Expose
     private String reason;
@@ -26,11 +26,11 @@ public class Header implements Parcelable {
         this.processTime = processTime;
     }
 
-    public Object getMessages() {
+    public String getMessages() {
         return messages;
     }
 
-    public void setMessages(Object messages) {
+    public void setMessages(String messages) {
         this.messages = messages;
     }
 
@@ -50,7 +50,7 @@ public class Header implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(this.processTime);
-        dest.writeParcelable(this.messages, flags);
+        dest.writeString(this.messages, flags);
         dest.writeString(this.reason);
     }
 
@@ -59,7 +59,7 @@ public class Header implements Parcelable {
 
     protected Header(Parcel in) {
         this.processTime = in.readDouble();
-        this.messages = in.readParcelable(Object.class.getClassLoader());
+        this.messages = in.readString();
         this.reason = in.readString();
     }
 

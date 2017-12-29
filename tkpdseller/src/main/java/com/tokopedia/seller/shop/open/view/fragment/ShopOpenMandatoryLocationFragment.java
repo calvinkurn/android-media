@@ -211,8 +211,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         });
 
         if(stepperListener.getStepperModel()!=null){
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getShipment();
+            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
 
             locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
             locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
@@ -236,7 +236,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
 
             ResponseIsReserveDomain responseIsReserveDomain = stepperListener.getStepperModel().getResponseIsReserveDomain();
 
-            Shipment shipment = responseIsReserveDomain.getShipment();
+            Shipment shipment = responseIsReserveDomain.getData().getShipment();
             shipment.setAddrStreet(googleLocationViewModel.getGeneratedAddress());
             shipment.setLongitude(googleLocationViewModel.getLongitude());
             shipment.setLatitude(googleLocationViewModel.getLatitude());
@@ -245,12 +245,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
             shipment.setPostal(Integer.valueOf(locationShippingViewHolder.getPostalCode()));
 
 
-            UserData userData = responseIsReserveDomain.getUserData();
+            UserData userData = responseIsReserveDomain.getData().getUserData();
             userData.setLocComplete(locationShippingViewHolder.getLocationComplete());
             userData.setLocation(locationShippingViewHolder.getDistrictName());
 
-            responseIsReserveDomain.setShipment(shipment);
-            responseIsReserveDomain.setUserData(userData);
+            responseIsReserveDomain.getData().setShipment(shipment);
+            responseIsReserveDomain.getData().setUserData(userData);
 
             stepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
         }
@@ -349,8 +349,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         if (savedInstanceState == null && getArguments() != null) {
             setupArguments(getArguments());
 
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getShipment();
+            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
             logShipment(shipment);
             logUserData(userData);
         }

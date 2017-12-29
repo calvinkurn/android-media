@@ -122,7 +122,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
             if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null){
                 presenter.getisReserveDomain();
             }else{
-                if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+                if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData() != null) {
                     UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
                     if(userData.getShopName()!= null) {
                         String helloName = getString(R.string.hello_x, userData.getShopName());
@@ -131,7 +131,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
                     shopDescEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getShortDesc());
                     shopSloganEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getTagLine());
                     ImageHandler.loadImage(getActivity(), imagePicker,
-                            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getLogo(), R.drawable.ic_add_photo_box);
+                            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData().getLogo(), R.drawable.ic_add_photo_box);
                 }
             }
         }
