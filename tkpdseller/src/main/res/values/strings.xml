@@ -221,7 +221,7 @@
     <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
 
     <string name="getting_shop_step">Mengambil Informasi Toko</string>
-    <string name="shipping_location_text">Lokasi Pengiriman</string>
+    <string name="shipping_location_text"><b>Lokasi Pengiriman</b></string>
     <string name="shipping_location_text_desc">Lengkapi informasi lokasi pengiriman untuk memilih kurir yang tersedia di lokasi Anda.</string>
     <string name="shipping_location_text_choose_desc">Pilih dari Daftar Alamat jika alamat pengiriman sama dengan alamat pembelian yang pernah Anda isi</string>
     <string name="choose_from_address_list">Pilih dari Daftar Alamat</string>
