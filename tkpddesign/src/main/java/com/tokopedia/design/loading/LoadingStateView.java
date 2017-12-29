@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +192,11 @@ public class LoadingStateView extends FrameLayout {
         }
         View viewTemp = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
         viewTemp.setVisibility(View.GONE);
-        addView(viewTemp);
+        ViewGroup.LayoutParams layoutParams = viewTemp.getLayoutParams();
+        if (layoutParams instanceof FrameLayout.LayoutParams) {
+            ((LayoutParams) layoutParams).gravity = Gravity.CENTER;
+        }
+        addView(viewTemp, layoutParams);
         return viewTemp;
     }
 

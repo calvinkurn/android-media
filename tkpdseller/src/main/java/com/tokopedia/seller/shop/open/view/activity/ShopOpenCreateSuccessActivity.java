@@ -3,6 +3,8 @@ package com.tokopedia.seller.shop.open.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
@@ -18,6 +20,9 @@ public class ShopOpenCreateSuccessActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_no_toolbar);
         if (savedInstanceState == null) {

@@ -34,13 +34,6 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.seller.shop.open.view.activity.ShopOpenCreateSuccessActivity"
-            android:label="@string/title_shop_is_active"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:exported="true"/>
-
-        <activity
             android:name=".dashboard.view.activity.DashboardActivity"
             android:exported="true"
             android:label="@string/drawer_title_home"

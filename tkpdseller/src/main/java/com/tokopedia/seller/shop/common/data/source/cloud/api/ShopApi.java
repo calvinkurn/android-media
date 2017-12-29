@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.data.source.cloud.api;
+package com.tokopedia.seller.shop.common.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;

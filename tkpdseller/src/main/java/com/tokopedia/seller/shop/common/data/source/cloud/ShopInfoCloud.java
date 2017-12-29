@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.edit.data.source.cloud;
+package com.tokopedia.seller.shop.common.data.source.cloud;
 
 import android.content.Context;
 
@@ -7,7 +7,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.common.data.response.DataResponse;
 
 import java.util.HashMap;
