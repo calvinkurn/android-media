@@ -12,7 +12,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 3/21/17.
  */
 
-public interface ShopSettingSaveInfoRepository {
+public interface ShopOpenSaveInfoRepository {
     Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest);
     Observable<Boolean> saveShopSettingStep2(RequestParams requestParams);
     Observable<Boolean> saveShopSettingStep3(CourierServiceIdWrapper courierServiceIdWrapper);

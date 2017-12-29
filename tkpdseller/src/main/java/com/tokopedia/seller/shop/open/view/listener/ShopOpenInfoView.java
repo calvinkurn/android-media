@@ -6,7 +6,7 @@ import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Respon
 /**
  * Created by zulfikarrahman on 3/16/17.
  */
-public interface ShopSettingInfoView extends CustomerView {
+public interface ShopOpenInfoView extends CustomerView {
 
     void showProgressDialog();
 

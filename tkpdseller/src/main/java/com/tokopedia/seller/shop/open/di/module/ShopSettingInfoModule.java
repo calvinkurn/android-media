@@ -18,15 +18,15 @@ import com.tokopedia.seller.product.edit.data.repository.GenerateHostRepositoryI
 import com.tokopedia.seller.product.edit.data.source.GenerateHostDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
+import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
-import com.tokopedia.seller.shop.open.data.repository.ShopSettingSaveInfoRepositoryImpl;
-import com.tokopedia.seller.shop.open.data.source.ShopSettingInfoDataSource;
-import com.tokopedia.seller.shop.open.domain.ShopSettingSaveInfoRepository;
+import com.tokopedia.seller.shop.open.data.repository.ShopOpenSaveInfoRepositoryImpl;
+import com.tokopedia.seller.shop.open.data.source.ShopOpenInfoDataSource;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopSettingSaveInfoUseCase;
-import com.tokopedia.seller.shop.open.view.presenter.ShopSettingInfoPresenter;
-import com.tokopedia.seller.shop.open.view.presenter.ShopSettingInfoPresenterImpl;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,8 +42,8 @@ public class ShopSettingInfoModule {
 
     @Provides
     @ShopOpenDomainScope
-    ShopSettingInfoPresenter providePresenter(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
-        return new ShopSettingInfoPresenterImpl(shopSettingSaveInfoUseCase, shopIsReserveDomainUseCase);
+    ShopOpenInfoPresenter providePresenter(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
+        return new ShopOpenInfoPresenterImpl(shopSettingSaveInfoUseCase, shopIsReserveDomainUseCase);
     }
 
     @Provides
@@ -60,8 +60,8 @@ public class ShopSettingInfoModule {
 
     @Provides
     @ShopOpenDomainScope
-    ShopSettingSaveInfoRepository provideShopSettingSaveInfoRepository(ShopSettingInfoDataSource shopSettingInfoDataSource){
-        return new ShopSettingSaveInfoRepositoryImpl(shopSettingInfoDataSource);
+    ShopOpenSaveInfoRepository provideShopSettingSaveInfoRepository(ShopOpenInfoDataSource shopOpenInfoDataSource){
+        return new ShopOpenSaveInfoRepositoryImpl(shopOpenInfoDataSource);
     }
 
     @Provides

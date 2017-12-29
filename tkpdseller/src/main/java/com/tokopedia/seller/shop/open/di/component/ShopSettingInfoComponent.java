@@ -6,9 +6,8 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
-import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.scope.ShopSettingInfoScope;
-import com.tokopedia.seller.shop.open.view.fragment.ShopSettingInfoFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenInfoFragment;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 
 import dagger.Component;
@@ -21,7 +20,7 @@ import retrofit2.Retrofit;
 @ShopSettingInfoScope
 @Component(dependencies = ShopOpenDomainComponent.class)
 public interface ShopSettingInfoComponent {
-    void inject(ShopSettingInfoFragment shopSettingInfoFragment);
+    void inject(ShopOpenInfoFragment shopOpenInfoFragment);
 
     TomeApi getTomeApi();
 

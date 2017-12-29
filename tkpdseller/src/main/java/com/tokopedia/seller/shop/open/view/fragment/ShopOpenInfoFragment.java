@@ -39,8 +39,8 @@ import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserDa
 import com.tokopedia.seller.shop.open.data.source.cloud.ShopSettingException;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopSettingInfoComponent;
-import com.tokopedia.seller.shop.open.view.listener.ShopSettingInfoView;
-import com.tokopedia.seller.shop.open.view.presenter.ShopSettingInfoPresenter;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenInfoView;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
 import com.tokopedia.seller.shop.open.view.fragment.ShopSettingInfoFragmentPermissionsDispatcher;
 
 import java.io.File;
@@ -59,12 +59,12 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopSettingInfoView {
+public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
 
     public static final int REQUEST_CODE_IMAGE_PICKER = 532;
 
     @Inject
-    public ShopSettingInfoPresenter presenter;
+    public ShopOpenInfoPresenter presenter;
     private TkpdHintTextInputLayout shopDescTextInputLayout;
     private EditText shopDescEditText;
     private TkpdHintTextInputLayout shopSloganTextInputLayout;
@@ -78,8 +78,8 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     private String uriPathImage = "";
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
-    public static ShopSettingInfoFragment createInstance() {
-        return new ShopSettingInfoFragment();
+    public static ShopOpenInfoFragment createInstance() {
+        return new ShopOpenInfoFragment();
     }
 
     @Override
@@ -214,7 +214,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     }
 
     private void onClickBrowseImage() {
-        ShopSettingInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopSettingInfoFragment.this);
+        ShopSettingInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenInfoFragment.this);
     }
 
     @Override

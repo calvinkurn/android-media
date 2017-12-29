@@ -18,7 +18,7 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFra
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.view.fragment.ShopSettingInfoFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-            fragmentList.add(ShopSettingInfoFragment.createInstance());
+            fragmentList.add(ShopOpenInfoFragment.createInstance());
             fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
             fragmentList.add(ShopOpenMandatoryLogisticFragment.newInstance());
             return fragmentList;

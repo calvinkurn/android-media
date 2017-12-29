@@ -11,12 +11,12 @@ import rx.Subscriber;
  * Created by zulfikarrahman on 3/20/17.
  */
 
-public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
+public class ShopOpenInfoPresenterImpl extends ShopOpenInfoPresenter {
 
     private final ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase;
     private final ShopIsReserveDomainUseCase shopIsReserveDomainUseCase;
 
-    public ShopSettingInfoPresenterImpl(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
+    public ShopOpenInfoPresenterImpl(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
         this.shopSettingSaveInfoUseCase = shopSettingSaveInfoUseCase;
         this.shopIsReserveDomainUseCase = shopIsReserveDomainUseCase;
     }
