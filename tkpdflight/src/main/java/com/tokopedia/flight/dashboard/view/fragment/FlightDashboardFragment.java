@@ -26,6 +26,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
+import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
@@ -389,6 +390,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }
         bannerView.setPromoList(promoUrls);
         bannerView.buildView();
+        bannerView.setPagerAdapter(new FlightBannerPagerAdapter(promoUrls, bannerView.getOnPromoClickListener()));
     }
 
     @Override
