@@ -29,7 +29,6 @@ import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDo
 import com.tokopedia.seller.shop.setting.data.model.response.Shipment;
 import com.tokopedia.seller.shop.setting.view.CourierListViewGroup;
 import com.tokopedia.seller.shop.setting.view.ShopCourierExpandableOption;
-import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragment;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenterImpl;
 
