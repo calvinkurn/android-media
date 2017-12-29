@@ -25,12 +25,12 @@ import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.open.data.model.response.Shipment;
-import com.tokopedia.seller.shop.setting.view.CourierListViewGroup;
-import com.tokopedia.seller.shop.setting.view.ShopCourierExpandableOption;
-import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenterImpl;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
+import com.tokopedia.seller.shop.open.view.CourierListViewGroup;
+import com.tokopedia.seller.shop.open.view.ShopCourierExpandableOption;
+import com.tokopedia.seller.shop.open.view.listener.ShopSettingLogisticView;
+import com.tokopedia.seller.shop.open.view.presenter.ShopSettingLogisticPresenterImpl;
 
 import java.util.List;
 
@@ -125,7 +125,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         if (responseIsReserveDomain == null) {
             return DEFAULT_DISTRICT_ID;
         }
-        Shipment shipment = responseIsReserveDomain.getShipment();
+        Shipment shipment = responseIsReserveDomain.getData().getShipment();
         if (shipment == null) {
             return DEFAULT_DISTRICT_ID;
         }

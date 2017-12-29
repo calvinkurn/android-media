@@ -17,8 +17,8 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenRoutingFragment;
-import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoPresenter;
+import com.tokopedia.seller.shop.open.di.module.ShopSettingInfoModule;
+import com.tokopedia.seller.shop.open.view.presenter.ShopSettingInfoPresenter;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;

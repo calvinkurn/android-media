@@ -1,10 +1,10 @@
 package com.tokopedia.seller.shop.open.data.source.cloud.api;
 
 import com.tokopedia.seller.shop.constant.ShopOpenNetworkConstant;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomain;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShop;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShopName;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseSaveShopDesc;
 
@@ -26,11 +26,11 @@ import rx.Observable;
 public interface TomeApi {
 
     @GET(ShopOpenNetworkConstant.PATH_DOMAIN_CHECK)
-    Observable<Response<ResponseCheckDomain>> getDomainCheck(
+    Observable<Response<ResponseCheckDomainName>> getDomainCheck(
             @Query(ShopOpenNetworkConstant.PARAM_SHOP_DOMAIN) String domainName);
 
     @GET(ShopOpenNetworkConstant.PATH_DOMAIN_CHECK)
-    Observable<Response<ResponseCheckShop>> getShopCheck(
+    Observable<Response<ResponseCheckShopName>> getShopCheck(
             @Query(ShopOpenNetworkConstant.PARAM_SHOP_NAME) String shopName);
 
     @FormUrlEncoded
