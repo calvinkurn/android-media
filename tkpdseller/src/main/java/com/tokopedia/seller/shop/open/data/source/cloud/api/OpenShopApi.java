@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.data.datasource.cloud;
+package com.tokopedia.seller.shop.open.data.source.cloud.api;
 
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
 import com.tokopedia.core.network.constants.TkpdBaseURL;

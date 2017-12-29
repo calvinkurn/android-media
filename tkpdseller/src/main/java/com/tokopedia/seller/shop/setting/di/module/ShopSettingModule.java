@@ -1,18 +1,12 @@
 package com.tokopedia.seller.shop.setting.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
-import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.OpenShopApi;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictLogisticDataRepositoryImpl;
-import com.tokopedia.seller.shop.setting.data.repository.ShopSettingSaveInfoRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
 import com.tokopedia.seller.shop.setting.data.source.LogisticDataSource;
-import com.tokopedia.seller.shop.setting.data.source.ShopSettingInfoDataSource;
-import com.tokopedia.seller.shop.setting.di.scope.ShopSettingInfoScope;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
-import com.tokopedia.seller.shop.setting.domain.ShopSettingSaveInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

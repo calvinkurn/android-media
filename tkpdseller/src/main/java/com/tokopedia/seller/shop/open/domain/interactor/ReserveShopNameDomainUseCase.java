@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shop.constant.ShopExtraConstant;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
 
 import javax.inject.Inject;
 

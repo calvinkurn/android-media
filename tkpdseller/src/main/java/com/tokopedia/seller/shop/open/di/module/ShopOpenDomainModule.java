@@ -9,7 +9,7 @@ import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepositoryImpl;
 import com.tokopedia.seller.shop.open.data.source.ShopOpenDataSource;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
-import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.OpenShopApi;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictLogisticDataRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
 import com.tokopedia.seller.shop.setting.data.source.LogisticDataSource;

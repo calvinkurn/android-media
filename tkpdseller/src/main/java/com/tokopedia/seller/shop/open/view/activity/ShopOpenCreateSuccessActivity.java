@@ -2,16 +2,14 @@ package com.tokopedia.seller.shop.open.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
 
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenCreateSuccessFragment;
 
-/**
- * Created by nakama on 28/12/17.
- */
 
-public class ShopOpenCreateSuccessActivity extends BaseSimpleActivity {
+public class ShopOpenCreateSuccessActivity extends BaseActivity {
 
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, ShopOpenCreateSuccessActivity.class);
@@ -19,8 +17,15 @@ public class ShopOpenCreateSuccessActivity extends BaseSimpleActivity {
     }
 
     @Override
-    protected Fragment getNewFragment() {
-        return ShopOpenCreateSuccessFragment.newInstance();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_no_toolbar);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, ShopOpenCreateSuccessFragment.newInstance(),
+                            ShopOpenCreateSuccessFragment.TAG)
+                    .commit();
+        }
     }
 
 }

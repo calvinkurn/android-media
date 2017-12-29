@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.data.model.response;
+package com.tokopedia.seller.shop.open.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

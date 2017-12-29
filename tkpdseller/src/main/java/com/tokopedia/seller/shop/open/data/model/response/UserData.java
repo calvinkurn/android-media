@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.shop.setting.data.model.response;
+package com.tokopedia.seller.shop.open.data.model.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
