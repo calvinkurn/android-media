@@ -14,6 +14,8 @@ public interface ChangePhoneNumberInputFragmentListener {
         void enableNextButton();
 
         void disableNextButton();
+
+        void correctPhoneNumber(String newNumber);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

@@ -50,6 +50,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private ArrayList<String> warningList;
     private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
+    private TextWatcher phoneNumberTextWatcher;
 
     public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, boolean hasTokocash, ArrayList<String> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
@@ -89,7 +90,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     private void setViewListener() {
-        newPhoneNumber.addTextChangedListener(new TextWatcher() {
+        phoneNumberTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -104,7 +105,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
             public void afterTextChanged(Editable editable) {
                 presenter.onNewNumberTextChanged(editable);
             }
-        });
+        };
+        newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,5 +179,13 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setEnabled(false);
         nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.grey_button_rounded));
         nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.black_12));
+    }
+
+    @Override
+    public void correctPhoneNumber(String newNumber) {
+        newPhoneNumber.removeTextChangedListener(phoneNumberTextWatcher);
+        newPhoneNumber.setText(newNumber);
+        newPhoneNumber.setSelection(newNumber.length());
+        newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);
     }
 }
