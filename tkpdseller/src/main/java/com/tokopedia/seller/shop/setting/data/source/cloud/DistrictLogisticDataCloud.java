@@ -9,8 +9,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
-import com.tokopedia.seller.shop.setting.data.datasource.cloud.OpenShopApi;
-import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.OpenShopApi;
 
 import javax.inject.Inject;
 

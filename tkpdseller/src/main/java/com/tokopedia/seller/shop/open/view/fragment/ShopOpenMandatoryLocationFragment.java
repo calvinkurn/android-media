@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -19,20 +18,17 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
- import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
 import com.tokopedia.seller.shop.open.view.holder.LocationMapViewHolder;
 import com.tokopedia.seller.shop.open.view.holder.LocationShippingViewHolder;
 import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
 import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
 import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.Shipment;
-import com.tokopedia.seller.shop.setting.data.model.response.UserData;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.Shipment;
+import com.tokopedia.seller.shop.open.data.model.response.UserData;
 import com.tokopedia.seller.shop.setting.domain.interactor.ShopOpenSaveLocationUseCase;
-import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
 
 import javax.inject.Inject;
 

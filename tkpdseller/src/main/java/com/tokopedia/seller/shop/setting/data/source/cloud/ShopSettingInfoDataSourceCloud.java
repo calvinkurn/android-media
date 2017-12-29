@@ -7,8 +7,8 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceId;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseCreateShop;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseSaveShopDesc;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseSaveShopDesc;
 
 import org.json.JSONArray;
 import org.json.JSONException;

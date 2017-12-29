@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.setting.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.setting.domain.interactor.ShopSettingSaveInfoUseCase;
 
 import rx.Subscriber;

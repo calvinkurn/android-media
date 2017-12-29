@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shop.open.data.source;
 
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
 import com.tokopedia.seller.shop.setting.data.source.cache.ShopOpenDataCache;
 import com.tokopedia.seller.shop.open.data.source.cloud.ShopOpenDataCloud;
 
