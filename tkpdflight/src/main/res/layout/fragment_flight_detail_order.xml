@@ -283,7 +283,7 @@
                 <TextView
                     android:id="@+id/help"
                     style="@style/TextView.Caption.Green"
-                    android:text="di sini" />
+                    android:text="@string/di_sini" />
             </LinearLayout>
 
             <Button

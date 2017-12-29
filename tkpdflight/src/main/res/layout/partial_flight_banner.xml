@@ -11,12 +11,14 @@
         android:id="@+id/banner_title"
         style="@style/TextView.Headline.Bold"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"
         android:text="@string/flight_title_promo" />
 
     <com.tokopedia.design.banner.BannerView
         android:id="@+id/banner"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -383,6 +383,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderBannerView(List<BannerDetail> bannerList) {
+        bannerTitle.setVisibility(View.VISIBLE);
+        bannerView.setVisibility(View.VISIBLE);
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
         for (BannerDetail bannerModel : bannerList) {

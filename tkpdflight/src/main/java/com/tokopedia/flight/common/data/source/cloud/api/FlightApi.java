@@ -75,10 +75,8 @@ public interface FlightApi {
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)
     Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest, @Header("x-tkpd-userid") String userId);
-    Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest);
 
     @GET
-    Observable<Response<DataResponse<List<BannerDetail>>>> getBanners(@Url
-                                                                              String url, @QueryMap Map<String, String> params);
+    Observable<Response<DataResponse<List<BannerDetail>>>> getBanners(@Url String url, @QueryMap Map<String, String> params);
 
 }
