@@ -123,22 +123,6 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
         }
     }
 
-    private String getLatitude(String latitude) {
-        if (latitude == null || latitude.isEmpty()) {
-            return TkpdState.Geolocation.defaultLatitude;
-        } else {
-            return latitude;
-        }
-    }
-
-    private String getLongitude(String longitude) {
-        if (longitude == null || longitude.isEmpty()) {
-            return TkpdState.Geolocation.defaultLongitude;
-        } else {
-            return longitude;
-        }
-    }
-
     public interface ViewHolderListener3{
         void navigateToGeoLocationActivityRequest(String generatedMap);
     }

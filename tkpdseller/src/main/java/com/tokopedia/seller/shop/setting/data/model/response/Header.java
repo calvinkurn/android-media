@@ -50,7 +50,7 @@ public class Header implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(this.processTime);
-        dest.writeString(this.messages, flags);
+        dest.writeString(this.messages);
         dest.writeString(this.reason);
     }
 

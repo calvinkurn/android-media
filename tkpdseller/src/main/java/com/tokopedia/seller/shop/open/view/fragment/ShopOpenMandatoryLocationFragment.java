@@ -295,21 +295,13 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                 case REQUEST_CODE__EDIT_ADDRESS:
                     Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
                     if(address != null){
-                        LocationViewModel locationViewModel = new LocationViewModel();
-                        locationViewModel.setDistrictId(address.getDistrictId());
-                        locationViewModel.setDistrictName(address.getDistrictName());
-                        locationViewModel.setCityId(address.getCityId());
-                        locationViewModel.setCityName(address.getCityName());
-                        locationViewModel.setProvinceId(address.getProvinceId());
-                        locationViewModel.setProvinceName(address.getProvinceName());
-                        locationViewModel.setZipCodes(address.getZipCodes());
 
-                        locationShippingViewHolder.initializeZipCodes(locationViewModel.getZipCodes());
-                        locationShippingViewHolder.updateDistrictId(locationViewModel.getDistrictId()+"");
+                        locationShippingViewHolder.initializeZipCodes(address.getZipCodes());
+                        locationShippingViewHolder.updateDistrictId(address.getDistrictId()+"");
                         locationShippingViewHolder.updateLocationData(
-                                locationViewModel.getProvinceName(),
-                                locationViewModel.getCityName(),
-                                locationViewModel.getDistrictName()
+                                address.getProvinceName(),
+                                address.getCityName(),
+                                address.getDistrictName()
                         );
                     }
                     break;
@@ -321,6 +313,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                         locationViewModel.setGeneratedAddress(locationPass.getGeneratedAddress());
                         locationViewModel.setLatitude(locationPass.getLatitude());
                         locationViewModel.setLongitude(locationPass.getLongitude());
+
                         locationMapViewHolder.setLocationText(locationViewModel);
                     }
                     break;
