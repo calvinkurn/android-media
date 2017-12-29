@@ -32,6 +32,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -440,6 +441,9 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                 intent = moveToCreateShop(this);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
+            intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_FEED);
+            startActivity(intent);
         }
     }
 
