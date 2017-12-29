@@ -8,9 +8,9 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
-import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.seller.shop.setting.constant.ShopSettingNetworkConstant;
+import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 
 import java.util.HashMap;
 
@@ -26,6 +26,7 @@ import rx.functions.Func1;
 public class ShopOpenSaveInfoUseCase extends UseCase<Boolean> {
     public static final String PATH_FILE_IMAGE = "PATH_FILE_IMAGE";
     public static final String SHOP_DESCRIPTION = "SHOP_DESCRIPTION";
+    public static final String TAG_LINE = "tag_line";
     public static final String STEP_INFO_1 = "1";
     public static final String LOGO = "logo";
     public static final String SERVER_ID = "server_id";
@@ -35,16 +36,16 @@ public class ShopOpenSaveInfoUseCase extends UseCase<Boolean> {
     public static final String STEP = "step";
     public static final String URL_IMAGE_CLOUD = "URL_IMAGE_CLOUD";
 
-    private ShopOpenSaveInfoRepository shopSettingSaveInfoRepository;
+    private ShopOpenSaveInfoRepository shopOpenSaveInfoRepository;
     private UploadImageUseCase<UploadShopImageModel> uploadImageUseCase;
 
     @Inject
     public ShopOpenSaveInfoUseCase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
-                                   ShopOpenSaveInfoRepository shopSettingSaveInfoRepository,
+                                   ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
                                    UploadImageUseCase<UploadShopImageModel> uploadImageUseCase) {
         super(threadExecutor, postExecutionThread);
-        this.shopSettingSaveInfoRepository = shopSettingSaveInfoRepository;
+        this.shopOpenSaveInfoRepository = shopOpenSaveInfoRepository;
         this.uploadImageUseCase = uploadImageUseCase;
     }
 
@@ -69,14 +70,14 @@ public class ShopOpenSaveInfoUseCase extends UseCase<Boolean> {
                     .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>, Observable<Boolean>>() {
                         @Override
                         public Observable<Boolean> call(ImageUploadDomainModel<UploadShopImageModel> dataImageUploadDomainModel) {
-                            return shopSettingSaveInfoRepository.saveShopSetting(getImageRequest(
+                            return shopOpenSaveInfoRepository.saveShopSetting(getImageRequest(
                                     dataImageUploadDomainModel.getDataResultImageUpload().getData().getUpload().getSrc(),
                                     dataImageUploadDomainModel.getServerId(), "",
                                     requestParams.getString(SHOP_DESCRIPTION, ""), requestParams.getString(TAG_LINE_REQUEST_CLOUD, "")));
                         }
                     });
         } else {
-            return shopSettingSaveInfoRepository.saveShopSetting(getImageRequest(requestParams.getString(URL_IMAGE_CLOUD, "")
+            return shopOpenSaveInfoRepository.saveShopSetting(getImageRequest(requestParams.getString(URL_IMAGE_CLOUD, "")
                     , requestParams.getString(SERVER_ID, ""), requestParams.getString(PHOTO_OBJ, ""),
                     requestParams.getString(SHOP_DESCRIPTION, ""), requestParams.getString(TAG_LINE_REQUEST_CLOUD, "")));
         }

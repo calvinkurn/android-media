@@ -3,7 +3,7 @@ package com.tokopedia.seller.shop.open.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.open.domain.interactor.ShopSettingSaveInfoUseCase;
+import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveInfoUseCase;
 
 import rx.Subscriber;
 
@@ -13,18 +13,18 @@ import rx.Subscriber;
 
 public class ShopOpenInfoPresenterImpl extends ShopOpenInfoPresenter {
 
-    private final ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase;
+    private final ShopOpenSaveInfoUseCase shopOpenSaveInfoUseCase;
     private final ShopIsReserveDomainUseCase shopIsReserveDomainUseCase;
 
-    public ShopOpenInfoPresenterImpl(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
-        this.shopSettingSaveInfoUseCase = shopSettingSaveInfoUseCase;
+    public ShopOpenInfoPresenterImpl(ShopOpenSaveInfoUseCase shopOpenSaveInfoUseCase, ShopIsReserveDomainUseCase shopIsReserveDomainUseCase) {
+        this.shopOpenSaveInfoUseCase = shopOpenSaveInfoUseCase;
         this.shopIsReserveDomainUseCase = shopIsReserveDomainUseCase;
     }
 
     @Override
     public void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription, String imageUrl, String serverId, String picObj) {
         getView().showProgressDialog();
-        shopSettingSaveInfoUseCase.execute(ShopSettingSaveInfoUseCase.createRequestParams(uriPathImage,
+        shopOpenSaveInfoUseCase.execute(ShopOpenSaveInfoUseCase.createRequestParams(uriPathImage,
                 shopDescription, shopSlogan, imageUrl, serverId, picObj), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -80,6 +80,6 @@ public class ShopOpenInfoPresenterImpl extends ShopOpenInfoPresenter {
     public void detachView() {
         super.detachView();
         shopIsReserveDomainUseCase.unsubscribe();
-        shopSettingSaveInfoUseCase.unsubscribe();
+        shopOpenSaveInfoUseCase.unsubscribe();
     }
 }
