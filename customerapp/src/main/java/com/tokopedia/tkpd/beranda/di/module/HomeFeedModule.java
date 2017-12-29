@@ -16,6 +16,7 @@ import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FeedFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.HomeFeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.WishlistFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.AddWishlistMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.CheckNewFeedMapper;
@@ -24,6 +25,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FollowKolMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.HomeFeedMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolCommentMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolDeleteCommentMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolSendCommentMapper;
@@ -34,6 +36,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FavoriteShopReposito
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FavoriteShopRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepositoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.HomeFeedRepository;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.HomeFeedRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolCommentSource;
@@ -71,9 +75,6 @@ import retrofit2.Retrofit;
 @Module
 public class HomeFeedModule {
 
-    private static final String NAME_CLOUD = "CLOUD";
-    private static final String NAME_LOCAL = "LOCAL";
-
     @Provides
     ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
         return ApolloClient.builder()
@@ -83,276 +84,36 @@ public class HomeFeedModule {
     }
 
     @Provides
-    MojitoService provideRecentProductService(@MojitoQualifier Retrofit retrofit) {
-        return retrofit.create(MojitoService.class);
+    HomeFeedRepository provideHomeFeedRepository(HomeFeedFactory feedFactory) {
+        return new HomeFeedRepositoryImpl(feedFactory);
     }
 
     @Provides
-    RecentProductMapper provideRecentProductMapper(Gson gson) {
-        return new RecentProductMapper(gson);
-    }
-
-    @Provides
-    FeedRepository provideFeedRepository(FeedFactory feedFactory,
-                                         KolCommentSource kolCommentSource,
-                                         KolSource kolSource) {
-        return new FeedRepositoryImpl(feedFactory, kolCommentSource, kolSource);
-    }
-
-    @Provides
-    FeedFactory provideFeedFactory(@ApplicationContext Context context,
-                                   ApolloClient apolloClient,
-                                   FeedListMapper feedListMapper,
-                                   @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
-                                   @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
-                                   FeedDetailListMapper feedDetailListMapper,
-                                   GlobalCacheManager globalCacheManager,
-                                   MojitoService mojitoService,
-                                   RecentProductMapper recentProductMapper,
-                                   CheckNewFeedMapper checkNewFeedMapper) {
-        return new FeedFactory(
-                context,
+    HomeFeedFactory provideHomeFeedFactory(ApolloClient apolloClient,
+                                           HomeFeedMapper homeFeedMapper,
+                                           FeedResultMapper feedResultMapper) {
+        return new HomeFeedFactory(
                 apolloClient,
-                feedListMapper,
-                feedResultMapperCloud,
-                feedResultMapperLocal,
-                globalCacheManager,
-                feedDetailListMapper,
-                mojitoService,
-                recentProductMapper,
-                checkNewFeedMapper
+                homeFeedMapper,
+                feedResultMapper
         );
     }
 
     @Provides
-    FeedListMapper provideFeedListMapper() {
-        return new FeedListMapper();
+    HomeFeedMapper provideHomeFeedMapper() {
+        return new HomeFeedMapper();
     }
 
-    @Named(NAME_LOCAL)
     @Provides
-    FeedResultMapper provideLocalFeedResultMapper() {
-        return new FeedResultMapper(FeedResult.SOURCE_LOCAL);
-    }
-
-    @Named(NAME_CLOUD)
-    @Provides
-    FeedResultMapper provideCloudFeedResultMapper() {
+    FeedResultMapper provideFeedResultMapper() {
         return new FeedResultMapper(FeedResult.SOURCE_CLOUD);
-    }
-
-    @Provides
-    FeedDetailListMapper provideFeedDetailListMapper() {
-        return new FeedDetailListMapper();
-    }
-
-    @Provides
-    FavoriteShopMapper provideFavoriteShopMapper() {
-        return new FavoriteShopMapper();
-    }
-
-    @Provides
-    ActionService provideActionService() {
-        return new ActionService();
-    }
-
-    @Provides
-    FavoriteShopFactory provideFavoriteShopFactory(@ApplicationContext Context context,
-                                                   FavoriteShopMapper mapper,
-                                                   ActionService service) {
-        return new FavoriteShopFactory(context, mapper, service);
-    }
-
-    @Provides
-    FavoriteShopRepository provideFavoriteShopRepository(FavoriteShopFactory favoriteShopFactory) {
-        return new FavoriteShopRepositoryImpl(favoriteShopFactory);
-    }
-
-    @Provides
-    AddWishlistMapper provideAddWishlistMapper() {
-        return new AddWishlistMapper();
-    }
-
-    @Provides
-    RemoveWishlistMapper provideRemoveWishlistMapper() {
-        return new RemoveWishlistMapper();
-    }
-
-    @Provides
-    MojitoNoRetryAuthService provideMojitoNoRetryAuthService() {
-        return new MojitoNoRetryAuthService();
-    }
-
-    @Provides
-    WishlistFactory provideWishlistFactory(AddWishlistMapper addWishlistMapper,
-                                           RemoveWishlistMapper removeWishlistMapper,
-                                           MojitoNoRetryAuthService mojitoNoRetryAuthService) {
-        return new WishlistFactory(addWishlistMapper,
-                removeWishlistMapper,
-                mojitoNoRetryAuthService);
-    }
-
-    @Provides
-    WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
-        return new WishlistRepositoryImpl(wishlistFactory);
     }
 
     @Provides
     GetHomeFeedsUseCase provideGetHomeFeedsUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            FeedRepository feedRepository) {
+            HomeFeedRepository feedRepository) {
         return new GetHomeFeedsUseCase(threadExecutor, postExecutionThread, feedRepository);
     }
-
-    @Provides
-    GetRecentViewUseCase provideGetRecentProductUseCase(ThreadExecutor threadExecutor,
-                                                        PostExecutionThread postExecutionThread,
-                                                        FeedRepository feedRepository) {
-        return new GetRecentViewUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @Provides
-    GetFeedsDetailUseCase provideGetFeedsDetailUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       FeedRepository feedRepository) {
-        return new GetFeedsDetailUseCase(threadExecutor, postExecutionThread, feedRepository);
-    }
-
-    @Provides
-    FavoriteShopUseCase provideDoFavoriteShopUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     FavoriteShopRepository repository) {
-        return new FavoriteShopUseCase(threadExecutor, postExecutionThread, repository);
-    }
-
-    @Provides
-    AddWishlistUseCase provideAddWishlistUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 WishlistRepository wishlistRepository) {
-        return new AddWishlistUseCase(threadExecutor,
-                postExecutionThread,
-                wishlistRepository);
-    }
-
-    @Provides
-    RemoveWishlistUseCase provideRemoveWishlistUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       WishlistRepository wishlistRepository) {
-        return new RemoveWishlistUseCase(threadExecutor,
-                postExecutionThread,
-                wishlistRepository);
-    }
-
-    @Provides
-    RefreshFeedUseCase provideRefreshFeedUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 FeedRepository feedRepository) {
-        return new RefreshFeedUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @Provides
-    CheckNewFeedMapper provideCheckNewFeedMapper() {
-        return new CheckNewFeedMapper();
-    }
-
-    @Provides
-    CheckNewFeedUseCase provideCheckNewFeedUseCase(ThreadExecutor threadExecutor,
-                                                   PostExecutionThread postExecutionThread,
-                                                   FeedRepository feedRepository) {
-        return new CheckNewFeedUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @Provides
-    GetKolCommentsUseCase provideGetKolCommentsUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       FeedRepository feedRepository) {
-        return new GetKolCommentsUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @Provides
-    KolCommentSource provideKolCommentSource(ApolloClient apolloClient,
-                                             KolCommentMapper kolCommentMapper,
-                                             KolSendCommentMapper kolSendCommentMapper,
-                                             KolDeleteCommentMapper kolDeleteCommentMapper) {
-        return new KolCommentSource(apolloClient, kolCommentMapper,
-                kolSendCommentMapper, kolDeleteCommentMapper);
-    }
-
-    @Provides
-    KolCommentMapper provideKolCommentMapper() {
-        return new KolCommentMapper();
-    }
-
-    @Provides
-    SendKolCommentUseCase provideSendKolCommentUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       FeedRepository feedRepository) {
-        return new SendKolCommentUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @Provides
-    KolSendCommentMapper provideKolSendCommentMapper() {
-        return new KolSendCommentMapper();
-    }
-
-    @Provides
-    KolSource provideKolSource(ApolloClient apolloClient, LikeKolMapper likeKolMapper,
-                               FollowKolMapper followKolMapper) {
-        return new KolSource(apolloClient, likeKolMapper, followKolMapper);
-    }
-
-    @Provides
-    LikeKolPostUseCase provideLikeKolPostUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 FeedRepository feedRepository) {
-        return new LikeKolPostUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @Provides
-    LikeKolMapper provideLikeKolMapper() {
-        return new LikeKolMapper();
-    }
-
-    @Provides
-    FollowKolMapper provideFollowKolMapper() {
-        return new FollowKolMapper();
-    }
-
-    @Provides
-    FollowKolPostUseCase provideFollowKolPostUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     FeedRepository feedRepository) {
-        return new FollowKolPostUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @Provides
-    DeleteKolCommentUseCase provideDeleteKolCommentUseCase(ThreadExecutor threadExecutor,
-                                                           PostExecutionThread postExecutionThread,
-                                                           FeedRepository feedRepository) {
-        return new DeleteKolCommentUseCase(threadExecutor,
-                postExecutionThread,
-                feedRepository);
-    }
-
-    @Provides
-    KolDeleteCommentMapper provideKolDeleteCommentMapper() {
-        return new KolDeleteCommentMapper();
-    }
-
-
 }

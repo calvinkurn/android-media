@@ -37,11 +37,6 @@ public class FeedRepositoryImpl implements FeedRepository {
     }
 
     @Override
-    public Observable<FeedResult> getHomeFeeds(RequestParams requestParams) {
-        return feedFactory.createCloudFeedDataSource().getHomeFeeds(requestParams);
-    }
-
-    @Override
     public Observable<FeedResult> getFeedsFromCloud(RequestParams requestParams) {
         return feedFactory.createCloudFeedDataSource().getNextPageFeedsList(requestParams);
     }

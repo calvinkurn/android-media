@@ -21,8 +21,6 @@ import rx.Observable;
 
 public interface FeedRepository {
 
-    Observable<FeedResult> getHomeFeeds(RequestParams requestParams);
-
     Observable<FeedResult> getFeedsFromCloud(RequestParams requestParams);
 
     Observable<FeedResult> getFirstPageFeedsFromCloud(RequestParams parameters);
