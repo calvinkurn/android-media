@@ -822,11 +822,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-//        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-//            return InboxChatActivity.getCallingIntent(context);
-//        else
-//            return InboxMessageActivity.getCallingIntent(context);
-        return new Intent(context, ChangePhoneNumberWarningActivity.class);
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+            return InboxChatActivity.getCallingIntent(context);
+        else
+            return InboxMessageActivity.getCallingIntent(context);
     }
 
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
