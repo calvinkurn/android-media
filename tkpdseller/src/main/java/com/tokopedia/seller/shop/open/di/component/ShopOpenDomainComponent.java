@@ -8,6 +8,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
+import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
@@ -46,6 +47,7 @@ public interface ShopOpenDomainComponent {
 
     PostExecutionThread getPostExecutionThread();
 
+    @ShopQualifier
     TomeApi getTomeApi();
 
     Retrofit.Builder retrofitBuilder();

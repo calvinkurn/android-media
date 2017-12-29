@@ -12,6 +12,8 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
+import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
@@ -19,6 +21,7 @@ import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -37,15 +40,19 @@ public interface ShopComponent {
 
     PostExecutionThread postExecutionThread();
 
-    @TomeQualifier
-    Retrofit tomeRetrofit();
-
     @WsV4QualifierWithErrorHander
     Retrofit retrofitWsV4();
 
     Retrofit.Builder getRetrofitBuilder();
 
+    @ShopQualifier
     TomeApi tomeApi();
+
+    OkHttpClient.Builder getHttpClientBuilder();
+
+    HttpLoggingInterceptor getHttpLoggingInterceptor();
+
+    BearerInterceptor bearerInterceptor();
 
     @DefaultAuthWithErrorHandler
     OkHttpClient okHttpClient();

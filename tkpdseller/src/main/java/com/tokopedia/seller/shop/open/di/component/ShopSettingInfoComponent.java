@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.di.scope.ShopSettingInfoScope;
@@ -22,6 +23,7 @@ import retrofit2.Retrofit;
 public interface ShopSettingInfoComponent {
     void inject(ShopOpenInfoFragment shopOpenInfoFragment);
 
+    @ShopQualifier
     TomeApi getTomeApi();
 
     Retrofit.Builder retrofitBuilder();

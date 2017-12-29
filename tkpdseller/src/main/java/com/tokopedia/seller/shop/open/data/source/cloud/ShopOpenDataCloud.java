@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.open.data.source.cloud;
 
+import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShopName;
@@ -20,7 +21,7 @@ public class ShopOpenDataCloud {
     private final TomeApi api;
 
     @Inject
-    public ShopOpenDataCloud(TomeApi api) {
+    public ShopOpenDataCloud(@ShopQualifier TomeApi api) {
         this.api = api;
     }
 

@@ -23,7 +23,7 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 3/21/17.
  */
 
-public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
+public class ShopOpenSaveInfoUseCase extends UseCase<Boolean> {
     public static final String PATH_FILE_IMAGE = "PATH_FILE_IMAGE";
     public static final String SHOP_DESCRIPTION = "SHOP_DESCRIPTION";
     public static final String TAG_LINE = "tag_line";
@@ -40,10 +40,10 @@ public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
     private UploadImageUseCase<UploadShopImageModel> uploadImageUseCase;
 
     @Inject
-    public ShopSettingSaveInfoUseCase(ThreadExecutor threadExecutor,
-                                      PostExecutionThread postExecutionThread,
-                                      ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
-                                      UploadImageUseCase<UploadShopImageModel> uploadImageUseCase) {
+    public ShopOpenSaveInfoUseCase(ThreadExecutor threadExecutor,
+                                   PostExecutionThread postExecutionThread,
+                                   ShopOpenSaveInfoRepository shopOpenSaveInfoRepository,
+                                   UploadImageUseCase<UploadShopImageModel> uploadImageUseCase) {
         super(threadExecutor, postExecutionThread);
         this.shopOpenSaveInfoRepository = shopOpenSaveInfoRepository;
         this.uploadImageUseCase = uploadImageUseCase;

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceId;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
@@ -53,7 +54,7 @@ public class ShopOpenInfoDataSourceCloud {
     private final TomeApi tomeApi;
 
     @Inject
-    public ShopOpenInfoDataSourceCloud(TomeApi tomeApi) {
+    public ShopOpenInfoDataSourceCloud(@ShopQualifier TomeApi tomeApi) {
         this.tomeApi = tomeApi;
     }
 
@@ -65,36 +66,10 @@ public class ShopOpenInfoDataSourceCloud {
                         if(responseSaveShopDescResponse.isSuccessful() && (responseSaveShopDescResponse.body().getData().getReserveStatus()==SUCCESS)){
                             return Observable.just(true);
                         }else{
-                            return checkResponseError(responseSaveShopDescResponse);
+                            return Observable.just(false);
                         }
                     }
                 });
-    }
-
-    private Observable<Boolean> checkResponseError(Response<ResponseSaveShopDesc> responseSaveShopDescResponse){
-            JSONObject json;
-            try {
-                json = new JSONObject(responseSaveShopDescResponse.body().toString());
-                JSONArray errorMessage = json.optJSONArray("message_error");
-                if (errorMessage != null) {
-                    String errorListMessage = "";
-                    for(int i = 0; i<errorMessage.length(); i++) {
-                        if(errorMessage.get(i) instanceof String) {
-                            errorListMessage = errorListMessage + errorMessage.getString(i);
-                        }
-                    }
-                    if(!TextUtils.isEmpty(errorListMessage)){
-                        return Observable.error(new ShopSettingException(errorListMessage));
-                    }else{
-                        return Observable.just(true);
-                    }
-                }else{
-                    return Observable.just(true);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return Observable.just(true);
-            }
     }
 
     public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){
@@ -130,7 +105,7 @@ public class ShopOpenInfoDataSourceCloud {
                             if (responseSaveShopDescResponse.body().getData().getReserveStatus() == SUCCESS) {
                                 return Observable.just(true);
                             } else {
-                                String errorString= responseSaveShopDescResponse.body().getHeader().getMessages();
+                                String errorString= responseSaveShopDescResponse.body().getHeader().getMessages().toString();
                                 if (TextUtils.isEmpty(errorString)) {
                                     return Observable.error(new ErrorMessageException(errorString));
                                 } else {
