@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -31,10 +32,16 @@ import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.session.R;
@@ -74,6 +81,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final String GPLUS = "gplus";
     private static final String COLOR_WHITE = "#FFFFFF";
 
+    public static final int TYPE_SQ_PHONE = 1;
+    public static final int TYPE_SQ_EMAIL = 2;
+
     LinearLayout linearLayout;
     LoginTextView registerButton;
     TextView loginButton;
@@ -82,6 +92,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Inject
     RegisterInitialPresenter presenter;
+
+    @Inject
+    GlobalCacheManager cacheManager;
 
     CallbackManager callbackManager;
 
@@ -415,14 +428,38 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
-        startActivityForResult(
-                SecurityQuestionActivity.getCallingIntent(
-                        getActivity(),
-                        securityDomain,
-                        fullName,
-                        email,
-                        phone),
-                REQUEST_SECURITY_QUESTION);
+
+        VerificationPassModel passModel = new VerificationPassModel(phone, email,
+                getListAvailableMethod(securityDomain, phone), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
+
+        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
+                securityDomain.getUserCheckSecurity2());
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    private ArrayList<MethodItem> getListAvailableMethod(SecurityDomain securityDomain, String phone) {
+        ArrayList<MethodItem> list = new ArrayList<>();
+        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
+            list.add(new MethodItem(
+                    VerificationActivity.TYPE_SMS,
+                    R.drawable.ic_verification_sms,
+                    MethodItem.getSmsMethodText(phone)
+            ));
+            list.add(new MethodItem(
+                    VerificationActivity.TYPE_PHONE_CALL,
+                    R.drawable.ic_verification_call,
+                    MethodItem.getCallMethodText(phone)
+            ));
+        }
+        return list;
     }
 
     @Override
