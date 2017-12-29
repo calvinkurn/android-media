@@ -22,6 +22,9 @@ import rx.Observable;
 
 public interface CommonService {
 
+    String CONTENT_TYPE_JSON = "Content-Type: application/json";
+    String CONTENT_TYPE_FORM_URLENCODED = "Content-Type: application/x-www-form-urlencoded";
+
     @GET
     Observable<String> get(@Url String Url);
 
@@ -35,13 +38,12 @@ public interface CommonService {
     @POST
     Observable<String> post(@Url String Url, @FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
     @POST
-    @Headers("Content-Type: application/json")
+    @Headers(CONTENT_TYPE_JSON)
     Observable<String> postJson(@Url String Url, @Body String params);
 
     @POST
-    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @Headers(CONTENT_TYPE_FORM_URLENCODED)
     Observable<String> postParam(@Url String Url, @Body String params);
 
     @POST

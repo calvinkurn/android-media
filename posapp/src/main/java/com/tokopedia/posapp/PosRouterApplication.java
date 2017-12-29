@@ -328,6 +328,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getResolutionCenterIntent(Context context) {
+        return null;
+    }
+
+    @Override
     public void sendAddWishlistEmitter(String productId, String userId) {
 
     }

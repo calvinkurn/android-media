@@ -66,7 +66,7 @@ public class PosReactNativeHostFactory {
 
             @Override
             protected String getJSMainModuleName() {
-                return "reactscript/index.android";
+                return "rnscript/index.android";
             }
         };
     }
