@@ -61,6 +61,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     }
 
     private void initTopAds(Config topAdsConfig) {
+        topAdsConfig.setEndpoint(Endpoint.CPM);
         adsBannerView.setConfig(topAdsConfig);
         adsBannerView.loadTopAds();
     }
