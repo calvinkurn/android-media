@@ -212,8 +212,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         if (!viewModel.isOneWay()) {
             Date currentReturnDate = FlightDateUtil.stringToDate(viewModel.getReturnDate());
             if (currentReturnDate.compareTo(newDepartureDate) < 0) {
-                viewModel.setReturnDate(newDepartureDateStr);
-                viewModel.setReturnDateFmt(newDepartureDateFmtStr);
+                Date reAssignReturnDate = FlightDateUtil.addDate(newDepartureDate, 1);
+                viewModel.setReturnDate(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_FORMAT));
+                viewModel.setReturnDateFmt(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
             }
             getView().setDashBoardViewModel(viewModel);
             getView().renderRoundTripView();

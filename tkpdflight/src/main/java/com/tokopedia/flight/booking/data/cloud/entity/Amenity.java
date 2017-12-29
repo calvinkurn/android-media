@@ -24,6 +24,12 @@ public class Amenity {
     @SerializedName("journey_id")
     @Expose
     private String journeyId;
+    @SerializedName("arrival_id")
+    @Expose
+    private String arrivalId;
+    @SerializedName("departure_id")
+    @Expose
+    private String departureId;
     @SerializedName("items")
     @Expose
     private List<AmenityItem> items;
@@ -49,5 +55,13 @@ public class Amenity {
 
     public String getJourneyId() {
         return journeyId;
+    }
+
+    public String getArrivalId() {
+        return arrivalId;
+    }
+
+    public String getDepartureId() {
+        return departureId;
     }
 }

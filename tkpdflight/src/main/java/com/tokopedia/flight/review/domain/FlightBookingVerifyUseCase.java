@@ -103,16 +103,21 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
             for (FlightBookingAmenityViewModel amenityViewModel : lugagge.getAmenities()) {
                 AmenityPassenger amenityPassenger = new AmenityPassenger();
                 amenityPassenger.setKey(lugagge.getKey());
+                amenityPassenger.setArrivalId(lugagge.getArrivalId());
+                amenityPassenger.setDepartureId(lugagge.getDepartureId());
                 amenityPassenger.setItemId(amenityViewModel.getId());
                 amenityPassenger.setAmenityType(amenityViewModel.getType());
                 amenityPassenger.setJourneyId(lugagge.getJourneyId());
                 amenityPassengers.add(amenityPassenger);
             }
         }
+
         for (FlightBookingAmenityMetaViewModel meal : flightBookingMealMetaViewModels) {
             for (FlightBookingAmenityViewModel amenityViewModel : meal.getAmenities()) {
                 AmenityPassenger amenityPassenger = new AmenityPassenger();
                 amenityPassenger.setKey(meal.getKey());
+                amenityPassenger.setArrivalId(meal.getArrivalId());
+                amenityPassenger.setDepartureId(meal.getDepartureId());
                 amenityPassenger.setItemId(amenityViewModel.getId());
                 amenityPassenger.setAmenityType(amenityViewModel.getType());
                 amenityPassenger.setJourneyId(meal.getJourneyId());

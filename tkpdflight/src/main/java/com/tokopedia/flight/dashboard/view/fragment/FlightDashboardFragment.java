@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.utils.KeyboardHandler;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -61,9 +62,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_LOGIN = 6;
 
     private static final String ALL_PROMO_LINK = "https://www.tokopedia.com/promo/";
-
-    private FlightDashboardViewModel viewModel;
-
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -78,11 +76,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View returnDateSeparatorView;
     AppCompatTextView bannerTitle;
     BannerView bannerView;
-
     List<BannerDetail> bannerList;
-
     @Inject
     FlightDashboardPresenter presenter;
+    private FlightDashboardViewModel viewModel;
 
     public static FlightDashboardFragment getInstance() {
         return new FlightDashboardFragment();
@@ -226,6 +223,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.initialize();
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 
     @Override

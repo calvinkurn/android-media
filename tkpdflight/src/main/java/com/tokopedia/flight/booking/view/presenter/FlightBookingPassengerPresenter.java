@@ -141,6 +141,8 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             existingSelected = new FlightBookingAmenityMetaViewModel();
             existingSelected.setKey(flightBookingLuggageMetaViewModel.getKey());
             existingSelected.setJourneyId(flightBookingLuggageMetaViewModel.getJourneyId());
+            existingSelected.setArrivalId(flightBookingLuggageMetaViewModel.getArrivalId());
+            existingSelected.setDepartureId(flightBookingLuggageMetaViewModel.getDepartureId());
             existingSelected.setDescription(flightBookingLuggageMetaViewModel.getDescription());
             existingSelected.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
         }
@@ -200,6 +202,8 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             existingSelected = new FlightBookingAmenityMetaViewModel();
             existingSelected.setKey(viewModel.getKey());
             existingSelected.setJourneyId(viewModel.getJourneyId());
+            existingSelected.setArrivalId(viewModel.getArrivalId());
+            existingSelected.setDepartureId(viewModel.getDepartureId());
             existingSelected.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
             existingSelected.setDescription(viewModel.getDescription());
         }

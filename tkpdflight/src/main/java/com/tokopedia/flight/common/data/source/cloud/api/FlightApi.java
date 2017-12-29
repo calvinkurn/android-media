@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.data.source.cloud.api;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
@@ -70,7 +71,7 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)
-    Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body VerifyRequest verifyRequest, @Header("x-tkpd-userid") String userId);
+    Observable<Response<DataResponse<DataResponseVerify>>> verifyBooking(@Body JsonObject verifyRequest, @Header("x-tkpd-userid") String userId);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)

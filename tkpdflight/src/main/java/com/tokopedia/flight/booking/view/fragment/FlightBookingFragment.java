@@ -336,7 +336,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         returnInfoView.setVisibility(View.VISIBLE);
         returnInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
-        returnInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getReturnDate()));
+        returnInfoView.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.getReturnDate()) + ")");
         String airLineSection = "";
         String tripInfo = "";
         if (returnTrip.getRouteList().size() > 1) {

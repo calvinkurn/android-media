@@ -1,5 +1,7 @@
 package com.tokopedia.flight.booking.di;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;

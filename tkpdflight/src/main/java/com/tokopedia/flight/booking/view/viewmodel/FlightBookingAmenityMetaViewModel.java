@@ -21,6 +21,8 @@ public class FlightBookingAmenityMetaViewModel implements Parcelable {
             return new FlightBookingAmenityMetaViewModel[size];
         }
     };
+    private String arrivalId;
+    private String departureId;
     private String journeyId;
     private String key;
     private String description;
@@ -30,6 +32,8 @@ public class FlightBookingAmenityMetaViewModel implements Parcelable {
     }
 
     protected FlightBookingAmenityMetaViewModel(Parcel in) {
+        arrivalId = in.readString();
+        departureId = in.readString();
         journeyId = in.readString();
         key = in.readString();
         description = in.readString();
@@ -79,6 +83,22 @@ public class FlightBookingAmenityMetaViewModel implements Parcelable {
         this.journeyId = journeyId;
     }
 
+    public String getArrivalId() {
+        return arrivalId;
+    }
+
+    public void setArrivalId(String arrivalId) {
+        this.arrivalId = arrivalId;
+    }
+
+    public String getDepartureId() {
+        return departureId;
+    }
+
+    public void setDepartureId(String departureId) {
+        this.departureId = departureId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -86,6 +106,8 @@ public class FlightBookingAmenityMetaViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(arrivalId);
+        parcel.writeString(departureId);
         parcel.writeString(journeyId);
         parcel.writeString(key);
         parcel.writeString(description);
