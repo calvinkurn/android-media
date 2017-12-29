@@ -125,11 +125,4 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         loadingStateView.setViewState(LoadingStateView.VIEW_ERROR);
     }
 
-    private void goToHome(){
-        Intent intent = ((TkpdCoreRouter)getActivity().getApplication()).getHomeIntent(getContext());
-        startActivity(intent);
-        getActivity().finish();
-    }
-
-
 }
