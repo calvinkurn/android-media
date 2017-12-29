@@ -54,11 +54,11 @@
                     android:layout_marginLeft="4dp"
                     android:padding="2dp">
 
-                    <ImageView
-                        android:id="@+id/badge"
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:src="@drawable/ic_official" />
+                    <!--<ImageView-->
+                        <!--android:id="@+id/badge"-->
+                        <!--android:layout_width="14dp"-->
+                        <!--android:layout_height="14dp"-->
+                        <!--android:src="@drawable/ic_official" />-->
                 </LinearLayout>
 
                 <TextView

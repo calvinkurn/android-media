@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
@@ -47,10 +48,17 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
         TextView nameTxt = (TextView) findViewById(R.id.shop_name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
+        LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
         promotedTxt.setText(cpm.getPromotedText());
         nameTxt.setText(cpm.getName());
         descriptionTxt.setText(cpm.getDecription());
+        badgeContainer.removeAllViews();
+        for (Badge badge : cpm.getBadges()) {
+            ImageView badgeImg = new ImageView(context);
+            imageLoader.loadImage(badge.getImageUrl(), badgeImg);
+            badgeContainer.addView(badgeImg);
+        }
     }
 
     private void createViewCpmDigital(Context context, CpmData.Cpm cpm) {

@@ -211,7 +211,7 @@ public class ProductListFragment extends SearchSectionFragment
             showBottomBarNavigation(false);
         } else {
             setProductList(initMappingProduct());
-            setHeaderTopAds(adapter.hasHeader());
+            setHeaderTopAds(true);
             showBottomBarNavigation(true);
         }
 
@@ -222,11 +222,6 @@ public class ProductListFragment extends SearchSectionFragment
         List<Visitable> list = new ArrayList<>();
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-
-        if (productViewModel.getOfficialStoreBannerModel() != null
-                && !productViewModel.getOfficialStoreBannerModel().getBannerUrl().isEmpty()) {
-            headerViewModel.setOfficialStoreBannerModel(productViewModel.getOfficialStoreBannerModel());
-        }
 
         if (headerViewModel.hasHeader()) {
             list.add(headerViewModel);

@@ -20,14 +20,21 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
 /**
  * @author by errysuprayogi on 11/7/17.
@@ -37,57 +44,29 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_header_layout;
-    private LinearLayout osBannerContainer;
     private LinearLayout suggestionContainer;
+    private TopAdsBannerView adsBannerView;
     private Context context;
     public static final String KEYWORD = "keyword";
     public static final String ETALASE_NAME = "etalase_name";
     private ItemClickListener clickListener;
 
-    public HeaderViewHolder(View itemView, ItemClickListener clickListener) {
+    public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
         super(itemView);
         context = itemView.getContext();
         this.clickListener = clickListener;
-        osBannerContainer = (LinearLayout) itemView.findViewById(R.id.official_store_banner_container);
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
+        adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
+        initTopAds(topAdsConfig);
+    }
+
+    private void initTopAds(Config topAdsConfig) {
+        adsBannerView.setConfig(topAdsConfig);
+        adsBannerView.loadTopAds();
     }
 
     @Override
     public void bind(final HeaderViewModel element) {
-        if (element.getOfficialStoreBannerModel() != null &&
-                !element.getOfficialStoreBannerModel().getBannerUrl().isEmpty()) {
-            UnifyTracking.eventImpressionOsBanner(element.getOfficialStoreBannerModel().getBannerUrl()
-                    + " - " + element.getOfficialStoreBannerModel().getKeyword());
-            Glide.with(context).load(element.getOfficialStoreBannerModel().getBannerUrl())
-                    .asBitmap()
-                    .fitCenter()
-                    .dontAnimate()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            if (resource.getHeight() != 1 && resource.getWidth() != 1) {
-                                ImageView imageView = new ImageView(context);
-                                imageView.setAdjustViewBounds(true);
-                                imageView.setImageBitmap(resource);
-                                osBannerContainer.removeAllViews();
-                                osBannerContainer.addView(imageView);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        goToUrl(element.getOfficialStoreBannerModel().getShopUrl());
-
-                                        // GTM Tracker
-                                        UnifyTracking.eventClickOsBanner(
-                                                element.getOfficialStoreBannerModel().getBannerUrl()
-                                                        + " - "
-                                                        + element.getOfficialStoreBannerModel().getKeyword()
-                                        );
-                                    }
-                                });
-                            }
-                        }
-                    });
-        }
 
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
