@@ -386,7 +386,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 .getData()
                                 .getId() == operatorId
                         &&
-                        product.getId() == productId
+                        Integer.valueOf(product.getId()) == productId
                         &&
                         product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
             }

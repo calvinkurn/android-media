@@ -48,15 +48,11 @@ public class HeaderHomeView extends BaseCustomView {
             case HeaderViewModel.TYPE_TOKOPINT_ONLY:
                 renderHeaderTokoPointOnly();
                 break;
+            case HeaderViewModel.TYPE_TOKOCASH_WITH_TOKOPOINT:
+                renderHeaderTokocashWithTokopoint();
+                break;
             default:
-                if (headerViewModel.getTokoPointDrawerData() == null
-                        || (headerViewModel.getTokoPointDrawerData() != null
-                        && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1)
-                        ) {
-                    renderHeaderOnlyTokocash();
-                } else {
-                    renderHeaderTokocashWithTokopoint();
-                }
+                setVisibility(GONE);
                 break;
         }
     }
