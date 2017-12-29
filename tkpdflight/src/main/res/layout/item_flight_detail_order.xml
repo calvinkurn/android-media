@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/counter_flight"
         style="@style/TextView.Title.Bold"
-        android:text="Detail Penerbangan"
-        android:textSize="@dimen/font_subheading" />
+        android:textSize="@dimen/font_subheading"
+        android:text="@string/flight_label_detail_order"/>
 
-    <com.tokopedia.flight.common.view.FlightExpandableOptionArrow
-        android:id="@+id/title_journey_flight"
+
+    <LinearLayout
+        android:id="@+id/layout_expendable_flight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:eo_checked="true"
-        app:eo_image_arrow_up="@drawable/ic_arrow_up"
-        app:eo_theme="@style/style_expandable_flight_detail_order"
-        app:eo_title="Detail Penerbangan">
+        android:orientation="horizontal">
 
-        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/recycler_view_flight_detail_journey"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/title_expendable_flight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/flight_label_detail_order"
+            style="@style/style_expandable_flight_detail_order_title" />
 
-    </com.tokopedia.flight.common.view.FlightExpandableOptionArrow>
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image_expendable_flight"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/medal_size"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_arrow_up" />
+
+    </LinearLayout>
+
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:id="@+id/recycler_view_flight_detail_journey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

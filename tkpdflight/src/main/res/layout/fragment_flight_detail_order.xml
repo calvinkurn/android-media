@@ -169,15 +169,38 @@
                 android:text="@string/flight_label_cek_t_and_c" />
         </LinearLayout>
 
-        <com.tokopedia.flight.common.view.FlightExpandableOptionArrow
-            android:id="@+id/title_journey_flight"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_med"
             android:background="@color/white"
-            app:eo_checked="true"
-            app:eo_theme="@style/style_expandable_flight"
-            app:eo_title="@string/flight_label_passenger_data">
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_expendable_passenger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_small">
+
+                <TextView
+                    android:id="@+id/title_expendable_passenger"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/flight_label_passenger_data"
+                    style="@style/style_expandable_flight_detail_order_title" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/image_expendable_passenger"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/medal_size"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_arrow_up" />
+
+            </LinearLayout>
+
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view_data_passenger"
@@ -187,7 +210,8 @@
                 android:paddingBottom="@dimen/padding_med"
                 android:paddingLeft="@dimen/padding_med"
                 android:paddingRight="@dimen/padding_med" />
-        </com.tokopedia.flight.common.view.FlightExpandableOptionArrow>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -207,8 +231,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/container_download_invoice"
-                    android:textSize="@dimen/font_subheading"
-                    android:text="@string/flight_label_detail_price" />
+                    android:text="@string/flight_label_detail_price"
+                    android:textSize="@dimen/font_subheading" />
 
                 <LinearLayout
                     android:id="@+id/container_download_invoice"
