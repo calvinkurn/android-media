@@ -47,5 +47,7 @@ public interface HomeCategoryListener {
 
     void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
 
+    void actionScannerQRTokoCash();
+
     boolean isMainViewVisible();
 }
