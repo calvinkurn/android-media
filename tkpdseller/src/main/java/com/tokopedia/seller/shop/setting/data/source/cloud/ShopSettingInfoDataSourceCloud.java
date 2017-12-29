@@ -21,7 +21,7 @@ import rx.functions.Func1;
 
 public class ShopSettingInfoDataSourceCloud {
 
-    public static final String SUCCESS = "1";
+    public static final long SUCCESS = 1;
     public static final String LOGO = "logo";
     public static final String SERVER_ID = "server_id";
     public static final String PHOTO_OBJ = "photo_obj";
@@ -49,7 +49,7 @@ public class ShopSettingInfoDataSourceCloud {
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
-                        if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
+                        if(responseSaveShopDescResponse.isSuccessful() && (responseSaveShopDescResponse.body().getData().getReserveStatus()==SUCCESS)){
                             return Observable.just(true);
                         }else{
                             return Observable.just(false);
@@ -72,7 +72,7 @@ public class ShopSettingInfoDataSourceCloud {
                 .flatMap(new Func1<Response<ResponseSaveShopDesc>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Response<ResponseSaveShopDesc> responseSaveShopDescResponse) {
-                        if(responseSaveShopDescResponse.isSuccessful() && responseSaveShopDescResponse.body().getReserveStatus().equals(SUCCESS)){
+                        if(responseSaveShopDescResponse.isSuccessful() && (responseSaveShopDescResponse.body().getData().getReserveStatus()==SUCCESS)){
                             return Observable.just(true);
                         }else{
                             return Observable.just(false);

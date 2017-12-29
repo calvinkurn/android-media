@@ -9,38 +9,27 @@ import com.google.gson.annotations.SerializedName;
 
 public class ResponseSaveShopDesc {
 
-    @SerializedName("ServerProcessTime")
+    @SerializedName("header")
     @Expose
-    private String serverProcessTime;
-    @SerializedName("message_status")
+    private Header header;
+    @SerializedName("data")
     @Expose
-    private String messageStatus;
-    @SerializedName("reserve_status")
-    @Expose
-    private String reserveStatus;
+    private Data data;
 
-    public String getServerProcessTime() {
-        return serverProcessTime;
+    public Header getHeader() {
+        return header;
     }
 
-    public void setServerProcessTime(String serverProcessTime) {
-        this.serverProcessTime = serverProcessTime;
+    public void setHeader(Header header) {
+        this.header = header;
     }
 
-    public String getMessageStatus() {
-        return messageStatus;
+    public Data getData() {
+        return data;
     }
 
-    public void setMessageStatus(String messageStatus) {
-        this.messageStatus = messageStatus;
-    }
-
-    public String getReserveStatus() {
-        return reserveStatus;
-    }
-
-    public void setReserveStatus(String reserveStatus) {
-        this.reserveStatus = reserveStatus;
+    public void setData(Data data) {
+        this.data = data;
     }
 
 }
