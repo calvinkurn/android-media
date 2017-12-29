@@ -52,7 +52,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             }
         });
 
-        mapView = (MapView)root.findViewById(R.id.mapview);
+        mapView = root.findViewById(R.id.mapview);
         if (mapView != null) {
             mapView.onCreate(null);
             mapView.onResume();
