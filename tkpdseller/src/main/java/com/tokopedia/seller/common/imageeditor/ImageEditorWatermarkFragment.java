@@ -70,7 +70,7 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_editor_watermark, container, false);
-        watermarkView = (com.tokopedia.seller.common.imageeditor.WatermarkView) view.findViewById(R.id.watermark_view);
+        watermarkView = view.findViewById(R.id.watermark_view);
         vWatermarkWarning = view.findViewById(R.id.tv_watermark_warning);
         vWatermarkWarning.setVisibility(View.INVISIBLE);
         return view;
