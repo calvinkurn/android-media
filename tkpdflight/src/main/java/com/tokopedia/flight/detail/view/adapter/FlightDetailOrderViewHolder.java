@@ -4,15 +4,12 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.ArrayList;
@@ -75,7 +72,6 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
         flightDetailAdapter.addElement(visitables);
         flightDetailAdapter.notifyDataSetChanged();
     }
-
 
     private void toggleFlightInfo() {
         if(isFlightInfoShowed) {
