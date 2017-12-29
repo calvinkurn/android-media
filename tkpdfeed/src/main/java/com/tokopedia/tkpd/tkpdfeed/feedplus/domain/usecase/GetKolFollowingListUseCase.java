@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepository;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingResultDomain;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import rx.Observable;
  * Created by yfsx on 28/12/17.
  */
 
-public class GetKolFollowingListUseCase extends UseCase<List<KolFollowingDomain>>{
+public class GetKolFollowingListUseCase extends UseCase<KolFollowingResultDomain>{
 
     public static final String PARAM_ID = "id";
     public static final String PARAM_CURSOR = "cursor";
@@ -33,7 +33,7 @@ public class GetKolFollowingListUseCase extends UseCase<List<KolFollowingDomain>
     }
 
     @Override
-    public Observable<List<KolFollowingDomain>> createObservable(RequestParams requestParams) {
+    public Observable<KolFollowingResultDomain> createObservable(RequestParams requestParams) {
         return feedRepository.getKolFollowingList(requestParams);
     }
 

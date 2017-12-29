@@ -11,7 +11,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FollowKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolFollowingMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.LikeKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingResultDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolFollowingListUseCase;
@@ -62,7 +62,7 @@ public class KolSource {
         return RxApollo.from(apolloWatcher).map(followKolMapper);
     }
 
-    public Observable<List<KolFollowingDomain>> getKolFollowingList(RequestParams requestParams) {
+    public Observable<KolFollowingResultDomain> getKolFollowingList(RequestParams requestParams) {
         ApolloWatcher<GetKolFollowingList.Data> apolloWatcher = apolloClient.newCall(
                 GetKolFollowingList.builder()
                 .userID(requestParams.getInt(GetKolFollowingListUseCase.PARAM_ID, 0))

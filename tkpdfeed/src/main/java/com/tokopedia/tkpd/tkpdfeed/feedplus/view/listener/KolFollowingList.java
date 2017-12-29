@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingResultViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingViewModel;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface KolFollowingList {
 
         void hideLoading();
 
-        void onSuccessGetKolFollowingList(List<KolFollowingViewModel> itemList);
+        void onSuccessGetKolFollowingList(KolFollowingResultViewModel itemList);
 
         void onErrorGetKolFollowingList(String error);
 

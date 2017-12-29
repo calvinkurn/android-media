@@ -4,22 +4,24 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.KolFollowingAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolFollowingList;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.KolFollowingListPresenter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingResultViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingViewModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,7 +36,6 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     ProgressBar progressBar;
 
     int userId;
-
     KolFollowingAdapter adapter;
 
     @Inject
@@ -44,6 +45,24 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         KolFollowingListFragment fragment = new KolFollowingListFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            userId = getArguments().getInt(KolFollowingListActivity.ARGS_USER_ID);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle state) {
+        super.onViewStateRestored(state);
     }
 
     @Override
@@ -57,9 +76,14 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_kol_following_list, container, false);
         rvItem = (RecyclerView) parentView.findViewById(R.id.rv_item);
         progressBar = (ProgressBar) parentView.findViewById(R.id.progress_bar);
-        rvItem.setLayoutManager(new LinearLayoutManager(getActivity()));
         presenter.attachView(this);
         return parentView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView();
     }
 
     private void initView() {
@@ -92,10 +116,13 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetKolFollowingList(List<KolFollowingViewModel> itemList) {
-        adapter = new KolFollowingAdapter(getActivity());
+    public void onSuccessGetKolFollowingList(KolFollowingResultViewModel viewModel) {
+        rvItem.setVisibility(View.VISIBLE);
+        adapter = new KolFollowingAdapter(getActivity(), this);
+        rvItem.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvItem.setHasFixedSize(true);
         rvItem.setAdapter(adapter);
-        adapter.setItemList(itemList);
+        adapter.setItemList(viewModel.getKolFollowingViewModelList());
     }
 
     @Override
@@ -110,7 +137,11 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     @Override
     public void onListItemClicked(KolFollowingViewModel item) {
-
+        String url = item.getProfileApplink();
+        if (!TextUtils.isEmpty(url)) {
+            ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
+                    , url);
+        }
     }
 
     @Override

@@ -50,6 +50,7 @@
     <string name="action_like">Like</string>
     <string name="following">Following</string>
     <string name="title_comment_kol">Comments</string>
+    <string name="title_following_kol">Following</string>
     <string name="explore_more">Explore lebih Lanjut</string>
     <string name="see_more_comments">Lihat Comments Sebelumnya</string>
     <string name="write_comment">Tulis komentar...</string>

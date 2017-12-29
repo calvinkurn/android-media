@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.CheckFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DeleteKolCommentDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingResultDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
@@ -44,5 +44,5 @@ public interface FeedRepository {
 
     Observable<DeleteKolCommentDomain> deleteKolComment(RequestParams requestParams);
 
-    Observable<List<KolFollowingDomain>> getKolFollowingList(RequestParams requestParams);
+    Observable<KolFollowingResultDomain> getKolFollowingList(RequestParams requestParams);
 }

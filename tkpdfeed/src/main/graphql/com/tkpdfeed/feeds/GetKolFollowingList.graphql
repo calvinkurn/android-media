@@ -1,24 +1,25 @@
-query GetKolFollowingListx($userID: Int!, $cursor: String, $limit: Int!) {
+query GetKolFollowingList($userID: Int!, $cursor: String, $limit: Int!) {
     get_user_kol_following(userID: $userID, cursor: $cursor, limit: $limit) {
-        error
-        profileKol {
-	        following
-            followers
-            followed
-	        iskol
-            id
-            info
-            bio
-            name
-            photo
+       profileKol {
+	       following
+           followers
+           followed
+	       iskol
+           id
+           info
+           bio
+           name
+           photo
         }
-        users {
-	        id
-	        followed
-	        name
-	        info
-	        photo
-	        userUrl
-	    }
-     }
+       users {
+	      id
+	      followed
+	      name
+	      info
+	      photo
+	      userUrl
+	   }
+       error
+       lastCursor
+    }
 }

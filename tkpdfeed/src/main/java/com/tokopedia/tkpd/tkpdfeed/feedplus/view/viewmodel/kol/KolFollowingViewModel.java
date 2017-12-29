@@ -10,14 +10,24 @@ import android.os.Parcelable;
 public class KolFollowingViewModel implements Parcelable {
     private int id;
     private String avatarUrl;
-    private boolean isVerified;
+    private String profileApplink;
+    private boolean isInfluencer;
     private String name;
 
-    public KolFollowingViewModel(int id, String avatarUrl, boolean isVerified, String name) {
+    public KolFollowingViewModel(int id, String avatarUrl, String profileApplink, boolean isInfluencer, String name) {
         this.id = id;
         this.avatarUrl = avatarUrl;
-        this.isVerified = isVerified;
+        this.profileApplink = profileApplink;
+        this.isInfluencer = isInfluencer;
         this.name = name;
+    }
+
+    public String getProfileApplink() {
+        return profileApplink;
+    }
+
+    public void setProfileApplink(String profileApplink) {
+        this.profileApplink = profileApplink;
     }
 
     public int getId() {
@@ -36,12 +46,12 @@ public class KolFollowingViewModel implements Parcelable {
         this.avatarUrl = avatarUrl;
     }
 
-    public boolean isVerified() {
-        return isVerified;
+    public boolean isInfluencer() {
+        return isInfluencer;
     }
 
-    public void setVerified(boolean verified) {
-        isVerified = verified;
+    public void setInfluencer(boolean influencer) {
+        isInfluencer = influencer;
     }
 
     public String getName() {
@@ -61,18 +71,20 @@ public class KolFollowingViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeString(this.avatarUrl);
-        dest.writeByte(this.isVerified ? (byte) 1 : (byte) 0);
+        dest.writeString(this.profileApplink);
+        dest.writeByte(this.isInfluencer ? (byte) 1 : (byte) 0);
         dest.writeString(this.name);
     }
 
     protected KolFollowingViewModel(Parcel in) {
         this.id = in.readInt();
         this.avatarUrl = in.readString();
-        this.isVerified = in.readByte() != 0;
+        this.profileApplink = in.readString();
+        this.isInfluencer = in.readByte() != 0;
         this.name = in.readString();
     }
 
-    public static final Parcelable.Creator<KolFollowingViewModel> CREATOR = new Parcelable.Creator<KolFollowingViewModel>() {
+    public static final Creator<KolFollowingViewModel> CREATOR = new Creator<KolFollowingViewModel>() {
         @Override
         public KolFollowingViewModel createFromParcel(Parcel source) {
             return new KolFollowingViewModel(source);

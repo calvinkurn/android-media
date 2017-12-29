@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolFollowingListFragment;
@@ -54,6 +55,7 @@ public class KolFollowingListActivity extends TActivity implements HasComponent 
 
     @Override
     public Object getComponent() {
-        return null;
+        return getApplicationComponent();
     }
+
 }

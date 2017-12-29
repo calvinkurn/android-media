@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolFollowingList;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolFollowingViewModel;
 
 import java.util.ArrayList;
@@ -24,9 +25,11 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<KolFollowingAdapte
 
     private Context context;
     private List<KolFollowingViewModel> itemList = new ArrayList<>();
+    private KolFollowingList.View mainView;
 
-    public KolFollowingAdapter(Context context) {
+    public KolFollowingAdapter(Context context, KolFollowingList.View view) {
         this.context = context;
+        this.mainView = view;
     }
 
     public List<KolFollowingViewModel> getItemList() {
@@ -45,13 +48,19 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<KolFollowingAdapte
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        KolFollowingViewModel viewModel = itemList.get(position);
+        final KolFollowingViewModel viewModel = itemList.get(position);
         initView(holder, viewModel);
         initData(holder, viewModel);
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainView.onListItemClicked(viewModel);
+            }
+        });
     }
 
     private void initView(Holder holder, KolFollowingViewModel viewModel) {
-        holder.ivVerified.setVisibility(viewModel.isVerified() ? View.VISIBLE : View.GONE);
+        holder.ivVerified.setVisibility(viewModel.isInfluencer() ? View.VISIBLE : View.GONE);
     }
 
     private void initData(Holder holder, KolFollowingViewModel viewModel) {
@@ -66,12 +75,14 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<KolFollowingAdapte
 
     public class Holder extends RecyclerView.ViewHolder {
         ImageView ivAvatar, ivVerified;
+        View layout;
         TextView tvName;
         public Holder(View itemView) {
             super(itemView);
             ivAvatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
             ivVerified = (ImageView) itemView.findViewById(R.id.iv_verified);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
+            layout = itemView.findViewById(R.id.layout);
         }
     }
 }
