@@ -2,7 +2,6 @@ package com.tokopedia.seller.shop.common.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
@@ -13,7 +12,6 @@ import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;

@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.open.data.source.cloud;
 
+import com.tokopedia.core.common.mapper.SimpleResponseMapper;
+import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
@@ -26,59 +28,62 @@ public class ShopOpenDataCloud {
     }
 
     public Observable<Boolean> checkDomainName(String domainName) {
-        return api.getDomainCheck(domainName).map(new Func1<Response<ResponseCheckDomainName>, Boolean>() {
-            @Override
-            public Boolean call(Response<ResponseCheckDomainName> responseCheckDomainResponse) {
-                if (responseCheckDomainResponse.isSuccessful()
-                        && responseCheckDomainResponse.body() != null) {
-                    return "1".equals( responseCheckDomainResponse.body().getDomainStatus());
-                } else {
-                    throw null;
-                }
-            }
-        });
+        return api.getDomainCheck(domainName)
+                .map(new SimpleDataResponseMapper<ResponseCheckDomainName>())
+                .flatMap(new Func1<ResponseCheckDomainName, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(ResponseCheckDomainName responseCheckDomainName) {
+                        if (responseCheckDomainName == null) {
+                            throw new RuntimeException();
+                        } else {
+                            return Observable.just("1".equals(responseCheckDomainName.getDomainStatus()));
+                        }
+                    }
+                });
     }
 
     public Observable<Boolean> checkShopName(String shopName) {
-        return api.getShopCheck(shopName).map(new Func1<Response<ResponseCheckShopName>, Boolean>() {
-            @Override
-            public Boolean call(Response<ResponseCheckShopName> responseCheckShopResponse) {
-                if (responseCheckShopResponse.isSuccessful()
-                        && responseCheckShopResponse.body() != null) {
-                    return "1".equals( responseCheckShopResponse.body().getShopNameStatus());
-                } else {
-                    throw null;
-                }
-            }
-        });
+        return api.getShopCheck(shopName).map(new SimpleDataResponseMapper<ResponseCheckShopName>())
+                .flatMap(new Func1<ResponseCheckShopName, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(ResponseCheckShopName responseCheckShopName) {
+                        if (responseCheckShopName == null) {
+                            throw new RuntimeException();
+                        } else {
+                            return Observable.just("1".equals(responseCheckShopName.getShopNameStatus()));
+                        }
+                    }
+                });
     }
 
     public Observable<ResponseIsReserveDomain> isReserveDomainResponseObservable() {
-        return api.isReserveDomain().map(new Func1<Response<ResponseIsReserveDomain>, ResponseIsReserveDomain>() {
-            @Override
-            public ResponseIsReserveDomain call(Response<ResponseIsReserveDomain> responseCheckShopResponse) {
-                if (responseCheckShopResponse.isSuccessful()
-                        && responseCheckShopResponse.body() != null) {
-                    return responseCheckShopResponse.body();
-                } else {
-                    throw null;
-                }
-            }
-        });
+        return api.isReserveDomain()
+                .map(new SimpleDataResponseMapper<ResponseIsReserveDomain>())
+                .flatMap(new Func1<ResponseIsReserveDomain, Observable<ResponseIsReserveDomain>>() {
+                    @Override
+                    public Observable<ResponseIsReserveDomain> call(ResponseIsReserveDomain responseIsReserveDomain) {
+                        if (responseIsReserveDomain == null) {
+                            throw new RuntimeException();
+                        } else {
+                            return Observable.just(responseIsReserveDomain);
+                        }
+                    }
+                });
     }
 
     public Observable<ResponseReserveDomain> reserveShopNameDomain(String shopName, String shopDomainName) {
-        return api.reserveDomain(shopName, shopDomainName).map(new Func1<Response<ResponseReserveDomain>, ResponseReserveDomain>() {
-            @Override
-            public ResponseReserveDomain call(Response<ResponseReserveDomain> responseReserveDomainResponse) {
-                if (responseReserveDomainResponse.isSuccessful()
-                        && responseReserveDomainResponse.body() != null) {
-                    return responseReserveDomainResponse.body();
-                } else {
-                    throw null;
-                }
-            }
-        });
+        return api.reserveDomain(shopName, shopDomainName)
+                .map(new SimpleDataResponseMapper<ResponseReserveDomain>())
+                .flatMap(new Func1<ResponseReserveDomain, Observable<ResponseReserveDomain>>() {
+                    @Override
+                    public Observable<ResponseReserveDomain> call(ResponseReserveDomain responseReserveDomain) {
+                        if (responseReserveDomain == null) {
+                            throw new RuntimeException();
+                        } else {
+                            return Observable.just(responseReserveDomain);
+                        }
+                    }
+                });
     }
 
 }

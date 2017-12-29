@@ -125,7 +125,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         if (responseIsReserveDomain == null) {
             return DEFAULT_DISTRICT_ID;
         }
-        Shipment shipment = responseIsReserveDomain.getData().getShipment();
+        Shipment shipment = responseIsReserveDomain.getShipment();
         if (shipment == null) {
             return DEFAULT_DISTRICT_ID;
         }

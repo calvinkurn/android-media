@@ -63,7 +63,7 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopC
 
     @Override
     public void onSuccessCheckReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
-        boolean isReservingDomain = responseIsReserveDomain.getData().isDomainAlreadyReserved();
+        boolean isReservingDomain = responseIsReserveDomain.isDomainAlreadyReserved();
         if (isReservingDomain) {
             goToShopOpenMandatory(responseIsReserveDomain);
         } else {
