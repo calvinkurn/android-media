@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.shop.common.exception.model.Header;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
