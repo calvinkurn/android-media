@@ -3,7 +3,7 @@ package com.tokopedia.seller.shop.open.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
 import com.tokopedia.seller.shop.open.view.listener.ShopCheckDomainView;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 
 import javax.inject.Inject;
 

@@ -32,11 +32,10 @@ import com.tokopedia.seller.shop.open.view.holder.LocationMapViewHolder;
 import com.tokopedia.seller.shop.open.view.holder.LocationShippingViewHolder;
 import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
 import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
-import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.open.data.model.response.Shipment;
-import com.tokopedia.seller.shop.open.data.model.response.UserData;
-import com.tokopedia.seller.shop.setting.domain.interactor.ShopOpenSaveLocationUseCase;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
+import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
 
 import java.util.HashMap;
 

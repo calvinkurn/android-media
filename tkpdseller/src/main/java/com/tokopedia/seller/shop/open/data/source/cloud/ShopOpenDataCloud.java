@@ -1,9 +1,9 @@
 package com.tokopedia.seller.shop.open.data.source.cloud;
 
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomain;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShop;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShopName;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
 
 import javax.inject.Inject;
@@ -25,9 +25,9 @@ public class ShopOpenDataCloud {
     }
 
     public Observable<Boolean> checkDomainName(String domainName) {
-        return api.getDomainCheck(domainName).map(new Func1<Response<ResponseCheckDomain>, Boolean>() {
+        return api.getDomainCheck(domainName).map(new Func1<Response<ResponseCheckDomainName>, Boolean>() {
             @Override
-            public Boolean call(Response<ResponseCheckDomain> responseCheckDomainResponse) {
+            public Boolean call(Response<ResponseCheckDomainName> responseCheckDomainResponse) {
                 if (responseCheckDomainResponse.isSuccessful()
                         && responseCheckDomainResponse.body() != null) {
                     return "1".equals( responseCheckDomainResponse.body().getDomainStatus());
@@ -39,9 +39,9 @@ public class ShopOpenDataCloud {
     }
 
     public Observable<Boolean> checkShopName(String shopName) {
-        return api.getShopCheck(shopName).map(new Func1<Response<ResponseCheckShop>, Boolean>() {
+        return api.getShopCheck(shopName).map(new Func1<Response<ResponseCheckShopName>, Boolean>() {
             @Override
-            public Boolean call(Response<ResponseCheckShop> responseCheckShopResponse) {
+            public Boolean call(Response<ResponseCheckShopName> responseCheckShopResponse) {
                 if (responseCheckShopResponse.isSuccessful()
                         && responseCheckShopResponse.body() != null) {
                     return "1".equals( responseCheckShopResponse.body().getShopNameStatus());
