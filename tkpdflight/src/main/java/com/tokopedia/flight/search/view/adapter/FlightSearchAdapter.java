@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.view.adapter;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
@@ -13,7 +13,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
  * Created by User on 10/26/2017.
  */
 
-public class FlightSearchV2Adapter extends BaseListAdapterV2<FlightSearchViewModel, FilterSearchAdapterTypeFactory> {
+public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> {
 
     private OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
     private FilterSearchAdapterTypeFactory filterSearchAdapterTypeFactory;
@@ -21,7 +21,7 @@ public class FlightSearchV2Adapter extends BaseListAdapterV2<FlightSearchViewMod
     private boolean inFilterMode;
 
 
-    public FlightSearchV2Adapter(FilterSearchAdapterTypeFactory filterSearchAdapterTypeFactory) {
+    public FlightSearchAdapter(FilterSearchAdapterTypeFactory filterSearchAdapterTypeFactory) {
         super(filterSearchAdapterTypeFactory);
         setDefaultErrorNetwork();
         setDefaultLoading();

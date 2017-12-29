@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapterTypeFactory;
 import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
@@ -20,7 +20,7 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightClassesfragment extends BaseListV2Fragment<FlightClassViewModel, FlightClassesAdapterTypeFactory> implements FlightClassesContract.View, FlightClassViewHolder.ListenerCheckedClass {
+public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel, FlightClassesAdapterTypeFactory> implements FlightClassesContract.View, FlightClassViewHolder.ListenerCheckedClass {
     public static final String EXTRA_FLIGHT_SELECTED_CLASS = "EXTRA_FLIGHT_SELECTED_CLASS";
     @Inject
     FlightClassesPresenter presenter;

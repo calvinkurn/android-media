@@ -139,7 +139,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         recyclerViewDetailPrice = (RecyclerView) view.findViewById(R.id.recycler_view_detail_price);
         reviewTotalPrice = (TextView) view.findViewById(R.id.total_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
-        voucherCartView = view.findViewById(R.id.voucher_check_view);
+        voucherCartView = (VoucherCartView) view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("");

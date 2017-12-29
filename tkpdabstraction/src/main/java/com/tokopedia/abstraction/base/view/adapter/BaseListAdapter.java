@@ -13,12 +13,12 @@ import java.util.List;
 /**
  * @author alvarisi
  */
-public class BaseListAdapterV2<T extends Visitable, F extends AdapterTypeFactory> extends BaseAdapter {
+public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> extends BaseAdapter {
 
     private OnAdapterInteractionListener onAdapterInteractionListener;
     private F baseListAdapterTypeFactory;
 
-    public BaseListAdapterV2(F baseListAdapterTypeFactory) {
+    public BaseListAdapter(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, new ArrayList<Visitable>());
         this.baseListAdapterTypeFactory = baseListAdapterTypeFactory;
     }

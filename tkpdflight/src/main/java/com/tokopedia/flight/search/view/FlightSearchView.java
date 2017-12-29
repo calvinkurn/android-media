@@ -1,5 +1,7 @@
 package com.tokopedia.flight.search.view;
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -41,4 +43,9 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
 
     void addToolbarElevation();
 
+    Activity getActivity();
+
+    void showFilterAndSortView();
+
+    void hideFilterAndSortView();
 }
