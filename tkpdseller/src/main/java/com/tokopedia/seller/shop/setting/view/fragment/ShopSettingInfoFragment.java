@@ -118,16 +118,16 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
             if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null){
                 presenter.getisReserveDomain();
             }else{
-                if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
-                    UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+                if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData() != null) {
+                    UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
                     if(userData.getShopName()!= null) {
                         String helloName = getString(R.string.hello_x, userData.getShopName());
                         welcomeText.setText(MethodChecker.fromHtml(helloName));
                     }
-                    shopDescEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getShortDesc());
-                    shopSloganEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getTagLine());
+                    shopDescEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData().getShortDesc());
+                    shopSloganEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData().getTagLine());
                     ImageHandler.loadImage(getActivity(), imagePicker,
-                            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getLogo(), R.drawable.ic_add_photo_box);
+                            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData().getLogo(), R.drawable.ic_add_photo_box);
                 }
             }
         }

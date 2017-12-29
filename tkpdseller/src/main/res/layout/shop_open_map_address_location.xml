@@ -32,5 +32,5 @@
         android:textStyle="normal"
         android:textColor="@color/black_38"
         android:lineSpacingExtra="5sp"
-        android:text="@string/fill_width_address_desc" />
+        android:hint="@string/fill_width_address_desc" />
 </merge>

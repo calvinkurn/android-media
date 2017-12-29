@@ -52,7 +52,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             }
         });
 
-        mapView = (MapView)root.findViewById(R.id.mapview);
+        mapView = root.findViewById(R.id.mapview);
         if (mapView != null) {
             mapView.onCreate(null);
             mapView.onResume();
@@ -120,22 +120,6 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
                     // which is navigate to default Google Map Apps
                 }
             });
-        }
-    }
-
-    private String getLatitude(String latitude) {
-        if (latitude == null || latitude.isEmpty()) {
-            return TkpdState.Geolocation.defaultLatitude;
-        } else {
-            return latitude;
-        }
-    }
-
-    private String getLongitude(String longitude) {
-        if (longitude == null || longitude.isEmpty()) {
-            return TkpdState.Geolocation.defaultLongitude;
-        } else {
-            return longitude;
         }
     }
 
