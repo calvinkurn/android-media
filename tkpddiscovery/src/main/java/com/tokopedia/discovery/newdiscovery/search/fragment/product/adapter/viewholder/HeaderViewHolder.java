@@ -34,6 +34,7 @@ import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerMode
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
 /**
@@ -69,6 +70,12 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 .build();
         adsBannerView.setConfig(newConfig);
         adsBannerView.loadTopAds();
+        adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                clickListener.onBannerAdsClicked(applink);
+            }
+        });
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.view;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +13,8 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
@@ -25,6 +28,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     private static final String TAG = TopAdsBannerView.class.getSimpleName();
     private BannerAdsPresenter presenter;
     private TopAdsListener adsListener;
+    private TopAdsBannerClickListener topAdsBannerClickListener;
     private ImageLoader imageLoader;
 
     public TopAdsBannerView(Context context) {
@@ -63,7 +67,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    private void createViewCpmDigital(Context context, CpmData.Cpm cpm) {
+    private void createViewCpmDigital(Context context, final CpmData.Cpm cpm) {
         inflate(getContext(), R.layout.layout_ads_banner_digital, this);
         ImageView iconImg = (ImageView) findViewById(R.id.icon);
         TextView nameTxt = (TextView) findViewById(R.id.name);
@@ -81,6 +85,10 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         this.adsListener = adsListener;
     }
 
+    public void setTopAdsBannerClickListener(TopAdsBannerClickListener topAdsBannerClickListener) {
+        this.topAdsBannerClickListener = topAdsBannerClickListener;
+    }
+
     @Override
     public void showLoading() {
 
@@ -89,12 +97,20 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     @Override
     public void displayAds(CpmModel cpmModel) {
         if (cpmModel.getData().size() > 0) {
-            CpmData data = cpmModel.getData().get(0);
+            final CpmData data = cpmModel.getData().get(0);
             if (data.getCpm().getCpmShop() != null) {
                 createViewCpmShop(getContext(), data.getCpm());
             } else {
                 createViewCpmDigital(getContext(), data.getCpm());
             }
+            setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(topAdsBannerClickListener !=null){
+                        topAdsBannerClickListener.onBannerAdsClicked(data.getApplinks());
+                    }
+                }
+            });
         }
     }
 

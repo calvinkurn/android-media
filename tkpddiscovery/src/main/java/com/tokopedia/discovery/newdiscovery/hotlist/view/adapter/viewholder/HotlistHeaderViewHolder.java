@@ -34,6 +34,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
@@ -87,6 +88,12 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
                 .build();
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.loadTopAds();
+        this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                mItemClickListener.onBannerAdsClicked(applink);
+            }
+        });
     }
 
     @Override
