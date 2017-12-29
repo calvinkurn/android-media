@@ -3,6 +3,7 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
@@ -22,7 +23,7 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onCompleted() {
-        
+
     }
 
     @Override
@@ -39,7 +40,7 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     .getGetUserInfoDomainData());
         } else if (loginSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
-                && isMsisdnVerified(loginSosmedDomain.getInfo())) {
+                && (isMsisdnVerified(loginSosmedDomain.getInfo()) || GlobalConfig.isSellerApp())) {
             view.setSmartLock();
             view.onSuccessLogin();
         } else if (!isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())

@@ -112,4 +112,10 @@ public interface TkpdCoreRouter {
     Intent getPhoneVerificationActivationIntent(Context context);
 
     Intent getSellerHomeIntent(Activity activity);
+
+    Intent getLoginGoogleIntent(Context context);
+
+    Intent getLoginFacebookIntent(Context context);
+
+    Intent getLoginWebviewIntent(Context context, String name, String url);
 }

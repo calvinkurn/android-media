@@ -18,10 +18,4 @@ public interface WelcomeFragmentPresenter {
     void destroyView();
 
     void saveProvider(List<LoginProviderModel.ProvidersBean> listProvider);
-
-    void loginFacebook(Context context);
-
-    void loginGoogle(Context context);
-
-    void loginWebview(Context context, String url, String name);
 }

@@ -59,6 +59,7 @@ import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
@@ -95,6 +96,9 @@ public class LoginFragment extends BaseDaggerFragment
 
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
+
+    public static final String IS_AUTO_LOGIN = "auto_login";
+    public static final String AUTO_LOGIN_METHOD = "method";
 
 
     AutoCompleteTextView emailEditText;
@@ -258,7 +262,33 @@ public class LoginFragment extends BaseDaggerFragment
         emailEditText.setAdapter(autoCompleteAdapter);
 
         presenter.discoverLogin();
-        showSmartLock();
+
+        if (getArguments().getBoolean(IS_AUTO_LOGIN)) {
+            switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
+                case LoginActivity.METHOD_FACEBOOK:
+                    onLoginFacebookClick();
+                    break;
+                case LoginActivity.METHOD_GOOGLE:
+                    onLoginGoogleClick();
+                    break;
+                case LoginActivity.METHOD_WEBVIEW:
+                    if (!TextUtils.isEmpty(getArguments().getString(LoginActivity
+                            .AUTO_WEBVIEW_NAME, ""))
+                            && !TextUtils.isEmpty(getArguments().getString(LoginActivity
+                            .AUTO_WEBVIEW_URL, ""))) {
+                        onLoginWebviewClick(getArguments().getString(LoginActivity.AUTO_WEBVIEW_NAME,
+                                ""),
+                                getArguments().getString(LoginActivity.AUTO_WEBVIEW_URL,
+                                        ""));
+                    }
+                    break;
+                default:
+                    showSmartLock();
+                    break;
+            }
+        } else {
+            showSmartLock();
+        }
     }
 
     private void showSmartLock() {
@@ -558,18 +588,19 @@ public class LoginFragment extends BaseDaggerFragment
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onLoginWebviewClick(discoverItemViewModel);
+                    onLoginWebviewClick(discoverItemViewModel.getName(),
+                            discoverItemViewModel.getUrl());
                 }
             });
         }
     }
 
-    private void onLoginWebviewClick(DiscoverItemViewModel discoverItemViewModel) {
-        UnifyTracking.eventCTAAction(discoverItemViewModel.getName());
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(discoverItemViewModel.getName());
+    private void onLoginWebviewClick(String name, String url) {
+        UnifyTracking.eventCTAAction(name);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(name);
 
         WebViewLoginFragment newFragment = WebViewLoginFragment
-                .createInstance(discoverItemViewModel.getUrl());
+                .createInstance(url);
         newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW);
         newFragment.show(getFragmentManager().beginTransaction(), "dialog");
         getActivity().getWindow().setSoftInputMode(

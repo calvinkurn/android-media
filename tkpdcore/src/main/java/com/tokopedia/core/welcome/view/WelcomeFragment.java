@@ -1,6 +1,5 @@
 package com.tokopedia.core.welcome.view;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -35,7 +34,6 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
@@ -43,19 +41,12 @@ import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
 import java.util.List;
 
 import butterknife.BindView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by stevenfredian on 10/5/16.
  */
 
-@RuntimePermissions
-public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresenter> implements WelcomeFragmentView{
+public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresenter> implements WelcomeFragmentView {
 
     private static final int REQUEST_LOGIN = 101;
 
@@ -84,7 +75,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
 
     List<LoginProviderModel.ProvidersBean> listProvider;
     private String backgroundUrl;
-    String sourceString = "Belum punya akun? "+ "Daftar";
+    String sourceString = "Belum punya akun? " + "Daftar";
     private ClickableSpan clickableSpan;
 
     public static WelcomeFragment createInstance(Bundle bundle) {
@@ -121,7 +112,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         spannable.setSpan(clickableSpan
                 , sourceString.indexOf("Daftar")
                 , sourceString.length()
-                ,0);
+                , 0);
 
         register.setText(spannable, TextView.BufferType.SPANNABLE);
         register.setMovementMethod(LinkMovementMethod.getInstance());
@@ -171,8 +162,8 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(MainApplication.getAppContext() instanceof TkpdCoreRouter){
-                    Intent intent = ((TkpdCoreRouter)MainApplication.getAppContext())
+                if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
                             .getLoginIntent(getActivity());
                     startActivityForResult(intent, REQUEST_LOGIN);
                 }
@@ -180,7 +171,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         });
         isNotFirstRun = new LocalCacheHandler(getActivity(), "FirstRun");
 
-        if(isNotFirstRun.getBoolean("firstRun").equals(false)){
+        if (isNotFirstRun.getBoolean("firstRun").equals(false)) {
             isNotFirstRun.putBoolean("firstRun", true);
             isNotFirstRun.applyEditor();
             showPopUp();
@@ -191,7 +182,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                ((TkpdCoreRouter)getActivity().getApplication()).goToRegister(getActivity());
+                ((TkpdCoreRouter) getActivity().getApplication()).goToRegister(getActivity());
             }
 
             @Override
@@ -255,9 +246,9 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
             for (int i = 0; i < listProvider.size(); i++) {
                 String color = listProvider.get(i).getColor();
                 int colorInt;
-                if(color==null) {
+                if (color == null) {
                     colorInt = Color.parseColor("#FFFFFF");
-                }else{
+                } else {
                     colorInt = Color.parseColor(color);
                 }
                 layoutParams.setMargins(9, 0, 9, 0);
@@ -280,7 +271,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            WelcomeFragmentPermissionsDispatcher.onGoogleClickWithCheck(WelcomeFragment.this);
+                            onGoogleClick();
                         }
                     });
                 } else {
@@ -298,8 +289,12 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.loginWebview(getActivity(), listProvider.get(position).getUrl(),
-                        listProvider.get(position).getName());
+                if(MainApplication.getAppContext() instanceof TkpdCoreRouter){
+                    Intent intent = ((TkpdCoreRouter)MainApplication.getAppContext())
+                            .getLoginWebviewIntent(getActivity(), listProvider.get(position)
+                                    .getName(), listProvider.get(position).getUrl());
+                    startActivityForResult(intent, REQUEST_LOGIN);
+                }
                 getActivity().getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                 UserAuthenticationAnalytics.setActiveAuthenticationMedium(listProvider.get(position).getName());
@@ -307,15 +302,20 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         };
     }
 
-    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGoogleClick() {
-        presenter.loginGoogle(getActivity());
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                    .getLoginGoogleIntent(getActivity());
+            startActivityForResult(intent, REQUEST_LOGIN);
+        }
     }
 
     private void onFacebookClick() {
-        presenter.loginFacebook(getActivity());
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                    .getLoginFacebookIntent(getActivity());
+            startActivityForResult(intent, REQUEST_LOGIN);
+        }
     }
 
     @Override
@@ -359,10 +359,10 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
 
     @Override
     public void showProgress(final boolean isShow) {
-        if(isShow){
+        if (isShow) {
             progressBar.setVisibility(View.VISIBLE);
             titleView.setVisibility(View.GONE);
-        }else {
+        } else {
             progressBar.setVisibility(View.GONE);
             titleView.setVisibility(View.VISIBLE);
         }
@@ -379,10 +379,10 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
 
     @Override
     public void setBackground(String backgroundURL) {
-        if(backgroundURL != null) {
+        if (backgroundURL != null) {
             ImageHandler.loadImageWithoutPlaceholder(background, backgroundURL, R.drawable.background);
             background.setBackgroundColor(getResources().getColor(R.color.white));
-        }else{
+        } else {
             ImageHandler.loadImageWithIdWithoutPlaceholder(background, R.color.white);
             background.setBackgroundColor(getResources().getColor(R.color.white));
         }
@@ -399,39 +399,18 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        WelcomeFragmentPermissionsDispatcher.onRequestPermissionsResult(WelcomeFragment.this,requestCode, grantResults);
-    }
-
-    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
-    void showRationaleForGetAccounts(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
-    void showDeniefForGetAccounts() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
-    void showNeverAskForGetAccounts() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("NISNISLogin", "WelcomeFragment onActivityResult requestcode" + " " + requestCode +
                 " resultCode "
                 + resultCode);
-        if(requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
             onSuccessLogin();
         }
     }
 
     private void onSuccessLogin() {
-        if(MainApplication.getAppContext() instanceof TkpdCoreRouter){
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
             Intent intent;
             if (SessionHandler.isUserSeller(getActivity())) {
                 intent = SellerAppRouter.getSellerHomeActivity(getActivity());

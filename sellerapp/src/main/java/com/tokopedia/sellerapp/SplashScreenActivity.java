@@ -49,14 +49,8 @@ public class SplashScreenActivity extends SplashScreen {
                 startActivity(DashboardActivity.createInstance(this));
             }
         } else {
-            // Means it is buyer
-            if (sessionHandler != null && !TextUtils.isEmpty(sessionHandler.getLoginID())) {
-                Intent intent = moveToCreateShop(this);
-                startActivity(intent);
-            } else {
-                Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
+            startActivity(intent);
         }
         finish();
     }

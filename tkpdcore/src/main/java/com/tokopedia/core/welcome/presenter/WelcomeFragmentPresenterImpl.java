@@ -132,33 +132,4 @@ public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
             backgroundCache.applyEditor();
         }
     }
-
-    @Override
-    public void loginFacebook(Context context) {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-        intent.putExtra("login",DownloadService.FACEBOOK);
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-        intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-        view.getActivity().startActivity(intent);
-    }
-
-    @Override
-    public void loginGoogle(Context context) {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-        intent.putExtra("login",DownloadService.GOOGLE);
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-        intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-        view.getActivity().startActivity(intent);
-    }
-
-    @Override
-    public void loginWebview(Context context, String url, String name) {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-        intent.putExtra("login",DownloadService.WEBVIEW);
-        intent.putExtra("url",url);
-        intent.putExtra("name",name);
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-        intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-        view.getActivity().startActivity(intent);
-    }
 }

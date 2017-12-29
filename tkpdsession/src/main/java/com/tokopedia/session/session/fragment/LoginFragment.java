@@ -100,6 +100,7 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 /**
  * edited by steven
  */
+@Deprecated
 @RuntimePermissions
 public class
 LoginFragment extends Fragment implements LoginView {

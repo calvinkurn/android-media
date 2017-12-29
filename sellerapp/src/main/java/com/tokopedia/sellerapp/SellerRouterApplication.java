@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.core.app.MainApplication;
@@ -32,8 +31,6 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -62,11 +59,6 @@ import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
-import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
-import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
-import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
-import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
@@ -105,7 +97,6 @@ import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.session.activity.Login;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
@@ -748,5 +739,22 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getSellerHomeIntent(Activity activity) {
         return DashboardActivity.createInstance(activity);
+    }
+
+    @Override
+    public Intent getLoginGoogleIntent(Context context) {
+        return LoginActivity.getAutoLoginGoogle(context);
+    }
+
+    @Override
+    public Intent getLoginFacebookIntent(Context context) {
+        return LoginActivity.getAutoLoginFacebook(context);
+
+    }
+
+    @Override
+    public Intent getLoginWebviewIntent(Context context, String name, String url) {
+        return LoginActivity.getAutoLoginWebview(context, name, url);
+
     }
 }

@@ -25,6 +25,12 @@ public class LoginActivity extends TActivity implements HasComponent {
     private static final String PARAM_LOGIN_TYPE = "type";
     private static final int TYPE_AUTO = 1;
 
+    public static final int METHOD_FACEBOOK = 111;
+    public static final int METHOD_GOOGLE = 222;
+    public static final int METHOD_WEBVIEW = 333;
+    public static final String AUTO_WEBVIEW_NAME = "webview_name";
+    public static final String AUTO_WEBVIEW_URL = "webview_url";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,5 +75,34 @@ public class LoginActivity extends TActivity implements HasComponent {
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, LoginActivity.class);
+    }
+
+    public static Intent getAutoLoginGoogle(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(LoginFragment.IS_AUTO_LOGIN, true);
+        bundle.putInt(LoginFragment.AUTO_LOGIN_METHOD, METHOD_GOOGLE);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getAutoLoginFacebook(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(LoginFragment.IS_AUTO_LOGIN, true);
+        bundle.putInt(LoginFragment.AUTO_LOGIN_METHOD, METHOD_FACEBOOK);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getAutoLoginWebview(Context context, String name, String url) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(LoginFragment.IS_AUTO_LOGIN, true);
+        bundle.putInt(LoginFragment.AUTO_LOGIN_METHOD, METHOD_WEBVIEW);
+        bundle.putString(AUTO_WEBVIEW_NAME, name);
+        bundle.putString(AUTO_WEBVIEW_URL, url);
+        intent.putExtras(bundle);
+        return intent;
     }
 }
