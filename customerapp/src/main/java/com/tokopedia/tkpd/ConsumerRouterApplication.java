@@ -991,6 +991,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getBannerWebViewIntent(Activity activity, String url) {
+        return BannerWebView.getCallingIntent(activity, url);
+    }
+
+    @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
     }

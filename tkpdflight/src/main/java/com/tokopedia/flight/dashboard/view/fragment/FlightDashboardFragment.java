@@ -19,11 +19,14 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
+import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
+import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
@@ -36,8 +39,10 @@ import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -55,6 +60,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
 
+    private static final String ALL_PROMO_LINK = "https://www.tokopedia.com/promo/";
+
     private FlightDashboardViewModel viewModel;
 
     AppCompatImageView reverseAirportImageView;
@@ -69,6 +76,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     AppCompatButton oneWayTripAppCompatButton;
     AppCompatButton roundTripAppCompatButton;
     View returnDateSeparatorView;
+    AppCompatTextView bannerTitle;
+    BannerView bannerView;
+
+    List<BannerDetail> bannerList;
 
     @Inject
     FlightDashboardPresenter presenter;
@@ -98,6 +109,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
+        bannerTitle = view.findViewById(R.id.banner_title);
+        bannerView = view.findViewById(R.id.banner);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -185,6 +198,26 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 reverseAirportImageView.startAnimation(shake);
             }
         });
+
+        bannerView.setOnPromoScrolledListener(new BannerView.OnPromoScrolledListener() {
+            @Override
+            public void onPromoScrolled(int position) {
+
+            }
+        });
+        bannerView.setOnPromoClickListener(new BannerView.OnPromoClickListener() {
+            @Override
+            public void onPromoClick(int position) {
+                bannerClickAction(position);
+            }
+        });
+        bannerView.setOnPromoAllClickListener(new BannerView.OnPromoAllClickListener() {
+            @Override
+            public void onPromoAllClick() {
+                bannerAllClickAction();
+            }
+        });
+
         return view;
     }
 
@@ -349,6 +382,26 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void renderBannerView(List<BannerDetail> bannerList) {
+        bannerTitle.setVisibility(View.VISIBLE);
+        bannerView.setVisibility(View.VISIBLE);
+        this.bannerList = bannerList;
+        List<String> promoUrls = new ArrayList<>();
+        for (BannerDetail bannerModel : bannerList) {
+            promoUrls.add(bannerModel.getAttributes().getFileName());
+        }
+        bannerView.setPromoList(promoUrls);
+        bannerView.buildView();
+        bannerView.setPagerAdapter(new FlightBannerPagerAdapter(promoUrls, bannerView.getOnPromoClickListener()));
+    }
+
+    @Override
+    public void hideBannerView() {
+        bannerTitle.setVisibility(View.GONE);
+        bannerView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
         FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
@@ -410,5 +463,25 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onDestroyView() {
         presenter.onDestroyView();
         super.onDestroyView();
+    }
+
+    private void bannerClickAction(int position) {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()) != null) {
+
+            startActivity(((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()));
+        }
+    }
+
+    private void bannerAllClickAction() {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), ALL_PROMO_LINK) != null) {
+
+            startActivity(((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), ALL_PROMO_LINK));
+        }
     }
 }

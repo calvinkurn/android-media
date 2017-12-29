@@ -5,6 +5,7 @@ import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
+import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
@@ -66,7 +67,8 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public FlightRepository provideFlightRepository(FlightAirportDataListSource flightAirportDataListSource,
+    public FlightRepository provideFlightRepository(BannerDataSource bannerDataSource,
+                                                    FlightAirportDataListSource flightAirportDataListSource,
                                                     FlightAirlineDataListSource flightAirlineDataListSource,
                                                     FlightSearchSingleDataSource flightSearchSingleDataListSource,
                                                     FlightSearchReturnDataSource flightSearchReturnDataListSource,
@@ -79,7 +81,7 @@ public class FlightModule {
                                                     FlightAirportVersionDBSource flightAirportVersionDBSource,
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper) {
-        return new FlightRepositoryImpl(flightAirportDataListSource,flightAirlineDataListSource,
+        return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource,flightAirlineDataListSource,
                 flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource,
                 flightMetaDataDBSource, flightAirportDataListBackgroundSource, flightCheckVoucheCodeDataSource, flightBookingDataSource,
                 flightAirportVersionDBSource, flightOrderDataSource, flightOrderMapper);
