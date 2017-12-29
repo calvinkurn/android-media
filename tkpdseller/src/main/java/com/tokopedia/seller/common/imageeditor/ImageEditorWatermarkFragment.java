@@ -36,7 +36,7 @@ import javax.inject.Inject;
 public class ImageEditorWatermarkFragment extends ImageEditorFragment implements WatermarkPresenterView, CropImageView.OnSetCropOverlayReleasedListener, CropImageView.OnSetCropOverlayMovedListener, CropImageView.OnSetCropWindowChangeListener {
 
     public static final int ROTATE_DEGREE = 90;
-    private com.tokopedia.seller.common.imageeditor.WatermarkView watermarkView;
+    private WatermarkView watermarkView;
 
     private String watermarkText;
     private boolean isUseWatermark;
