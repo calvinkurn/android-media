@@ -329,6 +329,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     public void resetPageFeed() {
+        currentCursor = "";
         pagingHandler.setPage(0);
         if (getFeedsUseCase != null) {
             getFeedsUseCase.unsubscribe();
