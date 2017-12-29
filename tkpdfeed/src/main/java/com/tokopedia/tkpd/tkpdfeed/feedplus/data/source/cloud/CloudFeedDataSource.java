@@ -51,4 +51,19 @@ public class CloudFeedDataSource {
 
         return RxApollo.from(apolloWatcher).map(feedListMapper);
     }
+
+    public Observable<FeedResult> getHomeFeeds(RequestParams requestParams) {
+        return getHomeFeedsList(requestParams).map(feedResultMapper);
+    }
+
+    private Observable<FeedDomain> getHomeFeedsList(RequestParams requestParams) {
+        String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");
+        ApolloWatcher<FeedQuery.Data> apolloWatcher = apolloClient.newCall(HomeFeedQuery.builder()
+                .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))
+                .limit(FEED_LIMIT)
+                .cursor(cursor)
+                .build()).watcher();
+
+        return RxApollo.from(apolloWatcher).map(feedListMapper);
+    }
 }

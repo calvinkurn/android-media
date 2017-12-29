@@ -48,6 +48,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
@@ -197,21 +198,11 @@ public class HomeFeedModule {
     }
 
     @Provides
-    GetFeedsUseCase provideGetFeedsUseCase(
+    GetHomeFeedsUseCase provideGetHomeFeedsUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             FeedRepository feedRepository) {
-        return new GetFeedsUseCase(threadExecutor, postExecutionThread, feedRepository);
-    }
-
-    @Provides
-    GetFirstPageFeedsUseCase provideGetFirstPageFeedsUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            FeedRepository feedRepository,
-            GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
-        return new GetFirstPageFeedsUseCase(threadExecutor, postExecutionThread,
-                feedRepository, getFirstPageFeedsCloudUseCase);
+        return new GetHomeFeedsUseCase(threadExecutor, postExecutionThread, feedRepository);
     }
 
     @Provides
@@ -221,17 +212,6 @@ public class HomeFeedModule {
         return new GetRecentViewUseCase(threadExecutor,
                 postExecutionThread,
                 feedRepository);
-    }
-
-    @Provides
-    GetFirstPageFeedsCloudUseCase provideGetFirstPageFeedsCloudUseCase(ThreadExecutor threadExecutor,
-                                                                       PostExecutionThread postExecutionThread,
-                                                                       FeedRepository feedRepository,
-                                                                       GetRecentViewUseCase getRecentProductUsecase) {
-        return new GetFirstPageFeedsCloudUseCase(
-                threadExecutor, postExecutionThread,
-                feedRepository,
-                getRecentProductUsecase);
     }
 
     @Provides
