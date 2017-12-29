@@ -7,6 +7,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.KolFollowingResultDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +18,15 @@ import rx.functions.Func1;
  * @author by nisie on 11/2/17.
  */
 
-public class KolFollowingMapper implements Func1<GetKolFollowingList.Data, List<KolFollowingDomain>> {
+public class KolFollowingMapper implements Func1<GetKolFollowingList.Data, KolFollowingResultDomain> {
 
     @Override
-    public List<KolFollowingDomain> call(GetKolFollowingList.Data data) {
+    public KolFollowingResultDomain call(GetKolFollowingList.Data data) {
         if (data != null
                 && data.get_user_kol_following() != null
-                && data.get_user_kol_following().users() != null
-                && data.get_user_kol_following().users().size() != 0
                 && (data.get_user_kol_following().error() == null
                 || TextUtils.isEmpty(data.get_user_kol_following().error()))) {
-            return convertToDomain(data.get_user_kol_following().users());
+            return convertToDomain(data.get_user_kol_following());
         } else if (data != null
                 && data.get_user_kol_following() != null
                 && (data.get_user_kol_following().error() != null
@@ -39,13 +38,24 @@ public class KolFollowingMapper implements Func1<GetKolFollowingList.Data, List<
         }
     }
 
-    private List<KolFollowingDomain> convertToDomain(List<GetKolFollowingList.Data.User> dataList) {
+    private KolFollowingResultDomain convertToDomain(GetKolFollowingList.Data.Get_user_kol_following user_kol_following) {
+        return new KolFollowingResultDomain(
+                false,
+                "",
+                user_kol_following.users() != null ?
+                        mappingKolFollowingDomain(user_kol_following.users()) :
+                        new ArrayList<KolFollowingDomain>()
+        );
+    }
+
+    private List<KolFollowingDomain> mappingKolFollowingDomain(List<GetKolFollowingList.Data.User> userList) {
         List<KolFollowingDomain> domainList = new ArrayList<>();
-        for (GetKolFollowingList.Data.User data : dataList) {
+        for (GetKolFollowingList.Data.User user : userList) {
             KolFollowingDomain domain = new KolFollowingDomain(
-                    data.id(),
-                    data.name(),
-                    data.userUrl(),
+                    user.id(),
+                    user.name(),
+                    user.photo(),
+                    "",
                     true);
             domainList.add(domain);
         }
