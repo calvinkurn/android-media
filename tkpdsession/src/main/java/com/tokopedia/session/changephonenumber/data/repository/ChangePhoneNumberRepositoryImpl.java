@@ -1,7 +1,7 @@
 package com.tokopedia.session.changephonenumber.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.changephonenumber.data.factory.ChangePhoneNumberFactory;
+import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
 import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
@@ -15,20 +15,19 @@ import rx.Observable;
  */
 
 public class ChangePhoneNumberRepositoryImpl implements ChangePhoneNumberRepository {
-    private final ChangePhoneNumberFactory changePhoneNumberFactory;
+    private final CloudGetWarningSource cloudGetWarningSource;
     private final CloudSendEmailSource cloudSendEmailSource;
 
     @Inject
-    public ChangePhoneNumberRepositoryImpl(ChangePhoneNumberFactory changePhoneNumberFactory,
+    public ChangePhoneNumberRepositoryImpl(CloudGetWarningSource cloudGetWarningSource,
                                            CloudSendEmailSource cloudSendEmailSource) {
-        this.changePhoneNumberFactory = changePhoneNumberFactory;
+        this.cloudGetWarningSource = cloudGetWarningSource;
         this.cloudSendEmailSource = cloudSendEmailSource;
     }
 
     @Override
     public Observable<WarningViewModel> getWarning(TKPDMapParam<String, Object> parameters) {
-        return changePhoneNumberFactory
-                .createCloudChangePhoneNumberWarningSource()
+        return cloudGetWarningSource
                 .getWarning(parameters);
     }
 
