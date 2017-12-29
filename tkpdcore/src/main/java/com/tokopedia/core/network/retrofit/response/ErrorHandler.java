@@ -146,7 +146,7 @@ public class ErrorHandler {
             return context.getString(R.string.default_request_error_timeout) + " " +
                     context.getString(R.string.code_error) + ErrorCode.SOCKET_TIMEOUT_EXCEPTION;
         } else if (e instanceof IOException) {
-            return context.getString(R.string.default_request_error_internal_server) + " " +
+            return context.getString(R.string.msg_no_connection) + " " +
                     context.getString(R.string.code_error) + ErrorCode.IO_EXCEPTION;
         } else if (e instanceof RuntimeException &&
                 e.getLocalizedMessage() != null &&

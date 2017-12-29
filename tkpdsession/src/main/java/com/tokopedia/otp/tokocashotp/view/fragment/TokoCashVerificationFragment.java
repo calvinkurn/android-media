@@ -249,14 +249,13 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     @Override
     public void onSuccessVerifyOTP(VerifyOtpTokoCashViewModel verifyOtpTokoCashViewModel) {
         resetCountDown();
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
+        Intent intent = ChooseTokocashAccountActivity.getCallingIntent(
+                getActivity(),
                 new ChooseTokoCashAccountViewModel(verifyOtpTokoCashViewModel.getList(),
                         viewModel.getPhoneNumber(),
                         verifyOtpTokoCashViewModel.getKey()));
-        intent.putExtras(bundle);
-        getActivity().setResult(Activity.RESULT_OK, intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
         getActivity().finish();
     }
 
@@ -302,8 +301,11 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onErrorNoAccountTokoCash() {
-        startActivity(NotConnectedTokocashActivity.getNoTokocashAccountIntent(getActivity(),
-                viewModel.getPhoneNumber()));
+        Intent intent = NotConnectedTokocashActivity.getNoTokocashAccountIntent(getActivity(),
+                viewModel.getPhoneNumber());
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        getActivity().setResult(Activity.RESULT_CANCELED);
         getActivity().finish();
     }
 

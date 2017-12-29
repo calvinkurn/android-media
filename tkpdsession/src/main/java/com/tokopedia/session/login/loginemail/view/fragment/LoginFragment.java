@@ -386,7 +386,6 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLogin() {
-
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -613,6 +612,7 @@ public class LoginFragment extends BaseDaggerFragment
         Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
+        getActivity().finish();
     }
 
     private void onLoginGoogleClick() {

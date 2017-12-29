@@ -16,8 +16,6 @@ public interface LoginPhoneNumber {
 
         void goToVerifyAccountPage(String phoneNumber);
 
-        void goToNoTokocashAccountPage();
-
         void dismissLoading();
 
         void showLoading();

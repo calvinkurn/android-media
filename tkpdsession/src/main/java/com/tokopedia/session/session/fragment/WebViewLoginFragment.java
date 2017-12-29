@@ -28,8 +28,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.android.volley.NetworkError;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.TkpdWebView;
 
 import java.util.Set;
@@ -133,7 +137,8 @@ public class WebViewLoginFragment extends DialogFragment {
 //            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
             dismiss();
             if (getActivity() != null)
-                SnackbarManager.make(getActivity(), getResources().getString(R.string.msg_network_error), Snackbar.LENGTH_SHORT).show();
+                NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler
+                        .getDefaultErrorCodeMessage(ErrorCode.WEBVIEW_ERROR));
         }
     }
 

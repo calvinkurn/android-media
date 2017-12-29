@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -25,12 +26,19 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.TextDrawable;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.R;
-import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
+import com.tokopedia.session.data.viewmodel.SecurityDomain;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.adapter.TokocashAccountAdapter;
 import com.tokopedia.session.login.loginphonenumber.view.presenter.ChooseTokocashAccountPresenter;
@@ -39,7 +47,11 @@ import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokoca
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 import com.tokopedia.session.session.activity.Login;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
+
+import static com.tokopedia.session.login.loginemail.view.fragment.LoginFragment.TYPE_SQ_PHONE;
 
 /**
  * @author by nisie on 12/4/17.
@@ -58,6 +70,10 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Inject
     ChooseTokocashAccountPresenter presenter;
+
+
+    @Inject
+    GlobalCacheManager cacheManager;
 
 
     public static Fragment createInstance(Bundle bundle) {
@@ -145,7 +161,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     private void goToLoginPage() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intentLogin = Login.getCallingIntent(getActivity());
+            Intent intentLogin = LoginActivity.getCallingIntent(getActivity());
             Intent intentHome = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
                     (getActivity());
             intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -199,13 +215,45 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void goToSecurityQuestion(AccountTokocash accountTokocash, MakeLoginDomain makeLoginDomain) {
-        Intent intent = SecurityQuestionActivity.getCallingIntent(getActivity(),
-                makeLoginDomain.getSecurityDomain(),
-                makeLoginDomain.getFullName(),
+    public void goToSecurityQuestion(AccountTokocash accountTokocash, LoginTokoCashViewModel
+            loginTokoCashViewModel) {
+
+        VerificationPassModel passModel = new VerificationPassModel(
+                loginTokoCashViewModel.getUserInfoDomain().getGetUserInfoDomainData().getPhone(),
                 accountTokocash.getEmail(),
-                viewModel.getPhoneNumber());
-        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+                getListAvailableMethod(loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain(),
+                        loginTokoCashViewModel.getUserInfoDomain().getGetUserInfoDomainData().getPhone()),
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
+
+        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
+                loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain().getUserCheckSecurity2());
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+
+    private ArrayList<MethodItem> getListAvailableMethod(SecurityDomain securityDomain, String phone) {
+        ArrayList<MethodItem> list = new ArrayList<>();
+        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
+            list.add(new MethodItem(
+                    VerificationActivity.TYPE_SMS,
+                    R.drawable.ic_verification_sms,
+                    MethodItem.getSmsMethodText(phone)
+            ));
+            list.add(new MethodItem(
+                    VerificationActivity.TYPE_PHONE_CALL,
+                    R.drawable.ic_verification_call,
+                    MethodItem.getCallMethodText(phone)
+            ));
+        }
+        return list;
     }
 
     @Override

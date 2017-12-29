@@ -40,7 +40,7 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
         view.dismissLoadingProgress();
         if (goToSecurityQuestion(loginTokoCashViewModel.getMakeLoginDomain())) {
             view.goToSecurityQuestion(accountTokocash,
-                    loginTokoCashViewModel.getMakeLoginDomain());
+                    loginTokoCashViewModel);
         } else if (loginTokoCashViewModel.getMakeLoginDomain().isLogin()) {
             view.onSuccessLogin();
         } else {

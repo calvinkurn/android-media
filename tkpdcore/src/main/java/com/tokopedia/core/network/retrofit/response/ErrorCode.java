@@ -16,4 +16,5 @@ public interface ErrorCode {
     int FACEBOOK_EXCEPTION = 1122;
     int EMPTY_ACCESS_TOKEN = 1123;
     int GOOGLE_FAILED_ACCESS_TOKEN = 1124;
+    int WEBVIEW_ERROR = 1125;
 }

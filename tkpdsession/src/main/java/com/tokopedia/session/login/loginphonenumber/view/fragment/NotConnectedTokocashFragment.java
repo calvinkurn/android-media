@@ -203,12 +203,4 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
         return list;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_VERIFY_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
-
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 }

@@ -39,11 +39,6 @@ import javax.inject.Inject;
 public class LoginPhoneNumberFragment extends BaseDaggerFragment
         implements LoginPhoneNumber.View {
 
-    private static final int REQUEST_VERIFY_PHONE = 101;
-    private static final int REQUEST_CHOOSE_ACCOUNT = 102;
-    private static final int REQUEST_PHONE_NOT_CONNECTED = 103;
-    private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 104;
-
     EditText phoneNumber;
     TextView nextButton;
     TextView message;
@@ -132,19 +127,13 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(VerificationActivity.getLoginTokoCashVerificationIntent(
+        Intent intent = VerificationActivity.getLoginTokoCashVerificationIntent(
                 getActivity(),
                 phoneNumber,
-                getListVerificationMethod()),
-                REQUEST_VERIFY_PHONE);
-    }
-
-    @Override
-    public void goToNoTokocashAccountPage() {
-        startActivityForResult(NotConnectedTokocashActivity.getNoTokocashAccountIntent(
-                getActivity(),
-                phoneNumber.getText().toString()),
-                REQUEST_NO_TOKOCASH_ACCOUNT);
+                getListVerificationMethod());
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     @Override
@@ -180,37 +169,6 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void showErrorPhoneNumber(String errorMessage) {
         errorText.setText(errorMessage);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_VERIFY_PHONE
-                && resultCode == Activity.RESULT_OK) {
-            ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
-            if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
-                    .getListAccount().isEmpty()) {
-                goToChooseAccountPage(chooseTokoCashAccountViewModel);
-            } else {
-                goToNoTokocashAccountPage();
-            }
-        } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
-                && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
-        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
-                getActivity(),
-                data),
-                REQUEST_CHOOSE_ACCOUNT);
-    }
-
-    private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
-        return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
     }
 
     @Override
