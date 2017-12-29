@@ -608,7 +608,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                     }
                 }
                 break;
-
         }
     }
 
@@ -693,7 +692,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public void openScroogePage(String url, String postData) {
         if (getActivity() != null) {
-            ScroogePGUtil.openScroogePage(getActivity(), url, true, postData, getString(R.string.title_pay_pending_fare));
+            ScroogePGUtil.openScroogePage(this, url, true, postData, getString(R.string.title_pay_pending_fare));
         }
     }
 
