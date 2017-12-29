@@ -56,6 +56,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         badgeContainer.removeAllViews();
         for (Badge badge : cpm.getBadges()) {
             ImageView badgeImg = new ImageView(context);
+            badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
+                    context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
             imageLoader.loadImage(badge.getImageUrl(), badgeImg);
             badgeContainer.addView(badgeImg);
         }
@@ -86,11 +88,13 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     @Override
     public void displayAds(CpmModel cpmModel) {
-        CpmData data = cpmModel.getData().get(0);
-        if(data.getCpm().getCpmShop()!=null) {
-            createViewCpmShop(getContext(), data.getCpm());
-        } else {
-            createViewCpmDigital(getContext(), data.getCpm());
+        if (cpmModel.getData().size() > 0) {
+            CpmData data = cpmModel.getData().get(0);
+            if (data.getCpm().getCpmShop() != null) {
+                createViewCpmShop(getContext(), data.getCpm());
+            } else {
+                createViewCpmDigital(getContext(), data.getCpm());
+            }
         }
     }
 
@@ -111,7 +115,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     @Override
     public void notifyAdsErrorLoaded(int errorCode, String message) {
-        if(adsListener!=null){
+        if (adsListener != null) {
             adsListener.onTopAdsFailToLoad(errorCode, message);
         }
     }
