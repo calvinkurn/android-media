@@ -23,6 +23,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
     private String shareLinkDescription;
     private String cursor;
     private int rowNumber;
+    private String eventLabel;
 
     public ActivityCardViewModel(ProductCardHeaderViewModel productCardHeaderViewModel,
                                  ArrayList<ProductFeedViewModel> listProduct,
@@ -150,5 +151,13 @@ public class ActivityCardViewModel extends ProductCardViewModel {
 
     public int getPositionFeedCard() {
         return positionFeedCard;
+    }
+
+    public void setEventLabel(String eventLabel) {
+        this.eventLabel = eventLabel;
+    }
+
+    public String getEventLabel() {
+        return eventLabel;
     }
 }

@@ -18,8 +18,8 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
     protected ArrayList<InspirationProductViewModel> listProduct;
     private int rowNumber;
     private String source;
-    private String userId;
     private int positionFeedCard;
+    private String eventLabel;
 
     public InspirationViewModel(String title,
                                 ArrayList<InspirationProductViewModel> listProduct,
@@ -70,14 +70,6 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
         this.source = source;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public List<Object> getListProductAsObjectDataLayer(String eventLabel, String userId, int positionFeedCard) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < getListProduct().size(); i++) {
@@ -92,7 +84,7 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
                             "variant", "",
                             "list", String.format("/feed - product %d - %s", positionFeedCard, eventLabel),
                             "position", i,
-                            "userId", getUserId()
+                            "userId", userId
                     )
             );
         }
@@ -105,5 +97,13 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public int getPositionFeedCard() {
         return positionFeedCard;
+    }
+
+    public void setEventLabel(String eventLabel) {
+        this.eventLabel = eventLabel;
+    }
+
+    public String getEventLabel() {
+        return eventLabel;
     }
 }

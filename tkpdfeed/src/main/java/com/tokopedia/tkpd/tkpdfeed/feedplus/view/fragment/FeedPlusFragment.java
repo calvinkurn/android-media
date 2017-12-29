@@ -415,11 +415,27 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetailFromProductUpload(int rowNumber, int positionFeedCard, int page, int itemPosition,
-                                                     String productId, String imageSourceSingle, String name,
-                                                     String price, String priceInt, String productUrl) {
-        FeedTracking.trackEventClickProductUploadEnhanced(name, productId, priceInt, productUrl,
-                positionFeedCard + 1, itemPosition, SessionHandler.getLoginID(getContext()));
+    public void onGoToProductDetailFromProductUpload(int rowNumber,
+                                                     int positionFeedCard,
+                                                     int page,
+                                                     int itemPosition,
+                                                     String productId,
+                                                     String imageSourceSingle,
+                                                     String name,
+                                                     String price,
+                                                     String priceInt,
+                                                     String productUrl,
+                                                     String eventLabel) {
+        FeedTracking.trackEventClickProductUploadEnhanced(
+                name,
+                productId,
+                priceInt,
+                productUrl,
+                positionFeedCard + 1,
+                itemPosition,
+                SessionHandler.getLoginID(getContext()),
+                eventLabel
+        );
         goToProductDetail(productId, imageSourceSingle, name, price);
     }
 
@@ -432,13 +448,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetailFromInspiration(int page, int rowNumber,
-                                                   String productId, String imageSource,
-                                                   String name, String price, String priceInt,
-                                                   String productUrl, String source,
-                                                   int positionFeedCard, int itemPosition) {
-        FeedTracking.trackEventClickInspirationEnhanced(name, productId, priceInt,
-                productUrl, positionFeedCard + 1, itemPosition, source, SessionHandler.getLoginID(getContext()));
+    public void onGoToProductDetailFromInspiration(int page,
+                                                   int rowNumber,
+                                                   String productId,
+                                                   String imageSource,
+                                                   String name,
+                                                   String price,
+                                                   String priceInt,
+                                                   String productUrl,
+                                                   String source,
+                                                   int positionFeedCard,
+                                                   int itemPosition,
+                                                   String eventLabel) {
+        FeedTracking.trackEventClickInspirationEnhanced(
+                name,
+                productId,
+                priceInt,
+                productUrl,
+                positionFeedCard + 1,
+                itemPosition,
+                source,
+                SessionHandler.getLoginID(getContext()),
+                eventLabel
+        );
 
         goToProductDetail(productId, imageSource, name, price);
         UnifyTracking.eventR3Product(productId, AppEventTracking.Action.CLICK,
@@ -917,7 +949,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         UnifyTracking.eventFeedClick(
                 getFeedAnalyticsHeader(page, rowNumber) +
                         FeedTrackingEventLabel.Click.TOPPICKS + name);
-        FeedTracking.trackEventClickTopPicksEnhanced(name, url, rowNumber, itemPosition, SessionHandler.getLoginID(getContext()));
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
                 DeepLinkChecker.openBrowse(url, getActivity());

@@ -58,7 +58,8 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getUrl(),
                             inspirationViewModel.getSource(),
                             inspirationViewModel.getPositionFeedCard(),
-                            getAdapterPosition());
+                            getAdapterPosition(),
+                            inspirationViewModel.getEventLabel());
                 }
             });
             productImage.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +77,8 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getUrl(),
                             inspirationViewModel.getSource(),
                             inspirationViewModel.getPositionFeedCard(),
-                            getAdapterPosition());
+                            getAdapterPosition(),
+                            inspirationViewModel.getEventLabel());
                 }
             });
         }

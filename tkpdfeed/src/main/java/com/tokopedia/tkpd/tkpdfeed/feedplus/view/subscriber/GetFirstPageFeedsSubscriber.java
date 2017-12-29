@@ -229,8 +229,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     case TYPE_NEW_PRODUCT:
                         ActivityCardViewModel model = convertToActivityViewModel(domain, positionFeedCard);
                         if (model.getListProduct() != null && !model.getListProduct().isEmpty()) {
+                            String eventLabel = String.format("%s - %s", "product", "product upload");
+                            model.setEventLabel(eventLabel);
                             listFeedView.add(model);
-                            String eventLabel = String.format("%s - %s", "product", "");
+
                             FeedTracking.eventImpressionFeedUploadedProduct(
                                     model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard + 1),
                                     eventLabel
@@ -252,9 +254,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         if (inspirationViewModel != null
                                 && inspirationViewModel.getListProduct() != null
                                 && !inspirationViewModel.getListProduct().isEmpty()) {
+
+                            String eventLabel = String.format("%s - %s", TYPE_INSPIRATION, "inspirasi_" + inspirationViewModel.getSource());
+                            inspirationViewModel.setEventLabel(eventLabel);
                             listFeedView.add(inspirationViewModel);
 
-                            String eventLabel = String.format("%s - %s", TYPE_INSPIRATION, inspirationViewModel.getSource());
                             FeedTracking.eventImpressionFeedInspiration(
                                     inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard + 1),
                                     eventLabel
@@ -480,7 +484,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             viewModel.setSource(
                     domain.getContent().getInspirationDomains().get(0).getSource()
             );
-            viewModel.setUserId(SessionHandler.getLoginID(viewListener.getActivity()));
             viewModel.setPositionFeedCard(positionFeedCard);
             return viewModel;
         } else {

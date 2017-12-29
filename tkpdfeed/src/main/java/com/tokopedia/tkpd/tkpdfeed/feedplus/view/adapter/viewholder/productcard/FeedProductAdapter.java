@@ -127,7 +127,9 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                             list.get(position).getName(),
                             list.get(position).getPrice(),
                             list.get(position).getPriceInt(),
-                            list.get(position).getUrl());
+                            list.get(position).getUrl(),
+                            activityCardViewModel.getEventLabel()
+                    );
                 }
             });
 
@@ -144,7 +146,9 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                             list.get(position).getName(),
                             list.get(position).getPrice(),
                             list.get(position).getPriceInt(),
-                            list.get(position).getUrl());
+                            list.get(position).getUrl(),
+                            activityCardViewModel.getEventLabel()
+                    );
                 }
             });
         }
