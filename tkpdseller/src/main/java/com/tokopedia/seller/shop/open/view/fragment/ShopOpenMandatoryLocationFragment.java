@@ -174,7 +174,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                 RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
                         googleLocationViewModel == null ? "" : googleLocationViewModel.getLongitude(),
                         googleLocationViewModel == null ? "" : googleLocationViewModel.getLatitude(),
-                        "",
+                        googleLocationViewModel == null ? "" : googleLocationViewModel.getCheckSum(),
                         locationShippingViewHolder.getLocationComplete(),
                         locationShippingViewHolder.getDistrictName(),
                         locationMapViewHolder.getManualAddress(),
@@ -226,6 +226,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
             googleLocationViewModel.setLatitude(shipment.getLatitude());
             googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
 
+            locationMapViewHolder.setFromReserveDomain(true);
+
             locationMapViewHolder.setLocationText(googleLocationViewModel);
         }
     }
@@ -254,25 +256,6 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
 
             stepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
         }
-    }
-
-    private void logShipment(Shipment shipment){
-        String addrStreet = shipment.getAddrStreet(); // manual address
-        String longitude = shipment.getLongitude();
-        String latitude = shipment.getLatitude();
-        String geolocationChecksum = shipment.getGeolocationChecksum();
-
-        int postal = shipment.getPostal();
-        int districtId = shipment.getDistrictId();
-        Log.d(TAG, String.format(
-                "%s %s %s %d %d %s", addrStreet, longitude, latitude, postal, districtId, geolocationChecksum
-        ));
-    }
-
-    private void logUserData(UserData userData){
-        // location complete district
-        String location = userData.getLocation();
-        String locComplete = userData.getLocComplete();
     }
 
     @Override
@@ -341,11 +324,6 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null && getArguments() != null) {
             setupArguments(getArguments());
-
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
-            logShipment(shipment);
-            logUserData(userData);
         }
     }
 

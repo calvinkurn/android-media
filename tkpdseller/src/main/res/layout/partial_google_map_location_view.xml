@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="24dp"
+    android:layout_marginTop="16dp"
     tools:showIn="@layout/fragment_shop_open_location">
 
     <TextView
@@ -16,7 +16,8 @@
         android:textStyle="normal"
         android:textColor="@color/black_38"
         android:lineSpacingExtra="10sp"
-        android:text="@string/optional_pinpoint_location_text" />
+        android:text="@string/optional_pinpoint_location_text"
+        android:layout_marginBottom="12dp"/>
 
     <FrameLayout
         android:id="@+id/empty_map_view"

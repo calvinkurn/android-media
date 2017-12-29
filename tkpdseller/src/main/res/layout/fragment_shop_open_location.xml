@@ -16,18 +16,19 @@
         android:orientation="vertical"
         >
 
-        <include layout="@layout/shop_open_location_header" />
+        <include layout="@layout/partial_shop_open_location_header" />
 
-        <include layout="@layout/edit_shipping_location_seller" />
+        <include layout="@layout/partial_edit_shipping_location_seller" />
 
-        <include layout="@layout/google_map_location_view" />
+        <include layout="@layout/partial_google_map_location_view" />
 
-        <include layout="@layout/shop_open_map_address_location" />
+        <include layout="@layout/partial_shop_open_map_address_location" />
 
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
-            android:text="@string/title_next" />
+            android:text="@string/title_next"
+            android:layout_width="match_parent"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.open.view.holder;
 
+import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -29,8 +30,15 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     private final LinearLayout mapViewContainer;
     private final FrameLayout emptyMapView;
     private View root;
-    private final EditText shopAddressEdittext;
+    private ViewHolderListener3 viewHolderListener3;
+    private final AppCompatEditText shopAddressEdittext;
     private GoogleMap googleMap;
+
+    private boolean isFromReserveDomain;
+
+    public void setFromReserveDomain(boolean fromReserveDomain) {
+        isFromReserveDomain = fromReserveDomain;
+    }
 
     private GoogleLocationViewModel googleLocationViewModel;
 
@@ -43,6 +51,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
 
         pinPickupLocation = root.findViewById(R.id.pin_pickup_location);
         this.root = root;
+        this.viewHolderListener3 = viewHolderListener3;
         pinPickupLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,6 +73,9 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     public void setLocationText(GoogleLocationViewModel googleLocationViewModel){
         this.googleLocationViewModel = googleLocationViewModel;
 
+        if(googleLocationViewModel == null)
+            return;
+
         emptyMapView.setVisibility(View.GONE);
         mapViewContainer.setVisibility(View.VISIBLE);
         generatedLocationOpenShop.setVisibility(View.VISIBLE);
@@ -75,7 +87,8 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             }
         });
 
-        setGoogleMap(googleMap);
+        if(!isFromReserveDomain)
+            setGoogleMap(googleMap);
     }
 
     public String getManualAddress(){
@@ -97,6 +110,12 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+
+        if(isFromReserveDomain){
+            setGoogleMap(googleMap);
+
+            isFromReserveDomain= false;
+        }
     }
 
     private void setGoogleMap(GoogleMap googleMap) {
@@ -118,6 +137,9 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
                     // need this even it's not used
                     // it's used to override default function of OnMapClickListener
                     // which is navigate to default Google Map Apps
+                    if(viewHolderListener3 != null){
+                        viewHolderListener3.navigateToGeoLocationActivityRequest(shopAddressEdittext.getText().toString());
+                    }
                 }
             });
         }
