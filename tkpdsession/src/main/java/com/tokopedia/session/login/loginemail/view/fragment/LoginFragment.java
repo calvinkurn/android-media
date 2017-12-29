@@ -247,7 +247,6 @@ public class LoginFragment extends BaseDaggerFragment
         forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().finish();
                 startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailEditText.getText()
                         .toString()));
             }
