@@ -166,7 +166,7 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     @Override
     public void setOnChangePhoneButtonClick(Context context, String userPhone) {
-        view.showManualPhoneVerificationDialog(userPhone);
+        view.startChangePhoneNumber();
     }
 
     @Override

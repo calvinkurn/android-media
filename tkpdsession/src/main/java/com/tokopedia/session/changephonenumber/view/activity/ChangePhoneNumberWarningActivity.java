@@ -1,5 +1,7 @@
 package com.tokopedia.session.changephonenumber.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -11,6 +13,18 @@ import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWa
 
 public class ChangePhoneNumberWarningActivity extends BasePresenterActivity
         implements ChangePhoneNumberWarningActivityListener.View, HasComponent {
+    public static final String PARAM_EMAIL = "email";
+    public static final String PARAM_PHONE_NUMBER = "phone_number";
+
+    private String email;
+    private String phoneNumber;
+
+    public static Intent newInstance(Context context, String email, String phoneNumber) {
+        Intent intent = new Intent(context, ChangePhoneNumberWarningActivity.class);
+        intent.putExtra(PARAM_EMAIL, email);
+        intent.putExtra(PARAM_PHONE_NUMBER, phoneNumber);
+        return intent;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -19,7 +33,8 @@ public class ChangePhoneNumberWarningActivity extends BasePresenterActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+        email = extras.getString(PARAM_EMAIL);
+        phoneNumber = extras.getString(PARAM_PHONE_NUMBER);
     }
 
     @Override
@@ -55,7 +70,7 @@ public class ChangePhoneNumberWarningActivity extends BasePresenterActivity
     @Override
     public void inflateFragment() {
         String TAG = ChangePhoneNumberWarningFragment.class.getSimpleName();
-        ChangePhoneNumberWarningFragment fragment = ChangePhoneNumberWarningFragment.newInstance();
+        ChangePhoneNumberWarningFragment fragment = ChangePhoneNumberWarningFragment.newInstance(email, phoneNumber);
 
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()

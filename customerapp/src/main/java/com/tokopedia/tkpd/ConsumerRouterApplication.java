@@ -864,4 +864,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
     }
+
+    @Override
+    public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
+        return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
+    }
 }

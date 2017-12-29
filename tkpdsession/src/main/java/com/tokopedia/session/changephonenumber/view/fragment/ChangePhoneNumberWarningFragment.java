@@ -39,6 +39,8 @@ import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningView
  */
 
 public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment implements ChangePhoneNumberWarningFragmentListener.View {
+    public static final String PARAM_EMAIL = "email";
+    public static final String PARAM_PHONE_NUMBER = "phone_number";
 
     @Inject
     WarningListAdapter adapter;
@@ -58,9 +60,11 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private View loadingView;
     private Unbinder unbinder;
 
-    public static ChangePhoneNumberWarningFragment newInstance() {
+    public static ChangePhoneNumberWarningFragment newInstance(String email, String phoneNumber) {
         ChangePhoneNumberWarningFragment fragment = new ChangePhoneNumberWarningFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(PARAM_EMAIL, email);
+        bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -108,7 +112,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     private void initVar() {
-        email = "kucing@tokopedia.com";
+        email = getArguments().getString(PARAM_EMAIL);
+        phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
     }
 
     @Override
@@ -132,6 +137,11 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                         .sessionModule(new SessionModule())
                         .build();
         sessionComponent.inject(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

@@ -19,7 +19,7 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.fragment.VerificationDialog;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.manage.people.profile.customview.AvatarView;
 import com.tokopedia.core.manage.people.profile.customview.ContactView;
@@ -30,7 +30,6 @@ import com.tokopedia.core.manage.people.profile.model.PeopleProfilePass;
 import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentImpl;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
-import com.tokopedia.core.msisdn.fragment.PhoneManualVerificationDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.core.router.SessionRouter;
@@ -293,12 +292,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     }
 
     @Override
-    public void showManualPhoneVerificationDialog(String userPhone) {
-        DialogFragment fragment = (DialogFragment) PhoneManualVerificationDialog.newInstance(VerificationDialog.VerificationFromProfileSettings, userPhone);
-        fragment.show(getFragmentManager(), PhoneManualVerificationDialog.FRAGMENT_TAG);
-    }
-
-    @Override
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
         startActivityForResult(SessionRouter.getPhoneVerificationProfileActivityIntent(getActivity()),
@@ -506,5 +499,17 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void finishActivity() {
         getActivity().finish();
+    }
+
+    @Override
+    public void startChangePhoneNumber() {
+        startActivity(
+                ((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .getChangePhoneNumberIntent(
+                                getActivity(),
+                                profileData.getDataUser().getUserEmail(),
+                                profileData.getDataUser().getUserPhone()
+                        )
+        );
     }
 }
