@@ -21,24 +21,6 @@ query HomeFeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
             }
             content {
               type
-              total_product
-              products {
-                id
-                name
-                price
-                image
-                image_single
-                wholesale {
-                  qty_min_fmt
-                }
-                freereturns
-                preorder
-                cashback
-                url
-                productLink
-                wishlist
-                rating
-              }
               inspirasi {
                 experiment_version
                 source
