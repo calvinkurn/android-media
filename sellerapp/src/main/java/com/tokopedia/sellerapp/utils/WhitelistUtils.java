@@ -64,9 +64,8 @@ public class WhitelistUtils {
                 TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC, FIVE_MINUTE));
 
         // Open Shop
-        //TODO add this!
-//        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
-//                TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM, ONE_HOUR));
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
+                TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM, ONE_HOUR));
 
         return cacheApiWhiteList;
     }
