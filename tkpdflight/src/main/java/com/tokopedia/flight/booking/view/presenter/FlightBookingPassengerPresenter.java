@@ -140,6 +140,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (existingSelected == null) {
             existingSelected = new FlightBookingAmenityMetaViewModel();
             existingSelected.setKey(flightBookingLuggageMetaViewModel.getKey());
+            existingSelected.setJourneyId(flightBookingLuggageMetaViewModel.getJourneyId());
+            existingSelected.setArrivalId(flightBookingLuggageMetaViewModel.getArrivalId());
+            existingSelected.setDepartureId(flightBookingLuggageMetaViewModel.getDepartureId());
             existingSelected.setDescription(flightBookingLuggageMetaViewModel.getDescription());
             existingSelected.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
         }
@@ -198,6 +201,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (existingSelected == null) {
             existingSelected = new FlightBookingAmenityMetaViewModel();
             existingSelected.setKey(viewModel.getKey());
+            existingSelected.setJourneyId(viewModel.getJourneyId());
+            existingSelected.setArrivalId(viewModel.getArrivalId());
+            existingSelected.setDepartureId(viewModel.getDepartureId());
             existingSelected.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
             existingSelected.setDescription(viewModel.getDescription());
         }
@@ -222,6 +228,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         } else if ((getView().getPassengerFirstName().length() + getView().getPassengerLastName().length()) > 48) {
             isValid = false;
             getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_last_name_max_error);
+        } else if (getView().getPassengerLastName().length() < 2) {
+            isValid = false;
+            getView().showPassengerLastNameEmptyError(R.string.flight_booking_passenger_last_name_empty_error);
         } else if (getView().getPassengerLastName().length() > 0 && !isSingleWord(getView().getPassengerLastName())) {
             isValid = false;
             getView().showPassengerLastNameShouldOneWordError(R.string.flight_booking_passenger_last_name_single_word_error);

@@ -23,7 +23,7 @@ import rx.functions.Func4;
  */
 
 public class FlightGetOrderUseCase extends UseCase<FlightOrder> {
-    private static final String PARAM_ID = "id";
+    private static final String PARAM_ID = "invoice_id";
     private static final String DEFAULT_EMPTY_VALUE = "";
     private FlightRepository flightRepository;
 

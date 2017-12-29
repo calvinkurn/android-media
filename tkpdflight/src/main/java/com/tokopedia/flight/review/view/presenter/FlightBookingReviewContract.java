@@ -1,5 +1,6 @@
 package com.tokopedia.flight.review.view.presenter;
 
+import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
@@ -58,6 +59,12 @@ public interface FlightBookingReviewContract {
         void navigateToOrderList();
 
         void showPaymentFailedErrorMessage(@StringRes int resId);
+
+        Context getActivity();
+
+        void showErrorInSnackbar(String message);
+
+        void showErrorInEmptyState(String message);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{

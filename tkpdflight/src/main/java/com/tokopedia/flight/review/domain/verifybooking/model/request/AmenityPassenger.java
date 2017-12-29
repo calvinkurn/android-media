@@ -6,12 +6,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class AmenityPassenger {
 
-    @SerializedName("departure_id")
-    @Expose
-    private String departureId;
     @SerializedName("arrival_id")
     @Expose
     private String arrivalId;
+    @SerializedName("departure_id")
+    @Expose
+    private String departureId;
+    @SerializedName("journey_id")
+    @Expose
+    private String journeyId;
     @SerializedName("amenity_type")
     @Expose
     private int amenityType;
@@ -22,20 +25,12 @@ public class AmenityPassenger {
     @Expose
     private String itemId;
 
-    public String getDepartureId() {
-        return departureId;
+    public String getJourneyId() {
+        return journeyId;
     }
 
-    public void setDepartureId(String departureId) {
-        this.departureId = departureId;
-    }
-
-    public String getArrivalId() {
-        return arrivalId;
-    }
-
-    public void setArrivalId(String arrivalId) {
-        this.arrivalId = arrivalId;
+    public void setJourneyId(String journeyId) {
+        this.journeyId = journeyId;
     }
 
     public int getAmenityType() {
@@ -62,4 +57,19 @@ public class AmenityPassenger {
         this.itemId = itemId;
     }
 
+    public String getArrivalId() {
+        return arrivalId;
+    }
+
+    public void setArrivalId(String arrivalId) {
+        this.arrivalId = arrivalId;
+    }
+
+    public String getDepartureId() {
+        return departureId;
+    }
+
+    public void setDepartureId(String departureId) {
+        this.departureId = departureId;
+    }
 }

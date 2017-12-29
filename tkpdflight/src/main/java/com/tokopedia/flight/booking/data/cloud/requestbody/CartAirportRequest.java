@@ -11,15 +11,9 @@ public class CartAirportRequest {
     @SerializedName("journey_id")
     @Expose
     private String journeyId;
-    @SerializedName("departure")
+    @SerializedName("term")
     @Expose
-    private String departure;
-    @SerializedName("arrival")
-    @Expose
-    private String arrival;
-    @SerializedName("date")
-    @Expose
-    private String date;
+    private String term;
 
     public CartAirportRequest() {
     }
@@ -32,27 +26,11 @@ public class CartAirportRequest {
         this.journeyId = journeyId;
     }
 
-    public String getDeparture() {
-        return departure;
+    public String getTerm() {
+        return term;
     }
 
-    public void setDeparture(String departure) {
-        this.departure = departure;
-    }
-
-    public String getArrival() {
-        return arrival;
-    }
-
-    public void setArrival(String arrival) {
-        this.arrival = arrival;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public void setTerm(String term) {
+        this.term = term;
     }
 }

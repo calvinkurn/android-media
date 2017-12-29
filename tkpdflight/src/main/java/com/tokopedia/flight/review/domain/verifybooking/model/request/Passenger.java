@@ -24,9 +24,9 @@ public class Passenger {
     @SerializedName("dob")
     @Expose
     private String dob;
-    @SerializedName("nationality")
+    /*@SerializedName("nationality")
     @Expose
-    private String nationality;
+    private String nationality;*/
     /*@SerializedName("passport_no")
     @Expose
     private String passportNo;
@@ -80,13 +80,13 @@ public class Passenger {
         this.dob = dob;
     }
 
-    public String getNationality() {
+    /*public String getNationality() {
         return nationality;
     }
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
-    }
+    }*/
 
     /*public String getPassportNo() {
         return passportNo;
