@@ -71,11 +71,6 @@
             android:name=".tokocash.activity.WaitingTransactionActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".tokocash.activity.CustomScannerQRActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".tokocash.activity.SuccessPaymentQRActivity"
-            android:screenOrientation="portrait" />
-
 
         <receiver
             android:name=".receiver.TokocashPendingDataBroadcastReceiver"

@@ -27,15 +27,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
 
-                <Button
-                    android:id="@+id/button_scan_qr"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/padding_detail"
-                    android:background="@color/tkpd_main_green"
-                    android:textColor="@color/white"
-                    android:text="SCAN QR CODE"/>
-
                 <LinearLayout
                     android:id="@+id/topup_tokocash_layout"
                     android:layout_width="match_parent"

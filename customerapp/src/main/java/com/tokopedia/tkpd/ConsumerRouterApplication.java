@@ -22,6 +22,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -115,6 +116,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
+import com.tokopedia.tokocash.qrpayment.presentation.CustomScannerQRActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -849,6 +851,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent goToHistoryTokoCash(Context context) {
         return HistoryTokoCashActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent goToQRScannerTokoCash(Context context) {
+        return new Intent(getApplicationContext(), CustomScannerQRActivity.class);
     }
 
     @Override
