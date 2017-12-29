@@ -41,7 +41,7 @@ import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponen
 import com.tokopedia.seller.shop.open.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenInfoView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
-import com.tokopedia.seller.shop.open.view.fragment.ShopSettingInfoFragmentPermissionsDispatcher;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenInfoFragmentPermissionsDispatcher;
 
 import java.io.File;
 
@@ -95,8 +95,8 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_setting_info, container, false);
-        initView(view);
         presenter.attachView(this);
+        initView(view);
         setActionVar();
         return view;
     }
@@ -214,7 +214,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     }
 
     private void onClickBrowseImage() {
-        ShopSettingInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenInfoFragment.this);
+        ShopOpenInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenInfoFragment.this);
     }
 
     @Override
@@ -262,7 +262,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
-        ShopSettingInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        ShopOpenInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @TargetApi(16)
