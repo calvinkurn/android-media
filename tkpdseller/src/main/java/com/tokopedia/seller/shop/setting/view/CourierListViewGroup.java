@@ -6,16 +6,13 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.SparseArray;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.open.data.model.Courier;
-import com.tokopedia.seller.shop.open.view.model.CourierServiceId;
-import com.tokopedia.seller.shop.open.view.model.CourierServiceIdList;
+import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,7 @@ public class CourierListViewGroup extends LinearLayout implements ShopCourierExp
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
     }
 
-    public void setCourierList(List<Courier> courierList, CourierServiceIdList selectedCourierService) {
+    public void setCourierList(List<Courier> courierList, CourierServiceIdWrapper selectedCourierService) {
         if (courierList == null) {
             this.courierList = new ArrayList<>();
         } else {
@@ -65,7 +62,7 @@ public class CourierListViewGroup extends LinearLayout implements ShopCourierExp
         setUIBasedOnCourierList(selectedCourierService);
     }
 
-    private void setUIBasedOnCourierList(CourierServiceIdList selectedCourierServiceList) {
+    private void setUIBasedOnCourierList(CourierServiceIdWrapper selectedCourierServiceList) {
         this.removeAllViews();
         for (int i = 0, sizei = courierList.size(); i < sizei; i++) {
             Courier courier = courierList.get(i);
@@ -88,20 +85,20 @@ public class CourierListViewGroup extends LinearLayout implements ShopCourierExp
 
     }
 
-    public CourierServiceIdList getSelectedCourierList() {
-        CourierServiceIdList courierServiceIdList = new CourierServiceIdList();
+    public CourierServiceIdWrapper getSelectedCourierList() {
+        CourierServiceIdWrapper courierServiceIdWrapper = new CourierServiceIdWrapper();
         for (int i = 0, sizei = this.getChildCount(); i < sizei; i++) {
             View child = this.getChildAt(i);
             if (child instanceof ShopCourierExpandableOption) {
                 ShopCourierExpandableOption shopCourierExpandableOption = (ShopCourierExpandableOption) child;
                 boolean isChecked = shopCourierExpandableOption.isChecked();
                 if (isChecked) {
-                    courierServiceIdList.add(courierList.get(i).getId(),
+                    courierServiceIdWrapper.add(courierList.get(i).getId(),
                             shopCourierExpandableOption.getSelectedChild());
                 }
             }
         }
-        return courierServiceIdList;
+        return courierServiceIdWrapper;
     }
 
     @Override

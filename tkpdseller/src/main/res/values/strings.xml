@@ -179,8 +179,8 @@
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
     <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik</string>
-    <string name="label_shop_setting_slogan">Slogan Toko (Opsional)</string>
-    <string name="label_shop_setting_desc_shop">Deskripsi Toko (Opsional)</string>
+    <string name="label_shop_setting_slogan">Slogan Toko</string>
+    <string name="label_shop_setting_desc_shop">Deskripsi Toko</string>
     <string name="label_shop_setting_logo">Logo (Opsional)</string>
     <string name="label_shop_setting_error_should_pick_image">Logo harus diisi</string>
     <string name="label_shop_setting_info_max_file_size">Besar file maksimum:</string>
@@ -246,4 +246,6 @@
     <string name="delivery_not_available">Pengiriman tidak tersedia</string>
     <string name="courier_cannot_activate_desc">Kurir ini tidak dapat diaktifkan karena tidak tersedia di daerah Anda.</string>
     <string name="courier_cannot_activate_title">Kurir tidak tersedia di daerah Anda</string>
+    <string name="min_1_courier_must_be_selected">Minimal 1 layanan kurir harus dipilih.</string>
+    <string name="shop_has_been_active">Toko Anda sudah aktif!</string>
 </resources>

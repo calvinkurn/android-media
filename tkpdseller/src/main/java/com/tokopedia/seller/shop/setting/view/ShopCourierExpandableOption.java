@@ -221,7 +221,7 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
         if (mEnabled) {
             tvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_primary_70));
         } else {
-            tvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.grey_500));
+            tvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_disabled_38));
         }
         if (TextUtils.isEmpty(titleText)) {
             tvTitle.setVisibility(View.GONE);
@@ -239,7 +239,7 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
             tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_secondary_54));
             tvDesc.setText(getContext().getString(R.string.choose_delivery_packet));
         } else {
-            tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.grey_300));
+            tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_disabled_38));
             tvDesc.setText(getContext().getString(R.string.delivery_not_available));
         }
     }

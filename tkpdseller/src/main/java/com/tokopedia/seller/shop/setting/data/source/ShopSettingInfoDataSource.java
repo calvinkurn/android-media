@@ -1,8 +1,7 @@
 package com.tokopedia.seller.shop.setting.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.shop.setting.data.model.GenerateHostModel;
-import com.tokopedia.seller.shop.setting.data.model.UploadShopImageModel;
+import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.setting.data.source.cloud.ShopSettingInfoDataSourceCloud;
 
 import java.util.HashMap;
@@ -29,5 +28,11 @@ public class ShopSettingInfoDataSource {
 
     public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){
         return shopSettingInfoDataSourceCloud.saveShopSettingStep2(requestParams);
+    }
+    public Observable<Boolean> saveShopSettingStep3(CourierServiceIdWrapper courierServiceIdWrapper){
+        return shopSettingInfoDataSourceCloud.saveShopSettingStep3(courierServiceIdWrapper);
+    }
+    public Observable<Boolean> createShop(){
+        return shopSettingInfoDataSourceCloud.createShop();
     }
 }

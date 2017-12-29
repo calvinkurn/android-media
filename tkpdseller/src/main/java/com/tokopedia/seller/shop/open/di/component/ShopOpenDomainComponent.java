@@ -13,12 +13,10 @@ import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
-import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenRoutingFragment;
-import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragment;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoPresenter;
 

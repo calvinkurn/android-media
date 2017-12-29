@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
@@ -16,8 +18,6 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFra
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.UserData;
-import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingInfoFragment;
 
@@ -28,7 +28,7 @@ import java.util.List;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent>{
+public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent> {
 
     public static final String EXTRA_RESPONSE_IS_RESERVE_DOMAIN = "EXTRA_RESPONSE_IS_RESERVE_DOMAIN";
     private List<Fragment> fragmentList;
@@ -76,7 +76,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
             fragmentList = new ArrayList<>();
             fragmentList.add(ShopSettingInfoFragment.createInstance());
             fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
-            fragmentList.add(new ShopOpenMandatoryLogisticFragment());
+            fragmentList.add(ShopOpenMandatoryLogisticFragment.newInstance());
             return fragmentList;
         } else {
             return fragmentList;
@@ -86,20 +86,17 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     @Override
     protected void onResume() {
         super.onResume();
-        //TODO uncomment this, bypass for testing purpose
-//        if (!SessionHandler.isMsisdnVerified()) {
-//            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
-//            startActivity(intent);
-//        }
+        if (!SessionHandler.isMsisdnVerified()) {
+            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
+            startActivity(intent);
+        }
     }
 
-    private void updateFragmentLogistic(int districtCode) {
-//        Fragment fragment = stepAdapter.getItemFragment(ShopOpenStepperViewAdapter.SHOP_SETTING_LOGICTIC_POSITION);
-//        if (fragment instanceof ShopSettingLogisticView) {
-//            ((ShopSettingLogisticView) fragment).changeDistrictCode(districtCode);
-//        } else {
-//            throw new RuntimeException("Fragment must implement ShopSettingLogisticView");
-//        }
+    @Override
+    public void finishPage() {
+        Intent intent = ShopOpenCreateSuccessActivity.getIntent(this);
+        this.startActivity(intent);
+        super.finishPage();
     }
 
     @Override

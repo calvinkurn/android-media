@@ -14,20 +14,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.view.model.CourierServiceIdList;
+import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
+import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.setting.data.model.response.Shipment;
 import com.tokopedia.seller.shop.setting.view.CourierListViewGroup;
 import com.tokopedia.seller.shop.setting.view.ShopCourierExpandableOption;
-import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragment;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenterImpl;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,8 +43,9 @@ import javax.inject.Inject;
 public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnDisabledHeaderClickedListener {
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
-    private CourierServiceIdList selectedCourierServiceIdList;
+    private CourierServiceIdWrapper selectedCourierServiceIdWrapper;
 
+    public static final int DEFAULT_DISTRICT_ID = -1; // 2253 for jakarta
     public static final String SAVED_SELECTED_COURIER = "svd_sel_couriers";
 
     @Inject
@@ -47,9 +53,10 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private View vContent;
     private View vLoading;
     private CourierListViewGroup courierListViewGroup;
+    private TkpdProgressDialog tkpdProgressDialog;
 
-    public static ShopSettingLogisticFragment getInstance() {
-        return new ShopSettingLogisticFragment();
+    public static ShopOpenMandatoryLogisticFragment newInstance() {
+        return new ShopOpenMandatoryLogisticFragment();
     }
 
     @Override
@@ -61,9 +68,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            selectedCourierServiceIdList = onShopStepperListener.getStepperModel().getSelectedCourierServices();
+            selectedCourierServiceIdWrapper = onShopStepperListener.getStepperModel().getSelectedCourierServices();
         } else {
-            selectedCourierServiceIdList = savedInstanceState.getParcelable(SAVED_SELECTED_COURIER);
+            selectedCourierServiceIdWrapper = savedInstanceState.getParcelable(SAVED_SELECTED_COURIER);
         }
     }
 
@@ -78,10 +85,30 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
 
         courierListViewGroup = view.findViewById(R.id.vg_courier_list);
-        courierListViewGroup.setCourierList(null, selectedCourierServiceIdList);
+        courierListViewGroup.setCourierList(null, selectedCourierServiceIdWrapper);
         courierListViewGroup.setOnDisabledHeaderClickedListener(this);
 
+        View continueButton = view.findViewById(R.id.continue_button);
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onContinueButtonClicked();
+            }
+        });
+
         return view;
+    }
+
+    private void onContinueButtonClicked(){
+        //check validity
+        selectedCourierServiceIdWrapper = courierListViewGroup.getSelectedCourierList();
+        List<String> courierIdList = selectedCourierServiceIdWrapper.getSelectedServiceIdList();
+        if (courierIdList.size() == 0) {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(),getString(R.string.min_1_courier_must_be_selected));
+            return;
+        }
+        showSubmitLoading();
+        presenter.saveCourier(selectedCourierServiceIdWrapper);
     }
 
     public void updateLogistic() {
@@ -90,7 +117,19 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     private int getDistrictId(){
-        return onShopStepperListener.getStepperModel().getDistrictID();
+        ShopOpenStepperModel shopOpenStepperModel = onShopStepperListener.getStepperModel();
+        if (shopOpenStepperModel == null) {
+            return DEFAULT_DISTRICT_ID;
+        }
+        ResponseIsReserveDomain responseIsReserveDomain = shopOpenStepperModel.getResponseIsReserveDomain();
+        if (responseIsReserveDomain == null) {
+            return DEFAULT_DISTRICT_ID;
+        }
+        Shipment shipment = responseIsReserveDomain.getShipment();
+        if (shipment == null) {
+            return DEFAULT_DISTRICT_ID;
+        }
+        return shipment.getDistrictId();
     }
 
     @Override
@@ -116,6 +155,20 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         vContent.setVisibility(View.VISIBLE);
     }
 
+    private void hideSubmitLoading() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+    }
+
+    private void showSubmitLoading() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
+                    getString(R.string.title_loading));
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
     @Override
     public void onDisabledHeaderClicked() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
@@ -134,7 +187,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onSuccessLoadLogistic(OpenShopCouriersModel openShopCouriersModel) {
         hideLoading();
-        courierListViewGroup.setCourierList(openShopCouriersModel.getCourier(), selectedCourierServiceIdList);
+        courierListViewGroup.setCourierList(openShopCouriersModel.getCourier(), selectedCourierServiceIdWrapper);
     }
 
     @Override
@@ -144,6 +197,30 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         if (!TextUtils.isEmpty(message)) {
             showMessageError(message);
         }
+    }
+
+    @Override
+    public void onErrorSaveCourier(Throwable t) {
+        hideSubmitLoading();
+        SnackbarRetry snackbarSubmitRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                ErrorHandler.getErrorMessage(t), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        onContinueButtonClicked();
+                    }
+                });
+        snackbarSubmitRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void onErrorCreateShop(Throwable t) {
+        onErrorSaveCourier(t);
+    }
+
+    @Override
+    public void onSuccessCreateShop() {
+        hideSubmitLoading();
+        onShopStepperListener.finishPage();
     }
 
     private void showMessageError(String messsage) {

@@ -3,6 +3,8 @@ package com.tokopedia.seller.shop.setting.data.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 12/19/17.
  */
@@ -27,7 +29,7 @@ public class ResponseSaveShopDesc {
     public Data getData() {
         return data;
     }
-
+  
     public void setData(Data data) {
         this.data = data;
     }

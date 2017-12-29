@@ -34,6 +34,7 @@ public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
     public static final String SHORT_DESC = "short_desc";
     public static final String TAG_LINE_REQUEST_CLOUD = "tag_line";
     public static final String STEP = "step";
+    public static final String URL_IMAGE_CLOUD = "URL_IMAGE_CLOUD";
 
     private ShopSettingSaveInfoRepository shopSettingSaveInfoRepository;
     private UploadImageUseCase<UploadShopImageModel> uploadImageUseCase;
@@ -48,18 +49,22 @@ public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
         this.uploadImageUseCase = uploadImageUseCase;
     }
 
-    public static RequestParams createRequestParams(String pathFileImage, String shopDescription,
-                                                    String tagLine) {
+    public static RequestParams createRequestParams(String uriPathImage, String description, String shopSlogan,
+                                                    String urlImageCloud, String serverId,
+                                                    String picObj) {
         RequestParams params = RequestParams.create();
-        params.putString(PATH_FILE_IMAGE, pathFileImage);
-        params.putString(SHOP_DESCRIPTION, shopDescription);
-        params.putString(TAG_LINE, tagLine);
+        params.putString(PATH_FILE_IMAGE, uriPathImage);
+        params.putString(SHOP_DESCRIPTION, description);
+        params.putString(TAG_LINE_REQUEST_CLOUD, shopSlogan);
+        params.putString(URL_IMAGE_CLOUD, urlImageCloud);
+        params.putString(SERVER_ID, serverId);
+        params.putString(PHOTO_OBJ, picObj);
         return params;
     }
 
     @Override
     public Observable<Boolean> createObservable(final RequestParams requestParams) {
-        if(!TextUtils.isEmpty(requestParams.getString(PATH_FILE_IMAGE,""))) {
+        if (!TextUtils.isEmpty(requestParams.getString(PATH_FILE_IMAGE, ""))) {
             return uploadImageUseCase.getExecuteObservable(uploadImageUseCase.createRequestParams(ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH,
                     requestParams.getString(PATH_FILE_IMAGE, "")))
                     .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>, Observable<Boolean>>() {
@@ -68,23 +73,23 @@ public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
                             return shopSettingSaveInfoRepository.saveShopSetting(getImageRequest(
                                     dataImageUploadDomainModel.getDataResultImageUpload().getData().getUpload().getSrc(),
                                     dataImageUploadDomainModel.getServerId(), "",
-                                    requestParams.getString(SHOP_DESCRIPTION, ""), requestParams.getString(TAG_LINE, "")));
+                                    requestParams.getString(SHOP_DESCRIPTION, ""), requestParams.getString(TAG_LINE_REQUEST_CLOUD, "")));
                         }
                     });
-        }else{
-            return shopSettingSaveInfoRepository.saveShopSetting(getImageRequest("", "", "", requestParams.getString(SHOP_DESCRIPTION, ""), requestParams.getString(TAG_LINE, "")));
+        } else {
+            return shopSettingSaveInfoRepository.saveShopSetting(getImageRequest(requestParams.getString(URL_IMAGE_CLOUD, "")
+                    , requestParams.getString(SERVER_ID, ""), requestParams.getString(PHOTO_OBJ, ""),
+                    requestParams.getString(SHOP_DESCRIPTION, ""), requestParams.getString(TAG_LINE_REQUEST_CLOUD, "")));
         }
     }
 
-    private HashMap<String, String> getImageRequest(String imageSrc, String serverId, String picObj, String shopDesc, String tagLine){
+    private HashMap<String, String> getImageRequest(String imageSrc, String serverId, String picObj, String shopDesc, String tagLine) {
         HashMap<String, String> params = new HashMap<>();
-        if(!TextUtils.isEmpty(imageSrc)) {
-            params.put(LOGO, imageSrc);
-            params.put(SERVER_ID, serverId);
-            params.put(PHOTO_OBJ, picObj);
-        }
+        params.put(LOGO, imageSrc);
+        params.put(SERVER_ID, serverId);
+        params.put(PHOTO_OBJ, picObj);
         params.put(SHORT_DESC, shopDesc);
-        params.put(TAG_LINE, tagLine);
+        params.put(TAG_LINE_REQUEST_CLOUD, tagLine);
         params.put(STEP, STEP_INFO_1);
         return params;
     }

@@ -40,6 +40,7 @@ import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.UserData;
+import com.tokopedia.seller.shop.setting.data.source.cloud.ShopSettingException;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
@@ -159,8 +160,16 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     }
 
     protected void onNextButtonClicked() {
-        presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
-                shopDescEditText.getText().toString());
+        if(TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain()!= null
+        && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
+            presenter.submitShopInfo(userData.getLogo(), shopSloganEditText.getText().toString(),
+                    shopDescEditText.getText().toString(), userData.getLogo(),
+                    userData.getServerId(), userData.getPhotoObj());
+        }else{
+            presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
+                    shopDescEditText.getText().toString(), "", "", "");
+        }
     }
 
     @Override
@@ -182,7 +191,13 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), ErrorHandler.getErrorMessage(t, getActivity()), new NetworkErrorHelper.RetryClickedListener() {
+        String errorMessage;
+        if(t instanceof ShopSettingException){
+            errorMessage = t.getMessage();
+        }else{
+            errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
+        }
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 onNextButtonClicked();
