@@ -61,6 +61,7 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopC
                 shopCheckIsReservePresenter.isReservingDomain();
             }
         });
+        showLoading(true);
         shopCheckIsReservePresenter.isReservingDomain();
         return view;
     }
