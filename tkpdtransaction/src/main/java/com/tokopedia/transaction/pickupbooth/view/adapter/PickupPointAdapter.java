@@ -57,7 +57,7 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
         holder.tvShowMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                listener.onItemShowMapClick(storeViewModel.getStore());
             }
         });
 
@@ -94,6 +94,8 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
 
     public interface Listener {
         void onItemClick(Store store);
+
+        void onItemShowMapClick(Store store);
     }
 
     protected class PickupPointViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -39,6 +40,8 @@ import static com.tokopedia.transaction.pickupbooth.view.contract.PickupPointCon
 
 public class PickupPointActivity extends BaseActivity
         implements PickupPointContract.View, PickupPointAdapter.Listener {
+
+    private static final int REQUEST_CODE_MAP = 100;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -178,5 +181,10 @@ public class PickupPointActivity extends BaseActivity
     @Override
     public void onItemClick(Store store) {
 
+    }
+
+    @Override
+    public void onItemShowMapClick(Store store) {
+        startActivityForResult(PickupPointMapActivity.createInstance(this, store.getGeolocation()), REQUEST_CODE_MAP);
     }
 }
