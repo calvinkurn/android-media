@@ -1,5 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.deposit.activity.WithdrawActivity;
+import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
@@ -41,6 +44,7 @@ import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningView
 public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment implements ChangePhoneNumberWarningFragmentListener.View {
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_PHONE_NUMBER = "phone_number";
+    public static final int REQUEST_WITHDRAW_CODE = 1;
 
     @Inject
     WarningListAdapter adapter;
@@ -52,6 +56,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private TextView tokocashValue;
     private RecyclerView warningRecyclerView;
     private TextView nextButton;
+    private TextView withdrawButton;
     private WarningViewModel viewModel;
     private String email;
     private String phoneNumber;
@@ -93,6 +98,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         tokocashValue = view.findViewById(R.id.tokocash_value);
         warningRecyclerView = view.findViewById(R.id.warning_rv);
         nextButton = view.findViewById(R.id.next_button);
+        withdrawButton = view.findViewById(R.id.withdraw_button);
         mainView = view.findViewById(R.id.main_view);
         loadingView = view.findViewById(R.id.loading_view);
 
@@ -106,6 +112,20 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
             @Override
             public void onClick(View view) {
                 goToNextActivity();
+            }
+        });
+
+        withdrawButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), WithdrawActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE,
+                        viewModel.getTokopediaBalance());
+                bundle.putString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE_INT,
+                        viewModel.getTokopediaBalance().replaceAll("[^\\d]", ""));
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
             }
         });
     }
@@ -163,7 +183,16 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
             getActivity().finish();
         } else {
             loadDataToView();
+            showOrHideWithdrawButton();
             dismissLoading();
+        }
+    }
+
+    private void showOrHideWithdrawButton() {
+        if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP) && !isNullOrEmpty(viewModel.getTokopediaBalance())) {
+            withdrawButton.setVisibility(View.VISIBLE);
+        } else {
+            withdrawButton.setVisibility(View.GONE);
         }
     }
 
