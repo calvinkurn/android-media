@@ -18,6 +18,7 @@ import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
+import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
+    public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
     public static final String KEY_BUY_MODE = "ON_BUY_MODE";
     public static final String KEY_SELLER_MODE = "ON_SELLER_MODE";
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
@@ -52,11 +54,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private VariantOptionAdapter variantOptionAdapterLevel1;
 
     private ProductVariant productVariant;
+    private ProductDetailData productDetailData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
+        productDetailData = getIntent().getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
         setContentView(R.layout.activity_variant);
         hideToolbar();
         initView();
@@ -77,10 +81,16 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionRecyclerViewLevel2 = (RecyclerView) findViewById(R.id.rv_variant_option_level2);
         buttonSave = (FrameLayout) findViewById(R.id.button_save);
         textButtonSave = (TextView) findViewById(R.id.text_button_save_variant);
+
+        productName.setText(productDetailData.getInfo().getProductName());
+        productPrice.setText(productDetailData.getInfo().getProductPrice());
+        ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
+        //TODO bedges, promo
     }
 
     private void initViewListener() {
-        if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
+        //TODO
+       /* if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
             textButtonSave.setText(getResources().getString(R.string.change_variant));
             buttonSave.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -122,7 +132,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     }
                 }
             });
-        }
+        }*/
         findViewById(R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -141,10 +151,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     }
 
     public void initAdapter() {
-        productName.setText(productVariant.getProductName());
-        productPrice.setText(productVariant.getProductPrice());
-        ImageHandler.LoadImage(productImage, productVariant.getProductImageUrl());
-
         Variant variantLevel1 = productVariant.getVariant().get(productVariant.getLevel1Variant());
         optionNameLevel1.setText(variantLevel1.getName()+" :");
         variantOptionAdapterLevel1 = new VariantOptionAdapter(VariantActivity.this,variantLevel1.getOption(),
@@ -157,50 +163,51 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionRecyclerViewLevel1.setLayoutManager(chipsLayoutManager);
         optionRecyclerViewLevel1.setAdapter(variantOptionAdapterLevel1);
         optionNameLevel1.setText(variantLevel1.getName()+" :");
-        Option level1Selected = getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
-        if (level1Selected!=null) {
+        //TODO handle selected variant
+        Option optionLevel1 = getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
+        if (optionLevel1==null) {
+            Child childProduct = productVariant.getChildFromProductId(productVariant.getDefaultChild());
             for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-                if (level1Selected.getId()==variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
+                if (childProduct.getOptionIds().get(0) == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
                     variantOptionAdapterLevel1.setSelectedPosition(i);
                     break;
                 }
             }
-        } else {
-            variantOptionAdapterLevel1.setSelectedPosition(0);
         }
 
-        Option level2Selected = getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED);
-        if (productVariant.getVariant().size()>1) {
-            Variant variantLevel2 = productVariant.getVariant().get(1- productVariant.getLevel1Variant());
-            variantOptionAdapterLevel2
-                    = new VariantOptionAdapter(VariantActivity.this,variantLevel2.getOption(),
-                    TextUtils.equals(IDENTIFIER_COLOUR,variantLevel2.getIdentifier()), VariantActivity.this, 2);
-
-            ChipsLayoutManager chipsLayoutManagerLevel2= ChipsLayoutManager.newBuilder(VariantActivity.this)
-                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                    .build();
-            optionRecyclerViewLevel2.setNestedScrollingEnabled(false);
-            optionRecyclerViewLevel2.setLayoutManager(chipsLayoutManagerLevel2);
-            optionRecyclerViewLevel2.setAdapter(variantOptionAdapterLevel2);
-            variantOptionAdapterLevel1.notifyItemSelectedChange();
-            if (level2Selected!=null) {
-                for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
-                    if (level2Selected.getId()==variantOptionAdapterLevel2.getVariantOptions().get(i).getId()) {
-                        variantOptionAdapterLevel2.setSelectedPosition(i);
-                        break;
-                    }
-                }
-                optionNameLevel2.setText(level2Selected.getValue()+" :");
-            } else {
-                variantOptionAdapterLevel2.setSelectedPosition(0);
-            }
-            variantOptionAdapterLevel2.notifyItemSelectedChange();
-            optionNameLevel2.setVisibility(View.VISIBLE);
-            optionRecyclerViewLevel2.setVisibility(View.VISIBLE);
-        } else {
-            variantOptionAdapterLevel1.notifyItemSelectedChange();
-        }
+//        variantOptionAdapterLevel1.notifyItemSelectedChange();
+//
+//        if (productVariant.getVariant().size()>1) {
+//            Variant variantLevel2 = productVariant.getVariant().get(1- productVariant.getLevel1Variant());
+//            variantOptionAdapterLevel2
+//                    = new VariantOptionAdapter(VariantActivity.this,variantLevel2.getOption(),
+//                    TextUtils.equals(IDENTIFIER_COLOUR,variantLevel2.getIdentifier()), VariantActivity.this, 2);
+//            ChipsLayoutManager chipsLayoutManagerLevel2= ChipsLayoutManager.newBuilder(VariantActivity.this)
+//                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
+//                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+//                    .build();
+//            optionRecyclerViewLevel2.setNestedScrollingEnabled(false);
+//            optionRecyclerViewLevel2.setLayoutManager(chipsLayoutManagerLevel2);
+//            optionRecyclerViewLevel2.setAdapter(variantOptionAdapterLevel2);
+//            optionNameLevel1.setText(variantLevel2.getName()+" :");
+//            variantOptionAdapterLevel1.notifyItemSelectedChange();
+//            //TODO handle selected variant
+//            Option level2Selected = getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED);
+//            if (level2Selected==null) {
+//                Child childProduct = productVariant.getChildFromProductId(productVariant.getDefaultChild());
+//                for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
+//                    if (childProduct.getOptionIds().get(1) == variantOptionAdapterLevel2.getVariantOptions().get(i).getId()) {
+//                        variantOptionAdapterLevel2.setSelectedPosition(i);
+//                        break;
+//                    }
+//                }
+//            }
+//            optionNameLevel2.setVisibility(View.VISIBLE);
+//            optionRecyclerViewLevel2.setVisibility(View.VISIBLE);
+//            variantOptionAdapterLevel2.notifyItemSelectedChange();
+//        } else {
+//            variantOptionAdapterLevel1.notifyItemSelectedChange();
+//        }
     }
 
 
@@ -232,7 +239,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         List<Long> combinations = productVariant.getCombinationFromSelectedVariant(option.getId());
         if (level==1) {
             if (combinations.size()==1 && productVariant.getVariant().size()>1) {
-                //option.setEnabled(false);
+                option.setEnabled(false);
                 for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
                     combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions().get(i).getId());
                     if (combinations.size() > 1) {
@@ -244,9 +251,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             } else if (productVariant.getVariant().size()>1) {
                 for (Option otherLevelOption: variantOptionAdapterLevel2.getVariantOptions()) {
                     if (combinations.contains(otherLevelOption.getId())) {
-                        //otherLevelOption.setEnabled(true);
+                        otherLevelOption.setEnabled(true);
                     } else {
-                        //otherLevelOption.setEnabled(false);
+                        otherLevelOption.setEnabled(false);
                     }
                 }
                 variantOptionAdapterLevel2.notifyItemSelectedChange();

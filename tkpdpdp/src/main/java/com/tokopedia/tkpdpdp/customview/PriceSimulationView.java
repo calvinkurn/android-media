@@ -123,13 +123,14 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         setVisibility(VISIBLE);
     }
 
-    public void addProductVariant(final ProductVariant productVariant) {
+    public void addProductVariant(final ProductVariant productVariant, final ProductDetailData productDetailData) {
         tvVariant.setText(getContext().getString(R.string.choose_variant));
         variantLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
+                bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productDetailData);
                 listener.onVariantClicked(bundle);
             }
         });

@@ -1039,10 +1039,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
-        productVariant.setProductName(productData.getInfo().getProductName());
-        productVariant.setProductImageUrl(productData.getProductImages().get(0).getImageSrc300());
-        productVariant.setProductPrice(productData.getInfo().getProductPrice());
-        this.priceSimulationView.addProductVariant(productVariant);
+        this.priceSimulationView.addProductVariant(productVariant,productData);
     }
 
     @Override

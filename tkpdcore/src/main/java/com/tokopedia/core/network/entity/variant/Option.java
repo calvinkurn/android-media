@@ -22,6 +22,8 @@ public class Option implements Parcelable {
     @Expose
     private Picture picture;
 
+    private boolean enabled = true;
+
     public long getId() {
         return id;
     }
@@ -54,12 +56,22 @@ public class Option implements Parcelable {
         this.picture = picture;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+
 
     protected Option(Parcel in) {
         id = in.readLong();
         value = in.readString();
         hex = in.readString();
         picture = (Picture) in.readValue(Picture.class.getClassLoader());
+        enabled = in.readByte() != 0x00;
     }
 
     @Override
@@ -73,6 +85,7 @@ public class Option implements Parcelable {
         dest.writeString(value);
         dest.writeString(hex);
         dest.writeValue(picture);
+        dest.writeByte((byte) (enabled ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")

@@ -54,8 +54,7 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
-                if (true) {
+                if (variantOptions.get(position).isEnabled()) {
                     selectedPosition = position;
                     notifyDataSetChanged();
                     variantChosenListener.onVariantChosen(variantOptions.get(selectedPosition),level);
@@ -102,8 +101,7 @@ public class VariantOptionAdapter extends RecyclerView.Adapter<VariantOptionAdap
                 imageColor.setVisibility(View.VISIBLE);
             }
             Drawable background = container.getBackground();
-            //TODO
-            if (true) {
+            if (!variantOption.isEnabled()) {
                 if (background instanceof GradientDrawable) {
                     ((GradientDrawable)background).setColor(ContextCompat.getColor(context,R.color.white));
                     ((GradientDrawable)background).setStroke(1,ContextCompat.getColor(context,R.color.grey_hint),5,5);

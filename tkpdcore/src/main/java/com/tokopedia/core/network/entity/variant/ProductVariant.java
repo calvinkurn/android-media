@@ -28,10 +28,6 @@ public class ProductVariant implements Parcelable {
     @Expose
     private String sizechart;
 
-    private String productName="";
-    private String productPrice="";
-    private String productImageUrl="";
-
 
     public long getParentId() {
         return parentId;
@@ -73,29 +69,6 @@ public class ProductVariant implements Parcelable {
         this.sizechart = sizechart;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
-    }
-
-    public String getProductImageUrl() {
-        return productImageUrl;
-    }
-
-    public void setProductImageUrl(String productImageUrl) {
-        this.productImageUrl = productImageUrl;
-    }
 
     protected ProductVariant(Parcel in) {
         parentId = in.readLong();
@@ -113,28 +86,6 @@ public class ProductVariant implements Parcelable {
             children = null;
         }
         sizechart = in.readString();
-        productName = in.readString();
-        productPrice = in.readString();
-        productImageUrl = in.readString();
-    }
-
-    public List<Long> getCombinationFromSelectedVariant(long variantOptionId) {
-        List<Long> products = new ArrayList<>();
-        for (Child child: getChildren()) {
-            if (child.getOptionIds().contains(variantOptionId)) {
-                products.addAll(child.getOptionIds());
-            }
-        }
-        products.removeAll(Collections.singleton(variantOptionId));
-        products.add(variantOptionId);
-        return products;
-    }
-
-    public int getLevel1Variant() {
-        if (variant!=null && variant.size()>1 && variant.get(0).getPosition()!=1) {
-            return 1;
-        }
-        return 0;
     }
 
     @Override
@@ -159,9 +110,6 @@ public class ProductVariant implements Parcelable {
             dest.writeList(children);
         }
         dest.writeString(sizechart);
-        dest.writeString(productName);
-        dest.writeString(productPrice);
-        dest.writeString(productImageUrl);
     }
 
     @SuppressWarnings("unused")
@@ -176,4 +124,31 @@ public class ProductVariant implements Parcelable {
             return new ProductVariant[size];
         }
     };
+
+    public List<Long> getCombinationFromSelectedVariant(long variantOptionId) {
+        List<Long> products = new ArrayList<>();
+        for (Child child: getChildren()) {
+            if (child.getOptionIds().contains(variantOptionId)) {
+                products.addAll(child.getOptionIds());
+            }
+        }
+        products.removeAll(Collections.singleton(variantOptionId));
+        products.add(variantOptionId);
+        return products;
+    }
+
+    public int getLevel1Variant() {
+        if (variant!=null && variant.size()>1 && variant.get(0).getPosition()!=1) {
+            return 1;
+        }
+        return 0;
+    }
+
+    public Child getChildFromProductId(long productId) {
+        for (Child child: getChildren()) {
+            if (child.getProductId()==productId)  return child;
+        }
+        return null;
+
+    }
 }
