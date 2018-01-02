@@ -46,6 +46,7 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
         flightBookingAmenityViewModels = getArguments().getParcelableArrayList(EXTRA_LIST_AMENITIES);
         selectedAmenity = getArguments().getParcelable(EXTRA_SELECTED_AMENITIES);
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -96,5 +97,11 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     @Override
     public boolean isItemChecked(FlightBookingAmenityViewModel selectedItem) {
         return selectedAmenity.getAmenities().contains(selectedItem);
+    }
+
+    @Override
+    public void resetItemCheck() {
+        selectedAmenity.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
+        getAdapter().notifyDataSetChanged();
     }
 }
