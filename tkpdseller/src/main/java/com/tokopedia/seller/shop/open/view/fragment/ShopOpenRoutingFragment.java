@@ -3,14 +3,16 @@ package com.tokopedia.seller.shop.open.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
 import com.tokopedia.seller.shop.open.view.listener.ShopCheckDomainView;
@@ -25,13 +27,14 @@ import javax.inject.Inject;
 
 public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopCheckDomainView {
 
+    private TextView tvMessageRetry;
+
     public static ShopOpenRoutingFragment newInstance() {
         return new ShopOpenRoutingFragment();
     }
 
     private View loadingLayout;
     private View errorLayout;
-    private Button retryButton;
 
     @Inject
     ShopCheckIsReservePresenterImpl shopCheckIsReservePresenter;
@@ -49,7 +52,8 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopC
         View view = inflater.inflate(R.layout.fragment_shop_open_routing, container, false);
         loadingLayout = view.findViewById(R.id.layout_loading);
         errorLayout = view.findViewById(R.id.layout_error);
-        retryButton = view.findViewById(R.id.button_retry);
+        tvMessageRetry = view.findViewById(R.id.message_retry);
+        View retryButton = view.findViewById(R.id.button_retry);
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,6 +78,10 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopC
     @Override
     public void onErrorCheckReserveDomain(Throwable t) {
         showLoading(false);
+        String errorMessage = ShopErrorHandler.getErrorMessage(t);
+        if (!TextUtils.isEmpty(errorMessage)) {
+            tvMessageRetry.setText(errorMessage);
+        }
     }
 
     private void showLoading(boolean show) {
