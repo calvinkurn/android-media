@@ -130,22 +130,25 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         if(stepperListener.getStepperModel()!=null){
             Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
             UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-
-            locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
-            locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
             locationShippingViewHolder.updateLocationData(userData.getLocComplete(), userData.getLocation());
 
-            GoogleLocationViewModel googleLocationViewModel
-                    = new GoogleLocationViewModel();
-            googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
-            googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
-            googleLocationViewModel.setLongitude(shipment.getLongitude());
-            googleLocationViewModel.setLatitude(shipment.getLatitude());
-            googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
+            if(shipment != null) {
+                locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
+                locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
 
-            locationMapViewHolder.setFromReserveDomain(true);
+                GoogleLocationViewModel googleLocationViewModel
+                        = new GoogleLocationViewModel();
+                googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
+                googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
+                googleLocationViewModel.setLongitude(shipment.getLongitude());
+                googleLocationViewModel.setLatitude(shipment.getLatitude());
+                googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
 
-            locationMapViewHolder.setLocationText(googleLocationViewModel);
+
+                locationMapViewHolder.setFromReserveDomain(true);
+
+                locationMapViewHolder.setLocationText(googleLocationViewModel);
+            }
         }
     }
 
