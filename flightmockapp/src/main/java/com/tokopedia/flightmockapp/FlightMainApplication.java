@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.facebook.stetho.Stetho;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -25,6 +26,13 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         super.onCreate();
         TkpdFlight.init(getApplicationContext());
+        initStetho();
+    }
+
+    private void initStetho() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            Stetho.initializeWithDefaults(getApplicationContext());
+        }
     }
 
     @Override
