@@ -21,4 +21,6 @@ public interface FlightModuleRouter {
     int getTopPayPaymentFailedCode();
 
     int getTopPayPaymentCancelCode();
+
+    Intent getBannerWebViewIntent(Activity activity, String url);
 }

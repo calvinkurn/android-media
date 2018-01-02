@@ -1,10 +1,11 @@
 package com.tokopedia.flight.search.view.adapter.viewholder;
 
+import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
@@ -22,7 +23,9 @@ import java.util.List;
  * Created by alvarisi on 12/22/17.
  */
 
-public class FlightSearchViewHolder extends BaseViewHolder<FlightSearchViewModel> {
+public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewModel> {
+    @LayoutRes
+    public static int LAYOUT = R.layout.item_flight_search;
 
     TextView tvDeparture;
     TextView tvArrival;
@@ -52,7 +55,7 @@ public class FlightSearchViewHolder extends BaseViewHolder<FlightSearchViewModel
     }
 
     @Override
-    public void bindObject(final FlightSearchViewModel flightSearchViewModel) {
+    public void bind(final FlightSearchViewModel flightSearchViewModel) {
         tvDeparture.setText(String.format("%s %s", flightSearchViewModel.getDepartureTime(), flightSearchViewModel.getDepartureAirport()));
         tvArrival.setText(String.format("%s %s", flightSearchViewModel.getArrivalTime(), flightSearchViewModel.getArrivalAirport()));
         tvPrice.setText(flightSearchViewModel.getFare().getAdult());

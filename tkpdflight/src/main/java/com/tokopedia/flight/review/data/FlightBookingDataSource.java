@@ -1,5 +1,6 @@
 package com.tokopedia.flight.review.data;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
@@ -14,6 +15,7 @@ import rx.Observable;
  */
 
 public class FlightBookingDataSource {
+
 
     private FlightBookingDataSourceCloud flightBookingDataSourceCloud;
 

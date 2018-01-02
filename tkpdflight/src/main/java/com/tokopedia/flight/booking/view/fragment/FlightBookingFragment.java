@@ -24,10 +24,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
@@ -333,7 +336,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         returnInfoView.setVisibility(View.VISIBLE);
         returnInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
-        returnInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
+        returnInfoView.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.getReturnDate()) + ")");
         String airLineSection = "";
         String tripInfo = "";
         if (returnTrip.getRouteList().size() > 1) {
@@ -344,15 +347,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         returnInfoView.setSubContent(airLineSection);
-        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
         returnInfoView.setSubContentInfo(tripInfo);
     }
 
     @Override
     public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + "-" + returnTrip.getArrivalAirportCity());
-        departureInfoView.setContentInfo(FlightDateUtil.formatToUi(searchParam.getDepartureDate()));
+        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
+        departureInfoView.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.getDepartureDate()) + ")");
         String airLineSection = "";
         String tripInfo = "";
         if (returnTrip.getRouteList().size() > 1) {
@@ -363,7 +366,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         departureInfoView.setSubContent(airLineSection);
-        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -505,9 +508,16 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     private String generateIdEmpotency(String requestId) {
+        String userId = String.valueOf(Math.random());
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
+            UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            if (userSession != null) {
+                userId += userSession.getUserId();
+            }
+        }
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = FlightRequestUtil.md5(timeMillis);
-        return String.format(getString(R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
+        return userId + String.format(getString(R.string.flight_booking_id_empotency_format), requestId, token.isEmpty() ? timeMillis : token);
     }
 
     private void showMessageErrorInSnackBar(int resId) {

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
@@ -12,9 +13,9 @@ import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
 import com.tokopedia.flight.search.domain.FlightSortUseCase;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
+import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchWithMetaViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.List;
@@ -63,7 +64,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
                                     boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
                                     @FlightSortOption int sortOptionId) {
-        getView().removeToolbarElevation();
+        if (isViewAttached())
+            getView().removeToolbarElevation();
         if (isFromCache) {
             flightSearchWithSortUseCase.execute(FlightSearchUseCase.generateRequestParams(
                     flightSearchApiRequestModel,
@@ -99,7 +101,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         addSubscription(subscription);
     }
 
-    public void setDelayHorizontalProgress(){
+    public void setDelayHorizontalProgress() {
         Subscription subscription = Observable.timer(DELAY_HORIZONTAL_PROGRESS, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -113,7 +115,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         addSubscription(subscription);
     }
 
-    public void deleteFlightCache(boolean isReturning){
+    public void deleteFlightCache(boolean isReturning) {
         deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(isReturning), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -122,7 +124,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().onErrorDeleteFlightCache(e);
                 }
             }
@@ -185,7 +187,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().onErrorGetDetailFlightDeparture(e);
                 }
             }
@@ -207,13 +209,18 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             @Override
             public void onError(Throwable e) {
                 getView().hideSortRouteLoading();
-                getView().onLoadSearchError(e);
+                getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
             }
 
             @Override
             public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
                 getView().hideSortRouteLoading();
                 getView().onSuccessGetDataFromCache(flightSearchViewModels);
+                if (flightSearchViewModels.size() > 0) {
+                    getView().showFilterAndSortView();
+                } else {
+                    getView().hideFilterAndSortView();
+                }
                 getView().setSelectedSortItem(sortOptionId);
             }
         };
@@ -228,7 +235,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onError(Throwable e) {
-                getView().onLoadSearchError(e);
+                e.printStackTrace();
+                getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
             }
 
             @Override
@@ -249,14 +257,20 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 getView().hideSortRouteLoading();
-                getView().onLoadSearchError(e);
+                getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
             }
 
             @Override
             public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
                 getView().hideSortRouteLoading();
                 getView().onSuccessGetDataFromCache(flightSearchViewModels);
+                if (flightSearchViewModels.size() > 0) {
+                    getView().showFilterAndSortView();
+                } else {
+                    getView().hideFilterAndSortView();
+                }
                 getView().setSelectedSortItem(sortOptionId);
             }
         };
@@ -271,7 +285,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onError(Throwable e) {
-                getView().onLoadSearchError(e);
+                e.printStackTrace();
+                getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
             }
 
             @Override

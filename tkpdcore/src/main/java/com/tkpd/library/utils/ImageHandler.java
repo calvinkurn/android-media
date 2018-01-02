@@ -27,22 +27,7 @@ public class ImageHandler extends com.tokopedia.abstraction.utils.image.ImageHan
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
-    public static void loadImageFit2(Context context, ImageView imageView, File file) {
-        Glide.with(context)
-                .load(file)
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .centerCrop()
-                .into(imageView);
-    }
-
-    public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
-        Glide.with(imageView.getContext()).load(gifDrawable)
-                .asGif()
-                .placeholder(placeholder)
-                .into(imageView);
-    }
 }

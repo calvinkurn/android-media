@@ -81,6 +81,8 @@ public interface FlightBookingPassengerContract {
 
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
 
+        void showPassengerLastNameEmptyError(@StringRes int resId);
+
         void showPassengerLastNameShouldNoMoreThanMaxError(@StringRes int resId);
 
         String getPassengerLastName();

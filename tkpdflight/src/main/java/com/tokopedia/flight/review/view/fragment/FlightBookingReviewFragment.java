@@ -139,7 +139,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         recyclerViewDetailPrice = (RecyclerView) view.findViewById(R.id.recycler_view_detail_price);
         reviewTotalPrice = (TextView) view.findViewById(R.id.total_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
-        voucherCartView = view.findViewById(R.id.voucher_check_view);
+        voucherCartView = (VoucherCartView) view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("");
@@ -157,9 +157,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flightBookingReviewPresenter.verifyBooking(voucherCartView.getVoucherCode(), flightBookingReviewModel.getTotalPriceNumeric(),
-                        flightBookingReviewModel.getAdult(), flightBookingReviewModel.getId(), flightBookingReviewModel.getDetailPassengersData(), flightBookingReviewModel.getContactName(),
-                        flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(), flightBookingReviewModel.getContactEmail(), flightBookingReviewModel.getContactPhone());
+                actionVerifyAndCheckoutBooking();
             }
         });
         reviewDetailReturnFlight.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +174,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         });
         voucherCartView.setActionListener(this);
         return view;
+    }
+
+    private void actionVerifyAndCheckoutBooking() {
+        flightBookingReviewPresenter.verifyBooking(voucherCartView.getVoucherCode(), flightBookingReviewModel.getTotalPriceNumeric(),
+                flightBookingReviewModel.getAdult(), flightBookingReviewModel.getId(), flightBookingReviewModel.getDetailPassengersData(), flightBookingReviewModel.getContactName(),
+                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(), flightBookingReviewModel.getContactEmail(), flightBookingReviewModel.getContactPhone());
     }
 
     void initView() {
@@ -525,6 +529,24 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void showPaymentFailedErrorMessage(int resId) {
         Toast.makeText(getActivity(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorInSnackbar(String message) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void showErrorInEmptyState(String message) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        actionVerifyAndCheckoutBooking();
+                    }
+                }
+        );
     }
 
 

@@ -58,11 +58,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_DEPARTURE_DATE = "EXTRA_DEPARTURE_DATE";
     private static final int REQUEST_CODE_PICK_LUGGAGE = 1;
     private static final int REQUEST_CODE_PICK_MEAL = 2;
-
-    public interface OnFragmentInteractionListener {
-        void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
-    }
-
+    @Inject
+    FlightBookingPassengerPresenter presenter;
     private AppCompatTextView tvHeader;
     private AppCompatTextView tvSubheader;
     private SpinnerTextView spTitle;
@@ -87,8 +84,9 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private boolean isAirAsiaAirlines = false;
     private String departureDate;
 
-    @Inject
-    FlightBookingPassengerPresenter presenter;
+    public FlightBookingPassengerFragment() {
+        // Required empty public constructor
+    }
 
     public static FlightBookingPassengerFragment newInstance(String departureId,
                                                              String returnId,
@@ -127,10 +125,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         bundle.putParcelableArrayList(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    public FlightBookingPassengerFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -400,6 +394,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void showPassengerLastNameEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public void showPassengerLastNameShouldNoMoreThanMaxError(int resId) {
         showMessageErrorInSnackBar(resId);
     }
@@ -535,5 +534,9 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                     break;
             }
         }
+    }
+
+    public interface OnFragmentInteractionListener {
+        void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
     }
 }

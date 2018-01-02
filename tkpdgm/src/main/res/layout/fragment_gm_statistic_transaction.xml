@@ -137,7 +137,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:content_color="@color/tkpd_main_green"
-                app:label_show_arrow="true"
                 app:title="@string/gm_statistic_sold_product_list_text" />
         </android.support.v7.widget.CardView>
 

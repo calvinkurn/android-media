@@ -78,7 +78,9 @@
 
     <dimen name="image_smiley_size">35dp</dimen>
 
-    <dimen name="price_seekbar_button_size">@dimen/image_width_s</dimen>
+    <dimen name="price_seekbar_button_size">30dp</dimen>
+    <dimen name="price_range_separator_margin">16dp</dimen>
+    <dimen name="deletable_item_button_size">30dp</dimen>
     <dimen name="deletable_item_max_width">78dp</dimen>
     <dimen name="deletable_item_max_height">14dp</dimen>
     <dimen name="empty_search_result_icon_height">145dp</dimen>
@@ -89,6 +91,10 @@
     <dimen name="alphabetical_sidebar_magnifier_padding">10dp</dimen>
     <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
     <dimen name="alphabetical_section_header_padding">16dp</dimen>
+
+    <dimen name="medal_size">20dp</dimen>
+    <dimen name="smiley_reputation_size">24dp</dimen>
+    <dimen name="reputation_view_smiley">14dp</dimen>
 
     <dimen name="lv_min_title_width">100dp</dimen>
 

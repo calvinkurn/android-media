@@ -148,4 +148,9 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
     public int getTopPayPaymentCancelCode() {
         return 0;
     }
+
+    @Override
+    public Intent getBannerWebViewIntent(Activity activity, String url) {
+        return null;
+    }
 }

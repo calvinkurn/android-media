@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @author normansyahputa on 5/17/17.
  */
 
-public abstract class BaseSearchListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseListV2Fragment<T, F> implements SearchInputView.Listener {
+public abstract class BaseSearchListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseListFragment<T, F> implements SearchInputView.Listener {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
 
@@ -64,8 +64,8 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     }
 
     @Override
-    public void showGetListError() {
-        super.showGetListError();
+    public void showGetListError(String message) {
+        super.showGetListError(message);
         if (getAdapter().getItemCount() > 0) {
             showSearchView(true);
         } else {

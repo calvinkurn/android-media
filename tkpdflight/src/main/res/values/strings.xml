@@ -206,7 +206,7 @@
     <string name="flight_booking_close_label">Tutup</string>
     <string name="flight_booking_trip_info_format" formatted="false">| %d %s</string>
     <string name="flight_booking_trip_info_format_without_count" formatted="false">| %s</string>
-    <string name="flight_booking_trip_info_airport_format" formatted="false">| %s %s - %s %s</string>
+    <string name="flight_booking_trip_info_airport_format" formatted="false"> | %s - %s</string>
     <string name="flight_booking_id_empotency_format" formatted="false">%s_%s</string>
     <string name="flight_booking_header_passenger_format" formatted="false">%s %d (%s)</string>
     <string name="flight_booking_passenger_price_format" formatted="false">%s - %s  %dx %s</string>
@@ -274,4 +274,6 @@
     <string name="flight_booking_atc_loading_label">Sedang menyiapkan formulir pemesanan Anda</string>
     <string name="flight_review_failed_checkout_message">Pembayaran gagal</string>
     <string name="flight_review_checkout_loading_label">Sedang menyiapkan formulir pembayaran</string>
+    <string name="di_sini">di sini</string>
+    <string name="flight_booking_passenger_last_name_empty_error">Nama belakang minimal 2 karakter</string>
 </resources>

@@ -12,12 +12,6 @@ import java.util.List;
 public class Amenity {
     public static final int LUGGAGE = 1;
     public static final int MEAL = 2;
-    /*{
-        "key": "_CGK_DPS_7538",
-            "amenity_type": 1,
-            "description": "Jakarta - Denpasar",
-            "items": [
-        {*/
     @SerializedName("key")
     @Expose
     private String key;
@@ -27,6 +21,15 @@ public class Amenity {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("journey_id")
+    @Expose
+    private String journeyId;
+    @SerializedName("arrival_id")
+    @Expose
+    private String arrivalId;
+    @SerializedName("departure_id")
+    @Expose
+    private String departureId;
     @SerializedName("items")
     @Expose
     private List<AmenityItem> items;
@@ -48,5 +51,17 @@ public class Amenity {
 
     public List<AmenityItem> getItems() {
         return items;
+    }
+
+    public String getJourneyId() {
+        return journeyId;
+    }
+
+    public String getArrivalId() {
+        return arrivalId;
+    }
+
+    public String getDepartureId() {
+        return departureId;
     }
 }

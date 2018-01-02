@@ -6,6 +6,8 @@ import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
+import com.tokopedia.flight.common.data.model.FlightException;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.FlightBookingCheckoutUseCase;
@@ -61,7 +63,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                 flightBookingVerifyUseCase.createRequestParams(
                         promoCode,
                         price,
-                        adult,
                         cartId,
                         flightPassengerViewModels,
                         contactName,
@@ -114,6 +115,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                         e.printStackTrace();
                         if (isViewAttached()) {
                             getView().hideCheckoutLoading();
+                            if (e instanceof FlightException) {
+                                getView().showErrorInSnackbar(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
+                            } else {
+                                getView().showErrorInEmptyState(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
+                            }
                         }
                     }
 
@@ -229,8 +235,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     getView().getCurrentBookingReviewModel().getFlightClass().getId(),
                     getView().getDepartureTripId(),
                     getView().getReturnTripId(),
-                    getView().getCurrentBookingReviewModel().getDepartureDate(),
-                    getView().getCurrentBookingReviewModel().getReturnDate(),
                     getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId())
             );
         } else {
@@ -240,7 +244,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     getView().getCurrentBookingReviewModel().getInfant(),
                     getView().getCurrentBookingReviewModel().getFlightClass().getId(),
                     getView().getDepartureTripId(),
-                    getView().getCurrentBookingReviewModel().getDepartureDate(),
                     getView().getIdEmpotencyKey(getView().getDepartureTripId())
             );
         }

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <com.tokopedia.flight.common.view.HorizontalProgressBar
         android:id="@+id/horizontal_progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/progress_bar_height" />
+        android:layout_height="@dimen/progress_bar_height"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/padding_med"
             android:layout_marginRight="@dimen/padding_med"
-            android:src="@drawable/ic_flight_round" />
+            android:src="@drawable/ic_flight_round"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,8 +37,9 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_departure_header_card_label"
                 style="@style/TextView.Caption.BlackSecondary"
-                android:text="@string/flight_label_departure_flight" />
+                tools:text="@string/flight_label_departure_flight"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -50,18 +51,18 @@
                     style="@style/TextView.Body1"
                     android:layout_marginEnd="@dimen/padding_ms"
                     android:layout_marginRight="@dimen/padding_ms"
-                    tools:text="Garuda" />
+                    tools:text="Garuda"/>
 
                 <TextView
                     android:id="@+id/duration"
-                    style="@style/TextView.Caption.BlackSecondary" />
+                    style="@style/TextView.Caption.BlackSecondary"/>
             </LinearLayout>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/line_divider" />
+            android:background="@drawable/line_divider"/>
 
     </LinearLayout>
 
@@ -83,10 +84,10 @@
                 android:clipToPadding="false"
                 android:fitsSystemWindows="true"
                 android:paddingBottom="@dimen/margin_small"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-        <include layout="@layout/include_filter_bottom_action_view" />
+        <include layout="@layout/include_filter_bottom_action_view"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

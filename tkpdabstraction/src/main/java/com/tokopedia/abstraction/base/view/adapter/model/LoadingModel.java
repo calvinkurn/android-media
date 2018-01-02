@@ -10,9 +10,21 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 
 public class LoadingModel implements Visitable<AdapterTypeFactory> {
 
+    private boolean isFullScreen;
+
+    public LoadingModel() {
+    }
+
     @Override
     public int type(AdapterTypeFactory favoriteTypeFactory) {
         return favoriteTypeFactory.type(this);
     }
 
+    public boolean isFullScreen() {
+        return isFullScreen;
+    }
+
+    public void setFullScreen(boolean fullScreen) {
+        isFullScreen = fullScreen;
+    }
 }

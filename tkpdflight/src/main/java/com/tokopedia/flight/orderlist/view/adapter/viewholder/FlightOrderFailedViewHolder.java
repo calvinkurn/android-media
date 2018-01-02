@@ -47,6 +47,12 @@ public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<Fligh
                 adapterInteractionListener.onReBookingClicked(item);
             }
         });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDetailOptionClicked();
+            }
+        });
     }
 
 

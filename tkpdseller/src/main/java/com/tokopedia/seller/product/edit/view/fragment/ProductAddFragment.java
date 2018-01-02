@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.myproduct.utils.FileUtils;
@@ -600,6 +601,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
             @Override
             public void clickImageEditor(int position) {
+                if (ProductAddFragment.this.getStatusUpload() == ProductStatus.ADD) {
+                    UnifyTracking.eventClickImageInAddProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
+                } else {
+                    UnifyTracking.eventClickImageInEditProduct(AppEventTracking.AddProduct.EVENT_ACTION_EDIT);
+                }
                 String uriOrPath = productImageViewHolder.getImagesSelectView().getImageAt(position).getUriOrPath();
                 if (!TextUtils.isEmpty(uriOrPath)) {
                     onImageEditor(uriOrPath);

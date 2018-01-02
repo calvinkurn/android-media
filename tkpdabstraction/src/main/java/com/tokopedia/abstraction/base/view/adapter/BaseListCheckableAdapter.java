@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public class BaseListCheckableAdapter<T extends Visitable, F extends BaseListCheckableTypeFactory<T>> extends BaseListAdapterV2<T, F> {
+public class BaseListCheckableAdapter<T extends Visitable, F extends BaseListCheckableTypeFactory<T>> extends BaseListAdapter<T, F> {
 
     private HashSet<Integer> checkedPositionList = new HashSet<>();
 

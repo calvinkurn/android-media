@@ -5,11 +5,13 @@ import android.support.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -53,6 +55,10 @@ public interface FlightDashboardContract {
         void navigateToLoginPage();
 
         void closePage();
+
+        void renderBannerView(List<BannerDetail> bannerList);
+
+        void hideBannerView();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -86,5 +92,6 @@ public interface FlightDashboardContract {
         void onDestroyView();
 
         void onLoginResultReceived();
+
     }
 }

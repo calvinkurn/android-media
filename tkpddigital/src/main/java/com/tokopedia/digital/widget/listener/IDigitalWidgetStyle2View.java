@@ -28,6 +28,6 @@ public interface IDigitalWidgetStyle2View extends BaseDigitalWidgetView {
 
     void renderDefaultError();
 
-    void renderLastTypedClientNumber();
+    void renderLastTypedClientNumber(String lastClientNumberTyped);
 
 }

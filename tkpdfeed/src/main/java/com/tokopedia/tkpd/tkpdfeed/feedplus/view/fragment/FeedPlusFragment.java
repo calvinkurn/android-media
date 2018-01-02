@@ -98,7 +98,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
 /**
  * @author by nisie on 5/15/17.
  */

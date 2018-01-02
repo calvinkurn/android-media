@@ -39,6 +39,9 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "type")
     String type;
 
+    @Column(name = "term")
+    String term;
+
     @Column(name = "aid")
     String aid;
 
@@ -108,11 +111,6 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = IS_REFUNDABLE)
     int isRefundable;
 
-    @Override
-    public int getType() {
-        return 0;
-    }
-
     public FlightSearchSingleRouteDB() {
 
     }
@@ -120,6 +118,7 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     public FlightSearchSingleRouteDB(FlightSearchData flightSearchData) {
         Gson gson = new Gson();
 
+        this.term = flightSearchData.getAttributes().getTerm();
         this.id = flightSearchData.getId();
         this.type = flightSearchData.getFlightType();
         Attributes attributes = flightSearchData.getAttributes();
@@ -172,6 +171,15 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         } else {
             this.isRefundable = RefundableEnum.PARTIAL_REFUNDABLE.getId();
         }
+    }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
+
+    public String getTerm() {
+        return term;
     }
 
     public String getFlightType() {

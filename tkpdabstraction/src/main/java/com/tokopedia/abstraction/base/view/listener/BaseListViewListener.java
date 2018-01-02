@@ -9,8 +9,10 @@ import java.util.List;
  */
 public interface BaseListViewListener<T> extends CustomerView {
 
-    void onSearchLoaded(@NonNull List<T> list, int totalItem);
+    void renderList(@NonNull List<T> list);
 
-    void onLoadSearchError(Throwable t);
+    void renderAddList(@NonNull List<T> list);
+
+    void showGetListError(String message);
 
 }

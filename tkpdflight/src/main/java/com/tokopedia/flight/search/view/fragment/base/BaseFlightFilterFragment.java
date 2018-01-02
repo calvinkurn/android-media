@@ -10,12 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapterV2;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
@@ -25,7 +25,7 @@ import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
  * Created by User on 11/17/2017.
  */
 
-public abstract class BaseFlightFilterFragment<T extends Visitable, F extends BaseListCheckableTypeFactory<T>> extends BaseListV2Fragment<T, F>
+public abstract class BaseFlightFilterFragment<T extends Visitable, F extends BaseListCheckableTypeFactory<T>> extends BaseListFragment<T, F>
         implements OnFlightBaseFilterListener, BaseListCheckableAdapter.OnCheckableAdapterListener<T>, CheckableBaseViewHolder.CheckableInteractionListener {
     public static final String SAVED_ORIGINAL_FILTER = "svd_ori_filter";
     protected OnFlightFilterListener listener;
@@ -44,7 +44,7 @@ public abstract class BaseFlightFilterFragment<T extends Visitable, F extends Ba
 
     @NonNull
     @Override
-    protected BaseListAdapterV2<T, F> createAdapterInstance() {
+    protected BaseListAdapter<T, F> createAdapterInstance() {
         adapter = new BaseListCheckableAdapter<>(getAdapterTypeFactory(), this);
         return adapter;
     }

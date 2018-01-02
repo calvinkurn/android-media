@@ -1,6 +1,8 @@
 package com.tokopedia.flight.orderlist.domain.model;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
  * @author by alvarisi on 12/11/17.
  */
 
-public class FlightOrderJourney implements ItemType {
+public class FlightOrderJourney implements ItemType, Visitable<FlightDetailOrderTypeFactory> {
     public static final int TYPE = 923;
     private String departureCity;
     private String departureCityCode;
@@ -108,5 +110,10 @@ public class FlightOrderJourney implements ItemType {
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    @Override
+    public int type(FlightDetailOrderTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }

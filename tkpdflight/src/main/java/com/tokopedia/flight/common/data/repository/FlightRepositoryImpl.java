@@ -6,6 +6,8 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundS
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.banner.data.source.BannerDataSource;
+import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
@@ -32,6 +34,7 @@ import com.tokopedia.flight.search.util.FlightSearchMetaParamUtil;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +48,7 @@ import rx.functions.Func1;
 
 public class FlightRepositoryImpl implements FlightRepository {
 
+    private BannerDataSource bannerDataSource;
     private FlightAirportDataListSource flightAirportDataListSource;
     private FlightAirlineDataListSource flightAirlineDataListSource;
     private FlightClassesDataSource flightClassesDataSource;
@@ -59,7 +63,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightOrderDataSource flightOrderDataSource;
     private FlightOrderMapper flightOrderMapper;
 
-    public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource,
+    public FlightRepositoryImpl(BannerDataSource bannerDataSource,
+                                FlightAirportDataListSource flightAirportDataListSource,
                                 FlightAirlineDataListSource flightAirlineDataListSource,
                                 FlightSearchSingleDataSource flightSearchSingleDataListSource,
                                 FlightSearchReturnDataSource flightSearchReturnDataListSource,
@@ -72,6 +77,7 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightAirportVersionDBSource flightAirportVersionDBSource,
                                 FlightOrderDataSource flightOrderDataSource,
                                 FlightOrderMapper flightOrderMapper) {
+        this.bannerDataSource = bannerDataSource;
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
         this.flightSearchSingleDataListSource = flightSearchSingleDataListSource;
@@ -150,6 +156,11 @@ public class FlightRepositoryImpl implements FlightRepository {
                         }
                     });
                 }
+            }
+        }).onErrorReturn(new Func1<Throwable, List<FlightAirlineDB>>() {
+            @Override
+            public List<FlightAirlineDB> call(Throwable throwable) {
+                return new ArrayList<>();
             }
         });
     }
@@ -270,5 +281,10 @@ public class FlightRepositoryImpl implements FlightRepository {
                         return flightOrderMapper.transform(orderEntity);
                     }
                 });
+    }
+
+    @Override
+    public Observable<List<BannerDetail>> getBanners(Map<String, String> params) {
+        return bannerDataSource.getBannerData(params);
     }
 }

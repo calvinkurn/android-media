@@ -17,15 +17,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
@@ -54,6 +53,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     private final TxDetailViewListener viewListener;
     private final TxOrderNetInteractor netInteractor;
     private static final int FREE_RETURN = 1;
+
     public TxDetailPresenterImpl(TxDetailViewListener viewListener) {
         this.viewListener = viewListener;
         this.netInteractor = new TxOrderNetInteractorImpl();
@@ -219,7 +219,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     }
 
     @Override
-    public void processComplain(Context context, OrderData orderData){
+    public void processComplain(Context context, OrderData orderData) {
         showComplainDialog(context, orderData);
     }
 
@@ -235,13 +235,17 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(context, InboxReputationActivity.class);
-                        intent.putExtra("unread", true);
-                        dialog.dismiss();
-                        viewListener.navigateToActivity(intent);
-                        viewListener.closeWithResult(
-                                TkpdState.TxActivityCode.BuyerItemReceived, null
-                        );
+                        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+                            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                                    .getInboxReputationIntent(MainApplication.getAppContext());
+                            intent.putExtra("unread", true);
+                            dialog.dismiss();
+                            viewListener.navigateToActivity(intent);
+                            viewListener.closeWithResult(
+                                    TkpdState.TxActivityCode.BuyerItemReceived, null
+                            );
+                        }
+
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -279,14 +283,14 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     private void showComplainDialog(final Context context, final OrderData orderData) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_complain);
-        Button btnBack = (Button) dialog.findViewById(R.id.btnBack);
-        Button btnNotReceive = (Button) dialog.findViewById(R.id.btnNotReceive);
-        Button btnReceive = (Button) dialog.findViewById(R.id.btnReceive);
-        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(R.id.llFreeReturn);
-        TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
-        TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
-        TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
+        dialog.setContentView(com.tokopedia.transaction.R.layout.dialog_complaint);
+        Button btnBack = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.cancel_button);
+        Button btnNotReceive = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.not_receive_btn);
+        Button btnReceive = (Button) dialog.findViewById(com.tokopedia.transaction.R.id.receive_btn);
+        LinearLayout llFreeReturn = (LinearLayout) dialog.findViewById(com.tokopedia.transaction.R.id.layout_free_return);
+        TextView tvFreeReturn = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.tv_free_return);
+        TextView tvComplainTitle = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.complaint_title);
+        TextView tvComplainBody = (TextView) dialog.findViewById(com.tokopedia.transaction.R.id.complaint_body);
         tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
         tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsgV2() != null ?
                 Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsgV2()) :
@@ -295,13 +299,13 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         llFreeReturn.setVisibility(View.GONE);
         btnBack.setVisibility(View.VISIBLE);
         btnNotReceive.setVisibility(View.GONE);
-      
+
         //will be used later
 //        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
 //            llFreeReturn.setVisibility(View.VISIBLE);
 //            tvFreeReturn.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
 //        }
-      
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -378,6 +382,7 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
 
         dialog.show();
     }
+
     private void processResolution(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         if (message == null || message.isEmpty())

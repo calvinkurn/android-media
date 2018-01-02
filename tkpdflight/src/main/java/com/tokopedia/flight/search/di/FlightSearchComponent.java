@@ -12,6 +12,8 @@ import dagger.Component;
 @FlightSearchScope
 @Component(modules = FlightSearchModule.class, dependencies = FlightComponent.class)
 public interface FlightSearchComponent {
+
     void inject(FlightSearchFragment flightSearchFragment);
+
     void inject(FlightSearchFilterActivity flightSearchFilterActivity);
 }

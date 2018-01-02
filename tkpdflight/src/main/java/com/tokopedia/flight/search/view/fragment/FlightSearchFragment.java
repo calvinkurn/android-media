@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,8 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
@@ -29,9 +30,7 @@ import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
@@ -45,6 +44,7 @@ import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
+import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.view.model.AirportCombineModelList;
 import com.tokopedia.flight.search.view.model.FlightAirportCombineModel;
@@ -66,47 +66,32 @@ import javax.inject.Inject;
  * Created by hendry on 10/26/2017.
  */
 
-public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel> implements FlightSearchView,
-        BaseListAdapter.OnBaseListV2AdapterListener<FlightSearchViewModel>,
+public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView,
         FlightSearchAdapter.OnBaseFlightSearchAdapterListener {
 
     public static final String TAG = FlightSearchFragment.class.getSimpleName();
-
+    public static final int MAX_PROGRESS = 100;
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
-
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
     private static final String SAVED_AIRPORT_COMBINE = "svd_airport_combine";
     private static final String SAVED_PROGRESS = "svd_progress";
-    public static final int MAX_PROGRESS = 100;
-
-    private BottomActionView filterAndSortBottomAction;
-
-    private FlightFilterModel flightFilterModel;
-    private FlightSearchStatisticModel flightSearchStatisticModel;
-    protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
-
-    private HorizontalProgressBar progressBar;
-    private int progress;
-
-    int selectedSortOption;
-
-    private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
-    private AirportCombineModelList airportCombineModelList;
-    private FlightSearchAdapter flightSearchAdapter;
-    private SwipeToRefresh swipeToRefresh;
-
-    public interface OnFlightSearchFragmentListener {
-        void selectFlight(String selectedFlightID);
-
-        void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel);
-    }
-
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
+    protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
+    int selectedSortOption;
+    private BottomActionView filterAndSortBottomAction;
+    private FlightFilterModel flightFilterModel;
+    private FlightSearchStatisticModel flightSearchStatisticModel;
+    private HorizontalProgressBar progressBar;
+    private int progress;
+    private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
+    private AirportCombineModelList airportCombineModelList;
+    private SwipeToRefresh swipeToRefresh;
+    private FlightSearchAdapter adapter;
     private boolean needRefreshFromCache;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
@@ -184,14 +169,26 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    protected final BaseListAdapter<FlightSearchViewModel> getNewAdapter() {
-        flightSearchAdapter = new FlightSearchAdapter(getContext(), this, this);
-        return flightSearchAdapter;
+    public RecyclerView getRecyclerView(View view) {
+        return (RecyclerView) view.findViewById(R.id.recycler_view);
     }
 
     @Override
-    public RecyclerView getRecyclerView(View view) {
-        return (RecyclerView) view.findViewById(R.id.recycler_view);
+    protected FilterSearchAdapterTypeFactory getAdapterTypeFactory() {
+        return new FilterSearchAdapterTypeFactory(this);
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> createAdapterInstance() {
+        adapter = new FlightSearchAdapter(getAdapterTypeFactory());
+        adapter.setOnBaseFlightSearchAdapterListener(this);
+        return adapter;
+    }
+
+    @Override
+    public FlightSearchAdapter getAdapter() {
+        return adapter;
     }
 
     @Nullable
@@ -221,11 +218,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         return R.layout.fragment_search_flight;
     }
 
-    @Override
-    protected boolean needLoadDataAtStart() {
-        return false; // load data will be handled in onResume Manually
-    }
-
     private void setUpProgress() {
         if (progressBar.getVisibility() == View.VISIBLE) {
             if (progress >= MAX_PROGRESS) {
@@ -253,6 +245,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             needRefreshFromCache = false;
         }
         loadInitialData();
+    }
+
+    @Override
+    public void loadInitialData() {
+        super.loadInitialData();
+        actionFetchFlightSearchData();
     }
 
     @Override
@@ -288,12 +286,13 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    /**
-     * load all data from cloud
-     */
     @Override
-    public void loadData(int page, int currentDataSize, int rowPerPage) {
-        if (getAdapter().getDataSize() == 0) {
+    protected void setInitialActionVar() {
+
+    }
+
+    private void actionFetchFlightSearchData() {
+        if (getAdapter().getItemCount() == 0) {
             showLoading();
         }
         String date = flightSearchPassDataViewModel.getDate(isReturning());
@@ -428,11 +427,31 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    public void showFilterAndSortView() {
+        filterAndSortBottomAction.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFilterAndSortView() {
+        filterAndSortBottomAction.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
         hideLoading();
         addToolbarElevation();
-        getAdapter().clearData();
-        getAdapter().addData(flightSearchViewModelList, flightSearchViewModelList.size());
+        adapter.clearData();
+        if (flightSearchViewModelList.size() == 0) {
+            if (progress < MAX_PROGRESS) {
+                adapter.showLoading();
+            } else {
+                adapter.addElement(getEmptyDataViewModel());
+            }
+        } else {
+            adapter.addData(flightSearchViewModelList);
+        }
+
+
     }
 
     @Override
@@ -495,7 +514,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         setUpProgress();
 
         // if the data is empty, but there is data need to fetch, then keep the loading state
-        if (getAdapter().getDataSize() == 0 && isDataEmpty &&
+        if (getAdapter().getItemCount() == 0 && isDataEmpty &&
                 airportCombineModelList.isRetrievingData()) {
             return;
         }
@@ -508,7 +527,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
         // we retrieve from cache, because there is possibility the filter/sort will be different
         reloadDataFromCache();
-        if (filterAndSortBottomAction.getVisibility() == View.GONE) {
+        if (filterAndSortBottomAction.getVisibility() == View.GONE && progress >= MAX_PROGRESS) {
             filterAndSortBottomAction.setVisibility(View.VISIBLE);
         }
     }
@@ -537,20 +556,18 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         progress = 0;
         filterAndSortBottomAction.setVisibility(View.GONE);
 
-        flightSearchAdapter.clearData();
-        flightSearchAdapter.notifyDataSetChanged();
+        adapter.clearData();
+        adapter.notifyDataSetChanged();
 
         flightSearchPresenter.attachView(this);
         loadInitialData();
     }
 
     @Override
-    public void onLoadSearchError(Throwable t) {
-        Log.i(TAG, t.toString());
+    public void showGetListError(String message) {
         this.addToolbarElevation();
-        super.onLoadSearchError(t);
-        String message = FlightErrorUtil.getMessageFromException(getActivity(), t);
-        flightSearchAdapter.setErrorMessage(message);
+        super.showGetListError(message);
+        adapter.setErrorMessage(message);
     }
 
     private int divideTo(int number, int pieces) {
@@ -591,6 +608,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         flightDetailViewModel.build(flightSearchPassDataViewModel);
         this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel, true),
                 REQUEST_CODE_SEE_DETAIL_FLIGHT);
+    }
+
+    @Override
+    public void onRetryClicked() {
+        adapter.clearData();
+        actionFetchFlightSearchData();
     }
 
     @Override
@@ -676,5 +699,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         onFlightSearchFragmentListener = (OnFlightSearchFragmentListener) context;
+    }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        return adapter.getEmptyViewModel();
+    }
+
+    public interface OnFlightSearchFragmentListener {
+        void selectFlight(String selectedFlightID);
+
+        void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel);
     }
 }
