@@ -224,7 +224,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         layoutExpendablePassenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate));
+                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_reverse));
                 togglePassengerInfo();
             }
         });
