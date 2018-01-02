@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".pickupbooth.view.activity.PickupPointActivity">
+    tools:context=".pickupbooth.view.pickuppoint.PickupPointActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -58,7 +58,7 @@
         android:layout_height="match_parent"
         android:background="@color/tkpd_bg_color"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".pickupbooth.view.activity.PickupPointActivity"
+        tools:context=".pickupbooth.view.pickuppoint.PickupPointActivity"
         tools:showIn="@layout/activity_pickup_point">
 
         <RelativeLayout

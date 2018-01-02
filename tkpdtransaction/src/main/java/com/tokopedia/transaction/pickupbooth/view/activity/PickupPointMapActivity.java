@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.pickupbooth.view.activity;
 
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 
