@@ -340,9 +340,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     voucherDigitalState.getAttributeVoucher().getVoucherCode(),
                     voucherDigitalState.getAttributeVoucher().getMessage()
             );
-            checkoutHolderView.enableVoucherDiscount(
-                    voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
-            );
+            if (voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain() > 0) {
+                checkoutHolderView.enableVoucherDiscount(
+                        voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
+                );
+            }
         }
         if (passData.getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             pbMainLoading.setVisibility(View.VISIBLE);
@@ -463,9 +465,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         voucherCartHachikoView.setVoucher(
                 voucherDigital.getAttributeVoucher().getVoucherCode(),
                 voucherDigital.getAttributeVoucher().getMessage());
-        checkoutHolderView.enableVoucherDiscount(
-                voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
-        );
+        if (voucherDigital.getAttributeVoucher().getDiscountAmountPlain() > 0) {
+            checkoutHolderView.enableVoucherDiscount(
+                    voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
+            );
+        }
     }
 
     @Override
