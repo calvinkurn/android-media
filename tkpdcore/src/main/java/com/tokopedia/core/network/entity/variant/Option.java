@@ -22,7 +22,11 @@ public class Option implements Parcelable {
     @Expose
     private Picture picture;
 
-    private boolean enabled = true;
+    private boolean enabled;
+
+    public Option() {
+        enabled=true;
+    }
 
     public long getId() {
         return id;
@@ -63,7 +67,6 @@ public class Option implements Parcelable {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
 
 
     protected Option(Parcel in) {

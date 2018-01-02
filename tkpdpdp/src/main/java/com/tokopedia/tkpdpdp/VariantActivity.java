@@ -165,8 +165,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionNameLevel1.setText(variantLevel1.getName()+" :");
         //TODO handle selected variant
         Option optionLevel1 = getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
+        Child childProduct = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         if (optionLevel1==null) {
-            Child childProduct = productVariant.getChildFromProductId(productVariant.getDefaultChild());
             for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
                 if (childProduct.getOptionIds().get(0) == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
                     variantOptionAdapterLevel1.setSelectedPosition(i);
@@ -175,39 +175,37 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             }
         }
 
-//        variantOptionAdapterLevel1.notifyItemSelectedChange();
-//
-//        if (productVariant.getVariant().size()>1) {
-//            Variant variantLevel2 = productVariant.getVariant().get(1- productVariant.getLevel1Variant());
-//            variantOptionAdapterLevel2
-//                    = new VariantOptionAdapter(VariantActivity.this,variantLevel2.getOption(),
-//                    TextUtils.equals(IDENTIFIER_COLOUR,variantLevel2.getIdentifier()), VariantActivity.this, 2);
-//            ChipsLayoutManager chipsLayoutManagerLevel2= ChipsLayoutManager.newBuilder(VariantActivity.this)
-//                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-//                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-//                    .build();
-//            optionRecyclerViewLevel2.setNestedScrollingEnabled(false);
-//            optionRecyclerViewLevel2.setLayoutManager(chipsLayoutManagerLevel2);
-//            optionRecyclerViewLevel2.setAdapter(variantOptionAdapterLevel2);
-//            optionNameLevel1.setText(variantLevel2.getName()+" :");
-//            variantOptionAdapterLevel1.notifyItemSelectedChange();
-//            //TODO handle selected variant
-//            Option level2Selected = getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED);
-//            if (level2Selected==null) {
-//                Child childProduct = productVariant.getChildFromProductId(productVariant.getDefaultChild());
-//                for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
-//                    if (childProduct.getOptionIds().get(1) == variantOptionAdapterLevel2.getVariantOptions().get(i).getId()) {
-//                        variantOptionAdapterLevel2.setSelectedPosition(i);
-//                        break;
-//                    }
-//                }
-//            }
-//            optionNameLevel2.setVisibility(View.VISIBLE);
-//            optionRecyclerViewLevel2.setVisibility(View.VISIBLE);
-//            variantOptionAdapterLevel2.notifyItemSelectedChange();
-//        } else {
-//            variantOptionAdapterLevel1.notifyItemSelectedChange();
-//        }
+        if (productVariant.getVariant().size()>1) {
+            Variant variantLevel2 = productVariant.getVariant().get(1- productVariant.getLevel1Variant());
+            variantOptionAdapterLevel2
+                    = new VariantOptionAdapter(VariantActivity.this,variantLevel2.getOption(),
+                    TextUtils.equals(IDENTIFIER_COLOUR,variantLevel2.getIdentifier()), VariantActivity.this, 2);
+            ChipsLayoutManager chipsLayoutManagerLevel2= ChipsLayoutManager.newBuilder(VariantActivity.this)
+                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                    .build();
+            optionRecyclerViewLevel2.setNestedScrollingEnabled(false);
+            optionRecyclerViewLevel2.setLayoutManager(chipsLayoutManagerLevel2);
+            optionRecyclerViewLevel2.setAdapter(variantOptionAdapterLevel2);
+            optionNameLevel2.setText(variantLevel2.getName()+" :");
+            variantOptionAdapterLevel1.notifyItemSelectedChange();
+            //TODO handle selected variant
+            Option level2Selected = getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED);
+            if (level2Selected==null) {
+                childProduct = productVariant.getChildFromProductId(productVariant.getDefaultChild());
+                for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
+                    if (childProduct.getOptionIds().get(1) == variantOptionAdapterLevel2.getVariantOptions().get(i).getId()) {
+                        variantOptionAdapterLevel2.setSelectedPosition(i);
+                        break;
+                    }
+                }
+            }
+            optionNameLevel2.setVisibility(View.VISIBLE);
+            optionRecyclerViewLevel2.setVisibility(View.VISIBLE);
+            variantOptionAdapterLevel2.notifyItemSelectedChange();
+        } else {
+            variantOptionAdapterLevel1.notifyItemSelectedChange();
+        }
     }
 
 
