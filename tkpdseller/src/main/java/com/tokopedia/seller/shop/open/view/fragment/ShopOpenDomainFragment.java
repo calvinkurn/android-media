@@ -1,6 +1,5 @@
 package com.tokopedia.seller.shop.open.view.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,6 +35,8 @@ import javax.inject.Inject;
 
 public class ShopOpenDomainFragment extends BasePresenterFragment implements ShopOpenDomainView {
 
+    public static final int MIN_SHOP_NAME_LENGTH = 3;
+    public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
     private View buttonSubmit;
     private TkpdHintTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
@@ -84,6 +85,8 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
                 hideSnackBarRetry();
                 if (TextUtils.isEmpty(s)) {
                     textInputShopName.setError(getString(R.string.shop_name_must_be_filled));
+                } else if (s.toString().length() < MIN_SHOP_NAME_LENGTH) {
+                    textInputShopName.setError(getString(R.string.shop_name_min_char));
                 } else if (s.toString().length() <= textInputShopName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
                 }
@@ -97,8 +100,11 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
                 textInputDomainName.disableSuccessError();
                 buttonSubmit.setEnabled(false);
                 hideSnackBarRetry();
-                if (TextUtils.isEmpty(editTextInputDomainName.getTextWithoutPrefix())) {
+                String domainInputStr = editTextInputDomainName.getTextWithoutPrefix();
+                if (TextUtils.isEmpty(domainInputStr)) {
                     textInputDomainName.setError(getString(R.string.domain_name_must_be_filled));
+                } else if (domainInputStr.length() < MIN_SHOP_DOMAIN_LENGTH) {
+                    textInputDomainName.setError(getString(R.string.domain_name_min_char));
                 } else if (s.toString().length() <= textInputDomainName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
                 }
@@ -146,13 +152,14 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public boolean isShopNameInValidRange() {
         int inputShopNameLength = editTextInputShopName.getText().length();
-        return inputShopNameLength > 0 && inputShopNameLength <= textInputShopName.getCounterMaxLength();
+        return inputShopNameLength >= MIN_SHOP_NAME_LENGTH && inputShopNameLength <= textInputShopName.getCounterMaxLength();
     }
 
     @Override
     public boolean isShopDomainInValidRange() {
         int inputShopDomainLength = editTextInputDomainName.getText().length();
-        return inputShopDomainLength > 0 && inputShopDomainLength <= textInputDomainName.getCounterMaxLength();
+        return editTextInputDomainName.getTextWithoutPrefix().length() >= MIN_SHOP_DOMAIN_LENGTH
+                && inputShopDomainLength <= textInputDomainName.getCounterMaxLength();
     }
 
     @Override
