@@ -1,6 +1,9 @@
 package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 
 import dagger.Component;
 
@@ -12,5 +15,10 @@ import dagger.Component;
 @Component(modules = SessionModule.class, dependencies = AppComponent.class)
 public interface SessionComponent {
 
+    void inject(VerificationActivity loginFragment);
+
+    void inject(VerificationFragment verificationFragment);
+
+    void inject(ChooseVerificationMethodFragment chooseVerificationMethodFragment);
 
 }
