@@ -30,7 +30,7 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     private static final String BUNDLE_MAX_SELECTION = "bundle_max_selection";
     private static final int DEFAULT_MAX_SELECTION = 1;
     private static final int DEFAULT_GALLERY_TYPE = GalleryType.ofImageOnly();
-    private int typeGallery;
+    private int typeGallery = GalleryType.ofAll();
     private int maxSelection;
 
     private View previewButton;
@@ -113,6 +113,7 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
         albumSpinner.setAdapter(albumAdapter);
         albumCollection.onCreate(this, this);
         albumCollection.onRestoreInstanceState(savedInstanceState);
+        albumCollection.setGalleryType(typeGallery);
         albumCollection.loadAlbums();
     }
 
