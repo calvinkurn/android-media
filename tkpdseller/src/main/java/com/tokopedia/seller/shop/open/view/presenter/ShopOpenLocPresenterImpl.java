@@ -21,8 +21,6 @@ import rx.Subscriber;
 
 public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocView> {
 
-    private static final String TAG = "ShopOpenLocPresenterImp";
-
     ShopOpenSaveLocationUseCase shopOpenSaveLocationUseCase;
 
     GetOpenShopTokenUseCase getOpenShopTokenUseCase;
@@ -47,7 +45,10 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
 
             @Override
             public void onError(Throwable e) {
-                Log.d(TAG, "berhasilkah ? -> "+e);
+                if(!isViewAttached())
+                    return;
+
+                getView().onErrorGetReserveDomain(e);
             }
 
             @Override
@@ -70,7 +71,10 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached())
+                    return;
 
+                getView().onErrorGetReserveDomain(e);
             }
 
             @Override
@@ -92,7 +96,10 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached())
+                    return;
 
+                getView().onFailedSaveInfoShop(e);
             }
 
             @Override
