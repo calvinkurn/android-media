@@ -159,7 +159,7 @@ public interface AppEventTracking {
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
-        String EVENT_RESOLUTION = "Resolusi";
+        String EVENT_RESOLUTION = "clickResolution";
     }
 
     interface Category {
