@@ -50,6 +50,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolFollowingListLoadMoreUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolFollowingListUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
@@ -423,7 +424,21 @@ public class FeedPlusModule {
     GetKolFollowingListUseCase provideGetKolFollowingListUseCase(ThreadExecutor threadExecutor,
                                                                  PostExecutionThread postExecutionThread,
                                                                  FeedRepository feedRepository) {
-        return new GetKolFollowingListUseCase(threadExecutor, postExecutionThread, feedRepository);
+        return new GetKolFollowingListUseCase(
+                threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GetKolFollowingListLoadMoreUseCase provideGetKolFollowingListLoadMoreUseCase(ThreadExecutor threadExecutor,
+                                                                                 PostExecutionThread postExecutionThread,
+                                                                                 FeedRepository feedRepository) {
+        return new GetKolFollowingListLoadMoreUseCase(
+                threadExecutor,
+                postExecutionThread,
+                feedRepository);
     }
 
     @FeedPlusScope

@@ -13,6 +13,7 @@ public class KolFollowingViewModel implements Parcelable {
     private String profileApplink;
     private boolean isInfluencer;
     private String name;
+    private boolean isLoadingItem;
 
     public KolFollowingViewModel(int id, String avatarUrl, String profileApplink, boolean isInfluencer, String name) {
         this.id = id;
@@ -20,6 +21,24 @@ public class KolFollowingViewModel implements Parcelable {
         this.profileApplink = profileApplink;
         this.isInfluencer = isInfluencer;
         this.name = name;
+        this.isLoadingItem = false;
+    }
+
+    public KolFollowingViewModel(boolean isLoadingItem) {
+        this.isLoadingItem = isLoadingItem;
+        this.id = 0;
+        this.avatarUrl = "";
+        this.profileApplink = "";
+        this.isInfluencer = false;
+        this.name = "";
+    }
+
+    public boolean isLoadingItem() {
+        return isLoadingItem;
+    }
+
+    public void setLoadingItem(boolean loadingItem) {
+        isLoadingItem = loadingItem;
     }
 
     public String getProfileApplink() {
@@ -74,6 +93,7 @@ public class KolFollowingViewModel implements Parcelable {
         dest.writeString(this.profileApplink);
         dest.writeByte(this.isInfluencer ? (byte) 1 : (byte) 0);
         dest.writeString(this.name);
+        dest.writeByte(this.isLoadingItem ? (byte) 1 : (byte) 0);
     }
 
     protected KolFollowingViewModel(Parcel in) {
@@ -82,6 +102,7 @@ public class KolFollowingViewModel implements Parcelable {
         this.profileApplink = in.readString();
         this.isInfluencer = in.readByte() != 0;
         this.name = in.readString();
+        this.isLoadingItem = in.readByte() != 0;
     }
 
     public static final Creator<KolFollowingViewModel> CREATOR = new Creator<KolFollowingViewModel>() {

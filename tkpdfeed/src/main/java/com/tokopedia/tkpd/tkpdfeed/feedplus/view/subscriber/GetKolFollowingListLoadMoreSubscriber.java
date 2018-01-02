@@ -16,10 +16,10 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class GetKolFollowingListSubscriber extends Subscriber<KolFollowingResultDomain> {
+public class GetKolFollowingListLoadMoreSubscriber extends Subscriber<KolFollowingResultDomain> {
     private KolFollowingList.View mainView;
 
-    public GetKolFollowingListSubscriber(KolFollowingList.View mainView) {
+    public GetKolFollowingListLoadMoreSubscriber(KolFollowingList.View mainView) {
         this.mainView = mainView;
     }
 
@@ -31,17 +31,13 @@ public class GetKolFollowingListSubscriber extends Subscriber<KolFollowingResult
     @Override
     public void onError(Throwable throwable) {
         mainView.hideLoading();
-        mainView.onErrorGetKolFollowingList(new MessageErrorException(throwable.getLocalizedMessage()).toString());
+        mainView.onErrorLoadMoreKolFollowingList(new MessageErrorException(throwable.getLocalizedMessage()).toString());
     }
 
     @Override
     public void onNext(KolFollowingResultDomain kolFollowingResultDomain) {
         mainView.hideLoading();
-        if (kolFollowingResultDomain.getKolFollowingDomainList().size() != 0) {
-            mainView.onSuccessGetKolFollowingList(mappingViewModel(kolFollowingResultDomain));
-        } else {
-            mainView.onSuccessGetKolFollowingListEmptyState();
-        }
+        mainView.onSuccessLoadMoreKolFollowingList(mappingViewModel(kolFollowingResultDomain));
     }
 
     private KolFollowingResultViewModel mappingViewModel(KolFollowingResultDomain domain) {

@@ -40,8 +40,8 @@ public class KolFollowingMapper implements Func1<GetKolFollowingList.Data, KolFo
 
     private KolFollowingResultDomain convertToDomain(GetKolFollowingList.Data.Get_user_kol_following user_kol_following) {
         return new KolFollowingResultDomain(
-                false,
-                "",
+                !TextUtils.isEmpty(user_kol_following.lastCursor()),
+                user_kol_following.lastCursor(),
                 user_kol_following.users() != null ?
                         mappingKolFollowingDomain(user_kol_following.users()) :
                         new ArrayList<KolFollowingDomain>()
@@ -55,8 +55,8 @@ public class KolFollowingMapper implements Func1<GetKolFollowingList.Data, KolFo
                     user.id(),
                     user.name(),
                     user.photo(),
-                    "",
-                    true);
+                    user.userApplink(),
+                    user.isInfluencer());
             domainList.add(domain);
         }
         return domainList;

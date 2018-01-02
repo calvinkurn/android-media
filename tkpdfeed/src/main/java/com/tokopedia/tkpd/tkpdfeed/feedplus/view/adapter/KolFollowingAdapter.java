@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -60,12 +61,26 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<KolFollowingAdapte
     }
 
     private void initView(Holder holder, KolFollowingViewModel viewModel) {
+        holder.layout.setVisibility(viewModel.isLoadingItem() ? View.GONE : View.VISIBLE);
+        holder.progressBar.setVisibility(viewModel.isLoadingItem()? View.VISIBLE : View.GONE);
         holder.ivVerified.setVisibility(viewModel.isInfluencer() ? View.VISIBLE : View.GONE);
     }
 
     private void initData(Holder holder, KolFollowingViewModel viewModel) {
-        ImageHandler.loadImageCircle2(context, holder.ivAvatar, viewModel.getAvatarUrl());
-        holder.tvName.setText(MethodChecker.fromHtml(viewModel.getName()));
+        if (!viewModel.isLoadingItem()) {
+            ImageHandler.loadImageCircle2(context, holder.ivAvatar, viewModel.getAvatarUrl());
+            holder.tvName.setText(MethodChecker.fromHtml(viewModel.getName()));
+        }
+    }
+
+    public void addBottomLoading() {
+        getItemList().add(new KolFollowingViewModel(true));
+        notifyDataSetChanged();
+    }
+
+    public void removeBottomLoading() {
+        getItemList().remove(getItemCount() - 1);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -77,12 +92,14 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<KolFollowingAdapte
         ImageView ivAvatar, ivVerified;
         View layout;
         TextView tvName;
+        ProgressBar progressBar;
         public Holder(View itemView) {
             super(itemView);
             ivAvatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
             ivVerified = (ImageView) itemView.findViewById(R.id.iv_verified);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             layout = itemView.findViewById(R.id.layout);
+            progressBar = itemView.findViewById(R.id.progress_bar);
         }
     }
 }

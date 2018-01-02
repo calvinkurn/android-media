@@ -32,11 +32,15 @@ import javax.inject.Inject;
 public class KolFollowingListFragment extends BaseDaggerFragment
         implements KolFollowingList.View {
 
-    RecyclerView rvItem;
-    ProgressBar progressBar;
+    private RecyclerView rvItem;
+    private ProgressBar progressBar;
 
-    int userId;
-    KolFollowingAdapter adapter;
+    private boolean isCanLoadMore;
+    private String cursor;
+    private int userId;
+    private KolFollowingAdapter adapter;
+    private LinearLayoutManager layoutManager;
+    private View emptyState;
 
     @Inject
     KolFollowingListPresenter presenter;
@@ -76,6 +80,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_kol_following_list, container, false);
         rvItem = (RecyclerView) parentView.findViewById(R.id.rv_item);
         progressBar = (ProgressBar) parentView.findViewById(R.id.progress_bar);
+        emptyState = parentView.findViewById(R.id.view_empty_state);
         presenter.attachView(this);
         return parentView;
     }
@@ -88,6 +93,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     private void initView() {
         rvItem.setVisibility(View.GONE);
+        emptyState.setVisibility(View.GONE);
         showLoading();
         presenter.getKolFollowingList(userId);
     }
@@ -105,6 +111,28 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     }
 
+    private RecyclerView.OnScrollListener getRVListener() {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+                if (isCanLoadMore && (visibleItemCount + firstVisiblesItems) >= totalItemCount) {
+                    adapter.addBottomLoading();
+                    isCanLoadMore = false;
+                    presenter.getKolLoadMore(userId, cursor);
+                }
+            }
+        };
+    }
+
     @Override
     public void showLoading() {
         progressBar.setVisibility(View.VISIBLE);
@@ -117,12 +145,24 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetKolFollowingList(KolFollowingResultViewModel viewModel) {
+        layoutManager = new LinearLayoutManager(getActivity());
         rvItem.setVisibility(View.VISIBLE);
         adapter = new KolFollowingAdapter(getActivity(), this);
-        rvItem.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvItem.setLayoutManager(layoutManager);
         rvItem.setHasFixedSize(true);
         rvItem.setAdapter(adapter);
         adapter.setItemList(viewModel.getKolFollowingViewModelList());
+        updateParams(viewModel);
+    }
+
+    @Override
+    public void onSuccessGetKolFollowingListEmptyState() {
+        emptyState.setVisibility(View.VISIBLE);
+    }
+
+    private void updateParams(KolFollowingResultViewModel viewModel) {
+        this.isCanLoadMore = viewModel.isCanLoadMore();
+        this.cursor = viewModel.getLastCursor();
     }
 
     @Override
@@ -136,11 +176,23 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSuccessLoadMoreKolFollowingList(KolFollowingResultViewModel itemList) {
+        adapter.removeBottomLoading();
+        adapter.getItemList().addAll(itemList.getKolFollowingViewModelList());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onErrorLoadMoreKolFollowingList(String error) {
+        adapter.removeBottomLoading();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
     public void onListItemClicked(KolFollowingViewModel item) {
         String url = item.getProfileApplink();
         if (!TextUtils.isEmpty(url)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                    , url);
+            ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
         }
     }
 
