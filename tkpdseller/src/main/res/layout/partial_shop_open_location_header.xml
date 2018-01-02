@@ -38,8 +38,10 @@
         >
         <TextView
             android:id="@+id/btn_choose_from_address"
-            android:textSize="13sp"
-            style="@style/TextView.ShopSettingHint.LabelBrowseImage"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center"
+            style="@style/TextView.Caption"
             android:text="@string/choose_from_address_list"
              />
     </FrameLayout>
