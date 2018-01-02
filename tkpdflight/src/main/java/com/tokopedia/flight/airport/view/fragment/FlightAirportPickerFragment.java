@@ -3,9 +3,14 @@ package com.tokopedia.flight.airport.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
@@ -37,6 +42,14 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
+        view.requestFocus();
+        return view;
     }
 
     @Override
