@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.shop.constant.ShopExtraConstant;
+import com.tokopedia.seller.shop.open.constant.ShopExtraConstant;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 
 import javax.inject.Inject;

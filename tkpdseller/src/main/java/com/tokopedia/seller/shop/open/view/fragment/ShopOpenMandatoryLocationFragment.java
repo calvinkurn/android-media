@@ -36,6 +36,9 @@ import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Respon
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
+import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocPresenterImpl;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocView;
 
 import java.util.HashMap;
 
@@ -47,7 +50,7 @@ import rx.Subscriber;
 /**
  * @author normansyahputa
  */
-public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
+public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implements ShopOpenLocView {
 
     public static final int REQUEST_CODE_ADDRESS = 1234;
     public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
@@ -61,13 +64,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
     private LocationMapViewHolder locationMapViewHolder;
 
     @Inject
-    ShopOpenSaveLocationUseCase shopOpenSaveLocationUseCase;
-
-    @Inject
     GetOpenShopTokenUseCase getOpenShopTokenUseCase;
 
     @Inject
-    GetOpenShopLocationPassUseCase getOpenShopLocationPassUseCase;
+    ShopOpenLocPresenterImpl shopOpenLocPresenter;
 
     RequestParams requestParams;
 
@@ -105,29 +105,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                 if(logisticRouter == null)
                     return;
 
-
-
-                getOpenShopTokenUseCase.execute(requestParams, new Subscriber<Token>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Token token) {
-                        logisticRouter.navigateToEditAddressActivityRequest(
-                                ShopOpenMandatoryLocationFragment.this,
-                                REQUEST_CODE__EDIT_ADDRESS,
-                                token
-                        );
-                    }
-                });
-
+                shopOpenLocPresenter.openDistrictRecommendation(requestParams);
 
             }
         });
@@ -138,29 +116,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                 if(logisticRouter == null)
                     return;
 
-                getOpenShopLocationPassUseCase.execute(requestParams, new Subscriber<LocationPass>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(LocationPass locationPass) {
-                        logisticRouter.navigateToGeoLocationActivityRequest(
-                                ShopOpenMandatoryLocationFragment.this,
-                                REQUEST_CODE_GOOGLE_MAP,
-                                generatedMap,
-                                locationPass
-                        );
-                    }
-                });
-
-
+                shopOpenLocPresenter.openGoogleMap(requestParams, generatedMap);
             }
         });
 
@@ -180,31 +136,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
                         locationShippingViewHolder.getDistrictId()
                 );
 
-                shopOpenSaveLocationUseCase.execute(requestParams, new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "berhasilkah ? -> "+e);
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        Log.d(TAG, "berhasilkah ? -> "+aBoolean);
-
-                        if(aBoolean != null || aBoolean){
-                            updateStepperModel();
-
-                            if(stepperListener != null) {
-                                stepperListener.goToNextPage(null);
-                            }
-                        }
-
-                    }
-                });
+                shopOpenLocPresenter.submitData(requestParams);
             }
         });
 
@@ -230,7 +162,35 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment {
         }
     }
 
-    private void updateStepperModel(){
+
+    @Override
+    public void navigateToDistrictRecommendation(Token token){
+        logisticRouter.navigateToEditAddressActivityRequest(
+                ShopOpenMandatoryLocationFragment.this,
+                REQUEST_CODE__EDIT_ADDRESS,
+                token
+        );
+    }
+
+    @Override
+    public void navigateToGoogleMap(String generatedMap, LocationPass locationPass){
+        logisticRouter.navigateToGeoLocationActivityRequest(
+                ShopOpenMandatoryLocationFragment.this,
+                REQUEST_CODE_GOOGLE_MAP,
+                generatedMap,
+                locationPass
+        );
+    }
+
+    @Override
+    public void goToNextPage(Object object) {
+        if(stepperListener != null) {
+            stepperListener.goToNextPage(null);
+        }
+    }
+
+    @Override
+    public void updateStepperModel(){
         if(stepperListener.getStepperModel() != null){
             GoogleLocationViewModel googleLocationViewModel = locationMapViewHolder.getGoogleLocationViewModel();
 
