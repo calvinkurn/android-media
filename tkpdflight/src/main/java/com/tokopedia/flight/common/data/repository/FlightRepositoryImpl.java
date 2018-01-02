@@ -34,6 +34,7 @@ import com.tokopedia.flight.search.util.FlightSearchMetaParamUtil;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +156,11 @@ public class FlightRepositoryImpl implements FlightRepository {
                         }
                     });
                 }
+            }
+        }).onErrorReturn(new Func1<Throwable, List<FlightAirlineDB>>() {
+            @Override
+            public List<FlightAirlineDB> call(Throwable throwable) {
+                return new ArrayList<>();
             }
         });
     }
