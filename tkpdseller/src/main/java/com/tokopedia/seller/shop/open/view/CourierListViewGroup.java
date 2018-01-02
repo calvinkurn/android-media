@@ -17,13 +17,13 @@ import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourierListViewGroup extends LinearLayout implements ShopCourierExpandableOption.OnDisabledHeaderClickedListener {
+public class CourierListViewGroup extends LinearLayout implements ShopCourierExpandableOption.OnShopCourierExpandableOptionListener {
     private List<Courier> courierList;
 
-    private ShopCourierExpandableOption.OnDisabledHeaderClickedListener onDisabledHeaderClickedListener;
-    public void setOnDisabledHeaderClickedListener(ShopCourierExpandableOption.OnDisabledHeaderClickedListener
-                                                           onDisabledHeaderClickedListener) {
-        this.onDisabledHeaderClickedListener = onDisabledHeaderClickedListener;
+    private ShopCourierExpandableOption.OnShopCourierExpandableOptionListener onShopCourierExpandableOptionListener;
+    public void setOnShopCourierExpandableOptionListener(ShopCourierExpandableOption.OnShopCourierExpandableOptionListener
+                                                                 onShopCourierExpandableOptionListener) {
+        this.onShopCourierExpandableOptionListener = onShopCourierExpandableOptionListener;
     }
 
     public CourierListViewGroup(Context context) {
@@ -72,7 +72,7 @@ public class CourierListViewGroup extends LinearLayout implements ShopCourierExp
             shopCourierExpandableOption.setLogo(courier.getLogo());
             shopCourierExpandableOption.setEnabled(courier.isAvailable());
             shopCourierExpandableOption.setChild(courier.getServices());
-            shopCourierExpandableOption.setOnDisabledHeaderClickedListener(this);
+            shopCourierExpandableOption.setOnShopCourierExpandableOptionListener(this);
             if (selectedCourierServiceList != null && selectedCourierServiceList.contains(courier.getId())) {
                 shopCourierExpandableOption.setChecked(true);
                 shopCourierExpandableOption.setSelectedChild(
@@ -103,8 +103,15 @@ public class CourierListViewGroup extends LinearLayout implements ShopCourierExp
 
     @Override
     public void onDisabledHeaderClicked() {
-        if (onDisabledHeaderClickedListener!= null) {
-            onDisabledHeaderClickedListener.onDisabledHeaderClicked();
+        if (onShopCourierExpandableOptionListener != null) {
+            onShopCourierExpandableOptionListener.onDisabledHeaderClicked();
+        }
+    }
+
+    @Override
+    public void onInfoIconClicked(String title, String description) {
+        if (onShopCourierExpandableOptionListener != null) {
+            onShopCourierExpandableOptionListener.onInfoIconClicked(title, description);
         }
     }
 }

@@ -8,11 +8,13 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -40,7 +42,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/21/17.
  */
 
-public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnDisabledHeaderClickedListener {
+public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnShopCourierExpandableOptionListener {
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     private CourierServiceIdWrapper selectedCourierServiceIdWrapper;
@@ -86,7 +88,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
         courierListViewGroup = view.findViewById(R.id.vg_courier_list);
         courierListViewGroup.setCourierList(null, selectedCourierServiceIdWrapper);
-        courierListViewGroup.setOnDisabledHeaderClickedListener(this);
+        courierListViewGroup.setOnShopCourierExpandableOptionListener(this);
 
         View continueButton = view.findViewById(R.id.continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +183,19 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
                     }
                 });
         AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void onInfoIconClicked(String title, String description) {
+        BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
+        dialog.setContentView(R.layout.shipping_info_bottom_sheet);
+
+        TextView tvInfo = dialog.findViewById(R.id.courier_information);
+        TextView tvServiceName = dialog.findViewById(R.id.courier_name_service);
+
+        tvServiceName.setText(title);
+        tvInfo.setText(description);
         dialog.show();
     }
 

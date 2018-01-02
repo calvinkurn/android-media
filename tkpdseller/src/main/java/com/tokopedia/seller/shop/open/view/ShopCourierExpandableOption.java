@@ -33,13 +33,15 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
 
     private boolean mEnabled;
 
-    private OnDisabledHeaderClickedListener onDisabledHeaderClickedListener;
-    public interface OnDisabledHeaderClickedListener{
+    private OnShopCourierExpandableOptionListener onShopCourierExpandableOptionListener;
+
+    public interface OnShopCourierExpandableOptionListener {
         void onDisabledHeaderClicked();
+        void onInfoIconClicked(String title, String description);
     }
 
-    public void setOnDisabledHeaderClickedListener(OnDisabledHeaderClickedListener onDisabledHeaderClickedListener) {
-        this.onDisabledHeaderClickedListener = onDisabledHeaderClickedListener;
+    public void setOnShopCourierExpandableOptionListener(OnShopCourierExpandableOptionListener onShopCourierExpandableOptionListener) {
+        this.onShopCourierExpandableOptionListener = onShopCourierExpandableOptionListener;
     }
 
     private String logo;
@@ -148,6 +150,13 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
         }
     }
 
+    @Override
+    public void onInfoIconClicked(String title, String description) {
+        if (onShopCourierExpandableOptionListener!= null) {
+            onShopCourierExpandableOptionListener.onInfoIconClicked(title, description);
+        }
+    }
+
     private void initRootLayout(View view) {
         LayoutTransition layoutTransition = ((ViewGroup) view).getLayoutTransition();
         layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
@@ -184,8 +193,8 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
     }
 
     private void onDisabledHeaderClicked(){
-        if (onDisabledHeaderClickedListener!= null) {
-            onDisabledHeaderClickedListener.onDisabledHeaderClicked();
+        if (onShopCourierExpandableOptionListener != null) {
+            onShopCourierExpandableOptionListener.onDisabledHeaderClicked();
         }
     }
 
