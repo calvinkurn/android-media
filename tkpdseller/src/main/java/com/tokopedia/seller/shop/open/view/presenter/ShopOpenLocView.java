@@ -16,4 +16,8 @@ public interface ShopOpenLocView extends CustomerView {
     void navigateToGoogleMap(String generatedMap, LocationPass locationPass);
 
     void navigateToDistrictRecommendation(Token token);
+
+    void onErrorGetReserveDomain(Throwable e);
+
+    void onFailedSaveInfoShop(Throwable t);
 }

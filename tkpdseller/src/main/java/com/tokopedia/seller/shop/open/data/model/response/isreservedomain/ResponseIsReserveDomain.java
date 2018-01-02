@@ -46,6 +46,13 @@ public class ResponseIsReserveDomain implements Parcelable {
         this.userData = userData;
     }
 
+    public ResponseIsReserveDomain() {
+    }
+
+    public boolean isDomainAlreadyReserved() {
+        return reserveStatus != 0;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -58,28 +65,21 @@ public class ResponseIsReserveDomain implements Parcelable {
         dest.writeParcelable(this.userData, flags);
     }
 
-    public ResponseIsReserveDomain() {
-    }
-
     protected ResponseIsReserveDomain(Parcel in) {
         this.reserveStatus = in.readLong();
         this.shipment = in.readParcelable(Shipment.class.getClassLoader());
         this.userData = in.readParcelable(UserData.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<ResponseSaveShopDesc> CREATOR = new Parcelable.Creator<ResponseSaveShopDesc>() {
+    public static final Creator<ResponseIsReserveDomain> CREATOR = new Creator<ResponseIsReserveDomain>() {
         @Override
-        public ResponseSaveShopDesc createFromParcel(Parcel source) {
-            return new ResponseSaveShopDesc(source);
+        public ResponseIsReserveDomain createFromParcel(Parcel source) {
+            return new ResponseIsReserveDomain(source);
         }
 
         @Override
-        public ResponseSaveShopDesc[] newArray(int size) {
-            return new ResponseSaveShopDesc[size];
+        public ResponseIsReserveDomain[] newArray(int size) {
+            return new ResponseIsReserveDomain[size];
         }
     };
-
-    public boolean isDomainAlreadyReserved() {
-        return reserveStatus != 0;
-    }
 }
