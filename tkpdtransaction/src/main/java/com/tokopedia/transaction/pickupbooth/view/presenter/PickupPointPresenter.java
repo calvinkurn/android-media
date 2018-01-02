@@ -57,7 +57,7 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
     @Override
     public void queryPickupPoints(String keyword) {
         getView().showLoading();
-        getPickupPointsUseCase.execute(getParams(), new Subscriber<PickupPointResponse>() {
+        getPickupPointsUseCase.execute(getParams(keyword), new Subscriber<PickupPointResponse>() {
             @Override
             public void onCompleted() {
 
@@ -86,6 +86,7 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
             @Override
             public void onNext(PickupPointResponse pickupPointResponse) {
                 if (isViewAttached()) {
+                    getView().hideLoading();
                     for (Store store : pickupPointResponse.getData().getStores()) {
                         storeViewModels.add(pickupPointViewModelMapper.transform(store));
                     }
@@ -99,14 +100,12 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
         return storeViewModels;
     }
 
-    private RequestParams getParams() {
+    private RequestParams getParams(String keyword) {
         RequestParams params = RequestParams.create();
-//        params.putString(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
-//        params.putString(GetPickupPointsUseCase.PARAM_TOKEN,
-//                token.getDistrictRecommendation());
-//        params.putString(GetPickupPointsUseCase.PARAM_UT,
-//                String.valueOf(token.getUnixTime()));
-//        params.putString(GetPickupPointsUseCase.PARAM_QUERY, query);
+        params.putString(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
+        params.putString(GetPickupPointsUseCase.PARAM_TOKEN, token);
+        params.putString(GetPickupPointsUseCase.PARAM_UT, ut);
+        params.putString(GetPickupPointsUseCase.PARAM_QUERY, keyword);
         return params;
     }
 }

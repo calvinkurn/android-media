@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 import static com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract.Constant.INTENT_DATA_PARAMS;
 
 public class PickupPointActivity extends BaseActivity
-        implements PickupPointContract.View, PickupPointAdapter.Listener{
+        implements PickupPointContract.View, PickupPointAdapter.Listener {
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -57,6 +57,8 @@ public class PickupPointActivity extends BaseActivity
     LinearLayout networkErrorView;
     @BindView(R2.id.ll_empty_result)
     LinearLayout llEmptyResult;
+    @BindView(R2.id.ll_header)
+    LinearLayout llHeader;
 
     @Inject
     PickupPointContract.Presenter presenter;
@@ -89,6 +91,18 @@ public class PickupPointActivity extends BaseActivity
         initializeInjector();
         presenter.attachView(this);
         setupRecycleView();
+
+        doQuery();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        llHeader.requestFocus();
+    }
+
+    private void doQuery() {
+        presenter.queryPickupPoints(searchViewPickupBooth.getQuery().toString());
     }
 
     private void setupRecycleView() {
