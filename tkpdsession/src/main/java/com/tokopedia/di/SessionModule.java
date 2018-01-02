@@ -4,11 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.otp.data.source.OtpSource;
+import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
+import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
+import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
+import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.login.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
@@ -39,6 +48,7 @@ SessionModule {
     public static final String BEARER_SERVICE = "BEARER_SERVICE";
     private static final String HMAC_SERVICE = "HMAC_SERVICE";
     private static final String WS_SERVICE = "WS_SERVICE";
+    public static final String LOGIN_CACHE = "LOGIN_CACHE";
 
     @SessionScope
     @Provides
@@ -125,4 +135,20 @@ SessionModule {
     ChangePhoneNumberEmailFragmentListener.Presenter ChangePhoneNumberEmailPresenter(SendEmailUseCase sendEmailUseCase) {
         return new ChangePhoneNumberEmailPresenter(sendEmailUseCase);
     }
+    @SessionScope
+    @Provides
+    OtpSource provideOtpSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                               RequestOtpMapper requestOTPMapper,
+                               ValidateOtpMapper validateOTPMapper,
+                               SessionHandler sessionHandler) {
+        return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    @Named(LOGIN_CACHE)
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
+        return new LocalCacheHandler(context, LOGIN_CACHE);
+    }
+
 }

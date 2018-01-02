@@ -66,6 +66,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false" />

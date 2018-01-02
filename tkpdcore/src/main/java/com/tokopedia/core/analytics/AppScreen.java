@@ -265,6 +265,11 @@ public final class AppScreen {
     public static final String SCREEN_DISCOVERY_PAGE = "Discovery Page";
     public static final String SCREEN_CHAT = "inbox-chat";
     public static final String SCREEN_CHAT_DETAIL = "chat detail";
+    
+    public static final String SCREEN_SELECT_VERIFICATION_METHOD = "Select Verification Method Page";
+    public static final String SCREEN_COTP_DEFAULT = "Account Verification Page";
+    public static final String SCREEN_COTP_SMS = "Account Verification - SMS ";
+    public static final String SCREEN_COTP_CALL = "Account Verification - Call";
 
     private AppScreen() {
 
