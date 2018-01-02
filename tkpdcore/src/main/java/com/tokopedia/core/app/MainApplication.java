@@ -267,6 +267,7 @@ public abstract class MainApplication extends BaseMainApplication{
         init();
         initFacebook();
         initCrashlytics();
+        initStetho();
         initializeAnalytics();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
@@ -372,6 +373,10 @@ public abstract class MainApplication extends BaseMainApplication{
 
     public void setAppComponent(AppComponent appComponent){
         this.appComponent = appComponent;
+    }
+
+    public void initStetho() {
+        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
     }
 
     private void initBranch() {
