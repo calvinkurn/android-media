@@ -45,6 +45,8 @@ public class NOTPExotelVerification {
             return;
         }
 
+        phoneNo = convertE164Fromat(phoneNo);
+
        /* Check if Truecaller installed
        *  and If We have number information in phone then verify verification number and phone number are same
        *
@@ -61,7 +63,7 @@ public class NOTPExotelVerification {
        * */
 
 
-        phoneNo = convertE164Fromat(phoneNo);
+
         ExotelVerification eVerification = new ExotelVerification();
         Config config = null;
         try {
