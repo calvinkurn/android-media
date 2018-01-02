@@ -31,7 +31,7 @@ public class ShopErrorResponse extends BaseResponseError {
 
     @Override
     public boolean hasBody() {
-        return header!= null;
+        return (header!= null && header.getMessages() != null && header.getMessages().size() > 0);
     }
 
     @Override
