@@ -39,10 +39,6 @@ import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseC
 import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocPresenterImpl;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocView;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.Shipment;
-import com.tokopedia.seller.shop.setting.data.model.response.UserData;
-import com.tokopedia.seller.shop.setting.domain.interactor.ShopOpenSaveLocationUseCase;
 
 import java.util.HashMap;
 
