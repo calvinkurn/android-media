@@ -21,8 +21,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
@@ -167,7 +167,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Override
     public void onErrorCheckShopName(Throwable t) {
-        textInputShopName.setError(ViewUtils.getErrorMessage(getActivity(), t));
+        textInputShopName.setError(ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override
@@ -182,7 +182,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Override
     public void onErrorCheckShopDomain(Throwable t) {
-        textInputDomainName.setError(ViewUtils.getErrorMessage(getActivity(), t));
+        textInputDomainName.setError(ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override
