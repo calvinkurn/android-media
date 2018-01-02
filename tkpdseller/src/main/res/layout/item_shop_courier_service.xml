@@ -6,9 +6,29 @@
     android:layout_height="wrap_content">
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/check_box"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:theme="@style/checkBoxStyleSeller"
         style="@style/TextView.Body1"
         tools:text="ini hanya test"/>
+
+    <FrameLayout
+        android:id="@+id/iv_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:visibility="gone"
+        tools:visibility="visible">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_info" />
+    </FrameLayout>
+
 </LinearLayout>
