@@ -10,6 +10,7 @@ import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -77,6 +78,7 @@ public class ShopModule {
                 .addInterceptor(bearerInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(tkpdErrorResponseInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
                 .build();
     }
 
@@ -84,7 +86,7 @@ public class ShopModule {
     @ShopScope
     @Provides
     public TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
-        return new TkpdErrorResponseInterceptor(ShopErrorResponse.class);
+        return new HeaderErrorResponseInterceptor(ShopErrorResponse.class);
     }
 }
 
