@@ -50,6 +50,7 @@ import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.addtocart.utils.NetParamUtil;
+import com.tokopedia.transaction.pickupbooth.domain.usecase.GetPickupPointsUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -588,14 +589,13 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public TKPDMapParam<String, String> getPickupPointParams() {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("district_id", "");
-        params.put("page", "");
-        params.put("query", "");
-        params.put("zipcode", "");
-        params.put("token", atcFormData.getShop().getToken());
-        params.put("ut", String.valueOf(atcFormData.getShop().getUt()));
+    public HashMap<String, String> getPickupPointParams() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID, String.valueOf(atcFormData.getShop().getOriginId()));
+        params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
+        params.put(GetPickupPointsUseCase.PARAM_TOKEN,
+                atcFormData.getShop().getTokenPickup() != null ? atcFormData.getShop().getTokenPickup() : "");
+        params.put(GetPickupPointsUseCase.PARAM_UT, String.valueOf(atcFormData.getShop().getUt()));
 
         return params;
     }

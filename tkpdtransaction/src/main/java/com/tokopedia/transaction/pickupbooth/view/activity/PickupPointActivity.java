@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -19,6 +20,7 @@ import android.widget.Spinner;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.pickupbooth.di.DaggerPickupPointComponent;
@@ -92,7 +94,7 @@ public class PickupPointActivity extends BaseActivity
         presenter.attachView(this);
         setupRecycleView();
 
-        doQuery();
+        doQuery((HashMap<String, String>) getIntent().getSerializableExtra(INTENT_DATA_PARAMS));
     }
 
     @Override
@@ -101,8 +103,8 @@ public class PickupPointActivity extends BaseActivity
         llHeader.requestFocus();
     }
 
-    private void doQuery() {
-        presenter.queryPickupPoints(searchViewPickupBooth.getQuery().toString());
+    private void doQuery(HashMap<String, String> param) {
+        presenter.queryPickupPoints(searchViewPickupBooth.getQuery().toString(), param);
     }
 
     private void setupRecycleView() {
@@ -111,6 +113,7 @@ public class PickupPointActivity extends BaseActivity
                 LinearLayoutManager.VERTICAL, false);
         rvPickupBooth.setLayoutManager(linearLayoutManager);
         rvPickupBooth.setAdapter(pickupPointAdapter);
+        ViewCompat.setNestedScrollingEnabled(rvPickupBooth, false);
     }
 
     @Override
@@ -163,7 +166,7 @@ public class PickupPointActivity extends BaseActivity
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.queryPickupPoints(searchViewPickupBooth.getQuery().toString());
+                        doQuery((HashMap<String, String>) getIntent().getSerializableExtra(INTENT_DATA_PARAMS));
                     }
                 });
     }

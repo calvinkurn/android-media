@@ -53,9 +53,10 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/tkpd_bg_color"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".pickupbooth.view.activity.PickupPointActivity"
         tools:showIn="@layout/activity_pickup_point">
@@ -68,8 +69,9 @@
                 android:id="@+id/ll_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:background="@color/white"
                 android:focusableInTouchMode="true"
+                android:orientation="vertical"
                 android:padding="16dp">
 
                 <TextView
@@ -164,5 +166,17 @@
         </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/btn_choose_pickup_booth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:background="@color/tkpd_main_green"
+        android:foreground="?selectableItemBackground"
+        android:text="@string/label_button_pick_pickup_booth"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
 
 </android.support.design.widget.CoordinatorLayout>

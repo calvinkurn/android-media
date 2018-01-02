@@ -20,6 +20,7 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
     public static final String PARAM_PAGE = "page";
     public static final String PARAM_UT = "ut";
     public static final String PARAM_QUERY = "query";
+    public static final String PARAM_DISTRICT_ID = "district_id";
 
     public static final String DEFAULT_PAGE = "0";
 

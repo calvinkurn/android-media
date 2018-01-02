@@ -1,10 +1,12 @@
 package com.tokopedia.transaction.pickupbooth.view.adapter;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
@@ -60,7 +62,14 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
             }
         });
 
-        holder.btnCheck.setOnClickListener(new View.OnClickListener() {
+        holder.btnCheck.setOnClickListener(getItemClickListener(storeViewModel));
+
+        holder.cvContainer.setOnClickListener(getItemClickListener(storeViewModel));
+
+    }
+
+    private View.OnClickListener getItemClickListener(final StoreViewModel storeViewModel){
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (StoreViewModel viewModel : stores) {
@@ -76,8 +85,7 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
                 }
                 notifyDataSetChanged();
             }
-        });
-
+        };
     }
 
     @Override
@@ -91,6 +99,8 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
 
     protected class PickupPointViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        @BindView(R2.id.cv_container)
+        CardView cvContainer;
         @BindView(R2.id.btn_check)
         ImageButton btnCheck;
         @BindView(R2.id.tv_store_name)

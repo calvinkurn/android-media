@@ -8,6 +8,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.transaction.pickupbooth.view.model.StoreViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Irfan Khoirul on 22/12/17.
@@ -30,7 +31,7 @@ public interface PickupPointContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void queryPickupPoints(String keyword);
+        void queryPickupPoints(String keyword, HashMap<String, String> param);
 
         ArrayList<StoreViewModel> getPickupPoints();
     }

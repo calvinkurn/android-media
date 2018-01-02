@@ -12,6 +12,8 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 
+import java.util.HashMap;
+
 /**
  * Created by Angga.Prasetiyo on 11/03/2016.
  * Edited by Hafizh :: Kero Rates
@@ -69,5 +71,5 @@ public interface AddToCartPresenter {
 
     String calculateWeight(String initWeight, String quantity);
 
-    TKPDMapParam<String, String> getPickupPointParams();
+    HashMap<String, String> getPickupPointParams();
 }

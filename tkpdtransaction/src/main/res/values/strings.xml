@@ -173,4 +173,6 @@
     <string name="label_pickup_booth">Gerai Pengambilan</string>
     <string name="label_no_pickup_booth_found">Oops, Gerai tidak ditemukan</string>
     <string name="label_pickup_booth_check_keyword">Periksa kembali kata kunci Anda</string>
+    <string name="label_button_pick_pickup_booth">Pilih Gerai ini</string>
+    <string name="label_show_map">Lihat Peta</string>
 </resources>

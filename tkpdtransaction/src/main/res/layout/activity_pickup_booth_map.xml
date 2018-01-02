@@ -6,4 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.tokopedia.transaction.pickupbooth.view.activity.PickupPointMapActivity">
 
+    <ImageView
+        android:id="@+id/img_pickup_booth_location"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>
