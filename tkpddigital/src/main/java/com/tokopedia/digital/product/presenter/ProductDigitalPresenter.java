@@ -410,6 +410,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
+                view.renderCheckPulsaBalanceData();
             }
         } else {
             view.showAccessibilityAlertDialog();
