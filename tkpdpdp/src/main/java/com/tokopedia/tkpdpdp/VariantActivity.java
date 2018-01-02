@@ -1,8 +1,13 @@
 package com.tokopedia.tkpdpdp;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.TintableBackgroundView;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,6 +29,8 @@ import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
 import java.util.List;
 
+import static android.view.View.VISIBLE;
+
 
 public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
 
@@ -43,6 +50,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private ImageView productImage;
     private TextView productName;
     private TextView productPrice;
+    private TextView textOriginalPrice;
+    private TextView textDiscount;
     private RecyclerView optionRecyclerViewLevel1;
     private TextView optionNameLevel1;
     private RecyclerView optionRecyclerViewLevel2;
@@ -81,9 +90,27 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionRecyclerViewLevel2 = (RecyclerView) findViewById(R.id.rv_variant_option_level2);
         buttonSave = (FrameLayout) findViewById(R.id.button_save);
         textButtonSave = (TextView) findViewById(R.id.text_button_save_variant);
+        textOriginalPrice = (TextView) findViewById(R.id.text_original_price);
+        textDiscount = (TextView) findViewById(R.id.text_discount);
 
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
+        if(productDetailData.getProductCampaign() != null
+                && productDetailData.getProductCampaign().getOriginalPrice() != null) {
+            textOriginalPrice.setText(productDetailData.getProductCampaign().getOriginalPriceIdr());
+            textOriginalPrice.setPaintFlags(
+                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
+
+            textDiscount.setText(String.format(
+                    VariantActivity.this.getString(R.string.label_discount_percentage),
+                    productDetailData.getProductCampaign().getPercentageAmount()
+            ));
+
+            textDiscount.setVisibility(VISIBLE);
+            textOriginalPrice.setVisibility(VISIBLE);
+        }
+
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         //TODO bedges, promo
     }
@@ -200,8 +227,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     }
                 }
             }
-            optionNameLevel2.setVisibility(View.VISIBLE);
-            optionRecyclerViewLevel2.setVisibility(View.VISIBLE);
+            optionNameLevel2.setVisibility(VISIBLE);
+            optionRecyclerViewLevel2.setVisibility(VISIBLE);
             variantOptionAdapterLevel2.notifyItemSelectedChange();
         } else {
             variantOptionAdapterLevel1.notifyItemSelectedChange();

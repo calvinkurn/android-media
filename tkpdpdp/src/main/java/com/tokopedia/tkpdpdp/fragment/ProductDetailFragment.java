@@ -174,7 +174,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private ProductDetailData productData;
     private List<ProductOther> productOthers;
     private VideoData videoData;
-    private ProductCampaign productCampaign;
     private PromoAttributes promoAttributes;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
@@ -800,7 +799,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
-        presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
         presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
         presenter.saveStateAppBarCollapsed(outState, STATE_APP_BAR_COLLAPSED, isAppBarCollapsed);
     }
@@ -1033,8 +1031,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductCampaign(ProductCampaign productCampaign) {
-        this.productCampaign = productCampaign;
-        headerInfoView.renderProductCampaign(this.productCampaign);
+        productData.setProductCampaign(productCampaign);
+        headerInfoView.renderProductCampaign(productData.getProductCampaign());
     }
 
     @Override

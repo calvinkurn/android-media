@@ -304,7 +304,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setGoldMerchantFeatures(context, productDetailData);
                             getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
-                            getProductVariant(context,productDetailData.getInfo().getProductId().toString());
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
@@ -654,7 +653,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         List<ProductOther> productOthers = savedInstanceState
                 .getParcelableArrayList(ProductDetailFragment.STATE_OTHER_PRODUCTS);
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
-        ProductCampaign productCampaign = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_CAMPAIGN);
         PromoAttributes promoAttributes = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PROMO_WIDGET);
         boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
@@ -666,8 +664,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             }
         }
 
-        if (productCampaign != null) {
-            viewListener.showProductCampaign(productCampaign);
+        if (productData.getProductCampaign() != null) {
+            viewListener.showProductCampaign(productData.getProductCampaign());
         }
 
         if (promoAttributes != null) {
@@ -807,7 +805,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
                         setGoldMerchantFeatures(context, data);
                         getProductCampaign(context, data.getInfo().getProductId().toString());
-                        getProductVariant(context,data.getInfo().getProductId().toString());
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
@@ -936,16 +933,18 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         });
     }
 
-    public void getProductCampaign(@NonNull Context context, @NonNull String id) {
+    public void getProductCampaign(final @NonNull Context context, final @NonNull String id) {
         retrofitInteractor.getProductCampaign(context, id,
                 new RetrofitInteractor.ProductCampaignListener() {
                     @Override
                     public void onSucccess(ProductCampaign productCampaign) {
                         viewListener.showProductCampaign(productCampaign);
+                        getProductVariant(context,id);
                     }
 
                     @Override
                     public void onError(String error) {
+                        getProductVariant(context,id);
                     }
                 }
         );

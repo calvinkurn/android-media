@@ -51,6 +51,7 @@ public class ProductDetailData implements Parcelable{
      */
     private LatestTalkViewModel latestTalkViewModel;
     private List<Review> reviewList;
+    private ProductCampaign productCampaign;
 
     public ProductDetailData() {
     }
@@ -142,6 +143,14 @@ public class ProductDetailData implements Parcelable{
 
     public void setReviewList(List<Review> reviewList) {
         this.reviewList = reviewList;
+    }
+
+    public ProductCampaign getProductCampaign() {
+        return productCampaign;
+    }
+
+    public void setProductCampaign(ProductCampaign productCampaign) {
+        this.productCampaign = productCampaign;
     }
 
     public static class Builder {
@@ -237,6 +246,7 @@ public class ProductDetailData implements Parcelable{
         dest.writeTypedList(this.productImages);
         dest.writeParcelable(this.latestTalkViewModel, flags);
         dest.writeTypedList(this.reviewList);
+        dest.writeParcelable(this.productCampaign,flags);
     }
 
     protected ProductDetailData(Parcel in) {
@@ -251,6 +261,7 @@ public class ProductDetailData implements Parcelable{
         this.productImages = in.createTypedArrayList(ProductImage.CREATOR);
         this.latestTalkViewModel = in.readParcelable(LatestTalkViewModel.class.getClassLoader());
         this.reviewList = in.createTypedArrayList(Review.CREATOR);
+        this.productCampaign = in.readParcelable(ProductCampaign.class.getClassLoader());
     }
 
     public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {
