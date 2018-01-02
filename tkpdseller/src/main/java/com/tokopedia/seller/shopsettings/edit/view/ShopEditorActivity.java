@@ -120,11 +120,7 @@ public class ShopEditorActivity extends TActivity implements
 
         switch (FRAGMENT_TAG) {
             case CREATE_SHOP_FRAGMENT_TAG:
-                if (!isFragmentCreated(CREATE_SHOP_FRAGMENT_TAG)) {
-                    fragment = ShopCreateFragment.newInstance();
-                } else {
-                    fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                }
+                fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
                 moveToFragment(fragment, true, CREATE_SHOP_FRAGMENT_TAG);
                 createCustomToolbar(getString(R.string.title_open_shop));
                 break;
