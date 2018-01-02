@@ -159,6 +159,7 @@ public interface AppEventTracking {
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
+        String EVENT_RESOLUTION = "Resolusi";
     }
 
     interface Category {
@@ -269,6 +270,7 @@ public interface AppEventTracking {
         String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
+        String RESOLUTION_CENTER = "Resolution Center";
     }
 
     interface Action {
@@ -417,6 +419,12 @@ public interface AppEventTracking {
 
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
+
+        String CLICK_PRODUCT_PROBLEM = "click Barang & Masalah";
+        String CLICK_SOLUTION = "click Solusi";
+        String CLICK_PROVE = "click Bukti & Keterangan";
+        String CLICK_CREATE_RESO = "click Buat Komplain";
+        String CLICK_CREATE_RESO_ABANDON = "click Abandon";
     }
 
     interface ImageEditor{
@@ -758,6 +766,15 @@ public interface AppEventTracking {
         String FEED_KOL_RECOMMENDATION_VIEW_ALL = "kol discovery page";
         String ONBOARDING_SKIP_LABEL = "skip - ";
         String ONBOARDING_START_LABEL = "click mulai sekarang";
+
+        String RESO_PROBLEM_SAVE = "Kendala - Simpan";
+        String RESO_PROBLEM_SAVE_CHOOSE_OTHER = "Kendala - Simpan dan Pilih Barang Lain";
+        String RESO_PROBLEM_CONTINUE = "Kendala - Lanjut";
+        String RESO_SOLUTION_CONTINUE  = "Solusi - Lanjut";
+        String RESO_CREATE_COMPLAINT_PRE  = "Pre - Buat Complain";
+        String RESO_CREATE_COMPLAINT_CONFIRM  = "Confirm - Buat Complain";
+        String RESO_CREATE_COMPLAINT_UNCONFIRM  = "Unconfirmed - Buat Complain";
+        String RESO_CREATE_ABANDON = "Abandon";
     }
 
     interface SOCIAL_MEDIA {
