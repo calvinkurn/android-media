@@ -1,6 +1,7 @@
 package com.tokopedia.flight.detail.presenter;
 
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -44,6 +45,27 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         flightGetOrderUseCase.execute(flightGetOrderUseCase.createRequestParams(orderId), getSubscriberGetDetailOrder(flightOrderDetailPassData));
     }
 
+    @Override
+    public void actionCancelOrderButtonClicked() {
+        getView().navigateToWebview(getView().getCancelUrl());
+    }
+
+    @Override
+    public void onHelpButtonClicked() {
+        String url = FlightUrl.CONTACT_US_FLIGHT_PREFIX + generateGeneralFlightContactUs();
+        getView().navigateToWebview(url);
+    }
+
+    @Override
+    public void actionReorderButtonClicked() {
+        getView().navigateToFlightHomePage();
+    }
+
+    private String generateGeneralFlightContactUs() {
+        return Base64.encodeToString(getView().getActivity().getString(R.string.flight_order_flight_default_contact_us).getBytes(), Base64.DEFAULT);
+    }
+
+
     private Subscriber<FlightOrder> getSubscriberGetDetailOrder(final FlightOrderDetailPassData flightOrderDetailPassData) {
         return new Subscriber<FlightOrder>() {
             @Override
@@ -69,10 +91,25 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                         flightOrder.getTotalChildNumeric(), flightOrder.getTotalInfantNumeric()));
                 getView().updateOrderData(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
                         FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
-                        generateTicketLink(flightOrder.getId()), generateInvoiceLink(flightOrder.getId()));
+                        generateTicketLink(flightOrder.getId()), generateInvoiceLink(flightOrder.getId()),
+                        generateCancelParam(flightOrder));
                 generateStatus(flightOrder.getStatus());
             }
         };
+    }
+
+    private String generateCancelParam(FlightOrder flightOrder) {
+        StringBuilder result = new StringBuilder(getView().getActivity().getString(R.string.flight_order_cancel_prefix_label));
+        for (FlightOrderJourney flightOrderJourney : flightOrder.getJourneys()) {
+            String item = flightOrderJourney.getDepartureAiportId() + "-" + flightOrderJourney.getArrivalAirportId() + " ";
+            ArrayList<String> passengers = new ArrayList<>();
+            for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
+                passengers.add("Passenger " + flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName());
+            }
+            item += TextUtils.join(",", passengers);
+            result.append(item);
+        }
+        return Base64.encodeToString(result.toString().getBytes(), Base64.DEFAULT);
     }
 
     private String generateInvoiceLink(String orderId) {

@@ -39,9 +39,9 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
         } else if (item.getItemId() == R.id.menu_help) {
             if (getApplication() instanceof FlightModuleRouter
                     && ((FlightModuleRouter) getApplication())
-                    .getBannerWebViewIntent(this, FlightUrl.CONTACT_US_FLIGHT) != null) {
+                    .getBannerWebViewIntent(this, FlightUrl.CONTACT_US) != null) {
                 startActivity(((FlightModuleRouter) getApplication())
-                        .getBannerWebViewIntent(this, FlightUrl.CONTACT_US_FLIGHT));
+                        .getBannerWebViewIntent(this, FlightUrl.CONTACT_US));
             }
 
             return true;

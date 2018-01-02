@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,10 +26,13 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
@@ -78,6 +82,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private String eticketLink = "";
     private String invoiceLink = "";
+    private String cancelLink = "";
 
     private boolean isPassengerInfoShowed = true;
 
@@ -173,7 +178,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         buttonCancelTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                flightDetailOrderPresenter.actionCancelOrderButtonClicked();
             }
         });
 
@@ -211,13 +216,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                flightDetailOrderPresenter.onHelpButtonClicked();
             }
         });
         buttonReorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                flightDetailOrderPresenter.actionReorderButtonClicked();
             }
         });
 
@@ -270,10 +275,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink) {
+    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelUrl) {
         this.transactionDate.setText(transactionDate);
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
+        this.cancelLink = FlightUrl.CONTACT_US_FLIGHT_PREFIX + cancelUrl;
     }
 
     @Override
@@ -327,9 +333,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     private void togglePassengerInfo() {
-        if(isPassengerInfoShowed) {
+        if (isPassengerInfoShowed) {
             hidePassengerInfo();
-        }else{
+        } else {
             showPassengerInfo();
         }
     }
@@ -376,5 +382,34 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onDestroy() {
         flightDetailOrderPresenter.detachView();
         super.onDestroy();
+    }
+
+    @Override
+    public String getCancelUrl() {
+        return cancelLink;
+    }
+
+    @Override
+    public void navigateToWebview(String url) {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getBannerWebViewIntent(getActivity(), url) != null) {
+            startActivity(((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), url));
+        }
+    }
+
+    @Override
+    public void navigateToFlightHomePage() {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getHomeIntent(getActivity()) != null) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
+                    .getHomeIntent(getActivity());
+            taskStackBuilder.addNextIntent(intent);
+        }
+        taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
+        taskStackBuilder.startActivities();
     }
 }
