@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,7 +183,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
         String errorMessage = ShopErrorHandler.getErrorMessage(t);
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 onNextButtonClicked();
