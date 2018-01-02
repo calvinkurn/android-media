@@ -81,8 +81,8 @@ public class PhoneVerificationPresenter extends BaseDaggerPresenter<PhoneVerific
             requestOtpUseCase.execute(RequestOtpUseCase.getParamAfterLogin(
                     RequestOtpUseCase.MODE_SMS,
                     viewListener.getPhoneNumber(),
-                    RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION),
-                    new RequestOTPPhoneverificationSubscriber(viewListener)
+                    RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION
+                    ), new RequestOTPPhoneverificationSubscriber(viewListener)
             );
         }
     }

@@ -73,8 +73,8 @@ public class ProfileCompletionPhoneVerificationPresenter
             requestOtpUseCase.execute(RequestOtpUseCase.getParamAfterLogin(
                     RequestOtpUseCase.MODE_SMS,
                     getView().getPhoneNumber(),
-                    RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION),
-                    new RequestOTPProfileCompletionSubscriber(getView())
+                    RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION
+                    ), new RequestOTPProfileCompletionSubscriber(getView())
             );
         }
     }

@@ -13,6 +13,7 @@ import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.domain.interactor.RequestOtpWithEmailUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpLoginUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 
@@ -26,6 +27,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         Verification.Presenter {
 
     private final RequestOtpUseCase requestOtpUseCase;
+    private final RequestOtpWithEmailUseCase requestOtpEmailUseCase;
     private final ValidateOtpLoginUseCase validateOtpLoginUseCase;
     private final ValidateOtpUseCase validateOtpUseCase;
     private final SessionHandler sessionHandler;
@@ -33,9 +35,11 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     @Inject
     public VerificationPresenter(SessionHandler sessionHandler,
                                  RequestOtpUseCase requestOtpUseCase,
+                                 RequestOtpWithEmailUseCase requestOtpEmailUseCase,
                                  ValidateOtpLoginUseCase validateOtpLoginUseCase,
                                  ValidateOtpUseCase validateOtpUseCase) {
         this.requestOtpUseCase = requestOtpUseCase;
+        this.requestOtpEmailUseCase = requestOtpEmailUseCase;
         this.validateOtpLoginUseCase = validateOtpLoginUseCase;
         this.validateOtpUseCase = validateOtpUseCase;
         this.sessionHandler = sessionHandler;
@@ -48,7 +52,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     @Override
     public void detachView() {
         super.detachView();
-
+        requestOtpEmailUseCase.unsubscribe();
         requestOtpUseCase.unsubscribe();
         validateOtpUseCase.unsubscribe();
         validateOtpLoginUseCase.unsubscribe();
@@ -87,17 +91,17 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                     requestOtpUseCase.execute(RequestOtpUseCase.getParamAfterLogin(
                             RequestOtpUseCase.MODE_CALL,
                             passModel.getPhoneNumber(),
-                            passModel.getOtpType()), new
-                            RequestOtpSubscriber(getView()));
+                            passModel.getOtpType()
+                    ), new RequestOtpSubscriber(getView()));
                 }
                 break;
             case VerificationActivity.TYPE_EMAIL:
                 if (!TextUtils.isEmpty(passModel.getEmail())) {
-                    requestOtpUseCase.execute(RequestOtpUseCase.getParamEmailAfterLogin(
-                            RequestOtpUseCase.MODE_EMAIL,
+                    requestOtpEmailUseCase.execute(RequestOtpWithEmailUseCase.getParam(
                             passModel.getEmail(),
-                            passModel.getOtpType()), new
-                            RequestOtpSubscriber(getView()));
+                            passModel.getOtpType(),
+                            sessionHandler.getLoginID()
+                    ), new RequestOtpSubscriber(getView()));
                 }
             default:
                 throw new RuntimeException("Verification Type not supported");
@@ -128,8 +132,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 break;
             case VerificationActivity.TYPE_EMAIL:
                 if (!TextUtils.isEmpty(passModel.getEmail())) {
-                    requestOtpUseCase.execute(RequestOtpUseCase.getParamEmailBeforeLogin(
-                            RequestOtpUseCase.MODE_EMAIL,
+                    requestOtpEmailUseCase.execute(RequestOtpWithEmailUseCase.getParam(
                             passModel.getEmail(),
                             passModel.getOtpType(),
                             sessionHandler.getTempLoginSession(MainApplication.getAppContext())
@@ -157,6 +160,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 break;
             default:
                 validateOtpUseCase.execute(ValidateOtpUseCase.getParam(
+                        sessionHandler.getTempLoginSession(MainApplication.getAppContext()),
                         passModel.getOtpType(),
                         otpCode
                 ), new VerifyOtpSubscriber(getView()));

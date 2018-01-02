@@ -137,15 +137,15 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
 
     @Override
     public void requestOTPWithEmail(String email) {
-        viewListener.showLoadingProgress();
-        viewListener.disableOtpButton();
-        requestOtpUseCase.execute(
-                RequestOtpUseCase.getParamEmailBeforeLogin(
-                        RequestOtpUseCase.MODE_EMAIL,
-                        email,
-                        RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                        sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
-                new RequestOTPSecurityQuestionSubscriber(viewListener));
+//        viewListener.showLoadingProgress();
+//        viewListener.disableOtpButton();
+//        requestOtpUseCase.execute(
+//                RequestOtpUseCase.getParamEmailBeforeLogin(
+//                        RequestOtpUseCase.MODE_EMAIL,
+//                        email,
+//                        RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+//                        sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
+//                new RequestOTPSecurityQuestionSubscriber(viewListener));
     }
 
     private boolean isValid(String otp) {
