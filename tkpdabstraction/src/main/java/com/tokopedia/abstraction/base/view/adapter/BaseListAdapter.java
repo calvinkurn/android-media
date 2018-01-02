@@ -69,6 +69,11 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
         return list;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return visitables.get(position).type(baseListAdapterTypeFactory);
+    }
+
     public interface OnAdapterInteractionListener<T> {
         void onItemClicked(T t);
     }

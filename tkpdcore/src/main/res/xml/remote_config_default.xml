@@ -85,4 +85,8 @@
         <key>mainapp_rating_message</key>
         <value>Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</value>
     </entry>
+    <entry>
+        <key>flight_airport</key>
+        <value>1</value>
+    </entry>
 </defaultsMap>
