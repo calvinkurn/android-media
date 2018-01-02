@@ -23,6 +23,7 @@ import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistViewPagerAdapter;
@@ -60,11 +61,13 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
     private int counterError;
+    private final String searchQuery;
 
-    public HotlistHeaderViewHolder(View parent, ItemClickListener mItemClickListener) {
+    public HotlistHeaderViewHolder(View parent, ItemClickListener mItemClickListener, String searchQuery) {
         super(parent);
         context = parent.getContext();
         this.mItemClickListener = mItemClickListener;
+        this.searchQuery = searchQuery;
         this.indicator = (CirclePageIndicator) parent.findViewById(R.id.hot_list_banner_indicator);
         this.viewpager = (ViewPager) parent.findViewById(R.id.hot_list_banner_view_pager);
         this.containerHashtag = (LinearLayout) parent.findViewById(R.id.hot_list_banner_hashtags);
@@ -77,8 +80,8 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
     private void initTopAds() {
         TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, "hotlist");
-        adsParams.getParam().put(TopAdsParams.KEY_QUERY, "laptop");
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_HOTLIST);
+        adsParams.getParam().put(TopAdsParams.KEY_QUERY, searchQuery);
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
@@ -87,13 +90,15 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
                 .topAdsParams(adsParams)
                 .build();
         this.topAdsBannerView.setConfig(config);
-        this.topAdsBannerView.loadTopAds();
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
             public void onBannerAdsClicked(String applink) {
                 mItemClickListener.onBannerAdsClicked(applink);
             }
         });
+        if (!searchQuery.isEmpty()) {
+            this.topAdsBannerView.loadTopAds();
+        }
     }
 
     @Override

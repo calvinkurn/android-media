@@ -80,6 +80,7 @@ public class HotlistFragment extends SearchSectionFragment
         ItemClickListener, TopAdsListener, TopAdsItemClickListener {
 
     private static final String EXTRA_URL = "extra_url";
+    private static final String EXTRA_SEARCH_QUERY = "extra_search_query";
     private static final String EXTRA_ALIAS = "extra_alias";
     private static final String EXTRA_QUERY_HOTLIST = "EXTRA_QUERY_HOTLIST";
     private static final String EXTRA_DISABLE_TOPADS = "EXTRA_DISABLE_TOPADS";
@@ -113,9 +114,10 @@ public class HotlistFragment extends SearchSectionFragment
         return fragment;
     }
 
-    public static Fragment createInstanceUsingURL(String url) {
+    public static Fragment createInstanceUsingURL(String url, String searchQuery) {
         Bundle args = new Bundle();
         args.putString(EXTRA_URL, url);
+        args.putString(EXTRA_SEARCH_QUERY, searchQuery);
         HotlistFragment fragment = new HotlistFragment();
         fragment.setArguments(args);
         return fragment;
@@ -335,7 +337,8 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     protected void setupAdapter() {
-        HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this);
+        String searchQuery = getArguments().getString(EXTRA_SEARCH_QUERY, "");
+        HotlistTypeFactory typeFactory = new HotlistAdapterTypeFactory(this, searchQuery);
         hotlistAdapter = new HotlistAdapter(this, typeFactory);
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), hotlistAdapter);
