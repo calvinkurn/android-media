@@ -898,6 +898,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onContentProviderLinkClicked(String url) {
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+    }
 
     @Override
     public void onToppicksClicked(int page, int rowNumber, String name, String url) {
