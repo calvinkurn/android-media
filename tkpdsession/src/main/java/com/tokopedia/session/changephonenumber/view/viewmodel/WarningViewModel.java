@@ -19,6 +19,7 @@ public class WarningViewModel implements Parcelable {
     private String tokocash;
     private String action;
     private List<String> warningList;
+    private boolean hasBankAccount;
 
     public WarningViewModel() {
     }
@@ -55,6 +56,14 @@ public class WarningViewModel implements Parcelable {
         this.warningList = warningList;
     }
 
+    public boolean isHasBankAccount() {
+        return hasBankAccount;
+    }
+
+    public void setHasBankAccount(boolean hasBankAccount) {
+        this.hasBankAccount = hasBankAccount;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -66,6 +75,7 @@ public class WarningViewModel implements Parcelable {
         dest.writeString(this.tokocash);
         dest.writeString(this.action);
         dest.writeStringList(this.warningList);
+        dest.writeByte(this.hasBankAccount ? (byte) 1 : (byte) 0);
     }
 
     protected WarningViewModel(Parcel in) {
@@ -73,6 +83,7 @@ public class WarningViewModel implements Parcelable {
         this.tokocash = in.readString();
         this.action = in.readString();
         this.warningList = in.createStringArrayList();
+        this.hasBankAccount = in.readByte() != 0;
     }
 
     public static final Creator<WarningViewModel> CREATOR = new Creator<WarningViewModel>() {

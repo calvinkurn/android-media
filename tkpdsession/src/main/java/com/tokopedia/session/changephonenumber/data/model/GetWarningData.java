@@ -19,6 +19,8 @@ public class GetWarningData {
     private String tokocash;
     @SerializedName("action")
     private String action;
+    @SerializedName("have_bank_acct")
+    private boolean hasBankAccount;
 
     public int getIsSuccess() {
         return isSuccess;
@@ -60,4 +62,11 @@ public class GetWarningData {
         this.action = action;
     }
 
+    public boolean getHasBankAccount() {
+        return hasBankAccount;
+    }
+
+    public void setHasBankAccount(boolean hasBankAccount) {
+        this.hasBankAccount = hasBankAccount;
+    }
 }

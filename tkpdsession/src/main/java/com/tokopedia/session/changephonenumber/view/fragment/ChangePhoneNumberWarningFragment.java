@@ -189,7 +189,9 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     private void showOrHideWithdrawButton() {
-        if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP) && !isNullOrEmpty(viewModel.getTokopediaBalance())) {
+        if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)
+                && !isNullOrEmpty(viewModel.getTokopediaBalance())
+                && viewModel.isHasBankAccount()) {
             withdrawButton.setVisibility(View.VISIBLE);
         } else {
             withdrawButton.setVisibility(View.GONE);
